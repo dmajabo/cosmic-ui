@@ -1,0 +1,264 @@
+{
+  "count": "2",
+  "organizations": [
+    {
+      "id": "0x4e5f",
+      "name": "Getriskaware",
+      "description": "",
+      "extId": "1062176",
+      "extType": "",
+      "extUrl": "https://n109.meraki.com/o/NfHs6a/manage/organization/overview",
+      "vnets": [
+        {
+          "id": "0x4e5e",
+          "name": "",
+          "description": "",
+          "extId": "L_624311498344248378",
+          "endpoints": [],
+          "vms": [],
+          "cidr": null
+        }
+      ],
+      "wedges": [],
+      "oedges": [],
+      "devices": [
+        {
+          "id": "0x4e62",
+          "name": "",
+          "description": "",
+          "extId": "Q2KN-U958-CSTY",
+          "type": "",
+          "serial": "Q2KN-U958-CSTY",
+          "model": "MX64",
+          "networkId": "L_624311498344248378",
+          "publicIp": "73.158.148.119",
+          "privateIp": "192.168.1.244",
+          "vpnlinks": [
+            {
+              "id": "0x4e5c",
+              "name": "AWS-TGW",
+              "description": "",
+              "extId": "",
+              "connectionId": "",
+              "linkStates": [
+                {
+                  "name": "state-AWS-TGW",
+                  "sourceIp": "73.158.148.119",
+                  "peerIp": "52.54.53.36",
+                  "peerId": "",
+                  "status": "unreachable",
+                  "statusMessage": "",
+                  "connectedTo": null
+                }
+              ],
+              "privateSubnets": []
+            },
+            {
+              "id": "0x4e60",
+              "name": "Azure VPNgw",
+              "description": "",
+              "extId": "",
+              "connectionId": "",
+              "linkStates": [
+                {
+                  "name": "state-Azure VPNgw",
+                  "sourceIp": "73.158.148.119",
+                  "peerIp": "13.91.19.10",
+                  "peerId": "",
+                  "status": "unreachable",
+                  "statusMessage": "",
+                  "connectedTo": null
+                }
+              ],
+              "privateSubnets": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "0x4e6f",
+      "name": "saurabh@okulis.ai",
+      "description": "",
+      "extId": "013719935964",
+      "extType": "",
+      "extUrl": "",
+      "vnets": [
+        {
+          "id": "0x4e6a",
+          "name": "intg-eks-dev01-stack-VPC",
+          "description": "",
+          "extId": "vpc-0be9666ab204b188d",
+          "endpoints": [],
+          "vms": [
+            {
+              "id": "0x4e64",
+              "name": "",
+              "description": "",
+              "extId": "i-06b6f89b210ba6143",
+              "vmkey": "",
+              "nic": [
+                {
+                  "id": "0x4e67",
+                  "name": "",
+                  "description": "aws-K8S-i-06b6f89b210ba6143",
+                  "extId": "eni-05e3720a42d68a5f3",
+                  "exttype": "",
+                  "virtual": true,
+                  "vmkey": "",
+                  "privateIp": "192.168.34.143",
+                  "publicIp": ""
+                },
+                {
+                  "id": "0x4e6b",
+                  "name": "",
+                  "description": "",
+                  "extId": "eni-0f2885704a3df949a",
+                  "exttype": "",
+                  "virtual": true,
+                  "vmkey": "",
+                  "privateIp": "192.168.26.140",
+                  "publicIp": "3.83.191.56"
+                }
+              ]
+            },
+            {
+              "id": "0x4e6d",
+              "name": "",
+              "description": "",
+              "extId": "i-09af54cd109cea705",
+              "vmkey": "",
+              "nic": [
+                {
+                  "id": "0x4e68",
+                  "name": "",
+                  "description": "aws-K8S-i-09af54cd109cea705",
+                  "extId": "eni-0f22aa647731dec94",
+                  "exttype": "",
+                  "virtual": true,
+                  "vmkey": "",
+                  "privateIp": "192.168.200.128",
+                  "publicIp": ""
+                },
+                {
+                  "id": "0x4e6c",
+                  "name": "",
+                  "description": "",
+                  "extId": "eni-0b7fe8895f38eaed8",
+                  "exttype": "",
+                  "virtual": true,
+                  "vmkey": "",
+                  "privateIp": "192.168.240.6",
+                  "publicIp": ""
+                },
+                {
+                  "id": "0x4e6e",
+                  "name": "",
+                  "description": "aws-K8S-i-09af54cd109cea705",
+                  "extId": "eni-075ce06ca901e0b8d",
+                  "exttype": "",
+                  "virtual": true,
+                  "vmkey": "",
+                  "privateIp": "192.168.243.78",
+                  "publicIp": ""
+                }
+              ]
+            }
+          ],
+          "cidr": null
+        },
+        {
+          "id": "0x4e73",
+          "name": "saurabh-vpc",
+          "description": "",
+          "extId": "vpc-08cde3913fbce1ba0",
+          "endpoints": [],
+          "vms": [
+            {
+              "id": "0x4e65",
+              "name": "saurabh-vm1",
+              "description": "",
+              "extId": "i-04132d5ce454c2569",
+              "vmkey": "",
+              "nic": [
+                {
+                  "id": "0x4e66",
+                  "name": "",
+                  "description": "Primary network interface",
+                  "extId": "eni-064a28cd8c296127b",
+                  "exttype": "",
+                  "virtual": true,
+                  "vmkey": "",
+                  "privateIp": "12.0.0.195",
+                  "publicIp": "54.158.46.128"
+                }
+              ]
+            }
+          ],
+          "cidr": null
+        }
+      ],
+      "wedges": [
+        {
+          "id": "0x4e63",
+          "name": "saurabh-tgw",
+          "description": "",
+          "extId": "tgw-0a45720eea0e8c4fe",
+          "vnetkey": "",
+          "phys": [],
+          "vpns": [
+            {
+              "id": "0x4e69",
+              "name": "TgwToMeraki",
+              "description": "",
+              "extId": "tgw-attach-030ac46a664d7674c",
+              "connectionId": "",
+              "linkStates": [
+                {
+                  "name": "",
+                  "sourceIp": "3.88.253.63",
+                  "peerIp": "73.158.148.119",
+                  "peerId": "cgw-0074ae4586f37613e",
+                  "status": "DOWN",
+                  "statusMessage": "",
+                  "connectedTo": null
+                },
+                {
+                  "name": "",
+                  "sourceIp": "52.54.53.36",
+                  "peerIp": "73.158.148.119",
+                  "peerId": "cgw-0074ae4586f37613e",
+                  "status": "DOWN",
+                  "statusMessage": "",
+                  "connectedTo": {
+                    "name": "state-AWS-TGW",
+                    "sourceIp": "73.158.148.119",
+                    "peerIp": "52.54.53.36",
+                    "peerId": "",
+                    "status": "unreachable",
+                    "statusMessage": "",
+                    "connectedTo": null
+                  }
+                }
+              ],
+              "privateSubnets": []
+            }
+          ],
+          "networkLinks": [
+            {
+              "id": "0x4e72",
+              "name": "TgwToSaurabhVPC",
+              "description": "",
+              "extId": "tgw-attach-00a0662ae073e3d2d",
+              "peerType": "",
+              "peerExtId": "vpc-08cde3913fbce1ba0"
+            }
+          ],
+          "ips": []
+        }
+      ],
+      "oedges": [],
+      "devices": []
+    }
+  ]
+}

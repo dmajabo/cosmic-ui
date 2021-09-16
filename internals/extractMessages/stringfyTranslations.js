@@ -27,11 +27,7 @@ function stringfyTranslationObjects(content) {
       keyAsStringValue = stringifyRecursively(content, key);
       keyAsStringValue = `'${keyAsStringValue}'`;
     }
-    contentWithObjectsStringified = replaceTranslationObjectWithString(
-      contentWithObjectsStringified,
-      key,
-      keyAsStringValue,
-    );
+    contentWithObjectsStringified = replaceTranslationObjectWithString(contentWithObjectsStringified, key, keyAsStringValue);
   }
   return contentWithObjectsStringified;
 }

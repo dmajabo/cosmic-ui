@@ -1,0 +1,62 @@
+import styled from 'styled-components';
+
+export const ContainerWithPanel = styled.div`
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  width: 100%;
+  height: 100%;
+  max-height: calc(100vh - 81px);
+  overflow: hidden;
+  background-color: var(--_appBg);
+  &.fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1001;
+  }
+`;
+
+export const ContainerWithFooter = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  max-width: 100%;
+  height: 100%;
+  overflow: hidden;
+`;
+
+export const ContainerWithMetrics = styled.div`
+  display: flex;
+  width: 100%;
+  height: calc(100% - 80px);
+  flex-shrink: 1;
+  flex-grow: 1;
+  &.withPanel {
+    height: 100%;
+  }
+`;
+
+export const MapContainer = styled.div`
+  display: flex;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  flex-shrink: 1;
+  transition-property: width;
+  transition: 0.5s ease-in-out;
+  padding: 0;
+`;
+
+export const StyledMap = styled.svg`
+  width: 100%;
+  height: 100%;
+`;
+
+export const ZoomButtonsWrapper = styled.div`
+  position: absolute;
+  bottom: 30px;
+  right: 30px;
+  display: flex;
+  flex-direction: column;
+`;
