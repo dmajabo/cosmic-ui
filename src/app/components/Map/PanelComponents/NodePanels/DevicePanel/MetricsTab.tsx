@@ -22,21 +22,14 @@ const MetricsTab: React.FC<IProps> = (props: IProps) => {
     <>
       <ChartContainer
         title="CPU utilization"
-        styles={{ margin: '0 0 20px 0' }}
+        styles={{ margin: '0 0 20px 0', minHeight: '390px' }}
         chartType="Line"
         id={props.dataItem.extId}
         queryTimeParam={param}
         queryKey={MetricsKeyTypes.CPU_UTILIZATION}
         dataValueSuffix="%"
       />
-      <ChartContainer
-        title="Memory"
-        // styles={{ margin: '0 0 20px 0' }}
-        chartType="Line"
-        id={props.dataItem.extId}
-        queryTimeParam={param}
-        queryKey={MetricsKeyTypes.MEMORY}
-      />
+      <ChartContainer title="Memory" styles={{ minHeight: '390px' }} chartType="Line" id={props.dataItem.extId} queryTimeParam={param} queryKey={MetricsKeyTypes.MEMORY} />
     </>
   );
 };
