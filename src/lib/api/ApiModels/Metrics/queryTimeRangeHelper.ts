@@ -1,7 +1,7 @@
 import { ISelectedListItem, ITimeRange, ITimeTypes } from 'lib/models/general';
-import { IMetrickQueryParam } from './endpoints';
+import { IMetrickQueryParam } from './apiModel';
 
-export const getQueryParam = (range: ITimeRange, period: ISelectedListItem<ITimeTypes>): IMetrickQueryParam | null => {
+export const getTimeQueryParam = (range: ITimeRange, period: ISelectedListItem<ITimeTypes>): IMetrickQueryParam | null => {
   const param: IMetrickQueryParam = {};
   const _start = getDay(range.startTime, range.selectedDay);
   const _end = getDay(range.endTime, range.selectedDay);

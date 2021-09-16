@@ -6,7 +6,7 @@ import Device from '../Containers/Nodes/Device';
 import GroupNode from '../Containers/Nodes/GroupNode';
 import { IPosition, TOPOLOGY_IDS } from '../model';
 import { StyledMap, ZoomButtonsWrapper } from '../styles';
-import { IDeviceNode, ILink, INetworkGroupNode, IVm, IVnetNode, IWedgeNode, TopologyMetricsPanelTypes } from 'lib/models/topology';
+import { IDeviceNode, ILink, INetworkGroupNode, IVM_PanelDataNode, IVnetNode, IWedgeNode, TopologyMetricsPanelTypes } from 'lib/models/topology';
 import WEdgeNode from '../Containers/Nodes/WEdge';
 import VNetNode from '../Containers/Nodes/VNet';
 import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
@@ -21,7 +21,7 @@ interface Props {
   networksGroups: INetworkGroupNode[];
   isFullScreen: boolean;
   onOpenFullScreen: () => void;
-  onClickVm: (_vm: IVm, _type: TopologyMetricsPanelTypes) => void;
+  onClickVm: (_vm: IVM_PanelDataNode) => void;
   onClickDevice: (dev: IDeviceNode, _type: TopologyMetricsPanelTypes) => void;
   onClickWedge: (wedge: IWedgeNode, _type: TopologyMetricsPanelTypes) => void;
 }
@@ -37,8 +37,8 @@ const Graph: React.FC<Props> = (props: Props) => {
     };
   }, []);
 
-  const onClickVm = (vm: IVm) => {
-    props.onClickVm(vm, TopologyMetricsPanelTypes.VM);
+  const onClickVm = (node: IVM_PanelDataNode) => {
+    props.onClickVm(node);
   };
 
   const onClickDevice = (dev: IDeviceNode) => {

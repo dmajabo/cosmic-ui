@@ -4,7 +4,7 @@ import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
 // import mockdataDevices from 'utils/dataDevices.json';
 import { ContainerWithFooter, ContainerWithMetrics, ContainerWithPanel, MapContainer } from './styles';
 import HeadeerAction from './HeadeerAction';
-import { IDeviceNode, IPanelBar, TopologyMetricsPanelTypes, TopologyPanelTypes, IVm, IWedgeNode } from 'lib/models/topology';
+import { IDeviceNode, IPanelBar, TopologyMetricsPanelTypes, TopologyPanelTypes, IWedgeNode, IVM_PanelDataNode } from 'lib/models/topology';
 import LoadingIndicator from 'app/components/Loading';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import { IPanelBarLayoutTypes } from 'lib/models/general';
@@ -91,15 +91,26 @@ const Map: React.FC<IProps> = (props: IProps) => {
     onTryLoadData();
   };
 
-  const onOpenNodePanel = (vm: IVm | IDeviceNode | IWedgeNode, _type: TopologyMetricsPanelTypes) => {
+  const onOpenNodePanel = (node: IDeviceNode | IWedgeNode, _type: TopologyMetricsPanelTypes) => {
     if (showPanelBar && showPanelBar.show) {
       setShowPanelBar({ show: false, type: null });
       setShowFooter(true);
     }
-    if (vm && showPanelBar && showPanelBar.dataItem && vm.id === showPanelBar.dataItem.id) {
+    if (node && showPanelBar && showPanelBar.dataItem && node.id === showPanelBar.dataItem.id) {
       return;
     }
-    setShowMetricks({ type: _type, show: true, dataItem: vm });
+    setShowMetricks({ type: _type, show: true, dataItem: node });
+  };
+
+  const onOpenVmPanel = (node: IVM_PanelDataNode) => {
+    if (showPanelBar && showPanelBar.show) {
+      setShowPanelBar({ show: false, type: null });
+      setShowFooter(true);
+    }
+    if (node && showPanelBar && showPanelBar.dataItem && node.vm.id === showPanelBar.dataItem.vm.id) {
+      return;
+    }
+    setShowMetricks({ type: TopologyMetricsPanelTypes.VM, show: true, dataItem: node });
   };
 
   const onOpenFullScreen = () => {
@@ -123,7 +134,7 @@ const Map: React.FC<IProps> = (props: IProps) => {
                     networksGroups={topology.networksGroups}
                     isFullScreen={isFullScreen}
                     onOpenFullScreen={onOpenFullScreen}
-                    onClickVm={onOpenNodePanel}
+                    onClickVm={onOpenVmPanel}
                     onClickDevice={onOpenNodePanel}
                     onClickWedge={onOpenNodePanel}
                   />

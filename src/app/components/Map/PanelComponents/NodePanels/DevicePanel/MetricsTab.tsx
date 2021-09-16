@@ -1,9 +1,9 @@
 import React from 'react';
 import { IDeviceNode } from 'lib/models/topology';
-import { IMetrickQueryParam, MetricsKeyTypes } from 'lib/api/ApiModels/Metrics/endpoints';
+import { MetricsKeyTypes, IMetrickQueryParam } from 'lib/api/ApiModels/Metrics/apiModel';
 import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
 import ChartContainer from 'app/components/ChartContainer';
-import { getQueryParam } from 'lib/api/ApiModels/Metrics/queryTimeRangeHelper';
+import { getTimeQueryParam } from 'lib/api/ApiModels/Metrics/queryTimeRangeHelper';
 
 interface IProps {
   dataItem: IDeviceNode;
@@ -14,7 +14,7 @@ const MetricsTab: React.FC<IProps> = (props: IProps) => {
   const [param, setParam] = React.useState<IMetrickQueryParam>(null);
 
   React.useEffect(() => {
-    const _param: IMetrickQueryParam = getQueryParam(topology.selectedRange, topology.selectedPeriod);
+    const _param: IMetrickQueryParam = getTimeQueryParam(topology.selectedRange, topology.selectedPeriod);
     setParam(_param);
   }, [props.dataItem, topology, topology.selectedRange]);
 

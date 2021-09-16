@@ -1,9 +1,14 @@
 import React from 'react';
 import { LineChart } from 'app/containers/Pages/TopologyPage/TopologyMetrics/LineChart';
-import ChartWrapper from './ChartWrapper';
-import { useGet } from 'lib/api/http/useGet';
+import LoadingIndicator from 'app/components/Loading';
 import { GetMetricsResponse, MetricsData } from 'app/containers/Pages/TopologyPage/TopologyMetrics/SharedTypes';
-import { IMetrickQueryParam, MetricsApi, MetricsKeyTypes } from 'lib/api/ApiModels/Metrics/endpoints';
+import { MetricsApi } from 'lib/api/ApiModels/Metrics/endpoints';
+import { MetricsKeyTypes, IMetrickQueryParam } from 'lib/api/ApiModels/Metrics/apiModel';
+import { useGet } from 'lib/api/http/useAxiosHook';
+import { ErrorMessage } from '../Basic/ErrorMessage/ErrorMessage';
+import { AbsLoaderWrapper } from '../Loading/styles';
+import { ChartContainerStyles, ChartTitle, ChartActionBlock, ChartActionLabel, Chart } from './styles';
+import { EmptyText } from '../Basic/NoDataStyles/NoDataStyles';
 
 interface Props {
   title: string;
@@ -16,33 +21,33 @@ interface Props {
 }
 
 const ChartContainer: React.FC<Props> = (props: Props) => {
-  const [showLoader, setLoader] = React.useState<boolean>(false);
-  const [stateGetMetrics, getMetricsAsync] = useGet<GetMetricsResponse>();
-  const [data, setData] = React.useState<MetricsData[]>([]);
+  const { response, loading, error, onGet } = useGet<GetMetricsResponse>();
+  const [data, setData] = React.useState<MetricsData[] | null>([]);
 
   React.useEffect(() => {
-    setLoader(true);
-    getMetrics(props.id, props.queryTimeParam, props.queryKey);
+    getDataAsync(props.id, props.queryKey, props.queryTimeParam);
   }, [props.queryTimeParam]);
+
   React.useEffect(() => {
-    if (stateGetMetrics && !stateGetMetrics.isLoading && stateGetMetrics.response && stateGetMetrics.response.item && stateGetMetrics.response.item.metrics) {
+    if (response !== null && response.metrics && response.metrics.keyedmap) {
       let _data = [];
-      stateGetMetrics.response.item.metrics.keyedmap.forEach(it => {
+      response.metrics.keyedmap.forEach(it => {
         if (it.key === props.queryKey) {
           _data = _data.concat(it.ts);
         }
       });
-      setData(_data);
+      if (!_data.length) {
+        setData(null);
+      } else {
+        setData(_data);
+      }
     }
-    if (stateGetMetrics && !stateGetMetrics.isLoading && (stateGetMetrics.isError || !stateGetMetrics.response || !stateGetMetrics.response.item)) {
-      console.error(stateGetMetrics);
-    }
-    if (showLoader && stateGetMetrics && !stateGetMetrics.isLoading) {
-      setLoader(false);
-    }
-  }, [stateGetMetrics]);
+  }, [response]);
 
-  const getMetrics = async (id: string, params: IMetrickQueryParam, key: MetricsKeyTypes) => {
+  const getDataAsync = async (id: string, key: MetricsKeyTypes, params?: IMetrickQueryParam) => {
+    if (!id || !key) {
+      return;
+    }
     const _param: IMetrickQueryParam = { metricname: key };
     if (params && params.startTime) {
       _param.startTime = params.startTime;
@@ -50,13 +55,31 @@ const ChartContainer: React.FC<Props> = (props: Props) => {
     if (params && params.endTime) {
       _param.endTime = params.endTime;
     }
-    await getMetricsAsync(MetricsApi.getMetricsById(id), _param);
+    await onGet(MetricsApi.getMetricsById(props.id), params);
   };
 
   return (
-    <ChartWrapper title={props.title} styles={props.styles} showLoader={showLoader}>
-      {props.chartType === 'Line' && <LineChart dataValueSuffix={props.dataValueSuffix} inputData={data} chartWidth="348" chartHeight="280" />}
-    </ChartWrapper>
+    <>
+      <ChartContainerStyles style={props.styles}>
+        <ChartTitle>{props.title}</ChartTitle>
+        {data && data.length > 0 && !error && (
+          <>
+            <ChartActionBlock>
+              <ChartActionLabel margin="0 4px 0 0">Open in</ChartActionLabel>
+              <ChartActionLabel color="var(--_highlightColor)">Metrics Explorer</ChartActionLabel>
+            </ChartActionBlock>
+            <Chart>{data && props.chartType === 'Line' && <LineChart dataValueSuffix={props.dataValueSuffix} inputData={data} chartWidth="348" chartHeight="280" />}</Chart>
+          </>
+        )}
+        {data === null && <EmptyText>No Data</EmptyText>}
+        {error && <ErrorMessage>{error.message}</ErrorMessage>}
+        {loading && (
+          <AbsLoaderWrapper size={40} width="100%" height="100%">
+            <LoadingIndicator margin="auto" />
+          </AbsLoaderWrapper>
+        )}
+      </ChartContainerStyles>
+    </>
   );
 };
 

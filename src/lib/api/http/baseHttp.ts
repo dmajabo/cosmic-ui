@@ -49,9 +49,13 @@ export class HttpApi implements IApi {
     if (param) {
       obj.params = param;
     }
+    debugger;
     return await axios
       .get(urlEndPoint, obj)
-      .then((res: AxiosResponse) => new ApiResponse<AxiosResponse>(res, false))
+      .then((res: AxiosResponse) => {
+        debugger;
+        return new ApiResponse<AxiosResponse>(res, false);
+      })
       .catch(err => {
         if (err.response.status === 404) {
           throw new Error(`${err.config.url} not found`);

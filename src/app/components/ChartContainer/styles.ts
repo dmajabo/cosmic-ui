@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { ErrorMessage } from '../Basic/ErrorMessage/ErrorMessage';
 
 export const ChartContainerStyles = styled.div`
   display: flex;
@@ -14,6 +15,9 @@ export const ChartContainerStyles = styled.div`
   border-color: var(--_borderColor);
   box-sizing: border-box;
   border-radius: 6px;
+  ${ErrorMessage} {
+    margin: auto;
+  }
 `;
 
 export const ChartTitle = styled.div`

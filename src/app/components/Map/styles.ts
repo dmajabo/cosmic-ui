@@ -14,6 +14,7 @@ export const ContainerWithPanel = styled.div`
     top: 0;
     left: 0;
     z-index: 1001;
+    max-height: 100vh;
   }
 `;
 

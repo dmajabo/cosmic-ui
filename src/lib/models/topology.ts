@@ -180,6 +180,11 @@ export interface IWedge extends IBaseEntity<string> {
 
 export interface IWedgeNode extends IWedge, IMappedNode, ICoord {}
 
+export interface IVM_PanelDataNode {
+  vm: IVm;
+  vnet: IVnetNode;
+}
+
 export interface IOrganization extends IBaseEntity<string>, ICoord {
   name: string;
   description: string;
