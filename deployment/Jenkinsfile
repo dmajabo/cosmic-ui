@@ -23,7 +23,7 @@ pipeline {
                 sh "echo REACT_APP_AUTH0_DOMAIN=${env.REACT_APP_AUTH0_DOMAIN} >> ${env.WORKSPACE}/.env.local"
                 sh "echo REACT_APP_AUTH0_CLIENT_ID=${env.REACT_APP_AUTH0_CLIENT_ID} >> ${env.WORKSPACE}/.env.local"
                 sh "echo REACT_APP_MAP_ACCESS_TOKEN=${env.REACT_APP_MAP_ACCESS_TOKEN} >> ${env.WORKSPACE}/.env.local"
-                sh 'npm i'
+                sh 'yarn install'
                 sh 'yarn build --prod'
             }
         }
