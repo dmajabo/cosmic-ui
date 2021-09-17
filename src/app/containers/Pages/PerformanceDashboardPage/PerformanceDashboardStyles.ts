@@ -18,6 +18,7 @@ export const PerformanceDashboardStyles = makeStyles(
         width: '100%',
         padding: 20,
         backgroundColor: 'white',
+        marginBottom: 30,
       },
       flexContainer: {
         display: 'flex',
