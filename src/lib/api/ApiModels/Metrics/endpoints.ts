@@ -10,5 +10,5 @@ export enum MetricsKeyTypes {
 }
 
 export const MetricsApi = {
-  getMetricsById: (id: string) => 'collector/api/v1/metrics/' + id,
+  getMetricsById: (id: string) => 'telemetry/api/v1/metrics/' + id,
 };

@@ -10,7 +10,7 @@ interface ApiClient {
 
 const PATHS = Object.freeze({
   GET_TOPOLOGY: `/topology/controller`,
-  GET_METRICS: '/collector/api/v1/metrics',
+  GET_METRICS: '/telemetry/api/v1/metrics',
 });
 
 export const createApiClient = (): ApiClient => {
