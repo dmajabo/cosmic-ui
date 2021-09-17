@@ -1,7 +1,7 @@
 import { ControllerKeyTypes } from './apiModel';
 
 export const MetricsApi = {
-  getMetricsById: (id: string) => 'collector/api/v1/metrics/' + id,
+  getMetricsById: (id: string) => 'telemetry/api/v1/metrics/' + id,
 };
 
 export const RoutesApi = {
