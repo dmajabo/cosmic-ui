@@ -36,7 +36,7 @@ export interface TopologyContextType {
   applicationsGroup: ITopologyGroup[];
   entityTypes: IEntity[];
   onChangeTimeRange: (_value: Date | null, key: TimeRangeFieldTypes) => void;
-  onChangeSelectedDay: (_value: Date | null, key: TimeRangeFieldTypes) => void;
+  onChangeSelectedDay: (_value: Date | null) => void;
   onChangeTimePeriod: (_value: ISelectedListItem<ITimeTypes> | null, key: TimeRangeFieldTypes) => void;
   onSetData: (res: ITopologyDataRes) => void;
   onUpdateGroups: (res: ITopologyGroup) => void;
@@ -385,11 +385,9 @@ export function useTopologyContext(): TopologyContextType {
 
   const onChangeTimePeriod = (_value: ISelectedListItem<ITimeTypes> | null, key: TimeRangeFieldTypes) => {
     if (!_value) {
-      console.log('period empty ', _value, { ...selectedRange, startTime: null, endTime: null });
       setSelectedRange({ ...selectedRange, startTime: null, endTime: null });
     } else if (key === TimeRangeFieldTypes.END) {
       if (selectedRange.endTime) {
-        console.log('period end key ', _value, { ...selectedRange, endTime: null });
         setSelectedRange({ ...selectedRange, endTime: null });
       }
     }
@@ -403,15 +401,12 @@ export function useTopologyContext(): TopologyContextType {
     setSelectedRange(_clone);
   };
 
-  const onChangeSelectedDay = (_value: Date | null, key: TimeRangeFieldTypes) => {
+  const onChangeSelectedDay = (_value: Date | null) => {
     const _clone: ITimeRange = { ...selectedRange };
     _clone.selectedDay = _value;
-    if (key === TimeRangeFieldTypes.START) {
+    if (_clone.startTime) {
       _clone.startTime = _value;
       _clone.endTime = null;
-    } else if (key === TimeRangeFieldTypes.END) {
-      _clone.startTime = null;
-      _clone.endTime = _value;
     }
     console.log('calendar', _clone);
     setSelectedRange(_clone);

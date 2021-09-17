@@ -96,7 +96,6 @@ const TimeSlider: React.FC<Props> = (props: Props) => {
   }, [debouncedValue]);
 
   React.useEffect(() => {
-    debugger;
     onSetConfig(props.currentPeriod, props.selectedDay);
   }, [props.selectedDay, props.currentPeriod]);
 
