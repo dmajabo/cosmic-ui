@@ -1,4 +1,5 @@
 import React, { forwardRef, MutableRefObject, useEffect, useRef } from 'react';
+import { PerformanceDashboardStyles } from '../PerformanceDashboardStyles';
 
 interface Props {
   indeterminate?: boolean;
@@ -26,6 +27,8 @@ const IndeterminateCheckbox = forwardRef<HTMLInputElement, Props>(({ indetermina
   const defaultRef = React.useRef(null);
   const combinedRef = useCombinedRefs(ref, defaultRef);
 
+  const classes = PerformanceDashboardStyles();
+
   useEffect(() => {
     if (combinedRef?.current) {
       combinedRef.current.indeterminate = indeterminate ?? false;
@@ -34,7 +37,7 @@ const IndeterminateCheckbox = forwardRef<HTMLInputElement, Props>(({ indetermina
 
   return (
     <>
-      <input type="checkbox" ref={combinedRef} {...rest} />
+      <input className={classes.checkbox} type="checkbox" ref={combinedRef} {...rest} />
     </>
   );
 });
