@@ -199,9 +199,9 @@ const Table: React.FC<TableProps> = ({ columns, data }) => {
             <span className={classes.paginationText}>Items per page</span>
           </div>
           <div>
-            <Typography className={classes.paginationText}>{`${Number(pageIndex) * pageSize + 1}-${data.length < pageSize ? data.length : pageSize * (Number(pageIndex) + 1)} out of ${
-              data.length
-            } items`}</Typography>
+            <Typography className={classes.paginationText}>{`${Number(pageIndex) * pageSize + 1}-${
+              data.length < pageSize * (pageIndex + 1) ? data.length : pageSize * (Number(pageIndex) + 1)
+            } out of ${data.length} items`}</Typography>
           </div>
         </div>
       </div>
