@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { CreateSLATest } from './components/CreateSLATest';
 import { PerformanceDashboardStyles } from './PerformanceDashboardStyles';
 import { SLATestList } from './components/SLATestList';
+import { createApiClient } from './apiClient';
 interface IProps {}
 
 interface TabPanelProps {
@@ -17,11 +18,13 @@ interface AverageQOE {
 }
 
 interface RawData {
+  readonly id?: string;
   readonly name: string;
   readonly sourceOrg: string;
   readonly sourceNetwork: string;
   readonly sourceDevice: string;
   readonly destination: string;
+  readonly interface?: string;
   readonly description: string;
   readonly averageQoe: AverageQOE;
 }
@@ -46,6 +49,8 @@ function a11yProps(index: any) {
 const PerformanceDashboardPage: React.FC<IProps> = (props: IProps) => {
   const classes = PerformanceDashboardStyles();
 
+  const apiClient = createApiClient();
+
   const [rawData, setRawData] = useState<RawData[]>([]);
 
   const addSlaTest = (value: RawData) => {
@@ -55,8 +60,14 @@ const PerformanceDashboardPage: React.FC<IProps> = (props: IProps) => {
   };
 
   useEffect(() => {
-    console.log('Added SLA Test');
-  }, [rawData]);
+    const getSLATests = async () => {
+      const responseData = await apiClient.getSLATests();
+      if (responseData.sla_tests.length > 0) {
+        responseData.sla_tests.map(test => {});
+      }
+    };
+    getSLATests();
+  }, []);
 
   const tab = 'sla_tests';
 

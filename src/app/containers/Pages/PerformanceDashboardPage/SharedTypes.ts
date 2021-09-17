@@ -112,3 +112,17 @@ export interface GetOrganizationResponse {
   readonly count?: string;
   readonly organizations?: Organization[];
 }
+
+interface SLATest {
+  readonly test_id: 'string';
+  readonly name: 'string';
+  readonly source_org_id: 'string';
+  readonly source_nw_ext_id: 'string';
+  readonly destination: 'string';
+  readonly interface: 'string';
+  readonly description: 'string';
+}
+
+export interface GetSLATestResponse {
+  readonly sla_tests?: SLATest[];
+}
