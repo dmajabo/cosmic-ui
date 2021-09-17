@@ -9,7 +9,6 @@ import { differenceInDays, format, getDate, getMonth, getYear } from 'date-fns';
 interface IProps {
   selectedDay: null | Date;
   startTime: null | Date;
-  shouldDisabledDays: boolean;
   onChange: (value: Date) => void;
 }
 const CalendarComponent: React.FC<IProps> = (props: IProps) => {
@@ -19,8 +18,8 @@ const CalendarComponent: React.FC<IProps> = (props: IProps) => {
 
   React.useEffect(() => {
     const _current = getCurrentDay(props.selectedDay, props.startTime);
-    onSetDates(_current, props.shouldDisabledDays);
-  }, [props.selectedDay, props.startTime, props.shouldDisabledDays]);
+    onSetDates(_current);
+  }, [props.selectedDay, props.startTime]);
 
   const getCurrentDay = (selectedDay: Date, startTime: Date): Date => {
     if (startTime) {
@@ -32,28 +31,19 @@ const CalendarComponent: React.FC<IProps> = (props: IProps) => {
     return new Date();
   };
 
-  const onSetDates = (_current: Date, shouldDisabledDays: boolean) => {
+  const onSetDates = (_current: Date) => {
     const current: DayValue = {
       year: getYear(_current),
       month: getMonth(_current) + 1,
       day: getDate(_current),
     };
-    if (shouldDisabledDays) {
-      const maximumDate: DayValue = {
-        year: getYear(_current),
-        month: getMonth(_current) + 1,
-        day: getDate(_current),
-      };
-      setMaxDay(maximumDate);
-    } else {
-      const _today = new Date();
-      const maximumDate: DayValue = {
-        year: getYear(_today),
-        month: getMonth(_today) + 1,
-        day: getDate(_today),
-      };
-      setMaxDay(maximumDate);
-    }
+    const _today = new Date();
+    const maximumDate: DayValue = {
+      year: getYear(_today),
+      month: getMonth(_today) + 1,
+      day: getDate(_today),
+    };
+    setMaxDay(maximumDate);
     if (differenceInDays(new Date(current.year, current.month - 1, current.day), new Date()) !== 0) {
       const _d = format(new Date(current.year, current.month - 1, current.day), 'd');
       const _m = format(new Date(current.year, current.month - 1, current.day), 'MMM');

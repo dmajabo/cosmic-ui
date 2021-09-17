@@ -54,7 +54,8 @@ const FooterAction: React.FC<IProps> = (props: IProps) => {
   };
 
   const onSetCurrentDay = (_date: Date) => {
-    topology.onChangeSelectedDay(_date);
+    const _key = props.isMetricks ? TimeRangeFieldTypes.END : TimeRangeFieldTypes.START;
+    topology.onChangeSelectedDay(_date, _key);
     if (props.isMetricks) {
       return;
     }
@@ -66,14 +67,9 @@ const FooterAction: React.FC<IProps> = (props: IProps) => {
     <PanelWrapperStyles show={props.show} type={IPanelBarLayoutTypes.HORIZONTAL}>
       <Wrapper>
         <Toogle selectedValue={selectedPeriod} values={TIME_PERIOD} onChange={onChangeTimePeriod} />
-        <CalendarComponent onChange={onSetCurrentDay} selectedDay={selectedRange.selectedDay} startTime={selectedRange.startTime} shouldDisabledDays={props.isMetricks} />
+        <CalendarComponent onChange={onSetCurrentDay} selectedDay={selectedRange.selectedDay} startTime={selectedRange.startTime} />
         <SliderWrapper>
-          <TimeSlider
-            selectedDay={selectedRange.selectedDay}
-            currentValue={props.isMetricks ? selectedRange.endTime : selectedRange.startTime}
-            currentPeriod={selectedPeriod ? selectedPeriod.value : null}
-            onUpdate={onUpdateTime}
-          />
+          <TimeSlider selectedDay={selectedRange.selectedDay} currentValue={selectedRange.startTime} currentPeriod={selectedPeriod ? selectedPeriod.value : null} onUpdate={onUpdateTime} />
         </SliderWrapper>
       </Wrapper>
     </PanelWrapperStyles>
