@@ -1,9 +1,9 @@
 import React from 'react';
 import { IVm } from 'lib/models/topology';
-import { MetricsKeyTypes, IMetrickQueryParam } from 'lib/api/ApiModels/Metrics/apiModel';
 import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
 import ChartContainer from 'app/components/ChartContainer';
 import { getTimeQueryParam } from 'lib/api/ApiModels/Metrics/queryTimeRangeHelper';
+import { IMetrickQueryParam, MetricsKeyTypes } from 'lib/api/ApiModels/Metrics/apiModel';
 
 interface IProps {
   dataItem: IVm;

@@ -55,7 +55,7 @@ const ChartContainer: React.FC<Props> = (props: Props) => {
     if (params && params.endTime) {
       _param.endTime = params.endTime;
     }
-    await onGet(MetricsApi.getMetricsById(props.id), params);
+    await onGet(MetricsApi.getMetricsById(props.id), _param);
   };
 
   return (
