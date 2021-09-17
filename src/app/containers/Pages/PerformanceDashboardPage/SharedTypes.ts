@@ -126,3 +126,11 @@ interface SLATest {
 export interface GetSLATestResponse {
   readonly sla_tests?: SLATest[];
 }
+
+export interface CreateSLATestRequest {
+  readonly sla_test: SLATest;
+}
+
+export interface CreateSLATestResponse {
+  readonly id?: string;
+}

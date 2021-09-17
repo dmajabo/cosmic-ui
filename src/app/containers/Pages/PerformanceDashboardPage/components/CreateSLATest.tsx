@@ -12,11 +12,13 @@ interface AverageQOE {
 }
 
 interface RawData {
+  readonly id?: string;
   readonly name: string;
   readonly sourceOrg: string;
   readonly sourceNetwork: string;
   readonly sourceDevice: string;
   readonly destination: string;
+  readonly interface?: string;
   readonly description: string;
   readonly averageQoe: AverageQOE;
 }

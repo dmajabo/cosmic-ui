@@ -62,8 +62,28 @@ const PerformanceDashboardPage: React.FC<IProps> = (props: IProps) => {
   useEffect(() => {
     const getSLATests = async () => {
       const responseData = await apiClient.getSLATests();
-      if (responseData.sla_tests.length > 0) {
-        responseData.sla_tests.map(test => {});
+      if (Object.keys(responseData).length > 0) {
+        if (Array.isArray(responseData.sla_tests) && responseData.sla_tests.length) {
+          const testData: RawData[] = responseData.sla_tests.map(test => {
+            return {
+              id: test.test_id,
+              name: test.name,
+              sourceOrg: test.source_org_id,
+              sourceNetwork: test.source_nw_ext_id,
+              sourceDevice: 'null',
+              destination: test.destination,
+              interface: test.interface,
+              description: test.description,
+              averageQoe: {
+                packetLoss: 0,
+                latency: 0,
+              },
+            };
+          });
+          setRawData(testData);
+        }
+      } else {
+        console.log('Error: No data Available');
       }
     };
     getSLATests();
