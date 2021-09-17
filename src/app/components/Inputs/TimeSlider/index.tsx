@@ -72,7 +72,6 @@ const SliderStyles = withStyles({
 
 interface Props {
   currentPeriod: ITimeTypes;
-  selectedDay: Date | null;
   currentValue: Date | null;
   disabled?: boolean;
   onUpdate: (_time: number) => void; // miliseconds
@@ -96,20 +95,20 @@ const TimeSlider: React.FC<Props> = (props: Props) => {
   }, [debouncedValue]);
 
   React.useEffect(() => {
-    onSetConfig(props.currentPeriod, props.selectedDay);
-  }, [props.selectedDay, props.currentPeriod]);
+    onSetConfig(props.currentPeriod, props.currentValue);
+  }, [props.currentValue, props.currentPeriod]);
 
-  const onSetConfig = (_period: ITimeTypes, selectedDay: Date | null) => {
-    const _obj: ITimeConfig = getSliderValuesConfig(_period, selectedDay);
+  const onSetConfig = (_period: ITimeTypes, startDate: Date | null) => {
+    const _obj: ITimeConfig = getSliderValuesConfig(_period, startDate, config);
     const _domain: number[] = getDomain(_obj.min, _obj.max);
     const _values: ITimeValue[] = getTicks(props.currentPeriod, _domain);
     _obj.domain = _domain;
     const _disabled = props.currentPeriod ? false : true;
-    let selected = _obj.max;
+    let _selected = _obj.max;
     if (props.currentValue) {
-      selected = getDayInMiliseconds(_period, props.currentValue);
+      _selected = getDayInMiliseconds(_period, props.currentValue);
     }
-    setSelected(selected);
+    setSelected(_selected);
     setDisabled(_disabled);
     setValues(_values);
     setConfig(_obj);

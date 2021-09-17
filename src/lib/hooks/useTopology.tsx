@@ -36,7 +36,7 @@ export interface TopologyContextType {
   applicationsGroup: ITopologyGroup[];
   entityTypes: IEntity[];
   onChangeTimeRange: (_value: Date | null, key: TimeRangeFieldTypes) => void;
-  onChangeSelectedDay: (_value: Date | null) => void;
+  onChangeSelectedDay: (_value: Date | null, key: TimeRangeFieldTypes) => void;
   onChangeTimePeriod: (_value: ISelectedListItem<ITimeTypes> | null, key: TimeRangeFieldTypes) => void;
   onSetData: (res: ITopologyDataRes) => void;
   onUpdateGroups: (res: ITopologyGroup) => void;
@@ -53,7 +53,7 @@ export interface TopologyContextType {
 export function useTopologyContext(): TopologyContextType {
   const [originData, setOriginData] = React.useState<ITopologyMapData | null>(null);
   const [selectedPeriod, setSelectedPeriod] = React.useState<ISelectedListItem<ITimeTypes> | null>(null);
-  const [selectedRange, setSelectedRange] = React.useState<ITimeRange>({ startTime: null, endTime: null, selectedDay: null });
+  const [selectedRange, setSelectedRange] = React.useState<ITimeRange>({ startTime: null, endTime: null });
 
   const [links, setLinks] = React.useState<ILink[]>([]);
   const [networksGroups, setNetworksGroups] = React.useState<INetworkGroupNode[]>([]);
@@ -396,16 +396,20 @@ export function useTopologyContext(): TopologyContextType {
 
   const onChangeTimeRange = (_value: Date | null, key: TimeRangeFieldTypes) => {
     const _clone: ITimeRange = { ...selectedRange };
-    _clone[key] = _value;
+    if (key === TimeRangeFieldTypes.END) {
+      _clone.endTime = _clone.startTime ? new Date(_clone.startTime) : null;
+      _clone.startTime = _value;
+    } else {
+      _clone[key] = _value;
+    }
     console.log('cnage selectedTime Range', _clone);
     setSelectedRange(_clone);
   };
 
-  const onChangeSelectedDay = (_value: Date | null) => {
+  const onChangeSelectedDay = (_value: Date | null, key: TimeRangeFieldTypes) => {
     const _clone: ITimeRange = { ...selectedRange };
-    _clone.selectedDay = _value;
-    if (_clone.startTime) {
-      _clone.startTime = _value;
+    _clone.startTime = _value;
+    if (key !== TimeRangeFieldTypes.END) {
       _clone.endTime = null;
     }
     console.log('calendar', _clone);

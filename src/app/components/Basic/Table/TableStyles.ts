@@ -16,7 +16,6 @@ export const TableStyles = makeStyles(
         fontStyle: 'normal',
       },
       tableHeadCell: {
-        background: 'transparent',
         border: 'none',
         borderBottom: '1px solid var(--_rowBorder)',
         fontWeight: 700,
@@ -25,6 +24,7 @@ export const TableStyles = makeStyles(
         textTransform: 'uppercase',
         color: 'var(--_disabledTextColor)',
         padding: '12px',
+        background: 'var(--_tableBg)',
       },
       tableCell: {
         background: 'transparent',

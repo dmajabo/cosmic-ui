@@ -6,6 +6,7 @@ import Toogle from 'app/components/Inputs/Toogle';
 import { PanelWrapperStyles } from 'app/components/Basic/PanelBar/styles';
 import TimeSlider from 'app/components/Inputs/TimeSlider';
 import CalendarComponent from 'app/components/Inputs/Calendar';
+import { getHours, isToday } from 'date-fns';
 
 interface IProps {
   show: boolean;
@@ -16,7 +17,7 @@ interface IProps {
 const FooterAction: React.FC<IProps> = (props: IProps) => {
   const { topology } = useTopologyDataContext();
   const [selectedPeriod, setSelectedPeriod] = React.useState<ISelectedListItem<ITimeTypes> | null>(null);
-  const [selectedRange, setSelectedRange] = React.useState<ITimeRange | null>({ startTime: null, endTime: null, selectedDay: null });
+  const [selectedRange, setSelectedRange] = React.useState<ITimeRange | null>({ startTime: null, endTime: null });
   React.useEffect(() => {
     if (topology && topology.selectedPeriod !== selectedPeriod) {
       setSelectedPeriod(topology.selectedPeriod);
@@ -44,17 +45,22 @@ const FooterAction: React.FC<IProps> = (props: IProps) => {
 
   const onUpdateTime = (_time: number) => {
     const _selected = !_time ? null : new Date(_time);
+    if (selectedPeriod && selectedPeriod.value !== ITimeTypes.DAY && !isToday(_selected)) {
+      const _h = !isToday(_selected) ? 23 : getHours(Date.now());
+      _selected.setHours(_h);
+    }
+    const key = props.isMetricks ? TimeRangeFieldTypes.END : TimeRangeFieldTypes.START;
+    topology.onChangeTimeRange(_selected, key);
     if (props.isMetricks) {
-      topology.onChangeTimeRange(_selected, TimeRangeFieldTypes.END);
       return;
     }
-    topology.onChangeTimeRange(_selected, TimeRangeFieldTypes.START);
     const _timeStamp = _time ? new Date(_time) : null;
     props.onTryLoadData(_timeStamp);
   };
 
   const onSetCurrentDay = (_date: Date) => {
-    topology.onChangeSelectedDay(_date);
+    const key = props.isMetricks ? TimeRangeFieldTypes.END : TimeRangeFieldTypes.START;
+    topology.onChangeSelectedDay(_date, key);
     if (props.isMetricks) {
       return;
     }
@@ -66,9 +72,9 @@ const FooterAction: React.FC<IProps> = (props: IProps) => {
     <PanelWrapperStyles show={props.show} type={IPanelBarLayoutTypes.HORIZONTAL}>
       <Wrapper>
         <Toogle selectedValue={selectedPeriod} values={TIME_PERIOD} onChange={onChangeTimePeriod} />
-        <CalendarComponent onChange={onSetCurrentDay} selectedDay={selectedRange.selectedDay} startTime={selectedRange.startTime} shouldDisabledDays={props.isMetricks} />
+        <CalendarComponent onChange={onSetCurrentDay} startTime={selectedRange.startTime} />
         <SliderWrapper>
-          <TimeSlider selectedDay={selectedRange.selectedDay} currentValue={selectedRange.startTime} currentPeriod={selectedPeriod ? selectedPeriod.value : null} onUpdate={onUpdateTime} />
+          <TimeSlider currentValue={selectedRange.startTime} currentPeriod={selectedPeriod ? selectedPeriod.value : null} onUpdate={onUpdateTime} />
         </SliderWrapper>
       </Wrapper>
     </PanelWrapperStyles>

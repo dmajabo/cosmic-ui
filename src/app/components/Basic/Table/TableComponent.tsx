@@ -21,7 +21,8 @@ const TableComponent: React.FC<IProps<any>> = (props: IProps<any>) => {
   }, [props.data]);
   return (
     <TableContainer className={classes.container}>
-      <Table className={classes.table}>
+      {/* <DataGrid rows={rows} columns={columns} pageSize={5} rowsPerPageOptions={[5]} checkboxSelection /> */}
+      <Table stickyHeader aria-label="sticky table" className={classes.table}>
         <TableHead>
           <TableRow>
             {props.columns.map(column => (

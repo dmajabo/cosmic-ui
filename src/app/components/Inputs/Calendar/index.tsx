@@ -4,12 +4,10 @@ import 'react-modern-calendar-datepicker/lib/DatePicker.css';
 import IconButton from 'app/components/Buttons/IconButton';
 import { calendarIcon } from 'app/components/SVGIcons/calendarIcon';
 import { DisplayedDay, DisplayedDaySpan, Wrapper } from './styles';
-import { differenceInDays, format, getDate, getMonth, getYear } from 'date-fns';
+import { differenceInCalendarDays, format, getDate, getMonth, getYear } from 'date-fns';
 
 interface IProps {
-  selectedDay: null | Date;
   startTime: null | Date;
-  shouldDisabledDays: boolean;
   onChange: (value: Date) => void;
 }
 const CalendarComponent: React.FC<IProps> = (props: IProps) => {
@@ -18,59 +16,49 @@ const CalendarComponent: React.FC<IProps> = (props: IProps) => {
   const [displayDay, setDisplayDay] = React.useState<string[]>(null);
 
   React.useEffect(() => {
-    const _current = getCurrentDay(props.selectedDay, props.startTime);
-    onSetDates(_current, props.shouldDisabledDays);
-  }, [props.selectedDay, props.startTime, props.shouldDisabledDays]);
+    const _current = getCurrentDay(props.startTime);
+    onSetDates(_current);
+  }, [props.startTime]);
 
-  const getCurrentDay = (selectedDay: Date, startTime: Date): Date => {
+  const getCurrentDay = (startTime: Date): Date => {
     if (startTime) {
-      return new Date(startTime);
-    }
-    if (selectedDay) {
-      return selectedDay;
+      return startTime;
     }
     return new Date();
   };
 
-  const onSetDates = (_current: Date, shouldDisabledDays: boolean) => {
+  const onSetDates = (_current: Date) => {
     const current: DayValue = {
       year: getYear(_current),
       month: getMonth(_current) + 1,
       day: getDate(_current),
     };
-    if (shouldDisabledDays) {
-      const maximumDate: DayValue = {
-        year: getYear(_current),
-        month: getMonth(_current) + 1,
-        day: getDate(_current),
-      };
-      setMaxDay(maximumDate);
-    } else {
-      const _today = new Date();
-      const maximumDate: DayValue = {
-        year: getYear(_today),
-        month: getMonth(_today) + 1,
-        day: getDate(_today),
-      };
-      setMaxDay(maximumDate);
-    }
-    if (differenceInDays(new Date(current.year, current.month - 1, current.day), new Date()) !== 0) {
+    const _today = new Date();
+    const maximumDate: DayValue = {
+      year: getYear(_today),
+      month: getMonth(_today) + 1,
+      day: getDate(_today),
+    };
+    if (differenceInCalendarDays(new Date(current.year, current.month - 1, current.day), Date.now()) !== 0) {
       const _d = format(new Date(current.year, current.month - 1, current.day), 'd');
       const _m = format(new Date(current.year, current.month - 1, current.day), 'MMM');
       setDisplayDay([_d, _m]);
     } else {
       setDisplayDay(null);
     }
+    setMaxDay(maximumDate);
     setSelectedDay(current);
   };
 
   const onChange = (e: DayValue) => {
     setSelectedDay(e);
-    const _d = new Date();
-    const _h = _d.getHours();
-    let _selectedDay = new Date(e.year, e.month - 1, e.day, _h);
-    if (differenceInDays(_selectedDay, new Date(Date.now())) === 0) {
+    const _today = new Date();
+    let _selectedDay = new Date(e.year, e.month - 1, e.day, _today.getHours());
+    const dif = differenceInCalendarDays(_selectedDay, Date.now());
+    if (dif === 0) {
       _selectedDay = null;
+    } else if (dif < -1) {
+      _selectedDay = new Date(e.year, e.month - 1, e.day, 23);
     }
     props.onChange(_selectedDay);
   };

@@ -66,8 +66,6 @@ const Map: React.FC<IProps> = (props: IProps) => {
     let _st = null;
     if (topology.selectedRange && topology.selectedRange.startTime) {
       _st = topology.selectedRange.startTime;
-    } else if (topology.selectedRange && topology.selectedRange.selectedDay) {
-      _st = topology.selectedRange.selectedDay;
     }
     const param = createTopologyQueryParam(_st);
     await onGetChainData([TopologyGroupApi.getAllGroups(), TopologyOrganizationApi.getAllOrganizations()], ['groups', 'organizations'], param);

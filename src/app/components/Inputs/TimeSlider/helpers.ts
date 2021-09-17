@@ -17,6 +17,7 @@ import {
   getMonth,
   getHours,
   getDate,
+  differenceInCalendarDays,
 } from 'date-fns';
 
 export const getDomain = (min, max) => [+min, +max];
@@ -76,8 +77,9 @@ export const formatTick = (period: ITimeTypes, ms) => {
   return format(new Date(ms), 'h aa');
 };
 
-export const getSliderValuesConfig = (period: ITimeTypes, selectedDay: Date | null): ITimeConfig => {
-  const _selectedDay = getFromSelected(period, selectedDay);
+export const getSliderValuesConfig = (period: ITimeTypes, startDate: Date | null, prevConfig: ITimeConfig | null): ITimeConfig => {
+  const _prevMax = prevConfig ? new Date(prevConfig.max) : new Date();
+  const _selectedDay = getFromSelected(period, startDate, _prevMax);
   const minMS = getTime(getMin(period, _selectedDay));
   const maxMS = getTime(getMax(period, _selectedDay));
   const _obj: ITimeConfig = {
@@ -88,18 +90,34 @@ export const getSliderValuesConfig = (period: ITimeTypes, selectedDay: Date | nu
   return _obj;
 };
 
-const getFromSelected = (period: ITimeTypes, selectedDay: Date | null) => {
+const getFromSelected = (period: ITimeTypes, selectedDay: Date | null, prevMax: Date) => {
   if (selectedDay) {
     if (period === ITimeTypes.DAY) {
+      const dif = differenceInCalendarDays(selectedDay, prevMax);
+      if (dif >= -1) {
+        return startOfHour(prevMax);
+      }
       return startOfHour(selectedDay);
     }
     if (period === ITimeTypes.WEEK) {
+      const dif = differenceInCalendarDays(selectedDay, prevMax);
+      if (dif > -7) {
+        return startOfDay(prevMax);
+      }
       return startOfDay(selectedDay);
     }
     if (period === ITimeTypes.MONTH) {
+      const dif = differenceInCalendarDays(selectedDay, prevMax);
+      if (dif > -31) {
+        return startOfDay(prevMax);
+      }
       return startOfDay(selectedDay);
     }
     if (period === ITimeTypes.YEAR) {
+      const dif = differenceInCalendarDays(selectedDay, prevMax);
+      if (dif > -365) {
+        return startOfDay(prevMax);
+      }
       return startOfDay(selectedDay);
     }
     return startOfHour(selectedDay);
