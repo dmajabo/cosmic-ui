@@ -99,7 +99,7 @@ export const SLATestList: React.FC<SLATestListProps> = ({ rawData, addSlaTest })
           ),
         };
       }),
-    [],
+    [rawData],
   );
 
   return (

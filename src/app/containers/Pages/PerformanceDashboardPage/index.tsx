@@ -49,14 +49,9 @@ const PerformanceDashboardPage: React.FC<IProps> = (props: IProps) => {
   const [rawData, setRawData] = useState<RawData[]>([]);
 
   const addSlaTest = (value: RawData) => {
-    let tempData = rawData.concat();
-    tempData.push(value);
+    let tempData = rawData.concat(value);
     setRawData(tempData);
   };
-
-  useEffect(() => {
-    console.log('Added SLA Test');
-  }, [rawData]);
 
   const tab = 'sla_tests';
 
