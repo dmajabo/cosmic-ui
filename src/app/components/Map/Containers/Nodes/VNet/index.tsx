@@ -1,5 +1,5 @@
 import React from 'react';
-import { IVm, IVnetNode } from 'lib/models/topology';
+import { IVm, IVM_PanelDataNode, IVnetNode } from 'lib/models/topology';
 import { IPosition, NODES_CONSTANTS } from 'app/components/Map/model';
 import VmsContainer from './VmsContainer';
 import { useDrag } from 'app/components/Map/hooks/useDrag';
@@ -13,7 +13,7 @@ interface IProps {
   index: number;
   dataItem: IVnetNode;
   onUpdateNode: (_node: IVnetNode, _position: IPosition, isDrag: boolean, isExpand: boolean) => void;
-  onClickVm: (vm: IVm) => void;
+  onClickVm: (node: IVM_PanelDataNode) => void;
 }
 const VNetNode: React.FC<IProps> = (props: IProps) => {
   const { onUpdate, onUnsubscribeDrag } = useDrag(
@@ -70,7 +70,7 @@ const VNetNode: React.FC<IProps> = (props: IProps) => {
   // };
 
   const onClickVm = (vm: IVm) => {
-    props.onClickVm(vm);
+    props.onClickVm({ vm: vm, vnet: { ...props.dataItem } });
   };
 
   if (!pos) {

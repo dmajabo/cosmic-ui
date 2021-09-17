@@ -397,10 +397,7 @@ export function useTopologyContext(): TopologyContextType {
   const onChangeTimeRange = (_value: Date | null, key: TimeRangeFieldTypes) => {
     const _clone: ITimeRange = { ...selectedRange };
     _clone[key] = _value;
-    // if (key === TimeRangeFieldTypes.START) {
-    //   _clone.selectedDay = null;
-    // }
-    // debugger
+    console.log('cnage selectedTime Range', _clone);
     setSelectedRange(_clone);
   };
 
@@ -411,6 +408,7 @@ export function useTopologyContext(): TopologyContextType {
       _clone.startTime = _value;
       _clone.endTime = null;
     }
+    console.log('calendar', _clone);
     setSelectedRange(_clone);
   };
 

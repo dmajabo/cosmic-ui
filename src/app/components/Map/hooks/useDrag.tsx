@@ -100,7 +100,7 @@ export function useDrag(props: IProps, onUpdateCallBack: (pos: IPosition) => voi
         const _sY = Number(_l.attr('data-source_y'));
         const _tX = Number(_l.attr('data-target_x')) + dx;
         const _tY = Number(_l.attr('data-target_y')) + dy;
-        _l.attr('d', `M${_tX} ${_tY}, L${_sX} ${_sY}`).attr('data-target_x', _tX).attr('data-target_y', _tY);
+        _l.attr('d', `M${_tX} ${_tY} L${_sX} ${_sY}`).attr('data-target_x', _tX).attr('data-target_y', _tY);
       });
     }
     if (sourceLinks) {
@@ -110,7 +110,7 @@ export function useDrag(props: IProps, onUpdateCallBack: (pos: IPosition) => voi
         const _sY = Number(_l.attr('data-source_y')) + dy;
         const _tX = Number(_l.attr('data-target_x'));
         const _tY = Number(_l.attr('data-target_y'));
-        _l.attr('d', `M${_tX} ${_tY}, L${_sX} ${_sY}`).attr('data-source_x', _sX).attr('data-source_y', _sY);
+        _l.attr('d', `M${_tX} ${_tY} L${_sX} ${_sY}`).attr('data-source_x', _sX).attr('data-source_y', _sY);
       });
     }
     node.attr('transform', `translate(${translateX}, ${translateY})`);

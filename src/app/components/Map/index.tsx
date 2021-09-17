@@ -4,11 +4,10 @@ import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
 // import mockdataDevices from 'utils/dataDevices.json';
 import { ContainerWithFooter, ContainerWithMetrics, ContainerWithPanel, MapContainer } from './styles';
 import HeadeerAction from './HeadeerAction';
-import { IDeviceNode, IPanelBar, TopologyMetricsPanelTypes, TopologyPanelTypes, IVm, IWedgeNode } from 'lib/models/topology';
+import { IDeviceNode, IPanelBar, TopologyMetricsPanelTypes, TopologyPanelTypes, IWedgeNode, IVM_PanelDataNode } from 'lib/models/topology';
 import LoadingIndicator from 'app/components/Loading';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import { IPanelBarLayoutTypes } from 'lib/models/general';
-import { useGetTopologyAsync } from 'lib/api/http/useGetTopology';
 import PanelBar from 'app/components/Basic/PanelBar';
 import Entities from './PanelComponents/EntitiesComponent/Entities';
 import GroupsComponent from './PanelComponents/GroupsComponent/GroupsComponent';
@@ -18,13 +17,13 @@ import FooterAction from './FooterAction';
 import Graph from './Graph';
 import DevicePanel from './PanelComponents/NodePanels/DevicePanel';
 import WedgePanel from './PanelComponents/NodePanels/WedgePanel';
+import { useGetTopology } from 'lib/api/http/useAxiosHook';
+import { ErrorMessage } from '../Basic/ErrorMessage/ErrorMessage';
 interface IProps {}
 
 const Map: React.FC<IProps> = (props: IProps) => {
   const { topology } = useTopologyDataContext();
-  const [stateLoad, loadData] = useGetTopologyAsync<ITopologyDataRes>();
-
-  const [showLoading, setShowLoading] = React.useState<boolean>(true);
+  const { response, loading, error, onGetChainData } = useGetTopology<ITopologyDataRes>();
   const [showPanelBar, setShowPanelBar] = React.useState<IPanelBar<TopologyPanelTypes>>({ show: false, type: null });
   const [showMetricksBar, setShowMetricks] = React.useState<IPanelBar<TopologyMetricsPanelTypes>>({ show: false, type: null });
   const [showFooter, setShowFooter] = React.useState<boolean>(true);
@@ -35,16 +34,10 @@ const Map: React.FC<IProps> = (props: IProps) => {
   }, []);
 
   React.useEffect(() => {
-    if (stateLoad && !stateLoad.isLoading && !stateLoad.isError && stateLoad.response && stateLoad.response.item) {
-      topology?.onSetData(stateLoad.response.item);
+    if (response !== null) {
+      topology?.onSetData(response);
     }
-    if (stateLoad && !stateLoad.isLoading && (stateLoad.isError || !stateLoad.response)) {
-      topology?.onSetData(null);
-    }
-    if (showLoading && stateLoad && !stateLoad.isLoading) {
-      setShowLoading(false);
-    }
-  }, [stateLoad]);
+  }, [response]);
 
   const onOpenPanel = (_panel: TopologyPanelTypes) => {
     setShowFooter(false);
@@ -77,29 +70,38 @@ const Map: React.FC<IProps> = (props: IProps) => {
       _st = topology.selectedRange.selectedDay;
     }
     const param = createTopologyQueryParam(_st);
-    await loadData(TopologyGroupApi.getAllGroups(), TopologyOrganizationApi.getAllOrganizations(), param);
+    await onGetChainData([TopologyGroupApi.getAllGroups(), TopologyOrganizationApi.getAllOrganizations()], ['groups', 'organizations'], param);
   };
 
   const onReloadData = async (startTime: Date | null) => {
-    setShowLoading(true);
     const param = createTopologyQueryParam(startTime);
-    await loadData(TopologyGroupApi.getAllGroups(), TopologyOrganizationApi.getAllOrganizations(), param);
+    await onGetChainData([TopologyGroupApi.getAllGroups(), TopologyOrganizationApi.getAllOrganizations()], ['groups', 'organizations'], param);
   };
 
   const onRefresh = () => {
-    setShowLoading(true);
     onTryLoadData();
   };
 
-  const onOpenNodePanel = (vm: IVm | IDeviceNode | IWedgeNode, _type: TopologyMetricsPanelTypes) => {
+  const onOpenNodePanel = (node: IDeviceNode | IWedgeNode, _type: TopologyMetricsPanelTypes) => {
     if (showPanelBar && showPanelBar.show) {
       setShowPanelBar({ show: false, type: null });
       setShowFooter(true);
     }
-    if (vm && showPanelBar && showPanelBar.dataItem && vm.id === showPanelBar.dataItem.id) {
+    if (node && showPanelBar && showPanelBar.dataItem && node.id === showPanelBar.dataItem.id) {
       return;
     }
-    setShowMetricks({ type: _type, show: true, dataItem: vm });
+    setShowMetricks({ type: _type, show: true, dataItem: node });
+  };
+
+  const onOpenVmPanel = (node: IVM_PanelDataNode) => {
+    if (showPanelBar && showPanelBar.show) {
+      setShowPanelBar({ show: false, type: null });
+      setShowFooter(true);
+    }
+    if (node && showPanelBar && showPanelBar.dataItem && node.vm.id === showPanelBar.dataItem.vm.id) {
+      return;
+    }
+    setShowMetricks({ type: TopologyMetricsPanelTypes.VM, show: true, dataItem: node });
   };
 
   const onOpenFullScreen = () => {
@@ -123,15 +125,22 @@ const Map: React.FC<IProps> = (props: IProps) => {
                     networksGroups={topology.networksGroups}
                     isFullScreen={isFullScreen}
                     onOpenFullScreen={onOpenFullScreen}
-                    onClickVm={onOpenNodePanel}
+                    onClickVm={onOpenVmPanel}
                     onClickDevice={onOpenNodePanel}
                     onClickWedge={onOpenNodePanel}
                   />
                 </>
               )}
-              {showLoading && (
+              {loading && (
                 <AbsLoaderWrapper size={40}>
                   <LoadingIndicator margin="auto" />
+                </AbsLoaderWrapper>
+              )}
+              {error && (
+                <AbsLoaderWrapper width="100%" height="100%">
+                  <ErrorMessage fontSize={28} margin="auto">
+                    {error.message}
+                  </ErrorMessage>
                 </AbsLoaderWrapper>
               )}
             </MapContainer>

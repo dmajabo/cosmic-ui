@@ -68,12 +68,7 @@ const FooterAction: React.FC<IProps> = (props: IProps) => {
         <Toogle selectedValue={selectedPeriod} values={TIME_PERIOD} onChange={onChangeTimePeriod} />
         <CalendarComponent onChange={onSetCurrentDay} selectedDay={selectedRange.selectedDay} startTime={selectedRange.startTime} shouldDisabledDays={props.isMetricks} />
         <SliderWrapper>
-          <TimeSlider
-            selectedDay={selectedRange.selectedDay}
-            currentValue={props.isMetricks ? selectedRange.endTime : selectedRange.startTime}
-            currentPeriod={selectedPeriod ? selectedPeriod.value : null}
-            onUpdate={onUpdateTime}
-          />
+          <TimeSlider selectedDay={selectedRange.selectedDay} currentValue={selectedRange.startTime} currentPeriod={selectedPeriod ? selectedPeriod.value : null} onUpdate={onUpdateTime} />
         </SliderWrapper>
       </Wrapper>
     </PanelWrapperStyles>

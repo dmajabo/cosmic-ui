@@ -4,15 +4,16 @@ export const TableStyles = makeStyles(
   (theme: Theme) =>
     createStyles({
       container: {
-        marginBottom: '20px',
-        maxHeight: '400px',
+        width: '100%',
+        background: 'var(--_tableBg)',
+        minHeight: 300,
+        position: 'relative',
+        borderRadius: '6px 6px 0 0',
+        border: '2px solid var(--_tableBg)',
       },
       table: {
         fontFamily: 'DMSans',
         fontStyle: 'normal',
-        background: 'var(--_tableBg)',
-        borderRadius: '6px 6px 0 0',
-        border: '2px solid transparent',
       },
       tableHeadCell: {
         background: 'transparent',
