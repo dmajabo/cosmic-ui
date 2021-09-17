@@ -8,7 +8,6 @@ import { IDeviceNode, IPanelBar, TopologyMetricsPanelTypes, TopologyPanelTypes, 
 import LoadingIndicator from 'app/components/Loading';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import { IPanelBarLayoutTypes } from 'lib/models/general';
-import { useGetTopologyAsync } from 'lib/api/http/useGetTopology';
 import PanelBar from 'app/components/Basic/PanelBar';
 import Entities from './PanelComponents/EntitiesComponent/Entities';
 import GroupsComponent from './PanelComponents/GroupsComponent/GroupsComponent';
@@ -18,13 +17,13 @@ import FooterAction from './FooterAction';
 import Graph from './Graph';
 import DevicePanel from './PanelComponents/NodePanels/DevicePanel';
 import WedgePanel from './PanelComponents/NodePanels/WedgePanel';
+import { useGetTopology } from 'lib/api/http/useAxiosHook';
+import { ErrorMessage } from '../Basic/ErrorMessage/ErrorMessage';
 interface IProps {}
 
 const Map: React.FC<IProps> = (props: IProps) => {
   const { topology } = useTopologyDataContext();
-  const [stateLoad, loadData] = useGetTopologyAsync<ITopologyDataRes>();
-
-  const [showLoading, setShowLoading] = React.useState<boolean>(true);
+  const { response, loading, error, onGetChainData } = useGetTopology<ITopologyDataRes>();
   const [showPanelBar, setShowPanelBar] = React.useState<IPanelBar<TopologyPanelTypes>>({ show: false, type: null });
   const [showMetricksBar, setShowMetricks] = React.useState<IPanelBar<TopologyMetricsPanelTypes>>({ show: false, type: null });
   const [showFooter, setShowFooter] = React.useState<boolean>(true);
@@ -35,16 +34,10 @@ const Map: React.FC<IProps> = (props: IProps) => {
   }, []);
 
   React.useEffect(() => {
-    if (stateLoad && !stateLoad.isLoading && !stateLoad.isError && stateLoad.response && stateLoad.response.item) {
-      topology?.onSetData(stateLoad.response.item);
+    if (response !== null) {
+      topology?.onSetData(response);
     }
-    if (stateLoad && !stateLoad.isLoading && (stateLoad.isError || !stateLoad.response)) {
-      topology?.onSetData(null);
-    }
-    if (showLoading && stateLoad && !stateLoad.isLoading) {
-      setShowLoading(false);
-    }
-  }, [stateLoad]);
+  }, [response]);
 
   const onOpenPanel = (_panel: TopologyPanelTypes) => {
     setShowFooter(false);
@@ -77,17 +70,15 @@ const Map: React.FC<IProps> = (props: IProps) => {
       _st = topology.selectedRange.selectedDay;
     }
     const param = createTopologyQueryParam(_st);
-    await loadData(TopologyGroupApi.getAllGroups(), TopologyOrganizationApi.getAllOrganizations(), param);
+    await onGetChainData([TopologyGroupApi.getAllGroups(), TopologyOrganizationApi.getAllOrganizations()], ['groups', 'organizations'], param);
   };
 
   const onReloadData = async (startTime: Date | null) => {
-    setShowLoading(true);
     const param = createTopologyQueryParam(startTime);
-    await loadData(TopologyGroupApi.getAllGroups(), TopologyOrganizationApi.getAllOrganizations(), param);
+    await onGetChainData([TopologyGroupApi.getAllGroups(), TopologyOrganizationApi.getAllOrganizations()], ['groups', 'organizations'], param);
   };
 
   const onRefresh = () => {
-    setShowLoading(true);
     onTryLoadData();
   };
 
@@ -140,9 +131,16 @@ const Map: React.FC<IProps> = (props: IProps) => {
                   />
                 </>
               )}
-              {showLoading && (
+              {loading && (
                 <AbsLoaderWrapper size={40}>
                   <LoadingIndicator margin="auto" />
+                </AbsLoaderWrapper>
+              )}
+              {error && (
+                <AbsLoaderWrapper width="100%" height="100%">
+                  <ErrorMessage fontSize={28} margin="auto">
+                    {error.message}
+                  </ErrorMessage>
                 </AbsLoaderWrapper>
               )}
             </MapContainer>

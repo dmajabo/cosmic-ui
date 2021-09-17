@@ -10,11 +10,9 @@ import PrimaryButton from 'app/components/Buttons/PrimaryButton';
 import { addIcon } from 'app/components/SVGIcons/addIcon';
 import { ITopologyGroup } from 'lib/models/topology';
 import { TopologyGroupApi } from 'lib/api/ApiModels/Topology/endpoints';
-import { usePost } from 'lib/api/http/usePost';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
-import { useDelete } from 'lib/api/http/useDelete';
-import { useGet } from 'lib/api/http/useGet';
+import { useGet, usePost, useDelete } from 'lib/api/http/useAxiosHook';
 import { jsonClone } from 'lib/helpers/cloneHelper';
 import { getMaxCopyValue } from './helpers';
 
@@ -25,12 +23,10 @@ const GroupsComponent: React.FC<IProps> = (props: IProps) => {
   const [groups, setGroups] = React.useState([]);
   const [view, setView] = React.useState<TopologyGroupsView | null>(null);
   const [groupToEdit, setGroupToEdit] = React.useState<ITopologyGroup | null>(null);
-  const [stateGetGroupById, getGroupByIdAsync] = useGet<ITopologyGroup>();
-  const [stateCreateNewGroup, postCreateGroupAsync] = usePost<any, any>();
-  const [stateUpdateGroup, postUpdateGroupAsync] = usePost<any, any>();
-  const [stateDeleteGroup, deleteDeleteGroupAsync] = useDelete<any>();
-  const [showLoader, setShowLoader] = React.useState<boolean>(false);
-  const [errorMessage, setErrorMessage] = React.useState<string>(null);
+  const { response, loading, error, onGet } = useGet<ITopologyGroup>();
+  const { response: postRes, loading: postLoading, onPost } = usePost<ITopologyGroup, ITopologyGroup>();
+  const { response: postUpdateRes, loading: postUpdateLoading, onPost: onUpdate } = usePost<ITopologyGroup, ITopologyGroup>();
+  const { response: deleteRes, loading: deleteLoading, onDelete } = useDelete<ITopologyGroup>();
   const [tempData, setTempData] = React.useState<ITopologyGroup>(null);
   React.useEffect(() => {
     const _devG = topology?.networksGroups && topology?.networksGroups.length ? topology?.networksGroups : [];
@@ -45,61 +41,32 @@ const GroupsComponent: React.FC<IProps> = (props: IProps) => {
   }, [topology?.networksGroups, topology?.applicationsGroup]);
 
   React.useEffect(() => {
-    if (stateCreateNewGroup && !stateCreateNewGroup.isError && !stateCreateNewGroup.isLoading && stateCreateNewGroup.response && stateCreateNewGroup.response.item) {
-      if (stateCreateNewGroup.response && stateCreateNewGroup.response.item && stateCreateNewGroup.response.item.id) {
-        setView(TopologyGroupsView.ALL);
-        onGetGroup(stateCreateNewGroup.response.item.id);
-        return;
-      }
+    if (postRes && postRes.id) {
+      setView(TopologyGroupsView.ALL);
+      onGetGroup(postRes.id);
     }
-    if (stateCreateNewGroup && stateCreateNewGroup.isError && !stateCreateNewGroup.isLoading) {
-      setErrorMessage(stateCreateNewGroup.errorMessage);
-    }
-    if (showLoader && stateCreateNewGroup && !stateCreateNewGroup.isLoading) {
-      setShowLoader(false);
-    }
-  }, [stateCreateNewGroup]);
+  }, [postRes]);
 
   React.useEffect(() => {
-    if (stateGetGroupById && !stateGetGroupById.isError && !stateGetGroupById.isLoading && stateGetGroupById.response && stateGetGroupById.response.item) {
-      topology?.onUpdateGroups(stateGetGroupById.response.item);
+    if (response !== null) {
+      topology?.onUpdateGroups(response);
     }
-    if (stateGetGroupById && stateGetGroupById.isError && !stateGetGroupById.isLoading) {
-      setErrorMessage(stateGetGroupById.errorMessage);
-    }
-    if (showLoader && stateGetGroupById && !stateGetGroupById.isLoading) {
-      setShowLoader(false);
-    }
-  }, [stateGetGroupById]);
+  }, [response]);
 
   React.useEffect(() => {
-    if (stateUpdateGroup && !stateUpdateGroup.isError && !stateUpdateGroup.isLoading && stateUpdateGroup.response && stateUpdateGroup.response.item) {
-      if (stateUpdateGroup.response && stateUpdateGroup.response.item && stateUpdateGroup.response.item.id) {
-        setView(TopologyGroupsView.ALL);
-        onGetGroup(stateUpdateGroup.response.item.id);
-        return;
-      }
+    if (postUpdateRes && postUpdateRes.id) {
+      setView(TopologyGroupsView.ALL);
+      onGetGroup(postUpdateRes.id);
+      return;
     }
-    if (stateUpdateGroup && stateUpdateGroup.isError && !stateUpdateGroup.isLoading) {
-      setErrorMessage(stateUpdateGroup.errorMessage);
-    }
-    if (showLoader && stateUpdateGroup && !stateUpdateGroup.isLoading) {
-      setShowLoader(false);
-    }
-  }, [stateUpdateGroup]);
+  }, [postUpdateRes]);
 
   React.useEffect(() => {
-    if (stateDeleteGroup && !stateDeleteGroup.isError && !stateDeleteGroup.isLoading && stateDeleteGroup.response && stateDeleteGroup.response.success) {
+    if (deleteRes !== null) {
       topology?.onDeleteGroup(tempData);
       setTempData(null);
     }
-    if (stateDeleteGroup && stateDeleteGroup.isError && !stateDeleteGroup.isLoading) {
-      setErrorMessage(stateDeleteGroup.errorMessage);
-    }
-    if (showLoader && stateDeleteGroup && !stateDeleteGroup.isLoading) {
-      setShowLoader(false);
-    }
-  }, [stateDeleteGroup]);
+  }, [deleteRes]);
 
   const onOpenEditorGroup = () => {
     setView(TopologyGroupsView.EDIT);
@@ -115,8 +82,6 @@ const GroupsComponent: React.FC<IProps> = (props: IProps) => {
   };
 
   const onSave = (_data: ITopologyGroup) => {
-    setShowLoader(true);
-    setErrorMessage(null);
     if (!_data.id) {
       onCreateGroup(_data);
       return;
@@ -124,19 +89,18 @@ const GroupsComponent: React.FC<IProps> = (props: IProps) => {
     onUpdateGroup(_data);
   };
 
-  const onDelete = (_group: ITopologyGroup) => {
-    setShowLoader(true);
+  const onDeleteGroup = (_group: ITopologyGroup) => {
     setTempData(_group);
-    onDeleteGroup(_group);
+    onTryDeleteGroup(_group);
   };
 
   const onUpdateGroup = async (_data: ITopologyGroup) => {
-    await postUpdateGroupAsync(TopologyGroupApi.postCreateGroup(), { groupPol: _data });
+    await onUpdate(TopologyGroupApi.postCreateGroup(), { groupPol: _data });
     // await postUpdateGroupAsync(TopologyGroupApi.postUpdateGroup(_data.id), { groupPol: _data });
   };
 
   const onCreateGroup = async (_data: ITopologyGroup) => {
-    await postCreateGroupAsync(TopologyGroupApi.postCreateGroup(), { groupPol: _data });
+    await onPost(TopologyGroupApi.postCreateGroup(), { groupPol: _data });
   };
 
   const getPanelBarTitle = (_view: TopologyGroupsView, _group: ITopologyGroup | null) => {
@@ -165,12 +129,12 @@ const GroupsComponent: React.FC<IProps> = (props: IProps) => {
     setView(TopologyGroupsView.EDIT);
   };
 
-  const onDeleteGroup = async (_group: ITopologyGroup) => {
-    await deleteDeleteGroupAsync(TopologyGroupApi.deleteGroup(_group.id));
+  const onTryDeleteGroup = async (_group: ITopologyGroup) => {
+    await onDelete(TopologyGroupApi.deleteGroup(_group.id));
   };
 
   const onGetGroup = async (id: string) => {
-    await getGroupByIdAsync(TopologyGroupApi.getGroupById(id));
+    await onGet(TopologyGroupApi.getGroupById(id));
   };
 
   if (!view) {
@@ -185,11 +149,11 @@ const GroupsComponent: React.FC<IProps> = (props: IProps) => {
       <OverflowContainer>
         <PanelBarContent>
           {view === TopologyGroupsView.EMPTY && <EmptyGroupView onOpenEditorGroup={onOpenEditorGroup} />}
-          {view === TopologyGroupsView.EDIT && <EditGroupView group={groupToEdit} onCancel={onCancel} onSave={onSave} error={errorMessage} />}
-          {view === TopologyGroupsView.ALL && <AllGroupView groups={groups} onSelectGroup={onSelectGroup} onDublicateGroup={onDublicateGroup} onDeleteGroup={onDelete} />}
+          {view === TopologyGroupsView.EDIT && <EditGroupView group={groupToEdit} onCancel={onCancel} onSave={onSave} error={error ? error.message : null} />}
+          {view === TopologyGroupsView.ALL && <AllGroupView groups={groups} onSelectGroup={onSelectGroup} onDublicateGroup={onDublicateGroup} onDeleteGroup={onDeleteGroup} />}
         </PanelBarContent>
       </OverflowContainer>
-      {showLoader && (
+      {(loading || postLoading || postUpdateLoading || deleteLoading) && (
         <AbsLoaderWrapper size={40} width="100%" height="100%">
           <LoadingIndicator margin="auto" />
         </AbsLoaderWrapper>

@@ -82,7 +82,7 @@ export const Circle = styled.div`
 
 interface ILoadProps {
   position?: 'absolute' | 'fixed' | 'relative' | 'static';
-  size: number;
+  size?: number;
   background?: string;
   width?: string;
   height?: string;
