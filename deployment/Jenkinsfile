@@ -1,0 +1,64 @@
+pipeline {
+    agent { label 'kubepods-ui' }
+    options {
+        buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '5', numToKeepStr: '5')
+    }
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+        stage('Pre Test') {
+            steps {
+                sh 'node -v'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                echo 'Compiling and building'
+                echo "${env.CI}"
+                sh "echo REACT_APP_API_BASE_URL=${env.REACT_APP_API_BASE_URL} >> ${env.WORKSPACE}/.env.local"
+                sh "echo REACT_APP_AUTH0_DOMAIN=${env.REACT_APP_AUTH0_DOMAIN} >> ${env.WORKSPACE}/.env.local"
+                sh "echo REACT_APP_AUTH0_CLIENT_ID=${env.REACT_APP_AUTH0_CLIENT_ID} >> ${env.WORKSPACE}/.env.local"
+                sh "echo REACT_APP_MAP_ACCESS_TOKEN=${env.REACT_APP_MAP_ACCESS_TOKEN} >> ${env.WORKSPACE}/.env.local"
+                sh 'yarn install'
+                sh 'yarn build --prod'
+            }
+        }
+
+        stage('Upload to S3') {
+            steps {
+                echo 'Uploading to S3'
+                script {
+                    if (env.BRANCH_NAME == 'main') {
+                        sh 'aws s3 cp build/ s3://cosmic-ui-dev/ --recursive'
+                    } else {
+                        echo 'Not uploading to s3 bucket as its not the main branch'
+                    }
+                }
+            }
+        }
+
+        stage('Invalidate cloudfront cache') {
+            steps {
+                script {
+                    if (env.BRANCH_NAME == 'main') {
+                        echo 'Invalidating cloudfront cache'
+                        sh 'aws cloudfront create-invalidation --distribution-id E2KMZ6NYNYNAP --paths "/*"'
+                    } else {
+                        echo 'Not invalidating cloudfront cache as its not the main branch'
+                    }
+                }
+            }
+        }
+    }
+
+    /* workspace clean up*/
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}
