@@ -9,5 +9,5 @@ export const RoutesApi = {
 };
 
 export const PolicyApi = {
-  getRoutes: (key: ControllerKeyTypes) => 'policy/api/v1/topology/' + key,
+  getPolicy: (key: ControllerKeyTypes) => 'topo/api/v1/topology/' + key,
 };

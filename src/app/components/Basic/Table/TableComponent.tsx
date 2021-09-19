@@ -21,12 +21,11 @@ const TableComponent: React.FC<IProps<any>> = (props: IProps<any>) => {
   }, [props.data]);
   return (
     <TableContainer className={classes.container}>
-      {/* <DataGrid rows={rows} columns={columns} pageSize={5} rowsPerPageOptions={[5]} checkboxSelection /> */}
       <Table stickyHeader aria-label="sticky table" className={classes.table}>
         <TableHead>
           <TableRow>
             {props.columns.map(column => (
-              <TableCell key={column.id} style={{ minWidth: column.minWidth }} className={classes.tableHeadCell}>
+              <TableCell key={`${column.id}`} style={{ minWidth: column.minWidth }} className={classes.tableHeadCell}>
                 {column.label}
               </TableCell>
             ))}
@@ -36,7 +35,7 @@ const TableComponent: React.FC<IProps<any>> = (props: IProps<any>) => {
           {rows && rows.length
             ? rows.map((row, rowIndex) => {
                 return (
-                  <TableRow hover tabIndex={-1} key={row.code} className={classes.row}>
+                  <TableRow hover tabIndex={-1} key={`tableRow${row.id}`} className={classes.row}>
                     {props.columns.map((column, index) => {
                       const value = row[column.field];
                       if (props.shouldDisplayRowNumber && index === 0) {

@@ -37,6 +37,10 @@ export const TableStyles = makeStyles(
         lineHeight: '18px',
         whiteSpace: 'nowrap',
       },
+      tableCellStatusActive: {
+        color: 'var(--_successColor)',
+        textTransform: 'capitalize',
+      },
       row: {
         background: 'var(--_rowBg)',
         borderTop: '1px solid',
