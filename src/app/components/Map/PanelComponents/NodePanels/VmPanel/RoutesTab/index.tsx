@@ -19,7 +19,7 @@ const RoutesTab: React.FC<IProps> = (props: IProps) => {
   ]);
 
   React.useEffect(() => {
-    const _param: IResourceQueryParam = getQueryRoutesParam(RoutesResourceTypes.NetworkLink, props.dataItem.id);
+    const _param: IResourceQueryParam = getQueryRoutesParam(RoutesResourceTypes.VNetwork, props.dataItem.id);
     setParam(_param);
   }, [props.dataItem]);
 

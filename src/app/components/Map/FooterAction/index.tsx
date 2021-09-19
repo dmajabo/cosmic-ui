@@ -1,12 +1,12 @@
 import React from 'react';
 import { SliderWrapper, Wrapper } from './styles';
 import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
-import { IPanelBarLayoutTypes, ISelectedListItem, ITimeRange, ITimeTypes, TimeRangeFieldTypes, TIME_PERIOD } from 'lib/models/general';
+import { IPanelBarLayoutTypes, ISelectedListItem, ITimeRange, ITimeTypes, TIME_PERIOD } from 'lib/models/general';
 import Toogle from 'app/components/Inputs/Toogle';
 import { PanelWrapperStyles } from 'app/components/Basic/PanelBar/styles';
 import TimeSlider from 'app/components/Inputs/TimeSlider';
 import CalendarComponent from 'app/components/Inputs/Calendar';
-import { getHours, isToday } from 'date-fns';
+// import { format } from 'date-fns';
 
 interface IProps {
   show: boolean;
@@ -17,7 +17,7 @@ interface IProps {
 const FooterAction: React.FC<IProps> = (props: IProps) => {
   const { topology } = useTopologyDataContext();
   const [selectedPeriod, setSelectedPeriod] = React.useState<ISelectedListItem<ITimeTypes> | null>(null);
-  const [selectedRange, setSelectedRange] = React.useState<ITimeRange | null>({ startTime: null, endTime: null });
+  const [selectedRange, setSelectedRange] = React.useState<ITimeRange | null>({ startTime: null, endTime: null, selectedCalendarDay: null });
   React.useEffect(() => {
     if (topology && topology.selectedPeriod !== selectedPeriod) {
       setSelectedPeriod(topology.selectedPeriod);
@@ -39,18 +39,17 @@ const FooterAction: React.FC<IProps> = (props: IProps) => {
   // };
 
   const onChangeTimePeriod = (value: ISelectedListItem<ITimeTypes>) => {
-    const _key = props.isMetricks ? TimeRangeFieldTypes.END : TimeRangeFieldTypes.START;
-    topology?.onChangeTimePeriod(value, _key);
+    topology?.onChangeTimePeriod(value);
   };
 
-  const onUpdateTime = (_time: number) => {
-    const _selected = !_time ? null : new Date(_time);
-    if (selectedPeriod && selectedPeriod.value !== ITimeTypes.DAY && !isToday(_selected)) {
-      const _h = !isToday(_selected) ? 23 : getHours(Date.now());
-      _selected.setHours(_h);
-    }
-    const key = props.isMetricks ? TimeRangeFieldTypes.END : TimeRangeFieldTypes.START;
-    topology.onChangeTimeRange(_selected, key);
+  const onUpdateTime = (_time: Date | null) => {
+    // const _selected = !_time ? null : new Date(_time);
+    // if (selectedPeriod && selectedPeriod.value !== ITimeTypes.DAY && !isToday(_selected)) {
+    //   const _h = !isToday(_selected) ? 23 : getHours(Date.now());
+    //   _selected.setHours(_h);
+    // }
+    // const key = props.isMetricks ? TimeRangeFieldTypes.END : TimeRangeFieldTypes.START;
+    topology.onChangeTimeRange(_time, props.isMetricks); // , key, props.isMetricks
     if (props.isMetricks) {
       return;
     }
@@ -59,8 +58,7 @@ const FooterAction: React.FC<IProps> = (props: IProps) => {
   };
 
   const onSetCurrentDay = (_date: Date) => {
-    const key = props.isMetricks ? TimeRangeFieldTypes.END : TimeRangeFieldTypes.START;
-    topology.onChangeSelectedDay(_date, key);
+    topology.onChangeSelectedDay(_date, props.isMetricks);
     if (props.isMetricks) {
       return;
     }
@@ -71,10 +69,20 @@ const FooterAction: React.FC<IProps> = (props: IProps) => {
   return (
     <PanelWrapperStyles show={props.show} type={IPanelBarLayoutTypes.HORIZONTAL}>
       <Wrapper>
+        {/* <div style={{ position: 'absolute', top: '-60px', left: '20px', fontSize: '12px' }}>
+          <div>Selected calendar day: {selectedRange.selectedCalendarDay ? format(selectedRange.selectedCalendarDay, 'dd MMM yyyy h:mm') : null}</div>
+          <div>Start Time: {selectedRange.startTime ? format(selectedRange.startTime, 'yyyy MMM dd h:mm') : null}</div>
+          <div>End Time: {selectedRange.endTime ? format(selectedRange.endTime, 'yyyy MMM dd h:mm') : null}</div>
+        </div> */}
         <Toogle selectedValue={selectedPeriod} values={TIME_PERIOD} onChange={onChangeTimePeriod} />
-        <CalendarComponent onChange={onSetCurrentDay} startTime={selectedRange.startTime} />
+        <CalendarComponent onChange={onSetCurrentDay} selectedDay={selectedRange.selectedCalendarDay} />
         <SliderWrapper>
-          <TimeSlider currentValue={selectedRange.startTime} currentPeriod={selectedPeriod ? selectedPeriod.value : null} onUpdate={onUpdateTime} />
+          <TimeSlider
+            selectedCalendarDay={selectedRange.selectedCalendarDay}
+            currentValue={selectedRange.startTime}
+            currentPeriod={selectedPeriod ? selectedPeriod.value : null}
+            onUpdate={onUpdateTime}
+          />
         </SliderWrapper>
       </Wrapper>
     </PanelWrapperStyles>

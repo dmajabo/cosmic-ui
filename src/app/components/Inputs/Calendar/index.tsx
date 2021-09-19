@@ -7,7 +7,7 @@ import { DisplayedDay, DisplayedDaySpan, Wrapper } from './styles';
 import { differenceInCalendarDays, format, getDate, getMonth, getYear } from 'date-fns';
 
 interface IProps {
-  startTime: null | Date;
+  selectedDay: null | Date;
   onChange: (value: Date) => void;
 }
 const CalendarComponent: React.FC<IProps> = (props: IProps) => {
@@ -16,32 +16,34 @@ const CalendarComponent: React.FC<IProps> = (props: IProps) => {
   const [displayDay, setDisplayDay] = React.useState<string[]>(null);
 
   React.useEffect(() => {
-    const _current = getCurrentDay(props.startTime);
+    const _current = props.selectedDay ? props.selectedDay : null;
     onSetDates(_current);
-  }, [props.startTime]);
+  }, [props.selectedDay]);
 
-  const getCurrentDay = (startTime: Date): Date => {
-    if (startTime) {
-      return startTime;
-    }
-    return new Date();
-  };
-
-  const onSetDates = (_current: Date) => {
-    const current: DayValue = {
-      year: getYear(_current),
-      month: getMonth(_current) + 1,
-      day: getDate(_current),
-    };
+  const onSetDates = (_current: Date | null) => {
     const _today = new Date();
+    let current: DayValue = null;
+    if (_current) {
+      current = {
+        year: getYear(_current),
+        month: getMonth(_current) + 1,
+        day: getDate(_current),
+      };
+    } else {
+      current = {
+        year: getYear(_today),
+        month: getMonth(_today) + 1,
+        day: getDate(_today),
+      };
+    }
     const maximumDate: DayValue = {
       year: getYear(_today),
       month: getMonth(_today) + 1,
       day: getDate(_today),
     };
     if (differenceInCalendarDays(new Date(current.year, current.month - 1, current.day), Date.now()) !== 0) {
-      const _d = format(new Date(current.year, current.month - 1, current.day), 'd');
-      const _m = format(new Date(current.year, current.month - 1, current.day), 'MMM');
+      const _d = format(_current, 'd');
+      const _m = format(_current, 'MMM');
       setDisplayDay([_d, _m]);
     } else {
       setDisplayDay(null);
@@ -51,15 +53,8 @@ const CalendarComponent: React.FC<IProps> = (props: IProps) => {
   };
 
   const onChange = (e: DayValue) => {
-    setSelectedDay(e);
-    const _today = new Date();
-    let _selectedDay = new Date(e.year, e.month - 1, e.day, _today.getHours());
-    const dif = differenceInCalendarDays(_selectedDay, Date.now());
-    if (dif === 0) {
-      _selectedDay = null;
-    } else if (dif < -1) {
-      _selectedDay = new Date(e.year, e.month - 1, e.day, 23);
-    }
+    let _selectedDay = new Date(e.year, e.month - 1, e.day);
+    _selectedDay = differenceInCalendarDays(_selectedDay, Date.now()) !== 0 ? new Date(e.year, e.month - 1, e.day) : null;
     props.onChange(_selectedDay);
   };
 
