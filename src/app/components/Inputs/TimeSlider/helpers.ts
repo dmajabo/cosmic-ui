@@ -90,6 +90,9 @@ const getTick = (period: ITimeTypes, ms: number, index: number, lastIndex: numbe
   if (period === ITimeTypes.YEAR) {
     return format(ms, 'yy / M');
   }
+  if (index === 0 || index === lastIndex || getTime(startOfDay(ms)) === ms) {
+    return format(ms, 'M / d h aa');
+  }
   return format(ms, 'h aa');
 };
 
@@ -220,10 +223,7 @@ const calculateMaxDay = (period: ITimeTypes, data: ISelectedData): Date => {
   const _today = new Date();
   const dif = differenceInCalendarDays(_today, data.date);
   let count = 0;
-  if (!period) {
-    return _today;
-  }
-  if (period === ITimeTypes.DAY) {
+  if (!period || period === ITimeTypes.DAY) {
     count = Math.max(0, Math.min(dif, 1));
   }
   if (period === ITimeTypes.WEEK) {
