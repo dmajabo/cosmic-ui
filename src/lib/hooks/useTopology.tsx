@@ -36,8 +36,9 @@ export interface TopologyContextType {
   networksGroups: INetworkGroupNode[];
   applicationsGroup: ITopologyGroup[];
   entityTypes: IEntity[];
-  onChangeTimeRange: (_value: Date | null, isSaveStartTime: boolean) => void;
-  onChangeSelectedDay: (_value: Date | null, isSaveStartTime: boolean) => void;
+  onSaveStartTime: (_save: boolean) => void;
+  onChangeTimeRange: (_value: Date | null) => void;
+  onChangeSelectedDay: (_value: Date | null) => void;
   onChangeTimePeriod: (_value: ISelectedListItem<ITimeTypes> | null) => void;
   onSetData: (res: ITopologyDataRes) => void;
   onUpdateGroups: (res: ITopologyGroup) => void;
@@ -396,30 +397,28 @@ export function useTopologyContext(): TopologyContextType {
     setSelectedPeriod(period);
   };
 
-  const onChangeTimeRange = (_value: Date | null, isSaveStartTime: boolean) => {
-    // , key: TimeRangeFieldTypes, isMetrics: boolean
+  const onChangeTimeRange = (_value: Date | null) => {
     const _clone: ITimeRange = { ...selectedRange };
-    if (isSaveStartTime && !_clone.endTime && _clone.startTime) {
-      _clone.endTime = new Date(_clone.startTime);
-    }
-    if (!_value && _clone.endTime) {
-      _clone.endTime = null;
-    }
     _clone.startTime = _value;
     _clone.selectedCalendarDay = _value;
     setSelectedRange(_clone);
   };
 
-  const onChangeSelectedDay = (_value: Date | null, isSaveStartTime: boolean) => {
+  const onChangeSelectedDay = (_value: Date | null) => {
     const _clone: ITimeRange = { ...selectedRange };
-    if (isSaveStartTime && !_clone.endTime && _clone.startTime) {
-      _clone.endTime = new Date(_clone.startTime);
-    }
-    if (!_value && _clone.endTime) {
-      _clone.endTime = null;
-    }
     _clone.selectedCalendarDay = _value;
     _clone.startTime = _value;
+    setSelectedRange(_clone);
+  };
+
+  const onSaveStartTime = (_save: boolean) => {
+    const _clone: ITimeRange = { ...selectedRange };
+    if (_save) {
+      _clone.endTime = _clone.startTime ? new Date(_clone.startTime) : null;
+    } else {
+      _clone.startTime = _clone.endTime ? new Date(_clone.endTime) : null;
+      _clone.endTime = null;
+    }
     setSelectedRange(_clone);
   };
 
@@ -451,5 +450,6 @@ export function useTopologyContext(): TopologyContextType {
     onChangeTimePeriod,
     onChangeTimeRange,
     onChangeSelectedDay,
+    onSaveStartTime,
   };
 }

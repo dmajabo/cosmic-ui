@@ -6,7 +6,7 @@ import Toogle from 'app/components/Inputs/Toogle';
 import { PanelWrapperStyles } from 'app/components/Basic/PanelBar/styles';
 import TimeSlider from 'app/components/Inputs/TimeSlider';
 import CalendarComponent from 'app/components/Inputs/Calendar';
-import { format } from 'date-fns';
+// import { format } from 'date-fns';
 
 interface IProps {
   show: boolean;
@@ -43,13 +43,7 @@ const FooterAction: React.FC<IProps> = (props: IProps) => {
   };
 
   const onUpdateTime = (_time: Date | null) => {
-    // const _selected = !_time ? null : new Date(_time);
-    // if (selectedPeriod && selectedPeriod.value !== ITimeTypes.DAY && !isToday(_selected)) {
-    //   const _h = !isToday(_selected) ? 23 : getHours(Date.now());
-    //   _selected.setHours(_h);
-    // }
-    // const key = props.isMetricks ? TimeRangeFieldTypes.END : TimeRangeFieldTypes.START;
-    topology.onChangeTimeRange(_time, props.isMetricks); // , key, props.isMetricks
+    topology.onChangeTimeRange(_time);
     if (props.isMetricks) {
       return;
     }
@@ -58,7 +52,7 @@ const FooterAction: React.FC<IProps> = (props: IProps) => {
   };
 
   const onSetCurrentDay = (_date: Date) => {
-    topology.onChangeSelectedDay(_date, props.isMetricks);
+    topology.onChangeSelectedDay(_date);
     if (props.isMetricks) {
       return;
     }
@@ -69,11 +63,11 @@ const FooterAction: React.FC<IProps> = (props: IProps) => {
   return (
     <PanelWrapperStyles show={props.show} type={IPanelBarLayoutTypes.HORIZONTAL}>
       <Wrapper>
-        <div style={{ position: 'absolute', top: '-60px', left: '20px', fontSize: '12px' }}>
+        {/* <div style={{ position: 'absolute', top: '-60px', left: '20px', fontSize: '12px' }}>
           <div>Selected calendar day: {selectedRange.selectedCalendarDay ? format(selectedRange.selectedCalendarDay, 'dd MMM yyyy h:mm') : 'current day. In Query params will be empty'}</div>
           <div>Start Time: {selectedRange.startTime ? format(selectedRange.startTime, 'yyyy MMM dd h:mm') : 'current day. In Query params will be empty'}</div>
           <div>End Time: {selectedRange.endTime ? format(selectedRange.endTime, 'yyyy MMM dd h:mm') : null}</div>
-        </div>
+        </div> */}
         <Toogle selectedValue={selectedPeriod} values={TIME_PERIOD} onChange={onChangeTimePeriod} />
         <CalendarComponent onChange={onSetCurrentDay} selectedDay={selectedRange.selectedCalendarDay} />
         <SliderWrapper>
