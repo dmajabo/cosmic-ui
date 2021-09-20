@@ -77,7 +77,6 @@ const GroupNode: React.FC<IProps> = (props: IProps) => {
         <g
           // onMouseEnter={e => onTogglePopup(e, true)}
           // onMouseLeave={e => onTogglePopup(e, false)}
-          pointerEvents="all"
           onClick={onExpandCollapse}
         >
           <>{CISCO_MERAKI}</>

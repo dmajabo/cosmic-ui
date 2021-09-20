@@ -7,6 +7,15 @@ interface IProps {
   dataItem: ILink | IConnectionToLink;
 }
 const TopologyLink: React.FC<IProps> = (props: IProps) => {
+  const [dataLink, setDataLink] = React.useState<ILink | IConnectionToLink>(null);
+
+  React.useEffect(() => {
+    setDataLink(props.dataItem);
+  }, [props.dataItem]);
+
+  if (!dataLink) {
+    return null;
+  }
   if (props.dataItem.type === TOPOLOGY_LINKS_TYPES.CONNECTED_TO_LINK) {
     return <ConnectedToLink dataItem={props.dataItem as IConnectionToLink} />;
   }
