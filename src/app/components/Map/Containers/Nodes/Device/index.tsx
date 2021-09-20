@@ -3,6 +3,7 @@ import { IDeviceNode } from 'lib/models/topology';
 import { IPosition, NODES_CONSTANTS } from 'app/components/Map/model';
 import { useDrag } from 'app/components/Map/hooks/useDrag';
 import CISCO_MERAKI_DEVICE from './CISCO_MERAKI_DEVICE';
+import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
 // import { IPopupDisplay } from 'lib/models/general';
 // import NodeTooltipPortal from 'components/Basic/NodeTooltipPortal';
 // import DevicePopup from '../../Popups/DevicePopup';
@@ -12,9 +13,9 @@ interface IProps {
   dataItem: IDeviceNode;
   disabled?: boolean;
   onClickDevice: (dev: IDeviceNode) => void;
-  onUpdateNode: (_node: IDeviceNode, _position: IPosition) => void;
 }
 const DeviceNode: React.FC<IProps> = (props: IProps) => {
+  const { topology } = useTopologyDataContext();
   // const [showPopup, setShowPopup] = React.useState<IPopupDisplay>({ show: false, x: 0, y: 0 });
   const { onUpdate, onUnsubscribeDrag } = useDrag(
     {
@@ -50,7 +51,7 @@ const DeviceNode: React.FC<IProps> = (props: IProps) => {
     if (props.dataItem.x === _pos.x && props.dataItem.y === _pos.y) {
       return;
     }
-    props.onUpdateNode(props.dataItem, _pos);
+    topology.onUpdateDeviceCoord(props.dataItem, _pos);
   };
 
   const onClickDevice = () => {

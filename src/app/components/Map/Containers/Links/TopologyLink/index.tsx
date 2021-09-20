@@ -16,10 +16,10 @@ const TopologyLink: React.FC<IProps> = (props: IProps) => {
   if (!dataLink) {
     return null;
   }
-  if (props.dataItem.type === TOPOLOGY_LINKS_TYPES.CONNECTED_TO_LINK) {
-    return <ConnectedToLink dataItem={props.dataItem as IConnectionToLink} />;
+  if (dataLink.type === TOPOLOGY_LINKS_TYPES.CONNECTED_TO_LINK) {
+    return <ConnectedToLink dataItem={dataLink as IConnectionToLink} />;
   }
-  return <DeviceLink dataItem={props.dataItem} />;
+  return <DeviceLink dataItem={dataLink} />;
 };
 
 export default React.memo(TopologyLink);

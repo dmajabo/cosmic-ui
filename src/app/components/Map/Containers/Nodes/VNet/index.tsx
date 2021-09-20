@@ -9,13 +9,14 @@ import { useDrag } from 'app/components/Map/hooks/useDrag';
 import VPC from './VPC';
 import { Transition } from 'react-transition-group';
 import { getVPCContainerSize, IVpcSize } from 'lib/helpers/tree';
+import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
 interface IProps {
   index: number;
   dataItem: IVnetNode;
-  onUpdateNode: (_node: IVnetNode, _position: IPosition, isDrag: boolean, isExpand: boolean) => void;
   onClickVm: (node: IVM_PanelDataNode) => void;
 }
 const VNetNode: React.FC<IProps> = (props: IProps) => {
+  const { topology } = useTopologyDataContext();
   const { onUpdate, onUnsubscribeDrag } = useDrag(
     {
       id: `${NODES_CONSTANTS.VNet.type}${props.dataItem.id}`,
@@ -49,14 +50,14 @@ const VNetNode: React.FC<IProps> = (props: IProps) => {
     if (props.dataItem.x === _pos.x && props.dataItem.y === _pos.y) {
       return;
     }
-    props.onUpdateNode(props.dataItem, _pos, true, false);
+    topology?.onUpdateVnetNode(props.dataItem, _pos, true, false);
   };
 
   const onToogleVMS = () => {
     if (!props.dataItem.vms || !props.dataItem.vms.length) {
       return;
     }
-    props.onUpdateNode(props.dataItem, null, false, true);
+    topology?.onUpdateVnetNode(props.dataItem, null, false, true);
   };
 
   // const onShowPopup = (e: React.MouseEvent) => {
