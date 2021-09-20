@@ -46,6 +46,8 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows }) => {
         };
         getPacketLossMetrics();
       });
+    } else {
+      setPacketLossMetrics([]);
     }
   }, [selectedRows]);
 

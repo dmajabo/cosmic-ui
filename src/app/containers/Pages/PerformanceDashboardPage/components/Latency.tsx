@@ -46,6 +46,8 @@ export const Latency: React.FC<LatencyProps> = ({ selectedRows }) => {
         };
         getLatencyMetrics();
       });
+    } else {
+      setLatencyMetrics([]);
     }
   }, [selectedRows]);
 
