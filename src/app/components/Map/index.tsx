@@ -99,7 +99,7 @@ const Map: React.FC<IProps> = (props: IProps) => {
       setShowPanelBar({ show: false, type: null });
       setShowFooter(true);
     }
-    if (node && showMetricksBar && showMetricksBar.dataItem && node.vm.id === showMetricksBar.dataItem.vm.id) {
+    if (node && showMetricksBar && showMetricksBar.dataItem && showMetricksBar.dataItem.vm && node.vm.id === showMetricksBar.dataItem.vm.id) {
       return;
     }
     topology.onSaveStartTime(true);

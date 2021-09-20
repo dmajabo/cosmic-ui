@@ -26,7 +26,7 @@ const ChartContainer: React.FC<Props> = (props: Props) => {
 
   React.useEffect(() => {
     getDataAsync(props.id, props.queryKey, props.queryTimeParam);
-  }, [props.queryTimeParam]);
+  }, [props.id, props.queryTimeParam]);
 
   React.useEffect(() => {
     if (response !== null && response.metrics && response.metrics.keyedmap) {
