@@ -2,10 +2,10 @@ import React from 'react';
 import { IVm } from 'lib/models/topology';
 import { IResourceQueryParam, ControllerKeyTypes, SecurityGroupsResourceTypes, IVmPolicyRes, IVmRule, PolicyResKeyEnum, PolicyTableKeyEnum } from 'lib/api/ApiModels/Metrics/apiModel';
 import { PolicyApi } from 'lib/api/ApiModels/Metrics/endpoints';
-import InboundTable from './InboundTable';
+import PolicyTable from './PolicyTable';
 import { useGet } from 'lib/api/http/useAxiosHook';
 import { getQueryResourceParam } from 'lib/api/ApiModels/Metrics/queryRoutesHelper';
-import OutboundTable from './OutboundTable';
+
 interface IProps {
   dataItem: IVm;
 }
@@ -50,8 +50,8 @@ const PolicyTab: React.FC<IProps> = (props: IProps) => {
 
   return (
     <>
-      <InboundTable styles={{ margin: '0 0 20px 0' }} data={inData} showLoader={loading} error={error ? error.message : null} />
-      <OutboundTable data={outData} showLoader={loading} error={error ? error.message : null} />
+      <PolicyTable title={PolicyTableKeyEnum.Inbound} styles={{ margin: '0 0 20px 0', flexDirection: 'column' }} data={inData} showLoader={loading} error={error ? error.message : null} />
+      <PolicyTable title={PolicyTableKeyEnum.Outbound} styles={{ flexDirection: 'column' }} data={outData} showLoader={loading} error={error ? error.message : null} />
     </>
   );
 };

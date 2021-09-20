@@ -82,16 +82,16 @@ export const Circle = styled.div`
 
 interface ILoadProps {
   position?: 'absolute' | 'fixed' | 'relative' | 'static';
-  size?: number;
   background?: string;
   width?: string;
   height?: string;
   zIndex?: number;
+  top?: string;
 }
 export const AbsLoaderWrapper = styled.div<ILoadProps>`
   display: flex;
   position: ${props => props.position || 'absolute'};
-  top: 0;
+  top: ${props => props.top || 0};
   left: 0;
   width: ${props => props.width || '100%'};
   height: ${props => props.height || '100%'};

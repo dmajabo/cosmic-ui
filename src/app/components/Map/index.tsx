@@ -123,7 +123,7 @@ const Map: React.FC<IProps> = (props: IProps) => {
                 </>
               )}
               {loading && (
-                <AbsLoaderWrapper size={40}>
+                <AbsLoaderWrapper>
                   <LoadingIndicator margin="auto" />
                 </AbsLoaderWrapper>
               )}

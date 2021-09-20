@@ -41,7 +41,7 @@ const TableWrapper: React.FC<Props> = (props: Props) => {
     <TableWrapperStyles style={props.styles}>
       <TableComponent columns={props.columns} data={data} error={error ? error.message : null} />
       {loading && (
-        <AbsLoaderWrapper size={40} width="100%" height="100%">
+        <AbsLoaderWrapper width="100%" height="100%">
           <LoadingIndicator margin="auto" />
         </AbsLoaderWrapper>
       )}
