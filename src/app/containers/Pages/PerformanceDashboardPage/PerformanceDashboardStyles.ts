@@ -135,6 +135,20 @@ export const PerformanceDashboardStyles = makeStyles(
         fontWeight: 500,
         border: '1px solid rgba(109, 121, 134, 0.3)',
       },
+      tabContainer: {
+        backgroundColor: '#F3F6FC',
+        width: 330,
+        borderRadius: 6,
+        padding: 5,
+        marginBottom: 20,
+      },
+      selectedTab: {
+        backgroundColor: 'white',
+        borderRadius: 6,
+      },
+      indicator: {
+        backgroundColor: 'transparent',
+      },
     }),
   {
     index: 1,

@@ -134,3 +134,22 @@ export interface CreateSLATestRequest {
 export interface CreateSLATestResponse {
   readonly id?: string;
 }
+
+interface Data {
+  readonly time: string;
+  readonly value: string;
+}
+
+interface KeyedMap {
+  readonly key: string;
+  readonly ts: Data[];
+}
+
+interface SLATestMetrics {
+  readonly resourceId: string;
+  readonly keyedmap: KeyedMap[];
+}
+
+export interface SLATestMetricsResponse {
+  readonly metrics?: SLATestMetrics;
+}

@@ -21,6 +21,7 @@ interface Data {
 }
 
 interface TableProps {
+  readonly onSelectedRowsUpdate: Function;
   readonly columns: Column[];
   readonly data: Data[];
 }
@@ -53,7 +54,7 @@ const Styles = styled.div`
   }
 `;
 
-const Table: React.FC<TableProps> = ({ columns, data }) => {
+const Table: React.FC<TableProps> = ({ onSelectedRowsUpdate, columns, data }) => {
   const classes = PerformanceDashboardStyles();
 
   const {
@@ -110,6 +111,12 @@ const Table: React.FC<TableProps> = ({ columns, data }) => {
   useEffect(() => {
     setPageSize(5);
   }, []);
+  useEffect(() => {
+    const selectedRows = selectedFlatRows.map(row => {
+      return row.original;
+    });
+    onSelectedRowsUpdate(selectedRows);
+  }, [selectedFlatRows]);
 
   return (
     // apply the table props
