@@ -1,5 +1,5 @@
 const CISCO_MERAKI_DEVICE = (
-  <svg style={{ cursor: 'pointer' }} pointerEvents="all" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
       d="M12 1.1547C13.2376 0.440169 14.7624 0.440169 16 1.1547L24.1244 5.8453C25.362 6.55983 26.1244 7.88034 26.1244 9.3094V18.6906C26.1244 20.1197 25.362 21.4402 24.1244 22.1547L16 26.8453C14.7624 27.5598 13.2376 27.5598 12 26.8453L3.87564 22.1547C2.63804 21.4402 1.87564 20.1197 1.87564 18.6906V9.3094C1.87564 7.88034 2.63804 6.55983 3.87564 5.8453L12 1.1547Z"
       fill="white"

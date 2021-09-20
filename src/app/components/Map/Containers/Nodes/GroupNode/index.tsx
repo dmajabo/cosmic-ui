@@ -72,7 +72,7 @@ const GroupNode: React.FC<IProps> = (props: IProps) => {
   }
   return (
     <>
-      <g id={`${NODES_CONSTANTS.NETWORK_GROUP.type}${props.dataItem.id}`} transform={`translate(${pos.x}, ${pos.y})`} data-type={NODES_CONSTANTS.NETWORK_GROUP.type}>
+      <g id={`${NODES_CONSTANTS.NETWORK_GROUP.type}${props.dataItem.id}`} className="topologyNode" transform={`translate(${pos.x}, ${pos.y})`} data-type={NODES_CONSTANTS.NETWORK_GROUP.type}>
         <Transition mountOnEnter unmountOnExit timeout={100} in={!props.dataItem.collapsed}>
           {state => <GroupDevicesContainer dataItem={props.dataItem} className={state} onClickDevice={onClickDevice} />}
         </Transition>

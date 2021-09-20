@@ -80,7 +80,7 @@ const VNetNode: React.FC<IProps> = (props: IProps) => {
 
   return (
     <>
-      <g id={`${NODES_CONSTANTS.VNet.type}${props.dataItem.id}`} transform={`translate(${pos.x}, ${pos.y})`} data-type={NODES_CONSTANTS.VNet.type}>
+      <g id={`${NODES_CONSTANTS.VNet.type}${props.dataItem.id}`} className="topologyNode" transform={`translate(${pos.x}, ${pos.y})`} data-type={NODES_CONSTANTS.VNet.type}>
         <Transition mountOnEnter unmountOnExit timeout={100} in={!props.dataItem.collapsed}>
           {state => <VmsContainer name={props.dataItem.name} className={state} items={props.dataItem.vms} vpcSize={vpcSize} onClickVm={onClickVm} />}
         </Transition>

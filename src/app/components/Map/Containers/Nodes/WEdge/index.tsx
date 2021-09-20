@@ -63,7 +63,7 @@ const WEdgeNode: React.FC<IProps> = (props: IProps) => {
   }
   return (
     <>
-      <g id={`${NODES_CONSTANTS.WEDGE.type}${props.dataItem.id}`} transform={`translate(${pos.x}, ${pos.y})`} data-type={NODES_CONSTANTS.WEDGE.type}>
+      <g id={`${NODES_CONSTANTS.WEDGE.type}${props.dataItem.id}`} className="topologyNode" transform={`translate(${pos.x}, ${pos.y})`} data-type={NODES_CONSTANTS.WEDGE.type}>
         <g transform={`scale(${props.dataItem.scaleFactor || 1})`}>
           <g
             // onMouseEnter={e => onTogglePopup(e, true)}

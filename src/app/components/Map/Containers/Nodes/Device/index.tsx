@@ -68,12 +68,14 @@ const DeviceNode: React.FC<IProps> = (props: IProps) => {
   }
   return (
     <>
-      <g id={`${NODES_CONSTANTS.Devisec.type}${props.dataItem.id}`} transform={`translate(${pos.x}, ${pos.y})`} data-type={NODES_CONSTANTS.Devisec.type}>
+      <g id={`${NODES_CONSTANTS.Devisec.type}${props.dataItem.id}`} className="topologyNode" transform={`translate(${pos.x}, ${pos.y})`} data-type={NODES_CONSTANTS.Devisec.type}>
         <g transform={`scale(${props.dataItem.scaleFactor || 1})`}>
           <g
             // onMouseEnter={e => onTogglePopup(e, true)}
             // onMouseLeave={e => onTogglePopup(e, false)}
             onClick={onClickDevice}
+            style={{ cursor: 'pointer' }}
+            pointerEvents="all"
           >
             {CISCO_MERAKI_DEVICE}
           </g>

@@ -154,7 +154,7 @@ const GroupsComponent: React.FC<IProps> = (props: IProps) => {
         </PanelBarContent>
       </OverflowContainer>
       {(loading || postLoading || postUpdateLoading || deleteLoading) && (
-        <AbsLoaderWrapper size={40} width="100%" height="100%">
+        <AbsLoaderWrapper width="100%" height="100%">
           <LoadingIndicator margin="auto" />
         </AbsLoaderWrapper>
       )}
