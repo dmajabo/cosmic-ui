@@ -153,3 +153,12 @@ interface SLATestMetrics {
 export interface SLATestMetricsResponse {
   readonly metrics?: SLATestMetrics;
 }
+
+interface AvgMetric {
+  readonly avgVal: string;
+  readonly resourceMetric: SLATestMetrics[];
+}
+
+export interface GetAvgMetricsResponse {
+  readonly avgMetric?: AvgMetric;
+}
