@@ -11,6 +11,7 @@ interface Props {
   url: string;
   param: any;
   responseKey: string;
+  tableDataKey: string;
   styles?: Object;
 }
 

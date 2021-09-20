@@ -3,17 +3,16 @@ import { IMetrickQueryParam } from './apiModel';
 
 export const getTimeQueryParam = (range: ITimeRange, period: ISelectedListItem<ITimeTypes>): IMetrickQueryParam | null => {
   const param: IMetrickQueryParam = {};
-  const _start = getDay(range.startTime, range.selectedDay);
-  const _end = getDay(range.endTime, range.selectedDay);
+  const _start = range.startTime ? range.startTime.getTime() : null;
+  const _end = range.endTime ? range.endTime.getTime() : null;
   if (period && period.value) {
     const _stDay = getDate(period.value, _start);
     const _endDay = getDate(period.value, _end);
     const _suffics = getSuffics(period.value);
-    const _selected = range.selectedDay ? getDate(period.value, range.selectedDay.getTime()) : null;
-    createParam(_suffics, _stDay, _endDay, _selected, param);
-  } else if (!period && range.selectedDay) {
-    const _selected = getDate(ITimeTypes.YEAR, range.selectedDay.getTime());
-    createParam(null, null, null, _selected, param);
+    createParam(_suffics, _stDay, _endDay, param);
+  } else if (!period && range.startTime) {
+    const _selected = getDate(ITimeTypes.YEAR, _start);
+    createParam(null, _selected, null, param);
   }
   if (!param.startTime && !param.endTime) {
     return null;
@@ -21,22 +20,8 @@ export const getTimeQueryParam = (range: ITimeRange, period: ISelectedListItem<I
   return param;
 };
 
-const getDay = (st, selected) => {
-  if (st) {
-    return st;
-  }
-  if (selected) {
-    return selected;
-  }
-  return null;
-};
-
-const createParam = (_suffics: string | null, st: number | null, end: number | null, selectedDay: number | null, param: IMetrickQueryParam) => {
-  if (!st && !end && !selectedDay) {
-    return;
-  }
-  if (!st && !end && selectedDay) {
-    param.startTime = `${selectedDay}d`;
+const createParam = (_suffics: string | null, st: number | null, end: number | null, param: IMetrickQueryParam) => {
+  if (!st && !end) {
     return;
   }
   if (st && !end) {

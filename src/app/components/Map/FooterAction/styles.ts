@@ -7,6 +7,7 @@ export const Wrapper = styled.div`
   justify-content: space-between;
   padding: 20px 30px;
   background: var(--_primaryBg);
+  position: relative;
 `;
 
 export const SliderWrapper = styled.div`

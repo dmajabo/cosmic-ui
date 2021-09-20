@@ -21,6 +21,7 @@ export interface ITimeConfig {
   max: any;
   step?: any;
   domain?: number[];
+  selected?: number;
 }
 
 export interface ITimeValue {

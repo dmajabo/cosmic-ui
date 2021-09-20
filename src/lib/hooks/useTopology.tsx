@@ -16,11 +16,12 @@ import {
   IDeviceNode,
   IVnetNode,
 } from 'lib/models/topology';
-import { ISelectedListItem, ITimeRange, TimeRangeFieldTypes, ITimeTypes, STANDART_DISPLAY_RESOLUTION } from 'lib/models/general';
+import { ISelectedListItem, ITimeRange, ITimeTypes, STANDART_DISPLAY_RESOLUTION } from 'lib/models/general';
 import { jsonClone } from 'lib/helpers/cloneHelper';
 import { EntityTypes, IEntity } from 'lib/models/entites';
 import { ITopologyDataRes } from 'lib/api/ApiModels/Topology/endpoints';
 import { IPosition, NODES_CONSTANTS } from 'app/components/Map/model';
+import { isToday } from 'date-fns';
 
 export interface TopologyContextType {
   selectedPeriod: ISelectedListItem<ITimeTypes> | null;
@@ -35,9 +36,10 @@ export interface TopologyContextType {
   networksGroups: INetworkGroupNode[];
   applicationsGroup: ITopologyGroup[];
   entityTypes: IEntity[];
-  onChangeTimeRange: (_value: Date | null, key: TimeRangeFieldTypes) => void;
+  onSaveStartTime: (_save: boolean) => void;
+  onChangeTimeRange: (_value: Date | null) => void;
   onChangeSelectedDay: (_value: Date | null) => void;
-  onChangeTimePeriod: (_value: ISelectedListItem<ITimeTypes> | null, key: TimeRangeFieldTypes) => void;
+  onChangeTimePeriod: (_value: ISelectedListItem<ITimeTypes> | null) => void;
   onSetData: (res: ITopologyDataRes) => void;
   onUpdateGroups: (res: ITopologyGroup) => void;
   onDeleteGroup: (_group: ITopologyGroup) => void;
@@ -53,7 +55,7 @@ export interface TopologyContextType {
 export function useTopologyContext(): TopologyContextType {
   const [originData, setOriginData] = React.useState<ITopologyMapData | null>(null);
   const [selectedPeriod, setSelectedPeriod] = React.useState<ISelectedListItem<ITimeTypes> | null>(null);
-  const [selectedRange, setSelectedRange] = React.useState<ITimeRange>({ startTime: null, endTime: null, selectedDay: null });
+  const [selectedRange, setSelectedRange] = React.useState<ITimeRange>({ startTime: null, endTime: null, selectedCalendarDay: null });
 
   const [links, setLinks] = React.useState<ILink[]>([]);
   const [networksGroups, setNetworksGroups] = React.useState<INetworkGroupNode[]>([]);
@@ -383,32 +385,40 @@ export function useTopologyContext(): TopologyContextType {
     setApplicationsGroup(_groups);
   };
 
-  const onChangeTimePeriod = (_value: ISelectedListItem<ITimeTypes> | null, key: TimeRangeFieldTypes) => {
-    if (!_value) {
+  const onChangeTimePeriod = (period: ISelectedListItem<ITimeTypes> | null) => {
+    if (!period) {
       setSelectedRange({ ...selectedRange, startTime: null, endTime: null });
-    } else if (key === TimeRangeFieldTypes.END) {
-      if (selectedRange.endTime) {
-        setSelectedRange({ ...selectedRange, endTime: null });
+    }
+    if (selectedPeriod && selectedPeriod.value !== ITimeTypes.DAY) {
+      if (period && period.value === ITimeTypes.DAY && selectedRange.selectedCalendarDay && isToday(selectedRange.selectedCalendarDay)) {
+        setSelectedRange({ selectedCalendarDay: null, startTime: null, endTime: null });
       }
     }
-    setSelectedPeriod(_value);
+    setSelectedPeriod(period);
   };
 
-  const onChangeTimeRange = (_value: Date | null, key: TimeRangeFieldTypes) => {
+  const onChangeTimeRange = (_value: Date | null) => {
     const _clone: ITimeRange = { ...selectedRange };
-    _clone[key] = _value;
-    console.log('cnage selectedTime Range', _clone);
+    _clone.startTime = _value;
+    _clone.selectedCalendarDay = _value;
     setSelectedRange(_clone);
   };
 
   const onChangeSelectedDay = (_value: Date | null) => {
     const _clone: ITimeRange = { ...selectedRange };
-    _clone.selectedDay = _value;
-    if (_clone.startTime) {
-      _clone.startTime = _value;
+    _clone.selectedCalendarDay = _value;
+    _clone.startTime = _value;
+    setSelectedRange(_clone);
+  };
+
+  const onSaveStartTime = (_save: boolean) => {
+    const _clone: ITimeRange = { ...selectedRange };
+    if (_save) {
+      _clone.endTime = _clone.startTime ? new Date(_clone.startTime) : null;
+    } else {
+      _clone.startTime = _clone.endTime ? new Date(_clone.endTime) : null;
       _clone.endTime = null;
     }
-    console.log('calendar', _clone);
     setSelectedRange(_clone);
   };
 
@@ -440,5 +450,6 @@ export function useTopologyContext(): TopologyContextType {
     onChangeTimePeriod,
     onChangeTimeRange,
     onChangeSelectedDay,
+    onSaveStartTime,
   };
 }

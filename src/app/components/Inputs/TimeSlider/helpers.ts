@@ -17,33 +17,46 @@ import {
   getMonth,
   getHours,
   getDate,
+  differenceInCalendarDays,
+  addDays,
 } from 'date-fns';
 
 export const getDomain = (min, max) => [+min, +max];
 
-export const getTicks = (period: ITimeTypes, _domain: number[]): ITimeValue[] => {
+export const getTicks = (period: ITimeTypes, _domain: number[], _selected: number): ITimeValue[] => {
   const _ticks = scaleTime().domain(_domain);
   if (period === ITimeTypes.DAY) {
-    return _ticks.ticks(24).map(d => ({ value: +d, label: formatTick(period, +d) }));
+    const arr = _ticks.ticks(24);
+    return arr.map((d, i) => ({ value: +d, label: getTick(period, +d, i, arr.length - 1) }));
     // 24 hours
   } else if (period === ITimeTypes.WEEK) {
-    return _ticks.ticks(7).map(d => ({ value: +d, label: formatTick(period, +d) }));
+    const arr = _ticks.ticks(7);
+    return arr.map((d, i) => ({ value: +d, label: getTick(period, +d, i, arr.length - 1) }));
   } else if (period === ITimeTypes.MONTH) {
     const _arr = _ticks.ticks(31);
     const _d: Date = _arr[_arr.length - 1];
     const isOdd = _d.getDate() % 2 === 0;
-    return getFilteredTicks(_arr, isOdd).map(d => ({ value: +d, label: formatTick(period, +d) }));
+    const filteredTicks = getFilteredTicks(_arr, isOdd, _selected, period);
+    return filteredTicks.map((d, i) => ({ value: +d, label: getTick(period, +d, i, filteredTicks.length - 1) }));
   } else if (period === ITimeTypes.YEAR) {
-    return _ticks.ticks(12).map(d => ({ value: +d, label: formatTick(period, +d) }));
+    const arr = _ticks.ticks(12);
+    return arr.map((d, i) => ({ value: +d, label: getTick(period, +d, i, arr.length - 1) }));
   }
-  return _ticks.ticks(24).map(d => ({ value: +d, label: formatTick(period, +d) }));
+  const arr = _ticks.ticks(24);
+  return arr.map((d, i) => ({ value: +d, label: getTick(period, +d, i, arr.length - 1) }));
 };
 
-const getFilteredTicks = (_arr: Date[], isOdd: boolean): Date[] => {
+const getFilteredTicks = (_arr: Date[], isOdd: boolean, _selected: number, period: ITimeTypes): Date[] => {
   if (isOdd) {
+    if (period === ITimeTypes.DAY) {
+      return _arr.filter((it, i) => i === 0 || isLastDayOfMonth(it) || isFirstDayOfMonth(it) || it.getDate() % 2 === 0 || i === _arr.length - 1);
+    }
     return _arr.filter((it, i) => i === 0 || isLastDayOfMonth(it) || isFirstDayOfMonth(it) || it.getDate() % 2 === 0 || i === _arr.length - 1);
   }
-  return _arr.filter((it, i) => i === 0 || it.getDate() % 2 !== 0 || i === _arr.length - 1);
+  if (period === ITimeTypes.DAY) {
+    return _arr.filter((it, i) => i === 0 || isLastDayOfMonth(it) || isFirstDayOfMonth(it) || it.getDate() % 2 !== 0 || i === _arr.length - 1);
+  }
+  return _arr.filter((it, i) => i === 0 || isLastDayOfMonth(it) || isFirstDayOfMonth(it) || it.getDate() % 2 !== 0 || i === _arr.length - 1);
 };
 export const getStep = (period: ITimeTypes, min?: number, max?: number) => {
   if (period === ITimeTypes.DAY) {
@@ -60,63 +73,85 @@ export const getStep = (period: ITimeTypes, min?: number, max?: number) => {
   }
   return 1000 * 60 * 60;
 };
-export const formatTick = (period: ITimeTypes, ms) => {
+
+const getTick = (period: ITimeTypes, ms: number, index: number, lastIndex: number) => {
+  if (period === ITimeTypes.DAY && (index === 0 || index === lastIndex || getTime(startOfDay(ms)) === ms)) {
+    return format(ms, 'M / d h aa');
+  }
   if (period === ITimeTypes.DAY) {
-    return format(new Date(ms), 'h aa');
+    return format(ms, 'h aa');
   } // 1 hour
   if (period === ITimeTypes.WEEK) {
-    return format(new Date(ms), 'M / d');
+    return format(ms, 'M / d');
   }
   if (period === ITimeTypes.MONTH) {
-    return format(new Date(ms), 'M / d');
+    return format(ms, 'M / d');
   }
   if (period === ITimeTypes.YEAR) {
-    return format(new Date(ms), 'yy / M');
+    return format(ms, 'yy / M');
   }
-  return format(new Date(ms), 'h aa');
+  if (index === 0 || index === lastIndex || getTime(startOfDay(ms)) === ms) {
+    return format(ms, 'M / d h aa');
+  }
+  return format(ms, 'h aa');
 };
 
-export const getSliderValuesConfig = (period: ITimeTypes, selectedDay: Date | null): ITimeConfig => {
-  const _selectedDay = getFromSelected(period, selectedDay);
-  const minMS = getTime(getMin(period, _selectedDay));
-  const maxMS = getTime(getMax(period, _selectedDay));
+export const getSliderValuesConfig = (period: ITimeTypes, startDate: Date | null): ITimeConfig => {
+  const _data = getFromSelected(period, startDate);
+  const maxMS = getMax(period, _data);
+  const minMS = getMin(period, _data, maxMS);
   const _obj: ITimeConfig = {
-    min: minMS,
-    max: maxMS,
+    min: getTime(minMS),
+    max: getTime(maxMS),
+    selected: getTime(_data.date),
   };
   _obj.step = getStep(period, _obj.min, _obj.max);
   return _obj;
 };
 
-const getFromSelected = (period: ITimeTypes, selectedDay: Date | null) => {
+interface ISelectedData {
+  date: Date | null;
+  isCurrentDay: boolean;
+}
+const getFromSelected = (period: ITimeTypes, selectedDay: Date | null): ISelectedData => {
   if (selectedDay) {
     if (period === ITimeTypes.DAY) {
-      return startOfHour(selectedDay);
+      const arr = startOfHour(selectedDay);
+      return { date: arr, isCurrentDay: false };
     }
     if (period === ITimeTypes.WEEK) {
-      return startOfDay(selectedDay);
+      const arr = startOfDay(selectedDay);
+      return { date: arr, isCurrentDay: false };
     }
     if (period === ITimeTypes.MONTH) {
-      return startOfDay(selectedDay);
+      const arr = startOfDay(selectedDay);
+      return { date: arr, isCurrentDay: false };
     }
     if (period === ITimeTypes.YEAR) {
-      return startOfDay(selectedDay);
+      const arr = startOfDay(selectedDay);
+      return { date: arr, isCurrentDay: false };
     }
-    return startOfHour(selectedDay);
+    const arr = startOfHour(selectedDay);
+    return { date: arr, isCurrentDay: false };
   }
   if (period === ITimeTypes.DAY) {
-    return startOfHour(new Date());
+    const arr = startOfHour(new Date());
+    return { date: arr, isCurrentDay: true };
   } // 1 hour
   if (period === ITimeTypes.WEEK) {
-    return startOfToday();
+    const arr = startOfToday();
+    return { date: arr, isCurrentDay: true };
   }
   if (period === ITimeTypes.MONTH) {
-    return startOfToday();
+    const arr = startOfToday();
+    return { date: arr, isCurrentDay: true };
   }
   if (period === ITimeTypes.YEAR) {
-    return startOfToday();
+    const arr = startOfToday();
+    return { date: arr, isCurrentDay: true };
   }
-  return startOfHour(new Date());
+  const arr = startOfHour(new Date());
+  return { date: arr, isCurrentDay: true };
 };
 
 export const getDayInMiliseconds = (_period: ITimeTypes, selected: Date): number => {
@@ -128,34 +163,75 @@ export const getDayInMiliseconds = (_period: ITimeTypes, selected: Date): number
   return _today.getTime();
 };
 
-const getMin = (period: ITimeTypes, today: Date): Date => {
+const getMin = (period: ITimeTypes, data: ISelectedData, max: Date): Date => {
   if (period === ITimeTypes.DAY) {
-    return subHours(today, 24);
+    if (data.isCurrentDay) {
+      return subHours(max, 24);
+    }
+    return subHours(data.date, 24);
   } // 1 hour
   if (period === ITimeTypes.WEEK) {
-    return subDays(today, 7);
+    return subDays(max, 7);
   }
   if (period === ITimeTypes.MONTH) {
-    return subDays(today, 31);
+    return subDays(max, 31);
   }
   if (period === ITimeTypes.YEAR) {
-    return subMonths(startOfMonth(today), 12);
+    return subMonths(startOfMonth(max), 12);
   }
-  return subHours(today, 24);
+  if (data.isCurrentDay) {
+    return subHours(max, 24);
+  }
+  return subHours(data.date, 24);
 };
 
-const getMax = (period: ITimeTypes, today: Date): Date => {
+const getMax = (period: ITimeTypes, data: ISelectedData): Date => {
   if (period === ITimeTypes.DAY) {
-    return startOfHour(today);
+    if (data.isCurrentDay) {
+      return startOfHour(data.date);
+    }
+    return calculateMaxDay(period, data);
   } // 1 hour
   if (period === ITimeTypes.WEEK) {
-    return startOfDay(today);
+    if (data.isCurrentDay) {
+      return startOfDay(data.date);
+    }
+    return calculateMaxDay(period, data);
   }
   if (period === ITimeTypes.MONTH) {
-    return startOfDay(today);
+    if (data.isCurrentDay) {
+      return startOfDay(data.date);
+    }
+    return calculateMaxDay(period, data);
   }
   if (period === ITimeTypes.YEAR) {
-    return startOfMonth(today);
+    if (data.isCurrentDay) {
+      return startOfMonth(data.date);
+    }
+    return calculateMaxDay(period, data);
   }
-  return startOfHour(today);
+  if (data.isCurrentDay) {
+    return startOfHour(data.date);
+  }
+  return calculateMaxDay(period, data);
+};
+
+const calculateMaxDay = (period: ITimeTypes, data: ISelectedData): Date => {
+  if (data.isCurrentDay) {
+    return data.date;
+  }
+  const _today = new Date();
+  const dif = differenceInCalendarDays(_today, data.date);
+  let count = 0;
+  if (!period || period === ITimeTypes.DAY) {
+    count = Math.max(0, Math.min(dif, 1));
+  }
+  if (period === ITimeTypes.WEEK) {
+    count = Math.max(0, Math.min(dif, 3));
+  }
+  if (period === ITimeTypes.MONTH) {
+    count = Math.max(0, Math.min(dif, 16));
+  }
+  const newMaxDay = addDays(data.date, count);
+  return newMaxDay;
 };
