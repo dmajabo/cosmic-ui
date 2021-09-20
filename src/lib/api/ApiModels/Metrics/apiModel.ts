@@ -2,7 +2,7 @@ import { IBaseEntity } from 'lib/models/general';
 export enum ControllerKeyTypes {
   Subnets = 'subnets',
   SecurityGroups = 'security-groups',
-  RouteTables = 'route-tables іа',
+  RouteTables = 'route-tables',
 }
 
 export enum RoutesResourceTypes {

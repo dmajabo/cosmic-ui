@@ -82,22 +82,28 @@ export const setUpGroupsCoord = (_groupsData: INetworkGroupNode[]) => {
     return;
   }
   const _nodes = _groupsData.map(g => Object.assign({}, g));
+  const _links = [];
+  _groupsData.forEach((it, i) => {
+    if (i >= _groupsData.length - 1) {
+      return;
+    }
+    _links.push({ target: it.id, source: _groupsData[i + 1].id });
+  });
   const simulation = d3
     .forceSimulation(_nodes)
-    .force('center', d3.forceCenter(STANDART_DISPLAY_RESOLUTION.width / 2, STANDART_DISPLAY_RESOLUTION.height / 4))
-    .force('manyBody', d3.forceManyBody())
     .force(
-      'collision',
-      d3.forceCollide().radius(d => {
-        if (d.devices && d.devices.length && !d.collapsed) {
-          return 200;
-        }
-        return 75;
-      }),
+      'link',
+      d3
+        .forceLink(_links)
+        .id(d => d.id)
+        .strength(1),
     )
+    .force('center', d3.forceCenter(STANDART_DISPLAY_RESOLUTION.width / 2, STANDART_DISPLAY_RESOLUTION.height / 4))
+    .force('manyBody', d3.forceManyBody().strength(-50))
+    .force('collision', d3.forceCollide().radius(75))
     .force('x', d3.forceX())
-    .force('y', d3.forceY());
-  simulation.stop();
+    .force('y', d3.forceY())
+    .stop();
 
   while (simulation.alpha() > simulation.alphaMin()) {
     simulation.tick();

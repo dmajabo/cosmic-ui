@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { createMappedGroupNode, createPreparedData, setUpGroupsCoord } from 'lib/helpers/tree';
+import { createMappedGroupNode, createPreparedData } from 'lib/helpers/tree';
 import {
   ILink,
   IOrganization,
@@ -16,7 +16,7 @@ import {
   IDeviceNode,
   IVnetNode,
 } from 'lib/models/topology';
-import { ISelectedListItem, ITimeRange, ITimeTypes, STANDART_DISPLAY_RESOLUTION } from 'lib/models/general';
+import { ISelectedListItem, ITimeRange, ITimeTypes } from 'lib/models/general';
 import { jsonClone } from 'lib/helpers/cloneHelper';
 import { EntityTypes, IEntity } from 'lib/models/entites';
 import { ITopologyDataRes } from 'lib/api/ApiModels/Topology/endpoints';
@@ -293,7 +293,7 @@ export function useTopologyContext(): TopologyContextType {
     }
     // const _sourceObj = NODES_CONSTANTS.VNet;
     // onUpdateTargetLink(TOPOLOGY_LINKS_TYPES.NETWORKLINK, _item.id, _position, _sourceObj);
-    setUpGroupsCoord(_data);
+    // setUpGroupsCoord(_data);
     setNetworksGroups(_data);
   };
 

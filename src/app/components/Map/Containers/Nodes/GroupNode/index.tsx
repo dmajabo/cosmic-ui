@@ -6,7 +6,7 @@ import CISCO_MERAKI from './Cisco_MERAKI';
 // import { IPopupDisplay } from 'lib/models/general';
 import { Transition } from 'react-transition-group';
 import GroupDevicesContainer from './GroupDevicesContainer';
-
+import * as d3 from 'd3';
 interface IProps {
   index: number;
   dataItem: INetworkGroupNode;
@@ -58,6 +58,7 @@ const GroupNode: React.FC<IProps> = (props: IProps) => {
     // if (!props.dataItem.devices || !props.dataItem.devices.length) {
     //   return;
     // }
+    d3.select(`#${NODES_CONSTANTS.NETWORK_GROUP.type}${props.dataItem.id}`).raise();
     props.onUpdateNode(props.dataItem, null, false, true);
   };
 
