@@ -5,7 +5,7 @@ import Select from 'react-select';
 import { CreateSLATestRequest, Organization, SLATest } from '../SharedTypes';
 import { createApiClient } from '../apiClient';
 import CloseIcon from '../icons/close.svg';
-import { GetDevicesString, GetSelectedOrganization } from './filterFunctions';
+import { GetSelectedOrganization } from './filterFunctions';
 
 interface CreateSLATestProps {
   readonly addSlaTest: Function;
@@ -72,6 +72,14 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ organizations, add
     }),
   };
 
+  const clearFormFields = () => {
+    setName('');
+    setSourceOrg('');
+    setSourceNetwork('');
+    setDestination('');
+    setDescription('');
+  };
+
   const handleFormSubmit = () => {
     const testData: SLATest = {
       testId: '',
@@ -86,6 +94,7 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ organizations, add
       sla_test: testData,
     };
     apiClient.createSLATest(submitData);
+    clearFormFields();
     addSlaTest(1);
   };
 
