@@ -15,8 +15,9 @@ import { jsonClone } from './cloneHelper';
 import { generateLinks } from './links';
 import * as d3 from 'd3';
 import { NODES_CONSTANTS } from 'app/components/Map/model';
+import { STANDART_DISPLAY_RESOLUTION } from 'lib/models/general';
 
-export const createPreparedData = (_data: ITopologyMapData, groups: ITopologyGroup[], width: number, height: number): ITopologyPreparedMapData => {
+export const createPreparedData = (_data: ITopologyMapData, groups: ITopologyGroup[]): ITopologyPreparedMapData => {
   if (!_data || !_data.organizations || !_data.organizations.length) {
     return { data: null, links: null, wedges: [], networkGroups: [], devices: [], applicationsGroup: [], vnets: [] };
   }
@@ -55,10 +56,10 @@ export const createPreparedData = (_data: ITopologyMapData, groups: ITopologyGro
   }
   const _applicationsGroup: ITopologyGroup[] = groups.filter(group => group.type === TopologyGroupTypesAsNumber.APPLICATION || group.type === TopologyGroupTypesAsString.APPLICATION);
 
-  setUpGroupsCoord(topologyGroups, width);
-  setUpWedgesCoord(wedges, width, height);
-  setUpDevicesCoord(devices, topologyGroups, width, height);
-  setUpVnetCoord(vnets, width, height);
+  setUpGroupsCoord(topologyGroups);
+  setUpWedgesCoord(wedges);
+  setUpDevicesCoord(devices, topologyGroups);
+  setUpVnetCoord(vnets);
 
   const links: ILink[] = generateLinks(wedges, vnets, devices, topologyGroups);
   return {
@@ -73,25 +74,25 @@ export const createPreparedData = (_data: ITopologyMapData, groups: ITopologyGro
 };
 
 export const createMappedGroupNode = (_item: ITopologyGroup, index: number): INetworkGroupNode => {
-  return { ..._item, collapsed: true, groupIndex: index, x: 0, y: 0, devices: [], links: [], r: 50 };
+  return { ..._item, collapsed: true, groupIndex: index, x: 0, y: 0, devices: [], links: [], r: 150 };
 };
 
-export const setUpGroupsCoord = (_groupsData: INetworkGroupNode[], width: number) => {
+export const setUpGroupsCoord = (_groupsData: INetworkGroupNode[]) => {
   if (!_groupsData || !_groupsData.length) {
     return;
   }
+  const _nodes = _groupsData.map(g => Object.assign({}, g));
   const simulation = d3
-    .forceSimulation(_groupsData)
-    .force('center', d3.forceCenter(width / 2 - 450, _groupsData.length * 75))
-    .force('manyBody', d3.forceManyBody().theta(1).strength(0.0005).distanceMin(1))
-    // .force("cluster", a => clustering(a, _groupsData))
+    .forceSimulation(_nodes)
+    .force('center', d3.forceCenter(STANDART_DISPLAY_RESOLUTION.width / 2, STANDART_DISPLAY_RESOLUTION.height / 4))
+    .force('manyBody', d3.forceManyBody())
     .force(
       'collision',
       d3.forceCollide().radius(d => {
-        if (d.children && d.children.length && !d.collapsed) {
+        if (d.devices && d.devices.length && !d.collapsed) {
           return 200;
         }
-        return 150;
+        return 75;
       }),
     )
     .force('x', d3.forceX())
@@ -101,34 +102,15 @@ export const setUpGroupsCoord = (_groupsData: INetworkGroupNode[], width: number
   while (simulation.alpha() > simulation.alphaMin()) {
     simulation.tick();
   }
-  _groupsData.forEach(it => {
+  _groupsData.forEach((it, i) => {
+    it.x = _nodes[i].x - 450;
+    it.y = _nodes[i].y;
     if (it && it.devices && it.devices.length) {
       const size = createpackLayout(it);
       it.r = size.r;
     }
   });
 };
-
-// const clustering = (alpha, _data) => {
-//   console.log(alpha);
-//   debugger
-//   _data.forEach(function(d) {
-//     debugger
-//     var cluster = d.r;
-//     if (cluster === d) return;
-//     var x = d.x - cluster.x,
-//         y = d.y - cluster.y,
-//         l = Math.sqrt(x * x + y * y),
-//         r = d.r + cluster.r;
-//     if (l !== r) {
-//       l = (l - r) / l * alpha;
-//       d.x -= x *= l;
-//       d.y -= y *= l;
-//       cluster.x += x;
-//       cluster.y += y;
-//     }
-//   });
-// };
 
 const createpackLayout = (group: INetworkGroupNode) => {
   const _cX = NODES_CONSTANTS.NETWORK_GROUP.r;
@@ -156,15 +138,15 @@ const createpackLayout = (group: INetworkGroupNode) => {
   return { r: Math.max(150, size.r * scale), x: _cX, y: _cY, scale: scale };
 };
 
-export const setUpWedgesCoord = (items: IWedgeNode[], width: number, height: number) => {
-  const minHeight = Math.max(height, (items.length / 1.5) * 200);
+export const setUpWedgesCoord = (items: IWedgeNode[]) => {
+  const minHeight = Math.max(STANDART_DISPLAY_RESOLUTION.height / 4, (items.length / 1.5) * 200);
   const _root = hierarchy({ id: null, children: items });
   if (!_root.children || !_root.children.length) {
     return;
   }
   const _tree = tree()
     .nodeSize([NODES_CONSTANTS.WEDGE.r, NODES_CONSTANTS.WEDGE.r])
-    .size([minHeight, width / 2]);
+    .size([minHeight, STANDART_DISPLAY_RESOLUTION.width / 2]);
   _tree(_root);
   if (items.length <= 4) {
     _root.children.forEach((child, i) => {
@@ -205,15 +187,15 @@ const getVPCHeight = (items: IVnetNode[], _height: number) => {
   return Math.max(_height, itemsHeight);
 };
 
-export const setUpVnetCoord = (items: IVnetNode[], width: number, height: number) => {
-  const minHeight = Math.max(height, getVPCHeight(items, height));
+export const setUpVnetCoord = (items: IVnetNode[]) => {
+  const minHeight = Math.max(STANDART_DISPLAY_RESOLUTION.height, getVPCHeight(items, STANDART_DISPLAY_RESOLUTION.height));
   const _root = hierarchy({ id: null, children: items });
   if (!_root.children || !_root.children.length) {
     return;
   }
   const _tree = tree()
     .nodeSize([NODES_CONSTANTS.VNet.width, NODES_CONSTANTS.VNet.height])
-    .size([minHeight, width / 2 + 300]);
+    .size([minHeight, STANDART_DISPLAY_RESOLUTION.width / 2 + 300]);
   _tree(_root);
   let prevNode = null;
   if (items.length <= 4) {
@@ -244,7 +226,7 @@ export const setUpVnetCoord = (items: IVnetNode[], width: number, height: number
   });
 };
 
-export const setUpDevicesCoord = (devices: IDeviceNode[], _devicesGroup: INetworkGroupNode[], width: number, height: number) => {
+export const setUpDevicesCoord = (devices: IDeviceNode[], _devicesGroup: INetworkGroupNode[]) => {
   if (!devices) {
     return;
   }
@@ -254,14 +236,14 @@ export const setUpDevicesCoord = (devices: IDeviceNode[], _devicesGroup: INetwor
   const nodeW = NODES_CONSTANTS.Devisec.textWidth + NODES_CONSTANTS.Devisec.spaceX;
   const nodeH = NODES_CONSTANTS.Devisec.height + NODES_CONSTANTS.Devisec.spaceY / 2;
   let nodeOffsetX = 40;
-  let _startX = width / 4;
+  let _startX = STANDART_DISPLAY_RESOLUTION.width / 4;
   const halfRowWidth = (cols * nodeW) / 2;
   const halfRowsHeight = ((devices.length / cols + 1) * nodeH) / 2;
-  if (_startX + halfRowWidth > width / 2.5) {
-    _startX = _startX - (_startX + halfRowWidth - width / 2.5);
+  if (_startX + halfRowWidth > STANDART_DISPLAY_RESOLUTION.width / 2.5) {
+    _startX = _startX - (_startX + halfRowWidth - STANDART_DISPLAY_RESOLUTION.width / 2.5);
   }
   const maxGroupY = Math.max(..._devicesGroup.map(o => o.y + o.r + 75));
-  const startCoordY = _devicesGroup && _devicesGroup.length ? maxGroupY + halfRowsHeight : height / 2;
+  const startCoordY = _devicesGroup && _devicesGroup.length ? maxGroupY + halfRowsHeight : STANDART_DISPLAY_RESOLUTION.height / 4 / 2;
   devices.forEach((it, i) => {
     if (i === 0) {
       const _x = _startX + nodeOffsetX + currentCol * nodeW - halfRowWidth;

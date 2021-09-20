@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { createMappedGroupNode, createPreparedData } from 'lib/helpers/tree';
+import { createMappedGroupNode, createPreparedData, setUpGroupsCoord } from 'lib/helpers/tree';
 import {
   ILink,
   IOrganization,
@@ -122,7 +122,7 @@ export function useTopologyContext(): TopologyContextType {
     //   _orgObj.organizations[0].vnets.push(element);
     // }
     // For test
-    const _data: ITopologyPreparedMapData = res.organizations ? createPreparedData(_orgObj, _groupsObj.groups, STANDART_DISPLAY_RESOLUTION.width, STANDART_DISPLAY_RESOLUTION.height) : null;
+    const _data: ITopologyPreparedMapData = res.organizations ? createPreparedData(_orgObj, _groupsObj.groups) : null;
     if (_data) {
       setLinks(_data.links);
       setApplicationsGroup(_data.applicationsGroup);
@@ -293,6 +293,7 @@ export function useTopologyContext(): TopologyContextType {
     }
     // const _sourceObj = NODES_CONSTANTS.VNet;
     // onUpdateTargetLink(TOPOLOGY_LINKS_TYPES.NETWORKLINK, _item.id, _position, _sourceObj);
+    setUpGroupsCoord(_data);
     setNetworksGroups(_data);
   };
 

@@ -55,9 +55,9 @@ const GroupNode: React.FC<IProps> = (props: IProps) => {
   // };
 
   const onExpandCollapse = () => {
-    if (!props.dataItem.devices || !props.dataItem.devices) {
-      return;
-    }
+    // if (!props.dataItem.devices || !props.dataItem.devices.length) {
+    //   return;
+    // }
     props.onUpdateNode(props.dataItem, null, false, true);
   };
 
@@ -78,6 +78,8 @@ const GroupNode: React.FC<IProps> = (props: IProps) => {
           // onMouseEnter={e => onTogglePopup(e, true)}
           // onMouseLeave={e => onTogglePopup(e, false)}
           onClick={onExpandCollapse}
+          style={{ cursor: !props.dataItem.devices || !props.dataItem.devices.length ? 'default' : 'pointer' }}
+          pointerEvents="all"
         >
           <>{CISCO_MERAKI}</>
         </g>
