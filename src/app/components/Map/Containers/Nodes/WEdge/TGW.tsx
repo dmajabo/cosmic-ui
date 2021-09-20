@@ -1,7 +1,7 @@
 import { NODES_CONSTANTS } from 'app/components/Map/model';
 
 const TGW = (
-  <svg width={NODES_CONSTANTS.WEDGE.r * 2} height={NODES_CONSTANTS.WEDGE.r * 2} viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg style={{ cursor: 'pointer' }} pointerEvents="all" width={NODES_CONSTANTS.WEDGE.r * 2} height={NODES_CONSTANTS.WEDGE.r * 2} viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
     <circle cx={NODES_CONSTANTS.WEDGE.r} cy={NODES_CONSTANTS.WEDGE.r} r={NODES_CONSTANTS.WEDGE.r} fill="white" />
     <path
       fillRule="evenodd"

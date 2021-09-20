@@ -6,7 +6,7 @@ import CISCO_MERAKI from './Cisco_MERAKI';
 // import { IPopupDisplay } from 'lib/models/general';
 import { Transition } from 'react-transition-group';
 import GroupDevicesContainer from './GroupDevicesContainer';
-
+import * as d3 from 'd3';
 interface IProps {
   index: number;
   dataItem: INetworkGroupNode;
@@ -55,9 +55,10 @@ const GroupNode: React.FC<IProps> = (props: IProps) => {
   // };
 
   const onExpandCollapse = () => {
-    if (!props.dataItem.devices || !props.dataItem.devices) {
-      return;
-    }
+    // if (!props.dataItem.devices || !props.dataItem.devices.length) {
+    //   return;
+    // }
+    d3.select(`#${NODES_CONSTANTS.NETWORK_GROUP.type}${props.dataItem.id}`).raise();
     props.onUpdateNode(props.dataItem, null, false, true);
   };
 
@@ -77,8 +78,9 @@ const GroupNode: React.FC<IProps> = (props: IProps) => {
         <g
           // onMouseEnter={e => onTogglePopup(e, true)}
           // onMouseLeave={e => onTogglePopup(e, false)}
-          pointerEvents="all"
           onClick={onExpandCollapse}
+          style={{ cursor: !props.dataItem.devices || !props.dataItem.devices.length ? 'default' : 'pointer' }}
+          pointerEvents="all"
         >
           <>{CISCO_MERAKI}</>
         </g>

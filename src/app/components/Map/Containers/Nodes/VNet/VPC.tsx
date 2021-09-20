@@ -1,5 +1,5 @@
 const VPC = (
-  <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg style={{ cursor: 'pointer' }} width="80" height="80" viewBox="0 0 80 80" pointerEvents="all" fill="none" xmlns="http://www.w3.org/2000/svg">
     <circle cx="40" cy="40" r="40" fill="white" />
     <circle cx="40" cy="40" r="34" fill="#FF9900" />
     <path

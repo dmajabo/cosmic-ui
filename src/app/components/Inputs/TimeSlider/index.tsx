@@ -42,7 +42,7 @@ const SliderStyles = withStyles({
   track: {
     height: 10,
     borderRadius: 20,
-    backgroundColor: 'var(--_vmBg)',
+    backgroundColor: 'transparent',
   },
   rail: {
     height: 10,
