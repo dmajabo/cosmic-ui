@@ -113,18 +113,18 @@ export interface GetOrganizationResponse {
   readonly organizations?: Organization[];
 }
 
-interface SLATest {
-  readonly test_id: 'string';
-  readonly name: 'string';
-  readonly source_org_id: 'string';
-  readonly source_nw_ext_id: 'string';
-  readonly destination: 'string';
-  readonly interface: 'string';
-  readonly description: 'string';
+export interface SLATest {
+  readonly testId: string;
+  readonly name: string;
+  readonly sourceOrgId: string;
+  readonly sourceNwExtId: string;
+  readonly destination: string;
+  readonly interface: string;
+  readonly description: string;
 }
 
 export interface GetSLATestResponse {
-  readonly sla_tests?: SLATest[];
+  readonly slaTests?: SLATest[];
 }
 
 export interface CreateSLATestRequest {

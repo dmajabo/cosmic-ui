@@ -1,11 +1,12 @@
 import { Backdrop, Button, IconButton, Typography } from '@material-ui/core';
 import { Add as AddIcon, MoreVert as MoreVertIcon } from '@material-ui/icons';
-import React, { useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { PerformanceDashboardStyles } from '../PerformanceDashboardStyles';
 import ColumnsIcon from '../icons/columns.svg';
 import FilterIcon from '../icons/filter.svg';
 import Table from './Table';
 import { CreateSLATest } from './CreateSLATest';
+import { Organization } from '../SharedTypes';
 
 interface AverageQOE {
   readonly packetLoss: number;
@@ -26,10 +27,11 @@ interface RawData {
 
 interface SLATestListProps {
   readonly rawData: RawData[];
+  readonly organizations: Organization[];
   readonly addSlaTest: Function;
 }
 
-export const SLATestList: React.FC<SLATestListProps> = ({ rawData, addSlaTest }) => {
+export const SLATestList: React.FC<SLATestListProps> = ({ organizations, rawData, addSlaTest }) => {
   const classes = PerformanceDashboardStyles();
 
   const [createToggle, setCreateToggle] = React.useState(false);
@@ -101,7 +103,7 @@ export const SLATestList: React.FC<SLATestListProps> = ({ rawData, addSlaTest })
           ),
         };
       }),
-    [],
+    [rawData],
   );
 
   return (
@@ -140,7 +142,7 @@ export const SLATestList: React.FC<SLATestListProps> = ({ rawData, addSlaTest })
         </div>
       </div>
       <Backdrop style={{ color: '#fff', zIndex: 5 }} open={createToggle}>
-        <CreateSLATest addSlaTest={addTest} popup={true} closeSlaTest={handleClose} />
+        <CreateSLATest organizations={organizations} addSlaTest={addTest} popup={true} closeSlaTest={handleClose} />
       </Backdrop>
     </div>
   );
