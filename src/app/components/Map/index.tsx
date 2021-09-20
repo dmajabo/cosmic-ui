@@ -41,6 +41,7 @@ const Map: React.FC<IProps> = (props: IProps) => {
 
   const onOpenPanel = (_panel: TopologyPanelTypes) => {
     setShowFooter(false);
+    topology.onSaveStartTime(false);
     setShowMetricks({ show: false, type: null });
     setShowPanelBar({ type: _panel, show: true });
   };
@@ -56,6 +57,7 @@ const Map: React.FC<IProps> = (props: IProps) => {
   };
 
   const onHideMetrics = () => {
+    topology.onSaveStartTime(false);
     setShowMetricks({ ...showMetricksBar, show: false });
     setTimeout(() => {
       setShowMetricks({ show: false, type: null });
@@ -66,8 +68,6 @@ const Map: React.FC<IProps> = (props: IProps) => {
     let _st = null;
     if (topology.selectedRange && topology.selectedRange.startTime) {
       _st = topology.selectedRange.startTime;
-    } else if (topology.selectedRange && topology.selectedRange.selectedDay) {
-      _st = topology.selectedRange.selectedDay;
     }
     const param = createTopologyQueryParam(_st);
     await onGetChainData([TopologyGroupApi.getAllGroups(), TopologyOrganizationApi.getAllOrganizations()], ['groups', 'organizations'], param);
@@ -87,9 +87,10 @@ const Map: React.FC<IProps> = (props: IProps) => {
       setShowPanelBar({ show: false, type: null });
       setShowFooter(true);
     }
-    if (node && showPanelBar && showPanelBar.dataItem && node.id === showPanelBar.dataItem.id) {
+    if (node && showMetricksBar && showMetricksBar.dataItem && node.id === showMetricksBar.dataItem.id) {
       return;
     }
+    topology.onSaveStartTime(true);
     setShowMetricks({ type: _type, show: true, dataItem: node });
   };
 
@@ -98,9 +99,10 @@ const Map: React.FC<IProps> = (props: IProps) => {
       setShowPanelBar({ show: false, type: null });
       setShowFooter(true);
     }
-    if (node && showPanelBar && showPanelBar.dataItem && node.vm.id === showPanelBar.dataItem.vm.id) {
+    if (node && showMetricksBar && showMetricksBar.dataItem && showMetricksBar.dataItem.vm && node.vm.id === showMetricksBar.dataItem.vm.id) {
       return;
     }
+    topology.onSaveStartTime(true);
     setShowMetricks({ type: TopologyMetricsPanelTypes.VM, show: true, dataItem: node });
   };
 

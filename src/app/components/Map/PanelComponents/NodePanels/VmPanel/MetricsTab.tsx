@@ -12,24 +12,41 @@ interface IProps {
 const MetricsTab: React.FC<IProps> = (props: IProps) => {
   const { topology } = useTopologyDataContext();
   const [param, setParam] = React.useState<IMetrickQueryParam>(null);
+  const [dataItem, setDataItem] = React.useState<IVm>(null);
+  React.useEffect(() => {
+    const _param: IMetrickQueryParam = getTimeQueryParam(topology.selectedRange, topology.selectedPeriod);
+    setParam(_param);
+    setDataItem(props.dataItem);
+  }, []);
+
+  React.useEffect(() => {
+    if (props.dataItem && dataItem && props.dataItem.id !== dataItem.id) {
+      const _param: IMetrickQueryParam = getTimeQueryParam(topology.selectedRange, topology.selectedPeriod);
+      setParam(_param);
+      setDataItem(props.dataItem);
+    }
+  }, [props.dataItem]);
 
   React.useEffect(() => {
     const _param: IMetrickQueryParam = getTimeQueryParam(topology.selectedRange, topology.selectedPeriod);
     setParam(_param);
-  }, [props.dataItem, topology, topology.selectedRange]);
+  }, [topology.selectedRange]);
 
+  if (!dataItem) {
+    return null;
+  }
   return (
     <>
       <ChartContainer
         title="CPU utilization"
         styles={{ margin: '0 0 20px 0', minHeight: '390px' }}
         chartType="Line"
-        id={props.dataItem.extId}
+        id={dataItem.extId}
         queryTimeParam={param}
         queryKey={MetricsKeyTypes.CPU_UTILIZATION}
         dataValueSuffix="%"
       />
-      <ChartContainer title="Memory" styles={{ minHeight: '390px' }} chartType="Line" id={props.dataItem.extId} queryTimeParam={param} queryKey={MetricsKeyTypes.MEMORY} />
+      <ChartContainer title="Memory" styles={{ minHeight: '390px' }} chartType="Line" id={dataItem.extId} queryTimeParam={param} queryKey={MetricsKeyTypes.MEMORY} />
     </>
   );
 };

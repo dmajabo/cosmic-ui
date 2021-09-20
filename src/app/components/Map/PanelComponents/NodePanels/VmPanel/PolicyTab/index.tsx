@@ -1,38 +1,57 @@
 import React from 'react';
 import { IVm } from 'lib/models/topology';
-import { ITableColumn } from 'app/components/Basic/Table/model';
-import TableWrapper from 'app/components/Basic/Table/TableWrapper';
-import { IResourceQueryParam, ControllerKeyTypes, RoutesResKeyEnum, SecurityGroupsResourceTypes } from 'lib/api/ApiModels/Metrics/apiModel';
-import { getQueryRoutesParam } from 'lib/api/ApiModels/Metrics/queryRoutesHelper';
-import { RoutesApi } from 'lib/api/ApiModels/Metrics/endpoints';
+import { IResourceQueryParam, ControllerKeyTypes, SecurityGroupsResourceTypes, IVmPolicyRes, IVmRule, PolicyResKeyEnum, PolicyTableKeyEnum } from 'lib/api/ApiModels/Metrics/apiModel';
+import { PolicyApi } from 'lib/api/ApiModels/Metrics/endpoints';
+import InboundTable from './InboundTable';
+import { useGet } from 'lib/api/http/useAxiosHook';
+import { getQueryResourceParam } from 'lib/api/ApiModels/Metrics/queryRoutesHelper';
+import OutboundTable from './OutboundTable';
 interface IProps {
   dataItem: IVm;
 }
 
 const PolicyTab: React.FC<IProps> = (props: IProps) => {
-  const [param, setParam] = React.useState<IResourceQueryParam>(null);
-  const [columns] = React.useState<ITableColumn[]>([
-    { id: 'id', field: 'id', label: '#' },
-    { id: 'policy', field: 'policy', label: 'Policy', minWidth: 100 },
-    { id: 'protocol', field: 'protocol', label: 'Protocol', minWidth: 100 },
-    { id: 'source', field: 'source', label: 'Source', minWidth: 100 },
-    { id: 'destination', field: 'destination', label: 'Destination', minWidth: 120 },
-    { id: 'hits', field: 'hits', label: 'Hits', minWidth: 60 },
-  ]);
-
-  const [columnsApplication] = React.useState<ITableColumn[]>([
-    { id: 'id', field: 'id', label: '#' },
-    { id: 'policy', field: 'policy', label: 'Policy', minWidth: 100 },
-    { id: 'aplication', field: 'aplication', label: 'Aplication' },
-  ]);
+  const { response, loading, error, onGet } = useGet<IVmPolicyRes>();
+  const [inData, setInData] = React.useState<IVmRule[]>([]);
+  const [outData, setOutData] = React.useState<IVmRule[]>([]);
   React.useEffect(() => {
-    const _param: IResourceQueryParam = getQueryRoutesParam(SecurityGroupsResourceTypes.Vm, props.dataItem.id);
-    setParam(_param);
+    const _param: IResourceQueryParam = getQueryResourceParam(SecurityGroupsResourceTypes.Vm, props.dataItem.id);
+    getDataAsync(PolicyApi.getPolicy(ControllerKeyTypes.SecurityGroups), _param);
   }, [props.dataItem]);
+
+  React.useEffect(() => {
+    if (response !== null && response[PolicyResKeyEnum.SecurityGroups] !== undefined) {
+      const _indata = [];
+      const _outdata = [];
+      response[PolicyResKeyEnum.SecurityGroups].forEach(it => {
+        if (!it.rules || !it.rules.length) {
+          return;
+        }
+        it.rules.forEach(rule => {
+          if (rule.ruleType === PolicyTableKeyEnum.Inbound) {
+            _indata.push(rule);
+          }
+          if (rule.ruleType === PolicyTableKeyEnum.Outbound) {
+            _outdata.push(rule);
+          }
+        });
+      });
+      setInData(_indata);
+      setOutData(_outdata);
+    }
+  }, [response]);
+
+  const getDataAsync = async (url: string, params: any) => {
+    if (!url || !params) {
+      return;
+    }
+    await onGet(url, params);
+  };
+
   return (
     <>
-      <TableWrapper styles={{ margin: '0 0 20px 0' }} columns={columns} url={RoutesApi.getRoutes(ControllerKeyTypes.SecurityGroups)} param={param} responseKey={RoutesResKeyEnum.RoutesTable} />
-      <TableWrapper columns={columnsApplication} url={RoutesApi.getRoutes(ControllerKeyTypes.SecurityGroups)} param={param} responseKey={RoutesResKeyEnum.RoutesTable} />
+      <InboundTable styles={{ margin: '0 0 20px 0' }} data={inData} showLoader={loading} error={error ? error.message : null} />
+      <OutboundTable data={outData} showLoader={loading} error={error ? error.message : null} />
     </>
   );
 };

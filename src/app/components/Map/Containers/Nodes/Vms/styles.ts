@@ -19,6 +19,7 @@ export const VmNodeStyles = styled.div<IProps>`
   white-space: nowrap;
   align-items: center;
   flex-wrap: nowrap;
+  cursor: pointer;
 `;
 
 export const Label = styled.div`

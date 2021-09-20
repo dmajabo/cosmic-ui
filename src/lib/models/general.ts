@@ -49,9 +49,9 @@ export enum TimeRangeFieldTypes {
 }
 
 export interface ITimeRange {
-  selectedDay: Date | null;
   startTime: Date | null;
   endTime: Date | null;
+  selectedCalendarDay: Date | null;
 }
 
 export enum ITimeTypes {
