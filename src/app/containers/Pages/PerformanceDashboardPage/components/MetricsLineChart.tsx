@@ -43,6 +43,10 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ dataValueSuffix, in
       setCategories(newCategories);
       setData(newData);
       setTickInterval(Math.floor(newData[0].data.length / 5));
+    } else {
+      setCategories([]);
+      setTickInterval(0);
+      setData([]);
     }
   }, [inputData]);
 
