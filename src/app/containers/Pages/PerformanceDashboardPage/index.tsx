@@ -76,8 +76,6 @@ const PerformanceDashboardPage: React.FC = () => {
             });
             setFinalTableData(testData);
           }
-        } else {
-          console.log('Error: No data Available');
         }
       };
       getSLATests();
