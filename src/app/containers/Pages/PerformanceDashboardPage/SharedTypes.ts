@@ -158,6 +158,7 @@ export interface AverageQoe {
 }
 
 export interface FinalTableData {
+  readonly id: string;
   readonly name: string;
   readonly sourceOrg: string;
   readonly sourceNetwork: string;
