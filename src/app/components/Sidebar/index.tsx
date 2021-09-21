@@ -4,7 +4,7 @@ import { dashboardIcon } from 'app/components/SVGIcons/pagesIcons/dashboard';
 import { logoIcon } from 'app/components/SVGIcons/pagesIcons/logo';
 import { policyIcon } from 'app/components/SVGIcons/pagesIcons/policy';
 import { topologyIcon } from 'app/components/SVGIcons/pagesIcons/topology';
-import { troubleshootIcon } from 'app/components/SVGIcons/pagesIcons/troubleshoot';
+import { performanceDashboard } from 'app/components/SVGIcons/pagesIcons/performanceDashboard';
 import { settingsIcon } from 'app/components/SVGIcons/pagesIcons/settings';
 import { analyticsIcon } from 'app/components/SVGIcons/pagesIcons/analytics';
 import { demoIcon } from 'app/components/SVGIcons/pagesIcons/demo';
@@ -33,10 +33,9 @@ const Sidebar: React.FC<SidebarProps> = props => {
       <List>
         <ListLink icon={dashboardIcon} label="Dashboard" path={`${match.url}${ROUTE.dashboard}`} onClick={() => onChangeSidebarPath(ROUTE.dashboard)} />
         <ListLink icon={topologyIcon} label="Topology" path={`${match.url}${ROUTE.topology}`} onClick={() => onChangeSidebarPath(ROUTE.topology)} />
+        <ListLink icon={performanceDashboard} label="Performance Dashboard" path={`${match.url}${ROUTE.performanceDashboard}`} onClick={() => onChangeSidebarPath(ROUTE.performanceDashboard)} />
         <ListLink icon={policyIcon} label="Policy" path={`${match.url}${ROUTE.policy}`} onClick={() => onChangeSidebarPath(ROUTE.policy)} />
-        <ListLink icon={troubleshootIcon} label="Troubleshoot" path={`${match.url}${ROUTE.troubleshoot}`} onClick={() => onChangeSidebarPath(ROUTE.troubleshoot)} />
         <ListLink icon={analyticsIcon} label="Analytics" path={`${match.url}${ROUTE.analytics}`} onClick={() => onChangeSidebarPath(ROUTE.analytics)} />
-
         <ListLink icon={automationIcon} label="Automation" path={`${match.url}${ROUTE.automation}`} onClick={() => onChangeSidebarPath(ROUTE.automation)} />
         <ListLink icon={settingsIcon} label="Settings" path={`${match.url}${ROUTE.settings}`} onClick={() => onChangeSidebarPath(ROUTE.settings)} />
       </List>

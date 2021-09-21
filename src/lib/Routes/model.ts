@@ -5,7 +5,7 @@ export const ROUTE = {
   topology: '/topology',
   dashboard: '/dashboard',
   policy: '/policy',
-  troubleshoot: '/troubleshoot',
+  performanceDashboard: '/performanceDashboard',
   analytics: '/analytics',
   settings: '/settings',
   automation: '/automation',
