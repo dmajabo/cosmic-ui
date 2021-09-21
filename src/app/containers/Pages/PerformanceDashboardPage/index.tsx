@@ -92,9 +92,11 @@ const PerformanceDashboardPage: React.FC = () => {
 
   return (
     <div className={classes.performanceDashboardContainer}>
-      <Tabs value={tab} indicatorColor="primary">
-        <Tab value="sla_tests" label={<span className={classes.tabLabel}>SLA Tests</span>} wrapped {...a11yProps('sla_tests')} />
-      </Tabs>
+      <div className={classes.fixedTabBar}>
+        <Tabs value={tab} indicatorColor="primary">
+          <Tab value="sla_tests" label={<span className={classes.tabLabel}>SLA Tests</span>} wrapped {...a11yProps('sla_tests')} />
+        </Tabs>
+      </div>
       <TabPanel value={tab} index={'sla_tests'}>
         {finalTableData.length > 0 ? (
           <SLATestList organizations={organizations} finalTableData={finalTableData} addSlaTest={addSlaTest} />

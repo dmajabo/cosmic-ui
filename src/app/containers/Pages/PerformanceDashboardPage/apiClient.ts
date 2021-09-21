@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig } from 'axios';
-import { CreateSLATestRequest, CreateSLATestResponse, GetOrganizationResponse, GetSLATestResponse } from './SharedTypes';
+import { CreateSLATestRequest, CreateSLATestResponse, GetOrganizationResponse, GetSLATestResponse, SLATestMetricsResponse } from './SharedTypes';
 
 const BASE_URL = 'http://a988b9b03ef8d4b518a3d50f0abbe9ad-780e920b5d005099.elb.us-east-1.amazonaws.com';
 
@@ -7,6 +7,8 @@ interface ApiClient {
   readonly getOrganizations: () => Promise<GetOrganizationResponse>;
   readonly getSLATests: () => Promise<GetSLATestResponse>;
   readonly createSLATest: (request: CreateSLATestRequest) => Promise<CreateSLATestResponse>;
+  readonly getPacketLossMetrics: (deviceId: string, destination: string, startTime: string) => Promise<SLATestMetricsResponse>;
+  readonly getLatencyMetrics: (deviceId: string, destination: string, startTime: string) => Promise<SLATestMetricsResponse>;
 }
 
 const PATHS = Object.freeze({
@@ -50,9 +52,39 @@ export const createApiClient = (): ApiClient => {
     }
   }
 
+  async function getPacketLossMetrics(deviceId: string, destination: string, startTime: string): Promise<SLATestMetricsResponse> {
+    try {
+      const response = await axios.get<SLATestMetricsResponse>(`/telemetry/api/v1/metrics/device/${deviceId}/destination/${destination}/packetloss`, {
+        baseURL: BASE_URL,
+        params: {
+          startTime: startTime,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      return {};
+    }
+  }
+
+  async function getLatencyMetrics(deviceId: string, destination: string, startTime: string): Promise<SLATestMetricsResponse> {
+    try {
+      const response = await axios.get<SLATestMetricsResponse>(`/telemetry/api/v1/metrics/device/${deviceId}/destination/${destination}/latency`, {
+        baseURL: BASE_URL,
+        params: {
+          startTime: startTime,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      return {};
+    }
+  }
+
   return {
     getOrganizations,
     getSLATests,
     createSLATest,
+    getPacketLossMetrics,
+    getLatencyMetrics,
   };
 };

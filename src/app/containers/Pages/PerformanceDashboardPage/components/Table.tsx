@@ -1,10 +1,11 @@
 import { Typography } from '@material-ui/core';
-import React from 'react';
-import { usePagination, useRowSelect, useTable } from 'react-table';
+import React, { useEffect } from 'react';
+import { usePagination, useRowSelect, useSortBy, useTable } from 'react-table';
 import styled from 'styled-components';
 import { PerformanceDashboardStyles } from '../PerformanceDashboardStyles';
 import { Column } from '../SharedTypes';
 import IndeterminateCheckbox from './IndeterminateCheckbox';
+import SortIcon from '../icons/sort.svg';
 
 interface Data {
   readonly name: string;
@@ -16,6 +17,7 @@ interface Data {
 }
 
 interface TableProps {
+  readonly onSelectedRowsUpdate: Function;
   readonly columns: Column[];
   readonly data: Data[];
 }
@@ -48,7 +50,7 @@ const Styles = styled.div`
   }
 `;
 
-const Table: React.FC<TableProps> = ({ columns, data }) => {
+const Table: React.FC<TableProps> = ({ onSelectedRowsUpdate, columns, data }) => {
   const classes = PerformanceDashboardStyles();
 
   const {
@@ -75,6 +77,7 @@ const Table: React.FC<TableProps> = ({ columns, data }) => {
       columns,
       data,
     },
+    useSortBy,
     usePagination,
     useRowSelect,
     hooks => {
@@ -102,6 +105,13 @@ const Table: React.FC<TableProps> = ({ columns, data }) => {
     },
   );
 
+  useEffect(() => {
+    const selectedRows = selectedFlatRows.map(row => {
+      return row.original;
+    });
+    onSelectedRowsUpdate(selectedRows);
+  }, [selectedFlatRows]);
+
   return (
     // apply the table props
     <Styles>
@@ -116,12 +126,13 @@ const Table: React.FC<TableProps> = ({ columns, data }) => {
                   // Loop over the headers in each row
                   headerGroup.headers.map(column => (
                     // Apply the header cell props
-                    <th {...column.getHeaderProps()}>
+                    <th {...column.getHeaderProps(column.getSortByToggleProps())}>
                       <div className={classes.tableHeaderText}>
                         {
                           // Render the header
                           column.render('Header')
                         }
+                        <span className={classes.sortIcon}>{column.Header === 'NAME' ? <img src={SortIcon} alt="sort by name" /> : <span />}</span>
                       </div>
                     </th>
                   ))
