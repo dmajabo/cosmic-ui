@@ -95,7 +95,11 @@ const PerformanceDashboardPage: React.FC = () => {
     for (let i = 0; i < tempFinalTableData.length; i++) {
       try {
         const responseData = await apiClient.getAvgPacketLoss(tempFinalTableData[i].sourceNetwork, tempFinalTableData[i].destination);
-        packetloss[tempFinalTableData[i].id] = responseData.avgMetric.avgVal;
+        if (responseData?.avgMetric?.avgVal) {
+          packetloss[tempFinalTableData[i].id] = responseData.avgMetric.avgVal;
+        } else {
+          packetloss[tempFinalTableData[i].id] = '-';
+        }
       } catch {}
     }
     setPacketLossData(packetloss);
@@ -106,7 +110,11 @@ const PerformanceDashboardPage: React.FC = () => {
     for (let i = 0; i < tempFinalTableData.length; i++) {
       try {
         const responseData = await apiClient.getAvgLatency(tempFinalTableData[i].sourceNetwork, tempFinalTableData[i].destination);
-        latency[tempFinalTableData[i].id] = responseData.avgMetric.avgVal;
+        if (responseData?.avgMetric?.avgVal) {
+          latency[tempFinalTableData[i].id] = responseData.avgMetric.avgVal;
+        } else {
+          latency[tempFinalTableData[i].id] = '-';
+        }
       } catch {}
     }
     setLatencyData(latency);

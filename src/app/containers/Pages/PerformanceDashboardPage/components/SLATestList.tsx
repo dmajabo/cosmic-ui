@@ -107,9 +107,6 @@ export const SLATestList: React.FC<SLATestListProps> = ({ latencyData, packetLos
     setSelectedRows(value);
   };
 
-  console.log(packetLossData);
-  console.log(latencyData);
-
   const data = useMemo(
     () =>
       finalTableData.map(item => {
@@ -124,9 +121,9 @@ export const SLATestList: React.FC<SLATestListProps> = ({ latencyData, packetLos
             <div className={classes.flexContainer}>
               <div className={classes.averageQoeText}>
                 <span>Packet Loss:</span>
-                <span className={classes.packetLossValueText}>{`${packetLossData[item.id] || 999}%`}</span>
+                <span className={classes.packetLossValueText}>{`${packetLossData[item.id] || '-'}%`}</span>
                 <span>Latency:</span>
-                <span className={classes.latencyValueText}>{`${Number(latencyData[item.id]).toFixed(2) || 999}ms`}</span>
+                <span className={classes.latencyValueText}>{`${Number(latencyData[item.id]).toFixed(2) || '-'}ms`}</span>
               </div>
               <div>
                 <IconButton aria-controls="widget-menu" aria-haspopup="true">
