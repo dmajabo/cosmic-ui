@@ -112,7 +112,7 @@ const getTick = (period: ITimeTypes, ms: number, index: number, lastIndex: numbe
 export const getSliderValuesConfig = (period: ITimeTypes, startDate: Date | null): ITimeConfig => {
   const _data = getFromSelected(period, startDate);
   const maxMS = getMax(period, _data);
-  const minMS = getMin(period, _data);
+  const minMS = getMin(period, _data, maxMS);
   const _obj: ITimeConfig = {
     min: getTime(minMS),
     max: getTime(maxMS),
@@ -180,18 +180,18 @@ export const getDayInMiliseconds = (_period: ITimeTypes, selected: Date): number
   return _today.getTime();
 };
 
-export const getMin = (period: ITimeTypes, data: ISelectedData): Date => {
+export const getMin = (period: ITimeTypes, data: ISelectedData, maxDate: Date): Date => {
   if (period === ITimeTypes.DAY) {
     return subDays(startOfDay(data.selected), 1);
   } // 1 hour
   if (period === ITimeTypes.WEEK) {
-    return subDays(data.selected, 7);
+    return subDays(maxDate, 7);
   }
   if (period === ITimeTypes.MONTH) {
-    return subDays(data.selected, 31);
+    return subDays(maxDate, 31);
   }
   if (period === ITimeTypes.YEAR) {
-    return subMonths(startOfMonth(data.selected), 12);
+    return subMonths(startOfMonth(maxDate), 12);
   }
   return subDays(startOfDay(data.selected), 1);
 };

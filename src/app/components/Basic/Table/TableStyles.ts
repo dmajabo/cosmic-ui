@@ -26,6 +26,8 @@ export const TableStyles = makeStyles(
         padding: '12px',
         background: 'var(--_tableBg)',
         fontFamily: 'DMSans',
+        textAlign: 'left',
+        position: 'initial',
       },
       tableCell: {
         background: 'transparent',
@@ -38,10 +40,13 @@ export const TableStyles = makeStyles(
         lineHeight: '18px',
         whiteSpace: 'nowrap',
         fontFamily: 'DMSans',
+        textAlign: 'left',
+        position: 'initial',
       },
       tableCellStatusActive: {
         color: 'var(--_successColor)',
         textTransform: 'capitalize',
+        textAlign: 'left',
       },
       row: {
         background: 'var(--_rowBg)',
