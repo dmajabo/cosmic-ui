@@ -4,7 +4,6 @@ import { createApiClient } from '../apiClient';
 import { PerformanceDashboardStyles } from '../PerformanceDashboardStyles';
 import { MetricsLineChart } from './MetricsLineChart';
 import InfoIcon from '../icons/info.svg';
-import Select from 'react-select';
 
 interface SelectedRow {
   readonly name: string;
