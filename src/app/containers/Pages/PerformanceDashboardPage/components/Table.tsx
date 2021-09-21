@@ -1,9 +1,10 @@
 import { Typography } from '@material-ui/core';
 import React, { useEffect } from 'react';
-import { usePagination, useRowSelect, useTable } from 'react-table';
+import { usePagination, useRowSelect, useSortBy, useTable } from 'react-table';
 import styled from 'styled-components';
 import { PerformanceDashboardStyles } from '../PerformanceDashboardStyles';
 import IndeterminateCheckbox from './IndeterminateCheckbox';
+import SortIcon from '../icons/sort.svg';
 import * as TableConfig from './react-table-config';
 
 interface Column {
@@ -81,6 +82,7 @@ const Table: React.FC<TableProps> = ({ onSelectedRowsUpdate, columns, data }) =>
       columns,
       data,
     },
+    useSortBy,
     usePagination,
     useRowSelect,
     hooks => {
@@ -132,12 +134,13 @@ const Table: React.FC<TableProps> = ({ onSelectedRowsUpdate, columns, data }) =>
                   // Loop over the headers in each row
                   headerGroup.headers.map(column => (
                     // Apply the header cell props
-                    <th {...column.getHeaderProps()}>
+                    <th {...column.getHeaderProps(column.getSortByToggleProps())}>
                       <div className={classes.tableHeaderText}>
                         {
                           // Render the header
                           column.render('Header')
                         }
+                        <span className={classes.sortIcon}>{column.Header === 'NAME' ? <img src={SortIcon} alt="sort by name" /> : <span />}</span>
                       </div>
                     </th>
                   ))

@@ -112,9 +112,11 @@ const PerformanceDashboardPage: React.FC<IProps> = (props: IProps) => {
 
   return (
     <div className={classes.performanceDashboardContainer}>
-      <Tabs value={tab} indicatorColor="primary">
-        <Tab value="sla_tests" label={<span className={classes.tabLabel}>SLA Tests</span>} wrapped {...a11yProps('sla_tests')} />
-      </Tabs>
+      <div className={classes.fixedTabBar}>
+        <Tabs value={tab} indicatorColor="primary">
+          <Tab value="sla_tests" label={<span className={classes.tabLabel}>SLA Tests</span>} wrapped {...a11yProps('sla_tests')} />
+        </Tabs>
+      </div>
       <TabPanel value={tab} index={'sla_tests'}>
         {rawData.length > 0 ? <SLATestList organizations={organizations} rawData={rawData} addSlaTest={addSlaTest} /> : <CreateSLATest organizations={organizations} addSlaTest={addSlaTest} />}
       </TabPanel>

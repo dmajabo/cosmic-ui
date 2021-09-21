@@ -4,7 +4,7 @@ import { IResourceQueryParam, ControllerKeyTypes, RoutesResKeyEnum, RoutesResour
 import { RoutesApi } from 'lib/api/ApiModels/Metrics/endpoints';
 import { getQueryResourceParam } from 'lib/api/ApiModels/Metrics/queryRoutesHelper';
 import { useGet } from 'lib/api/http/useAxiosHook';
-import RouteTable from './RouteTable';
+import RouteTableWrapper from './RouteTableWrapper';
 interface IProps {
   dataItem: IVnetNode;
 }
@@ -31,7 +31,7 @@ const RoutesTab: React.FC<IProps> = (props: IProps) => {
     await onGet(url, params);
   };
 
-  return <RouteTable data={data} showLoader={loading} error={error ? error.message : null} />;
+  return <RouteTableWrapper data={data} showLoader={loading} error={error ? error.message : null} />;
 };
 
 export default React.memo(RoutesTab);

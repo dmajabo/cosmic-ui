@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { createApiClient } from '../apiClient';
 import { PerformanceDashboardStyles } from '../PerformanceDashboardStyles';
 import { MetricsLineChart } from './MetricsLineChart';
+import InfoIcon from '../icons/info.svg';
 
 interface SelectedRow {
   readonly name: string;
@@ -15,6 +16,7 @@ interface SelectedRow {
 
 interface PacketLossProps {
   readonly selectedRows: SelectedRow[];
+  readonly timeRange: string;
 }
 
 interface DataMetrics {
@@ -26,7 +28,7 @@ interface PacketLossMetrics {
   readonly metric: DataMetrics[];
 }
 
-export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows }) => {
+export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange }) => {
   const classes = PerformanceDashboardStyles();
 
   const [packetLossMetrics, setPacketLossMetrics] = useState<PacketLossMetrics[]>([]);
@@ -36,26 +38,36 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows }) => {
     if (selectedRows.length > 0) {
       selectedRows.map(row => {
         const getPacketLossMetrics = async () => {
-          const responseData = await apiClient.getPacketLossMetrics(row.sourceDevice, row.destination);
+          const responseData = await apiClient.getPacketLossMetrics(row.sourceDevice, row.destination, timeRange);
           const devicePacketLossMetrics: PacketLossMetrics = {
             deviceId: responseData.metrics.resourceId,
             metric: responseData.metrics.keyedmap[0].ts,
           };
-          const tempMetricsArray = packetLossMetrics.concat(devicePacketLossMetrics);
-          setPacketLossMetrics(tempMetricsArray);
+          setPacketLossMetrics([devicePacketLossMetrics]);
         };
         getPacketLossMetrics();
       });
     } else {
       setPacketLossMetrics([]);
     }
-  }, [selectedRows]);
+  }, [selectedRows, timeRange]);
+
+  console.log(packetLossMetrics);
 
   return (
     <div>
-      <Typography className={classes.itemTitle}>Packet Loss</Typography>
-      <Typography className={classes.subTitleText}>Shows aggregated packet loss between sources.</Typography>
-      <div>
+      <div className={classes.flexContainer}>
+        <div>
+          <Typography className={classes.itemTitle}>
+            Packet Loss summary
+            <span className={classes.sortIcon}>
+              <img src={InfoIcon} alt="ínfo" />
+            </span>
+          </Typography>
+          <Typography className={classes.subTitleText}>Shows aggregated packet loss between sources.</Typography>
+        </div>
+      </div>
+      <div className={classes.lineChartContainer}>
         <MetricsLineChart dataValueSuffix="%" inputData={packetLossMetrics} />
       </div>
     </div>

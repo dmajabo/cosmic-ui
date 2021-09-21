@@ -9,6 +9,7 @@ import { CreateSLATest } from './CreateSLATest';
 import { Organization } from '../SharedTypes';
 import { PacketLoss } from './PacketLoss';
 import { Latency } from './Latency';
+import Select from 'react-select';
 
 interface AverageQOE {
   readonly packetLoss: number;
@@ -71,6 +72,7 @@ export const SLATestList: React.FC<SLATestListProps> = ({ organizations, rawData
   const [createToggle, setCreateToggle] = React.useState(false);
   const [tab, setTab] = useState<string>('packetLoss');
   const [selectedRows, setSelectedRows] = useState<SelectedRow[]>([]);
+  const [timeRange, setTimeRange] = useState<string>('-7d');
 
   const handleTabChange = (event, newValue) => {
     setTab(newValue);
@@ -150,6 +152,28 @@ export const SLATestList: React.FC<SLATestListProps> = ({ organizations, rawData
     [rawData],
   );
 
+  const timeRangeOptions = [
+    {
+      value: '-7d',
+      label: '1 Week',
+    },
+    {
+      value: '-30d',
+      label: '1 Month',
+    },
+  ];
+
+  const dropdownStyle = {
+    option: provided => ({
+      ...provided,
+      color: 'black',
+    }),
+    control: provided => ({
+      ...provided,
+      width: 120,
+    }),
+  };
+
   return (
     <div className={classes.slaTestListContainer}>
       <div className={classes.itemContainer}>
@@ -186,15 +210,27 @@ export const SLATestList: React.FC<SLATestListProps> = ({ organizations, rawData
         </div>
       </div>
       <div className={classes.itemContainer}>
+        <div className={classes.timeRangeContainer}>
+          <Typography className={classes.timeRangeText}>Time Range:</Typography>
+          <Select
+            label="Single select"
+            styles={dropdownStyle}
+            options={timeRangeOptions}
+            defaultValue={timeRangeOptions[0]}
+            onChange={e => {
+              setTimeRange(e.value);
+            }}
+          />
+        </div>
         <Tabs classes={{ root: classes.tabContainer, indicator: classes.indicator }} value={tab} onChange={handleTabChange} indicatorColor="primary">
           <Tab classes={{ selected: classes.selectedTab }} value="packetLoss" label={<span className={classes.tableHeaderText}>PACKET LOSS</span>} wrapped {...a11yProps('sla_tests')} />
           <Tab classes={{ selected: classes.selectedTab }} value="latency" label={<span className={classes.tableHeaderText}>LATENCY</span>} wrapped {...a11yProps('latency')} />
         </Tabs>
         <TabPanel value={tab} index={'packetLoss'}>
-          <PacketLoss selectedRows={selectedRows} />
+          <PacketLoss timeRange={timeRange} selectedRows={selectedRows} />
         </TabPanel>
         <TabPanel value={tab} index={'latency'}>
-          <Latency selectedRows={selectedRows} />
+          <Latency timeRange={timeRange} selectedRows={selectedRows} />
         </TabPanel>
       </div>
       <Backdrop style={{ color: '#fff', zIndex: 5 }} open={createToggle}>

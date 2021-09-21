@@ -10,15 +10,18 @@ export const GetSelectedOrganization = (organizations: Organization[], orgName: 
 };
 
 export const GetDevicesString = (organization: Organization) => {
-  const orgDevices = organization.devices;
+  if (typeof organization !== 'undefined') {
+    const orgDevices = organization.devices;
 
-  const deviceExtIdList = orgDevices.map(device => {
-    return device.extId;
-  });
+    const deviceExtIdList = orgDevices.map(device => {
+      return device.extId;
+    });
 
-  const allDevices = deviceExtIdList.reduce((acc, newValue) => {
-    return acc + ',' + newValue;
-  });
+    const allDevices = deviceExtIdList.reduce((acc, newValue) => {
+      return acc + ',' + newValue;
+    });
+    return allDevices;
+  }
 
-  return allDevices;
+  return '';
 };

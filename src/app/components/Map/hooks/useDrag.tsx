@@ -29,6 +29,7 @@ export function useDrag(props: IProps, onUpdateCallBack: (pos: IPosition) => voi
   // let popupTranslateCoord: ICoord | null;
   let targetLinks = null;
   let sourceLinks = null;
+  // let allNodes = null;
   React.useEffect(() => {
     return () => {
       onUnsubscribeDrag();
@@ -68,6 +69,7 @@ export function useDrag(props: IProps, onUpdateCallBack: (pos: IPosition) => voi
     if (!skipSourceLinks) {
       sourceLinks = d3.selectAll(`path[data-source_id=${id}]`);
     }
+    // allNodes = d3.selectAll('.topologyNode');
     // if (popup && popup.node()) {
     //   popup.style('display', 'none');
     //   // popupTranslateCoord = {
@@ -76,6 +78,15 @@ export function useDrag(props: IProps, onUpdateCallBack: (pos: IPosition) => voi
     //   // };
     // }
   };
+
+  // const collisionDetection = (e) => {
+  //   console.log(e);
+  //   console.log(node);
+  //   console.log(allNodes);
+  //   allNodes.each(n => {
+  //     console.log(n);
+  //   });
+  // };
 
   const onDrag = e => {
     if (!node || !e) {
@@ -92,6 +103,9 @@ export function useDrag(props: IProps, onUpdateCallBack: (pos: IPosition) => voi
     //     .attr('data-y', popupTranslateCoord.y + 'px')
     //     .style('left', popupTranslateCoord.x + 'px')
     //     .style('top', popupTranslateCoord.y + 'px');
+    // }
+    // if (allNodes) {
+    //   collisionDetection(e);
     // }
     if (targetLinks) {
       targetLinks.each(function (this: any) {
@@ -121,6 +135,7 @@ export function useDrag(props: IProps, onUpdateCallBack: (pos: IPosition) => voi
     //   popup.style('display', 'block');
     // }
     node = null;
+    // allNodes = null;
     // popup = null;
     // popupTranslateCoord = null;
     onUpdateCallBack({ x: translateX, y: translateY });

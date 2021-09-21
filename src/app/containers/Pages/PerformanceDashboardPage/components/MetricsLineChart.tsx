@@ -29,6 +29,7 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ dataValueSuffix, in
 
   useEffect(() => {
     if (inputData.length > 0) {
+      console.log(inputData);
       const newCategories = inputData[0].metric.map(item => {
         return moment(item.time).format('YY/MM/DD HH:mm');
       });
@@ -48,6 +49,12 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ dataValueSuffix, in
       setTickInterval(0);
       setData([]);
     }
+
+    return () => {
+      setCategories([]);
+      setTickInterval(0);
+      setData([]);
+    };
   }, [inputData]);
 
   const lineChartOptions = {
