@@ -6,11 +6,12 @@ import ColumnsIcon from '../icons/columns.svg';
 import FilterIcon from '../icons/filter.svg';
 import Table from './Table';
 import { CreateSLATest } from './CreateSLATest';
-import { Column, FinalTableData } from '../SharedTypes';
+import { Organization, Column, FinalTableData } from '../SharedTypes';
 
 interface SLATestListProps {
   readonly finalTableData: FinalTableData[];
   readonly addSlaTest: Function;
+  readonly organizations: Organization[];
 }
 
 const columns: Column[] = [
@@ -40,7 +41,7 @@ const columns: Column[] = [
   },
 ];
 
-export const SLATestList: React.FC<SLATestListProps> = ({ finalTableData, addSlaTest }) => {
+export const SLATestList: React.FC<SLATestListProps> = ({ organizations, finalTableData, addSlaTest }) => {
   const classes = PerformanceDashboardStyles();
 
   const [createToggle, setCreateToggle] = React.useState<boolean>(false);
@@ -122,7 +123,7 @@ export const SLATestList: React.FC<SLATestListProps> = ({ finalTableData, addSla
         </div>
       </div>
       <Backdrop style={{ color: '#fff', zIndex: 5 }} open={createToggle}>
-        <CreateSLATest addSlaTest={addTest} popup={true} closeSlaTest={handleClose} />
+        <CreateSLATest organizations={organizations} addSlaTest={addTest} popup={true} closeSlaTest={handleClose} />
       </Backdrop>
     </div>
   );

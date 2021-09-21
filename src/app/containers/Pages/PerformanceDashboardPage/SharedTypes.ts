@@ -103,6 +103,27 @@ export interface GetOrganizationResponse {
   readonly organizations?: Organization[];
 }
 
+export interface SLATest {
+  readonly testId: string;
+  readonly name: string;
+  readonly sourceOrgId: string;
+  readonly sourceNwExtId: string;
+  readonly destination: string;
+  readonly interface: string;
+  readonly description: string;
+}
+
+export interface GetSLATestResponse {
+  readonly slaTests?: SLATest[];
+}
+
+export interface CreateSLATestRequest {
+  readonly sla_test: SLATest;
+}
+
+export interface CreateSLATestResponse {
+  readonly id?: string;
+}
 export interface AverageQoe {
   readonly packetLoss: number;
   readonly latency: number;
