@@ -48,12 +48,6 @@ export enum TimeRangeFieldTypes {
   END = 'endTime',
 }
 
-export interface ITimeRange {
-  startTime: Date | null;
-  endTime: Date | null;
-  selectedCalendarDay: Date | null;
-}
-
 export enum ITimeTypes {
   DAY = 'd',
   WEEK = 'w',

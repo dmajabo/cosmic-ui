@@ -3,7 +3,6 @@ import { ITimeTypes } from 'lib/models/general';
 import { ITimeConfig, ITimeValue } from './models';
 import {
   subDays,
-  subHours,
   startOfHour,
   format,
   startOfToday,
@@ -19,7 +18,17 @@ import {
   getDate,
   differenceInCalendarDays,
   addDays,
+  isToday,
+  isFuture,
 } from 'date-fns';
+
+export interface ITimeMinMaxRange {
+  min: Date;
+  max: Date;
+}
+export const getMinMaxSliderRange = (_min: number, _max: number): ITimeMinMaxRange => {
+  return { min: new Date(_min), max: new Date(_max) };
+};
 
 export const getDomain = (min, max) => [+min, +max];
 
@@ -27,6 +36,10 @@ export const getTicks = (period: ITimeTypes, _domain: number[], _selected: numbe
   const _ticks = scaleTime().domain(_domain);
   if (period === ITimeTypes.DAY) {
     const arr = _ticks.ticks(24);
+    if (arr.length > 24 && arr.length < 48) {
+      const a = arr.filter((tick, i) => i % 3 === 0 || i === arr.length - 1);
+      return a.map((d, i) => ({ value: +d, label: getTick(period, +d, i, arr.length - 1) }));
+    }
     return arr.map((d, i) => ({ value: +d, label: getTick(period, +d, i, arr.length - 1) }));
     // 24 hours
   } else if (period === ITimeTypes.WEEK) {
@@ -99,59 +112,63 @@ const getTick = (period: ITimeTypes, ms: number, index: number, lastIndex: numbe
 export const getSliderValuesConfig = (period: ITimeTypes, startDate: Date | null): ITimeConfig => {
   const _data = getFromSelected(period, startDate);
   const maxMS = getMax(period, _data);
-  const minMS = getMin(period, _data, maxMS);
+  const minMS = getMin(period, _data);
   const _obj: ITimeConfig = {
     min: getTime(minMS),
     max: getTime(maxMS),
-    selected: getTime(_data.date),
+    selected: getTime(_data.selected),
   };
   _obj.step = getStep(period, _obj.min, _obj.max);
   return _obj;
 };
 
-interface ISelectedData {
+export interface ISelectedData {
   date: Date | null;
-  isCurrentDay: boolean;
+  selected: Date;
 }
-const getFromSelected = (period: ITimeTypes, selectedDay: Date | null): ISelectedData => {
+export const getFromSelected = (period: ITimeTypes, selectedDay: Date | null): ISelectedData => {
   if (selectedDay) {
     if (period === ITimeTypes.DAY) {
+      if (isToday(selectedDay)) {
+        const arr = startOfHour(new Date());
+        return { date: arr, selected: selectedDay };
+      }
       const arr = startOfHour(selectedDay);
-      return { date: arr, isCurrentDay: false };
+      return { date: arr, selected: selectedDay };
     }
     if (period === ITimeTypes.WEEK) {
       const arr = startOfDay(selectedDay);
-      return { date: arr, isCurrentDay: false };
+      return { date: arr, selected: selectedDay };
     }
     if (period === ITimeTypes.MONTH) {
       const arr = startOfDay(selectedDay);
-      return { date: arr, isCurrentDay: false };
+      return { date: arr, selected: selectedDay };
     }
     if (period === ITimeTypes.YEAR) {
       const arr = startOfDay(selectedDay);
-      return { date: arr, isCurrentDay: false };
+      return { date: arr, selected: selectedDay };
     }
     const arr = startOfHour(selectedDay);
-    return { date: arr, isCurrentDay: false };
+    return { date: arr, selected: selectedDay };
   }
   if (period === ITimeTypes.DAY) {
     const arr = startOfHour(new Date());
-    return { date: arr, isCurrentDay: true };
+    return { date: arr, selected: arr };
   } // 1 hour
   if (period === ITimeTypes.WEEK) {
     const arr = startOfToday();
-    return { date: arr, isCurrentDay: true };
+    return { date: arr, selected: arr };
   }
   if (period === ITimeTypes.MONTH) {
     const arr = startOfToday();
-    return { date: arr, isCurrentDay: true };
+    return { date: arr, selected: arr };
   }
   if (period === ITimeTypes.YEAR) {
     const arr = startOfToday();
-    return { date: arr, isCurrentDay: true };
+    return { date: arr, selected: arr };
   }
   const arr = startOfHour(new Date());
-  return { date: arr, isCurrentDay: true };
+  return { date: arr, selected: arr };
 };
 
 export const getDayInMiliseconds = (_period: ITimeTypes, selected: Date): number => {
@@ -163,63 +180,25 @@ export const getDayInMiliseconds = (_period: ITimeTypes, selected: Date): number
   return _today.getTime();
 };
 
-const getMin = (period: ITimeTypes, data: ISelectedData, max: Date): Date => {
+export const getMin = (period: ITimeTypes, data: ISelectedData): Date => {
   if (period === ITimeTypes.DAY) {
-    if (data.isCurrentDay) {
-      return subHours(max, 24);
-    }
-    return subHours(data.date, 24);
+    return subDays(startOfDay(data.selected), 1);
   } // 1 hour
   if (period === ITimeTypes.WEEK) {
-    return subDays(max, 7);
+    return subDays(data.selected, 7);
   }
   if (period === ITimeTypes.MONTH) {
-    return subDays(max, 31);
+    return subDays(data.selected, 31);
   }
   if (period === ITimeTypes.YEAR) {
-    return subMonths(startOfMonth(max), 12);
+    return subMonths(startOfMonth(data.selected), 12);
   }
-  if (data.isCurrentDay) {
-    return subHours(max, 24);
-  }
-  return subHours(data.date, 24);
+  return subDays(startOfDay(data.selected), 1);
 };
 
-const getMax = (period: ITimeTypes, data: ISelectedData): Date => {
-  if (period === ITimeTypes.DAY) {
-    if (data.isCurrentDay) {
-      return startOfHour(data.date);
-    }
-    return calculateMaxDay(period, data);
-  } // 1 hour
-  if (period === ITimeTypes.WEEK) {
-    if (data.isCurrentDay) {
-      return startOfDay(data.date);
-    }
-    return calculateMaxDay(period, data);
-  }
-  if (period === ITimeTypes.MONTH) {
-    if (data.isCurrentDay) {
-      return startOfDay(data.date);
-    }
-    return calculateMaxDay(period, data);
-  }
-  if (period === ITimeTypes.YEAR) {
-    if (data.isCurrentDay) {
-      return startOfMonth(data.date);
-    }
-    return calculateMaxDay(period, data);
-  }
-  if (data.isCurrentDay) {
-    return startOfHour(data.date);
-  }
-  return calculateMaxDay(period, data);
-};
+export const getMax = (period: ITimeTypes, data: ISelectedData): Date => calculateMaxDay(period, data);
 
 const calculateMaxDay = (period: ITimeTypes, data: ISelectedData): Date => {
-  if (data.isCurrentDay) {
-    return data.date;
-  }
   const _today = new Date();
   const dif = differenceInCalendarDays(_today, data.date);
   let count = 0;
@@ -233,5 +212,11 @@ const calculateMaxDay = (period: ITimeTypes, data: ISelectedData): Date => {
     count = Math.max(0, Math.min(dif, 16));
   }
   const newMaxDay = addDays(data.date, count);
+  if (isFuture(newMaxDay)) {
+    return new Date();
+  }
+  if (!isToday(newMaxDay)) {
+    return startOfDay(newMaxDay);
+  }
   return newMaxDay;
 };

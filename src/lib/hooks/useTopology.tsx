@@ -15,16 +15,17 @@ import {
   IDeviceNode,
   IVnetNode,
 } from 'lib/models/topology';
-import { ISelectedListItem, ITimeRange, ITimeTypes } from 'lib/models/general';
+import { ISelectedListItem, ITimeTypes, TIME_PERIOD } from 'lib/models/general';
 import { jsonClone } from 'lib/helpers/cloneHelper';
 import { EntityTypes, IEntity } from 'lib/models/entites';
 import { ITopologyDataRes } from 'lib/api/ApiModels/Topology/endpoints';
 import { IPosition, NODES_CONSTANTS } from 'app/components/Map/model';
-import { isToday } from 'date-fns';
+import { ITimeMinMaxRange } from 'app/components/Inputs/TimeSlider/helpers';
 
 export interface TopologyContextType {
-  selectedPeriod: ISelectedListItem<ITimeTypes> | null;
-  selectedRange: ITimeRange;
+  selectedPeriod: ISelectedListItem<ITimeTypes>;
+  selectedTime: Date | null;
+  timeRange: ITimeMinMaxRange | null;
   originData: ITopologyMapData | null;
   searchQuery: string | null;
   selectedType: string | null;
@@ -35,10 +36,10 @@ export interface TopologyContextType {
   networksGroups: INetworkGroupNode[];
   applicationsGroup: ITopologyGroup[];
   entityTypes: IEntity[];
-  onSaveStartTime: (_save: boolean) => void;
-  onChangeTimeRange: (_value: Date | null) => void;
+  onChangeTime: (_value: Date | null) => void;
+  onUpdateTimeRange: (_range: ITimeMinMaxRange) => void;
   onChangeSelectedDay: (_value: Date | null) => void;
-  onChangeTimePeriod: (_value: ISelectedListItem<ITimeTypes> | null) => void;
+  onChangeTimePeriod: (_value: ISelectedListItem<ITimeTypes>) => void;
   onSetData: (res: ITopologyDataRes) => void;
   onUpdateGroups: (res: ITopologyGroup) => void;
   onDeleteGroup: (_group: ITopologyGroup) => void;
@@ -53,8 +54,9 @@ export interface TopologyContextType {
 }
 export function useTopologyContext(): TopologyContextType {
   const [originData, setOriginData] = React.useState<ITopologyMapData | null>(null);
-  const [selectedPeriod, setSelectedPeriod] = React.useState<ISelectedListItem<ITimeTypes> | null>(null);
-  const [selectedRange, setSelectedRange] = React.useState<ITimeRange>({ startTime: null, endTime: null, selectedCalendarDay: null });
+  const [selectedPeriod, setSelectedPeriod] = React.useState<ISelectedListItem<ITimeTypes>>(TIME_PERIOD[0]);
+  const [selectedTime, setSelectedTime] = React.useState<Date | null>(null);
+  const [timeRange, setTimeRange] = React.useState<ITimeMinMaxRange | null>(null);
 
   const [links, setLinks] = React.useState<ILink[]>([]);
   const [networksGroups, setNetworksGroups] = React.useState<INetworkGroupNode[]>([]);
@@ -380,46 +382,31 @@ export function useTopologyContext(): TopologyContextType {
     setApplicationsGroup(_groups);
   };
 
-  const onChangeTimePeriod = (period: ISelectedListItem<ITimeTypes> | null) => {
-    if (!period) {
-      setSelectedRange({ ...selectedRange, startTime: null, endTime: null });
-    }
-    if (selectedPeriod && selectedPeriod.value !== ITimeTypes.DAY) {
-      if (period && period.value === ITimeTypes.DAY && selectedRange.selectedCalendarDay && isToday(selectedRange.selectedCalendarDay)) {
-        setSelectedRange({ selectedCalendarDay: null, startTime: null, endTime: null });
-      }
+  const onChangeTimePeriod = (period: ISelectedListItem<ITimeTypes>) => {
+    if (period && period.value !== ITimeTypes.DAY && selectedTime) {
+      const _d = new Date(selectedTime);
+      _d.setHours(0, 0, 0, 0);
+      setSelectedTime(_d);
     }
     setSelectedPeriod(period);
   };
 
-  const onChangeTimeRange = (_value: Date | null) => {
-    const _clone: ITimeRange = { ...selectedRange };
-    _clone.startTime = _value;
-    _clone.selectedCalendarDay = _value;
-    setSelectedRange(_clone);
+  const onChangeTime = (_value: Date | null) => {
+    setSelectedTime(_value);
   };
 
   const onChangeSelectedDay = (_value: Date | null) => {
-    const _clone: ITimeRange = { ...selectedRange };
-    _clone.selectedCalendarDay = _value;
-    _clone.startTime = _value;
-    setSelectedRange(_clone);
+    setSelectedTime(_value);
   };
 
-  const onSaveStartTime = (_save: boolean) => {
-    const _clone: ITimeRange = { ...selectedRange };
-    if (_save) {
-      _clone.endTime = _clone.startTime ? new Date(_clone.startTime) : null;
-    } else {
-      _clone.startTime = _clone.endTime ? new Date(_clone.endTime) : null;
-      _clone.endTime = null;
-    }
-    setSelectedRange(_clone);
+  const onUpdateTimeRange = (_range: ITimeMinMaxRange) => {
+    setTimeRange(_range);
   };
 
   return {
     selectedPeriod,
-    selectedRange,
+    selectedTime,
+    timeRange,
     originData,
     links,
     networksGroups,
@@ -443,8 +430,8 @@ export function useTopologyContext(): TopologyContextType {
     onUpdateGroups,
     onDeleteGroup,
     onChangeTimePeriod,
-    onChangeTimeRange,
+    onChangeTime,
+    onUpdateTimeRange,
     onChangeSelectedDay,
-    onSaveStartTime,
   };
 }

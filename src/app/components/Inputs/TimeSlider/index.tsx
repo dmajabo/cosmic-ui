@@ -3,7 +3,7 @@ import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import { ITimeConfig, ITimeValue } from './models';
 import { ITimeTypes } from 'lib/models/general';
-import { getDomain, getDayInMiliseconds, getSliderValuesConfig, getTicks } from './helpers';
+import { getDomain, getMinMaxSliderRange, getSliderValuesConfig, getTicks, ITimeMinMaxRange } from './helpers';
 import Slider from '@material-ui/core/Slider';
 import ValueLabelComponent from './ValueLabelComponent';
 import { DEBOUNCE_TIME } from 'lib/constants/general';
@@ -72,11 +72,12 @@ const SliderStyles = withStyles({
 })(Slider);
 
 interface Props {
+  rangeId: string;
   selectedCalendarDay: Date | null;
   currentPeriod: ITimeTypes;
-  currentValue: Date | null;
   disabled?: boolean;
-  onUpdate: (_time: Date) => void; // miliseconds
+  onUpdate: (_time: Date) => void;
+  onUpdateRange: (range: ITimeMinMaxRange) => void;
 }
 
 const TimeSlider: React.FC<Props> = (props: Props) => {
@@ -84,7 +85,6 @@ const TimeSlider: React.FC<Props> = (props: Props) => {
   const [values, setValues] = React.useState<ITimeValue[]>([]);
   const [selected, setSelected] = React.useState<number | null>(null);
   const [defaultValue] = React.useState<number>(new Date(Date.now()).getTime());
-  const [disabled, setDisabled] = React.useState<boolean>(props.disabled || true);
   const [isTyping, setIsChanged] = React.useState(false);
   const debouncedValue = useDebounce(selected, DEBOUNCE_TIME);
 
@@ -105,7 +105,7 @@ const TimeSlider: React.FC<Props> = (props: Props) => {
   }, [props.currentPeriod]);
 
   React.useEffect(() => {
-    if (differenceInCalendarDays(selected, props.selectedCalendarDay) !== 0) {
+    if (differenceInCalendarDays(selected, props.selectedCalendarDay) !== 0 || (isToday(props.selectedCalendarDay) && !isThisHour(props.selectedCalendarDay))) {
       onSetConfig(props.currentPeriod, props.selectedCalendarDay);
     }
   }, [props.selectedCalendarDay]);
@@ -114,16 +114,19 @@ const TimeSlider: React.FC<Props> = (props: Props) => {
     const _obj: ITimeConfig = getSliderValuesConfig(_period, startDate);
     const _domain: number[] = getDomain(_obj.min, _obj.max);
     _obj.domain = _domain;
-    const _disabled = props.currentPeriod ? false : true;
-    let _selected = _obj.selected || _obj.max;
-    if (props.currentValue) {
-      _selected = getDayInMiliseconds(_period, props.currentValue);
-    }
+    const _selected = _obj.selected || _obj.max;
     const _values: ITimeValue[] = getTicks(props.currentPeriod, _domain, _selected);
     setSelected(_selected);
-    setDisabled(_disabled);
     setValues(_values);
     setConfig(_obj);
+    if (config && (_obj.min !== config.min || _obj.max !== config.max)) {
+      const _range: ITimeMinMaxRange = getMinMaxSliderRange(_obj.min, _obj.max);
+      props.onUpdateRange(_range);
+    }
+    if (!config) {
+      const _range: ITimeMinMaxRange = getMinMaxSliderRange(_obj.min, _obj.max);
+      props.onUpdateRange(_range);
+    }
   };
 
   const handleChange = (event: object, value: number) => {
@@ -139,20 +142,32 @@ const TimeSlider: React.FC<Props> = (props: Props) => {
   }
 
   return (
-    <SliderStyles
-      classes={{ markLabel: 'slider-label', mark: 'slider-mark' }}
-      value={selected}
-      defaultValue={defaultValue}
-      min={config.min}
-      step={config.step}
-      max={config.max}
-      disabled={disabled}
-      ValueLabelComponent={ValueLabelComponent}
-      marks={values}
-      onChange={handleChange}
-      valueLabelDisplay="auto"
-      valueLabelFormat={(value: number) => `${format(value, 'yyyy MMM dd')} ${format(value, 'h aa')}`}
-    />
+    <>
+      <input
+        style={{ visibility: 'hidden', opacity: '0', position: 'absolute', top: 0, left: 0, pointerEvents: 'none', width: 0, height: 0 }}
+        id={props.rangeId}
+        type="range"
+        min={config.min}
+        max={config.max}
+        value={selected}
+        readOnly
+        disabled
+        onChange={() => {}}
+      />
+      <SliderStyles
+        classes={{ markLabel: 'slider-label', mark: 'slider-mark' }}
+        value={selected}
+        defaultValue={defaultValue}
+        min={config.min}
+        step={config.step}
+        max={config.max}
+        ValueLabelComponent={ValueLabelComponent}
+        marks={values}
+        onChange={handleChange}
+        valueLabelDisplay="auto"
+        valueLabelFormat={(value: number) => `${format(value, 'yyyy MMM dd')} ${format(value, 'h aa')}`}
+      />
+    </>
   );
 };
 
