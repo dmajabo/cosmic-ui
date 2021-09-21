@@ -13,8 +13,8 @@ interface PacketLossMetrics {
 }
 
 interface ChartData {
-  name: string;
-  data: number[];
+  readonly name: string;
+  readonly data: number[];
 }
 
 interface LineChartProps {
@@ -29,7 +29,6 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ dataValueSuffix, in
 
   useEffect(() => {
     if (inputData.length > 0) {
-      console.log(inputData);
       const newCategories = inputData[0].metric.map(item => {
         return moment(item.time).format('YY/MM/DD HH:mm');
       });

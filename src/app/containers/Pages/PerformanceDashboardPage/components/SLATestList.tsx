@@ -6,38 +6,21 @@ import ColumnsIcon from '../icons/columns.svg';
 import FilterIcon from '../icons/filter.svg';
 import Table from './Table';
 import { CreateSLATest } from './CreateSLATest';
-import { Organization } from '../SharedTypes';
+import { Organization, Column, FinalTableData } from '../SharedTypes';
 import { PacketLoss } from './PacketLoss';
 import { Latency } from './Latency';
 import Select from 'react-select';
 
-interface AverageQOE {
-  readonly packetLoss: number;
-  readonly latency: number;
-}
-
-interface RawData {
-  readonly id?: string;
-  readonly name: string;
-  readonly sourceOrg: string;
-  readonly sourceNetwork: string;
-  readonly sourceDevice: string;
-  readonly destination: string;
-  readonly interface?: string;
-  readonly description: string;
-  readonly averageQoe: AverageQOE;
-}
-
 interface SLATestListProps {
-  readonly rawData: RawData[];
-  readonly organizations: Organization[];
+  readonly finalTableData: FinalTableData[];
   readonly addSlaTest: Function;
+  readonly organizations: Organization[];
 }
 
 interface TabPanelProps {
-  children?: React.ReactNode;
-  index: any;
-  value: any;
+  readonly children?: React.ReactNode;
+  readonly index: string;
+  readonly value: string;
 }
 
 interface SelectedRow {
@@ -66,15 +49,42 @@ function a11yProps(index: any) {
   };
 }
 
-export const SLATestList: React.FC<SLATestListProps> = ({ organizations, rawData, addSlaTest }) => {
+const columns: Column[] = [
+  {
+    Header: 'NAME',
+    accessor: 'name' as const,
+  },
+  {
+    Header: 'SOURCE ORGANIZATION',
+    accessor: 'sourceOrg' as const,
+  },
+  {
+    Header: 'SOURCE NETWORK',
+    accessor: 'sourceNetwork' as const,
+  },
+  {
+    Header: 'SOURCE DEVICE',
+    accessor: 'sourceDevice' as const,
+  },
+  {
+    Header: 'DESTINATION',
+    accessor: 'destination' as const,
+  },
+  {
+    Header: 'AVERAGE QOE',
+    accessor: 'averageQoe' as const,
+  },
+];
+
+export const SLATestList: React.FC<SLATestListProps> = ({ organizations, finalTableData, addSlaTest }) => {
   const classes = PerformanceDashboardStyles();
 
-  const [createToggle, setCreateToggle] = React.useState(false);
+  const [createToggle, setCreateToggle] = React.useState<boolean>(false);
   const [tab, setTab] = useState<string>('packetLoss');
   const [selectedRows, setSelectedRows] = useState<SelectedRow[]>([]);
   const [timeRange, setTimeRange] = useState<string>('-7d');
 
-  const handleTabChange = (event, newValue) => {
+  const handleTabChange = (event, newValue: string) => {
     setTab(newValue);
   };
 
@@ -85,7 +95,7 @@ export const SLATestList: React.FC<SLATestListProps> = ({ organizations, rawData
     setCreateToggle(!createToggle);
   };
 
-  const addTest = (value: RawData) => {
+  const addTest = (value: FinalTableData) => {
     addSlaTest(value);
     handleClose();
   };
@@ -94,38 +104,9 @@ export const SLATestList: React.FC<SLATestListProps> = ({ organizations, rawData
     setSelectedRows(value);
   };
 
-  const columns = useMemo(
-    () => [
-      {
-        Header: 'NAME',
-        accessor: 'name' as const,
-      },
-      {
-        Header: 'SOURCE ORGANIZATION',
-        accessor: 'sourceOrg' as const,
-      },
-      {
-        Header: 'SOURCE NETWORK',
-        accessor: 'sourceNetwork' as const,
-      },
-      {
-        Header: 'SOURCE DEVICE',
-        accessor: 'sourceDevice' as const,
-      },
-      {
-        Header: 'DESTINATION',
-        accessor: 'destination' as const,
-      },
-      {
-        Header: 'AVERAGE QOE',
-        accessor: 'averageQoe' as const,
-      },
-    ],
-    [],
-  );
   const data = useMemo(
     () =>
-      rawData.map(item => {
+      finalTableData.map(item => {
         return {
           name: item.name,
           sourceOrg: item.sourceOrg,
@@ -149,7 +130,7 @@ export const SLATestList: React.FC<SLATestListProps> = ({ organizations, rawData
           ),
         };
       }),
-    [rawData],
+    [finalTableData],
   );
 
   const timeRangeOptions = [

@@ -36,7 +36,7 @@ export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange }) => 
   const apiClient = createApiClient();
   useEffect(() => {
     if (selectedRows.length > 0) {
-      selectedRows.map(row => {
+      selectedRows.forEach(row => {
         const getLatencyMetrics = async () => {
           const responseData = await apiClient.getLatencyMetrics(row.sourceDevice, row.destination, timeRange);
           const deviceLatencyMetrics: LatencyMetrics = {

@@ -1,18 +1,23 @@
-import { ISelectedListItem, ITimeRange, ITimeTypes } from 'lib/models/general';
+import { ITimeMinMaxRange } from 'app/components/Inputs/TimeSlider/helpers';
+import { isThisHour, isToday, differenceInHours, differenceInCalendarDays } from 'date-fns';
+import { ISelectedListItem, ITimeTypes } from 'lib/models/general';
 import { IMetrickQueryParam } from './apiModel';
 
-export const getTimeQueryParam = (range: ITimeRange, period: ISelectedListItem<ITimeTypes>): IMetrickQueryParam | null => {
+export const getTimeQueryMetricsParamFromRange = (range: ITimeMinMaxRange, period: ISelectedListItem<ITimeTypes>): IMetrickQueryParam | null => {
+  if (!range) {
+    return null;
+  }
   const param: IMetrickQueryParam = {};
-  const _start = range.startTime ? range.startTime.getTime() : null;
-  const _end = range.endTime ? range.endTime.getTime() : null;
-  if (period && period.value) {
-    const _stDay = getDate(period.value, _start);
-    const _endDay = getDate(period.value, _end);
-    const _suffics = getSuffics(period.value);
-    createParam(_suffics, _stDay, _endDay, param);
-  } else if (!period && range.startTime) {
-    const _selected = getDate(ITimeTypes.YEAR, _start);
-    createParam(null, _selected, null, param);
+  if (isToday(range.max) && isThisHour(range.max)) {
+    createParam('h', 'h', null, differenceInHours(range.min, range.max), param);
+  } else if (isToday(range.max) && !isThisHour(range.max)) {
+    const stM = differenceInCalendarDays(range.min, new Date());
+    const end = differenceInHours(range.max, new Date());
+    createParam('d', 'h', stM, end, param);
+  } else {
+    const stM = differenceInCalendarDays(range.min, new Date());
+    const enMin = differenceInCalendarDays(range.max, new Date());
+    createParam('d', 'd', stM, enMin, param);
   }
   if (!param.startTime && !param.endTime) {
     return null;
@@ -20,43 +25,47 @@ export const getTimeQueryParam = (range: ITimeRange, period: ISelectedListItem<I
   return param;
 };
 
-const createParam = (_suffics: string | null, st: number | null, end: number | null, param: IMetrickQueryParam) => {
+export const getTimeQueryMetricsString = (range: ITimeMinMaxRange): string | null => {
+  if (!range) {
+    return null;
+  }
+  const param: IMetrickQueryParam = {};
+  if (isToday(range.max) && isThisHour(range.max)) {
+    createParam('h', 'h', null, differenceInHours(range.min, range.max), param);
+  } else if (isToday(range.max) && !isThisHour(range.max)) {
+    const stM = differenceInCalendarDays(range.min, new Date());
+    const end = differenceInHours(range.max, new Date());
+    createParam('d', 'h', stM, end, param);
+  } else {
+    const stM = differenceInCalendarDays(range.min, new Date());
+    const enMin = differenceInCalendarDays(range.max, new Date());
+    createParam('d', 'd', stM, enMin, param);
+  }
+  if (!param.startTime && !param.endTime) {
+    return null;
+  }
+  if (param.startTime && !param.endTime) {
+    return `startTime=${param.startTime}`;
+  }
+  return `startTime=${param.startTime}&endTime=${param.endTime}`;
+};
+
+const createParam = (_sufficsSt: string | null, _sufficsEnd: string | null, st: number | null, end: number | null, param: IMetrickQueryParam) => {
   if (!st && !end) {
     return;
   }
   if (st && !end) {
-    param.startTime = `${st}${_suffics}`;
+    param.startTime = `${st}${_sufficsSt}`;
     return;
   }
   if (!st && end) {
-    param.startTime = `${end}${_suffics}`;
+    param.startTime = `${end}${_sufficsSt}`;
     return;
   }
   if (st === end) {
-    param.startTime = `${st}${_suffics}`;
+    param.startTime = `${st}${_sufficsSt}`;
     return;
   }
-  param.startTime = `${Math.min(st, end)}${_suffics}`;
-  param.endTime = `${Math.max(st, end)}${_suffics}`;
-};
-
-const getSuffics = (period: ITimeTypes): string => {
-  if (period !== ITimeTypes.DAY) {
-    return 'd';
-  }
-  return 'h';
-};
-
-const getDate = (period: ITimeTypes, _value: number): number | null => {
-  if (!_value || _value === 0) {
-    return null;
-  }
-  const timeinmilisec = _value - new Date(Date.now()).getTime();
-  if (period === ITimeTypes.DAY) {
-    return Math.ceil(timeinmilisec / (1000 * 60 * 60));
-  }
-  if (period === ITimeTypes.WEEK || period === ITimeTypes.MONTH || period === ITimeTypes.YEAR) {
-    return Math.ceil(timeinmilisec / (1000 * 60 * 60 * 24));
-  }
-  return Math.ceil(timeinmilisec / (1000 * 60 * 60));
+  param.startTime = `${st}${_sufficsSt}`;
+  param.endTime = `${end}${_sufficsEnd}`;
 };

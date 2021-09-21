@@ -3,14 +3,9 @@ import React, { useEffect } from 'react';
 import { usePagination, useRowSelect, useSortBy, useTable } from 'react-table';
 import styled from 'styled-components';
 import { PerformanceDashboardStyles } from '../PerformanceDashboardStyles';
+import { Column } from '../SharedTypes';
 import IndeterminateCheckbox from './IndeterminateCheckbox';
 import SortIcon from '../icons/sort.svg';
-import * as TableConfig from './react-table-config';
-
-interface Column {
-  readonly Header: string;
-  readonly accessor: 'name' | 'sourceOrg' | 'sourceNetwork' | 'sourceDevice' | 'destination' | 'averageQoe';
-}
 
 interface Data {
   readonly name: string;
@@ -111,9 +106,6 @@ const Table: React.FC<TableProps> = ({ onSelectedRowsUpdate, columns, data }) =>
   );
 
   useEffect(() => {
-    setPageSize(5);
-  }, []);
-  useEffect(() => {
     const selectedRows = selectedFlatRows.map(row => {
       return row.original;
     });
@@ -200,7 +192,7 @@ const Table: React.FC<TableProps> = ({ onSelectedRowsUpdate, columns, data }) =>
                 setPageSize(Number(e.target.value));
               }}
             >
-              {[5, 6, 7, 8, 9].map(pageSize => (
+              {[10, 100, 1000].map(pageSize => (
                 <option key={pageSize} value={pageSize}>
                   {pageSize}
                 </option>
