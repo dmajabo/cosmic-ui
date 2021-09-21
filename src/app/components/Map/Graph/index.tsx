@@ -65,19 +65,13 @@ const Graph: React.FC<Props> = (props: Props) => {
                 {topology.links && topology.links.length ? topology.links.map((link, index) => <TopologyLink dataItem={link} key={`link${link.id}${index}`} />) : null}
               </g>
               <g id={TOPOLOGY_IDS.NODES_ROOT}>
-                <g id="devices">{topology.devices && topology.devices.map((device, index) => <Device key={`${device.id}`} dataItem={device} index={index} onClickDevice={onClickDevice} />)}</g>
+                <g id="devices">{topology.devices && topology.devices.map((device, index) => <Device key={`dev${device.id}`} dataItem={device} index={index} onClickDevice={onClickDevice} />)}</g>
                 <g id="vnets">
                   {topology.vnets.map((vnet, index) => (
-                    <VNetNode key={`${vnet.id}`} dataItem={vnet} index={index} onClickVm={onClickVm} />
+                    <VNetNode key={`vnet${vnet.id}`} dataItem={vnet} index={index} onClickVm={onClickVm} />
                   ))}
                 </g>
-                <g id="wedges">
-                  {/* {props.dataItem.wedges.length  && <circle fill="red" fillOpacity="0.5" r="184" cx={props.dataItem.x + 184 + 100} cy={props.dataItem.y + 70} />} */}
-                  {topology.wedges && topology.wedges.map((wedge, index) => <WEdgeNode key={`${wedge.id}`} dataItem={wedge} index={index} onClick={onClickWedge} />)}
-                </g>
-                {/* {topology?.originData && topology?.originData.organizations.map((dataItem, index) => (
-                          <Organization key={`${dataItem.id}`} dataItem={dataItem} index={index} onClickVm={onClickVm} />
-                        ))} */}
+                <g id="wedges">{topology.wedges && topology.wedges.map((wedge, index) => <WEdgeNode key={`wedge${wedge.id}`} dataItem={wedge} index={index} onClick={onClickWedge} />)}</g>
                 {topology.networksGroups &&
                   topology.networksGroups.map((dataItem, index) => <GroupNode key={`group${dataItem.id}${index}`} dataItem={dataItem} index={index} onClickDevice={onClickDevice} />)}
               </g>

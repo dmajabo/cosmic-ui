@@ -29,7 +29,7 @@ export const createPreparedData = (_data: ITopologyMapData, groups: ITopologyGro
   let topologyGroups: INetworkGroupNode[] = [];
   data.organizations.forEach((org, i) => {
     wedges = wedges.concat(org.wedges.map((it, index) => ({ ...it, childIndex: index, orgIndex: i, orgId: org.id, x: 0, y: 0 })));
-    vnets = vnets.concat(org.vnets.map((it, index) => ({ ...it, childIndex: index, orgIndex: i, orgId: org.id, x: 0, y: 0, collapsed: true })));
+    vnets = vnets.concat(org.vnets.map((it, index) => ({ ...it, childIndex: index, orgIndex: i, orgId: org.id, x: 0, y: 0, collapsed: it.vms && it.vms.length ? false : true })));
     if (org.devices) {
       org.devices.forEach((dev, index) => {
         const obj: IDeviceNode = { ...dev, childIndex: index, orgIndex: i, orgId: org.id, x: 0, y: 0, scaleFactor: 1 };
@@ -82,13 +82,8 @@ export const setUpGroupsCoord = (_groupsData: INetworkGroupNode[]) => {
     return;
   }
   const _nodes = _groupsData.map(g => Object.assign({}, g));
-  const _links = [];
-  _groupsData.forEach((it, i) => {
-    if (i >= _groupsData.length - 1) {
-      return;
-    }
-    _links.push({ target: it.id, source: _groupsData[i + 1].id });
-  });
+  _nodes.push({ id: `1` } as INetworkGroupNode);
+  const _links = _groupsData.map(v => Object.create({ target: v.id, source: `1` }));
   const simulation = d3
     .forceSimulation(_nodes)
     .force(
@@ -99,7 +94,7 @@ export const setUpGroupsCoord = (_groupsData: INetworkGroupNode[]) => {
         .strength(1),
     )
     .force('center', d3.forceCenter(STANDART_DISPLAY_RESOLUTION.width / 2, STANDART_DISPLAY_RESOLUTION.height / 4))
-    .force('manyBody', d3.forceManyBody().strength(-50))
+    // .force('manyBody', d3.forceManyBody().strength(-50))
     .force('collision', d3.forceCollide().radius(75))
     .force('x', d3.forceX())
     .force('y', d3.forceY())
@@ -194,42 +189,83 @@ const getVPCHeight = (items: IVnetNode[], _height: number) => {
 };
 
 export const setUpVnetCoord = (items: IVnetNode[]) => {
-  const minHeight = Math.max(STANDART_DISPLAY_RESOLUTION.height, getVPCHeight(items, STANDART_DISPLAY_RESOLUTION.height));
-  const _root = hierarchy({ id: null, children: items });
-  if (!_root.children || !_root.children.length) {
+  if (!items || !items.length) {
     return;
   }
-  const _tree = tree()
-    .nodeSize([NODES_CONSTANTS.VNet.width, NODES_CONSTANTS.VNet.height])
-    .size([minHeight, STANDART_DISPLAY_RESOLUTION.width / 2 + 300]);
-  _tree(_root);
-  let prevNode = null;
-  if (items.length <= 4) {
-    _root.children.forEach((child, i) => {
-      if (!prevNode) {
-        prevNode = child;
-      }
-      items[i].x = child.y;
-      items[i].y = child.x;
-      // data.organizations[child.data.orgIndex].vnets[child.data.childIndex].x = child.y;
-      // data.organizations[child.data.orgIndex].vnets[child.data.childIndex].y = child.x;
-    });
-    return;
+  const _nodes = items.map(v => Object.assign({}, v));
+  _nodes.push({ id: `1` } as IVnetNode);
+  const _links = items.map(v => Object.create({ target: v.id, source: `1` }));
+  const simulation = d3
+    .forceSimulation(_nodes)
+    .force(
+      'link',
+      d3
+        .forceLink(_links)
+        .id(d => d.id)
+        .strength(1),
+    )
+    .force('center', d3.forceCenter(STANDART_DISPLAY_RESOLUTION.width / 2, STANDART_DISPLAY_RESOLUTION.height / 2))
+    // .force('manyBody', d3.forceManyBody())
+    .force(
+      'collision',
+      d3.forceCollide().radius(d => {
+        if (d.collapsed || !d.vms || !d.vms.length) {
+          const _r = Math.sqrt(Math.pow(NODES_CONSTANTS.VNet.width, 2) + Math.pow(NODES_CONSTANTS.VNet.height, 2));
+          return Math.ceil(_r / 2);
+        }
+        const _obj = getVPCContainerSize(d.vms.length);
+        return _obj.r + 40;
+      }),
+    )
+    .force('x', d3.forceX())
+    .force('y', d3.forceY())
+    .stop();
+
+  while (simulation.alpha() > simulation.alphaMin()) {
+    simulation.tick();
   }
-  _root.children.forEach((child, index) => {
-    const d = NODES_CONSTANTS.WEDGE.r * 2;
-    let x = child.y;
-    const y = child.x - d;
-    if (index === 0) {
-      x -= d;
-    } else {
-      x = index % 2 === 0 ? x - d : x + d;
-    }
-    items[index].x = x;
-    items[index].y = y;
-    // data.organizations[child.data.orgIndex].vnets[child.data.childIndex].x = x;
-    // data.organizations[child.data.orgIndex].vnets[child.data.childIndex].y = y;
+
+  items.forEach((it, i) => {
+    it.x = _nodes[i].x + 450;
+    it.y = _nodes[i].y;
   });
+
+  // const minHeight = Math.max(STANDART_DISPLAY_RESOLUTION.height, getVPCHeight(items, STANDART_DISPLAY_RESOLUTION.height));
+  // const _root = hierarchy({ id: null, children: items });
+  // if (!_root.children || !_root.children.length) {
+  //   return;
+  // }
+  // const _tree = tree()
+  //   .nodeSize([NODES_CONSTANTS.VNet.width, NODES_CONSTANTS.VNet.height])
+  //   .size([minHeight, STANDART_DISPLAY_RESOLUTION.width / 2 + 300]);
+  // _tree(_root);
+  // let prevNode = null;
+  // if (items.length <= 4) {
+  //   _root.children.forEach((child, i) => {
+  //     if (!prevNode) {
+  //       prevNode = child;
+  //     }
+  //     items[i].x = child.y;
+  //     items[i].y = child.x;
+  //     // data.organizations[child.data.orgIndex].vnets[child.data.childIndex].x = child.y;
+  //     // data.organizations[child.data.orgIndex].vnets[child.data.childIndex].y = child.x;
+  //   });
+  //   return;
+  // }
+  // _root.children.forEach((child, index) => {
+  //   const d = NODES_CONSTANTS.WEDGE.r * 2;
+  //   let x = child.y;
+  //   const y = child.x - d;
+  //   if (index === 0) {
+  //     x -= d;
+  //   } else {
+  //     x = index % 2 === 0 ? x - d : x + d;
+  //   }
+  //   items[index].x = x;
+  //   items[index].y = y;
+  //   // data.organizations[child.data.orgIndex].vnets[child.data.childIndex].x = x;
+  //   // data.organizations[child.data.orgIndex].vnets[child.data.childIndex].y = y;
+  // });
 };
 
 export const setUpDevicesCoord = (devices: IDeviceNode[], _devicesGroup: INetworkGroupNode[]) => {
