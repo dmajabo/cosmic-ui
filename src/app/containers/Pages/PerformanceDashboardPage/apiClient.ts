@@ -8,7 +8,7 @@ interface ApiClient {
 }
 
 const PATHS = Object.freeze({
-  GET_ORGANIZATIONS: '/topo/api/v1/topology/organizations',
+  GET_ORGANIZATIONS: 'topo/api/v1/topology/organizations',
 });
 
 export const createApiClient = (): ApiClient => {

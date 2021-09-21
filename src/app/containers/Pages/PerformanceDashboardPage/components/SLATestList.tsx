@@ -1,36 +1,23 @@
 import { Backdrop, Button, IconButton, Typography } from '@material-ui/core';
 import { Add as AddIcon, MoreVert as MoreVertIcon } from '@material-ui/icons';
-import React, { useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { PerformanceDashboardStyles } from '../PerformanceDashboardStyles';
 import ColumnsIcon from '../icons/columns.svg';
 import FilterIcon from '../icons/filter.svg';
 import Table from './Table';
 import { CreateSLATest } from './CreateSLATest';
-
-interface AverageQOE {
-  readonly packetLoss: number;
-  readonly latency: number;
-}
-
-interface RawData {
-  readonly name: string;
-  readonly sourceOrg: string;
-  readonly sourceNetwork: string;
-  readonly sourceDevice: string;
-  readonly destination: string;
-  readonly description: string;
-  readonly averageQoe: AverageQOE;
-}
+import { Column, FinalTableData } from '../SharedTypes';
 
 interface SLATestListProps {
-  readonly rawData: RawData[];
+  readonly finalTableData: FinalTableData[];
   readonly addSlaTest: Function;
+  readonly columns: Column[];
 }
 
-export const SLATestList: React.FC<SLATestListProps> = ({ rawData, addSlaTest }) => {
+export const SLATestList: React.FC<SLATestListProps> = ({ columns, finalTableData, addSlaTest }) => {
   const classes = PerformanceDashboardStyles();
 
-  const [createToggle, setCreateToggle] = React.useState(false);
+  const [createToggle, setCreateToggle] = React.useState<boolean>(false);
 
   const handleClose = () => {
     setCreateToggle(false);
@@ -39,43 +26,14 @@ export const SLATestList: React.FC<SLATestListProps> = ({ rawData, addSlaTest })
     setCreateToggle(!createToggle);
   };
 
-  const addTest = (value: RawData) => {
+  const addTest = (value: FinalTableData) => {
     addSlaTest(value);
     handleClose();
   };
 
-  const columns = useMemo(
-    () => [
-      {
-        Header: 'NAME',
-        accessor: 'name' as const,
-      },
-      {
-        Header: 'SOURCE ORGANIZATION',
-        accessor: 'sourceOrg' as const,
-      },
-      {
-        Header: 'SOURCE NETWORK',
-        accessor: 'sourceNetwork' as const,
-      },
-      {
-        Header: 'SOURCE DEVICE',
-        accessor: 'sourceDevice' as const,
-      },
-      {
-        Header: 'DESTINATION',
-        accessor: 'destination' as const,
-      },
-      {
-        Header: 'AVERAGE QOE',
-        accessor: 'averageQoe' as const,
-      },
-    ],
-    [],
-  );
   const data = useMemo(
     () =>
-      rawData.map(item => {
+      finalTableData.map(item => {
         return {
           name: item.name,
           sourceOrg: item.sourceOrg,
@@ -99,7 +57,7 @@ export const SLATestList: React.FC<SLATestListProps> = ({ rawData, addSlaTest })
           ),
         };
       }),
-    [rawData],
+    [finalTableData],
   );
 
   return (

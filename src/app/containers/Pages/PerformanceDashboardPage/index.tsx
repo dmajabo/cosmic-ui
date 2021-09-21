@@ -1,29 +1,14 @@
 import { Tab, Tabs } from '@material-ui/core';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { CreateSLATest } from './components/CreateSLATest';
 import { PerformanceDashboardStyles } from './PerformanceDashboardStyles';
 import { SLATestList } from './components/SLATestList';
-interface IProps {}
+import { FinalTableData } from './SharedTypes';
 
 interface TabPanelProps {
   children?: React.ReactNode;
-  index: any;
-  value: any;
-}
-
-interface AverageQOE {
-  readonly packetLoss: number;
-  readonly latency: number;
-}
-
-interface RawData {
-  readonly name: string;
-  readonly sourceOrg: string;
-  readonly sourceNetwork: string;
-  readonly sourceDevice: string;
-  readonly destination: string;
-  readonly description: string;
-  readonly averageQoe: AverageQOE;
+  index: string;
+  value: string;
 }
 
 function TabPanel(props: TabPanelProps) {
@@ -43,17 +28,44 @@ function a11yProps(index: any) {
   };
 }
 
-const PerformanceDashboardPage: React.FC<IProps> = (props: IProps) => {
+const PerformanceDashboardPage: React.FC = () => {
   const classes = PerformanceDashboardStyles();
 
-  const [rawData, setRawData] = useState<RawData[]>([]);
+  const [finalTableData, setFinalTableData] = useState<FinalTableData[]>([]);
 
-  const addSlaTest = (value: RawData) => {
-    let tempData = rawData.concat(value);
-    setRawData(tempData);
+  const addSlaTest = (value: FinalTableData) => {
+    let tempData = finalTableData.concat(value);
+    setFinalTableData(tempData);
   };
 
   const tab = 'sla_tests';
+
+  const columns = [
+    {
+      Header: 'NAME',
+      accessor: 'name' as const,
+    },
+    {
+      Header: 'SOURCE ORGANIZATION',
+      accessor: 'sourceOrg' as const,
+    },
+    {
+      Header: 'SOURCE NETWORK',
+      accessor: 'sourceNetwork' as const,
+    },
+    {
+      Header: 'SOURCE DEVICE',
+      accessor: 'sourceDevice' as const,
+    },
+    {
+      Header: 'DESTINATION',
+      accessor: 'destination' as const,
+    },
+    {
+      Header: 'AVERAGE QOE',
+      accessor: 'averageQoe' as const,
+    },
+  ];
 
   return (
     <div className={classes.performanceDashboardContainer}>
@@ -61,10 +73,10 @@ const PerformanceDashboardPage: React.FC<IProps> = (props: IProps) => {
         <Tab value="sla_tests" label={<span className={classes.tabLabel}>SLA Tests</span>} wrapped {...a11yProps('sla_tests')} />
       </Tabs>
       <TabPanel value={tab} index={'sla_tests'}>
-        {rawData.length > 0 ? <SLATestList rawData={rawData} addSlaTest={addSlaTest} /> : <CreateSLATest addSlaTest={addSlaTest} />}
+        {finalTableData.length > 0 ? <SLATestList columns={columns} finalTableData={finalTableData} addSlaTest={addSlaTest} /> : <CreateSLATest addSlaTest={addSlaTest} />}
       </TabPanel>
     </div>
   );
 };
 
-export default React.memo(PerformanceDashboardPage);
+export default PerformanceDashboardPage;

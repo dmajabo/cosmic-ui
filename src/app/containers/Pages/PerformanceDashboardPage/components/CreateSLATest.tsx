@@ -2,24 +2,9 @@ import { Button, Typography } from '@material-ui/core';
 import React, { useState, useEffect } from 'react';
 import { PerformanceDashboardStyles } from '../PerformanceDashboardStyles';
 import Select from 'react-select';
-import { Organization } from '../SharedTypes';
+import { FinalTableData, Organization } from '../SharedTypes';
 import { createApiClient } from '../apiClient';
 import CloseIcon from '../icons/close.svg';
-
-interface AverageQOE {
-  readonly packetLoss: number;
-  readonly latency: number;
-}
-
-interface RawData {
-  readonly name: string;
-  readonly sourceOrg: string;
-  readonly sourceNetwork: string;
-  readonly sourceDevice: string;
-  readonly destination: string;
-  readonly description: string;
-  readonly averageQoe: AverageQOE;
-}
 
 interface CreateSLATestProps {
   readonly addSlaTest: Function;
@@ -49,10 +34,10 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ addSlaTest, closeS
   useEffect(() => {
     const getOrganizations = async () => {
       const responseData = await apiClient.getOrganizations();
-      const MerakiOrganizations = responseData.organizations.filter(organization => {
+      const merakiOrganizations = responseData.organizations.filter(organization => {
         return organization.vendorType === 'MERAKI';
       });
-      setOrganizations(MerakiOrganizations);
+      setOrganizations(merakiOrganizations);
     };
     getOrganizations();
   }, []);
@@ -88,7 +73,6 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ addSlaTest, closeS
     setSourceNetworkOptions(networkOptions);
     if (selectedOrganization) {
       const orgDevices = selectedOrganization.devices;
-      //console.log(orgDevices);
       const deviceExtIdList = orgDevices.map(device => {
         return device.extId;
       });
@@ -113,7 +97,7 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ addSlaTest, closeS
   };
 
   const handleFormSubmit = () => {
-    const testData: RawData = {
+    const testData: FinalTableData = {
       name: name,
       sourceOrg: sourceOrg,
       sourceNetwork: sourceNetwork,
