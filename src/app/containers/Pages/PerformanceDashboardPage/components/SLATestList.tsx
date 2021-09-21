@@ -10,11 +10,14 @@ import { Organization, Column, FinalTableData } from '../SharedTypes';
 import { PacketLoss } from './PacketLoss';
 import { Latency } from './Latency';
 import Select from 'react-select';
+import { KeyValue } from '..';
 
 interface SLATestListProps {
   readonly finalTableData: FinalTableData[];
   readonly addSlaTest: Function;
   readonly organizations: Organization[];
+  readonly packetLossData: KeyValue;
+  readonly latencyData: KeyValue;
 }
 
 interface TabPanelProps {
@@ -76,7 +79,7 @@ const columns: Column[] = [
   },
 ];
 
-export const SLATestList: React.FC<SLATestListProps> = ({ organizations, finalTableData, addSlaTest }) => {
+export const SLATestList: React.FC<SLATestListProps> = ({ latencyData, packetLossData, organizations, finalTableData, addSlaTest }) => {
   const classes = PerformanceDashboardStyles();
 
   const [createToggle, setCreateToggle] = React.useState<boolean>(false);
@@ -108,6 +111,7 @@ export const SLATestList: React.FC<SLATestListProps> = ({ organizations, finalTa
     () =>
       finalTableData.map(item => {
         return {
+          id: item.id,
           name: item.name,
           sourceOrg: item.sourceOrg,
           sourceNetwork: item.sourceNetwork,
@@ -117,9 +121,9 @@ export const SLATestList: React.FC<SLATestListProps> = ({ organizations, finalTa
             <div className={classes.flexContainer}>
               <div className={classes.averageQoeText}>
                 <span>Packet Loss:</span>
-                <span className={classes.packetLossValueText}>{`${item.averageQoe.packetLoss}%`}</span>
+                <span className={classes.packetLossValueText}>{`${packetLossData[item.id] || '-'}%`}</span>
                 <span>Latency:</span>
-                <span className={classes.latencyValueText}>{`${item.averageQoe.latency}ms`}</span>
+                <span className={classes.latencyValueText}>{`${Number(latencyData[item.id]).toFixed(2) || '-'}ms`}</span>
               </div>
               <div>
                 <IconButton aria-controls="widget-menu" aria-haspopup="true">
@@ -130,7 +134,7 @@ export const SLATestList: React.FC<SLATestListProps> = ({ organizations, finalTa
           ),
         };
       }),
-    [finalTableData],
+    [finalTableData, packetLossData, latencyData],
   );
 
   const timeRangeOptions = [

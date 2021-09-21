@@ -13,6 +13,10 @@ interface TabPanelProps {
   value: string;
 }
 
+export interface KeyValue {
+  readonly [key: string]: string;
+}
+
 function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
 
@@ -37,15 +41,18 @@ const PerformanceDashboardPage: React.FC = () => {
 
   const [addedTestCount, setAddedTestCount] = useState<number>(0);
   const [finalTableData, setFinalTableData] = useState<FinalTableData[]>([]);
+  const [tempFinalTableData, setTempFinalTableData] = useState<FinalTableData[]>([]);
+  const [packetLossData, setPacketLossData] = useState<KeyValue>({});
+  const [latencyData, setLatencyData] = useState<KeyValue>({});
   const [organizations, setOrganizations] = useState<Organization[]>([]);
 
   useEffect(() => {
     const getOrganizations = async () => {
       const responseData = await apiClient.getOrganizations();
-      const MerakiOrganizations = responseData.organizations.filter(organization => {
+      const merakiOrganizations = responseData.organizations.filter(organization => {
         return organization.vendorType === 'MERAKI';
       });
-      setOrganizations(MerakiOrganizations);
+      setOrganizations(merakiOrganizations);
     };
     getOrganizations();
   }, []);
@@ -74,13 +81,49 @@ const PerformanceDashboardPage: React.FC = () => {
                 },
               };
             });
-            setFinalTableData(testData);
+            setTempFinalTableData(testData);
           }
         }
       };
       getSLATests();
     }
   }, [organizations, addedTestCount]);
+
+  //TODO: Refactor below API calls with Promise.all
+  const packetLoss = async () => {
+    const packetloss = {};
+    for (let i = 0; i < tempFinalTableData.length; i++) {
+      try {
+        const responseData = await apiClient.getAvgPacketLoss(tempFinalTableData[i].sourceNetwork, tempFinalTableData[i].destination);
+        if (responseData?.avgMetric?.avgVal) {
+          packetloss[tempFinalTableData[i].id] = responseData.avgMetric.avgVal;
+        } else {
+          packetloss[tempFinalTableData[i].id] = '-';
+        }
+      } catch {}
+    }
+    setPacketLossData(packetloss);
+  };
+
+  const latency = async () => {
+    const latency = {};
+    for (let i = 0; i < tempFinalTableData.length; i++) {
+      try {
+        const responseData = await apiClient.getAvgLatency(tempFinalTableData[i].sourceNetwork, tempFinalTableData[i].destination);
+        if (responseData?.avgMetric?.avgVal) {
+          latency[tempFinalTableData[i].id] = responseData.avgMetric.avgVal;
+        } else {
+          latency[tempFinalTableData[i].id] = '-';
+        }
+      } catch {}
+    }
+    setLatencyData(latency);
+  };
+  useEffect(() => {
+    packetLoss();
+    latency();
+    setFinalTableData(tempFinalTableData);
+  }, [tempFinalTableData]);
 
   const addSlaTest = (value: number) => {
     setTimeout(() => {
@@ -99,7 +142,7 @@ const PerformanceDashboardPage: React.FC = () => {
       </div>
       <TabPanel value={tab} index={'sla_tests'}>
         {finalTableData.length > 0 ? (
-          <SLATestList organizations={organizations} finalTableData={finalTableData} addSlaTest={addSlaTest} />
+          <SLATestList latencyData={latencyData} packetLossData={packetLossData} organizations={organizations} finalTableData={finalTableData} addSlaTest={addSlaTest} />
         ) : (
           <CreateSLATest organizations={organizations} addSlaTest={addSlaTest} />
         )}

@@ -1,7 +1,7 @@
 import axios, { AxiosRequestConfig } from 'axios';
-import { CreateSLATestRequest, CreateSLATestResponse, GetOrganizationResponse, GetSLATestResponse, SLATestMetricsResponse } from './SharedTypes';
+import { CreateSLATestRequest, CreateSLATestResponse, GetAvgMetricsResponse, GetOrganizationResponse, GetSLATestResponse, SLATestMetricsResponse } from './SharedTypes';
 
-const BASE_URL = 'http://a988b9b03ef8d4b518a3d50f0abbe9ad-780e920b5d005099.elb.us-east-1.amazonaws.com';
+const BASE_URL = 'https://a988b9b03ef8d4b518a3d50f0abbe9ad-780e920b5d005099.elb.us-east-1.amazonaws.com';
 
 interface ApiClient {
   readonly getOrganizations: () => Promise<GetOrganizationResponse>;
@@ -9,6 +9,8 @@ interface ApiClient {
   readonly createSLATest: (request: CreateSLATestRequest) => Promise<CreateSLATestResponse>;
   readonly getPacketLossMetrics: (deviceId: string, destination: string, startTime: string) => Promise<SLATestMetricsResponse>;
   readonly getLatencyMetrics: (deviceId: string, destination: string, startTime: string) => Promise<SLATestMetricsResponse>;
+  readonly getAvgPacketLoss: (sourceNw: string, destination: string) => Promise<GetAvgMetricsResponse>;
+  readonly getAvgLatency: (sourceNw: string, destination: string) => Promise<GetAvgMetricsResponse>;
 }
 
 const PATHS = Object.freeze({
@@ -80,11 +82,41 @@ export const createApiClient = (): ApiClient => {
     }
   }
 
+  async function getAvgPacketLoss(sourceNw: string, destination: string): Promise<GetAvgMetricsResponse> {
+    try {
+      const response = await axios.get<GetAvgMetricsResponse>(`/telemetry/api/v1/metrics/source_nw/${sourceNw}/device/destination/${destination}/avgpacketloss`, {
+        baseURL: BASE_URL,
+        params: {
+          startTime: '-30d',
+        },
+      });
+      return response.data;
+    } catch (error) {
+      return {};
+    }
+  }
+
+  async function getAvgLatency(sourceNw: string, destination: string): Promise<GetAvgMetricsResponse> {
+    try {
+      const response = await axios.get<GetAvgMetricsResponse>(`/telemetry/api/v1/metrics/source_nw/${sourceNw}/device/destination/${destination}/avglatency`, {
+        baseURL: BASE_URL,
+        params: {
+          startTime: '-30d',
+        },
+      });
+      return response.data;
+    } catch (error) {
+      return {};
+    }
+  }
+
   return {
     getOrganizations,
     getSLATests,
     createSLATest,
     getPacketLossMetrics,
     getLatencyMetrics,
+    getAvgPacketLoss,
+    getAvgLatency,
   };
 };

@@ -107,7 +107,7 @@ export const PerformanceDashboardStyles = makeStyles(
         marginRight: 10,
       },
       createSlaTestContainer: {
-        marginTop: 20,
+        marginTop: 60,
         display: 'flex',
         justifyContent: 'center',
       },
