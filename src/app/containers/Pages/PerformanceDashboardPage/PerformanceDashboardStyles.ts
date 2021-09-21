@@ -12,7 +12,7 @@ export const PerformanceDashboardStyles = makeStyles(
         padding: 20,
       },
       slaTestListContainer: {
-        marginTop: 30,
+        marginTop: 60,
       },
       itemContainer: {
         width: '100%',
@@ -148,6 +148,35 @@ export const PerformanceDashboardStyles = makeStyles(
       },
       indicator: {
         backgroundColor: 'transparent',
+      },
+      sortIcon: {
+        marginLeft: 15,
+      },
+      fixedTabBar: {
+        position: 'fixed',
+        width: '100%',
+        marginTop: -20,
+        paddingTop: 10,
+        paddingBottom: 10,
+        zIndex: 4,
+        backgroundColor: '#F3F6FC',
+      },
+      timeRangeContainer: {
+        width: 250,
+        display: 'flex',
+        justifyContent: 'space-between',
+        float: 'right',
+        marginTop: 100,
+      },
+      timeRangeText: {
+        color: '#848DA3',
+        fontSize: 14,
+        paddingTop: 10,
+        fontWeight: 400,
+        marginLeft: 40,
+      },
+      lineChartContainer: {
+        marginTop: 40,
       },
     }),
   {

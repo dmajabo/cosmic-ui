@@ -7,8 +7,8 @@ interface ApiClient {
   readonly getOrganizations: () => Promise<GetOrganizationResponse>;
   readonly getSLATests: () => Promise<GetSLATestResponse>;
   readonly createSLATest: (request: CreateSLATestRequest) => Promise<CreateSLATestResponse>;
-  readonly getPacketLossMetrics: (deviceId: string, destination: string) => Promise<SLATestMetricsResponse>;
-  readonly getLatencyMetrics: (deviceId: string, destination: string) => Promise<SLATestMetricsResponse>;
+  readonly getPacketLossMetrics: (deviceId: string, destination: string, startTime: string) => Promise<SLATestMetricsResponse>;
+  readonly getLatencyMetrics: (deviceId: string, destination: string, startTime: string) => Promise<SLATestMetricsResponse>;
 }
 
 const PATHS = Object.freeze({
@@ -52,12 +52,12 @@ export const createApiClient = (): ApiClient => {
     }
   }
 
-  async function getPacketLossMetrics(deviceId: string, destination: string): Promise<SLATestMetricsResponse> {
+  async function getPacketLossMetrics(deviceId: string, destination: string, startTime: string): Promise<SLATestMetricsResponse> {
     try {
       const response = await axios.get<SLATestMetricsResponse>(`/telemetry/api/v1/metrics/device/${deviceId}/destination/${destination}/packetloss`, {
         baseURL: BASE_URL,
         params: {
-          startTime: '-30d',
+          startTime: startTime,
         },
       });
       return response.data;
@@ -66,12 +66,12 @@ export const createApiClient = (): ApiClient => {
     }
   }
 
-  async function getLatencyMetrics(deviceId: string, destination: string): Promise<SLATestMetricsResponse> {
+  async function getLatencyMetrics(deviceId: string, destination: string, startTime: string): Promise<SLATestMetricsResponse> {
     try {
       const response = await axios.get<SLATestMetricsResponse>(`/telemetry/api/v1/metrics/device/${deviceId}/destination/${destination}/latency`, {
         baseURL: BASE_URL,
         params: {
-          startTime: '-30d',
+          startTime: startTime,
         },
       });
       return response.data;
