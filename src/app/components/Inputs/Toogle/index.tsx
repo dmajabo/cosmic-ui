@@ -11,7 +11,6 @@ interface IProps {
 const Toogle: React.FC<IProps> = (props: IProps) => {
   const onChange = (value: ISelectedListItem<string>) => {
     if (value === props.selectedValue) {
-      props.onChange(null);
       return;
     }
     props.onChange(value);

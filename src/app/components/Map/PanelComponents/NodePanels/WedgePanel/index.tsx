@@ -7,6 +7,7 @@ import { TabComponentProps } from 'app/components/Tabs/TabComponentProps';
 import TabPanel from 'app/components/Tabs/TabPanel';
 import { TabsStyles } from 'app/components/Tabs/TabsStyles';
 import RoutesTab from './RoutesTab';
+import PolicyTab from './PolicyTab';
 
 interface IProps {
   dataItem: IWedgeNode;
@@ -36,7 +37,7 @@ const WedgePanel: React.FC<IProps> = (props: IProps) => {
           }}
         >
           <Tab label="Routes" classes={{ selected: classes.tabSelected }} {...TabComponentProps(0)} className={classes.tab} />
-          <Tab disabled label="Policy" classes={{ selected: classes.tabSelected }} {...TabComponentProps(1)} className={classes.tab} />
+          <Tab label="Policy" classes={{ selected: classes.tabSelected }} {...TabComponentProps(1)} className={classes.tab} />
         </Tabs>
       </PanelTabWrapper>
       <PanelHeader direction="column" align="unset">
@@ -48,8 +49,7 @@ const WedgePanel: React.FC<IProps> = (props: IProps) => {
           <RoutesTab dataItem={props.dataItem} />
         </TabPanel>
         <TabPanel value={value} index={1}>
-          Policy
-          {/* <MetricsTab dataItem={props.dataItem} /> */}
+          <PolicyTab dataItem={props.dataItem} />
         </TabPanel>
       </OverflowContainer>
     </>

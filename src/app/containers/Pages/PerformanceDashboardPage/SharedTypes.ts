@@ -12,10 +12,6 @@ interface Device {
   readonly vpnLinks: Vpn;
 }
 
-interface Oedge {}
-
-interface Ip {}
-
 interface NetworkLink {
   readonly id: string;
   readonly name: string;
@@ -24,8 +20,6 @@ interface NetworkLink {
   readonly peerType: string;
   readonly peerExtId: string;
 }
-
-interface PrivateSubnet {}
 
 interface LinkState {
   readonly name: string;
@@ -44,10 +38,8 @@ interface Vpn {
   readonly extId: string;
   readonly connectionId: string;
   readonly linkStates: LinkState[];
-  readonly privateSubnets: PrivateSubnet[];
+  readonly privateSubnets: [];
 }
-
-interface Phy {}
 
 interface Wedge {
   readonly id: string;
@@ -55,10 +47,10 @@ interface Wedge {
   readonly description: string;
   readonly extId: string;
   readonly vnetkey: string;
-  readonly phys: Phy[];
+  readonly phys: [];
   readonly vpns: Vpn[];
   readonly networkLinks: NetworkLink[];
-  readonly ips: Ip[];
+  readonly ips: [];
 }
 
 interface Nic {
@@ -82,30 +74,28 @@ interface Vm {
   readonly nic: Nic[];
 }
 
-interface Endpoint {}
-
 interface Vnet {
   readonly id: string;
   readonly name: string;
   readonly description: string;
   readonly extId: string;
-  readonly endpoints: Endpoint[];
+  readonly endpoints: [];
   readonly vms: Vm[];
   readonly cidr: null;
 }
 
 export interface Organization {
-  readonly id?: string;
-  readonly name?: string;
-  readonly description?: string;
-  readonly extId?: string;
-  readonly extType?: string;
-  readonly extUrl?: string;
-  readonly vnets?: Vnet[];
-  readonly wedges?: Wedge[];
-  readonly oedges?: Oedge[];
-  readonly devices?: Device[];
-  readonly vendorType?: string;
+  readonly id: string;
+  readonly name: string;
+  readonly description: string;
+  readonly extId: string;
+  readonly extType: string;
+  readonly extUrl: string;
+  readonly vnets: Vnet[];
+  readonly wedges: Wedge[];
+  readonly oedges: [];
+  readonly devices: Device[];
+  readonly vendorType: string;
 }
 
 export interface GetOrganizationResponse {
@@ -161,4 +151,23 @@ interface AvgMetric {
 
 export interface GetAvgMetricsResponse {
   readonly avgMetric?: AvgMetric;
+}
+export interface AverageQoe {
+  readonly packetLoss: number;
+  readonly latency: number;
+}
+
+export interface FinalTableData {
+  readonly name: string;
+  readonly sourceOrg: string;
+  readonly sourceNetwork: string;
+  readonly sourceDevice: string;
+  readonly destination: string;
+  readonly description: string;
+  readonly averageQoe: AverageQoe;
+}
+
+export interface Column {
+  readonly Header: string;
+  readonly accessor: 'name' | 'sourceOrg' | 'sourceNetwork' | 'sourceDevice' | 'destination' | 'averageQoe';
 }

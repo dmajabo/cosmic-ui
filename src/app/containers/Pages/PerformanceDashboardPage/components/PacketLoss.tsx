@@ -36,7 +36,7 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange 
   const apiClient = createApiClient();
   useEffect(() => {
     if (selectedRows.length > 0) {
-      selectedRows.map(row => {
+      selectedRows.forEach(row => {
         const getPacketLossMetrics = async () => {
           const responseData = await apiClient.getPacketLossMetrics(row.sourceDevice, row.destination, timeRange);
           const devicePacketLossMetrics: PacketLossMetrics = {
@@ -51,8 +51,6 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange 
       setPacketLossMetrics([]);
     }
   }, [selectedRows, timeRange]);
-
-  console.log(packetLossMetrics);
 
   return (
     <div>
