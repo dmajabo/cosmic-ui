@@ -40,40 +40,13 @@ const PerformanceDashboardPage: React.FC = () => {
 
   const tab = 'sla_tests';
 
-  const columns = [
-    {
-      Header: 'NAME',
-      accessor: 'name' as const,
-    },
-    {
-      Header: 'SOURCE ORGANIZATION',
-      accessor: 'sourceOrg' as const,
-    },
-    {
-      Header: 'SOURCE NETWORK',
-      accessor: 'sourceNetwork' as const,
-    },
-    {
-      Header: 'SOURCE DEVICE',
-      accessor: 'sourceDevice' as const,
-    },
-    {
-      Header: 'DESTINATION',
-      accessor: 'destination' as const,
-    },
-    {
-      Header: 'AVERAGE QOE',
-      accessor: 'averageQoe' as const,
-    },
-  ];
-
   return (
     <div className={classes.performanceDashboardContainer}>
       <Tabs value={tab} indicatorColor="primary">
         <Tab value="sla_tests" label={<span className={classes.tabLabel}>SLA Tests</span>} wrapped {...a11yProps('sla_tests')} />
       </Tabs>
       <TabPanel value={tab} index={'sla_tests'}>
-        {finalTableData.length > 0 ? <SLATestList columns={columns} finalTableData={finalTableData} addSlaTest={addSlaTest} /> : <CreateSLATest addSlaTest={addSlaTest} />}
+        {finalTableData.length > 0 ? <SLATestList finalTableData={finalTableData} addSlaTest={addSlaTest} /> : <CreateSLATest addSlaTest={addSlaTest} />}
       </TabPanel>
     </div>
   );

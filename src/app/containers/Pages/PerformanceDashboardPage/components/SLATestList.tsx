@@ -11,10 +11,36 @@ import { Column, FinalTableData } from '../SharedTypes';
 interface SLATestListProps {
   readonly finalTableData: FinalTableData[];
   readonly addSlaTest: Function;
-  readonly columns: Column[];
 }
 
-export const SLATestList: React.FC<SLATestListProps> = ({ columns, finalTableData, addSlaTest }) => {
+const columns: Column[] = [
+  {
+    Header: 'NAME',
+    accessor: 'name' as const,
+  },
+  {
+    Header: 'SOURCE ORGANIZATION',
+    accessor: 'sourceOrg' as const,
+  },
+  {
+    Header: 'SOURCE NETWORK',
+    accessor: 'sourceNetwork' as const,
+  },
+  {
+    Header: 'SOURCE DEVICE',
+    accessor: 'sourceDevice' as const,
+  },
+  {
+    Header: 'DESTINATION',
+    accessor: 'destination' as const,
+  },
+  {
+    Header: 'AVERAGE QOE',
+    accessor: 'averageQoe' as const,
+  },
+];
+
+export const SLATestList: React.FC<SLATestListProps> = ({ finalTableData, addSlaTest }) => {
   const classes = PerformanceDashboardStyles();
 
   const [createToggle, setCreateToggle] = React.useState<boolean>(false);
