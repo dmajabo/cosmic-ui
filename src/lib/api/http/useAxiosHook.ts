@@ -40,9 +40,14 @@ export const useGet = <T = any>(): IApiRes<T> => {
     await axios
       .get(url, _header)
       .then((res: AxiosResponse<T>) => {
+        console.log(res);
         setResponse(res.data);
       })
       .catch(err => {
+        if (err.response && err.response.data && err.response.data.message) {
+          setError(err.response.data);
+          return;
+        }
         setError(err.toJSON());
       })
       .finally(() => {
@@ -72,6 +77,10 @@ export const usePost = <T = any, R = any>(): IApiRes<R> => {
         setResponse(res.data);
       })
       .catch(err => {
+        if (err.response && err.response.data && err.response.data.message) {
+          setError(err.response.data);
+          return;
+        }
         setError(err.toJSON());
       })
       .finally(() => {
@@ -100,6 +109,10 @@ export const useDelete = <T = any>(): IApiRes<T> => {
         setResponse(res.data);
       })
       .catch(err => {
+        if (err.response && err.response.data && err.response.data.message) {
+          setError(err.response.data);
+          return;
+        }
         setError(err.toJSON());
       })
       .finally(() => {
@@ -136,9 +149,17 @@ export const useGetTopology = <T = any>(): IApiRes<T> => {
         if (Array.isArray(err)) {
           const _obj: any = {};
           keys.forEach((key, i) => {
+            if (err[i].response && err[i].response.data && err[i].response.data.message) {
+              _obj[key] = err[i].response.data;
+              return;
+            }
             _obj[key] = err[i].toJSON();
           });
           setError(_obj);
+          return;
+        }
+        if (err.response && err.response.data && err.response.data.message) {
+          setError(err.response.data);
           return;
         }
         setError(err);

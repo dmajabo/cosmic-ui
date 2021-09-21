@@ -1,5 +1,5 @@
 import React from 'react';
-import { TableWrapperStyles } from 'app/components/Basic/Table/styles';
+import { CaptionRow, CaptionContent, TableWrapperStyles } from 'app/components/Basic/Table/styles';
 import { IRouteResDataItem, IRouteState } from 'lib/api/ApiModels/Metrics/apiModel';
 import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
 import { EmptyDataStyles, EmptyText } from 'app/components/Basic/NoDataStyles/NoDataStyles';
@@ -17,18 +17,24 @@ const RouteTable: React.FC<Props> = (props: Props) => {
   return (
     <TableWrapperStyles style={props.styles}>
       <TableContainer className={classes.container}>
+        {(props.data.name || props.data.extId) && (
+          <CaptionRow>
+            {props.data.name && (
+              <CaptionContent>
+                <span className="label">Name:</span>
+                <span className="highlightText">{props.data.name}</span>
+              </CaptionContent>
+            )}
+            {props.data.extId && (
+              <CaptionContent>
+                <span className="label">Id:</span>
+                <span className="highlightText">{props.data.extId}</span>
+              </CaptionContent>
+            )}
+          </CaptionRow>
+        )}
         <Table stickyHeader aria-label="sticky table" className={classes.table}>
           <TableHead>
-            <TableRow>
-              <TableCell className={classes.tableHeadCell} colSpan={3}>
-                <div>
-                  Name: <span className="highlightText">{props.data.name}</span>
-                </div>
-                <div>
-                  ExtId: <span className="highlightText">{props.data.extId}</span>
-                </div>
-              </TableCell>
-            </TableRow>
             <TableRow>
               <TableCell className={classes.tableHeadCell} style={{ minWidth: 110 }}>
                 Destination
