@@ -15,7 +15,6 @@ const MetricsTab: React.FC<IProps> = (props: IProps) => {
   const [dataItem, setDataItem] = React.useState<IDeviceNode>(null);
   React.useEffect(() => {
     const _param: IMetrickQueryParam = getTimeQueryMetricsParamFromRange(topology.timeRange, topology.selectedPeriod);
-    debugger;
     if (!isEqual(param, _param)) {
       setParam(_param);
     }
@@ -25,7 +24,6 @@ const MetricsTab: React.FC<IProps> = (props: IProps) => {
   React.useEffect(() => {
     if (props.dataItem && dataItem && props.dataItem.id !== dataItem.id) {
       const _param: IMetrickQueryParam = getTimeQueryMetricsParamFromRange(topology.timeRange, topology.selectedPeriod);
-      debugger;
       if (!isEqual(param, _param)) {
         setParam(_param);
       }
@@ -35,7 +33,6 @@ const MetricsTab: React.FC<IProps> = (props: IProps) => {
 
   React.useEffect(() => {
     const _param: IMetrickQueryParam = getTimeQueryMetricsParamFromRange(topology.timeRange, topology.selectedPeriod);
-    debugger;
     if (!isEqual(param, _param)) {
       setParam(_param);
     }

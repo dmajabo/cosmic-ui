@@ -70,8 +70,6 @@ const Map: React.FC<IProps> = (props: IProps) => {
 
   const onReloadData = async (startTime: Date | null) => {
     const param = createTopologyQueryParam(startTime);
-    console.log(startTime);
-    console.log(param);
     await onGetChainData([TopologyGroupApi.getAllGroups(), TopologyOrganizationApi.getAllOrganizations()], ['groups', 'organizations'], param);
   };
 

@@ -40,7 +40,6 @@ export const useGet = <T = any>(): IApiRes<T> => {
     await axios
       .get(url, _header)
       .then((res: AxiosResponse<T>) => {
-        console.log(res);
         setResponse(res.data);
       })
       .catch(err => {
