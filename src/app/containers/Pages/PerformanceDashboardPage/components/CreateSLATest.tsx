@@ -34,7 +34,7 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ organizations, add
   useEffect(() => {
     const organizationOptions = organizations.map(organization => {
       return {
-        value: `${organization.name}`,
+        value: `${organization.extId}`,
         label: `${organization.name}`,
       };
     });

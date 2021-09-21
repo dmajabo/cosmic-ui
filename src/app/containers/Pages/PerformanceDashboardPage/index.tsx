@@ -80,7 +80,7 @@ const PerformanceDashboardPage: React.FC<IProps> = (props: IProps) => {
               return {
                 id: test.testId,
                 name: test.name,
-                sourceOrg: test.sourceOrgId,
+                sourceOrg: selectedOrganization.name,
                 sourceNetwork: test.sourceNwExtId,
                 sourceDevice: allDevices,
                 destination: test.destination,
