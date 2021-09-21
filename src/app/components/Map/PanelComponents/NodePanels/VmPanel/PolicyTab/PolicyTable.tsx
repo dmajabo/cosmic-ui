@@ -1,7 +1,7 @@
 import React from 'react';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
-import { TableWrapperStyles } from 'app/components/Basic/Table/styles';
+import { TableHeaderStyles, TableWrapperStyles } from 'app/components/Basic/Table/styles';
 import { IVmRule } from 'lib/api/ApiModels/Metrics/apiModel';
 import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
@@ -13,24 +13,32 @@ interface Props {
   showLoader: boolean;
   error?: string;
   styles?: Object;
+  title: string;
 }
 
-const OutboundTable: React.FC<Props> = (props: Props) => {
+const PolicyTable: React.FC<Props> = (props: Props) => {
   const classes = TableStyles();
   return (
     <TableWrapperStyles style={props.styles}>
+      <TableHeaderStyles>{props.title}</TableHeaderStyles>
       <TableContainer className={classes.container}>
         <Table stickyHeader aria-label="sticky table" className={classes.table}>
           <TableHead>
-            <TableRow>
-              <TableCell className={classes.tableHeadCell}>#</TableCell>
-              <TableCell style={{ minWidth: '60px' }} className={classes.tableHeadCell}>
-                Policy
-              </TableCell>
-              <TableCell style={{ minWidth: '100px' }} className={classes.tableHeadCell}>
-                Aplication
-              </TableCell>
-            </TableRow>
+            <TableCell className={classes.tableHeadCell} style={{ minWidth: '20px' }}>
+              #
+            </TableCell>
+            <TableCell style={{ minWidth: '70px' }} className={classes.tableHeadCell}>
+              Policy
+            </TableCell>
+            <TableCell className={classes.tableHeadCell} style={{ minWidth: '110px' }}>
+              Protocol
+            </TableCell>
+            <TableCell style={{ minWidth: '110px' }} className={classes.tableHeadCell}>
+              Destination
+            </TableCell>
+            <TableCell className={classes.tableHeadCell} style={{ minWidth: '110px' }}>
+              Port Range
+            </TableCell>
           </TableHead>
           <TableBody>
             {props.data && props.data.length
@@ -39,7 +47,9 @@ const OutboundTable: React.FC<Props> = (props: Props) => {
                     <TableRow hover tabIndex={-1} key={`tableRow${row.id}`} className={classes.row}>
                       <TableCell className={classes.tableCell}>{rowIndex + 1}</TableCell>
                       <TableCell className={classes.tableCell}>Allow</TableCell>
-                      <TableCell className={classes.tableCell}>{row.id}</TableCell>
+                      <TableCell className={classes.tableCell}>{row.ipProtocol}</TableCell>
+                      <TableCell className={classes.tableCell}>{row.cidrs && row.cidrs.length ? row.cidrs[0].name : null}</TableCell>
+                      <TableCell className={classes.tableCell}>{row.fromPort === 0 && row.toPort === 0 ? 'All' : `${row.fromPort} - ${row.toPort}`}</TableCell>
                     </TableRow>
                   );
                 })
@@ -58,12 +68,12 @@ const OutboundTable: React.FC<Props> = (props: Props) => {
         )}
       </TableContainer>
       {props.showLoader && (
-        <AbsLoaderWrapper size={40} width="100%" height="100%">
-          <LoadingIndicator margin="auto" />
+        <AbsLoaderWrapper width="100%" height="calc(100% - 42px)" top="42px">
+          <LoadingIndicator margin="auto" width="24px" height="24px" />
         </AbsLoaderWrapper>
       )}
     </TableWrapperStyles>
   );
 };
 
-export default React.memo(OutboundTable);
+export default React.memo(PolicyTable);

@@ -119,22 +119,11 @@ const Map: React.FC<IProps> = (props: IProps) => {
               {topology.originData && (
                 <>
                   <HeadeerAction onShowPanel={onOpenPanel} onRefresh={onRefresh} />
-                  <Graph
-                    links={topology.links}
-                    devices={topology.devices}
-                    wedges={topology.wedges}
-                    vnets={topology.vnets}
-                    networksGroups={topology.networksGroups}
-                    isFullScreen={isFullScreen}
-                    onOpenFullScreen={onOpenFullScreen}
-                    onClickVm={onOpenVmPanel}
-                    onClickDevice={onOpenNodePanel}
-                    onClickWedge={onOpenNodePanel}
-                  />
+                  <Graph isFullScreen={isFullScreen} onOpenFullScreen={onOpenFullScreen} onClickVm={onOpenVmPanel} onClickDevice={onOpenNodePanel} onClickWedge={onOpenNodePanel} />
                 </>
               )}
               {loading && (
-                <AbsLoaderWrapper size={40}>
+                <AbsLoaderWrapper>
                   <LoadingIndicator margin="auto" />
                 </AbsLoaderWrapper>
               )}
