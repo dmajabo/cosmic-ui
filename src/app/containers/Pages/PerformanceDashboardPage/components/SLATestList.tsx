@@ -6,35 +6,45 @@ import ColumnsIcon from '../icons/columns.svg';
 import FilterIcon from '../icons/filter.svg';
 import Table from './Table';
 import { CreateSLATest } from './CreateSLATest';
-import { Organization } from '../SharedTypes';
-
-interface AverageQOE {
-  readonly packetLoss: number;
-  readonly latency: number;
-}
-
-interface RawData {
-  readonly id?: string;
-  readonly name: string;
-  readonly sourceOrg: string;
-  readonly sourceNetwork: string;
-  readonly sourceDevice: string;
-  readonly destination: string;
-  readonly interface?: string;
-  readonly description: string;
-  readonly averageQoe: AverageQOE;
-}
+import { Organization, Column, FinalTableData } from '../SharedTypes';
 
 interface SLATestListProps {
-  readonly rawData: RawData[];
-  readonly organizations: Organization[];
+  readonly finalTableData: FinalTableData[];
   readonly addSlaTest: Function;
+  readonly organizations: Organization[];
 }
 
-export const SLATestList: React.FC<SLATestListProps> = ({ organizations, rawData, addSlaTest }) => {
+const columns: Column[] = [
+  {
+    Header: 'NAME',
+    accessor: 'name' as const,
+  },
+  {
+    Header: 'SOURCE ORGANIZATION',
+    accessor: 'sourceOrg' as const,
+  },
+  {
+    Header: 'SOURCE NETWORK',
+    accessor: 'sourceNetwork' as const,
+  },
+  {
+    Header: 'SOURCE DEVICE',
+    accessor: 'sourceDevice' as const,
+  },
+  {
+    Header: 'DESTINATION',
+    accessor: 'destination' as const,
+  },
+  {
+    Header: 'AVERAGE QOE',
+    accessor: 'averageQoe' as const,
+  },
+];
+
+export const SLATestList: React.FC<SLATestListProps> = ({ organizations, finalTableData, addSlaTest }) => {
   const classes = PerformanceDashboardStyles();
 
-  const [createToggle, setCreateToggle] = React.useState(false);
+  const [createToggle, setCreateToggle] = React.useState<boolean>(false);
 
   const handleClose = () => {
     setCreateToggle(false);
@@ -43,43 +53,14 @@ export const SLATestList: React.FC<SLATestListProps> = ({ organizations, rawData
     setCreateToggle(!createToggle);
   };
 
-  const addTest = (value: RawData) => {
+  const addTest = (value: FinalTableData) => {
     addSlaTest(value);
     handleClose();
   };
 
-  const columns = useMemo(
-    () => [
-      {
-        Header: 'NAME',
-        accessor: 'name' as const,
-      },
-      {
-        Header: 'SOURCE ORGANIZATION',
-        accessor: 'sourceOrg' as const,
-      },
-      {
-        Header: 'SOURCE NETWORK',
-        accessor: 'sourceNetwork' as const,
-      },
-      {
-        Header: 'SOURCE DEVICE',
-        accessor: 'sourceDevice' as const,
-      },
-      {
-        Header: 'DESTINATION',
-        accessor: 'destination' as const,
-      },
-      {
-        Header: 'AVERAGE QOE',
-        accessor: 'averageQoe' as const,
-      },
-    ],
-    [],
-  );
   const data = useMemo(
     () =>
-      rawData.map(item => {
+      finalTableData.map(item => {
         return {
           name: item.name,
           sourceOrg: item.sourceOrg,
@@ -103,7 +84,7 @@ export const SLATestList: React.FC<SLATestListProps> = ({ organizations, rawData
           ),
         };
       }),
-    [rawData],
+    [finalTableData],
   );
 
   return (

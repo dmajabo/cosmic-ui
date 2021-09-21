@@ -49,10 +49,8 @@ const ChartContainer: React.FC<Props> = (props: Props) => {
       return;
     }
     const _param: IMetrickQueryParam = { metricname: key };
-    if (params && params.startTime) {
+    if (params) {
       _param.startTime = params.startTime;
-    }
-    if (params && params.endTime) {
       _param.endTime = params.endTime;
     }
     await onGet(MetricsApi.getMetricsById(props.id), _param);
@@ -71,8 +69,8 @@ const ChartContainer: React.FC<Props> = (props: Props) => {
             <Chart>{data && props.chartType === 'Line' && <LineChart dataValueSuffix={props.dataValueSuffix} inputData={data} chartWidth="348" chartHeight="280" />}</Chart>
           </>
         )}
-        {data === null && <EmptyText>No Data</EmptyText>}
-        {error && <ErrorMessage>{error.message}</ErrorMessage>}
+        {data === null && !error && !loading && <EmptyText>No Data</EmptyText>}
+        {error && !loading && <ErrorMessage>{error.message}</ErrorMessage>}
         {loading && (
           <AbsLoaderWrapper width="100%" height="100%">
             <LoadingIndicator margin="auto" />

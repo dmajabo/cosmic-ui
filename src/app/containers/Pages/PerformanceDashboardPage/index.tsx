@@ -3,32 +3,14 @@ import React, { useEffect, useState } from 'react';
 import { CreateSLATest } from './components/CreateSLATest';
 import { PerformanceDashboardStyles } from './PerformanceDashboardStyles';
 import { SLATestList } from './components/SLATestList';
+import { FinalTableData, Organization } from './SharedTypes';
 import { createApiClient } from './apiClient';
-import { Organization } from './SharedTypes';
 import { GetDevicesString, GetSelectedOrganization } from './components/filterFunctions';
-interface IProps {}
 
 interface TabPanelProps {
   children?: React.ReactNode;
-  index: any;
-  value: any;
-}
-
-interface AverageQOE {
-  readonly packetLoss: number;
-  readonly latency: number;
-}
-
-interface RawData {
-  readonly id?: string;
-  readonly name: string;
-  readonly sourceOrg: string;
-  readonly sourceNetwork: string;
-  readonly sourceDevice: string;
-  readonly destination: string;
-  readonly interface?: string;
-  readonly description: string;
-  readonly averageQoe: AverageQOE;
+  index: string;
+  value: string;
 }
 
 function TabPanel(props: TabPanelProps) {
@@ -48,13 +30,13 @@ function a11yProps(index: any) {
   };
 }
 
-const PerformanceDashboardPage: React.FC<IProps> = (props: IProps) => {
+const PerformanceDashboardPage: React.FC = () => {
   const classes = PerformanceDashboardStyles();
 
   const apiClient = createApiClient();
 
   const [addedTestCount, setAddedTestCount] = useState<number>(0);
-  const [rawData, setRawData] = useState<RawData[]>([]);
+  const [finalTableData, setFinalTableData] = useState<FinalTableData[]>([]);
   const [organizations, setOrganizations] = useState<Organization[]>([]);
 
   useEffect(() => {
@@ -74,7 +56,7 @@ const PerformanceDashboardPage: React.FC<IProps> = (props: IProps) => {
         const responseData = await apiClient.getSLATests();
         if (Object.keys(responseData).length > 0) {
           if (Array.isArray(responseData.slaTests) && responseData.slaTests.length) {
-            const testData: RawData[] = responseData.slaTests.map(test => {
+            const testData: FinalTableData[] = responseData.slaTests.map(test => {
               const selectedOrganization = GetSelectedOrganization(organizations, test.sourceOrgId);
               const allDevices: string = GetDevicesString(selectedOrganization);
               return {
@@ -92,7 +74,7 @@ const PerformanceDashboardPage: React.FC<IProps> = (props: IProps) => {
                 },
               };
             });
-            setRawData(testData);
+            setFinalTableData(testData);
           }
         } else {
           console.log('Error: No data Available');
@@ -116,10 +98,14 @@ const PerformanceDashboardPage: React.FC<IProps> = (props: IProps) => {
         <Tab value="sla_tests" label={<span className={classes.tabLabel}>SLA Tests</span>} wrapped {...a11yProps('sla_tests')} />
       </Tabs>
       <TabPanel value={tab} index={'sla_tests'}>
-        {rawData.length > 0 ? <SLATestList organizations={organizations} rawData={rawData} addSlaTest={addSlaTest} /> : <CreateSLATest organizations={organizations} addSlaTest={addSlaTest} />}
+        {finalTableData.length > 0 ? (
+          <SLATestList organizations={organizations} finalTableData={finalTableData} addSlaTest={addSlaTest} />
+        ) : (
+          <CreateSLATest organizations={organizations} addSlaTest={addSlaTest} />
+        )}
       </TabPanel>
     </div>
   );
 };
 
-export default React.memo(PerformanceDashboardPage);
+export default PerformanceDashboardPage;

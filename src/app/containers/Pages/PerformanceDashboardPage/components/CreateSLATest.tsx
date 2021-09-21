@@ -25,7 +25,19 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ organizations, add
   const [destination, setDestination] = useState<string>('');
   const [description, setDescription] = useState<string>('');
 
-  const [selectedOrganization, setSelectedOrganization] = useState<Organization>({});
+  const [selectedOrganization, setSelectedOrganization] = useState<Organization>({
+    id: '',
+    name: '',
+    description: '',
+    extId: '',
+    extType: '',
+    extUrl: '',
+    vnets: [],
+    wedges: [],
+    oedges: [],
+    devices: [],
+    vendorType: '',
+  });
   const [selectedOrganizationVnets, setSelectedOrganizationVnets] = useState([]);
 
   const [sourceOrganizationOptions, setSourceOrganizationOptions] = useState([]);
