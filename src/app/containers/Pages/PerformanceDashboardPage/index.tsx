@@ -49,10 +49,10 @@ const PerformanceDashboardPage: React.FC = () => {
   useEffect(() => {
     const getOrganizations = async () => {
       const responseData = await apiClient.getOrganizations();
-      const MerakiOrganizations = responseData.organizations.filter(organization => {
+      const merakiOrganizations = responseData.organizations.filter(organization => {
         return organization.vendorType === 'MERAKI';
       });
-      setOrganizations(MerakiOrganizations);
+      setOrganizations(merakiOrganizations);
     };
     getOrganizations();
   }, []);
