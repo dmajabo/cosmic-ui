@@ -22,7 +22,7 @@ const GroupDevicesContainer: React.FC<IProps> = (props: IProps) => {
           <DeviceLink key={`${link.id}`} dataItem={link} />
         ))}
         {props.dataItem.devices.map((device, index) => (
-          <Device key={`${device.id}`} dataItem={device} index={index} disabled onClickDevice={onClickDevice} onUpdateNode={() => {}} />
+          <Device key={`${device.id}`} dataItem={device} index={index} disabled onClickDevice={onClickDevice} />
         ))}
       </g>
     </ContainerWrapper>

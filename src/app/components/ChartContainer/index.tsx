@@ -74,7 +74,7 @@ const ChartContainer: React.FC<Props> = (props: Props) => {
         {data === null && <EmptyText>No Data</EmptyText>}
         {error && <ErrorMessage>{error.message}</ErrorMessage>}
         {loading && (
-          <AbsLoaderWrapper size={40} width="100%" height="100%">
+          <AbsLoaderWrapper width="100%" height="100%">
             <LoadingIndicator margin="auto" />
           </AbsLoaderWrapper>
         )}

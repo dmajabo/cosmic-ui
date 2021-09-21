@@ -7,13 +7,14 @@ import CISCO_MERAKI from './Cisco_MERAKI';
 import { Transition } from 'react-transition-group';
 import GroupDevicesContainer from './GroupDevicesContainer';
 import * as d3 from 'd3';
+import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
 interface IProps {
   index: number;
   dataItem: INetworkGroupNode;
-  onUpdateNode: (_item: INetworkGroupNode, _position: IPosition, isDrag: boolean, isExpand: boolean) => void;
   onClickDevice: (dev: IDeviceNode) => void;
 }
 const GroupNode: React.FC<IProps> = (props: IProps) => {
+  const { topology } = useTopologyDataContext();
   const { onUpdate, onUnsubscribeDrag } = useDrag(
     {
       id: `${NODES_CONSTANTS.NETWORK_GROUP.type}${props.dataItem.id}`,
@@ -44,7 +45,7 @@ const GroupNode: React.FC<IProps> = (props: IProps) => {
     if (props.dataItem.x === _pos.x && props.dataItem.y === _pos.y) {
       return;
     }
-    props.onUpdateNode(props.dataItem, _pos, true, false);
+    topology?.onUpdateGroupNode(props.dataItem, _pos, true, false);
   };
 
   // const onTogglePopup = (e: React.MouseEvent, show: boolean) => {
@@ -59,7 +60,7 @@ const GroupNode: React.FC<IProps> = (props: IProps) => {
     //   return;
     // }
     d3.select(`#${NODES_CONSTANTS.NETWORK_GROUP.type}${props.dataItem.id}`).raise();
-    props.onUpdateNode(props.dataItem, null, false, true);
+    topology?.onUpdateGroupNode(props.dataItem, null, false, true);
   };
 
   const onClickDevice = (dev: IDeviceNode) => {
@@ -71,7 +72,7 @@ const GroupNode: React.FC<IProps> = (props: IProps) => {
   }
   return (
     <>
-      <g id={`${NODES_CONSTANTS.NETWORK_GROUP.type}${props.dataItem.id}`} transform={`translate(${pos.x}, ${pos.y})`} data-type={NODES_CONSTANTS.NETWORK_GROUP.type}>
+      <g id={`${NODES_CONSTANTS.NETWORK_GROUP.type}${props.dataItem.id}`} className="topologyNode" transform={`translate(${pos.x}, ${pos.y})`} data-type={NODES_CONSTANTS.NETWORK_GROUP.type}>
         <Transition mountOnEnter unmountOnExit timeout={100} in={!props.dataItem.collapsed}>
           {state => <GroupDevicesContainer dataItem={props.dataItem} className={state} onClickDevice={onClickDevice} />}
         </Transition>

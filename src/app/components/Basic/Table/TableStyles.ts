@@ -6,7 +6,7 @@ export const TableStyles = makeStyles(
       container: {
         width: '100%',
         background: 'var(--_tableBg)',
-        minHeight: 300,
+        minHeight: 88,
         position: 'relative',
         borderRadius: '6px 6px 0 0',
         border: '2px solid var(--_tableBg)',
@@ -25,6 +25,7 @@ export const TableStyles = makeStyles(
         color: 'var(--_disabledTextColor)',
         padding: '12px',
         background: 'var(--_tableBg)',
+        fontFamily: 'DMSans',
       },
       tableCell: {
         background: 'transparent',
@@ -36,6 +37,7 @@ export const TableStyles = makeStyles(
         fontSize: 14,
         lineHeight: '18px',
         whiteSpace: 'nowrap',
+        fontFamily: 'DMSans',
       },
       tableCellStatusActive: {
         color: 'var(--_successColor)',

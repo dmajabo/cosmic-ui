@@ -3,6 +3,7 @@ import { IWedgeNode } from 'lib/models/topology';
 import { IPosition, NODES_CONSTANTS } from 'app/components/Map/model';
 import { useDrag } from 'app/components/Map/hooks/useDrag';
 import TGW from './TGW';
+import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
 // import NodeTooltipPortal from 'components/Basic/NodeTooltipPortal';
 // import WedgePopup from '../../Popups/WedgePopup';
 // import { IPopupDisplay } from 'lib/models/general';
@@ -10,10 +11,10 @@ import TGW from './TGW';
 interface IProps {
   index: number;
   dataItem: IWedgeNode;
-  onUpdateNode: (_node: IWedgeNode, _position: IPosition) => void;
   onClick: (vm: IWedgeNode) => void;
 }
 const WEdgeNode: React.FC<IProps> = (props: IProps) => {
+  const { topology } = useTopologyDataContext();
   const { onUpdate, onUnsubscribeDrag } = useDrag(
     {
       id: `${NODES_CONSTANTS.WEDGE.type}${props.dataItem.id}`,
@@ -45,7 +46,7 @@ const WEdgeNode: React.FC<IProps> = (props: IProps) => {
     if (props.dataItem.x === _pos.x && props.dataItem.y === _pos.y) {
       return;
     }
-    props.onUpdateNode(props.dataItem, _pos);
+    topology?.onUpdateWedgeCoord(props.dataItem, _pos);
   };
 
   const onClick = () => {
@@ -62,7 +63,7 @@ const WEdgeNode: React.FC<IProps> = (props: IProps) => {
   }
   return (
     <>
-      <g id={`${NODES_CONSTANTS.WEDGE.type}${props.dataItem.id}`} transform={`translate(${pos.x}, ${pos.y})`} data-type={NODES_CONSTANTS.WEDGE.type}>
+      <g id={`${NODES_CONSTANTS.WEDGE.type}${props.dataItem.id}`} className="topologyNode" transform={`translate(${pos.x}, ${pos.y})`} data-type={NODES_CONSTANTS.WEDGE.type}>
         <g transform={`scale(${props.dataItem.scaleFactor || 1})`}>
           <g
             // onMouseEnter={e => onTogglePopup(e, true)}
