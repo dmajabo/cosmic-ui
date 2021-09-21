@@ -174,19 +174,19 @@ export const setUpWedgesCoord = (items: IWedgeNode[]) => {
   });
 };
 
-const getVPCHeight = (items: IVnetNode[], _height: number) => {
-  if (!items || !items.length) {
-    return null;
-  }
-  const itemsHeight = items.reduce((v, n, i) => {
-    if (n.collapsed || !n.vms || !n.vms.length) {
-      return v + 50;
-    }
-    const _size = getVPCContainerSize(n.vms.length);
-    return v + _size.r;
-  }, 0);
-  return Math.max(_height, itemsHeight);
-};
+// const getVPCHeight = (items: IVnetNode[], _height: number) => {
+//   if (!items || !items.length) {
+//     return null;
+//   }
+//   const itemsHeight = items.reduce((v, n, i) => {
+//     if (n.collapsed || !n.vms || !n.vms.length) {
+//       return v + 50;
+//     }
+//     const _size = getVPCContainerSize(n.vms.length);
+//     return v + _size.r;
+//   }, 0);
+//   return Math.max(_height, itemsHeight);
+// };
 
 export const setUpVnetCoord = (items: IVnetNode[]) => {
   if (!items || !items.length) {

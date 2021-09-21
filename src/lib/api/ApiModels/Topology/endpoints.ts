@@ -22,12 +22,17 @@ export const TopologyGroupApi = {
 
 export const createTopologyQueryParam = (startTime: Date): ITopologyQueryParam => {
   if (startTime) {
-    return { timestamp: toTimestamp(startTime) };
+    const ms = toTimestamp(startTime);
+    if (!ms) return null;
+    return { timestamp: ms };
   }
   return null;
 };
 
-const toTimestamp = (data: Date): number => {
-  var datum = new Date(data.toUTCString());
+export const toTimestamp = (date: Date): number => {
+  if (!date) {
+    return null;
+  }
+  var datum = new Date(date.toUTCString());
   return Math.round(datum.getTime() / 1000);
 };

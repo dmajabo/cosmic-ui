@@ -8,8 +8,9 @@ import TimeSlider from 'app/components/Inputs/TimeSlider';
 import CalendarComponent from 'app/components/Inputs/Calendar';
 import { SLIDER_RANGE_INPUT } from 'app/components/Inputs/TimeSlider/models';
 import { ITimeMinMaxRange } from 'app/components/Inputs/TimeSlider/helpers';
-import { getTimeQueryMetricsString } from 'lib/api/ApiModels/Metrics/queryTimeRangeHelper';
-import { format } from 'date-fns';
+// import { getTimeQueryMetricsString } from 'lib/api/ApiModels/Metrics/queryTimeRangeHelper';
+// import { format } from 'date-fns';
+// import { toTimestamp } from 'lib/api/ApiModels/Topology/endpoints';
 
 interface IProps {
   show: boolean;
@@ -70,12 +71,13 @@ const FooterAction: React.FC<IProps> = (props: IProps) => {
   return (
     <PanelWrapperStyles show={props.show} type={IPanelBarLayoutTypes.HORIZONTAL}>
       <Wrapper>
-        <div style={{ position: 'absolute', top: '-60px', left: '20px', fontSize: '12px' }}>
+        {/* <div style={{ position: 'absolute', top: '-91px', left: '20px', fontSize: '12px' }}>
           <div>Selected calendar day: {selectedTime ? format(selectedTime, 'dd MMM yyyy h:mm aa') : 'current day. In Query - params will be empty'}</div>
-          <div>Start Time in query: {topology && topology.timeRange ? format(topology.timeRange.min, 'yyyy MMM dd h:mm aa') : 'current day. In Query - params will be empty'}</div>
-          <div>End Time in query: {topology && topology.timeRange ? format(topology.timeRange.max, 'yyyy MMM dd h:mm aa') : 'current day. In Query - params will be empty'}</div>
-          <div>Query: {topology && topology.timeRange ? getTimeQueryMetricsString(topology.timeRange) : 'current day. In Query - params will be empty'}</div>
-        </div>
+          <div>Start Time in range: {topology && topology.timeRange ? format(topology.timeRange.min, 'yyyy MMM dd h:mm aa') : 'current day. In Query - params will be empty'}</div>
+          <div>End Time in range: {topology && topology.timeRange ? format(topology.timeRange.max, 'yyyy MMM dd h:mm aa') : 'current day. In Query - params will be empty'}</div>
+          <div>Query for metrics: {topology && topology.timeRange ? getTimeQueryMetricsString(topology.timeRange) : 'current day. In Query - params will be empty'}</div>
+          <div>Query for topology: {selectedTime ? toTimestamp(selectedTime) : 'Query - params will be empty'}</div>
+        </div> */}
         <Toogle selectedValue={selectedPeriod} values={TIME_PERIOD} onChange={onChangeTimePeriod} />
         <CalendarComponent onChange={onSetCurrentDay} selectedDay={selectedTime} />
         <SliderWrapper>
