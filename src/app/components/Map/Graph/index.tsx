@@ -4,9 +4,9 @@ import GContainer from '../Containers/GContainer/GContainer';
 import TopologyLink from '../Containers/Links/TopologyLink';
 import Device from '../Containers/Nodes/Device';
 import GroupNode from '../Containers/Nodes/GroupNode';
-import { IPosition, TOPOLOGY_IDS } from '../model';
+import { TOPOLOGY_IDS } from '../model';
 import { StyledMap, ZoomButtonsWrapper } from '../styles';
-import { IDeviceNode, ILink, INetworkGroupNode, IVM_PanelDataNode, IVnetNode, IWedgeNode, TopologyMetricsPanelTypes } from 'lib/models/topology';
+import { IDeviceNode, IVM_PanelDataNode, IWedgeNode, TopologyMetricsPanelTypes } from 'lib/models/topology';
 import WEdgeNode from '../Containers/Nodes/WEdge';
 import VNetNode from '../Containers/Nodes/VNet';
 import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
@@ -14,11 +14,6 @@ import { useZoom } from '../hooks/useZoom';
 import IconButton from 'app/components/Buttons/IconButton';
 import { zoomInIcon, zoomOutIcon, zoomFullScreenIcon } from 'app/components/SVGIcons/zoom';
 interface Props {
-  links: ILink[];
-  devices: IDeviceNode[];
-  vnets: IVnetNode[];
-  wedges: IWedgeNode[];
-  networksGroups: INetworkGroupNode[];
   isFullScreen: boolean;
   onOpenFullScreen: () => void;
   onClickVm: (_vm: IVM_PanelDataNode) => void;
@@ -37,33 +32,15 @@ const Graph: React.FC<Props> = (props: Props) => {
     };
   }, []);
 
-  const onClickVm = (node: IVM_PanelDataNode) => {
+  const onClickVm = React.useCallback((node: IVM_PanelDataNode) => {
     props.onClickVm(node);
-  };
-
-  const onClickDevice = (dev: IDeviceNode) => {
+  }, []);
+  const onClickDevice = React.useCallback((dev: IDeviceNode) => {
     props.onClickDevice(dev, TopologyMetricsPanelTypes.Device);
-  };
-
-  const onClickWedge = (wedge: IWedgeNode) => {
+  }, []);
+  const onClickWedge = React.useCallback((wedge: IWedgeNode) => {
     props.onClickWedge(wedge, TopologyMetricsPanelTypes.Wedge);
-  };
-
-  const onUpdateDeviceCoord = (_item: IDeviceNode, _position: IPosition) => {
-    topology?.onUpdateDeviceCoord(_item, _position);
-  };
-
-  const onUpdateWedgeCoord = (_item: IWedgeNode, _position: IPosition) => {
-    topology?.onUpdateWedgeCoord(_item, _position);
-  };
-
-  const onUpdateVnetNode = (_item: IVnetNode, _position: IPosition, isDrag: boolean, isExpand: boolean) => {
-    topology?.onUpdateVnetNode(_item, _position, isDrag, isExpand);
-  };
-
-  const onUpdateGroupNode = (_item: INetworkGroupNode, _position: IPosition, isDrag: boolean, isExpand: boolean) => {
-    topology?.onUpdateGroupNode(_item, _position, isDrag, isExpand);
-  };
+  }, []);
 
   const onOpenFullScreen = () => {
     props.onOpenFullScreen();
@@ -82,31 +59,30 @@ const Graph: React.FC<Props> = (props: Props) => {
       >
         {/* <DefsComponent /> */}
         <GContainer id={TOPOLOGY_IDS.G_ROOT}>
-          <>
-            <g id={TOPOLOGY_IDS.LINKS_ROOT}>{props.links && props.links.length ? props.links.map((link, index) => <TopologyLink dataItem={link} key={`link${link.id}${index}`} />) : null}</g>
-            <g id={TOPOLOGY_IDS.NODES_ROOT}>
-              <g id="devices">
-                {props.devices &&
-                  props.devices.map((device, index) => <Device key={`${device.id}`} dataItem={device} index={index} onUpdateNode={onUpdateDeviceCoord} onClickDevice={onClickDevice} />)}
+          {topology && (
+            <>
+              <g id={TOPOLOGY_IDS.LINKS_ROOT}>
+                {topology.links && topology.links.length ? topology.links.map((link, index) => <TopologyLink dataItem={link} key={`link${link.id}${index}`} />) : null}
               </g>
-              <g id="vnets">
-                {props.vnets.map((vnet, index) => (
-                  <VNetNode key={`${vnet.id}`} dataItem={vnet} index={index} onUpdateNode={onUpdateVnetNode} onClickVm={onClickVm} />
-                ))}
-              </g>
-              <g id="wedges">
-                {/* {props.dataItem.wedges.length  && <circle fill="red" fillOpacity="0.5" r="184" cx={props.dataItem.x + 184 + 100} cy={props.dataItem.y + 70} />} */}
-                {props.wedges && props.wedges.map((wedge, index) => <WEdgeNode key={`${wedge.id}`} dataItem={wedge} index={index} onUpdateNode={onUpdateWedgeCoord} onClick={onClickWedge} />)}
-              </g>
-              {/* {topology?.originData && topology?.originData.organizations.map((dataItem, index) => (
+              <g id={TOPOLOGY_IDS.NODES_ROOT}>
+                <g id="devices">{topology.devices && topology.devices.map((device, index) => <Device key={`${device.id}`} dataItem={device} index={index} onClickDevice={onClickDevice} />)}</g>
+                <g id="vnets">
+                  {topology.vnets.map((vnet, index) => (
+                    <VNetNode key={`${vnet.id}`} dataItem={vnet} index={index} onClickVm={onClickVm} />
+                  ))}
+                </g>
+                <g id="wedges">
+                  {/* {props.dataItem.wedges.length  && <circle fill="red" fillOpacity="0.5" r="184" cx={props.dataItem.x + 184 + 100} cy={props.dataItem.y + 70} />} */}
+                  {topology.wedges && topology.wedges.map((wedge, index) => <WEdgeNode key={`${wedge.id}`} dataItem={wedge} index={index} onClick={onClickWedge} />)}
+                </g>
+                {/* {topology?.originData && topology?.originData.organizations.map((dataItem, index) => (
                           <Organization key={`${dataItem.id}`} dataItem={dataItem} index={index} onClickVm={onClickVm} />
                         ))} */}
-              {props.networksGroups &&
-                props.networksGroups.map((dataItem, index) => (
-                  <GroupNode key={`group${dataItem.id}${index}`} dataItem={dataItem} index={index} onUpdateNode={onUpdateGroupNode} onClickDevice={onClickDevice} />
-                ))}
-            </g>
-          </>
+                {topology.networksGroups &&
+                  topology.networksGroups.map((dataItem, index) => <GroupNode key={`group${dataItem.id}${index}`} dataItem={dataItem} index={index} onClickDevice={onClickDevice} />)}
+              </g>
+            </>
+          )}
         </GContainer>
       </StyledMap>
       <ZoomButtonsWrapper>
