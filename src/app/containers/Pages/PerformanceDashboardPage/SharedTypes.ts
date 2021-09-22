@@ -152,6 +152,9 @@ interface AvgMetric {
 export interface GetAvgMetricsResponse {
   readonly avgMetric?: AvgMetric;
 }
+
+export interface DeleteSLATestResponse {}
+
 export interface AverageQoe {
   readonly packetLoss: number;
   readonly latency: number;

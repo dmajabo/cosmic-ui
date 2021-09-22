@@ -40,6 +40,7 @@ const PerformanceDashboardPage: React.FC = () => {
   const apiClient = createApiClient();
 
   const [addedTestCount, setAddedTestCount] = useState<number>(0);
+  const [deletedTestCount, setDeletedTestCount] = useState<number>(0);
   const [finalTableData, setFinalTableData] = useState<FinalTableData[]>([]);
   const [tempFinalTableData, setTempFinalTableData] = useState<FinalTableData[]>([]);
   const [packetLossData, setPacketLossData] = useState<KeyValue>({});
@@ -87,7 +88,7 @@ const PerformanceDashboardPage: React.FC = () => {
       };
       getSLATests();
     }
-  }, [organizations, addedTestCount]);
+  }, [organizations, addedTestCount, deletedTestCount]);
 
   //TODO: Refactor below API calls with Promise.all
   const packetLoss = async () => {
@@ -126,9 +127,7 @@ const PerformanceDashboardPage: React.FC = () => {
   }, [tempFinalTableData]);
 
   const addSlaTest = (value: number) => {
-    setTimeout(() => {
-      setAddedTestCount(addedTestCount + value);
-    }, 500);
+    setAddedTestCount(addedTestCount + value);
   };
 
   const tab = 'sla_tests';

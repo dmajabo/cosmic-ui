@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig } from 'axios';
-import { CreateSLATestRequest, CreateSLATestResponse, GetAvgMetricsResponse, GetOrganizationResponse, GetSLATestResponse, SLATestMetricsResponse } from './SharedTypes';
+import { CreateSLATestRequest, CreateSLATestResponse, DeleteSLATestResponse, GetAvgMetricsResponse, GetOrganizationResponse, GetSLATestResponse, SLATestMetricsResponse } from './SharedTypes';
 
 const BASE_URL = 'http://a988b9b03ef8d4b518a3d50f0abbe9ad-780e920b5d005099.elb.us-east-1.amazonaws.com';
 
@@ -11,6 +11,7 @@ interface ApiClient {
   readonly getLatencyMetrics: (deviceId: string, destination: string, startTime: string) => Promise<SLATestMetricsResponse>;
   readonly getAvgPacketLoss: (sourceNw: string, destination: string) => Promise<GetAvgMetricsResponse>;
   readonly getAvgLatency: (sourceNw: string, destination: string) => Promise<GetAvgMetricsResponse>;
+  readonly deleteSLATest: (testId: string) => Promise<DeleteSLATestResponse>;
 }
 
 const PATHS = Object.freeze({
@@ -110,6 +111,15 @@ export const createApiClient = (): ApiClient => {
     }
   }
 
+  async function deleteSLATest(testId: string): Promise<DeleteSLATestResponse> {
+    try {
+      const response = await axios.delete<CreateSLATestResponse>(`/policy/api/v1/policy/performance/sla-tests/${testId}`, config);
+      return response.data;
+    } catch (error) {
+      return {};
+    }
+  }
+
   return {
     getOrganizations,
     getSLATests,
@@ -118,5 +128,6 @@ export const createApiClient = (): ApiClient => {
     getLatencyMetrics,
     getAvgPacketLoss,
     getAvgLatency,
+    deleteSLATest,
   };
 };

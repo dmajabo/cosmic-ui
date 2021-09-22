@@ -78,7 +78,7 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ organizations, add
     setDescription('');
   };
 
-  const handleFormSubmit = () => {
+  const handleFormSubmit = async () => {
     const testData: SLATest = {
       testId: '',
       name: name,
@@ -91,7 +91,7 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ organizations, add
     const submitData: CreateSLATestRequest = {
       sla_test: testData,
     };
-    apiClient.createSLATest(submitData);
+    await apiClient.createSLATest(submitData);
     clearFormFields();
     addSlaTest(1);
   };
