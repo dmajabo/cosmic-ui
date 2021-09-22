@@ -4,51 +4,32 @@ import { createApiClient } from '../apiClient';
 import { PerformanceDashboardStyles } from '../PerformanceDashboardStyles';
 import { MetricsLineChart } from './MetricsLineChart';
 import InfoIcon from '../icons/info.svg';
-
-interface SelectedRow {
-  readonly name: string;
-  readonly sourceOrg: string;
-  readonly sourceNetwork: string;
-  readonly sourceDevice: string;
-  readonly destination: string;
-  readonly averageQoe: JSX.Element;
-}
+import LoadingIndicator from '../../../../components/Loading';
+import { MetricKeyValue } from './PacketLoss';
+import { Data } from './Table';
 
 interface LatencyProps {
-  readonly selectedRows: SelectedRow[];
+  readonly selectedRows: Data[];
   readonly timeRange: string;
-}
-
-interface DataMetrics {
-  readonly time: string;
-  readonly value: string;
-}
-interface LatencyMetrics {
-  readonly deviceId: string;
-  readonly metric: DataMetrics[];
 }
 
 export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange }) => {
   const classes = PerformanceDashboardStyles();
 
-  const [latencyMetrics, setLatencyMetrics] = useState<LatencyMetrics[]>([]);
+  const [latencyData, setLatencyData] = useState<MetricKeyValue>({});
 
   const apiClient = createApiClient();
   useEffect(() => {
     if (selectedRows.length > 0) {
-      selectedRows.forEach(row => {
-        const getLatencyMetrics = async () => {
-          const responseData = await apiClient.getLatencyMetrics(row.sourceDevice, row.destination, timeRange);
-          const deviceLatencyMetrics: LatencyMetrics = {
-            deviceId: responseData.metrics.resourceId,
-            metric: responseData.metrics.keyedmap[0].ts,
-          };
-          setLatencyMetrics([deviceLatencyMetrics]);
-        };
-        getLatencyMetrics();
-      });
-    } else {
-      setLatencyMetrics([]);
+      const getLatencyMetrics = async () => {
+        const latencyChartData: MetricKeyValue = {};
+        for (let i = 0; i < selectedRows.length; i++) {
+          const responseData = await apiClient.getLatencyMetrics(selectedRows[i].sourceDevice, selectedRows[i].destination, timeRange);
+          latencyChartData[selectedRows[i].id] = responseData.metrics.keyedmap[0].ts;
+        }
+        setLatencyData(latencyChartData);
+      };
+      getLatencyMetrics();
     }
   }, [selectedRows, timeRange]);
 
@@ -66,7 +47,19 @@ export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange }) => 
         </div>
       </div>
       <div className={classes.lineChartContainer}>
-        <MetricsLineChart dataValueSuffix="ms" inputData={latencyMetrics} />
+        {selectedRows.length > 0 ? (
+          Object.keys(latencyData).length === selectedRows.length ? (
+            <MetricsLineChart dataValueSuffix="ms" selectedRows={selectedRows} inputData={latencyData} />
+          ) : (
+            <div className={classes.noChartContainer}>
+              <LoadingIndicator />
+            </div>
+          )
+        ) : (
+          <div className={classes.noChartContainer}>
+            <Typography className={classes.noChartText}>To see the data select SLA Tests on top</Typography>
+          </div>
+        )}
       </div>
     </div>
   );

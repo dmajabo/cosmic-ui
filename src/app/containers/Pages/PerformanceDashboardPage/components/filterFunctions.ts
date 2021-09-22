@@ -1,4 +1,3 @@
-import React from 'react';
 import { Organization } from '../SharedTypes';
 
 export const GetSelectedOrganization = (organizations: Organization[], orgId: string) => {

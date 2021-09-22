@@ -4,7 +4,7 @@ import React, { useMemo, useState } from 'react';
 import { PerformanceDashboardStyles } from '../PerformanceDashboardStyles';
 import ColumnsIcon from '../icons/columns.svg';
 import FilterIcon from '../icons/filter.svg';
-import Table from './Table';
+import Table, { Data } from './Table';
 import { CreateSLATest } from './CreateSLATest';
 import { Organization, Column, FinalTableData } from '../SharedTypes';
 import { PacketLoss } from './PacketLoss';
@@ -24,15 +24,6 @@ interface TabPanelProps {
   readonly children?: React.ReactNode;
   readonly index: string;
   readonly value: string;
-}
-
-interface SelectedRow {
-  readonly name: string;
-  readonly sourceOrg: string;
-  readonly sourceNetwork: string;
-  readonly sourceDevice: string;
-  readonly destination: string;
-  readonly averageQoe: JSX.Element;
 }
 
 function TabPanel(props: TabPanelProps) {
@@ -84,7 +75,7 @@ export const SLATestList: React.FC<SLATestListProps> = ({ latencyData, packetLos
 
   const [createToggle, setCreateToggle] = React.useState<boolean>(false);
   const [tab, setTab] = useState<string>('packetLoss');
-  const [selectedRows, setSelectedRows] = useState<SelectedRow[]>([]);
+  const [selectedRows, setSelectedRows] = useState<Data[]>([]);
   const [timeRange, setTimeRange] = useState<string>('-7d');
 
   const handleTabChange = (event, newValue: string) => {
@@ -103,7 +94,7 @@ export const SLATestList: React.FC<SLATestListProps> = ({ latencyData, packetLos
     handleClose();
   };
 
-  const onSelectedRowsUpdate = (value: SelectedRow[]) => {
+  const onSelectedRowsUpdate = (value: Data[]) => {
     setSelectedRows(value);
   };
 
@@ -121,9 +112,9 @@ export const SLATestList: React.FC<SLATestListProps> = ({ latencyData, packetLos
             <div className={classes.flexContainer}>
               <div className={classes.averageQoeText}>
                 <span>Packet Loss:</span>
-                <span className={classes.packetLossValueText}>{`${packetLossData[item.id] || '-'}%`}</span>
+                <span className={classes.packetLossValueText}>{`${isNaN(Number(packetLossData[item.id])) ? '-' : Number(packetLossData[item.id])}%`}</span>
                 <span>Latency:</span>
-                <span className={classes.latencyValueText}>{`${Number(latencyData[item.id]).toFixed(2) || '-'}ms`}</span>
+                <span className={classes.latencyValueText}>{`${isNaN(Number(latencyData[item.id])) ? '-' : Number(latencyData[item.id]).toFixed(2)}ms`}</span>
               </div>
               <div>
                 <IconButton aria-controls="widget-menu" aria-haspopup="true">
