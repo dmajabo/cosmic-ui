@@ -103,12 +103,62 @@ export interface GetOrganizationResponse {
   readonly organizations?: Organization[];
 }
 
+export interface SLATest {
+  readonly testId: string;
+  readonly name: string;
+  readonly sourceOrgId: string;
+  readonly sourceNwExtId: string;
+  readonly destination: string;
+  readonly interface: string;
+  readonly description: string;
+}
+
+export interface GetSLATestResponse {
+  readonly slaTests?: SLATest[];
+}
+
+export interface CreateSLATestRequest {
+  readonly sla_test: SLATest;
+}
+
+export interface CreateSLATestResponse {
+  readonly id?: string;
+}
+
+interface Data {
+  readonly time: string;
+  readonly value: string;
+}
+
+interface KeyedMap {
+  readonly key: string;
+  readonly ts: Data[];
+}
+
+interface SLATestMetrics {
+  readonly resourceId: string;
+  readonly keyedmap: KeyedMap[];
+}
+
+export interface SLATestMetricsResponse {
+  readonly metrics?: SLATestMetrics;
+}
+
+interface AvgMetric {
+  readonly avgVal: string;
+  readonly resourceMetric: SLATestMetrics[];
+}
+
+export interface GetAvgMetricsResponse {
+  readonly avgMetric?: AvgMetric;
+}
 export interface AverageQoe {
   readonly packetLoss: number;
   readonly latency: number;
 }
 
 export interface FinalTableData {
+  readonly id: string;
   readonly name: string;
   readonly sourceOrg: string;
   readonly sourceNetwork: string;

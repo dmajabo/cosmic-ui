@@ -2,17 +2,19 @@ import { Button, Typography } from '@material-ui/core';
 import React, { useState, useEffect } from 'react';
 import { PerformanceDashboardStyles } from '../PerformanceDashboardStyles';
 import Select from 'react-select';
-import { FinalTableData, Organization } from '../SharedTypes';
+import { CreateSLATestRequest, Organization, SLATest } from '../SharedTypes';
 import { createApiClient } from '../apiClient';
 import CloseIcon from '../icons/close.svg';
+import { GetSelectedOrganization } from './filterFunctions';
 
 interface CreateSLATestProps {
   readonly addSlaTest: Function;
+  readonly organizations: Organization[];
   readonly popup?: boolean;
   readonly closeSlaTest?: Function;
 }
 
-export const CreateSLATest: React.FC<CreateSLATestProps> = ({ addSlaTest, closeSlaTest, popup }) => {
+export const CreateSLATest: React.FC<CreateSLATestProps> = ({ organizations, addSlaTest, closeSlaTest, popup }) => {
   const classes = PerformanceDashboardStyles();
 
   const apiClient = createApiClient();
@@ -20,46 +22,42 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ addSlaTest, closeS
   const [name, setName] = useState<string>('');
   const [sourceOrg, setSourceOrg] = useState<string>('');
   const [sourceNetwork, setSourceNetwork] = useState<string>('');
-  const [sourceDevice, setSourceDevice] = useState<string>('');
   const [destination, setDestination] = useState<string>('');
   const [description, setDescription] = useState<string>('');
 
-  const [organizations, setOrganizations] = useState<Organization[]>([]);
-  const [selectedOrganization, setSelectedOrganization] = useState<Organization>(null);
+  const [selectedOrganization, setSelectedOrganization] = useState<Organization>({
+    id: '',
+    name: '',
+    description: '',
+    extId: '',
+    extType: '',
+    extUrl: '',
+    vnets: [],
+    wedges: [],
+    oedges: [],
+    devices: [],
+    vendorType: '',
+  });
   const [selectedOrganizationVnets, setSelectedOrganizationVnets] = useState([]);
 
   const [sourceOrganizationOptions, setSourceOrganizationOptions] = useState([]);
   const [sourceNetworkOptions, setSourceNetworkOptions] = useState([]);
 
   useEffect(() => {
-    const getOrganizations = async () => {
-      const responseData = await apiClient.getOrganizations();
-      const merakiOrganizations = responseData.organizations.filter(organization => {
-        return organization.vendorType === 'MERAKI';
-      });
-      setOrganizations(merakiOrganizations);
-    };
-    getOrganizations();
-  }, []);
-
-  useEffect(() => {
     const organizationOptions = organizations.map(organization => {
       return {
-        value: `${organization.name} ${organization.id}`,
-        label: `${organization.name} ${organization.id}`,
+        value: `${organization.extId}`,
+        label: `${organization.name}`,
       };
     });
     setSourceOrganizationOptions(organizationOptions);
   }, [organizations]);
 
   useEffect(() => {
-    const selectedOrganization = organizations.filter(organization => {
-      return `${organization.name} ${organization.id}` === sourceOrg;
-    });
-
-    if (selectedOrganization.length > 0) {
-      setSelectedOrganization(selectedOrganization[0]);
-      setSelectedOrganizationVnets(selectedOrganization[0].vnets);
+    if (organizations.length > 0 && sourceOrg !== '') {
+      const selectedOrganization = GetSelectedOrganization(organizations, sourceOrg);
+      setSelectedOrganization(selectedOrganization);
+      setSelectedOrganizationVnets(selectedOrganization.vnets);
     }
   }, [sourceOrg]);
 
@@ -71,16 +69,6 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ addSlaTest, closeS
       };
     });
     setSourceNetworkOptions(networkOptions);
-    if (selectedOrganization) {
-      const orgDevices = selectedOrganization.devices;
-      const deviceExtIdList = orgDevices.map(device => {
-        return device.extId;
-      });
-      const allDevices = deviceExtIdList.reduce((acc, newValue) => {
-        return acc + ',' + newValue;
-      });
-      setSourceDevice(allDevices);
-    }
   }, [selectedOrganizationVnets]);
 
   const dropdownStyle = {
@@ -96,20 +84,30 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ addSlaTest, closeS
     }),
   };
 
+  const clearFormFields = () => {
+    setName('');
+    setSourceOrg('');
+    setSourceNetwork('');
+    setDestination('');
+    setDescription('');
+  };
+
   const handleFormSubmit = () => {
-    const testData: FinalTableData = {
+    const testData: SLATest = {
+      testId: '',
       name: name,
-      sourceOrg: sourceOrg,
-      sourceNetwork: sourceNetwork,
-      sourceDevice: sourceDevice,
+      sourceOrgId: sourceOrg,
+      sourceNwExtId: sourceNetwork,
       destination: destination,
+      interface: '',
       description: description,
-      averageQoe: {
-        packetLoss: 0,
-        latency: 0,
-      },
     };
-    addSlaTest(testData);
+    const submitData: CreateSLATestRequest = {
+      sla_test: testData,
+    };
+    apiClient.createSLATest(submitData);
+    clearFormFields();
+    addSlaTest(1);
   };
 
   return (
