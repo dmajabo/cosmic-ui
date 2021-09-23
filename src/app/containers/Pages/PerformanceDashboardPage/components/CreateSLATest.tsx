@@ -91,6 +91,7 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ organizations, add
     const submitData: CreateSLATestRequest = {
       sla_test: testData,
     };
+    closeSlaTest();
     await apiClient.createSLATest(submitData);
     clearFormFields();
     addSlaTest(1);

@@ -64,7 +64,7 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange 
       <div className={classes.lineChartContainer}>
         {selectedRows.length > 0 ? (
           Object.keys(packetLossData).length === selectedRows.length ? (
-            <MetricsLineChart dataValueSuffix="ms" selectedRows={selectedRows} inputData={packetLossData} />
+            <MetricsLineChart dataValueSuffix="%" selectedRows={selectedRows} inputData={packetLossData} />
           ) : (
             <div className={classes.noChartContainer}>
               <LoadingIndicator />

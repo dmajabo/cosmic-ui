@@ -91,7 +91,6 @@ export const SLATestList: React.FC<SLATestListProps> = ({ latencyData, packetLos
 
   const addTest = (value: FinalTableData) => {
     addSlaTest(value);
-    handleClose();
   };
 
   const onSelectedRowsUpdate = (value: Data[]) => {
@@ -117,7 +116,7 @@ export const SLATestList: React.FC<SLATestListProps> = ({ latencyData, packetLos
                 <span className={classes.latencyValueText}>{`${isNaN(Number(latencyData[item.id])) ? '-' : Number(latencyData[item.id]).toFixed(2)}ms`}</span>
               </div>
               <div>
-                <IconButton aria-controls="widget-menu" aria-haspopup="true">
+                <IconButton aria-controls="test-menu" aria-haspopup="true">
                   <MoreVertIcon />
                 </IconButton>
               </div>
