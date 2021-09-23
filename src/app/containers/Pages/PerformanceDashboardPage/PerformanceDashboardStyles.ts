@@ -187,6 +187,9 @@ export const PerformanceDashboardStyles = makeStyles(
         padding: 200,
         textAlign: 'center',
       },
+      deleteTest: {
+        color: 'red',
+      },
     }),
   {
     index: 1,

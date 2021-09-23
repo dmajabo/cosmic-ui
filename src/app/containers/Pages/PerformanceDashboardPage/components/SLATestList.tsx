@@ -1,5 +1,5 @@
-import { Backdrop, Button, IconButton, Tab, Tabs, Typography } from '@material-ui/core';
-import { Add as AddIcon, MoreVert as MoreVertIcon } from '@material-ui/icons';
+import { Backdrop, Button, Tab, Tabs, Typography } from '@material-ui/core';
+import { Add as AddIcon } from '@material-ui/icons';
 import React, { useMemo, useState } from 'react';
 import { PerformanceDashboardStyles } from '../PerformanceDashboardStyles';
 import ColumnsIcon from '../icons/columns.svg';
@@ -11,6 +11,8 @@ import { PacketLoss } from './PacketLoss';
 import { Latency } from './Latency';
 import Select from 'react-select';
 import { KeyValue } from '..';
+import AverageQoe from './AverageQoe';
+import { createApiClient } from '../apiClient';
 
 interface SLATestListProps {
   readonly finalTableData: FinalTableData[];
@@ -18,6 +20,7 @@ interface SLATestListProps {
   readonly organizations: Organization[];
   readonly packetLossData: KeyValue;
   readonly latencyData: KeyValue;
+  readonly deleteSlaTest: Function;
 }
 
 interface TabPanelProps {
@@ -70,13 +73,15 @@ const columns: Column[] = [
   },
 ];
 
-export const SLATestList: React.FC<SLATestListProps> = ({ latencyData, packetLossData, organizations, finalTableData, addSlaTest }) => {
+export const SLATestList: React.FC<SLATestListProps> = ({ deleteSlaTest, latencyData, packetLossData, organizations, finalTableData, addSlaTest }) => {
   const classes = PerformanceDashboardStyles();
 
   const [createToggle, setCreateToggle] = React.useState<boolean>(false);
   const [tab, setTab] = useState<string>('packetLoss');
   const [selectedRows, setSelectedRows] = useState<Data[]>([]);
   const [timeRange, setTimeRange] = useState<string>('-7d');
+
+  const apiClient = createApiClient();
 
   const handleTabChange = (event, newValue: string) => {
     setTab(newValue);
@@ -97,6 +102,11 @@ export const SLATestList: React.FC<SLATestListProps> = ({ latencyData, packetLos
     setSelectedRows(value);
   };
 
+  const deleteTest = async (testId: string) => {
+    await apiClient.deleteSLATest(testId);
+    deleteSlaTest(1);
+  };
+
   const data = useMemo(
     () =>
       finalTableData.map(item => {
@@ -107,21 +117,7 @@ export const SLATestList: React.FC<SLATestListProps> = ({ latencyData, packetLos
           sourceNetwork: item.sourceNetwork,
           sourceDevice: item.sourceDevice,
           destination: item.destination,
-          averageQoe: (
-            <div className={classes.flexContainer}>
-              <div className={classes.averageQoeText}>
-                <span>Packet Loss:</span>
-                <span className={classes.packetLossValueText}>{`${isNaN(Number(packetLossData[item.id])) ? '-' : Number(packetLossData[item.id])}%`}</span>
-                <span>Latency:</span>
-                <span className={classes.latencyValueText}>{`${isNaN(Number(latencyData[item.id])) ? '-' : Number(latencyData[item.id]).toFixed(2)}ms`}</span>
-              </div>
-              <div>
-                <IconButton aria-controls="test-menu" aria-haspopup="true">
-                  <MoreVertIcon />
-                </IconButton>
-              </div>
-            </div>
-          ),
+          averageQoe: <AverageQoe deleteTest={deleteTest} packetLoss={packetLossData[item.id]} latency={latencyData[item.id]} testId={item.id} />,
         };
       }),
     [finalTableData, packetLossData, latencyData],
