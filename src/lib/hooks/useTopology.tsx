@@ -215,17 +215,27 @@ export function useTopologyContext(): TopologyContextType {
   const onSelectEntity = (_entity: IEntity, _selected: boolean) => {
     if (!nodesRef.current) return;
     const _arr: IEntity[] = jsonClone(entityTypes);
-    const _data: (IWedgeNode | IVnetNode | IDeviceNode | INetworkGroupNode)[] = jsonClone(nodesRef.current);
+    const _nodes: (IWedgeNode | IVnetNode | IDeviceNode | INetworkGroupNode)[] = jsonClone(nodesRef.current);
+    const _links: ILink[] = jsonClone(linksRef.current);
     const index: number = _arr.findIndex(it => it.id === _entity.id);
     _arr[index].selected = _selected;
-    _data.forEach(it => {
+    _nodes.forEach(it => {
       if (it.nodeType === _entity.id) {
         it.visible = _arr[index].selected;
       }
     });
+    _links.forEach(it => {
+      if (it.targetType === _entity.id || it.sourceType === _entity.id) {
+        const _snode = _nodes.find(n => n.id === it.sourceId);
+        const _tnode = _nodes.find(n => n.id === it.targetId);
+        it.visible = _snode.visible && _tnode.visible ? true : false;
+      }
+    });
     setEntityTypes(_arr);
-    setNodes(_data);
-    nodesRef.current = _data;
+    setNodes(_nodes);
+    setLinks(_links);
+    nodesRef.current = _nodes;
+    linksRef.current = _links;
   };
 
   const onSetSelectedType = (_value: string | null) => {

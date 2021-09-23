@@ -1,4 +1,4 @@
-import { IBaseEntity, ICoord, ISelectedListItem } from './general';
+import { IBaseEntity, ICollapsed, ICoord, ISelectedListItem, IVisible } from './general';
 export interface ITopologyGroupsData {
   groups: ITopologyGroup[];
 }
@@ -49,15 +49,7 @@ export enum ILinkStatus {
   Reachable = 'reachable',
 }
 
-export interface ICollapsedNode {
-  collapsed: boolean;
-}
-
-export interface IVisibleNode {
-  visible: boolean;
-}
-
-export interface IMappedNode extends IVisibleNode {
+export interface IMappedNode extends IVisible {
   childIndex: number;
   orgIndex: number;
   orgId: string;
@@ -144,7 +136,7 @@ export interface IVnet extends IBaseEntity<string> {
   securityGroups: any[];
 }
 
-export interface IVnetNode extends IVnet, IMappedNode, ICoord, ICollapsedNode {}
+export interface IVnetNode extends IVnet, IMappedNode, ICoord, ICollapsed {}
 
 export interface IVpn extends IBaseEntity<string> {
   name: string;
@@ -204,7 +196,7 @@ export interface ITopologyGroup {
   expr: string | null;
 }
 
-export interface INetworkGroupNode extends ITopologyGroup, IVisibleNode, ICoord, ICollapsedNode {
+export interface INetworkGroupNode extends ITopologyGroup, IVisible, ICoord, ICollapsed {
   groupIndex: number;
   r: number;
   devices: IDeviceNode[];
@@ -228,7 +220,7 @@ export enum TOPOLOGY_LINKS_TYPES {
   CONNECTED_TO_LINK = 'connectedTo',
   NETWORKLINK = 'networklink',
 }
-export interface ILink {
+export interface ILink extends IVisible {
   id: string;
   type: TOPOLOGY_LINKS_TYPES;
   targetId: string;

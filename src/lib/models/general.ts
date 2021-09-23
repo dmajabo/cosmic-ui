@@ -66,3 +66,11 @@ export enum IPanelBarLayoutTypes {
   VERTICAL = 'vertical',
   HORIZONTAL = 'horizontal',
 }
+
+export interface ICollapsed {
+  collapsed: boolean;
+}
+
+export interface IVisible {
+  visible: boolean;
+}

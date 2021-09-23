@@ -118,6 +118,7 @@ export const createVNetLink = (source: IWedgeNode, target: IVnetNode, nodes: (IW
     targetId: target.id,
     targetCoord: { x: _x1, y: _y1 },
     sourceCoord: { x: _x2, y: _y2 },
+    visible: true,
   };
 };
 
@@ -137,6 +138,7 @@ export const createConnectionToD_WLink = (source: IDeviceNode, target: IWedgeNod
     sourceCoord: { x: _x2, y: _y2 },
     targetType: NODES_CONSTANTS.WEDGE.type,
     sourceType: NODES_CONSTANTS.Devisec.type,
+    visible: true,
   };
 };
 
@@ -156,6 +158,7 @@ export const createD_GLink = (target: IDeviceNode, source: INetworkGroupNode): I
     sourceCoord: { x: _x2, y: _y2 },
     targetType: NODES_CONSTANTS.Devisec.type,
     sourceType: NODES_CONSTANTS.NETWORK_GROUP.type,
+    visible: true,
   };
 };
 
@@ -175,5 +178,6 @@ export const createG_WLink = (target: INetworkGroupNode, source: IWedgeNode): IC
     sourceCoord: { x: _x2, y: _y2 },
     targetType: NODES_CONSTANTS.NETWORK_GROUP.type,
     sourceType: NODES_CONSTANTS.WEDGE.type,
+    visible: true,
   };
 };
