@@ -22,19 +22,17 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
   const [tickInterval, setTickInterval] = useState<number>(0);
 
   useEffect(() => {
-    let tempChartData: ChartData[] = [];
-    let datalength: number[] = [];
-    for (let i = 0; i < selectedRows.length; i++) {
-      tempChartData.push({
-        name: selectedRows[i].name,
-        data: inputData[selectedRows[i].id].map(item => {
+    const tempChartData: ChartData[] = selectedRows.map(row => {
+      return {
+        name: row.name,
+        data: inputData[row.id].map(item => {
           return Number(Number.parseFloat(item.value).toFixed(2));
         }),
-      });
-      datalength.push(inputData[selectedRows[i].id].length);
-    }
+      };
+    });
+    const dataLength: number[] = selectedRows.map(row => inputData[row.id].length);
     setData(tempChartData);
-    const maxDataLengthIndex = datalength.reduce((iMax, x, i, arr) => (x > arr[iMax] ? i : iMax), 0);
+    const maxDataLengthIndex = dataLength.reduce((iMax, x, i, arr) => (x > arr[iMax] ? i : iMax), 0);
     const newCategories = inputData[selectedRows[maxDataLengthIndex].id].map(item => {
       return moment(item.time).format('YY/MM/DD HH:mm');
     });

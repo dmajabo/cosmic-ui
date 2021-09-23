@@ -18,6 +18,11 @@ const PATHS = Object.freeze({
   GET_ORGANIZATIONS: '/topo/api/v1/topology/organizations',
   GET_SLA_TESTS: '/policy/api/v1/policy/performance/sla-tests',
   CREATE_SLA_TEST: '/policy/api/v1/policy/performance/sla-tests',
+  GET_PACKET_LOSS: (deviceId: string, destination: string) => `/telemetry/api/v1/metrics/device/${deviceId}/destination/${destination}/packetloss`,
+  GET_LATENCY: (deviceId: string, destination: string) => `/telemetry/api/v1/metrics/device/${deviceId}/destination/${destination}/latency`,
+  GET_AVG_PACKET_LOSS: (sourceNw: string, destination: string) => `/telemetry/api/v1/metrics/source_nw/${sourceNw}/device/destination/${destination}/avgpacketloss`,
+  GET_AVG_LATENCY: (sourceNw: string, destination: string) => `/telemetry/api/v1/metrics/source_nw/${sourceNw}/device/destination/${destination}/avglatency`,
+  DELETE_SLA_TEST: (testId: string) => `/policy/api/v1/policy/performance/sla-tests/${testId}`,
 });
 
 export const createApiClient = (): ApiClient => {
@@ -57,7 +62,7 @@ export const createApiClient = (): ApiClient => {
 
   async function getPacketLossMetrics(deviceId: string, destination: string, startTime: string): Promise<SLATestMetricsResponse> {
     try {
-      const response = await axios.get<SLATestMetricsResponse>(`/telemetry/api/v1/metrics/device/${deviceId}/destination/${destination}/packetloss`, {
+      const response = await axios.get<SLATestMetricsResponse>(PATHS.GET_PACKET_LOSS(deviceId, destination), {
         baseURL: BASE_URL,
         params: {
           startTime: startTime,
@@ -71,7 +76,7 @@ export const createApiClient = (): ApiClient => {
 
   async function getLatencyMetrics(deviceId: string, destination: string, startTime: string): Promise<SLATestMetricsResponse> {
     try {
-      const response = await axios.get<SLATestMetricsResponse>(`/telemetry/api/v1/metrics/device/${deviceId}/destination/${destination}/latency`, {
+      const response = await axios.get<SLATestMetricsResponse>(PATHS.GET_LATENCY(deviceId, destination), {
         baseURL: BASE_URL,
         params: {
           startTime: startTime,
@@ -85,7 +90,7 @@ export const createApiClient = (): ApiClient => {
 
   async function getAvgPacketLoss(sourceNw: string, destination: string): Promise<GetAvgMetricsResponse> {
     try {
-      const response = await axios.get<GetAvgMetricsResponse>(`/telemetry/api/v1/metrics/source_nw/${sourceNw}/device/destination/${destination}/avgpacketloss`, {
+      const response = await axios.get<GetAvgMetricsResponse>(PATHS.GET_AVG_PACKET_LOSS(sourceNw, destination), {
         baseURL: BASE_URL,
         params: {
           startTime: '-30d',
@@ -99,7 +104,7 @@ export const createApiClient = (): ApiClient => {
 
   async function getAvgLatency(sourceNw: string, destination: string): Promise<GetAvgMetricsResponse> {
     try {
-      const response = await axios.get<GetAvgMetricsResponse>(`/telemetry/api/v1/metrics/source_nw/${sourceNw}/device/destination/${destination}/avglatency`, {
+      const response = await axios.get<GetAvgMetricsResponse>(PATHS.GET_AVG_LATENCY(sourceNw, destination), {
         baseURL: BASE_URL,
         params: {
           startTime: '-30d',
@@ -113,7 +118,7 @@ export const createApiClient = (): ApiClient => {
 
   async function deleteSLATest(testId: string): Promise<DeleteSLATestResponse> {
     try {
-      const response = await axios.delete<CreateSLATestResponse>(`/policy/api/v1/policy/performance/sla-tests/${testId}`, config);
+      const response = await axios.delete<CreateSLATestResponse>(PATHS.DELETE_SLA_TEST(testId), config);
       return response.data;
     } catch (error) {
       return {};

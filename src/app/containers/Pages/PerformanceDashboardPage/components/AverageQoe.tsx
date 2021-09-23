@@ -7,7 +7,7 @@ interface AvgQoeProps {
   readonly packetLoss: string;
   readonly latency: string;
   readonly testId: string;
-  readonly deleteTest: Function;
+  readonly deleteTest: (testId: string) => void;
 }
 
 const AverageQoe: React.FC<AvgQoeProps> = ({ deleteTest, packetLoss, latency, testId }) => {
@@ -15,9 +15,7 @@ const AverageQoe: React.FC<AvgQoeProps> = ({ deleteTest, packetLoss, latency, te
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => setAnchorEl(event.currentTarget);
 
   const handleClose = (testId: string) => {
     deleteTest(testId);
