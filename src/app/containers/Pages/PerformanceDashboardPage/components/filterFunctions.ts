@@ -1,22 +1,10 @@
 import { Organization } from '../SharedTypes';
 
 export const GetSelectedOrganization = (organizations: Organization[], orgId: string) => {
-  if (orgId !== '') {
-    //TODO: Remove on addition of delete SLA Test
-    if (isNaN(Number(orgId))) {
-      //TODO: Remove on addition of delete SLA Test
-      const selectedOrganization = organizations.filter(organization => {
-        return organization.name === orgId;
-      });
-      return selectedOrganization[0];
-    } else {
-      const selectedOrganization = organizations.filter(organization => {
-        return organization.extId === orgId;
-      });
-      return selectedOrganization[0];
-    }
-  }
-  return organizations[0]; //TODO: Remove on addition of delete SLA Test
+  const selectedOrganization = organizations.filter(organization => {
+    return organization.extId === orgId;
+  });
+  return selectedOrganization[0];
 };
 
 export const GetDevicesString = (organization: Organization) => {
