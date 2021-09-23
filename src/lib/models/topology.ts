@@ -115,6 +115,10 @@ export interface INic extends IBaseEntity<string> {
   securityGroups: any[];
 }
 
+export interface ITag extends IBaseEntity<string> {
+  key: string;
+  value: string;
+}
 export interface IVm extends IBaseEntity<string> {
   name: string;
   description: string;
@@ -123,6 +127,10 @@ export interface IVm extends IBaseEntity<string> {
   nic: INic[];
   selectorGroup: string;
   securityGroups: [];
+
+  subnet: any;
+  dimensions: any;
+  tags: ITag;
 }
 
 export interface IVnet extends IBaseEntity<string> {
