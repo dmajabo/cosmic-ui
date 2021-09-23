@@ -11,8 +11,8 @@ import { PacketLoss } from './PacketLoss';
 import { Latency } from './Latency';
 import Select from 'react-select';
 import { KeyValue } from '..';
-import AverageQoe from './AverageQoe';
 import { createApiClient } from '../apiClient';
+import AverageQoe from './AverageQoe';
 
 interface SLATestListProps {
   readonly finalTableData: FinalTableData[];
@@ -87,20 +87,13 @@ export const SLATestList: React.FC<SLATestListProps> = ({ deleteSlaTest, latency
     setTab(newValue);
   };
 
-  const handleClose = () => {
-    setCreateToggle(false);
-  };
-  const handleToggle = () => {
-    setCreateToggle(!createToggle);
-  };
+  const handleClose = () => setCreateToggle(false);
 
-  const addTest = (value: FinalTableData) => {
-    addSlaTest(value);
-  };
+  const handleToggle = () => setCreateToggle(!createToggle);
 
-  const onSelectedRowsUpdate = (value: Data[]) => {
-    setSelectedRows(value);
-  };
+  const addTest = (value: FinalTableData) => addSlaTest(value);
+
+  const onSelectedRowsUpdate = (value: Data[]) => setSelectedRows(value);
 
   const deleteTest = async (testId: string) => {
     await apiClient.deleteSLATest(testId);

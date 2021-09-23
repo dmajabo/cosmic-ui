@@ -126,13 +126,9 @@ const PerformanceDashboardPage: React.FC = () => {
     setFinalTableData(tempFinalTableData);
   }, [tempFinalTableData]);
 
-  const addSlaTest = (value: number) => {
-    setAddedTestCount(addedTestCount + value);
-  };
+  const addSlaTest = (value: number) => setAddedTestCount(addedTestCount + value);
 
-  const deleteSlaTest = (value: number) => {
-    setDeletedTestCount(deletedTestCount + value);
-  };
+  const deleteSlaTest = (value: number) => setDeletedTestCount(deletedTestCount + value);
 
   const tab = 'sla_tests';
 

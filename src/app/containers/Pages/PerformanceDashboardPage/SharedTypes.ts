@@ -93,7 +93,7 @@ export interface Organization {
   readonly extUrl: string;
   readonly vnets: Vnet[];
   readonly wedges: Wedge[];
-  readonly oedges: [];
+  readonly oedges?: [];
   readonly devices: Device[];
   readonly vendorType: string;
 }
