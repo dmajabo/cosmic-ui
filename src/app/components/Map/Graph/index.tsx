@@ -2,17 +2,14 @@ import React from 'react';
 import { STANDART_DISPLAY_RESOLUTION } from 'lib/models/general';
 import GContainer from '../Containers/GContainer/GContainer';
 import TopologyLink from '../Containers/Links/TopologyLink';
-import Device from '../Containers/Nodes/Device';
-import GroupNode from '../Containers/Nodes/GroupNode';
 import { TOPOLOGY_IDS } from '../model';
 import { StyledMap, ZoomButtonsWrapper } from '../styles';
-import { IDeviceNode, IVM_PanelDataNode, IWedgeNode, TopologyMetricsPanelTypes } from 'lib/models/topology';
-import WEdgeNode from '../Containers/Nodes/WEdge';
-import VNetNode from '../Containers/Nodes/VNet';
+import { IDeviceNode, ILink, INetworkGroupNode, IVM_PanelDataNode, IVnetNode, IWedgeNode, TopologyMetricsPanelTypes } from 'lib/models/topology';
 import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
 import { useZoom } from '../hooks/useZoom';
 import IconButton from 'app/components/Buttons/IconButton';
 import { zoomInIcon, zoomOutIcon, zoomFullScreenIcon } from 'app/components/SVGIcons/zoom';
+import NodeWrapper from '../Containers/Nodes/NodeWrapper';
 interface Props {
   isFullScreen: boolean;
   onOpenFullScreen: () => void;
@@ -25,12 +22,19 @@ const Graph: React.FC<Props> = (props: Props) => {
   const { topology } = useTopologyDataContext();
   const { onZoomInit, onZoomIn, onZoomOut, onUnsubscribe } = useZoom({ svgId: TOPOLOGY_IDS.SVG, rootId: TOPOLOGY_IDS.G_ROOT });
 
+  const [nodes, setNodes] = React.useState<(IWedgeNode | IVnetNode | IDeviceNode | INetworkGroupNode)[] | null>(null);
+  const [links, setLinks] = React.useState<ILink[] | null>(null);
   React.useEffect(() => {
     onZoomInit({ k: 1, x: 0, y: 0 });
     return () => {
       onUnsubscribe();
     };
   }, []);
+
+  React.useEffect(() => {
+    setNodes(topology.nodes);
+    setLinks(topology.links);
+  }, [topology.nodes, topology.links]);
 
   const onClickVm = React.useCallback((node: IVM_PanelDataNode) => {
     props.onClickVm(node);
@@ -61,19 +65,10 @@ const Graph: React.FC<Props> = (props: Props) => {
         <GContainer id={TOPOLOGY_IDS.G_ROOT}>
           {topology && (
             <>
-              <g id={TOPOLOGY_IDS.LINKS_ROOT}>
-                {topology.links && topology.links.length ? topology.links.map((link, index) => <TopologyLink dataItem={link} key={`link${link.id}${index}`} />) : null}
-              </g>
-              <g id={TOPOLOGY_IDS.NODES_ROOT}>
-                <g id="devices">{topology.devices && topology.devices.map((device, index) => <Device key={`dev${device.id}`} dataItem={device} index={index} onClickDevice={onClickDevice} />)}</g>
-                <g id="vnets">
-                  {topology.vnets.map((vnet, index) => (
-                    <VNetNode key={`vnet${vnet.id}`} dataItem={vnet} index={index} onClickVm={onClickVm} />
-                  ))}
-                </g>
-                <g id="wedges">{topology.wedges && topology.wedges.map((wedge, index) => <WEdgeNode key={`wedge${wedge.id}`} dataItem={wedge} index={index} onClick={onClickWedge} />)}</g>
-                {topology.networksGroups &&
-                  topology.networksGroups.map((dataItem, index) => <GroupNode key={`group${dataItem.id}${index}`} dataItem={dataItem} index={index} onClickDevice={onClickDevice} />)}
+              <g id="linkContainer">{links && links.length && links.map((link, index) => <TopologyLink dataItem={link} key={`link${link.id}${index}`} />)}</g>
+
+              <g id="nodesContainer">
+                {nodes && nodes.length && nodes.map(it => <NodeWrapper key={`node${it.id}`} dataItem={it} onClickVm={onClickVm} onClickDevice={onClickDevice} onClickWedge={onClickWedge} />)}
               </g>
             </>
           )}

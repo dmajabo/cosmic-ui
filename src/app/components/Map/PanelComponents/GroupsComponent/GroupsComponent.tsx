@@ -29,16 +29,13 @@ const GroupsComponent: React.FC<IProps> = (props: IProps) => {
   const { response: deleteRes, loading: deleteLoading, onDelete } = useDelete<ITopologyGroup>();
   const [tempData, setTempData] = React.useState<ITopologyGroup>(null);
   React.useEffect(() => {
-    const _devG = topology?.networksGroups && topology?.networksGroups.length ? topology?.networksGroups : [];
-    const _appG = topology?.applicationsGroup && topology?.applicationsGroup.length ? topology?.applicationsGroup : [];
-    const _groups: ITopologyGroup[] = [].concat(_devG, _appG);
-    setGroups(_groups);
-    if (_groups && _groups.length) {
+    setGroups(topology?.originGroupsData);
+    if (topology?.originGroupsData && topology?.originGroupsData.length) {
       setView(TopologyGroupsView.ALL);
     } else {
       setView(TopologyGroupsView.EMPTY);
     }
-  }, [topology?.networksGroups, topology?.applicationsGroup]);
+  }, [topology?.originGroupsData]);
 
   React.useEffect(() => {
     if (postRes && postRes.id) {
@@ -74,7 +71,7 @@ const GroupsComponent: React.FC<IProps> = (props: IProps) => {
   };
 
   const onCancel = () => {
-    if ((topology?.networksGroups && topology?.networksGroups.length) || (topology?.applicationsGroup && topology?.applicationsGroup.length)) {
+    if (topology?.originGroupsData && topology?.originGroupsData.length) {
       setView(TopologyGroupsView.ALL);
     } else {
       setView(TopologyGroupsView.EMPTY);

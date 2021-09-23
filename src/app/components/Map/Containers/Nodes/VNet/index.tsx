@@ -10,8 +10,8 @@ import VPC from './VPC';
 import { Transition } from 'react-transition-group';
 import { getVPCContainerSize, IVpcSize } from 'lib/helpers/tree';
 import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
+import TransitionContainer from '../../TransitionContainer';
 interface IProps {
-  index: number;
   dataItem: IVnetNode;
   onClickVm: (node: IVM_PanelDataNode) => void;
 }
@@ -25,6 +25,7 @@ const VNetNode: React.FC<IProps> = (props: IProps) => {
     (e: IPosition) => onUpdatePosition(e),
   );
   const [pos, setPosition] = React.useState<IPosition>(null);
+  const [visible, setVisible] = React.useState<boolean>(false);
   // const [showPopup, setShowPopup] = React.useState<IPopupDisplay>({ show: false, x: 0, y: 0 });
   const [vpcSize, setVpcSize] = React.useState<IVpcSize>({ r: 110, width: 62, height: 15, cols: 2, rows: 1 });
 
@@ -37,14 +38,21 @@ const VNetNode: React.FC<IProps> = (props: IProps) => {
   }, []);
 
   React.useEffect(() => {
+    setVisible(props.dataItem.visible);
     setPosition({ x: props.dataItem.x, y: props.dataItem.y });
   }, [props.dataItem]);
 
   React.useEffect(() => {
-    if (pos) {
-      onUpdate({ x: props.dataItem.x, y: props.dataItem.y });
+    if (visible) {
+      if (pos) {
+        onUpdate({ x: props.dataItem.x, y: props.dataItem.y }, visible);
+      } else {
+        onUnsubscribeDrag();
+      }
+    } else {
+      onUnsubscribeDrag();
     }
-  }, [pos]);
+  }, [pos, visible]);
 
   const onUpdatePosition = (_pos: IPosition) => {
     if (props.dataItem.x === _pos.x && props.dataItem.y === _pos.y) {
@@ -79,7 +87,7 @@ const VNetNode: React.FC<IProps> = (props: IProps) => {
   }
 
   return (
-    <>
+    <TransitionContainer stateIn={visible}>
       <g id={`${NODES_CONSTANTS.VNet.type}${props.dataItem.id}`} className="topologyNode" transform={`translate(${pos.x}, ${pos.y})`} data-type={NODES_CONSTANTS.VNet.type}>
         <Transition mountOnEnter unmountOnExit timeout={100} in={!props.dataItem.collapsed}>
           {state => <VmsContainer name={props.dataItem.name} className={state} items={props.dataItem.vms} vpcSize={vpcSize} onClickVm={onClickVm} />}
@@ -92,13 +100,12 @@ const VNetNode: React.FC<IProps> = (props: IProps) => {
           {VPC}
         </g>
       </g>
-      {/* {showPopup.show && (
+    </TransitionContainer>
+  );
+};
+/* {showPopup.show && (
         <NodeTooltipPortal id={props.dataItem.id} x={showPopup.x} y={showPopup.y}>
           <VnetPopup dataItem={props.dataItem} />
         </NodeTooltipPortal>
-      )} */}
-    </>
-  );
-};
-
+      )} */
 export default React.memo(VNetNode);

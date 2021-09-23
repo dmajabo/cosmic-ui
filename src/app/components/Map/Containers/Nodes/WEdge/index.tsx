@@ -4,12 +4,12 @@ import { IPosition, NODES_CONSTANTS } from 'app/components/Map/model';
 import { useDrag } from 'app/components/Map/hooks/useDrag';
 import TGW from './TGW';
 import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
+import TransitionContainer from '../../TransitionContainer';
 // import NodeTooltipPortal from 'components/Basic/NodeTooltipPortal';
 // import WedgePopup from '../../Popups/WedgePopup';
 // import { IPopupDisplay } from 'lib/models/general';
 
 interface IProps {
-  index: number;
   dataItem: IWedgeNode;
   onClick: (vm: IWedgeNode) => void;
 }
@@ -18,12 +18,12 @@ const WEdgeNode: React.FC<IProps> = (props: IProps) => {
   const { onUpdate, onUnsubscribeDrag } = useDrag(
     {
       id: `${NODES_CONSTANTS.WEDGE.type}${props.dataItem.id}`,
-      scaleFactor: props.dataItem.scaleFactor || 1,
       // popupId: `popupContainer${props.dataItem.id}`,
     },
     (e: IPosition) => onUpdatePosition(e),
   );
   const [pos, setPosition] = React.useState<IPosition>(null);
+  const [visible, setVisible] = React.useState<boolean>(false);
   // const [showPopup, setShowPopup] = React.useState<IPopupDisplay>({ show: false, x: 0, y: 0 });
 
   React.useEffect(() => {
@@ -33,14 +33,21 @@ const WEdgeNode: React.FC<IProps> = (props: IProps) => {
   }, []);
 
   React.useEffect(() => {
+    setVisible(props.dataItem.visible);
     setPosition({ x: props.dataItem.x, y: props.dataItem.y });
   }, [props.dataItem]);
 
   React.useEffect(() => {
-    if (pos) {
-      onUpdate({ x: props.dataItem.x, y: props.dataItem.y });
+    if (visible) {
+      if (pos) {
+        onUpdate({ x: props.dataItem.x, y: props.dataItem.y }, visible);
+      } else {
+        onUnsubscribeDrag();
+      }
+    } else {
+      onUnsubscribeDrag();
     }
-  }, [pos]);
+  }, [pos, visible]);
 
   const onUpdatePosition = (_pos: IPosition) => {
     if (props.dataItem.x === _pos.x && props.dataItem.y === _pos.y) {
@@ -62,9 +69,9 @@ const WEdgeNode: React.FC<IProps> = (props: IProps) => {
     return null;
   }
   return (
-    <>
+    <TransitionContainer stateIn={visible}>
       <g id={`${NODES_CONSTANTS.WEDGE.type}${props.dataItem.id}`} className="topologyNode" transform={`translate(${pos.x}, ${pos.y})`} data-type={NODES_CONSTANTS.WEDGE.type}>
-        <g transform={`scale(${props.dataItem.scaleFactor || 1})`}>
+        <g>
           <g
             // onMouseEnter={e => onTogglePopup(e, true)}
             // onMouseLeave={e => onTogglePopup(e, false)}
@@ -91,12 +98,7 @@ const WEdgeNode: React.FC<IProps> = (props: IProps) => {
           </foreignObject>
         </g>
       </g>
-      {/* {showPopup.show && (
-        <NodeTooltipPortal id={props.dataItem.id} x={showPopup.x} y={showPopup.y}>
-          <WedgePopup dataItem={props.dataItem} />
-        </NodeTooltipPortal>
-      )} */}
-    </>
+    </TransitionContainer>
   );
 };
 

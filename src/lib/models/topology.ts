@@ -1,6 +1,6 @@
 import { IBaseEntity, ICoord, ISelectedListItem } from './general';
 export interface ITopologyGroupsData {
-  groups: any[];
+  groups: ITopologyGroup[];
 }
 export interface ITopologyMapData {
   count: number;
@@ -8,13 +8,8 @@ export interface ITopologyMapData {
 }
 
 export interface ITopologyPreparedMapData {
-  data: ITopologyMapData;
   links: ILink[];
-  wedges: IWedgeNode[];
-  devices: IDeviceNode[];
-  vnets: IVnetNode[];
-  networkGroups: INetworkGroupNode[];
-  applicationsGroup: ITopologyGroup[];
+  nodes: (IWedgeNode | IVnetNode | IDeviceNode | INetworkGroupNode)[];
 }
 
 export enum TopologyPanelTypes {
@@ -58,10 +53,15 @@ export interface ICollapsedNode {
   collapsed: boolean;
 }
 
-export interface IMappedNode {
+export interface IVisibleNode {
+  visible: boolean;
+}
+
+export interface IMappedNode extends IVisibleNode {
   childIndex: number;
   orgIndex: number;
   orgId: string;
+  nodeType: TOPOLOGY_NODE_TYPES;
 }
 
 export interface IConnectedTo extends IBaseEntity<string> {
@@ -129,6 +129,7 @@ export interface IVm extends IBaseEntity<string> {
   extId: string;
   vmkey: string;
   nic: INic[];
+  selectorGroup: string;
   securityGroups: [];
 }
 
@@ -174,8 +175,6 @@ export interface IWedge extends IBaseEntity<string> {
   vpns: IVpn[];
   networkLinks: INetworkLink[];
   ips: IIp[];
-  scaleFactor?: number;
-  visible?: boolean;
 }
 
 export interface IWedgeNode extends IWedge, IMappedNode, ICoord {}
@@ -205,11 +204,12 @@ export interface ITopologyGroup {
   expr: string | null;
 }
 
-export interface INetworkGroupNode extends ITopologyGroup, ICoord, ICollapsedNode {
+export interface INetworkGroupNode extends ITopologyGroup, IVisibleNode, ICoord, ICollapsedNode {
   groupIndex: number;
   r: number;
   devices: IDeviceNode[];
   links: ILink[];
+  nodeType: TOPOLOGY_NODE_TYPES;
 }
 
 export enum TOPOLOGY_NODE_TYPES {
@@ -240,10 +240,6 @@ export interface ILink {
 }
 
 export interface IConnectionToLink extends ILink {}
-
-export interface ILinks {
-  [key: string]: ILink | IConnectionToLink;
-}
 
 export interface IOrganizationNode extends IOrganization {
   type: TOPOLOGY_NODE_TYPES.ORGANIZATION;

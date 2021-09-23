@@ -28,7 +28,8 @@ const Map: React.FC<IProps> = (props: IProps) => {
   const [showMetricksBar, setShowMetricks] = React.useState<IPanelBar<TopologyMetricsPanelTypes>>({ show: false, type: null });
   const [showFooter, setShowFooter] = React.useState<boolean>(true);
   const [isFullScreen, setIsFullScreen] = React.useState<boolean>(false);
-
+  const showPanelRef = React.useRef(showPanelBar);
+  const showMetrickRef = React.useRef(showMetricksBar);
   React.useEffect(() => {
     onTryLoadData();
   }, []);
@@ -40,25 +41,35 @@ const Map: React.FC<IProps> = (props: IProps) => {
   }, [response]);
 
   const onOpenPanel = (_panel: TopologyPanelTypes) => {
+    const _objPanel = { type: _panel, show: true };
+    const _objMetrick = { ...showMetrickRef.current, show: false };
     setShowFooter(false);
-    setShowMetricks({ show: false, type: null });
-    setShowPanelBar({ type: _panel, show: true });
+    setShowMetricks(_objMetrick);
+    setShowPanelBar(_objPanel);
+    showMetrickRef.current = _objMetrick;
+    showPanelRef.current = _objPanel;
   };
 
   const onHidePanel = () => {
-    if (showPanelBar.type === TopologyPanelTypes.GROUPS) {
-      setShowFooter(true);
-    }
-    setShowPanelBar({ ...showPanelBar, show: false });
+    setShowFooter(true);
+    const _objPanel = { ...showPanelRef.current, show: false };
+    setShowPanelBar(_objPanel);
+    showPanelRef.current = _objPanel;
     setTimeout(() => {
-      setShowPanelBar({ show: false, type: null });
+      const _objPanel = { show: false, type: null };
+      setShowPanelBar(_objPanel);
+      showPanelRef.current = _objPanel;
     }, 800);
   };
 
   const onHideMetrics = () => {
-    setShowMetricks({ ...showMetricksBar, show: false });
+    const _objMetrick = { ...showMetrickRef.current, show: false };
+    setShowMetricks(_objMetrick);
+    showMetrickRef.current = _objMetrick;
     setTimeout(() => {
-      setShowMetricks({ show: false, type: null });
+      const _objMetrick = { show: false, type: null };
+      setShowMetricks(_objMetrick);
+      showMetrickRef.current = _objMetrick;
     }, 800);
   };
 
@@ -78,25 +89,29 @@ const Map: React.FC<IProps> = (props: IProps) => {
   };
 
   const onOpenNodePanel = (node: IDeviceNode | IWedgeNode, _type: TopologyMetricsPanelTypes) => {
-    if (showPanelBar && showPanelBar.show) {
-      setShowPanelBar({ show: false, type: null });
-      setShowFooter(true);
-    }
+    const _objPanel = { ...showPanelRef.current, show: false };
+    setShowPanelBar(_objPanel);
+    showPanelRef.current = _objPanel;
+    setShowFooter(true);
     if (node && showMetricksBar && showMetricksBar.dataItem && node.id === showMetricksBar.dataItem.id) {
       return;
     }
-    setShowMetricks({ type: _type, show: true, dataItem: node });
+    const _objMetrick = { type: _type, show: true, dataItem: node };
+    setShowMetricks(_objMetrick);
+    showMetrickRef.current = _objMetrick;
   };
 
   const onOpenVmPanel = (node: IVM_PanelDataNode) => {
-    if (showPanelBar && showPanelBar.show) {
-      setShowPanelBar({ show: false, type: null });
-      setShowFooter(true);
-    }
+    const _objPanel = { ...showPanelRef.current, show: false };
+    setShowPanelBar(_objPanel);
+    showPanelRef.current = _objPanel;
+    setShowFooter(true);
     if (node && showMetricksBar && showMetricksBar.dataItem && showMetricksBar.dataItem.vm && node.vm.id === showMetricksBar.dataItem.vm.id) {
       return;
     }
-    setShowMetricks({ type: TopologyMetricsPanelTypes.VM, show: true, dataItem: node });
+    const _objMetrick = { type: TopologyMetricsPanelTypes.VM, show: true, dataItem: node };
+    setShowMetricks(_objMetrick);
+    showMetrickRef.current = _objMetrick;
   };
 
   const onOpenFullScreen = () => {

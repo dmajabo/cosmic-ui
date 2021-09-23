@@ -14,6 +14,7 @@ export function useDrag(props: IProps, onUpdateCallBack: (pos: IPosition) => voi
   // const [popupId] = React.useState<string>(props.popupId);
   // const [scaleFactor] = React.useState<number>(props.scaleFactor || 1);
   const [position, setPosition] = React.useState<IPosition | null>(null);
+  const [visible, setVisible] = React.useState<boolean>(true);
   const [skipTargetsLinks] = React.useState<boolean>(props.skipTargetsLinks || false);
   const [skipSourceLinks] = React.useState<boolean>(props.skipSourceLinks || false);
   const [isUpdated, setIsUpdated] = React.useState<boolean>(false);
@@ -39,7 +40,11 @@ export function useDrag(props: IProps, onUpdateCallBack: (pos: IPosition) => voi
   React.useEffect(() => {
     if (isUpdated) {
       setIsUpdated(false);
-      onSubscribeDrag();
+      if (visible) {
+        onSubscribeDrag();
+      } else {
+        onUnsubscribeDrag();
+      }
     }
   }, [isUpdated]);
 
@@ -53,7 +58,8 @@ export function useDrag(props: IProps, onUpdateCallBack: (pos: IPosition) => voi
     _node.on('drag', null);
   };
 
-  const onUpdate = (pos: IPosition) => {
+  const onUpdate = (pos: IPosition, visible: boolean) => {
+    setVisible(visible);
     setPosition(pos);
     setIsUpdated(true);
   };

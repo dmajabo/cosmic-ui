@@ -10,72 +10,215 @@ import {
   IWedgeNode,
   TopologyGroupTypesAsNumber,
   TopologyGroupTypesAsString,
+  IDevice,
+  IOrganization,
+  IWedge,
+  TOPOLOGY_NODE_TYPES,
+  IVnet,
 } from 'lib/models/topology';
-import { jsonClone } from './cloneHelper';
 import { generateLinks } from './links';
 import * as d3 from 'd3';
 import { NODES_CONSTANTS } from 'app/components/Map/model';
 import { STANDART_DISPLAY_RESOLUTION } from 'lib/models/general';
 
-export const createPreparedData = (_data: ITopologyMapData, groups: ITopologyGroup[]): ITopologyPreparedMapData => {
-  if (!_data || !_data.organizations || !_data.organizations.length) {
-    return { data: null, links: null, wedges: [], networkGroups: [], devices: [], applicationsGroup: [], vnets: [] };
-  }
-  const data: ITopologyMapData = jsonClone(_data);
+const createDeviceNode = (org: IOrganization, orgIndex: number, node: IDevice, index: number): IDeviceNode => {
+  return { ...node, visible: true, childIndex: index, orgIndex: orgIndex, orgId: org.id, x: 0, y: 0, scaleFactor: 1, nodeType: TOPOLOGY_NODE_TYPES.DEVICE };
+};
+
+const createWedgeNode = (org: IOrganization, orgIndex: number, node: IWedge, index: number): IWedgeNode => {
+  return { ...node, visible: true, childIndex: index, orgIndex: orgIndex, orgId: org.id, x: 0, y: 0, nodeType: TOPOLOGY_NODE_TYPES.WEDGE };
+};
+
+const createVnetNode = (org: IOrganization, orgIndex: number, node: IVnet, index: number): IVnetNode => {
+  return { ...node, visible: true, childIndex: index, orgIndex: orgIndex, orgId: org.id, x: 0, y: 0, nodeType: TOPOLOGY_NODE_TYPES.VNET, collapsed: node.vms && node.vms.length ? false : true };
+};
+
+export const createGroupNode = (_item: ITopologyGroup, index: number): INetworkGroupNode => {
+  return { ..._item, visible: true, collapsed: false, groupIndex: index, x: 0, y: 0, devices: [], links: [], r: 0, nodeType: TOPOLOGY_NODE_TYPES.NETWORK_GROUP };
+};
+export const prepareNodesData = (_data: ITopologyMapData, _groups: ITopologyGroup[]): ITopologyPreparedMapData => {
+  const nodes: (IWedgeNode | IVnetNode | IDeviceNode | INetworkGroupNode)[] = [];
   let wedges: IWedgeNode[] = [];
   let vnets: IVnetNode[] = [];
   let devices: IDeviceNode[] = [];
-  let devicesInGroup: IDeviceNode[] = [];
   let topologyGroups: INetworkGroupNode[] = [];
-  data.organizations.forEach((org, i) => {
-    wedges = wedges.concat(org.wedges.map((it, index) => ({ ...it, childIndex: index, orgIndex: i, orgId: org.id, x: 0, y: 0 })));
-    vnets = vnets.concat(org.vnets.map((it, index) => ({ ...it, childIndex: index, orgIndex: i, orgId: org.id, x: 0, y: 0, collapsed: it.vms && it.vms.length ? false : true })));
-    if (org.devices) {
-      org.devices.forEach((dev, index) => {
-        const obj: IDeviceNode = { ...dev, childIndex: index, orgIndex: i, orgId: org.id, x: 0, y: 0, scaleFactor: 1 };
-        if (dev.selectorGroup && groups && groups.length) {
+  const devicesInGroup: IDeviceNode[] = [];
+  _data.organizations.forEach((org, i) => {
+    if (org.wedges && org.wedges.length) {
+      org.wedges.forEach((w, index) => {
+        const obj: IWedgeNode = createWedgeNode(org, i, w, index);
+        nodes.push(obj);
+        wedges.push(obj);
+      });
+    }
+    if (org.vnets && org.vnets.length) {
+      org.vnets.forEach((v, index) => {
+        const obj: IVnetNode = createVnetNode(org, i, v, index);
+        nodes.push(obj);
+        vnets.push(obj);
+      });
+    }
+    if (org.devices && org.devices.length) {
+      org.devices.forEach((d, index) => {
+        const obj: IDeviceNode = createDeviceNode(org, i, d, index);
+        if (d.selectorGroup) {
           devicesInGroup.push(obj);
         } else {
+          nodes.push(obj);
           devices.push(obj);
         }
       });
     }
   });
-  if (groups && groups.length) {
-    groups.forEach((gr, index) => {
+  if (_groups && _groups.length) {
+    _groups.forEach((gr, index) => {
       if (gr.type === TopologyGroupTypesAsNumber.BRANCH_NETWORKS || gr.type === TopologyGroupTypesAsString.BRANCH_NETWORKS) {
-        const _obg: INetworkGroupNode = createMappedGroupNode(gr, index);
+        const _obj: INetworkGroupNode = createGroupNode(gr, index);
         if (devicesInGroup.length) {
           const _devs = devicesInGroup.filter(it => it.selectorGroup === gr.name || it.selectorGroup === gr.id);
-          _obg.devices = _devs;
-          _obg.r = 200;
+          _obj.devices = _devs;
+          if (_devs && _devs.length) {
+            const size = createpackLayout(_obj);
+            _obj.r = size.r;
+          }
         }
-        topologyGroups.push(_obg);
+        nodes.push(_obj);
+        topologyGroups.push(_obj);
       }
     });
   }
-  const _applicationsGroup: ITopologyGroup[] = groups.filter(group => group.type === TopologyGroupTypesAsNumber.APPLICATION || group.type === TopologyGroupTypesAsString.APPLICATION);
+  const xScale = d3.scaleLinear().domain([0, 1]).range([0, STANDART_DISPLAY_RESOLUTION.width]);
+  const yScale = d3.scaleLinear().domain([0, 1]).range([0, STANDART_DISPLAY_RESOLUTION.height]);
+  const simulation = d3
+    .forceSimulation(nodes)
+    // .force(
+    //   'link',
+    //   d3
+    //     .forceLink(links)
+    //     .id(d => d.id)
+    //     .distance(100)
+    //     .strength(1),
+    // )
+    // .force('center', d3.forceCenter(STANDART_DISPLAY_RESOLUTION.width / 2, STANDART_DISPLAY_RESOLUTION.height / 2))
+    .force('manyBody', d3.forceManyBody().strength(-20))
 
-  setUpGroupsCoord(topologyGroups);
-  setUpWedgesCoord(wedges);
-  setUpDevicesCoord(devices, topologyGroups);
-  setUpVnetCoord(vnets);
+    .force(
+      'collision',
+      d3.forceCollide().radius(d => {
+        if (d.nodeType === TOPOLOGY_NODE_TYPES.DEVICE) {
+          return 25;
+        }
+        if (d.nodeType === TOPOLOGY_NODE_TYPES.NETWORK_GROUP) {
+          if (!d.collapsed && d.devices && d.devices.length) return 200;
+          return 75;
+        }
+        if (d.nodeType === TOPOLOGY_NODE_TYPES.WEDGE) {
+          return 100;
+        }
+        if (d.nodeType === TOPOLOGY_NODE_TYPES.VNET) {
+          if (d.collapsed || !d.vms || !d.vms.length) {
+            const _r = Math.sqrt(Math.pow(NODES_CONSTANTS.VNet.width, 2) + Math.pow(NODES_CONSTANTS.VNet.height, 2));
+            return Math.ceil(_r);
+          }
+          const _obj = getVPCContainerSize(d.vms.length);
+          return _obj.r + 40;
+        }
+        return 50;
+      }),
+    )
+    .force(
+      'x',
+      d3.forceX().x(d => {
+        let s = 0.5;
+        if (d.nodeType === TOPOLOGY_NODE_TYPES.DEVICE || d.nodeType === TOPOLOGY_NODE_TYPES.NETWORK_GROUP) {
+          s = 0.2;
+        }
+        if (d.nodeType === TOPOLOGY_NODE_TYPES.WEDGE) {
+          s = 0.5;
+        }
+        if (d.nodeType === TOPOLOGY_NODE_TYPES.VNET) {
+          s = 0.75;
+        }
+        return xScale(s);
+      }),
+    )
+    .force(
+      'y',
+      d3.forceY().y(d => {
+        let s = 0.5;
+        if (d.nodeType === TOPOLOGY_NODE_TYPES.NETWORK_GROUP) {
+          s = 0.15;
+        }
+        if (d.nodeType === TOPOLOGY_NODE_TYPES.DEVICE) {
+          s = 0.55;
+        }
+        return yScale(s);
+      }),
+    )
+    .stop();
 
-  const links: ILink[] = generateLinks(wedges, vnets, devices, topologyGroups);
-  return {
-    data: _data,
-    links: links,
-    wedges: wedges,
-    devices: devices,
-    vnets: vnets,
-    networkGroups: topologyGroups,
-    applicationsGroup: _applicationsGroup,
-  };
+  while (simulation.alpha() > simulation.alphaMin()) {
+    simulation.tick();
+  }
+  const links: ILink[] = generateLinks(nodes, wedges, vnets, devices, topologyGroups);
+  return { nodes, links };
 };
 
-export const createMappedGroupNode = (_item: ITopologyGroup, index: number): INetworkGroupNode => {
-  return { ..._item, collapsed: true, groupIndex: index, x: 0, y: 0, devices: [], links: [], r: 150 };
-};
+// export const createPreparedData = (_data: ITopologyMapData, groups: ITopologyGroup[]): ITopologyPreparedMapData => {
+//   if (!_data || !_data.organizations || !_data.organizations.length) {
+//     return { data: null, links: null, wedges: [], networkGroups: [], devices: [], applicationsGroup: [], vnets: [] };
+//   }
+//   const data: ITopologyMapData = jsonClone(_data);
+//   let wedges: IWedgeNode[] = [];
+//   let vnets: IVnetNode[] = [];
+//   let devices: IDeviceNode[] = [];
+//   let devicesInGroup: IDeviceNode[] = [];
+//   let topologyGroups: INetworkGroupNode[] = [];
+//   // data.organizations.forEach((org, i) => {
+//   //   wedges = wedges.concat(org.wedges.map((it, index) => ({ ...it, childIndex: index, orgIndex: i, orgId: org.id, x: 0, y: 0 })));
+//   //   vnets = vnets.concat(org.vnets.map((it, index) => ({ ...it, childIndex: index, orgIndex: i, orgId: org.id, x: 0, y: 0, collapsed: it.vms && it.vms.length ? false : true })));
+//   //   if (org.devices) {
+//   //     org.devices.forEach((dev, index) => {
+//   //       const obj: IDeviceNode = { ...dev, childIndex: index, orgIndex: i, orgId: org.id, x: 0, y: 0, scaleFactor: 1 };
+//   //       if (dev.selectorGroup && groups && groups.length) {
+//   //         devicesInGroup.push(obj);
+//   //       } else {
+//   //         devices.push(obj);
+//   //       }
+//   //     });
+//   //   }
+//   // });
+//   // if (groups && groups.length) {
+//   //   groups.forEach((gr, index) => {
+//   //     if (gr.type === TopologyGroupTypesAsNumber.BRANCH_NETWORKS || gr.type === TopologyGroupTypesAsString.BRANCH_NETWORKS) {
+//   //       const _obg: INetworkGroupNode = createMappedGroupNode(gr, index);
+//   //       if (devicesInGroup.length) {
+//   //         const _devs = devicesInGroup.filter(it => it.selectorGroup === gr.name || it.selectorGroup === gr.id);
+//   //         _obg.devices = _devs;
+//   //         _obg.r = 200;
+//   //       }
+//   //       topologyGroups.push(_obg);
+//   //     }
+//   //   });
+//   // }
+//   const _applicationsGroup: ITopologyGroup[] = groups.filter(group => group.type === TopologyGroupTypesAsNumber.APPLICATION || group.type === TopologyGroupTypesAsString.APPLICATION);
+
+//   setUpGroupsCoord(topologyGroups);
+//   setUpWedgesCoord(wedges);
+//   setUpDevicesCoord(devices, topologyGroups);
+//   setUpVnetCoord(vnets);
+
+//   const links: ILink[] = generateLinks(wedges, vnets, devices, topologyGroups);
+//   return {
+//     data: _data,
+//     links: links,
+//     wedges: wedges,
+//     devices: devices,
+//     vnets: vnets,
+//     networkGroups: topologyGroups,
+//     applicationsGroup: _applicationsGroup,
+//   };
+// };
 
 export const setUpGroupsCoord = (_groupsData: INetworkGroupNode[]) => {
   if (!_groupsData || !_groupsData.length) {
