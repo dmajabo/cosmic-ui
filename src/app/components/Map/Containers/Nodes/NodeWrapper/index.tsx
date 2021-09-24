@@ -1,19 +1,23 @@
 import React from 'react';
-import { IDeviceNode, IVnetNode, IWedgeNode, INetworkGroupNode, TOPOLOGY_NODE_TYPES, IVM_PanelDataNode } from 'lib/models/topology';
+import { IDeviceNode, IVnetNode, IWedgeNode, INetworkGroupNode, TOPOLOGY_NODE_TYPES, IVM_PanelDataNode, IAppGroup_PanelDataNode } from 'lib/models/topology';
 import Device from '../Device';
 import WEdgeNode from '../WEdge';
 import VNetNode from '../VNet';
 import GroupNode from '../GroupNode';
 interface Props {
   dataItem: IDeviceNode | IVnetNode | IWedgeNode | INetworkGroupNode;
-  onClickVm: (_node: IVM_PanelDataNode) => void;
+  onClickVm: (_data: IVM_PanelDataNode) => void;
+  onClickAppGroup: (_data: IAppGroup_PanelDataNode) => void;
   onClickDevice: (_node: IDeviceNode) => void;
   onClickWedge: (_node: IWedgeNode) => void;
 }
 
 const NodesWrapper: React.FC<Props> = (props: Props) => {
-  const onClickVm = (node: IVM_PanelDataNode) => {
-    props.onClickVm(node);
+  const onClickVm = (_data: IVM_PanelDataNode) => {
+    props.onClickVm(_data);
+  };
+  const onClickAppGroup = (_data: IAppGroup_PanelDataNode) => {
+    props.onClickAppGroup(_data);
   };
   const onClickDevice = (dev: IDeviceNode) => {
     props.onClickDevice(dev);
@@ -29,7 +33,7 @@ const NodesWrapper: React.FC<Props> = (props: Props) => {
     return <WEdgeNode dataItem={props.dataItem as IWedgeNode} onClick={onClickWedge} />;
   }
   if (props.dataItem.nodeType === TOPOLOGY_NODE_TYPES.VNET) {
-    return <VNetNode dataItem={props.dataItem as IVnetNode} onClickVm={onClickVm} />;
+    return <VNetNode dataItem={props.dataItem as IVnetNode} onClickVm={onClickVm} onClickGroup={onClickAppGroup} />;
   }
   if (props.dataItem.nodeType === TOPOLOGY_NODE_TYPES.NETWORK_GROUP) {
     return <GroupNode dataItem={props.dataItem as INetworkGroupNode} onClickDevice={onClickDevice} />;

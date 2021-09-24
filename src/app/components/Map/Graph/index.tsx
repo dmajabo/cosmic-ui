@@ -4,7 +4,7 @@ import GContainer from '../Containers/GContainer/GContainer';
 import TopologyLink from '../Containers/Links/TopologyLink';
 import { TOPOLOGY_IDS } from '../model';
 import { StyledMap, ZoomButtonsWrapper } from '../styles';
-import { IDeviceNode, ILink, INetworkGroupNode, IVM_PanelDataNode, IVnetNode, IWedgeNode, TopologyMetricsPanelTypes } from 'lib/models/topology';
+import { IAppGroup_PanelDataNode, IDeviceNode, ILink, INetworkGroupNode, IVM_PanelDataNode, IVnetNode, IWedgeNode, TopologyMetricsPanelTypes } from 'lib/models/topology';
 import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
 import { useZoom } from '../hooks/useZoom';
 import IconButton from 'app/components/Buttons/IconButton';
@@ -13,7 +13,8 @@ import NodeWrapper from '../Containers/Nodes/NodeWrapper';
 interface Props {
   isFullScreen: boolean;
   onOpenFullScreen: () => void;
-  onClickVm: (_vm: IVM_PanelDataNode) => void;
+  onClickVm: (_data: IVM_PanelDataNode) => void;
+  onClickAppGroup: (_data: IAppGroup_PanelDataNode) => void;
   onClickDevice: (dev: IDeviceNode, _type: TopologyMetricsPanelTypes) => void;
   onClickWedge: (wedge: IWedgeNode, _type: TopologyMetricsPanelTypes) => void;
 }
@@ -36,8 +37,11 @@ const Graph: React.FC<Props> = (props: Props) => {
     setLinks(topology.links);
   }, [topology.nodes, topology.links]);
 
-  const onClickVm = React.useCallback((node: IVM_PanelDataNode) => {
-    props.onClickVm(node);
+  const onClickVm = React.useCallback((_data: IVM_PanelDataNode) => {
+    props.onClickVm(_data);
+  }, []);
+  const onClickAppGroup = React.useCallback((_data: IAppGroup_PanelDataNode) => {
+    props.onClickAppGroup(_data);
   }, []);
   const onClickDevice = React.useCallback((dev: IDeviceNode) => {
     props.onClickDevice(dev, TopologyMetricsPanelTypes.Device);
@@ -68,7 +72,9 @@ const Graph: React.FC<Props> = (props: Props) => {
               <g id="linkContainer">{links && links.length && links.map((link, index) => <TopologyLink dataItem={link} key={`link${link.id}${index}`} />)}</g>
 
               <g id="nodesContainer">
-                {nodes && nodes.length && nodes.map(it => <NodeWrapper key={`node${it.id}`} dataItem={it} onClickVm={onClickVm} onClickDevice={onClickDevice} onClickWedge={onClickWedge} />)}
+                {nodes &&
+                  nodes.length &&
+                  nodes.map(it => <NodeWrapper key={`node${it.id}`} dataItem={it} onClickVm={onClickVm} onClickAppGroup={onClickAppGroup} onClickDevice={onClickDevice} onClickWedge={onClickWedge} />)}
               </g>
             </>
           )}

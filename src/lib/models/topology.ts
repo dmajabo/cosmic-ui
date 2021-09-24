@@ -22,6 +22,7 @@ export enum TopologyMetricsPanelTypes {
   VM = 'Vm',
   Device = ' device',
   Wedge = 'wedge',
+  APPLICATION_GROUP = 'application_group',
 }
 
 export enum VendorTypes {
@@ -185,6 +186,11 @@ export interface IWedgeNode extends IWedge, IMappedNode, ICoord {}
 
 export interface IVM_PanelDataNode {
   vm: IVm;
+  vnet: IVnetNode;
+}
+
+export interface IAppGroup_PanelDataNode {
+  group: ITopologyGroup;
   vnet: IVnetNode;
 }
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ITopologyGroup, IVm, IVM_PanelDataNode, IVnetNode } from 'lib/models/topology';
+import { IAppGroup_PanelDataNode, ITopologyGroup, IVm, IVM_PanelDataNode, IVnetNode } from 'lib/models/topology';
 import { IPosition, NODES_CONSTANTS } from 'app/components/Map/model';
 import VmsContainer from './VmsContainer';
 import { useDrag } from 'app/components/Map/hooks/useDrag';
@@ -10,9 +10,11 @@ import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
 import VNetHeder from './VNetHeder';
 import { ContainerWrapper } from './styles';
 import ApplicationGroupContainer from './ApplicationGroupContainer';
+import TransitionContainer from '../../TransitionContainer';
 interface IProps {
   dataItem: IVnetNode;
-  onClickVm: (node: IVM_PanelDataNode) => void;
+  onClickVm: (_data: IVM_PanelDataNode) => void;
+  onClickGroup: (_data: IAppGroup_PanelDataNode) => void;
 }
 const VNetNode: React.FC<IProps> = (props: IProps) => {
   const { topology } = useTopologyDataContext();
@@ -72,8 +74,7 @@ const VNetNode: React.FC<IProps> = (props: IProps) => {
   };
 
   const onClickGroup = (gr: ITopologyGroup) => {
-    debugger;
-    // props.onClickVm({ gr: gr, vnet: { ...props.dataItem } });
+    props.onClickGroup({ group: gr, vnet: { ...props.dataItem } });
   };
 
   if (!pos) {
@@ -81,15 +82,17 @@ const VNetNode: React.FC<IProps> = (props: IProps) => {
   }
 
   return (
-    <g id={`${NODES_CONSTANTS.VNet.type}${props.dataItem.id}`} className="topologyNode" transform={`translate(${pos.x}, ${pos.y})`} data-type={NODES_CONSTANTS.VNet.type}>
-      <foreignObject x="0" y="0" width={props.dataItem.nodeSize.width} height={props.dataItem.nodeSize.height}>
-        <ContainerWrapper>
-          <VNetHeder name={props.dataItem.name} />
-          <ApplicationGroupContainer items={props.dataItem.applicationGroups} onClickGroup={onClickGroup} />
-          <VmsContainer name={props.dataItem.name} isGroupPresent={!!props.dataItem.applicationGroups.length} items={props.dataItem.vms} onClickVm={onClickVm} />
-        </ContainerWrapper>
-      </foreignObject>
-    </g>
+    <TransitionContainer stateIn={visible}>
+      <g id={`${NODES_CONSTANTS.VNet.type}${props.dataItem.id}`} className="topologyNode" transform={`translate(${pos.x}, ${pos.y})`} data-type={NODES_CONSTANTS.VNet.type}>
+        <foreignObject x="0" y="0" width={props.dataItem.nodeSize.width} height={props.dataItem.nodeSize.height}>
+          <ContainerWrapper>
+            <VNetHeder name={props.dataItem.name} />
+            <ApplicationGroupContainer items={props.dataItem.applicationGroups} onClickGroup={onClickGroup} />
+            <VmsContainer name={props.dataItem.name} isGroupPresent={!!props.dataItem.applicationGroups.length} items={props.dataItem.vms} onClickVm={onClickVm} />
+          </ContainerWrapper>
+        </foreignObject>
+      </g>
+    </TransitionContainer>
   );
 };
 /* {showPopup.show && (

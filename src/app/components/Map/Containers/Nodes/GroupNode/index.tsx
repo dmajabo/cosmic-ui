@@ -8,6 +8,7 @@ import { Transition } from 'react-transition-group';
 import GroupDevicesContainer from './GroupDevicesContainer';
 import * as d3 from 'd3';
 import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
+import TransitionContainer from '../../TransitionContainer';
 
 interface IProps {
   dataItem: INetworkGroupNode;
@@ -79,35 +80,37 @@ const GroupNode: React.FC<IProps> = (props: IProps) => {
     return null;
   }
   return (
-    <g id={`${NODES_CONSTANTS.NETWORK_GROUP.type}${props.dataItem.id}`} className="topologyNode" transform={`translate(${pos.x}, ${pos.y})`} data-type={NODES_CONSTANTS.NETWORK_GROUP.type}>
-      <Transition mountOnEnter unmountOnExit timeout={100} in={!props.dataItem.collapsed}>
-        {state => <GroupDevicesContainer dataItem={props.dataItem} className={state} onClickDevice={onClickDevice} />}
-      </Transition>
-      <g
-        // onMouseEnter={e => onTogglePopup(e, true)}
-        // onMouseLeave={e => onTogglePopup(e, false)}
-        onClick={onExpandCollapse}
-        style={{ cursor: !props.dataItem.devices || !props.dataItem.devices.length ? 'default' : 'pointer' }}
-        pointerEvents="all"
-      >
-        <>{CISCO_MERAKI}</>
-      </g>
-      <foreignObject pointerEvents="none" x={-NODES_CONSTANTS.NETWORK_GROUP.spaceX / 2} y={NODES_CONSTANTS.NETWORK_GROUP.r * 2} width="100" height="24">
-        <div
-          style={{
-            width: '100%',
-            height: '20px',
-            fontSize: '14px',
-            fontWeight: 500,
-            textAlign: 'center',
-            pointerEvents: 'none',
-            color: 'var(--_primaryColor)',
-          }}
+    <TransitionContainer stateIn={visible}>
+      <g id={`${NODES_CONSTANTS.NETWORK_GROUP.type}${props.dataItem.id}`} className="topologyNode" transform={`translate(${pos.x}, ${pos.y})`} data-type={NODES_CONSTANTS.NETWORK_GROUP.type}>
+        <Transition mountOnEnter unmountOnExit timeout={100} in={!props.dataItem.collapsed}>
+          {state => <GroupDevicesContainer dataItem={props.dataItem} className={state} onClickDevice={onClickDevice} />}
+        </Transition>
+        <g
+          // onMouseEnter={e => onTogglePopup(e, true)}
+          // onMouseLeave={e => onTogglePopup(e, false)}
+          onClick={onExpandCollapse}
+          style={{ cursor: !props.dataItem.devices || !props.dataItem.devices.length ? 'default' : 'pointer' }}
+          pointerEvents="all"
         >
-          {props.dataItem.name}
-        </div>
-      </foreignObject>
-    </g>
+          <>{CISCO_MERAKI}</>
+        </g>
+        <foreignObject pointerEvents="none" x={-NODES_CONSTANTS.NETWORK_GROUP.spaceX / 2} y={NODES_CONSTANTS.NETWORK_GROUP.r * 2} width="100" height="24">
+          <div
+            style={{
+              width: '100%',
+              height: '20px',
+              fontSize: '14px',
+              fontWeight: 500,
+              textAlign: 'center',
+              pointerEvents: 'none',
+              color: 'var(--_primaryColor)',
+            }}
+          >
+            {props.dataItem.name}
+          </div>
+        </foreignObject>
+      </g>
+    </TransitionContainer>
   );
 };
 

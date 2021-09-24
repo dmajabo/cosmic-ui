@@ -4,7 +4,7 @@ import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
 // import mockdataDevices from 'utils/dataDevices.json';
 import { ContainerWithFooter, ContainerWithMetrics, ContainerWithPanel, MapContainer } from './styles';
 import HeadeerAction from './HeadeerAction';
-import { IDeviceNode, IPanelBar, TopologyMetricsPanelTypes, TopologyPanelTypes, IWedgeNode, IVM_PanelDataNode } from 'lib/models/topology';
+import { IDeviceNode, IPanelBar, TopologyMetricsPanelTypes, TopologyPanelTypes, IWedgeNode, IVM_PanelDataNode, IAppGroup_PanelDataNode } from 'lib/models/topology';
 import LoadingIndicator from 'app/components/Loading';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import { IPanelBarLayoutTypes } from 'lib/models/general';
@@ -19,6 +19,7 @@ import DevicePanel from './PanelComponents/NodePanels/DevicePanel';
 import WedgePanel from './PanelComponents/NodePanels/WedgePanel';
 import { useGetTopology } from 'lib/api/http/useAxiosHook';
 import { ErrorMessage } from '../Basic/ErrorMessage/ErrorMessage';
+import ApplicationGroupPanel from './PanelComponents/NodePanels/ApplicationGroupPanel';
 interface IProps {}
 
 const Map: React.FC<IProps> = (props: IProps) => {
@@ -114,6 +115,19 @@ const Map: React.FC<IProps> = (props: IProps) => {
     showMetrickRef.current = _objMetrick;
   };
 
+  const onOpenAppGroupPanel = (_data: IAppGroup_PanelDataNode) => {
+    const _objPanel = { ...showPanelRef.current, show: false };
+    setShowPanelBar(_objPanel);
+    showPanelRef.current = _objPanel;
+    setShowFooter(true);
+    if (_data && showMetricksBar && showMetricksBar.dataItem && showMetricksBar.dataItem.group && _data.group.id === showMetricksBar.dataItem.group.id) {
+      return;
+    }
+    const _objMetrick = { type: TopologyMetricsPanelTypes.APPLICATION_GROUP, show: true, dataItem: _data };
+    setShowMetricks(_objMetrick);
+    showMetrickRef.current = _objMetrick;
+  };
+
   const onOpenFullScreen = () => {
     setIsFullScreen(!isFullScreen);
   };
@@ -127,7 +141,14 @@ const Map: React.FC<IProps> = (props: IProps) => {
               {topology.originData && (
                 <>
                   <HeadeerAction onShowPanel={onOpenPanel} onRefresh={onRefresh} />
-                  <Graph isFullScreen={isFullScreen} onOpenFullScreen={onOpenFullScreen} onClickVm={onOpenVmPanel} onClickDevice={onOpenNodePanel} onClickWedge={onOpenNodePanel} />
+                  <Graph
+                    isFullScreen={isFullScreen}
+                    onOpenFullScreen={onOpenFullScreen}
+                    onClickVm={onOpenVmPanel}
+                    onClickAppGroup={onOpenAppGroupPanel}
+                    onClickDevice={onOpenNodePanel}
+                    onClickWedge={onOpenNodePanel}
+                  />
                 </>
               )}
               {loading && (
@@ -144,6 +165,7 @@ const Map: React.FC<IProps> = (props: IProps) => {
               )}
             </MapContainer>
             <PanelBar show={showMetricksBar.show} onHidePanel={onHideMetrics} type={IPanelBarLayoutTypes.VERTICAL}>
+              {showMetricksBar.type === TopologyMetricsPanelTypes.APPLICATION_GROUP && <ApplicationGroupPanel dataItem={showMetricksBar.dataItem} />}
               {showMetricksBar.type === TopologyMetricsPanelTypes.VM && <VmPanel dataItem={showMetricksBar.dataItem} />}
               {showMetricksBar.type === TopologyMetricsPanelTypes.Device && <DevicePanel dataItem={showMetricksBar.dataItem} />}
               {showMetricksBar.type === TopologyMetricsPanelTypes.Wedge && <WedgePanel dataItem={showMetricksBar.dataItem} />}
