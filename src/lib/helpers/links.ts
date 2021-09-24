@@ -104,9 +104,8 @@ const buildNetworkLinks = (links: ILink[], wedge: IWedgeNode, vnets: IVnetNode[]
 
 export const createVNetLink = (source: IWedgeNode, target: IVnetNode, nodes: (IWedgeNode | IVnetNode | IDeviceNode | INetworkGroupNode)[]): ILink => {
   const souceObj = NODES_CONSTANTS.WEDGE;
-  const _size: ISize = getNodeSize();
-  const _x1 = target.x + _size.width / 2;
-  const _y1 = target.y + _size.height / 2;
+  const _x1 = target.x + target.nodeSize.width / 2;
+  const _y1 = target.y + target.nodeSize.height / 2;
   const _x2 = source.x + souceObj.r;
   const _y2 = source.y + souceObj.r;
   return {

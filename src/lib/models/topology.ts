@@ -1,3 +1,4 @@
+import { IVpcSize } from 'lib/helpers/tree';
 import { IBaseEntity, ICollapsed, ICoord, ISelectedListItem, IVisible } from './general';
 export interface ITopologyGroupsData {
   groups: ITopologyGroup[];
@@ -144,7 +145,10 @@ export interface IVnet extends IBaseEntity<string> {
   securityGroups: any[];
 }
 
-export interface IVnetNode extends IVnet, IMappedNode, ICoord, ICollapsed {}
+export interface IVnetNode extends IVnet, IMappedNode, ICoord {
+  nodeSize: IVpcSize;
+  applicationGroups: ITopologyGroup[];
+}
 
 export interface IVpn extends IBaseEntity<string> {
   name: string;
@@ -219,6 +223,7 @@ export enum TOPOLOGY_NODE_TYPES {
   VM = 'vm',
   WEDGE = 'wedge',
   NETWORK_GROUP = 'network_group',
+  APPLICATION_GROUP = 'application_group',
 }
 
 export enum TOPOLOGY_LINKS_TYPES {

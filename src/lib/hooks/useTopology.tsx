@@ -17,6 +17,7 @@ import {
   IDeviceNode,
   IVnetNode,
   ITopologyPreparedMapData,
+  // TOPOLOGY_NODE_TYPES,
 } from 'lib/models/topology';
 import { ISelectedListItem, ITimeTypes, TIME_PERIOD } from 'lib/models/general';
 import { jsonClone } from 'lib/helpers/cloneHelper';
@@ -48,7 +49,7 @@ export interface TopologyContextType {
   onUpdateOrganization: (_item: IOrganization, _pos: IPosition) => void;
   onUpdateDeviceCoord: (_item: IDeviceNode, _pos: IPosition) => void;
   onUpdateWedgeCoord: (_item: IWedgeNode, _pos: IPosition) => void;
-  onUpdateVnetNode: (_item: IVnetNode, _pos: IPosition, isDrag: boolean, isExpand: boolean) => void;
+  onUpdateVnetNode: (_item: IVnetNode, _pos: IPosition) => void;
   onUpdateGroupNode: (_item: INetworkGroupNode, _pos: IPosition, isDrag: boolean, isExpand: boolean) => void;
   onSelectEntity: (entity: IEntity, selected: boolean) => void;
 }
@@ -87,7 +88,7 @@ export function useTopologyContext(): TopologyContextType {
     //   const device = onCreateDevice(j, '');
     //   _orgObj.organizations[0].devices.push(device);
     // }
-    // for (let j = 0; j < 200; j++) {
+    // for (let j = 0; j < 2000; j++) {
     //   const device = onCreateDevice(1, _orgObj.organizations[1].id, j + 250, '');
     //   _orgObj.organizations[1].devices.push(device);
     // }
@@ -173,6 +174,7 @@ export function useTopologyContext(): TopologyContextType {
   //     orgId: orgId,
   //     scaleFactor: 1,
   //     nodeType: TOPOLOGY_NODE_TYPES.DEVICE,
+  //     visible: true,
   //   };
   // };
 
@@ -279,21 +281,16 @@ export function useTopologyContext(): TopologyContextType {
     linksRef.current = _lData;
   };
 
-  const onUpdateVnetNode = (_item: IVnetNode, _position: IPosition, isDrag: boolean, isExpand: boolean) => {
+  const onUpdateVnetNode = (_item: IVnetNode, _position: IPosition) => {
     const _data: any[] = jsonClone(nodesRef.current);
     const index = _data.findIndex(it => it.id === _item.id);
-    if (isDrag && _position) {
-      _data[index].x = _position.x;
-      _data[index].y = _position.y;
-      const _sourceObj = NODES_CONSTANTS.VNet;
-      const _lData = onUpdateTargetLink(linksRef.current, _data[index].id, _position, _sourceObj.width / 2, _sourceObj.height / 2);
-      setLinks(_lData);
-      linksRef.current = _lData;
-    }
-    if (isExpand) {
-      _data[index].collapsed = !_item.collapsed;
-    }
+    _data[index].x = _position.x;
+    _data[index].y = _position.y;
+    const _sourceObj = NODES_CONSTANTS.VNet;
+    const _lData = onUpdateTargetLink(linksRef.current, _data[index].id, _position, _sourceObj.width / 2, _sourceObj.height / 2);
+    setLinks(_lData);
     setNodes(_data);
+    linksRef.current = _lData;
     nodesRef.current = _data;
   };
 

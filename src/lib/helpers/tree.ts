@@ -15,6 +15,7 @@ import {
   IWedge,
   TOPOLOGY_NODE_TYPES,
   IVnet,
+  IVm,
 } from 'lib/models/topology';
 import { generateLinks } from './links';
 import * as d3 from 'd3';
@@ -29,8 +30,30 @@ const createWedgeNode = (org: IOrganization, orgIndex: number, node: IWedge, ind
   return { ...node, visible: true, childIndex: index, orgIndex: orgIndex, orgId: org.id, x: 0, y: 0, nodeType: TOPOLOGY_NODE_TYPES.WEDGE };
 };
 
-const createVnetNode = (org: IOrganization, orgIndex: number, node: IVnet, index: number): IVnetNode => {
-  return { ...node, visible: true, childIndex: index, orgIndex: orgIndex, orgId: org.id, x: 0, y: 0, nodeType: TOPOLOGY_NODE_TYPES.VNET, collapsed: node.vms && node.vms.length ? false : true };
+const createVnetNode = (org: IOrganization, orgIndex: number, node: IVnet, index: number, groups: ITopologyGroup[]): IVnetNode => {
+  const _uniqueGroupsSet: Set<ITopologyGroup> = new Set();
+  node.vms.forEach(vm => {
+    if (vm.selectorGroup) {
+      const gr = groups.find(it => it.name === vm.selectorGroup || it.id === vm.selectorGroup);
+      if (gr) {
+        _uniqueGroupsSet.add(gr);
+      }
+    }
+  });
+  const _arr: ITopologyGroup[] = Array.from(_uniqueGroupsSet);
+  const _size: IVpcSize = getVPCContainerSize(node, _arr);
+  return {
+    ...node,
+    applicationGroups: _arr,
+    visible: true,
+    childIndex: index,
+    orgIndex: orgIndex,
+    orgId: org.id,
+    x: 0,
+    y: 0,
+    nodeType: TOPOLOGY_NODE_TYPES.VNET,
+    nodeSize: _size,
+  };
 };
 
 export const createGroupNode = (_item: ITopologyGroup, index: number): INetworkGroupNode => {
@@ -53,7 +76,7 @@ export const prepareNodesData = (_data: ITopologyMapData, _groups: ITopologyGrou
     }
     if (org.vnets && org.vnets.length) {
       org.vnets.forEach((v, index) => {
-        const obj: IVnetNode = createVnetNode(org, i, v, index);
+        const obj: IVnetNode = createVnetNode(org, i, v, index, _groups);
         nodes.push(obj);
         vnets.push(obj);
       });
@@ -116,12 +139,7 @@ export const prepareNodesData = (_data: ITopologyMapData, _groups: ITopologyGrou
           return 100;
         }
         if (d.nodeType === TOPOLOGY_NODE_TYPES.VNET) {
-          if (d.collapsed || !d.vms || !d.vms.length) {
-            const _r = Math.sqrt(Math.pow(NODES_CONSTANTS.VNet.width, 2) + Math.pow(NODES_CONSTANTS.VNet.height, 2));
-            return Math.ceil(_r);
-          }
-          const _obj = getVPCContainerSize(d.vms.length);
-          return _obj.r + 40;
+          return d.nodeSize.r / 2 + 20;
         }
         return 50;
       }),
@@ -349,17 +367,17 @@ export const setUpVnetCoord = (items: IVnetNode[]) => {
     )
     .force('center', d3.forceCenter(STANDART_DISPLAY_RESOLUTION.width / 2, STANDART_DISPLAY_RESOLUTION.height / 2))
     // .force('manyBody', d3.forceManyBody())
-    .force(
-      'collision',
-      d3.forceCollide().radius(d => {
-        if (d.collapsed || !d.vms || !d.vms.length) {
-          const _r = Math.sqrt(Math.pow(NODES_CONSTANTS.VNet.width, 2) + Math.pow(NODES_CONSTANTS.VNet.height, 2));
-          return Math.ceil(_r / 2);
-        }
-        const _obj = getVPCContainerSize(d.vms.length);
-        return _obj.r + 40;
-      }),
-    )
+    // .force(
+    //   'collision',
+    //   d3.forceCollide().radius(d => {
+    //     if (d.collapsed || !d.vms || !d.vms.length) {
+    //       const _r = Math.sqrt(Math.pow(NODES_CONSTANTS.VNet.width, 2) + Math.pow(NODES_CONSTANTS.VNet.height, 2));
+    //       return Math.ceil(_r / 2);
+    //     }
+    //     const _obj = getVPCContainerSize(d, d.);
+    //     return _obj.r + 40;
+    //   }),
+    // )
     .force('x', d3.forceX())
     .force('y', d3.forceY())
     .stop();
@@ -466,13 +484,19 @@ export interface IVpcSize {
   cols: number;
   rows: number;
 }
-export const getVPCContainerSize = (items: number): IVpcSize => {
-  const num = items && items !== 0 ? Math.max(2, Math.ceil(Math.sqrt(items))) : 2;
-  const cols = num === 2 ? 2 : Math.ceil(Math.max(2, num / 2));
-  const _width = Math.max(64, cols * 64);
-  const rows = Math.ceil(items / cols);
-  const _height = Math.max(17, rows * 17);
-  const d = Math.ceil(Math.sqrt(Math.pow(_width, 2) + Math.pow(_height + 34, 2)));
-  const _r = Math.max(110, d / 2);
-  return { r: _r, width: _width, height: _height, cols: cols, rows: rows };
+
+export const getVPCContainerSize = (node: IVnet, _arr: ITopologyGroup[]): IVpcSize => {
+  if (!node.vms || !node.vms.length) {
+    const _r = Math.sqrt(Math.pow(NODES_CONSTANTS.VNet.width, 2) + Math.pow(NODES_CONSTANTS.VNet.height, 2));
+    return { r: _r, width: NODES_CONSTANTS.VNet.width, height: NODES_CONSTANTS.VNet.height, cols: 3, rows: 2 };
+  }
+  const _vms: IVm[] = node.vms.filter(it => !it.selectorGroup);
+  const groupsHeight = _arr.length * (NODES_CONSTANTS.APP_GROUP.height + NODES_CONSTANTS.APP_GROUP.spaceY) + 4;
+  const rows = Math.ceil(_vms.length / 3);
+  const vmRowH = (NODES_CONSTANTS.VM.height + NODES_CONSTANTS.VM.spaceY * 2) * rows;
+  const _nodeH = groupsHeight + vmRowH + NODES_CONSTANTS.VNet.headerHeight;
+  const _height = Math.max(NODES_CONSTANTS.VNet.height, _nodeH) + 2;
+  const d = Math.ceil(Math.sqrt(Math.pow(NODES_CONSTANTS.VNet.width, 2) + Math.pow(_height + 34, 2)));
+  const _r = Math.max(NODES_CONSTANTS.VNet.width, d / 2);
+  return { r: _r, width: NODES_CONSTANTS.VNet.width, height: _height, cols: 3, rows: rows };
 };

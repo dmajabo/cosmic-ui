@@ -1,19 +1,16 @@
 import styled from 'styled-components';
 import { NODES_CONSTANTS } from 'app/components/Map/model';
 
-interface IProps {
-  cols: number;
-}
-export const VmNodeStyles = styled.div<IProps>`
+export const VmNodeStyles = styled.div`
   display: inline-flex;
-  width: 60px;
+  width: ${NODES_CONSTANTS.VM.width + 'px'};
   height: ${NODES_CONSTANTS.VM.height + 'px'};
   flex-shrink: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   margin: 2px;
-  background-color: var(--_primaryBg);
+  background-color: var(--_vmsContainerBg);
   border-radius: ${NODES_CONSTANTS.VM.borderRadius + 'px'};
   padding: 1px 5px;
   white-space: nowrap;
