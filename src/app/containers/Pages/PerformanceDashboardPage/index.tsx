@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { CreateSLATest } from './components/CreateSLATest';
 import { PerformanceDashboardStyles } from './PerformanceDashboardStyles';
 import { SLATestList } from './components/SLATestList';
-import { FinalTableData, Organization } from './SharedTypes';
+import { CreateSLATestRequest, FinalTableData, Organization } from './SharedTypes';
 import { createApiClient } from './apiClient';
 import { GetDevicesString, GetSelectedOrganization } from './components/filterFunctions';
 
@@ -11,10 +11,6 @@ interface TabPanelProps {
   children?: React.ReactNode;
   index: string;
   value: string;
-}
-
-export interface KeyValue {
-  readonly [key: string]: string;
 }
 
 function TabPanel(props: TabPanelProps) {
@@ -38,97 +34,68 @@ const PerformanceDashboardPage: React.FC = () => {
   const classes = PerformanceDashboardStyles();
 
   const apiClient = createApiClient();
-
-  const [addedTestCount, setAddedTestCount] = useState<number>(0);
-  const [deletedTestCount, setDeletedTestCount] = useState<number>(0);
   const [finalTableData, setFinalTableData] = useState<FinalTableData[]>([]);
-  const [tempFinalTableData, setTempFinalTableData] = useState<FinalTableData[]>([]);
-  const [packetLossData, setPacketLossData] = useState<KeyValue>({});
-  const [latencyData, setLatencyData] = useState<KeyValue>({});
   const [organizations, setOrganizations] = useState<Organization[]>([]);
 
   useEffect(() => {
     const getOrganizations = async () => {
       const responseData = await apiClient.getOrganizations();
-      const merakiOrganizations = responseData.organizations.filter(organization => {
-        return organization.vendorType === 'MERAKI';
-      });
-      setOrganizations(merakiOrganizations);
+      if (Object.keys(responseData).length > 0) {
+        const merakiOrganizations = responseData.organizations.filter(organization => {
+          return organization.vendorType === 'MERAKI';
+        });
+        setOrganizations(merakiOrganizations);
+      }
     };
     getOrganizations();
   }, []);
 
+  const getSLATests = async () => {
+    const responseData = await apiClient.getSLATests();
+    if (Object.keys(responseData).length > 0) {
+      if (Array.isArray(responseData.slaTests) && responseData.slaTests.length) {
+        const testData: FinalTableData[] = responseData.slaTests.map(test => {
+          const selectedOrganization = GetSelectedOrganization(organizations, test.sourceOrgId);
+          const allDevices: string = GetDevicesString(selectedOrganization);
+          return {
+            id: test.testId,
+            name: test.name,
+            sourceOrg: selectedOrganization.name,
+            sourceNetwork: test.sourceNwExtId,
+            sourceDevice: allDevices,
+            destination: test.destination,
+            interface: test.interface,
+            description: test.description,
+            averageQoe: {
+              packetLoss: test.metrics.avgPacketLoss.value,
+              latency: test.metrics.avgLatency.value,
+            },
+          };
+        });
+        setFinalTableData(testData);
+      }
+    }
+  };
+
   useEffect(() => {
     if (organizations.length > 0) {
-      const getSLATests = async () => {
-        const responseData = await apiClient.getSLATests();
-        if (Object.keys(responseData).length > 0) {
-          if (Array.isArray(responseData.slaTests) && responseData.slaTests.length) {
-            const testData: FinalTableData[] = responseData.slaTests.map(test => {
-              const selectedOrganization = GetSelectedOrganization(organizations, test.sourceOrgId);
-              const allDevices: string = GetDevicesString(selectedOrganization);
-              return {
-                id: test.testId,
-                name: test.name,
-                sourceOrg: selectedOrganization.name,
-                sourceNetwork: test.sourceNwExtId,
-                sourceDevice: allDevices,
-                destination: test.destination,
-                interface: test.interface,
-                description: test.description,
-                averageQoe: {
-                  packetLoss: 0,
-                  latency: 0,
-                },
-              };
-            });
-            setTempFinalTableData(testData);
-          }
-        }
-      };
       getSLATests();
     }
-  }, [organizations, addedTestCount, deletedTestCount]);
+  }, [organizations]);
 
-  //TODO: Refactor below API calls with Promise.all
-  const packetLoss = async () => {
-    const packetloss = {};
-    for (let i = 0; i < tempFinalTableData.length; i++) {
-      try {
-        const responseData = await apiClient.getAvgPacketLoss(tempFinalTableData[i].sourceNetwork, tempFinalTableData[i].destination);
-        if (responseData?.avgMetric?.avgVal) {
-          packetloss[tempFinalTableData[i].id] = responseData.avgMetric.avgVal;
-        } else {
-          packetloss[tempFinalTableData[i].id] = '-';
-        }
-      } catch {}
+  const addSlaTest = async (submitData: CreateSLATestRequest) => {
+    const responseData = await apiClient.createSLATest(submitData);
+    if (Object.keys(responseData).length > 0) {
+      getSLATests();
     }
-    setPacketLossData(packetloss);
   };
 
-  const latency = async () => {
-    const latency = {};
-    for (let i = 0; i < tempFinalTableData.length; i++) {
-      try {
-        const responseData = await apiClient.getAvgLatency(tempFinalTableData[i].sourceNetwork, tempFinalTableData[i].destination);
-        if (responseData?.avgMetric?.avgVal) {
-          latency[tempFinalTableData[i].id] = responseData.avgMetric.avgVal;
-        } else {
-          latency[tempFinalTableData[i].id] = '-';
-        }
-      } catch {}
+  const deleteSlaTest = async (testId: string) => {
+    const responseData = await apiClient.deleteSLATest(testId);
+    if (Object.keys(responseData).length === 0) {
+      getSLATests();
     }
-    setLatencyData(latency);
   };
-  useEffect(() => {
-    packetLoss();
-    latency();
-    setFinalTableData(tempFinalTableData);
-  }, [tempFinalTableData]);
-
-  const addSlaTest = (value: number) => setAddedTestCount(addedTestCount + value);
-
-  const deleteSlaTest = (value: number) => setDeletedTestCount(deletedTestCount + value);
 
   const tab = 'sla_tests';
 
@@ -141,7 +108,7 @@ const PerformanceDashboardPage: React.FC = () => {
       </div>
       <TabPanel value={tab} index={'sla_tests'}>
         {finalTableData.length > 0 ? (
-          <SLATestList deleteSlaTest={deleteSlaTest} latencyData={latencyData} packetLossData={packetLossData} organizations={organizations} finalTableData={finalTableData} addSlaTest={addSlaTest} />
+          <SLATestList deleteSlaTest={deleteSlaTest} organizations={organizations} finalTableData={finalTableData} addSlaTest={addSlaTest} />
         ) : (
           <CreateSLATest organizations={organizations} addSlaTest={addSlaTest} />
         )}

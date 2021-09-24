@@ -10,16 +10,12 @@ import { Organization, Column, FinalTableData } from '../SharedTypes';
 import { PacketLoss } from './PacketLoss';
 import { Latency } from './Latency';
 import Select from 'react-select';
-import { KeyValue } from '..';
-import { createApiClient } from '../apiClient';
 import AverageQoe from './AverageQoe';
 
 interface SLATestListProps {
   readonly finalTableData: FinalTableData[];
   readonly addSlaTest: Function;
   readonly organizations: Organization[];
-  readonly packetLossData: KeyValue;
-  readonly latencyData: KeyValue;
   readonly deleteSlaTest: Function;
 }
 
@@ -73,15 +69,13 @@ const columns: Column[] = [
   },
 ];
 
-export const SLATestList: React.FC<SLATestListProps> = ({ deleteSlaTest, latencyData, packetLossData, organizations, finalTableData, addSlaTest }) => {
+export const SLATestList: React.FC<SLATestListProps> = ({ deleteSlaTest, organizations, finalTableData, addSlaTest }) => {
   const classes = PerformanceDashboardStyles();
 
   const [createToggle, setCreateToggle] = React.useState<boolean>(false);
   const [tab, setTab] = useState<string>('packetLoss');
   const [selectedRows, setSelectedRows] = useState<Data[]>([]);
   const [timeRange, setTimeRange] = useState<string>('-7d');
-
-  const apiClient = createApiClient();
 
   const handleTabChange = (event, newValue: string) => {
     setTab(newValue);
@@ -91,13 +85,14 @@ export const SLATestList: React.FC<SLATestListProps> = ({ deleteSlaTest, latency
 
   const handleToggle = () => setCreateToggle(!createToggle);
 
-  const addTest = (value: FinalTableData) => addSlaTest(value);
+  const addTest = (value: FinalTableData) => {
+    addSlaTest(value);
+  };
 
   const onSelectedRowsUpdate = (value: Data[]) => setSelectedRows(value);
 
   const deleteTest = async (testId: string) => {
-    await apiClient.deleteSLATest(testId);
-    deleteSlaTest(1);
+    deleteSlaTest(testId);
   };
 
   const data = useMemo(
@@ -110,10 +105,10 @@ export const SLATestList: React.FC<SLATestListProps> = ({ deleteSlaTest, latency
           sourceNetwork: item.sourceNetwork,
           sourceDevice: item.sourceDevice,
           destination: item.destination,
-          averageQoe: <AverageQoe deleteTest={deleteTest} packetLoss={packetLossData[item.id]} latency={latencyData[item.id]} testId={item.id} />,
+          averageQoe: <AverageQoe deleteTest={deleteTest} packetLoss={item.averageQoe.packetLoss} latency={item.averageQoe.latency} testId={item.id} />,
         };
       }),
-    [finalTableData, packetLossData, latencyData],
+    [finalTableData],
   );
 
   const timeRangeOptions = [

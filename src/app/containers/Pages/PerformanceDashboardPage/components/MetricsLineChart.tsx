@@ -8,7 +8,7 @@ import { Data } from './Table';
 
 interface ChartData {
   readonly name: string;
-  readonly data: number[];
+  readonly data: [string, number][];
 }
 
 interface LineChartProps {
@@ -18,7 +18,6 @@ interface LineChartProps {
   readonly timeFormat?: string;
 }
 export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataValueSuffix, inputData }) => {
-  const [categories, setCategories] = useState<string[]>([]);
   const [data, setData] = useState<ChartData[]>([]);
   const [tickInterval, setTickInterval] = useState<number>(0);
 
@@ -27,19 +26,17 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
       return {
         name: row.name,
         data: inputData[row.id].map(item => {
-          return Number(Number.parseFloat(item.value).toFixed(2));
+          return [item.time, Number(Number.parseFloat(item.value).toFixed(2))];
         }),
       };
     });
-    const dataLength: number[] = selectedRows.map(row => inputData[row.id].length);
     setData(tempChartData);
+
+    const dataLength: number[] = selectedRows.map(row => inputData[row.id].length);
     const maxDataLengthIndex = dataLength.reduce((iMax, x, i, arr) => (x > arr[iMax] ? i : iMax), 0);
-    const newCategories = inputData[selectedRows[maxDataLengthIndex].id].map(item => {
-      return moment(item.time).format('YY/MM/DD HH:mm');
-    });
-    setCategories(newCategories);
-    setTickInterval(Math.floor(inputData[selectedRows[maxDataLengthIndex].id].length / 5));
-  }, [inputData]);
+
+    setTickInterval(Math.floor(inputData[selectedRows[maxDataLengthIndex].id].length / 10));
+  }, [inputData, tickInterval]);
 
   const lineChartOptions = {
     time: {
@@ -47,11 +44,8 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
     },
     title: false,
     xAxis: {
+      type: 'category',
       tickInterval: tickInterval,
-      categories: categories,
-      labels: {
-        autoRotation: 0,
-      },
     },
     tooltip: {
       valueSuffix: dataValueSuffix ? ` ${dataValueSuffix}` : '',
@@ -62,11 +56,18 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
         format: dataValueSuffix ? `{text} ${dataValueSuffix}` : `{text}`,
       },
     },
+    plotOptions: {
+      series: {
+        marker: {
+          enabled: false,
+        },
+      },
+    },
     legend: false,
     credits: {
       enabled: false,
     },
-
+    colors: ['red', 'green', 'skyblue', 'yellow'],
     series: data,
   };
 

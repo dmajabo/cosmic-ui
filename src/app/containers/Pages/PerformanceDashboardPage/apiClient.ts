@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig } from 'axios';
-import { CreateSLATestRequest, CreateSLATestResponse, DeleteSLATestResponse, GetAvgMetricsResponse, GetOrganizationResponse, GetSLATestResponse, SLATestMetricsResponse } from './SharedTypes';
+import { CreateSLATestRequest, CreateSLATestResponse, DeleteSLATestResponse, GetOrganizationResponse, GetSLATestResponse, SLATestMetricsResponse } from './SharedTypes';
 
 const BASE_URL = process.env.NODE_ENV === 'development' ? process.env.REACT_APP_API_ENDPOINT_DEVELOPMENT : process.env.REACT_APP_API_ENDPOINT_PRODUCTION;
 
@@ -9,8 +9,6 @@ interface ApiClient {
   readonly createSLATest: (request: CreateSLATestRequest) => Promise<CreateSLATestResponse>;
   readonly getPacketLossMetrics: (deviceId: string, destination: string, startTime: string) => Promise<SLATestMetricsResponse>;
   readonly getLatencyMetrics: (deviceId: string, destination: string, startTime: string) => Promise<SLATestMetricsResponse>;
-  readonly getAvgPacketLoss: (sourceNw: string, destination: string) => Promise<GetAvgMetricsResponse>;
-  readonly getAvgLatency: (sourceNw: string, destination: string) => Promise<GetAvgMetricsResponse>;
   readonly deleteSLATest: (testId: string) => Promise<DeleteSLATestResponse>;
 }
 
@@ -20,8 +18,6 @@ const PATHS = Object.freeze({
   CREATE_SLA_TEST: '/policy/api/v1/policy/performance/sla-tests',
   GET_PACKET_LOSS: (deviceId: string, destination: string) => `/telemetry/api/v1/metrics/device/${deviceId}/destination/${destination}/packetloss`,
   GET_LATENCY: (deviceId: string, destination: string) => `/telemetry/api/v1/metrics/device/${deviceId}/destination/${destination}/latency`,
-  GET_AVG_PACKET_LOSS: (sourceNw: string, destination: string) => `/telemetry/api/v1/metrics/source_nw/${sourceNw}/device/destination/${destination}/avgpacketloss`,
-  GET_AVG_LATENCY: (sourceNw: string, destination: string) => `/telemetry/api/v1/metrics/source_nw/${sourceNw}/device/destination/${destination}/avglatency`,
   DELETE_SLA_TEST: (testId: string) => `/policy/api/v1/policy/performance/sla-tests/${testId}`,
 });
 
@@ -44,7 +40,12 @@ export const createApiClient = (): ApiClient => {
 
   async function getSLATests(): Promise<GetSLATestResponse> {
     try {
-      const response = await axios.get<GetSLATestResponse>(PATHS.GET_SLA_TESTS, config);
+      const response = await axios.get<GetSLATestResponse>(PATHS.GET_SLA_TESTS, {
+        baseURL: BASE_URL,
+        params: {
+          include_metrics: true,
+        },
+      });
       return response.data;
     } catch (error) {
       return {};
@@ -88,40 +89,12 @@ export const createApiClient = (): ApiClient => {
     }
   }
 
-  async function getAvgPacketLoss(sourceNw: string, destination: string): Promise<GetAvgMetricsResponse> {
-    try {
-      const response = await axios.get<GetAvgMetricsResponse>(PATHS.GET_AVG_PACKET_LOSS(sourceNw, destination), {
-        baseURL: BASE_URL,
-        params: {
-          startTime: '-30d',
-        },
-      });
-      return response.data;
-    } catch (error) {
-      return {};
-    }
-  }
-
-  async function getAvgLatency(sourceNw: string, destination: string): Promise<GetAvgMetricsResponse> {
-    try {
-      const response = await axios.get<GetAvgMetricsResponse>(PATHS.GET_AVG_LATENCY(sourceNw, destination), {
-        baseURL: BASE_URL,
-        params: {
-          startTime: '-30d',
-        },
-      });
-      return response.data;
-    } catch (error) {
-      return {};
-    }
-  }
-
   async function deleteSLATest(testId: string): Promise<DeleteSLATestResponse> {
     try {
-      const response = await axios.delete<CreateSLATestResponse>(PATHS.DELETE_SLA_TEST(testId), config);
+      const response = await axios.delete<DeleteSLATestResponse>(PATHS.DELETE_SLA_TEST(testId), config);
       return response.data;
     } catch (error) {
-      return {};
+      return { id: 'error' };
     }
   }
 
@@ -131,8 +104,6 @@ export const createApiClient = (): ApiClient => {
     createSLATest,
     getPacketLossMetrics,
     getLatencyMetrics,
-    getAvgPacketLoss,
-    getAvgLatency,
     deleteSLATest,
   };
 };

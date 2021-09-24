@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { PerformanceDashboardStyles } from '../PerformanceDashboardStyles';
 import Select from 'react-select';
 import { CreateSLATestRequest, Organization, SLATest } from '../SharedTypes';
-import { createApiClient } from '../apiClient';
 import CloseIcon from '../icons/close.svg';
 import { GetSelectedOrganization } from './filterFunctions';
 
@@ -16,8 +15,6 @@ interface CreateSLATestProps {
 
 export const CreateSLATest: React.FC<CreateSLATestProps> = ({ organizations, addSlaTest, closeSlaTest, popup }) => {
   const classes = PerformanceDashboardStyles();
-
-  const apiClient = createApiClient();
 
   const [name, setName] = useState<string>('');
   const [sourceOrg, setSourceOrg] = useState<string>('');
@@ -92,13 +89,8 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ organizations, add
       sla_test: testData,
     };
     closeSlaTest();
-    try {
-      await apiClient.createSLATest(submitData);
-      clearFormFields();
-      addSlaTest(1);
-    } catch (error) {
-      alert('Test Not Added !!');
-    }
+    addSlaTest(submitData);
+    clearFormFields();
   };
 
   return (
