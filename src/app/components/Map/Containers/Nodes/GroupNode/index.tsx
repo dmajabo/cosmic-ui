@@ -26,6 +26,7 @@ const GroupNode: React.FC<IProps> = (props: IProps) => {
   );
   const [pos, setPosition] = React.useState<IPosition>(null);
   const [visible, setVisible] = React.useState<boolean>(false);
+  const [shouldUpdate, setShouldUpdate] = React.useState<boolean>(false);
   // const [showPopup, setShowPopup] = React.useState<IPopupDisplay>({ show: false, x: 0, y: 0 });
   React.useEffect(() => {
     return () => {
@@ -36,6 +37,7 @@ const GroupNode: React.FC<IProps> = (props: IProps) => {
   React.useEffect(() => {
     setVisible(props.dataItem.visible);
     setPosition({ x: props.dataItem.x, y: props.dataItem.y });
+    setShouldUpdate(true);
   }, [props.dataItem]);
 
   React.useEffect(() => {
@@ -48,12 +50,13 @@ const GroupNode: React.FC<IProps> = (props: IProps) => {
     } else {
       onUnsubscribeDrag();
     }
-  }, [pos, visible]);
+  }, [shouldUpdate]);
 
   const onUpdatePosition = (_pos: IPosition) => {
     if (props.dataItem.x === _pos.x && props.dataItem.y === _pos.y) {
       return;
     }
+    setShouldUpdate(false);
     topology?.onUpdateGroupNode(props.dataItem, _pos, true, false);
   };
 
@@ -69,6 +72,7 @@ const GroupNode: React.FC<IProps> = (props: IProps) => {
     //   return;
     // }
     d3.select(`#${NODES_CONSTANTS.NETWORK_GROUP.type}${props.dataItem.id}`).raise();
+    setShouldUpdate(false);
     topology?.onUpdateGroupNode(props.dataItem, null, false, true);
   };
 

@@ -12,7 +12,7 @@ import { ITopologyGroup } from 'lib/models/topology';
 import { TopologyGroupApi } from 'lib/api/ApiModels/Topology/endpoints';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
-import { useGet, usePost, useDelete } from 'lib/api/http/useAxiosHook';
+import { useGet, usePost, useDelete, usePut } from 'lib/api/http/useAxiosHook';
 import { jsonClone } from 'lib/helpers/cloneHelper';
 import { getMaxCopyValue } from './helpers';
 
@@ -25,7 +25,7 @@ const GroupsComponent: React.FC<IProps> = (props: IProps) => {
   const [groupToEdit, setGroupToEdit] = React.useState<ITopologyGroup | null>(null);
   const { response, loading, error, onGet } = useGet<ITopologyGroup>();
   const { response: postRes, loading: postLoading, onPost } = usePost<ITopologyGroup, ITopologyGroup>();
-  const { response: postUpdateRes, loading: postUpdateLoading, onPost: onUpdate } = usePost<ITopologyGroup, ITopologyGroup>();
+  const { response: postUpdateRes, loading: postUpdateLoading, onPut: onUpdate } = usePut<ITopologyGroup, ITopologyGroup>();
   const { response: deleteRes, loading: deleteLoading, onDelete } = useDelete<ITopologyGroup>();
   const [tempData, setTempData] = React.useState<ITopologyGroup>(null);
   React.useEffect(() => {
@@ -92,12 +92,12 @@ const GroupsComponent: React.FC<IProps> = (props: IProps) => {
   };
 
   const onUpdateGroup = async (_data: ITopologyGroup) => {
-    await onUpdate(TopologyGroupApi.postCreateGroup(), { groupPol: _data });
+    await onUpdate(TopologyGroupApi.postUpdateGroup(_data.id), { group: _data });
     // await postUpdateGroupAsync(TopologyGroupApi.postUpdateGroup(_data.id), { groupPol: _data });
   };
 
   const onCreateGroup = async (_data: ITopologyGroup) => {
-    await onPost(TopologyGroupApi.postCreateGroup(), { groupPol: _data });
+    await onPost(TopologyGroupApi.postCreateGroup(), { group: _data });
   };
 
   const getPanelBarTitle = (_view: TopologyGroupsView, _group: ITopologyGroup | null) => {

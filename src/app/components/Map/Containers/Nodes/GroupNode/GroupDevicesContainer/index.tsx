@@ -1,8 +1,8 @@
 import React from 'react';
-import { ContainerWrapper } from './styles';
 import { IDeviceNode, INetworkGroupNode } from 'lib/models/topology';
 import Device from '../../Device';
 import DeviceLink from 'app/components/Map/Containers/Links/DeviceLink';
+import { ContainerWrapper } from './styles';
 
 interface IProps {
   dataItem: INetworkGroupNode;
@@ -15,7 +15,7 @@ const GroupDevicesContainer: React.FC<IProps> = (props: IProps) => {
     props.onClickDevice(dev);
   };
   return (
-    <ContainerWrapper className={props.className} x={props.dataItem.x} y={props.dataItem.y}>
+    <ContainerWrapper className={props.className}>
       <circle pointerEvents="none" r={props.dataItem.r} fill="var(--_groupDevicesBg)" cx="-100" cy="50" />
       <g>
         {props.dataItem.links.map(link => (

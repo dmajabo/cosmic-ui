@@ -37,18 +37,18 @@ const Graph: React.FC<Props> = (props: Props) => {
     setLinks(topology.links);
   }, [topology.nodes, topology.links]);
 
-  const onClickVm = React.useCallback((_data: IVM_PanelDataNode) => {
+  const onClickVm = (_data: IVM_PanelDataNode) => {
     props.onClickVm(_data);
-  }, []);
-  const onClickAppGroup = React.useCallback((_data: IAppGroup_PanelDataNode) => {
+  };
+  const onClickAppGroup = (_data: IAppGroup_PanelDataNode) => {
     props.onClickAppGroup(_data);
-  }, []);
-  const onClickDevice = React.useCallback((dev: IDeviceNode) => {
+  };
+  const onClickDevice = (dev: IDeviceNode) => {
     props.onClickDevice(dev, TopologyMetricsPanelTypes.Device);
-  }, []);
-  const onClickWedge = React.useCallback((wedge: IWedgeNode) => {
+  };
+  const onClickWedge = (wedge: IWedgeNode) => {
     props.onClickWedge(wedge, TopologyMetricsPanelTypes.Wedge);
-  }, []);
+  };
 
   const onOpenFullScreen = () => {
     props.onOpenFullScreen();

@@ -29,8 +29,12 @@ const ApplicationGroupPanel: React.FC<IProps> = (props: IProps) => {
     if (props.dataItem && props.dataItem.vnet && props.dataItem.vnet.vms && props.dataItem.vnet.vms.length) {
       const _listItems: IVm[] = props.dataItem.vnet.vms.filter(it => it.selectorGroup === props.dataItem.group.name || it.selectorGroup === props.dataItem.group.id);
       setVms(_listItems);
+    } else {
+      setVms(null);
     }
-  }, []);
+    setSelectedVm(null);
+    setValue(0);
+  }, [props.dataItem]);
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
@@ -53,7 +57,7 @@ const ApplicationGroupPanel: React.FC<IProps> = (props: IProps) => {
         <>
           <PanelHeader direction="row" align="center">
             <IconButton styles={{ margin: '0 12px 0 0' }} icon={returnArrow} title="Back" onClick={onReturn} />
-            <PanelTitle maxWidth="calc(100% - 32px)">{selectedVm.name ? selectedVm.name : selectedVm.id}</PanelTitle>
+            <PanelTitle maxWidth="calc(100% - 32px)">{selectedVm.name ? selectedVm.name : selectedVm.extId}</PanelTitle>
           </PanelHeader>
           <PanelTabWrapper>
             <Tabs

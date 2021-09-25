@@ -86,7 +86,7 @@ const VNetNode: React.FC<IProps> = (props: IProps) => {
       <g id={`${NODES_CONSTANTS.VNet.type}${props.dataItem.id}`} className="topologyNode" transform={`translate(${pos.x}, ${pos.y})`} data-type={NODES_CONSTANTS.VNet.type}>
         <foreignObject x="0" y="0" width={props.dataItem.nodeSize.width} height={props.dataItem.nodeSize.height}>
           <ContainerWrapper>
-            <VNetHeder name={props.dataItem.name} />
+            <VNetHeder name={props.dataItem.name} extId={props.dataItem.extId} />
             <ApplicationGroupContainer items={props.dataItem.applicationGroups} onClickGroup={onClickGroup} />
             <VmsContainer name={props.dataItem.name} isGroupPresent={!!props.dataItem.applicationGroups.length} items={props.dataItem.vms} onClickVm={onClickVm} />
           </ContainerWrapper>

@@ -4,13 +4,14 @@ import VPC from './VPC';
 
 interface IProps {
   name: string;
+  extId: string;
 }
 const VNetHeder: React.FC<IProps> = (props: IProps) => {
   return (
-    <HeaderWrapper title={`VPC ${props.name}`}>
+    <HeaderWrapper title={`VPC ${props.name ? props.name : props.extId}`}>
       <Icon>{VPC}</Icon>
       <Title>VPC</Title>
-      <Title>{props.name}</Title>
+      <Title>{props.name ? props.name : props.extId}</Title>
     </HeaderWrapper>
   );
 };

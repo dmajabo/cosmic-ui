@@ -75,18 +75,16 @@ const Map: React.FC<IProps> = (props: IProps) => {
   };
 
   const onTryLoadData = async () => {
+    topology.onSetIsDataLoading();
     const _st = topology.selectedTime || null;
     const param = createTopologyQueryParam(_st);
     await onGetChainData([TopologyGroupApi.getAllGroups(), TopologyOrganizationApi.getAllOrganizations()], ['groups', 'organizations'], param);
   };
 
   const onReloadData = async (startTime: Date | null) => {
+    topology.onSetIsDataLoading();
     const param = createTopologyQueryParam(startTime);
     await onGetChainData([TopologyGroupApi.getAllGroups(), TopologyOrganizationApi.getAllOrganizations()], ['groups', 'organizations'], param);
-  };
-
-  const onRefresh = () => {
-    onTryLoadData();
   };
 
   const onOpenNodePanel = (node: IDeviceNode | IWedgeNode, _type: TopologyMetricsPanelTypes) => {
@@ -120,7 +118,14 @@ const Map: React.FC<IProps> = (props: IProps) => {
     setShowPanelBar(_objPanel);
     showPanelRef.current = _objPanel;
     setShowFooter(true);
-    if (_data && showMetricksBar && showMetricksBar.dataItem && showMetricksBar.dataItem.group && _data.group.id === showMetricksBar.dataItem.group.id) {
+    if (
+      _data &&
+      showMetricksBar &&
+      showMetricksBar.dataItem &&
+      showMetricksBar.dataItem.group &&
+      _data.group.id === showMetricksBar.dataItem.group.id &&
+      _data.vnet.id === showMetricksBar.dataItem.vnet.id
+    ) {
       return;
     }
     const _objMetrick = { type: TopologyMetricsPanelTypes.APPLICATION_GROUP, show: true, dataItem: _data };
@@ -140,7 +145,7 @@ const Map: React.FC<IProps> = (props: IProps) => {
             <MapContainer>
               {topology.originData && (
                 <>
-                  <HeadeerAction onShowPanel={onOpenPanel} onRefresh={onRefresh} />
+                  <HeadeerAction onShowPanel={onOpenPanel} onRefresh={onTryLoadData} />
                   <Graph
                     isFullScreen={isFullScreen}
                     onOpenFullScreen={onOpenFullScreen}
@@ -151,7 +156,7 @@ const Map: React.FC<IProps> = (props: IProps) => {
                   />
                 </>
               )}
-              {loading && (
+              {(loading || !topology.dataReadyToShow) && (
                 <AbsLoaderWrapper>
                   <LoadingIndicator margin="auto" />
                 </AbsLoaderWrapper>

@@ -43,7 +43,7 @@ const VmPanel: React.FC<IProps> = (props: IProps) => {
         </Tabs>
       </PanelTabWrapper>
       <PanelHeader direction="column" align="unset">
-        <PanelTitle>{props.dataItem.vm.name ? props.dataItem.vm.name : props.dataItem.vm.id}</PanelTitle>
+        <PanelTitle>{props.dataItem.vm.name ? props.dataItem.vm.name : props.dataItem.vm.extId}</PanelTitle>
       </PanelHeader>
       <OverflowContainer>
         <TabPanel value={value} index={0}>

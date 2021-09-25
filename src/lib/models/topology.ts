@@ -257,11 +257,13 @@ export interface IOrganizationNode extends IOrganization {
 }
 
 export enum TopologyGroupTypesAsNumber {
-  BRANCH_NETWORKS = 0,
-  APPLICATION = 1,
+  NONE = 0,
+  BRANCH_NETWORKS = 1,
+  APPLICATION = 2,
 }
 
 export enum TopologyGroupTypesAsString {
+  NONE = 'NONE',
   BRANCH_NETWORKS = 'DEVICE',
   APPLICATION = 'APPLICATION',
 }

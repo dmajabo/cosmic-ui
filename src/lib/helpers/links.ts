@@ -93,7 +93,7 @@ const getDevices = (nodes: IDeviceNode[], connectedTo: string): IDeviceNode[] =>
 
 const buildNetworkLinks = (links: ILink[], wedge: IWedgeNode, vnets: IVnetNode[], nodes: (IWedgeNode | IVnetNode | IDeviceNode | INetworkGroupNode)[]) => {
   wedge.networkLinks.forEach(link => {
-    const vnet = vnets.find(vnet => (link.vnet ? vnet.id === link.vnet.id : vnet.extId === link.peerExtId) || link.peerExtId === vnet.extId);
+    const vnet = vnets.find(vnet => (link.vnet ? vnet.id === link.vnet.id : vnet.extId === link.peerExtId));
     if (!vnet) {
       return;
     }

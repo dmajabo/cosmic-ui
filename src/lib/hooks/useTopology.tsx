@@ -17,6 +17,7 @@ import {
   IDeviceNode,
   IVnetNode,
   ITopologyPreparedMapData,
+  TOPOLOGY_NODE_TYPES,
   // TOPOLOGY_NODE_TYPES,
 } from 'lib/models/topology';
 import { ISelectedListItem, ITimeTypes, TIME_PERIOD } from 'lib/models/general';
@@ -27,6 +28,7 @@ import { IPosition, NODES_CONSTANTS } from 'app/components/Map/model';
 import { ITimeMinMaxRange } from 'app/components/Inputs/TimeSlider/helpers';
 
 export interface TopologyContextType {
+  dataReadyToShow: boolean;
   selectedPeriod: ISelectedListItem<ITimeTypes>;
   selectedTime: Date | null;
   timeRange: ITimeMinMaxRange | null;
@@ -52,8 +54,10 @@ export interface TopologyContextType {
   onUpdateVnetNode: (_item: IVnetNode, _pos: IPosition) => void;
   onUpdateGroupNode: (_item: INetworkGroupNode, _pos: IPosition, isDrag: boolean, isExpand: boolean) => void;
   onSelectEntity: (entity: IEntity, selected: boolean) => void;
+  onSetIsDataLoading: () => void;
 }
 export function useTopologyContext(): TopologyContextType {
+  const [dataReadyToShow, setDataReadyToShow] = React.useState<boolean>(false);
   const [originData, setOriginData] = React.useState<ITopologyMapData | null>(null);
   const [originGroupsData, setOriginGroupsData] = React.useState<ITopologyGroup[] | null>(null);
   const [nodes, setNodes] = React.useState<(IWedgeNode | IVnetNode | IDeviceNode | INetworkGroupNode)[] | null>([]);
@@ -69,6 +73,7 @@ export function useTopologyContext(): TopologyContextType {
   const nodesRef = React.useRef(nodes);
   const onSetData = (res: ITopologyDataRes) => {
     if (!res) {
+      setDataReadyToShow(true);
       setLinks(null);
       setOriginData(null);
       setOriginGroupsData(null);
@@ -123,6 +128,7 @@ export function useTopologyContext(): TopologyContextType {
     // For test
     // const _data: ITopologyPreparedMapData = res.organizations ? createPreparedData(_orgObj, _groupsObj.groups) : null;
     const _data: ITopologyPreparedMapData = prepareNodesData(_orgObj, _groupsObj.groups);
+    setDataReadyToShow(true);
     if (_data.links) {
       setLinks(_data.links);
       linksRef.current = _data.links;
@@ -300,14 +306,14 @@ export function useTopologyContext(): TopologyContextType {
     if (isDrag && _position) {
       _data[index].x = _position.x;
       _data[index].y = _position.y;
+      const _sourceObj = NODES_CONSTANTS.NETWORK_GROUP;
+      const _lData = onUpdateTargetLink(linksRef.current, _item.id, _position, _sourceObj.r, _sourceObj.r);
+      setLinks(_lData);
+      linksRef.current = _lData;
     }
     if (isExpand) {
       _data[index].collapsed = !_item.collapsed;
     }
-    const _sourceObj = NODES_CONSTANTS.NETWORK_GROUP;
-    const _lData = onUpdateTargetLink(linksRef.current, _item.id, _position, _sourceObj.r, _sourceObj.r);
-    setLinks(_lData);
-    linksRef.current = _lData;
     setNodes(_data);
     nodesRef.current = _data;
   };
@@ -328,21 +334,7 @@ export function useTopologyContext(): TopologyContextType {
   };
 
   const onUpdateGroups = (_group: ITopologyGroup) => {
-    if (_group.type === TopologyGroupTypesAsNumber.BRANCH_NETWORKS || _group.type === TopologyGroupTypesAsString.BRANCH_NETWORKS) {
-      const _data: any[] = jsonClone(nodesRef.current);
-      let _index: number = _data.findIndex(it => it.id === _group.id);
-      if (_index === -1) {
-        _index = _data.length;
-      }
-      const _obg: INetworkGroupNode = createGroupNode(_group, _index);
-      if (_index === -1) {
-        _data.push(_obg);
-      } else {
-        _data.splice(_index, 1, _obg);
-      }
-      setNodes(_data);
-      nodesRef.current = _data;
-    }
+    const _nodes: any[] = jsonClone(nodesRef.current);
     const _groups: ITopologyGroup[] = jsonClone(originGroupsData);
     const _gindex: number = _groups.findIndex(it => it.id === _group.id);
     if (_gindex === -1) {
@@ -350,20 +342,53 @@ export function useTopologyContext(): TopologyContextType {
     } else {
       _groups.splice(_gindex, 1, _group);
     }
+    if (_group.type === TopologyGroupTypesAsNumber.BRANCH_NETWORKS || _group.type === TopologyGroupTypesAsString.BRANCH_NETWORKS) {
+      let _index: number = _nodes.findIndex(it => it.id === _group.id);
+      let _obg = null;
+      if (_index === -1) {
+        _obg = createGroupNode(_group, 0);
+        _nodes.push(_obg);
+      } else {
+        _obg = createGroupNode(_group, _index);
+        _obg.x = _nodes[_index].x;
+        _obg.y = _nodes[_index].y;
+        _nodes.splice(_index, 1, _obg);
+      }
+    } else {
+      const vnets: IVnetNode[] = _nodes.filter(node => node.nodeType === TOPOLOGY_NODE_TYPES.VNET) as IVnetNode[];
+      const vnetNodes = vnets && vnets.length && vnets.filter(it => it.applicationGroups && it.applicationGroups.length && it.applicationGroups.find(gr => gr.id === _group.id));
+      if (vnetNodes && vnetNodes.length) {
+        vnetNodes.forEach(vnet => {
+          const i = vnet.applicationGroups.findIndex(g => g.id === _group.id);
+          vnet.applicationGroups.splice(i, 1, _group);
+        });
+      }
+    }
+    setNodes(_nodes);
     setOriginGroupsData(_groups);
+    nodesRef.current = _nodes;
   };
 
   const onDeleteGroup = (_group: INetworkGroupNode) => {
+    const _nodes: any[] = jsonClone(nodesRef.current);
+    const _groups: ITopologyGroup[] = originGroupsData.filter(it => it.id !== _group.id);
+    let _data: any[] = _nodes.filter(it => it.id !== _group.id);
     if (_group.type === TopologyGroupTypesAsNumber.BRANCH_NETWORKS || _group.type === TopologyGroupTypesAsString.BRANCH_NETWORKS) {
-      let _data: any[] = nodesRef.current.filter(it => it.id !== _group.id);
       if (_group.devices && _group.devices.length) {
         _data = _data.concat(_group.devices);
       }
-      setNodes(_data);
-      nodesRef.current = _data;
+    } else {
+      const vnets: IVnetNode[] = _nodes.filter(node => node.nodeType === TOPOLOGY_NODE_TYPES.VNET) as IVnetNode[];
+      const vnetNodes = vnets && vnets.length && vnets.filter(it => it.applicationGroups && it.applicationGroups.length && it.applicationGroups.find(gr => gr.id === _group.id));
+      if (vnetNodes && vnetNodes.length) {
+        vnetNodes.forEach(vnet => {
+          vnet.applicationGroups = vnet.applicationGroups.filter(it => it.id !== _group.id);
+        });
+      }
     }
-    const _groups: ITopologyGroup[] = originGroupsData.filter(it => it.id !== _group.id);
+    setNodes(_data);
     setOriginGroupsData(_groups);
+    nodesRef.current = _data;
   };
 
   const onChangeTimePeriod = (period: ISelectedListItem<ITimeTypes>) => {
@@ -387,7 +412,12 @@ export function useTopologyContext(): TopologyContextType {
     setTimeRange(_range);
   };
 
+  const onSetIsDataLoading = () => {
+    setDataReadyToShow(false);
+  };
+
   return {
+    dataReadyToShow,
     selectedPeriod,
     selectedTime,
     timeRange,
@@ -414,5 +444,6 @@ export function useTopologyContext(): TopologyContextType {
     onChangeTime,
     onUpdateTimeRange,
     onChangeSelectedDay,
+    onSetIsDataLoading,
   };
 }
