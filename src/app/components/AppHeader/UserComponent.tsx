@@ -6,14 +6,17 @@ import { useAuthDataContext } from 'lib/Routes/useAuth';
 import PopupContainer from 'app/components/PopupContainer';
 import { PopupLinkItem } from 'app/components/PopupContainer/styles';
 import { ClickAwayListener } from '@material-ui/core';
+import { useAuth0 } from '@auth0/auth0-react';
 interface Props {}
 
 export const UserComponent: React.FC<Props> = (props: Props) => {
   const { authData } = useAuthDataContext();
   const [showPopup, setShowPopup] = React.useState<boolean>(false);
+  const { logout } = useAuth0();
 
   const onLogOut = () => {
     authData?.onLogout();
+    logout({ returnTo: window.location.origin });
   };
 
   const onShowPopup = () => {

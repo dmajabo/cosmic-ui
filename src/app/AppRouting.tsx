@@ -16,7 +16,7 @@ const AppRouting: React.FC<{}> = () => {
       <Route exact path={ROUTE.base} component={LandingPage} />
       <Route exact path={ROUTE.signUp} component={SignUpPage} />
       <PublicRoute path={ROUTE.login} component={LoginPage} />
-      <ProtectedRouteV2 path={ROUTE.app} component={HomePage} authenticationPath={ROUTE.base} />
+      <ProtectedRouteV2 path={ROUTE.app} component={HomePage} />
       <Route exact path={ROUTE.base} render={() => <Redirect to={ROUTE.app} />} />
       <Route path={ROUTE.notFound} component={NotFoundPage} />
     </Switch>
