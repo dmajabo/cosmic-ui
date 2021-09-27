@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
-import moment from 'moment';
 import { DateTime } from 'luxon';
 import { MetricKeyValue } from './PacketLoss';
 import { Data } from './Table';
@@ -26,7 +25,8 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
       return {
         name: row.name,
         data: inputData[row.id].map(item => {
-          return [item.time, Number(Number.parseFloat(item.value).toFixed(2))];
+          const val = DateTime.fromFormat(item.time, 'yyyy-MM-dd HH:mm:ss ZZZ z').toUTC().toFormat('yy/MM/dd HH:mm');
+          return [val, Number(Number.parseFloat(item.value).toFixed(2))];
         }),
       };
     });
