@@ -57,7 +57,7 @@ const createVnetNode = (org: IOrganization, orgIndex: number, node: IVnet, index
 };
 
 export const createGroupNode = (_item: ITopologyGroup, index: number): INetworkGroupNode => {
-  return { ..._item, visible: true, collapsed: false, groupIndex: index, x: 0, y: 0, devices: [], links: [], r: 0, nodeType: TOPOLOGY_NODE_TYPES.NETWORK_GROUP };
+  return { ..._item, visible: true, collapsed: true, groupIndex: index, x: 0, y: 0, devices: [], links: [], r: 0, nodeType: TOPOLOGY_NODE_TYPES.NETWORK_GROUP };
 };
 export const prepareNodesData = (_data: ITopologyMapData, _groups: ITopologyGroup[]): ITopologyPreparedMapData => {
   const nodes: (IWedgeNode | IVnetNode | IDeviceNode | INetworkGroupNode)[] = [];
@@ -100,6 +100,7 @@ export const prepareNodesData = (_data: ITopologyMapData, _groups: ITopologyGrou
         if (devicesInGroup.length) {
           const _devs = devicesInGroup.filter(it => it.selectorGroup === gr.name || it.selectorGroup === gr.id);
           _obj.devices = _devs;
+          _obj.collapsed = false;
           if (_devs && _devs.length) {
             const size = createpackLayout(_obj);
             _obj.r = size.r;
@@ -165,10 +166,10 @@ export const prepareNodesData = (_data: ITopologyMapData, _groups: ITopologyGrou
       d3.forceY().y(d => {
         let s = 0.5;
         if (d.nodeType === TOPOLOGY_NODE_TYPES.NETWORK_GROUP) {
-          s = 0.15;
+          s = devices && devices.length ? 0.15 : 0.5;
         }
         if (d.nodeType === TOPOLOGY_NODE_TYPES.DEVICE) {
-          s = 0.55;
+          s = topologyGroups && topologyGroups.length ? 0.55 : 0.5;
         }
         return yScale(s);
       }),

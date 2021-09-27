@@ -120,7 +120,7 @@ export function useDrag(props: IProps, onUpdateCallBack: (pos: IPosition) => voi
       targetLinks.each(function (this: any) {
         const _g = d3.select(this);
         const _l = _g.select('.topologyLink');
-        const _type = _g.attr('data-link-type');
+        const _type = _g.attr('data-link_type');
         const _tX = Number(_g.attr('data-target_x')) + dx;
         const _tY = Number(_g.attr('data-target_y')) + dy;
         const _sX = Number(_g.attr('data-source_x'));
@@ -133,6 +133,11 @@ export function useDrag(props: IProps, onUpdateCallBack: (pos: IPosition) => voi
             [0, 0],
             [_x, _y],
           ]);
+          if (_data.x <= 0) {
+            gAtt.classed('rightLabel', true);
+          } else {
+            gAtt.classed('rightLabel', false);
+          }
           gAtt.attr('transform', `translate(${_data.x}, ${_data.y}) rotate(${_data.angle})`);
         }
         _g.attr('transform', `translate(${_tX}, ${_tY})`).attr('data-target_x', _tX).attr('data-target_y', _tY);
@@ -143,7 +148,7 @@ export function useDrag(props: IProps, onUpdateCallBack: (pos: IPosition) => voi
       sourceLinks.each(function (this: any) {
         const _g = d3.select(this);
         const _l = _g.select('.topologyLink');
-        const _type = _g.attr('data-link-type');
+        const _type = _g.attr('data-link_type');
         const _tX = Number(_g.attr('data-target_x'));
         const _tY = Number(_g.attr('data-target_y'));
         const _sX = Number(_g.attr('data-source_x')) + dx;
@@ -156,6 +161,11 @@ export function useDrag(props: IProps, onUpdateCallBack: (pos: IPosition) => voi
             [0, 0],
             [_x, _y],
           ]);
+          if (_data.x <= 0) {
+            gAtt.classed('rightLabel', true);
+          } else {
+            gAtt.classed('rightLabel', false);
+          }
           gAtt.attr('transform', `translate(${_data.x}, ${_data.y}) rotate(${_data.angle})`);
         }
         _g.attr('data-source_x', _sX).attr('data-source_y', _sY);
@@ -170,6 +180,8 @@ export function useDrag(props: IProps, onUpdateCallBack: (pos: IPosition) => voi
     //   popup.style('display', 'block');
     // }
     node = null;
+    targetLinks = null;
+    sourceLinks = null;
     // allNodes = null;
     // popup = null;
     // popupTranslateCoord = null;

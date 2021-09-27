@@ -9,6 +9,7 @@ import GroupDevicesContainer from './GroupDevicesContainer';
 import * as d3 from 'd3';
 import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
 import TransitionContainer from '../../TransitionContainer';
+import NodeName from '../../Shared/NodeName';
 
 interface IProps {
   dataItem: INetworkGroupNode;
@@ -100,21 +101,7 @@ const GroupNode: React.FC<IProps> = (props: IProps) => {
         >
           <>{CISCO_MERAKI}</>
         </g>
-        <foreignObject pointerEvents="none" x={-NODES_CONSTANTS.NETWORK_GROUP.spaceX / 2} y={NODES_CONSTANTS.NETWORK_GROUP.r * 2} width="100" height="24">
-          <div
-            style={{
-              width: '100%',
-              height: '20px',
-              fontSize: '14px',
-              fontWeight: 500,
-              textAlign: 'center',
-              pointerEvents: 'none',
-              color: 'var(--_primaryColor)',
-            }}
-          >
-            {props.dataItem.name}
-          </div>
-        </foreignObject>
+        {props.dataItem.collapsed && <NodeName name={props.dataItem.name} dx={-NODES_CONSTANTS.NETWORK_GROUP.spaceX / 2} dy={NODES_CONSTANTS.NETWORK_GROUP.r * 2} />}
       </g>
     </TransitionContainer>
   );

@@ -5,6 +5,7 @@ import { useDrag } from 'app/components/Map/hooks/useDrag';
 import TGW from './TGW';
 import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
 import TransitionContainer from '../../TransitionContainer';
+import NodeName from '../../Shared/NodeName';
 // import NodeTooltipPortal from 'components/Basic/NodeTooltipPortal';
 // import WedgePopup from '../../Popups/WedgePopup';
 // import { IPopupDisplay } from 'lib/models/general';
@@ -79,10 +80,11 @@ const WEdgeNode: React.FC<IProps> = (props: IProps) => {
           >
             {TGW}
           </g>
-          <text dx={NODES_CONSTANTS.WEDGE.r} dy={NODES_CONSTANTS.WEDGE.r * 2 + 20} fill="var(--_primaryColor)" fontSize="14" textAnchor="middle">
+          <NodeName labelBefore="TGW" name={props.dataItem.name} dx={-NODES_CONSTANTS.WEDGE.r} dy={NODES_CONSTANTS.WEDGE.r * 2 + 10} />
+          {/* <text dx={NODES_CONSTANTS.WEDGE.r} dy={NODES_CONSTANTS.WEDGE.r * 2 + 20} fill="var(--_primaryColor)" fontSize="14" textAnchor="middle">
             <tspan>TGW</tspan>
-          </text>
-          <foreignObject pointerEvents="none" x={NODES_CONSTANTS.WEDGE.dx} y={NODES_CONSTANTS.WEDGE.r * 2 + 20} width={NODES_CONSTANTS.WEDGE.textWidth} height={NODES_CONSTANTS.WEDGE.textHeight}>
+          </text> */}
+          {/* <foreignObject pointerEvents="none" x={} y={} width={NODES_CONSTANTS.WEDGE.textWidth} height={NODES_CONSTANTS.WEDGE.textHeight}>
             <div
               style={{
                 width: '100%',
@@ -95,7 +97,7 @@ const WEdgeNode: React.FC<IProps> = (props: IProps) => {
             >
               {props.dataItem.name}
             </div>
-          </foreignObject>
+          </foreignObject> */}
         </g>
       </g>
     </TransitionContainer>

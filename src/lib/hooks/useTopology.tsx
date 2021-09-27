@@ -98,10 +98,10 @@ export function useTopologyContext(): TopologyContextType {
     //   const device = onCreateDevice(1, _orgObj.organizations[1].id, j + 250, '');
     //   _orgObj.organizations[1].devices.push(device);
     // }
-    for (let j = 0; j < 100; j++) {
-      const device = onCreateDevice(1, _orgObj.organizations[1].id, j + 2, 'US_WEST_3');
-      _orgObj.organizations[1].devices.push(device);
-    }
+    // for (let j = 0; j < 100; j++) {
+    //   const device = onCreateDevice(1, _orgObj.organizations[1].id, j + 2, '');
+    //   _orgObj.organizations[1].devices.push(device);
+    // }
     // for (let i = 0; i < _orgObj.organizations.length; i++) {
     //   const _org = _orgObj.organizations[0];
     //   const c =  (i + 1) * 103;
@@ -160,30 +160,30 @@ export function useTopologyContext(): TopologyContextType {
   //   };
   // }
 
-  const onCreateDevice = (orgI, orgId, index: number, groupName: string): IDeviceNode => {
-    return {
-      id: `0xeaa5_temporaryDevice${index}`,
-      name: '',
-      description: '',
-      extId: 'Q2KN-U958-CSTY',
-      type: '',
-      serial: 'Q2KN-U958-CSTY',
-      model: 'MX64',
-      networkId: 'L_624311498344248378',
-      publicIp: '73.158.148.119',
-      privateIp: '192.168.1.244',
-      vpnlinks: [],
-      selectorGroup: groupName,
-      x: 0,
-      y: 0,
-      childIndex: index,
-      orgIndex: orgI,
-      orgId: orgId,
-      scaleFactor: 1,
-      nodeType: TOPOLOGY_NODE_TYPES.DEVICE,
-      visible: true,
-    };
-  };
+  // const onCreateDevice = (orgI, orgId, index: number, groupName: string): IDeviceNode => {
+  //   return {
+  //     id: `0xeaa5_temporaryDevice${index}`,
+  //     name: '',
+  //     description: '',
+  //     extId: 'Q2KN-U958-CSTY',
+  //     type: '',
+  //     serial: 'Q2KN-U958-CSTY',
+  //     model: 'MX64',
+  //     networkId: 'L_624311498344248378',
+  //     publicIp: '73.158.148.119',
+  //     privateIp: '192.168.1.244',
+  //     vpnlinks: [],
+  //     selectorGroup: groupName,
+  //     x: 0,
+  //     y: 0,
+  //     childIndex: index,
+  //     orgIndex: orgI,
+  //     orgId: orgId,
+  //     scaleFactor: 1,
+  //     nodeType: TOPOLOGY_NODE_TYPES.DEVICE,
+  //     visible: true,
+  //   };
+  // };
 
   // const onCreateWedge = (orgId: string, index: number): IWedge => {
   //   return {
@@ -293,7 +293,7 @@ export function useTopologyContext(): TopologyContextType {
     const index = _data.findIndex(it => it.id === _item.id);
     _data[index].x = _position.x;
     _data[index].y = _position.y;
-    const _sourceObj = NODES_CONSTANTS.VNet;
+    const _sourceObj = _data[index].nodeSize;
     const _lData = onUpdateTargetLink(linksRef.current, _data[index].id, _position, _sourceObj.width / 2, _sourceObj.height / 2);
     setLinks(_lData);
     setNodes(_data);

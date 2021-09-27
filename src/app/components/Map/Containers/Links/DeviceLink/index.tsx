@@ -7,7 +7,7 @@ interface IProps {
 const DeviceLink: React.FC<IProps> = (props: IProps) => {
   return (
     <g
-      data-link-type={props.dataItem.type}
+      data-link_type={props.dataItem.type}
       data-source_id={`${props.dataItem.sourceType}${props.dataItem.sourceId}`}
       data-target_id={`${props.dataItem.targetType}${props.dataItem.targetId}`}
       data-source_x={props.dataItem.sourceCoord.x}
