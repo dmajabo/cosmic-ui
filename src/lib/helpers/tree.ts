@@ -288,7 +288,7 @@ const createpackLayout = (group: INetworkGroupNode) => {
   }
   if (_root.children && _root.children.length > 0) {
     _root.children.forEach((child, index) => {
-      group.devices[index].x = _cX + child.x * scale - NODES_CONSTANTS.Devisec.width / 2 - 140;
+      group.devices[index].x = _cX + child.x * scale - NODES_CONSTANTS.Devisec.width / 2 - 150;
       group.devices[index].y = _cY + child.y * scale;
       group.devices[index].scaleFactor = scale;
       // data.organizations[child.data.orgIndex].devices[child.data.childIndex].x =
@@ -297,7 +297,7 @@ const createpackLayout = (group: INetworkGroupNode) => {
       // data.organizations[child.data.orgIndex].devices[child.data.childIndex].visible = !group.collapsed;
     });
   }
-  return { r: Math.max(150, size.r * scale), x: _cX, y: _cY, scale: scale };
+  return { r: Math.max(160, size.r * scale), x: _cX, y: _cY, scale: scale };
 };
 
 export const setUpWedgesCoord = (items: IWedgeNode[]) => {

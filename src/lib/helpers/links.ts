@@ -1,5 +1,5 @@
 import { ISize, NODES_CONSTANTS } from 'app/components/Map/model';
-import { ILink, TOPOLOGY_LINKS_TYPES, IConnectionToLink, INetworkGroupNode, IWedgeNode, IVnetNode, IDeviceNode } from 'lib/models/topology';
+import { ILink, TOPOLOGY_LINKS_TYPES, IConnectionToLink, INetworkGroupNode, IWedgeNode, IVnetNode, IDeviceNode, TOPOLOGY_NODE_TYPES } from 'lib/models/topology';
 
 export const generateLinks = (
   nodes: (IWedgeNode | IVnetNode | IDeviceNode | INetworkGroupNode)[],
@@ -26,6 +26,17 @@ export const generateLinks = (
     });
   }
   return links;
+};
+
+export const reCreateDeviceLinks = (nodes: (IWedgeNode | IVnetNode | IDeviceNode | INetworkGroupNode)[], devices: IDeviceNode[], links: ILink[]) => {
+  if (!nodes || !nodes.length || !devices || !devices.length) return;
+  nodes.forEach(node => {
+    if (node.nodeType !== TOPOLOGY_NODE_TYPES.WEDGE) return;
+    const _node = node as IWedgeNode;
+    if (_node.vpns && _node.vpns.length) {
+      buildVpnLinks(links, _node, devices);
+    }
+  });
 };
 
 export const getNodeSize = (): ISize => {

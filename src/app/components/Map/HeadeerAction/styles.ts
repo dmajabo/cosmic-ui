@@ -9,6 +9,7 @@ export const Wrapper = styled.div`
   justify-content: space-between;
   z-index: 10;
   padding: 0 30px;
+  pointer-events: none;
 `;
 
 interface ISideProps {
@@ -20,4 +21,5 @@ export const Side = styled.div<ISideProps>`
   max-width: 100%;
   margin: ${props => props.margin || '0'};
   flex-wrap: nowrap;
+  pointer-events: all;
 `;

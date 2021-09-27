@@ -37,7 +37,7 @@ const GroupNode: React.FC<IProps> = (props: IProps) => {
   React.useEffect(() => {
     setVisible(props.dataItem.visible);
     setPosition({ x: props.dataItem.x, y: props.dataItem.y });
-    setShouldUpdate(true);
+    setShouldUpdate(!shouldUpdate);
   }, [props.dataItem]);
 
   React.useEffect(() => {
@@ -56,7 +56,7 @@ const GroupNode: React.FC<IProps> = (props: IProps) => {
     if (props.dataItem.x === _pos.x && props.dataItem.y === _pos.y) {
       return;
     }
-    setShouldUpdate(false);
+    setShouldUpdate(!shouldUpdate);
     topology?.onUpdateNetworkGroupNode(props.dataItem, _pos, true, false);
   };
 
@@ -68,11 +68,11 @@ const GroupNode: React.FC<IProps> = (props: IProps) => {
   // };
 
   const onExpandCollapse = () => {
-    // if (!props.dataItem.devices || !props.dataItem.devices.length) {
-    //   return;
-    // }
+    if (!props.dataItem.devices || !props.dataItem.devices.length) {
+      return;
+    }
     d3.select(`#${NODES_CONSTANTS.NETWORK_GROUP.type}${props.dataItem.id}`).raise();
-    setShouldUpdate(false);
+    setShouldUpdate(!shouldUpdate);
     topology?.onUpdateNetworkGroupNode(props.dataItem, null, false, true);
   };
 
@@ -86,14 +86,16 @@ const GroupNode: React.FC<IProps> = (props: IProps) => {
   return (
     <TransitionContainer stateIn={visible}>
       <g id={`${NODES_CONSTANTS.NETWORK_GROUP.type}${props.dataItem.id}`} className="topologyNode" transform={`translate(${pos.x}, ${pos.y})`} data-type={NODES_CONSTANTS.NETWORK_GROUP.type}>
-        <Transition mountOnEnter unmountOnExit timeout={100} in={!props.dataItem.collapsed}>
-          {state => <GroupDevicesContainer dataItem={props.dataItem} className={state} onClickDevice={onClickDevice} />}
-        </Transition>
+        {props.dataItem.devices && props.dataItem.devices.length && (
+          <Transition mountOnEnter unmountOnExit timeout={100} in={!props.dataItem.collapsed}>
+            {state => <GroupDevicesContainer dataItem={props.dataItem} className={state} onClickDevice={onClickDevice} />}
+          </Transition>
+        )}
         <g
           // onMouseEnter={e => onTogglePopup(e, true)}
           // onMouseLeave={e => onTogglePopup(e, false)}
           onClick={onExpandCollapse}
-          style={{ cursor: !props.dataItem.devices || !props.dataItem.devices.length ? 'default' : 'pointer' }}
+          style={{ cursor: 'pointer' }}
           pointerEvents="all"
         >
           <>{CISCO_MERAKI}</>

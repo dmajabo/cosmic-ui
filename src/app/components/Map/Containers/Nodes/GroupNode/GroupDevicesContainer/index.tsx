@@ -16,7 +16,7 @@ const GroupDevicesContainer: React.FC<IProps> = (props: IProps) => {
   };
   return (
     <ContainerWrapper className={props.className}>
-      <circle pointerEvents="none" r={props.dataItem.r} fill="var(--_groupDevicesBg)" cx="-100" cy="50" />
+      <circle pointerEvents="none" r={props.dataItem.r} fill="var(--_groupDevicesBg)" cx="-110" cy="50" />
       <g>
         {props.dataItem.links.map(link => (
           <DeviceLink key={`${link.id}`} dataItem={link} />

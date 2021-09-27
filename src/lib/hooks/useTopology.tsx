@@ -26,6 +26,7 @@ import { EntityTypes, IEntity } from 'lib/models/entites';
 import { ITopologyDataRes } from 'lib/api/ApiModels/Topology/endpoints';
 import { IPosition, NODES_CONSTANTS } from 'app/components/Map/model';
 import { ITimeMinMaxRange } from 'app/components/Inputs/TimeSlider/helpers';
+import { reCreateDeviceLinks } from 'lib/helpers/links';
 
 export interface TopologyContextType {
   dataReadyToShow: boolean;
@@ -97,10 +98,10 @@ export function useTopologyContext(): TopologyContextType {
     //   const device = onCreateDevice(1, _orgObj.organizations[1].id, j + 250, '');
     //   _orgObj.organizations[1].devices.push(device);
     // }
-    // for (let j = 0; j < 50; j++) {
-    //   const device = onCreateDevice(1, _orgObj.organizations[1].id, j + 2, 'US_WEST');
-    //   _orgObj.organizations[1].devices.push(device);
-    // }
+    for (let j = 0; j < 100; j++) {
+      const device = onCreateDevice(1, _orgObj.organizations[1].id, j + 2, 'US_WEST_3');
+      _orgObj.organizations[1].devices.push(device);
+    }
     // for (let i = 0; i < _orgObj.organizations.length; i++) {
     //   const _org = _orgObj.organizations[0];
     //   const c =  (i + 1) * 103;
@@ -159,30 +160,30 @@ export function useTopologyContext(): TopologyContextType {
   //   };
   // }
 
-  // const onCreateDevice = (orgI, orgId, index: number, groupName: string): IDeviceNode => {
-  //   return {
-  //     id: `0xeaa5_temporaryDevice${index}`,
-  //     name: '',
-  //     description: '',
-  //     extId: 'Q2KN-U958-CSTY',
-  //     type: '',
-  //     serial: 'Q2KN-U958-CSTY',
-  //     model: 'MX64',
-  //     networkId: 'L_624311498344248378',
-  //     publicIp: '73.158.148.119',
-  //     privateIp: '192.168.1.244',
-  //     vpnlinks: [],
-  //     selectorGroup: groupName,
-  //     x: 0,
-  //     y: 0,
-  //     childIndex: index,
-  //     orgIndex: orgI,
-  //     orgId: orgId,
-  //     scaleFactor: 1,
-  //     nodeType: TOPOLOGY_NODE_TYPES.DEVICE,
-  //     visible: true,
-  //   };
-  // };
+  const onCreateDevice = (orgI, orgId, index: number, groupName: string): IDeviceNode => {
+    return {
+      id: `0xeaa5_temporaryDevice${index}`,
+      name: '',
+      description: '',
+      extId: 'Q2KN-U958-CSTY',
+      type: '',
+      serial: 'Q2KN-U958-CSTY',
+      model: 'MX64',
+      networkId: 'L_624311498344248378',
+      publicIp: '73.158.148.119',
+      privateIp: '192.168.1.244',
+      vpnlinks: [],
+      selectorGroup: groupName,
+      x: 0,
+      y: 0,
+      childIndex: index,
+      orgIndex: orgI,
+      orgId: orgId,
+      scaleFactor: 1,
+      nodeType: TOPOLOGY_NODE_TYPES.DEVICE,
+      visible: true,
+    };
+  };
 
   // const onCreateWedge = (orgId: string, index: number): IWedge => {
   //   return {
@@ -369,26 +370,40 @@ export function useTopologyContext(): TopologyContextType {
     nodesRef.current = _nodes;
   };
 
-  const onDeleteGroup = (_group: INetworkGroupNode) => {
-    const _nodes: any[] = jsonClone(nodesRef.current);
+  const onDeleteGroup = (_group: ITopologyGroup) => {
+    let _nodes: (IWedgeNode | IVnetNode | IDeviceNode | INetworkGroupNode)[] = jsonClone(nodesRef.current);
     const _groups: ITopologyGroup[] = originGroupsData.filter(it => it.id !== _group.id);
-    let _data: any[] = _nodes.filter(it => it.id !== _group.id);
-    if (_group.type === TopologyGroupTypesAsNumber.BRANCH_NETWORKS || _group.type === TopologyGroupTypesAsString.BRANCH_NETWORKS) {
-      if (_group.devices && _group.devices.length) {
-        _data = _data.concat(_group.devices);
-      }
-    } else {
-      const vnets: IVnetNode[] = _nodes.filter(node => node.nodeType === TOPOLOGY_NODE_TYPES.VNET) as IVnetNode[];
-      const vnetNodes = vnets && vnets.length && vnets.filter(it => it.applicationGroups && it.applicationGroups.length && it.applicationGroups.find(gr => gr.id === _group.id));
-      if (vnetNodes && vnetNodes.length) {
-        vnetNodes.forEach(vnet => {
-          vnet.applicationGroups = vnet.applicationGroups.filter(it => it.id !== _group.id);
-        });
-      }
+    const _nodeIndex: number = _nodes.findIndex(it => it.id === _group.id);
+    if (_nodeIndex === -1) {
+      setOriginGroupsData(_groups);
+      return;
     }
-    setNodes(_data);
+    // let _data: (IWedgeNode | IVnetNode | IDeviceNode | INetworkGroupNode)[] = _nodes.findIndex(it => it.id === _group.id);
+    if (_group.type === TopologyGroupTypesAsNumber.BRANCH_NETWORKS || _group.type === TopologyGroupTypesAsString.BRANCH_NETWORKS) {
+      const _gr: INetworkGroupNode = _nodes[_nodeIndex] as INetworkGroupNode;
+      const _devices = _gr.devices && _gr.devices.length ? _gr.devices.map(dev => ({ ...dev, x: dev.x + _gr.x, y: dev.y + _gr.y, scaleFactor: 1 })) : [];
+      _nodes.splice(_nodeIndex, 1);
+      _nodes = _nodes.concat(_devices);
+      const dataL: ILink[] = jsonClone(linksRef.current);
+      const _links: ILink[] = dataL.filter(it => it.targetId !== _gr.id && it.sourceId !== _gr.id);
+      reCreateDeviceLinks(_nodes, _devices, _links);
+      setNodes(_nodes);
+      setLinks(_links);
+      setOriginGroupsData(_groups);
+      nodesRef.current = _nodes;
+      linksRef.current = _links;
+      return;
+    }
+    const vnets: IVnetNode[] = _nodes.filter(node => node.nodeType === TOPOLOGY_NODE_TYPES.VNET) as IVnetNode[];
+    const vnetNodes = vnets && vnets.length && vnets.filter(it => it.applicationGroups && it.applicationGroups.length && it.applicationGroups.find(gr => gr.id === _group.id));
+    if (vnetNodes && vnetNodes.length) {
+      vnetNodes.forEach(vnet => {
+        vnet.applicationGroups = vnet.applicationGroups.filter(it => it.id !== _group.id);
+      });
+    }
+    setNodes(_nodes);
     setOriginGroupsData(_groups);
-    nodesRef.current = _data;
+    nodesRef.current = _nodes;
   };
 
   const onChangeTimePeriod = (period: ISelectedListItem<ITimeTypes>) => {
