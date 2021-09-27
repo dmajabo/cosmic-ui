@@ -20,14 +20,15 @@ const LabelBeforeStyles = styled.div`
 interface Props {
   labelBefore?: string;
   name: string;
-  dx: number;
-  dy: number;
+  dx: number | string;
+  dy: number | string;
+  styles?: Object;
 }
 
 const NodeName: React.FC<Props> = (props: Props) => {
   return (
     <foreignObject pointerEvents="none" x={props.dx || 0} y={props.dy || 0} width="1" height="1" overflow="visible">
-      <NameStyles title={`${props.labelBefore ? `${props.labelBefore} ${props.name}` : `${props.name}`}`}>
+      <NameStyles style={props.styles} title={`${props.labelBefore ? `${props.labelBefore} ${props.name}` : `${props.name}`}`}>
         {props.labelBefore && <LabelBeforeStyles>{props.labelBefore}</LabelBeforeStyles>}
         <span>{props.name}</span>
       </NameStyles>

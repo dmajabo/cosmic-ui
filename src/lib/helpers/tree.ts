@@ -100,10 +100,10 @@ export const prepareNodesData = (_data: ITopologyMapData, _groups: ITopologyGrou
         if (devicesInGroup.length) {
           const _devs = devicesInGroup.filter(it => it.selectorGroup === gr.name || it.selectorGroup === gr.id);
           _obj.devices = _devs;
-          _obj.collapsed = false;
           if (_devs && _devs.length) {
             const size = createpackLayout(_obj);
             _obj.r = size.r;
+            _obj.collapsed = false;
           }
         }
         nodes.push(_obj);
