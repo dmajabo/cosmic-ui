@@ -3,8 +3,8 @@ import { Form, Submit, Wrapper } from './styles';
 import landingBg from 'app/images/landingBg.svg';
 import ImgComponent from 'app/components/Basic/ImgComponent';
 import { useForm } from 'react-hook-form';
-import { useAuthDataContext } from 'lib/Routes/useAuth';
-import { UserRole } from 'lib/api/ApiModels/Account/account';
+// import { useAuthDataContext } from 'lib/Routes/useAuth';
+//import { UserRole } from 'lib/api/ApiModels/Account/account';
 import FormTextInput from 'app/components/Inputs/FormTextInput';
 
 interface ILoginForm {
@@ -18,7 +18,7 @@ enum LoginFieldsEnum {
 interface IProps {}
 
 const LoginPage: React.FC<IProps> = (props: IProps) => {
-  const { authData } = useAuthDataContext();
+  //const { authData } = useAuthDataContext();
   const {
     register,
     handleSubmit,
@@ -43,7 +43,7 @@ const LoginPage: React.FC<IProps> = (props: IProps) => {
       password: data.password,
     };
     if (item.login === 'admin' && item.password === '+') {
-      authData?.onLogin({ token: 'testToken', user: { id: 1, firstName: 'Admin', lastName: 'Administrator', email: 'admin@admin.com', role: UserRole.ADMIN } });
+      //authData?.onLogin({ token: 'testToken', user: { id: 1, firstName: 'Admin', lastName: 'Administrator', email: 'admin@admin.com', role: UserRole.ADMIN } });
     }
   };
 

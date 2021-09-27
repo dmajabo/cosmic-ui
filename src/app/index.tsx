@@ -15,11 +15,9 @@ import { useTranslation } from 'react-i18next';
 import history from 'utils/history';
 import { setupAppTheme } from 'utils/appTheme';
 import AppRouting from './AppRouting';
-import { AuthProvider, useAuthDataActions } from 'lib/Routes/useAuth';
 
 export function App() {
   const { i18n } = useTranslation();
-  const authActions = useAuthDataActions();
   React.useEffect(() => {
     setupAppTheme();
   }, []);
@@ -29,11 +27,9 @@ export function App() {
       <Helmet titleTemplate="%s" defaultTitle="Okulis.io" htmlAttributes={{ lang: i18n.language }}>
         <meta name="description" content="" />
       </Helmet>
-      <AuthProvider actions={authActions}>
-        <Router history={history}>
-          <AppRouting />
-        </Router>
-      </AuthProvider>
+      <Router history={history}>
+        <AppRouting />
+      </Router>
       <GlobalStyle />
     </BrowserRouter>
   );

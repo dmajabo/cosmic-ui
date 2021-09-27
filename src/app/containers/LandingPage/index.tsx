@@ -6,14 +6,11 @@ import { ROUTE } from 'lib/Routes/model';
 import AppLogoComponent from 'app/components/Basic/AppLogoComponent';
 import ImgComponent from 'app/components/Basic/ImgComponent';
 import { arrowSignIn } from 'app/components/SVGIcons/arrows';
-import { useAuth0 } from '@auth0/auth0-react';
 
 const LandingPage: React.FC<{}> = () => {
   const onGoTo = (path: string) => {
     history.push(path);
   };
-
-  const { loginWithRedirect } = useAuth0();
 
   return (
     <Wrapper>
@@ -29,7 +26,7 @@ const LandingPage: React.FC<{}> = () => {
         </GetStartedWrapper>
       </Content>
       <SignInWrapper>
-        <SignInButton onClick={() => onGoTo(ROUTE.login)}>
+        <SignInButton onClick={() => onGoTo(ROUTE.app)}>
           <SignInText>Sign in</SignInText>
           <SignInIcon>{arrowSignIn}</SignInIcon>
         </SignInButton>
