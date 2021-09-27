@@ -31,12 +31,16 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange 
     if (selectedRows.length > 0) {
       const getPacketLossMetrics = async () => {
         const packetLossChartData: MetricKeyValue = {};
+        const promises = selectedRows.map(row => apiClient.getPacketLossMetrics(row.sourceDevice, row.destination, timeRange));
         Promise.all(
           selectedRows.map(async row => {
             try {
               const responseData = await apiClient.getPacketLossMetrics(row.sourceDevice, row.destination, timeRange);
-
-              packetLossChartData[row.id] = responseData.metrics.keyedmap[0].ts;
+              if (responseData.metrics.keyedmap.length > 0) {
+                packetLossChartData[row.id] = responseData.metrics.keyedmap[0].ts;
+              } else {
+                packetLossChartData[row.id] = [];
+              }
             } catch {}
           }),
         ).then(() => {
