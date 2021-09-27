@@ -56,18 +56,22 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
         format: dataValueSuffix ? `{text} ${dataValueSuffix}` : `{text}`,
       },
     },
+    legend: {
+      symbolHeight: 20,
+      symbolPadding: 10,
+    },
     plotOptions: {
       series: {
         marker: {
-          enabled: false,
+          enabled: undefined,
+          radius: 10,
+          symbol: 'square',
         },
       },
     },
-    legend: false,
     credits: {
       enabled: false,
     },
-    colors: ['red', 'green', 'skyblue', 'yellow'],
     series: data,
   };
 
