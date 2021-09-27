@@ -11,7 +11,6 @@ export const HomePage: React.FC = () => {
   useEffect(() => {
     getIdTokenClaims().then(idtoken => {
       userContext.setIdToken(idtoken);
-      console.log(idtoken);
     });
   }, []);
   return userContext.idToken ? (
