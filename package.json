@@ -37,6 +37,7 @@
     "eslint-plugin-prettier": "3.4.0",
     "eslint-plugin-react-hooks": "4.2.0",
     "fontfaceobserver": "2.1.0",
+    "geometric": "2.2.8",
     "highcharts": "9.2.2",
     "highcharts-react-official": "3.0.0",
     "husky": "7.0.0",

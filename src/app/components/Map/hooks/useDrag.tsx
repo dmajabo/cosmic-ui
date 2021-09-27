@@ -1,6 +1,9 @@
 import React from 'react';
 import * as d3 from 'd3';
 import { IPosition } from '../model';
+import { TOPOLOGY_LINKS_TYPES } from 'lib/models/topology';
+import { calculateVPSAttaget } from '../Containers/Links/NetworkLink/helper';
+import { IRotateCoord } from 'lib/models/general';
 
 interface IProps {
   id: string;
@@ -70,10 +73,10 @@ export function useDrag(props: IProps, onUpdateCallBack: (pos: IPosition) => voi
     node = d3.select(`#${id}`);
     // popup = d3.select(`#${popupId}`);
     if (!skipTargetsLinks) {
-      targetLinks = d3.selectAll(`path[data-target_id=${id}]`);
+      targetLinks = d3.selectAll(`g[data-target_id=${id}]`);
     }
     if (!skipSourceLinks) {
-      sourceLinks = d3.selectAll(`path[data-source_id=${id}]`);
+      sourceLinks = d3.selectAll(`g[data-source_id=${id}]`);
     }
     // allNodes = d3.selectAll('.topologyNode');
     // if (popup && popup.node()) {
@@ -115,22 +118,48 @@ export function useDrag(props: IProps, onUpdateCallBack: (pos: IPosition) => voi
     // }
     if (targetLinks) {
       targetLinks.each(function (this: any) {
-        const _l = d3.select(this);
-        const _sX = Number(_l.attr('data-source_x'));
-        const _sY = Number(_l.attr('data-source_y'));
-        const _tX = Number(_l.attr('data-target_x')) + dx;
-        const _tY = Number(_l.attr('data-target_y')) + dy;
-        _l.attr('d', `M${_tX} ${_tY} L${_sX} ${_sY}`).attr('data-target_x', _tX).attr('data-target_y', _tY);
+        const _g = d3.select(this);
+        const _l = _g.select('.topologyLink');
+        const _type = _g.attr('data-link-type');
+        const _tX = Number(_g.attr('data-target_x')) + dx;
+        const _tY = Number(_g.attr('data-target_y')) + dy;
+        const _sX = Number(_g.attr('data-source_x'));
+        const _sY = Number(_g.attr('data-source_y'));
+        const _x = _sX - _tX;
+        const _y = _sY - _tY;
+        if (_type === TOPOLOGY_LINKS_TYPES.NETWORKLINK) {
+          const gAtt = _g.select('.networkAttached');
+          const _data: IRotateCoord = calculateVPSAttaget([
+            [0, 0],
+            [_x, _y],
+          ]);
+          gAtt.attr('transform', `translate(${_data.x}, ${_data.y}) rotate(${_data.angle})`);
+        }
+        _g.attr('transform', `translate(${_tX}, ${_tY})`).attr('data-target_x', _tX).attr('data-target_y', _tY);
+        _l.attr('x2', _x).attr('y2', _y);
       });
     }
     if (sourceLinks) {
       sourceLinks.each(function (this: any) {
-        const _l = d3.select(this);
-        const _sX = Number(_l.attr('data-source_x')) + dx;
-        const _sY = Number(_l.attr('data-source_y')) + dy;
-        const _tX = Number(_l.attr('data-target_x'));
-        const _tY = Number(_l.attr('data-target_y'));
-        _l.attr('d', `M${_tX} ${_tY} L${_sX} ${_sY}`).attr('data-source_x', _sX).attr('data-source_y', _sY);
+        const _g = d3.select(this);
+        const _l = _g.select('.topologyLink');
+        const _type = _g.attr('data-link-type');
+        const _tX = Number(_g.attr('data-target_x'));
+        const _tY = Number(_g.attr('data-target_y'));
+        const _sX = Number(_g.attr('data-source_x')) + dx;
+        const _sY = Number(_g.attr('data-source_y')) + dy;
+        const _x = _sX - _tX;
+        const _y = _sY - _tY;
+        if (_type === TOPOLOGY_LINKS_TYPES.NETWORKLINK) {
+          const gAtt = _g.select('.networkAttached');
+          const _data: IRotateCoord = calculateVPSAttaget([
+            [0, 0],
+            [_x, _y],
+          ]);
+          gAtt.attr('transform', `translate(${_data.x}, ${_data.y}) rotate(${_data.angle})`);
+        }
+        _g.attr('data-source_x', _sX).attr('data-source_y', _sY);
+        _l.attr('x2', _x).attr('y2', _y);
       });
     }
     node.attr('transform', `translate(${translateX}, ${translateY})`);

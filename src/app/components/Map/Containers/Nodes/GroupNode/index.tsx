@@ -57,7 +57,7 @@ const GroupNode: React.FC<IProps> = (props: IProps) => {
       return;
     }
     setShouldUpdate(false);
-    topology?.onUpdateGroupNode(props.dataItem, _pos, true, false);
+    topology?.onUpdateNetworkGroupNode(props.dataItem, _pos, true, false);
   };
 
   // const onTogglePopup = (e: React.MouseEvent, show: boolean) => {
@@ -73,7 +73,7 @@ const GroupNode: React.FC<IProps> = (props: IProps) => {
     // }
     d3.select(`#${NODES_CONSTANTS.NETWORK_GROUP.type}${props.dataItem.id}`).raise();
     setShouldUpdate(false);
-    topology?.onUpdateGroupNode(props.dataItem, null, false, true);
+    topology?.onUpdateNetworkGroupNode(props.dataItem, null, false, true);
   };
 
   const onClickDevice = (dev: IDeviceNode) => {

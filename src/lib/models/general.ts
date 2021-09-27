@@ -33,6 +33,12 @@ export interface ICoord {
   y: number;
 }
 
+export interface IRotateCoord {
+  x: number;
+  y: number;
+  angle: number;
+}
+
 export interface ISelectedListItem<T> {
   id: string | number | null;
   value: T;

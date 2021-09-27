@@ -52,7 +52,7 @@ export interface TopologyContextType {
   onUpdateDeviceCoord: (_item: IDeviceNode, _pos: IPosition) => void;
   onUpdateWedgeCoord: (_item: IWedgeNode, _pos: IPosition) => void;
   onUpdateVnetNode: (_item: IVnetNode, _pos: IPosition) => void;
-  onUpdateGroupNode: (_item: INetworkGroupNode, _pos: IPosition, isDrag: boolean, isExpand: boolean) => void;
+  onUpdateNetworkGroupNode: (_item: INetworkGroupNode, _pos: IPosition, isDrag: boolean, isExpand: boolean) => void;
   onSelectEntity: (entity: IEntity, selected: boolean) => void;
   onSetIsDataLoading: () => void;
 }
@@ -300,7 +300,7 @@ export function useTopologyContext(): TopologyContextType {
     nodesRef.current = _data;
   };
 
-  const onUpdateGroupNode = (_item: INetworkGroupNode, _position: IPosition, isDrag: boolean, isExpand: boolean) => {
+  const onUpdateNetworkGroupNode = (_item: INetworkGroupNode, _position: IPosition, isDrag: boolean, isExpand: boolean) => {
     const _data: any[] = jsonClone(nodesRef.current);
     const index = _data.findIndex(it => it.id === _item.id);
     if (isDrag && _position) {
@@ -436,7 +436,7 @@ export function useTopologyContext(): TopologyContextType {
     onUpdateDeviceCoord,
     onUpdateWedgeCoord,
     onUpdateVnetNode,
-    onUpdateGroupNode,
+    onUpdateNetworkGroupNode,
     onSelectEntity,
     onUpdateGroups,
     onDeleteGroup,

@@ -3,6 +3,7 @@ import { IConnectionToLink, ILink, TOPOLOGY_LINKS_TYPES } from 'lib/models/topol
 import ConnectedToLink from '../ConnectedToLink';
 import DeviceLink from '../DeviceLink';
 import TransitionContainer from '../../TransitionContainer';
+import NetworkLink from '../NetworkLink';
 
 interface IProps {
   dataItem: ILink | IConnectionToLink;
@@ -21,6 +22,13 @@ const TopologyLink: React.FC<IProps> = (props: IProps) => {
     return (
       <TransitionContainer stateIn={dataLink.visible}>
         <ConnectedToLink dataItem={dataLink as IConnectionToLink} />
+      </TransitionContainer>
+    );
+  }
+  if (dataLink.type === TOPOLOGY_LINKS_TYPES.NETWORKLINK) {
+    return (
+      <TransitionContainer stateIn={dataLink.visible}>
+        <NetworkLink dataItem={dataLink} />
       </TransitionContainer>
     );
   }
