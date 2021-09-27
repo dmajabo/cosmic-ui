@@ -6,11 +6,18 @@ import { ROUTE } from 'lib/Routes/model';
 import AppLogoComponent from 'app/components/Basic/AppLogoComponent';
 import ImgComponent from 'app/components/Basic/ImgComponent';
 import { arrowSignIn } from 'app/components/SVGIcons/arrows';
+import { useAuth0 } from '@auth0/auth0-react';
 
 const LandingPage: React.FC<{}> = () => {
+  const { isAuthenticated } = useAuth0();
+
   const onGoTo = (path: string) => {
     history.push(path);
   };
+
+  if (isAuthenticated) {
+    onGoTo(ROUTE.app);
+  }
 
   return (
     <Wrapper>
