@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
-import moment from 'moment';
 import { DateTime } from 'luxon';
 import { MetricKeyValue } from './PacketLoss';
 import { Data } from './Table';
@@ -17,6 +16,10 @@ interface LineChartProps {
   readonly inputData: MetricKeyValue;
   readonly timeFormat?: string;
 }
+
+const OLD_TIME_FORMAT: string = 'yyyy-MM-dd HH:mm:ss ZZZ z';
+const REQUIRED_FORMAT: string = 'yy/MM/dd HH:mm';
+
 export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataValueSuffix, inputData }) => {
   const [data, setData] = useState<ChartData[]>([]);
   const [tickInterval, setTickInterval] = useState<number>(0);
@@ -26,7 +29,8 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
       return {
         name: row.name,
         data: inputData[row.id].map(item => {
-          return [item.time, Number(Number.parseFloat(item.value).toFixed(2))];
+          const val = DateTime.fromFormat(item.time, OLD_TIME_FORMAT).toUTC().toFormat(REQUIRED_FORMAT);
+          return [val, Number(Number.parseFloat(item.value).toFixed(2))];
         }),
       };
     });
@@ -56,18 +60,22 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
         format: dataValueSuffix ? `{text} ${dataValueSuffix}` : `{text}`,
       },
     },
+    legend: {
+      symbolHeight: 20,
+      symbolPadding: 10,
+    },
     plotOptions: {
       series: {
         marker: {
-          enabled: false,
+          enabled: undefined,
+          radius: 10,
+          symbol: 'square',
         },
       },
     },
-    legend: false,
     credits: {
       enabled: false,
     },
-    colors: ['red', 'green', 'skyblue', 'yellow'],
     series: data,
   };
 
