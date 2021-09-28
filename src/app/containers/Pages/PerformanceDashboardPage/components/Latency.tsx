@@ -67,6 +67,19 @@ export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange }) => 
           </div>
         )}
       </div>
+      <hr style={{ backgroundColor: '#CBD2DC' }} />
+      <div className={classes.flexContainer}>
+        <div className={classes.lineChartContainer}>
+          <Typography className={classes.itemTitle}>
+            Median latency
+            <span className={classes.sortIcon}>
+              <img src={InfoIcon} alt="ínfo" />
+            </span>
+          </Typography>
+          <Typography className={classes.subTitleText}>Shows aggregated latency between branches and applications.</Typography>
+        </div>
+      </div>
+      <div className={classes.lineChartContainer}>Heatmap Latency</div>
     </div>
   );
 };

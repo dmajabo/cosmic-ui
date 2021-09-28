@@ -21,6 +21,31 @@ export interface MetricKeyValue {
   [id: string]: DataMetrics[];
 }
 
+const HeatMapData = [
+  {
+    testId: '1',
+    metrics: [
+      {
+        device: 'ABC',
+        value: 10,
+      },
+      {
+        device: 'XYZ',
+        value: 9,
+      },
+    ],
+  },
+  {
+    testId: '2',
+    metrics: [
+      {
+        device: 'DEF',
+        value: 15,
+      },
+    ],
+  },
+];
+
 export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange }) => {
   const classes = PerformanceDashboardStyles();
 
@@ -75,6 +100,19 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange 
           </div>
         )}
       </div>
+      <hr style={{ backgroundColor: '#CBD2DC' }} />
+      <div className={classes.flexContainer}>
+        <div className={classes.lineChartContainer}>
+          <Typography className={classes.itemTitle}>
+            Average packet loss
+            <span className={classes.sortIcon}>
+              <img src={InfoIcon} alt="ínfo" />
+            </span>
+          </Typography>
+          <Typography className={classes.subTitleText}>Shows aggregated packet loss between branches and applications.</Typography>
+        </div>
+      </div>
+      <div className={classes.lineChartContainer}>Heatmap Packet Loss</div>
     </div>
   );
 };
