@@ -4,12 +4,12 @@ import { IPosition, NODES_CONSTANTS } from 'app/components/Map/model';
 import { useDrag } from 'app/components/Map/hooks/useDrag';
 import CISCO_MERAKI_DEVICE from './CISCO_MERAKI_DEVICE';
 import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
+import TransitionContainer from '../../TransitionContainer';
 // import { IPopupDisplay } from 'lib/models/general';
 // import NodeTooltipPortal from 'components/Basic/NodeTooltipPortal';
 // import DevicePopup from '../../Popups/DevicePopup';
 
 interface IProps {
-  index: number;
   dataItem: IDeviceNode;
   disabled?: boolean;
   onClickDevice: (dev: IDeviceNode) => void;
@@ -25,6 +25,7 @@ const DeviceNode: React.FC<IProps> = (props: IProps) => {
     (e: IPosition) => onUpdatePosition(e),
   );
   const [pos, setPosition] = React.useState<IPosition>(null);
+  const [visible, setVisible] = React.useState<boolean>(false);
 
   React.useEffect(() => {
     return () => {
@@ -33,12 +34,21 @@ const DeviceNode: React.FC<IProps> = (props: IProps) => {
   }, []);
 
   React.useEffect(() => {
+    setVisible(props.dataItem.visible);
     setPosition({ x: props.dataItem.x, y: props.dataItem.y });
   }, [props.dataItem]);
 
   React.useEffect(() => {
-    if (pos && !props.disabled) {
-      onUpdate({ x: props.dataItem.x, y: props.dataItem.y });
+    if (!props.disabled) {
+      if (visible) {
+        if (pos) {
+          onUpdate({ x: props.dataItem.x, y: props.dataItem.y }, visible);
+        } else {
+          onUnsubscribeDrag();
+        }
+      } else {
+        onUnsubscribeDrag();
+      }
     } else {
       onUnsubscribeDrag();
     }
@@ -67,7 +77,7 @@ const DeviceNode: React.FC<IProps> = (props: IProps) => {
     return null;
   }
   return (
-    <>
+    <TransitionContainer stateIn={visible}>
       <g id={`${NODES_CONSTANTS.Devisec.type}${props.dataItem.id}`} className="topologyNode" transform={`translate(${pos.x}, ${pos.y})`} data-type={NODES_CONSTANTS.Devisec.type}>
         <g transform={`scale(${props.dataItem.scaleFactor || 1})`}>
           <g
@@ -95,12 +105,7 @@ const DeviceNode: React.FC<IProps> = (props: IProps) => {
           </foreignObject>
         </g>
       </g>
-      {/* {showPopup.show && (
-        <NodeTooltipPortal id={props.dataItem.id} x={showPopup.x} y={showPopup.y}>
-          <DevicePopup dataItem={props.dataItem} />
-        </NodeTooltipPortal>
-      )} */}
-    </>
+    </TransitionContainer>
   );
 };
 

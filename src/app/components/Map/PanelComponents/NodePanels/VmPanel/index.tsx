@@ -2,13 +2,13 @@ import React from 'react';
 import { PanelHeader, PanelTabWrapper, PanelTitle } from '../../styles';
 import OverflowContainer from 'app/components/Basic/OverflowContainer/styles';
 import { IVM_PanelDataNode } from 'lib/models/topology';
-import MetricsTab from './MetricsTab';
 import { Tab, Tabs } from '@material-ui/core';
 import { TabsStyles } from 'app/components/Tabs/TabsStyles';
 import { TabComponentProps } from 'app/components/Tabs/TabComponentProps';
 import TabPanel from 'app/components/Tabs/TabPanel';
 import RoutesTab from './RoutesTab';
 import PolicyTab from './PolicyTab';
+import MetricsTab from './MetricsTab';
 
 interface IProps {
   dataItem: IVM_PanelDataNode;
@@ -43,7 +43,7 @@ const VmPanel: React.FC<IProps> = (props: IProps) => {
         </Tabs>
       </PanelTabWrapper>
       <PanelHeader direction="column" align="unset">
-        <PanelTitle>{props.dataItem.vm.name ? props.dataItem.vm.name : props.dataItem.vm.id}</PanelTitle>
+        <PanelTitle>{props.dataItem.vm.name ? props.dataItem.vm.name : props.dataItem.vm.extId}</PanelTitle>
       </PanelHeader>
       <OverflowContainer>
         <TabPanel value={value} index={0}>

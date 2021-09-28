@@ -1,11 +1,17 @@
 import { ISize, NODES_CONSTANTS } from 'app/components/Map/model';
-import { ILink, TOPOLOGY_LINKS_TYPES, IConnectionToLink, INetworkGroupNode, IWedgeNode, IVnetNode, IDeviceNode } from 'lib/models/topology';
+import { ILink, TOPOLOGY_LINKS_TYPES, IConnectionToLink, INetworkGroupNode, IWedgeNode, IVnetNode, IDeviceNode, TOPOLOGY_NODE_TYPES } from 'lib/models/topology';
 
-export const generateLinks = (wedges: IWedgeNode[], vnets: IVnetNode[], devices: IDeviceNode[], groups: INetworkGroupNode[]): ILink[] => {
+export const generateLinks = (
+  nodes: (IWedgeNode | IVnetNode | IDeviceNode | INetworkGroupNode)[],
+  wedges: IWedgeNode[],
+  vnets: IVnetNode[],
+  devices: IDeviceNode[],
+  groups: INetworkGroupNode[],
+): ILink[] => {
   const links: ILink[] = [];
   wedges.forEach(wedge => {
     if (wedge.networkLinks && wedge.networkLinks.length) {
-      buildNetworkLinks(links, wedge, vnets);
+      buildNetworkLinks(links, wedge, vnets, nodes);
     }
     if (wedge.vpns && wedge.vpns.length) {
       buildVpnLinks(links, wedge, devices);
@@ -20,6 +26,17 @@ export const generateLinks = (wedges: IWedgeNode[], vnets: IVnetNode[], devices:
     });
   }
   return links;
+};
+
+export const reCreateDeviceLinks = (nodes: (IWedgeNode | IVnetNode | IDeviceNode | INetworkGroupNode)[], devices: IDeviceNode[], links: ILink[]) => {
+  if (!nodes || !nodes.length || !devices || !devices.length) return;
+  nodes.forEach(node => {
+    if (node.nodeType !== TOPOLOGY_NODE_TYPES.WEDGE) return;
+    const _node = node as IWedgeNode;
+    if (_node.vpns && _node.vpns.length) {
+      buildVpnLinks(links, _node, devices);
+    }
+  });
 };
 
 export const getNodeSize = (): ISize => {
@@ -85,22 +102,21 @@ const getDevices = (nodes: IDeviceNode[], connectedTo: string): IDeviceNode[] =>
   return _arr;
 };
 
-const buildNetworkLinks = (links: ILink[], wedge: IWedgeNode, vnets: IVnetNode[]) => {
+const buildNetworkLinks = (links: ILink[], wedge: IWedgeNode, vnets: IVnetNode[], nodes: (IWedgeNode | IVnetNode | IDeviceNode | INetworkGroupNode)[]) => {
   wedge.networkLinks.forEach(link => {
     const vnet = vnets.find(vnet => (link.vnet ? vnet.id === link.vnet.id : vnet.extId === link.peerExtId));
     if (!vnet) {
       return;
     }
-    const nlink = createVNetLink(wedge, vnet);
+    const nlink = createVNetLink(wedge, vnet, nodes);
     links.push(nlink);
   });
 };
 
-export const createVNetLink = (source: IWedgeNode, target: IVnetNode): ILink => {
+export const createVNetLink = (source: IWedgeNode, target: IVnetNode, nodes: (IWedgeNode | IVnetNode | IDeviceNode | INetworkGroupNode)[]): ILink => {
   const souceObj = NODES_CONSTANTS.WEDGE;
-  const _size: ISize = getNodeSize();
-  const _x1 = target.x + _size.width / 2;
-  const _y1 = target.y + _size.height / 2;
+  const _x1 = target.x + target.nodeSize.width / 2;
+  const _y1 = target.y + target.nodeSize.height / 2;
   const _x2 = source.x + souceObj.r;
   const _y2 = source.y + souceObj.r;
   return {
@@ -112,6 +128,7 @@ export const createVNetLink = (source: IWedgeNode, target: IVnetNode): ILink => 
     targetId: target.id,
     targetCoord: { x: _x1, y: _y1 },
     sourceCoord: { x: _x2, y: _y2 },
+    visible: true,
   };
 };
 
@@ -131,6 +148,7 @@ export const createConnectionToD_WLink = (source: IDeviceNode, target: IWedgeNod
     sourceCoord: { x: _x2, y: _y2 },
     targetType: NODES_CONSTANTS.WEDGE.type,
     sourceType: NODES_CONSTANTS.Devisec.type,
+    visible: true,
   };
 };
 
@@ -150,6 +168,7 @@ export const createD_GLink = (target: IDeviceNode, source: INetworkGroupNode): I
     sourceCoord: { x: _x2, y: _y2 },
     targetType: NODES_CONSTANTS.Devisec.type,
     sourceType: NODES_CONSTANTS.NETWORK_GROUP.type,
+    visible: true,
   };
 };
 
@@ -169,5 +188,6 @@ export const createG_WLink = (target: INetworkGroupNode, source: IWedgeNode): IC
     sourceCoord: { x: _x2, y: _y2 },
     targetType: NODES_CONSTANTS.NETWORK_GROUP.type,
     sourceType: NODES_CONSTANTS.WEDGE.type,
+    visible: true,
   };
 };

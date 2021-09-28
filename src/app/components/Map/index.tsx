@@ -4,7 +4,7 @@ import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
 // import mockdataDevices from 'utils/dataDevices.json';
 import { ContainerWithFooter, ContainerWithMetrics, ContainerWithPanel, MapContainer } from './styles';
 import HeadeerAction from './HeadeerAction';
-import { IDeviceNode, IPanelBar, TopologyMetricsPanelTypes, TopologyPanelTypes, IWedgeNode, IVM_PanelDataNode } from 'lib/models/topology';
+import { IDeviceNode, IPanelBar, TopologyMetricsPanelTypes, TopologyPanelTypes, IWedgeNode, IVM_PanelDataNode, IAppGroup_PanelDataNode } from 'lib/models/topology';
 import LoadingIndicator from 'app/components/Loading';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import { IPanelBarLayoutTypes } from 'lib/models/general';
@@ -19,6 +19,7 @@ import DevicePanel from './PanelComponents/NodePanels/DevicePanel';
 import WedgePanel from './PanelComponents/NodePanels/WedgePanel';
 import { useGetTopology } from 'lib/api/http/useAxiosHook';
 import { ErrorMessage } from '../Basic/ErrorMessage/ErrorMessage';
+import ApplicationGroupPanel from './PanelComponents/NodePanels/ApplicationGroupPanel';
 interface IProps {}
 
 const Map: React.FC<IProps> = (props: IProps) => {
@@ -28,7 +29,8 @@ const Map: React.FC<IProps> = (props: IProps) => {
   const [showMetricksBar, setShowMetricks] = React.useState<IPanelBar<TopologyMetricsPanelTypes>>({ show: false, type: null });
   const [showFooter, setShowFooter] = React.useState<boolean>(true);
   const [isFullScreen, setIsFullScreen] = React.useState<boolean>(false);
-
+  const showPanelRef = React.useRef(showPanelBar);
+  const showMetrickRef = React.useRef(showMetricksBar);
   React.useEffect(() => {
     onTryLoadData();
   }, []);
@@ -40,63 +42,95 @@ const Map: React.FC<IProps> = (props: IProps) => {
   }, [response]);
 
   const onOpenPanel = (_panel: TopologyPanelTypes) => {
+    const _objPanel = { type: _panel, show: true };
+    const _objMetrick = { ...showMetrickRef.current, show: false };
     setShowFooter(false);
-    setShowMetricks({ show: false, type: null });
-    setShowPanelBar({ type: _panel, show: true });
+    setShowMetricks(_objMetrick);
+    setShowPanelBar(_objPanel);
+    showMetrickRef.current = _objMetrick;
+    showPanelRef.current = _objPanel;
   };
 
   const onHidePanel = () => {
-    if (showPanelBar.type === TopologyPanelTypes.GROUPS) {
-      setShowFooter(true);
-    }
-    setShowPanelBar({ ...showPanelBar, show: false });
+    setShowFooter(true);
+    const _objPanel = { ...showPanelRef.current, show: false };
+    setShowPanelBar(_objPanel);
+    showPanelRef.current = _objPanel;
     setTimeout(() => {
-      setShowPanelBar({ show: false, type: null });
+      const _objPanel = { show: false, type: null };
+      setShowPanelBar(_objPanel);
+      showPanelRef.current = _objPanel;
     }, 800);
   };
 
   const onHideMetrics = () => {
-    setShowMetricks({ ...showMetricksBar, show: false });
+    const _objMetrick = { ...showMetrickRef.current, show: false };
+    setShowMetricks(_objMetrick);
+    showMetrickRef.current = _objMetrick;
     setTimeout(() => {
-      setShowMetricks({ show: false, type: null });
+      const _objMetrick = { show: false, type: null };
+      setShowMetricks(_objMetrick);
+      showMetrickRef.current = _objMetrick;
     }, 800);
   };
 
   const onTryLoadData = async () => {
+    topology.onSetIsDataLoading();
     const _st = topology.selectedTime || null;
     const param = createTopologyQueryParam(_st);
     await onGetChainData([TopologyGroupApi.getAllGroups(), TopologyOrganizationApi.getAllOrganizations()], ['groups', 'organizations'], param);
   };
 
   const onReloadData = async (startTime: Date | null) => {
+    topology.onSetIsDataLoading();
     const param = createTopologyQueryParam(startTime);
     await onGetChainData([TopologyGroupApi.getAllGroups(), TopologyOrganizationApi.getAllOrganizations()], ['groups', 'organizations'], param);
   };
 
-  const onRefresh = () => {
-    onTryLoadData();
-  };
-
   const onOpenNodePanel = (node: IDeviceNode | IWedgeNode, _type: TopologyMetricsPanelTypes) => {
-    if (showPanelBar && showPanelBar.show) {
-      setShowPanelBar({ show: false, type: null });
-      setShowFooter(true);
-    }
+    const _objPanel = { ...showPanelRef.current, show: false };
+    setShowPanelBar(_objPanel);
+    showPanelRef.current = _objPanel;
+    setShowFooter(true);
     if (node && showMetricksBar && showMetricksBar.dataItem && node.id === showMetricksBar.dataItem.id) {
       return;
     }
-    setShowMetricks({ type: _type, show: true, dataItem: node });
+    const _objMetrick = { type: _type, show: true, dataItem: node };
+    setShowMetricks(_objMetrick);
+    showMetrickRef.current = _objMetrick;
   };
 
   const onOpenVmPanel = (node: IVM_PanelDataNode) => {
-    if (showPanelBar && showPanelBar.show) {
-      setShowPanelBar({ show: false, type: null });
-      setShowFooter(true);
-    }
+    const _objPanel = { ...showPanelRef.current, show: false };
+    setShowPanelBar(_objPanel);
+    showPanelRef.current = _objPanel;
+    setShowFooter(true);
     if (node && showMetricksBar && showMetricksBar.dataItem && showMetricksBar.dataItem.vm && node.vm.id === showMetricksBar.dataItem.vm.id) {
       return;
     }
-    setShowMetricks({ type: TopologyMetricsPanelTypes.VM, show: true, dataItem: node });
+    const _objMetrick = { type: TopologyMetricsPanelTypes.VM, show: true, dataItem: node };
+    setShowMetricks(_objMetrick);
+    showMetrickRef.current = _objMetrick;
+  };
+
+  const onOpenAppGroupPanel = (_data: IAppGroup_PanelDataNode) => {
+    const _objPanel = { ...showPanelRef.current, show: false };
+    setShowPanelBar(_objPanel);
+    showPanelRef.current = _objPanel;
+    setShowFooter(true);
+    if (
+      _data &&
+      showMetricksBar &&
+      showMetricksBar.dataItem &&
+      showMetricksBar.dataItem.group &&
+      _data.group.id === showMetricksBar.dataItem.group.id &&
+      _data.vnet.id === showMetricksBar.dataItem.vnet.id
+    ) {
+      return;
+    }
+    const _objMetrick = { type: TopologyMetricsPanelTypes.APPLICATION_GROUP, show: true, dataItem: _data };
+    setShowMetricks(_objMetrick);
+    showMetrickRef.current = _objMetrick;
   };
 
   const onOpenFullScreen = () => {
@@ -111,11 +145,18 @@ const Map: React.FC<IProps> = (props: IProps) => {
             <MapContainer>
               {topology.originData && (
                 <>
-                  <HeadeerAction onShowPanel={onOpenPanel} onRefresh={onRefresh} />
-                  <Graph isFullScreen={isFullScreen} onOpenFullScreen={onOpenFullScreen} onClickVm={onOpenVmPanel} onClickDevice={onOpenNodePanel} onClickWedge={onOpenNodePanel} />
+                  <HeadeerAction onShowPanel={onOpenPanel} onRefresh={onTryLoadData} />
+                  <Graph
+                    isFullScreen={isFullScreen}
+                    onOpenFullScreen={onOpenFullScreen}
+                    onClickVm={onOpenVmPanel}
+                    onClickAppGroup={onOpenAppGroupPanel}
+                    onClickDevice={onOpenNodePanel}
+                    onClickWedge={onOpenNodePanel}
+                  />
                 </>
               )}
-              {loading && (
+              {(loading || !topology.dataReadyToShow) && (
                 <AbsLoaderWrapper>
                   <LoadingIndicator margin="auto" />
                 </AbsLoaderWrapper>
@@ -129,6 +170,7 @@ const Map: React.FC<IProps> = (props: IProps) => {
               )}
             </MapContainer>
             <PanelBar show={showMetricksBar.show} onHidePanel={onHideMetrics} type={IPanelBarLayoutTypes.VERTICAL}>
+              {showMetricksBar.type === TopologyMetricsPanelTypes.APPLICATION_GROUP && <ApplicationGroupPanel dataItem={showMetricksBar.dataItem} />}
               {showMetricksBar.type === TopologyMetricsPanelTypes.VM && <VmPanel dataItem={showMetricksBar.dataItem} />}
               {showMetricksBar.type === TopologyMetricsPanelTypes.Device && <DevicePanel dataItem={showMetricksBar.dataItem} />}
               {showMetricksBar.type === TopologyMetricsPanelTypes.Wedge && <WedgePanel dataItem={showMetricksBar.dataItem} />}
