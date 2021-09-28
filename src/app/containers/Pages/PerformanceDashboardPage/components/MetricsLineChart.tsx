@@ -5,9 +5,14 @@ import { DateTime } from 'luxon';
 import { MetricKeyValue } from './PacketLoss';
 import { Data } from './Table';
 
+interface DataPoint {
+  name: string;
+  y: number;
+}
+
 interface ChartData {
   readonly name: string;
-  readonly data: [string, number][];
+  readonly data: DataPoint[];
 }
 
 interface LineChartProps {
@@ -30,8 +35,15 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
         name: row.name,
         data: inputData[row.id].map(item => {
           const val = DateTime.fromFormat(item.time, OLD_TIME_FORMAT).toUTC().toFormat(REQUIRED_FORMAT);
-          return [val, Number(Number.parseFloat(item.value).toFixed(2))];
+          return {
+            name: val,
+            y: Number(Number.parseFloat(item.value).toFixed(2)),
+            marker: {
+              enabled: false,
+            },
+          };
         }),
+        turboThreshold: inputData[row.id].length,
       };
     });
     setData(tempChartData);
@@ -40,7 +52,7 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
     const maxDataLengthIndex = dataLength.reduce((iMax, x, i, arr) => (x > arr[iMax] ? i : iMax), 0);
 
     setTickInterval(Math.floor(inputData[selectedRows[maxDataLengthIndex].id].length / 10));
-  }, [inputData, tickInterval]);
+  }, [inputData]);
 
   const lineChartOptions = {
     time: {
@@ -61,17 +73,7 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
       },
     },
     legend: {
-      symbolHeight: 20,
       symbolPadding: 10,
-    },
-    plotOptions: {
-      series: {
-        marker: {
-          enabled: undefined,
-          radius: 10,
-          symbol: 'square',
-        },
-      },
     },
     credits: {
       enabled: false,
