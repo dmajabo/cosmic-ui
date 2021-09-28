@@ -101,12 +101,7 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ organizations, add
             <Typography className={classes.itemTitle}>Create SLA Test</Typography>
           </div>
           {popup ? (
-            <div
-              style={{ cursor: 'pointer' }}
-              onClick={() => {
-                closeSlaTest();
-              }}
-            >
+            <div style={{ cursor: 'pointer' }} onClick={() => closeSlaTest()}>
               <img src={CloseIcon} alt="close" />
             </div>
           ) : (
@@ -117,23 +112,9 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ organizations, add
           <span className={classes.tableHeaderText}>NAME</span>
           <input className={classes.slaInput} type="text" value={name} onChange={e => setName(e.target.value)} />
           <span className={classes.tableHeaderText}>SOURCE ORGANIZATION</span>
-          <Select
-            styles={dropdownStyle}
-            label="Single select"
-            options={sourceOrganizationOptions}
-            onChange={e => {
-              setSourceOrg(e.value);
-            }}
-          />
+          <Select styles={dropdownStyle} label="Single select" options={sourceOrganizationOptions} onChange={e => setSourceOrg(e.value)} />
           <span className={classes.tableHeaderText}>SOURCE NETWORK</span>
-          <Select
-            styles={dropdownStyle}
-            label="Single select"
-            options={sourceNetworkOptions}
-            onChange={e => {
-              setSourceNetwork(e.value);
-            }}
-          />
+          <Select styles={dropdownStyle} label="Single select" options={sourceNetworkOptions} onChange={e => setSourceNetwork(e.value)} />
           <span className={classes.tableHeaderText}>DESTINATION</span>
           <input className={classes.slaInput} type="text" value={destination} onChange={e => setDestination(e.target.value)} />
           <span className={classes.tableHeaderText}>DESCRIPTION</span>

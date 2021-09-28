@@ -41,9 +41,7 @@ const PerformanceDashboardPage: React.FC = () => {
     const getOrganizations = async () => {
       const responseData = await apiClient.getOrganizations();
       if (Object.keys(responseData).length > 0) {
-        const merakiOrganizations = responseData.organizations.filter(organization => {
-          return organization.vendorType === 'MERAKI';
-        });
+        const merakiOrganizations = responseData.organizations.filter(organization => organization.vendorType === 'MERAKI');
         setOrganizations(merakiOrganizations);
       }
     };

@@ -77,9 +77,7 @@ export const SLATestList: React.FC<SLATestListProps> = ({ deleteSlaTest, organiz
   const [selectedRows, setSelectedRows] = useState<Data[]>([]);
   const [timeRange, setTimeRange] = useState<string>('-7d');
 
-  const handleTabChange = (event, newValue: string) => {
-    setTab(newValue);
-  };
+  const handleTabChange = (event, newValue: string) => setTab(newValue);
 
   const handleClose = () => setCreateToggle(false);
 
@@ -91,9 +89,7 @@ export const SLATestList: React.FC<SLATestListProps> = ({ deleteSlaTest, organiz
 
   const onSelectedRowsUpdate = (value: Data[]) => setSelectedRows(value);
 
-  const deleteTest = async (testId: string) => {
-    deleteSlaTest(testId);
-  };
+  const deleteTest = async (testId: string) => deleteSlaTest(testId);
 
   const data = useMemo(
     () =>
@@ -171,15 +167,7 @@ export const SLATestList: React.FC<SLATestListProps> = ({ deleteSlaTest, organiz
       <div className={classes.itemContainer}>
         <div className={classes.timeRangeContainer}>
           <Typography className={classes.timeRangeText}>Time Range:</Typography>
-          <Select
-            label="Single select"
-            styles={dropdownStyle}
-            options={timeRangeOptions}
-            defaultValue={timeRangeOptions[0]}
-            onChange={e => {
-              setTimeRange(e.value);
-            }}
-          />
+          <Select label="Single select" styles={dropdownStyle} options={timeRangeOptions} defaultValue={timeRangeOptions[0]} onChange={e => setTimeRange(e.value)} />
         </div>
         <Tabs classes={{ root: classes.tabContainer, indicator: classes.indicator }} value={tab} onChange={handleTabChange} indicatorColor="primary">
           <Tab classes={{ selected: classes.selectedTab }} value="packetLoss" label={<span className={classes.tableHeaderText}>PACKET LOSS</span>} wrapped {...a11yProps('sla_tests')} />
