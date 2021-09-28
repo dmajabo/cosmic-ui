@@ -1,8 +1,15 @@
 import React from 'react';
+import Page from './Page';
+import { SessionsProvider, useSessionsActions } from 'lib/hooks/Sessions/useSessionsDataContext';
 interface IProps {}
 
 const SessionsPage: React.FC<IProps> = (props: IProps) => {
-  return <div>This page is currently unavailable</div>;
+  const sessionsActions = useSessionsActions();
+  return (
+    <SessionsProvider actions={sessionsActions}>
+      <Page />
+    </SessionsProvider>
+  );
 };
 
 export default React.memo(SessionsPage);
