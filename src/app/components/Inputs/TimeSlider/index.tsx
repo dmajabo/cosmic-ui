@@ -141,6 +141,10 @@ const TimeSlider: React.FC<Props> = (props: Props) => {
     return null;
   }
 
+  // const valuetext = () => {
+
+  // }
+
   return (
     <>
       <input

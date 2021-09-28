@@ -7,8 +7,8 @@ interface ApiClient {
   readonly getOrganizations: () => Promise<GetOrganizationResponse>;
   readonly getSLATests: () => Promise<GetSLATestResponse>;
   readonly createSLATest: (request: CreateSLATestRequest) => Promise<CreateSLATestResponse>;
-  readonly getPacketLossMetrics: (deviceId: string, destination: string, startTime: string) => Promise<SLATestMetricsResponse>;
-  readonly getLatencyMetrics: (deviceId: string, destination: string, startTime: string) => Promise<SLATestMetricsResponse>;
+  readonly getPacketLossMetrics: (deviceId: string, destination: string, startTime: string, testId: string) => Promise<SLATestMetricsResponse>;
+  readonly getLatencyMetrics: (deviceId: string, destination: string, startTime: string, testId: string) => Promise<SLATestMetricsResponse>;
   readonly deleteSLATest: (testId: string) => Promise<DeleteSLATestResponse>;
 }
 
@@ -61,7 +61,7 @@ export const createApiClient = (): ApiClient => {
     }
   }
 
-  async function getPacketLossMetrics(deviceId: string, destination: string, startTime: string): Promise<SLATestMetricsResponse> {
+  async function getPacketLossMetrics(deviceId: string, destination: string, startTime: string, testId: string): Promise<SLATestMetricsResponse> {
     try {
       const response = await axios.get<SLATestMetricsResponse>(PATHS.GET_PACKET_LOSS(deviceId, destination), {
         baseURL: BASE_URL,
@@ -69,13 +69,21 @@ export const createApiClient = (): ApiClient => {
           startTime: startTime,
         },
       });
-      return response.data;
+      return {
+        metrics: response.data.metrics,
+        testId: testId,
+      };
     } catch (error) {
-      return {};
+      return {
+        testId: testId,
+        metrics: {
+          keyedmap: [],
+        },
+      };
     }
   }
 
-  async function getLatencyMetrics(deviceId: string, destination: string, startTime: string): Promise<SLATestMetricsResponse> {
+  async function getLatencyMetrics(deviceId: string, destination: string, startTime: string, testId: string): Promise<SLATestMetricsResponse> {
     try {
       const response = await axios.get<SLATestMetricsResponse>(PATHS.GET_LATENCY(deviceId, destination), {
         baseURL: BASE_URL,
@@ -83,9 +91,17 @@ export const createApiClient = (): ApiClient => {
           startTime: startTime,
         },
       });
-      return response.data;
+      return {
+        metrics: response.data.metrics,
+        testId: testId,
+      };
     } catch (error) {
-      return {};
+      return {
+        testId: testId,
+        metrics: {
+          keyedmap: [],
+        },
+      };
     }
   }
 

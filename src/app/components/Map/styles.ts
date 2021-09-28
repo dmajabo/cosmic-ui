@@ -36,6 +36,8 @@ export const ContainerWithMetrics = styled.div`
   &.withPanel {
     height: 100%;
   }
+  transition-property: height;
+  transition: 0.8s ease-in;
 `;
 
 export const MapContainer = styled.div`

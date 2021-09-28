@@ -1,10 +1,6 @@
 import styled from 'styled-components';
 
-interface Props {
-  x: number;
-  y: number;
-}
-export const ContainerWrapper = styled.g<Props>`
+export const ContainerWrapper = styled.g`
   transition: all 0.2s ease-in-out;
   /* Hidden init state */
   opacity: 0;

@@ -14,20 +14,25 @@ export const TopologyOrganizationApi = {
 };
 export const TopologyGroupApi = {
   getAllGroups: () => 'policy/api/v1/policy/selector/groups',
-  getGroupById: (id: string) => `policy/api/v1/policy/selector/group/${id}`,
-  postCreateGroup: () => 'policy/api/v1/policy/selector/group',
-  postUpdateGroup: (id: string) => `policy/api/v1/policy/selector/group/${id}`,
-  deleteGroup: (id: string) => `policy/api/v1/policy/selector/group/${id}`,
+  getGroupById: (id: string) => `policy/api/v1/policy/selector/groups/${id}`,
+  postCreateGroup: () => 'policy/api/v1/policy/selector/groups',
+  postUpdateGroup: (id: string) => `policy/api/v1/policy/selector/groups/${id}`,
+  deleteGroup: (id: string) => `policy/api/v1/policy/selector/groups/${id}`,
 };
 
 export const createTopologyQueryParam = (startTime: Date): ITopologyQueryParam => {
   if (startTime) {
-    return { timestamp: toTimestamp(startTime) };
+    const ms = toTimestamp(startTime);
+    if (!ms) return null;
+    return { timestamp: ms };
   }
   return null;
 };
 
-const toTimestamp = (data: Date): number => {
-  var datum = new Date(data.toUTCString());
+export const toTimestamp = (date: Date): number => {
+  if (!date) {
+    return null;
+  }
+  var datum = new Date(date.toUTCString());
   return Math.round(datum.getTime() / 1000);
 };

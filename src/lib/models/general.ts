@@ -33,6 +33,12 @@ export interface ICoord {
   y: number;
 }
 
+export interface IRotateCoord {
+  x: number;
+  y: number;
+  angle: number;
+}
+
 export interface ISelectedListItem<T> {
   id: string | number | null;
   value: T;
@@ -65,4 +71,12 @@ export const TIME_PERIOD: ISelectedListItem<ITimeTypes>[] = [
 export enum IPanelBarLayoutTypes {
   VERTICAL = 'vertical',
   HORIZONTAL = 'horizontal',
+}
+
+export interface ICollapsed {
+  collapsed: boolean;
+}
+
+export interface IVisible {
+  visible: boolean;
 }

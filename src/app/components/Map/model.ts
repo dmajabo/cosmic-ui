@@ -41,18 +41,20 @@ interface ISpace {
 }
 
 interface IVNetNode extends INode<TOPOLOGY_NODE_TYPES>, ISize, ISpace {
+  headerHeight: number;
+  contentHeight: number;
   borderRadius: number;
-  spaceX: number;
-  spaceY: number;
   dx: number;
   dy: number;
   fontSize: number;
-  VmsContainerFill: string;
+  VnetFill: string;
+  VnetHeaderFill: string;
 }
 
 export interface IVMNode extends INode<TOPOLOGY_NODE_TYPES>, ISize, ISpace {
   borderRadius: number;
   iconSize: number;
+  VmFill: string;
 }
 export interface IDeviceNode extends INode<TOPOLOGY_NODE_TYPES>, ISize, ISpace {
   dx: number;
@@ -77,6 +79,12 @@ export interface INetworkGroupNode extends INode<TOPOLOGY_NODE_TYPES>, ISpace {
   r: number;
 }
 
+export interface IVnetAppGroup extends INode<TOPOLOGY_NODE_TYPES>, ISize, ISpace {
+  borderRadius: number;
+  iconSize: number;
+  groupFill: string;
+}
+
 export interface IOrganizationNode extends INode<TOPOLOGY_NODE_TYPES>, ISize, ISpace {}
 
 export interface INodes_Types {
@@ -86,6 +94,7 @@ export interface INodes_Types {
   VM: IVMNode;
   WEDGE: IWEDGENode;
   NETWORK_GROUP: INetworkGroupNode;
+  APP_GROUP: IVnetAppGroup;
 }
 
 export const NODES_CONSTANTS: INodes_Types = {
@@ -116,24 +125,38 @@ export const NODES_CONSTANTS: INodes_Types = {
   },
   VNet: {
     type: TOPOLOGY_NODE_TYPES.VNET,
-    width: 80,
-    height: 80,
+    width: 196,
+    height: 42,
+    headerHeight: 20,
+    contentHeight: 24,
+    VnetFill: 'var(--_primaryBg)',
+    VnetHeaderFill: 'var(--_vnetHeaderBg)',
     spaceX: 20,
     spaceY: 20,
     borderRadius: 6,
     dx: 13, // 196 /2 - 64 / 2
     dy: -0.5,
     fontSize: 11,
-    VmsContainerFill: 'var(--_vmsContainerBg)',
   },
   VM: {
     type: TOPOLOGY_NODE_TYPES.VM,
-    width: 62,
-    height: 13,
+    width: 60,
+    height: 15,
     spaceX: 2,
     spaceY: 2,
     borderRadius: 4,
     iconSize: 8,
+    VmFill: 'var(--_primaryBg)',
+  },
+  APP_GROUP: {
+    type: TOPOLOGY_NODE_TYPES.APPLICATION_GROUP,
+    width: 188,
+    height: 28,
+    spaceX: 2,
+    spaceY: 2,
+    borderRadius: 4,
+    iconSize: 13,
+    groupFill: 'var(--_primaryBg)',
   },
   WEDGE: {
     type: TOPOLOGY_NODE_TYPES.WEDGE,

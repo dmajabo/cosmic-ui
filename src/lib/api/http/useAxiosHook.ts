@@ -21,6 +21,7 @@ interface IApiRes<T> {
   onGet?: (url: string, param?: any, token?: string) => void;
   onGetChainData?: (url: string[], keys: string[], param?: any, token?: string) => void;
   onPost?: (url: string, _data: any, param?: any, token?: string) => void;
+  onPut?: (url: string, _data: any, param?: any, token?: string) => void;
   onDelete?: (url: string, param?: any, token?: string) => void;
 }
 
@@ -62,9 +63,9 @@ export const usePost = <T = any, R = any>(): IApiRes<R> => {
   const [error, setError] = React.useState<AxiosError>(null);
   const [loading, setloading] = React.useState<boolean>(false);
 
-  const onPost = React.useCallback((url: string, param?: any, token?: string) => {
+  const onPost = React.useCallback((url: string, _data: T, param?: any, token?: string) => {
     setloading(true);
-    postDataAsync(url, param, token);
+    postDataAsync(url, _data, param, token);
   }, []);
 
   const postDataAsync = async (url: string, _data: T, param?: any, token?: string) => {
@@ -88,6 +89,39 @@ export const usePost = <T = any, R = any>(): IApiRes<R> => {
   };
 
   return { response, error, loading, onPost };
+};
+
+export const usePut = <T = any, R = any>(): IApiRes<R> => {
+  const [response, setResponse] = React.useState<R>(null);
+  const [error, setError] = React.useState<AxiosError>(null);
+  const [loading, setloading] = React.useState<boolean>(false);
+
+  const onPut = React.useCallback((url: string, _data: T, param?: any, token?: string) => {
+    setloading(true);
+    putDataAsync(url, _data, param, token);
+  }, []);
+
+  const putDataAsync = async (url: string, _data: T, param?: any, token?: string) => {
+    const _header = getHeaders(param, token);
+    const data = JSON.stringify(_data);
+    await axios
+      .put(url, data, _header)
+      .then((res: AxiosResponse<R>) => {
+        setResponse(res.data);
+      })
+      .catch(err => {
+        if (err.response && err.response.data && err.response.data.message) {
+          setError(err.response.data);
+          return;
+        }
+        setError(err.toJSON());
+      })
+      .finally(() => {
+        setloading(false);
+      });
+  };
+
+  return { response, error, loading, onPut };
 };
 
 export const useDelete = <T = any>(): IApiRes<T> => {

@@ -7,7 +7,6 @@ import { NODES_CONSTANTS } from 'app/components/Map/model';
 
 interface IProps {
   dataItem: IVm;
-  cols: number;
   onClick: (vm: IVm) => void;
 }
 const VmNode: React.FC<IProps> = (props: IProps) => {
@@ -15,9 +14,9 @@ const VmNode: React.FC<IProps> = (props: IProps) => {
     props.onClick(props.dataItem);
   };
   return (
-    <VmNodeStyles data-type={NODES_CONSTANTS.VM.type} title={props.dataItem.name} cols={props.cols} onClick={onClick}>
+    <VmNodeStyles data-type={NODES_CONSTANTS.VM.type} title={props.dataItem.name ? props.dataItem.name : props.dataItem.extId} onClick={onClick}>
       <IconWrapper icon={vmIcon} width={`${NODES_CONSTANTS.VM.iconSize}px`} height={`${NODES_CONSTANTS.VM.iconSize}px`} />
-      <Label>{props.dataItem.name}</Label>
+      <Label>{props.dataItem.name ? props.dataItem.name : props.dataItem.extId}</Label>
     </VmNodeStyles>
   );
 };

@@ -28,31 +28,23 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange 
 
   const apiClient = createApiClient();
   useEffect(() => {
-    if (selectedRows.length > 0) {
-      const getPacketLossMetrics = async () => {
-        const packetLossChartData: MetricKeyValue = {};
-        const promises = selectedRows.map(row => apiClient.getPacketLossMetrics(row.sourceDevice, row.destination, timeRange));
-        Promise.all(
-          selectedRows.map(async row => {
-            try {
-              const responseData = await apiClient.getPacketLossMetrics(row.sourceDevice, row.destination, timeRange);
-              if (responseData.metrics.keyedmap.length > 0) {
-                packetLossChartData[row.id] = responseData.metrics.keyedmap[0].ts;
-              } else {
-                packetLossChartData[row.id] = [];
-              }
-            } catch {}
-          }),
-        ).then(() => {
-          setPacketLossData(packetLossChartData);
+    const getPacketLossMetrics = async () => {
+      const packetLossChartData: MetricKeyValue = {};
+      const promises = selectedRows.map(row => apiClient.getPacketLossMetrics(row.sourceDevice, row.destination, timeRange, row.id));
+      Promise.all(promises).then(values => {
+        values.forEach(item => {
+          if (item.metrics.keyedmap.length > 0) {
+            packetLossChartData[item.testId] = item.metrics.keyedmap[0].ts;
+          } else {
+            packetLossChartData[item.testId] = [];
+          }
         });
-      };
-      getPacketLossMetrics();
-    }
-
-    return () => {
-      setPacketLossData({});
+        setPacketLossData(packetLossChartData);
+      });
     };
+    getPacketLossMetrics();
+
+    return () => setPacketLossData({});
   }, [selectedRows, timeRange]);
 
   return (

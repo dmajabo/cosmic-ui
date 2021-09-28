@@ -46,7 +46,11 @@ export const PanelHeader = styled.div<Props>`
   }
 `;
 
-export const PanelTitle = styled.div`
+interface TitleProps {
+  maxWidth?: string;
+  margin?: string;
+}
+export const PanelTitle = styled.div<TitleProps>`
   font-style: normal;
   font-weight: 700;
   font-size: 22px;
@@ -55,7 +59,8 @@ export const PanelTitle = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
   flex-shrink: 0;
-  max-width: 100%;
+  max-width: ${props => props.maxWidth || '100%'};
+  margin: ${props => props.margin || '0'};
 `;
 
 export const SubPanelTitle = styled.div`

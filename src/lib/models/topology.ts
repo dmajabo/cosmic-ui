@@ -1,6 +1,7 @@
-import { IBaseEntity, ICoord, ISelectedListItem } from './general';
+import { IVpcSize } from 'lib/helpers/tree';
+import { IBaseEntity, ICollapsed, ICoord, ISelectedListItem, IVisible } from './general';
 export interface ITopologyGroupsData {
-  groups: any[];
+  groups: ITopologyGroup[];
 }
 export interface ITopologyMapData {
   count: number;
@@ -8,13 +9,8 @@ export interface ITopologyMapData {
 }
 
 export interface ITopologyPreparedMapData {
-  data: ITopologyMapData;
   links: ILink[];
-  wedges: IWedgeNode[];
-  devices: IDeviceNode[];
-  vnets: IVnetNode[];
-  networkGroups: INetworkGroupNode[];
-  applicationsGroup: ITopologyGroup[];
+  nodes: (IWedgeNode | IVnetNode | IDeviceNode | INetworkGroupNode)[];
 }
 
 export enum TopologyPanelTypes {
@@ -26,6 +22,7 @@ export enum TopologyMetricsPanelTypes {
   VM = 'Vm',
   Device = ' device',
   Wedge = 'wedge',
+  APPLICATION_GROUP = 'application_group',
 }
 
 export enum VendorTypes {
@@ -54,14 +51,11 @@ export enum ILinkStatus {
   Reachable = 'reachable',
 }
 
-export interface ICollapsedNode {
-  collapsed: boolean;
-}
-
-export interface IMappedNode {
+export interface IMappedNode extends IVisible {
   childIndex: number;
   orgIndex: number;
   orgId: string;
+  nodeType: TOPOLOGY_NODE_TYPES;
 }
 
 export interface IConnectedTo extends IBaseEntity<string> {
@@ -123,13 +117,22 @@ export interface INic extends IBaseEntity<string> {
   securityGroups: any[];
 }
 
+export interface ITag extends IBaseEntity<string> {
+  key: string;
+  value: string;
+}
 export interface IVm extends IBaseEntity<string> {
   name: string;
   description: string;
   extId: string;
   vmkey: string;
   nic: INic[];
+  selectorGroup: string;
   securityGroups: [];
+
+  subnet: any;
+  dimensions: any;
+  tags: ITag;
 }
 
 export interface IVnet extends IBaseEntity<string> {
@@ -143,7 +146,10 @@ export interface IVnet extends IBaseEntity<string> {
   securityGroups: any[];
 }
 
-export interface IVnetNode extends IVnet, IMappedNode, ICoord, ICollapsedNode {}
+export interface IVnetNode extends IVnet, IMappedNode, ICoord {
+  nodeSize: IVpcSize;
+  applicationGroups: ITopologyGroup[];
+}
 
 export interface IVpn extends IBaseEntity<string> {
   name: string;
@@ -174,14 +180,17 @@ export interface IWedge extends IBaseEntity<string> {
   vpns: IVpn[];
   networkLinks: INetworkLink[];
   ips: IIp[];
-  scaleFactor?: number;
-  visible?: boolean;
 }
 
 export interface IWedgeNode extends IWedge, IMappedNode, ICoord {}
 
 export interface IVM_PanelDataNode {
   vm: IVm;
+  vnet: IVnetNode;
+}
+
+export interface IAppGroup_PanelDataNode {
+  group: ITopologyGroup;
   vnet: IVnetNode;
 }
 
@@ -205,11 +214,12 @@ export interface ITopologyGroup {
   expr: string | null;
 }
 
-export interface INetworkGroupNode extends ITopologyGroup, ICoord, ICollapsedNode {
+export interface INetworkGroupNode extends ITopologyGroup, IVisible, ICoord, ICollapsed {
   groupIndex: number;
   r: number;
   devices: IDeviceNode[];
   links: ILink[];
+  nodeType: TOPOLOGY_NODE_TYPES;
 }
 
 export enum TOPOLOGY_NODE_TYPES {
@@ -219,6 +229,7 @@ export enum TOPOLOGY_NODE_TYPES {
   VM = 'vm',
   WEDGE = 'wedge',
   NETWORK_GROUP = 'network_group',
+  APPLICATION_GROUP = 'application_group',
 }
 
 export enum TOPOLOGY_LINKS_TYPES {
@@ -228,7 +239,7 @@ export enum TOPOLOGY_LINKS_TYPES {
   CONNECTED_TO_LINK = 'connectedTo',
   NETWORKLINK = 'networklink',
 }
-export interface ILink {
+export interface ILink extends IVisible {
   id: string;
   type: TOPOLOGY_LINKS_TYPES;
   targetId: string;
@@ -241,20 +252,18 @@ export interface ILink {
 
 export interface IConnectionToLink extends ILink {}
 
-export interface ILinks {
-  [key: string]: ILink | IConnectionToLink;
-}
-
 export interface IOrganizationNode extends IOrganization {
   type: TOPOLOGY_NODE_TYPES.ORGANIZATION;
 }
 
 export enum TopologyGroupTypesAsNumber {
-  BRANCH_NETWORKS = 0,
-  APPLICATION = 1,
+  NONE = 0,
+  BRANCH_NETWORKS = 1,
+  APPLICATION = 2,
 }
 
 export enum TopologyGroupTypesAsString {
+  NONE = 'NONE',
   BRANCH_NETWORKS = 'DEVICE',
   APPLICATION = 'APPLICATION',
 }
