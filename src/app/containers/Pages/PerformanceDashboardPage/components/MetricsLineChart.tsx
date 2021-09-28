@@ -32,7 +32,7 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
   useEffect(() => {
     const tempChartData: ChartData[] = selectedRows.map(row => {
       return {
-        name: row.name,
+        name: `${row.name} > ${row.sourceDevice}`,
         data: inputData[row.id].map(item => {
           const val = DateTime.fromFormat(item.time, OLD_TIME_FORMAT).toUTC().toFormat(REQUIRED_FORMAT);
           return {
