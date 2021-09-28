@@ -17,8 +17,10 @@ const SessionCard: React.FC<Props> = (props: Props) => {
         <IconWrapper icon={props.icon} width="40px" height="40px" />
       </IconWrapStyles>
       <ContentWrapStyles>
-        <Label>{props.label}</Label>
-        <ValueStyles color={props.valueColor}>{props.value}</ValueStyles>
+        <Label title={props.label}>{props.label}</Label>
+        <ValueStyles color={props.valueColor} title={`${props.value}`}>
+          {props.value}
+        </ValueStyles>
       </ContentWrapStyles>
     </CardWrapper>
   );

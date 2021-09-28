@@ -2,11 +2,14 @@ import React from 'react';
 import { Tab, Tabs } from '@material-ui/core';
 import { TabsStyles } from 'app/components/Tabs/TabsStyles';
 import { TabComponentProps } from 'app/components/Tabs/TabComponentProps';
-import { SESSIONS_TABS } from 'lib/hooks/Sessions/model';
+import { SessionsSelectValuesTypes, SESSIONS_SELECT_VALUES, SESSIONS_TABS } from 'lib/hooks/Sessions/model';
 import { useSessionsDataContext } from 'lib/hooks/Sessions/useSessionsDataContext';
-import { PageWrapperStyles, TabsWrapperStyles } from '../../Shared/styles';
+import { ActionPart, ActionRowStyles, PageWrapperStyles, TabsWrapperStyles } from '../../Shared/styles';
 import OverviewPage from '../OverviewPage';
 import TabPanel from 'app/components/Tabs/TabPanel';
+import Dropdown from 'app/components/Inputs/Dropdown';
+import { ISelectedListItem } from 'lib/models/general';
+import TrendsPage from '../TrendsPage';
 
 interface IProps {}
 
@@ -16,6 +19,10 @@ const Page: React.FC<IProps> = (props: IProps) => {
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     sessions.onChangeSelectedTab(newValue);
+  };
+
+  const onChangePeriod = (_value: ISelectedListItem<SessionsSelectValuesTypes>) => {
+    sessions.onChangeSelectedPeriod(_value);
   };
 
   return (
@@ -38,8 +45,16 @@ const Page: React.FC<IProps> = (props: IProps) => {
           ))}
         </Tabs>
       </TabsWrapperStyles>
+      <ActionRowStyles>
+        <ActionPart margin="0 0 0 auto">
+          <Dropdown label="Show" selectedValue={sessions.selectedPeriod} values={SESSIONS_SELECT_VALUES} onSelectValue={onChangePeriod} />
+        </ActionPart>
+      </ActionRowStyles>
       <TabPanel value={sessions.selectedTab.index} index={SESSIONS_TABS[0].index}>
         <OverviewPage />
+      </TabPanel>
+      <TabPanel value={sessions.selectedTab.index} index={SESSIONS_TABS[1].index}>
+        <TrendsPage />
       </TabPanel>
     </PageWrapperStyles>
   );

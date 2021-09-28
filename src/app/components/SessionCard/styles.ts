@@ -24,7 +24,8 @@ export const IconWrapStyles = styled.div`
   }
 `;
 export const ContentWrapStyles = styled.div`
-  max-width: calc(100% - 100px);
+  max-width: calc(100% - 130px);
+  overflow: hidden;
 `;
 
 export const Label = styled.div`
@@ -32,6 +33,9 @@ export const Label = styled.div`
   font-style: normal;
   font-size: 16px;
   color: var(--_primaryColor);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 interface ValueProps {
@@ -42,5 +46,8 @@ export const ValueStyles = styled.div<ValueProps>`
   font-weight: 700;
   font-size: 60px;
   line-height: 78px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   color: ${props => props.color || 'var(--_primaryColor)'};
 `;
