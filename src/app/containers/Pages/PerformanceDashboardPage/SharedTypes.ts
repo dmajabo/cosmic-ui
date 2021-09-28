@@ -142,12 +142,13 @@ interface KeyedMap {
 }
 
 interface SLATestMetrics {
-  readonly resourceId: string;
+  readonly resourceId?: string;
   readonly keyedmap: KeyedMap[];
 }
 
 export interface SLATestMetricsResponse {
-  readonly metrics?: SLATestMetrics;
+  readonly metrics: SLATestMetrics;
+  readonly testId: string;
 }
 
 export interface DeleteSLATestResponse {}

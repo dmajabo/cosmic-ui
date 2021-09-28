@@ -22,20 +22,21 @@ export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange }) => 
   useEffect(() => {
     const getLatencyMetrics = async () => {
       const latencyChartData: MetricKeyValue = {};
-      Promise.all(
-        selectedRows.map(async row => {
-          const responseData = await apiClient.getLatencyMetrics(row.sourceDevice, row.destination, timeRange);
-          if (responseData.metrics.keyedmap.length > 0) {
-            latencyChartData[row.id] = responseData.metrics.keyedmap[0].ts;
+      const promises = selectedRows.map(row => apiClient.getLatencyMetrics(row.sourceDevice, row.destination, timeRange, row.id));
+      Promise.all(promises).then(values => {
+        values.forEach(item => {
+          if (item.metrics.keyedmap.length > 0) {
+            latencyChartData[item.testId] = item.metrics.keyedmap[0].ts;
           } else {
-            latencyChartData[row.id] = [];
+            latencyChartData[item.testId] = [];
           }
-        }),
-      ).then(() => {
+        });
         setLatencyData(latencyChartData);
       });
     };
     getLatencyMetrics();
+
+    return () => setLatencyData({});
   }, [selectedRows, timeRange]);
 
   return (
