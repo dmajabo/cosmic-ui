@@ -1,38 +1,28 @@
-import { Backdrop, Button, IconButton, Tab, Tabs, Typography } from '@material-ui/core';
-import { Add as AddIcon, MoreVert as MoreVertIcon } from '@material-ui/icons';
+import { Backdrop, Button, Tab, Tabs, Typography } from '@material-ui/core';
+import { Add as AddIcon } from '@material-ui/icons';
 import React, { useMemo, useState } from 'react';
 import { PerformanceDashboardStyles } from '../PerformanceDashboardStyles';
 import ColumnsIcon from '../icons/columns.svg';
 import FilterIcon from '../icons/filter.svg';
-import Table from './Table';
+import Table, { Data } from './Table';
 import { CreateSLATest } from './CreateSLATest';
 import { Organization, Column, FinalTableData } from '../SharedTypes';
 import { PacketLoss } from './PacketLoss';
 import { Latency } from './Latency';
 import Select from 'react-select';
-import { KeyValue } from '..';
+import AverageQoe from './AverageQoe';
 
 interface SLATestListProps {
   readonly finalTableData: FinalTableData[];
   readonly addSlaTest: Function;
   readonly organizations: Organization[];
-  readonly packetLossData: KeyValue;
-  readonly latencyData: KeyValue;
+  readonly deleteSlaTest: Function;
 }
 
 interface TabPanelProps {
   readonly children?: React.ReactNode;
   readonly index: string;
   readonly value: string;
-}
-
-interface SelectedRow {
-  readonly name: string;
-  readonly sourceOrg: string;
-  readonly sourceNetwork: string;
-  readonly sourceDevice: string;
-  readonly destination: string;
-  readonly averageQoe: JSX.Element;
 }
 
 function TabPanel(props: TabPanelProps) {
@@ -79,33 +69,27 @@ const columns: Column[] = [
   },
 ];
 
-export const SLATestList: React.FC<SLATestListProps> = ({ latencyData, packetLossData, organizations, finalTableData, addSlaTest }) => {
+export const SLATestList: React.FC<SLATestListProps> = ({ deleteSlaTest, organizations, finalTableData, addSlaTest }) => {
   const classes = PerformanceDashboardStyles();
 
   const [createToggle, setCreateToggle] = React.useState<boolean>(false);
   const [tab, setTab] = useState<string>('packetLoss');
-  const [selectedRows, setSelectedRows] = useState<SelectedRow[]>([]);
+  const [selectedRows, setSelectedRows] = useState<Data[]>([]);
   const [timeRange, setTimeRange] = useState<string>('-7d');
 
-  const handleTabChange = (event, newValue: string) => {
-    setTab(newValue);
-  };
+  const handleTabChange = (event, newValue: string) => setTab(newValue);
 
-  const handleClose = () => {
-    setCreateToggle(false);
-  };
-  const handleToggle = () => {
-    setCreateToggle(!createToggle);
-  };
+  const handleClose = () => setCreateToggle(false);
+
+  const handleToggle = () => setCreateToggle(!createToggle);
 
   const addTest = (value: FinalTableData) => {
     addSlaTest(value);
-    handleClose();
   };
 
-  const onSelectedRowsUpdate = (value: SelectedRow[]) => {
-    setSelectedRows(value);
-  };
+  const onSelectedRowsUpdate = (value: Data[]) => setSelectedRows(value);
+
+  const deleteTest = async (testId: string) => deleteSlaTest(testId);
 
   const data = useMemo(
     () =>
@@ -117,24 +101,10 @@ export const SLATestList: React.FC<SLATestListProps> = ({ latencyData, packetLos
           sourceNetwork: item.sourceNetwork,
           sourceDevice: item.sourceDevice,
           destination: item.destination,
-          averageQoe: (
-            <div className={classes.flexContainer}>
-              <div className={classes.averageQoeText}>
-                <span>Packet Loss:</span>
-                <span className={classes.packetLossValueText}>{`${packetLossData[item.id] || '-'}%`}</span>
-                <span>Latency:</span>
-                <span className={classes.latencyValueText}>{`${Number(latencyData[item.id]).toFixed(2) || '-'}ms`}</span>
-              </div>
-              <div>
-                <IconButton aria-controls="widget-menu" aria-haspopup="true">
-                  <MoreVertIcon />
-                </IconButton>
-              </div>
-            </div>
-          ),
+          averageQoe: <AverageQoe deleteTest={deleteTest} packetLoss={item.averageQoe.packetLoss} latency={item.averageQoe.latency} testId={item.id} />,
         };
       }),
-    [finalTableData, packetLossData, latencyData],
+    [finalTableData],
   );
 
   const timeRangeOptions = [
@@ -197,15 +167,7 @@ export const SLATestList: React.FC<SLATestListProps> = ({ latencyData, packetLos
       <div className={classes.itemContainer}>
         <div className={classes.timeRangeContainer}>
           <Typography className={classes.timeRangeText}>Time Range:</Typography>
-          <Select
-            label="Single select"
-            styles={dropdownStyle}
-            options={timeRangeOptions}
-            defaultValue={timeRangeOptions[0]}
-            onChange={e => {
-              setTimeRange(e.value);
-            }}
-          />
+          <Select label="Single select" styles={dropdownStyle} options={timeRangeOptions} defaultValue={timeRangeOptions[0]} onChange={e => setTimeRange(e.value)} />
         </div>
         <Tabs classes={{ root: classes.tabContainer, indicator: classes.indicator }} value={tab} onChange={handleTabChange} indicatorColor="primary">
           <Tab classes={{ selected: classes.selectedTab }} value="packetLoss" label={<span className={classes.tableHeaderText}>PACKET LOSS</span>} wrapped {...a11yProps('sla_tests')} />
