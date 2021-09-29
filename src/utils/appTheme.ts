@@ -31,6 +31,7 @@ const Themes = {
     '--_defaultInputColor': '#848DA3',
     '--_errorColor': '#DC4545',
     '--_successColor': '#52984E',
+    '--_warningColor': '#F69442',
     // NODES
     // GROUP
     '--_groupDevicesBg': '#E9EFF9',
