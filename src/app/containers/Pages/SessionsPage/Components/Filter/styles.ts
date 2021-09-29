@@ -13,7 +13,11 @@ export const FilterWrapper = styled.div`
 `;
 
 export const Label = styled.label`
-  margin-bottom: 4px;
+  margin-bottom: 20px;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 22px;
+  color: var(--_primaryColor);
 `;
 export const InputWrapper = styled.div``;
 
