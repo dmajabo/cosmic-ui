@@ -7,11 +7,38 @@ import InfoIcon from '../icons/info.svg';
 import LoadingIndicator from '../../../../components/Loading';
 import { MetricKeyValue } from './PacketLoss';
 import { Data } from './Table';
+import Heatmap from './Heatmap';
+import { HeatMapData } from '../SharedTypes';
 
 interface LatencyProps {
   readonly selectedRows: Data[];
   readonly timeRange: string;
 }
+
+const heatMapData: HeatMapData[] = [
+  {
+    testId: '1',
+    metrics: [
+      {
+        deviceName: 'ABC',
+        value: 10,
+      },
+      {
+        deviceName: 'XYZ',
+        value: 9,
+      },
+    ],
+  },
+  {
+    testId: '2',
+    metrics: [
+      {
+        deviceName: 'DEF',
+        value: 15,
+      },
+    ],
+  },
+];
 
 export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange }) => {
   const classes = PerformanceDashboardStyles();
@@ -79,7 +106,15 @@ export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange }) => 
           <Typography className={classes.subTitleText}>Shows aggregated latency between branches and applications.</Typography>
         </div>
       </div>
-      <div className={classes.lineChartContainer}>Heatmap Latency</div>
+      <div className={classes.lineChartContainer}>
+        {selectedRows.length > 0 ? (
+          <Heatmap data={heatMapData} selectedRows={selectedRows} dataSuffix="ms" />
+        ) : (
+          <div className={classes.noChartContainer}>
+            <Typography className={classes.noChartText}>To see the data select SLA Tests on top</Typography>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

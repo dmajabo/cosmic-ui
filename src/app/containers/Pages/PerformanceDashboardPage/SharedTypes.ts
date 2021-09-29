@@ -173,3 +173,13 @@ export interface Column {
   readonly Header: string;
   readonly accessor: 'name' | 'sourceOrg' | 'sourceNetwork' | 'sourceDevice' | 'destination' | 'averageQoe';
 }
+
+interface HeatMapMetric {
+  deviceName: string;
+  value: number;
+}
+
+export interface HeatMapData {
+  testId: string;
+  metrics: HeatMapMetric[];
+}

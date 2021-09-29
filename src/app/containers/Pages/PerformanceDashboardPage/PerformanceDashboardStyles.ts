@@ -190,6 +190,10 @@ export const PerformanceDashboardStyles = makeStyles(
       deleteTest: {
         color: 'red',
       },
+      startFlexContainer: {
+        display: 'flex',
+        justifyContent: 'start',
+      },
     }),
   {
     index: 1,

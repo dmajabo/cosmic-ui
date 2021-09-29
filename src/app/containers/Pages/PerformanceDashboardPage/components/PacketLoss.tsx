@@ -6,6 +6,8 @@ import { MetricsLineChart } from './MetricsLineChart';
 import InfoIcon from '../icons/info.svg';
 import LoadingIndicator from '../../../../components/Loading';
 import { Data } from './Table';
+import Heatmap from './Heatmap';
+import { HeatMapData } from '../SharedTypes';
 
 interface PacketLossProps {
   readonly selectedRows: Data[];
@@ -21,25 +23,25 @@ export interface MetricKeyValue {
   [id: string]: DataMetrics[];
 }
 
-const HeatMapData = [
+const heatMapData: HeatMapData[] = [
   {
-    testId: '1',
+    testId: 'Test 1',
     metrics: [
       {
-        device: 'ABC',
+        deviceName: 'Device 1',
         value: 10,
       },
       {
-        device: 'XYZ',
+        deviceName: 'Device 2',
         value: 9,
       },
     ],
   },
   {
-    testId: '2',
+    testId: 'Test 2',
     metrics: [
       {
-        device: 'DEF',
+        deviceName: 'Device 3',
         value: 15,
       },
     ],
@@ -112,7 +114,15 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange 
           <Typography className={classes.subTitleText}>Shows aggregated packet loss between branches and applications.</Typography>
         </div>
       </div>
-      <div className={classes.lineChartContainer}>Heatmap Packet Loss</div>
+      <div className={classes.lineChartContainer}>
+        {selectedRows.length > 0 ? (
+          <Heatmap data={heatMapData} selectedRows={selectedRows} dataSuffix="%" />
+        ) : (
+          <div className={classes.noChartContainer}>
+            <Typography className={classes.noChartText}>To see the data select SLA Tests on top</Typography>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
