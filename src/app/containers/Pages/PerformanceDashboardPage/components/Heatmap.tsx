@@ -1,15 +1,17 @@
+import { Grid } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
 import { PerformanceDashboardStyles } from '../PerformanceDashboardStyles';
 import { HeatMapData } from '../SharedTypes';
 import { Data } from './Table';
+import GridRow from './GridRow';
+
 interface HeatmapProps {
   data: HeatMapData[];
   selectedRows: Data[];
   dataSuffix: string;
 }
 
-interface HeatmapMetrics {
+export interface HeatmapMetrics {
   [id: string]: number;
 }
 
@@ -30,6 +32,7 @@ const Heatmap: React.FC<HeatmapProps> = ({ data, selectedRows, dataSuffix }) => 
         heatMapData[`${test.testId}_${device.deviceName}`] = device.value;
       }),
     );
+    devices.push('');
     setTests(tests);
     setDevices(devices);
     setHeatMapData(heatMapData);
@@ -38,7 +41,15 @@ const Heatmap: React.FC<HeatmapProps> = ({ data, selectedRows, dataSuffix }) => 
   return (
     <div className={classes.startFlexContainer}>
       <div>Legend</div>
-      <div>Heatmap</div>
+      <div>
+        <Grid container spacing={1}>
+          {devices.map(device => (
+            <Grid container item spacing={3}>
+              <GridRow device={device} tests={tests} heatMapData={heatMapData} />
+            </Grid>
+          ))}
+        </Grid>
+      </div>
     </div>
   );
 };
