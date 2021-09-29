@@ -25,6 +25,8 @@ interface LineChartProps {
 const OLD_TIME_FORMAT: string = 'yyyy-MM-dd HH:mm:ss ZZZ z';
 const REQUIRED_FORMAT: string = 'yy/MM/dd HH:mm';
 
+const colors = ['cyan', 'red', 'green', 'blue', 'grey', 'yellow'];
+
 export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataValueSuffix, inputData }) => {
   const [data, setData] = useState<ChartData[]>([]);
   const [tickInterval, setTickInterval] = useState<number>(0);
@@ -32,7 +34,7 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
   useEffect(() => {
     const tempChartData: ChartData[] = selectedRows.map(row => {
       return {
-        name: `${row.name} > ${row.sourceDevice}`,
+        name: `${row.name} &#9654 ${row.sourceDevice}`,
         data: inputData[row.id].map(item => {
           const val = DateTime.fromFormat(item.time, OLD_TIME_FORMAT).toUTC().toFormat(REQUIRED_FORMAT);
           return {
@@ -84,6 +86,7 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
       symbolHeight: 20,
       symbolPadding: 10,
     },
+    colors: colors,
     credits: {
       enabled: false,
     },
