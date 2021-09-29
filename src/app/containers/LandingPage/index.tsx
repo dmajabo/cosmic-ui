@@ -26,7 +26,7 @@ const LandingPage: React.FC<{}> = () => {
         </GetStartedWrapper>
       </Content>
       <SignInWrapper>
-        <SignInButton onClick={() => onGoTo(ROUTE.login)}>
+        <SignInButton onClick={() => onGoTo(ROUTE.app)}>
           <SignInText>Sign in</SignInText>
           <SignInIcon>{arrowSignIn}</SignInIcon>
         </SignInButton>
