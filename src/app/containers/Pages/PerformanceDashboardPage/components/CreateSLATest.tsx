@@ -75,7 +75,7 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ organizations, add
     setDescription('');
   };
 
-  const handleFormSubmit = async () => {
+  const handleFormSubmit = () => {
     const testData: SLATest = {
       testId: '',
       name: name,
