@@ -1,7 +1,7 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { CreateSLATestRequest, CreateSLATestResponse, GetAvgMetricsResponse, GetOrganizationResponse, GetSLATestResponse, SLATestMetricsResponse } from './SharedTypes';
 
-const BASE_URL = process.env.REACT_APP_API_ENDPOINT_PRODUCTION;
+const BASE_URL = process.env.NODE_ENV === 'development' ? process.env.REACT_APP_API_ENDPOINT_DEVELOPMENT : process.env.REACT_APP_API_ENDPOINT_PRODUCTION;
 
 interface ApiClient {
   readonly getOrganizations: () => Promise<GetOrganizationResponse>;
