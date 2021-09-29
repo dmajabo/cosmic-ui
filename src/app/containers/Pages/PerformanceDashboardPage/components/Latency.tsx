@@ -51,13 +51,7 @@ export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange }) => 
       const latencyChartData: MetricKeyValue = {};
       const promises = selectedRows.map(row => apiClient.getLatencyMetrics(row.sourceDevice, row.destination, timeRange, row.id));
       Promise.all(promises).then(values => {
-        values.forEach(item => {
-          if (item.metrics.keyedmap.length > 0) {
-            latencyChartData[item.testId] = item.metrics.keyedmap[0].ts;
-          } else {
-            latencyChartData[item.testId] = [];
-          }
-        });
+        values.forEach(item => (latencyChartData[item.testId] = item.metrics.keyedmap.length > 0 ? item.metrics.keyedmap[0].ts : []));
         setLatencyData(latencyChartData);
       });
     };

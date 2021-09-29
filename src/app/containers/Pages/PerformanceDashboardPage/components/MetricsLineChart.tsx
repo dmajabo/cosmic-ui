@@ -6,8 +6,8 @@ import { MetricKeyValue } from './PacketLoss';
 import { Data } from './Table';
 
 interface DataPoint {
-  name: string;
-  y: number;
+  readonly name: string;
+  readonly y: number;
 }
 
 interface ChartData {
@@ -25,6 +25,63 @@ interface LineChartProps {
 const OLD_TIME_FORMAT: string = 'yyyy-MM-dd HH:mm:ss ZZZ z';
 const REQUIRED_FORMAT: string = 'yy/MM/dd HH:mm';
 
+const COLORS = [
+  '#004D40',
+  '#00BCD4',
+  '#01579B',
+  '#0277BD',
+  '#0288D1',
+  '#03A9F4',
+  '#1A237E',
+  '#26A69A',
+  '#4527A0',
+  '#4A148C',
+  '#512DA8',
+  '#558B2F',
+  '#5C6BC0',
+  '#673AB7',
+  '#006064',
+  '#00695C',
+  '#00796B',
+  '#00838F',
+  '#009688',
+  '#0097A7',
+  '#26C6DA',
+  '#283593',
+  '#29B6F6',
+  '#303F9F',
+  '#311B92',
+  '#33691E',
+  '#3F51B5',
+  '#689F38',
+  '#6A1B9A',
+  '#7B1FA2',
+  '#7E57C2',
+  '#80CBC4',
+  '#80DEEA',
+  '#81D4FA',
+  '#880E4F',
+  '#8BC34A',
+  '#9C27B0',
+  '#9CCC65',
+  '#9FA8DA',
+  '#AB47BC',
+  '#AD1457',
+  '#B39DDB',
+  '#B71C1C',
+  '#C2185B',
+  '#C5E1A5',
+  '#C62828',
+  '#CE93D8',
+  '#D32F2F',
+  '#E91E63',
+  '#EC407A',
+  '#EF5350',
+  '#EF9A9A',
+  '#F44336',
+  '#F48FB1',
+];
+
 export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataValueSuffix, inputData }) => {
   const [data, setData] = useState<ChartData[]>([]);
   const [tickInterval, setTickInterval] = useState<number>(0);
@@ -32,7 +89,7 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
   useEffect(() => {
     const tempChartData: ChartData[] = selectedRows.map(row => {
       return {
-        name: row.name,
+        name: `${row.name} &#9654 ${row.sourceDevice}`,
         data: inputData[row.id].map(item => {
           const val = DateTime.fromFormat(item.time, OLD_TIME_FORMAT).toUTC().toFormat(REQUIRED_FORMAT);
           return {
@@ -84,6 +141,7 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
       symbolHeight: 20,
       symbolPadding: 10,
     },
+    colors: COLORS,
     credits: {
       enabled: false,
     },
