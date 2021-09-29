@@ -64,6 +64,10 @@ const Themes = {
     '--_tableBg': '#F3F6FC',
     '--_rowBg': '#FFFFFF',
     '--_rowBorder': '#E7EDF9',
+    // SWITCH
+    '--_offBg': '#DEE3EE',
+    '--_onBg': '#1565C0',
+    '--_thumbBg': '#FFFFFF',
   },
 };
 

@@ -10,6 +10,8 @@ import TabPanel from 'app/components/Tabs/TabPanel';
 import Dropdown from 'app/components/Inputs/Dropdown';
 import { ISelectedListItem } from 'lib/models/general';
 import TrendsPage from '../TrendsPage';
+import SessionsSwitch from '../Components/SessionsSwitch';
+import SessionPage from '../SessionPage';
 
 interface IProps {}
 
@@ -23,6 +25,10 @@ const Page: React.FC<IProps> = (props: IProps) => {
 
   const onChangePeriod = (_value: ISelectedListItem<SessionsSelectValuesTypes>) => {
     sessions.onChangeSelectedPeriod(_value);
+  };
+
+  const onSwitchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    sessions.onChangeSwitch(e.target.checked);
   };
 
   return (
@@ -46,6 +52,11 @@ const Page: React.FC<IProps> = (props: IProps) => {
         </Tabs>
       </TabsWrapperStyles>
       <ActionRowStyles>
+        {sessions.selectedTab.index !== 0 && (
+          <ActionPart margin="0 auto 0 0">
+            <SessionsSwitch checked={sessions.checkedSwitch} onChange={onSwitchChange} />
+          </ActionPart>
+        )}
         <ActionPart margin="0 0 0 auto">
           <Dropdown label="Show" selectedValue={sessions.selectedPeriod} values={SESSIONS_SELECT_VALUES} onSelectValue={onChangePeriod} />
         </ActionPart>
@@ -55,6 +66,9 @@ const Page: React.FC<IProps> = (props: IProps) => {
       </TabPanel>
       <TabPanel value={sessions.selectedTab.index} index={SESSIONS_TABS[1].index}>
         <TrendsPage />
+      </TabPanel>
+      <TabPanel value={sessions.selectedTab.index} index={SESSIONS_TABS[2].index}>
+        <SessionPage />
       </TabPanel>
     </PageWrapperStyles>
   );

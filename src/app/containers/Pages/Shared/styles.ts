@@ -22,7 +22,7 @@ export const TabsWrapperStyles = styled.div`
 export const ActionRowStyles = styled.div`
   display: flex;
   width: 100%;
-  height: 40px;
+  height: 50px;
   flex-shrink: 0;
   margin-bottom: 20px;
 `;
@@ -32,9 +32,10 @@ interface IPageActionPart {
 }
 export const ActionPart = styled.div<IPageActionPart>`
   display: flex;
+  align-items: center;
   width: auto;
   max-width: 100%;
-  height: 40px;
+  height: 100%;
   flex-shrink: 0;
   margin: ${props => props.margin || 0};
 `;
@@ -57,6 +58,17 @@ export const ChartWrapper = styled.div`
   border-color: var(--_primaryButtonBorder);
   border-radius: 6px;
   margin-bottom: 30px;
+  padding: 36px 30px 30px 30px;
+  overflow: hidden;
+  height: 480px;
+`;
+
+export const ChartLabel = styled.div`
+  font-style: normal;
+  font-weight: bold;
+  font-size: 22px;
+  margin-bottom: 25px;
+  color: var(--_primaryColor);
 `;
 
 export const TableWrapper = styled.div`

@@ -24,6 +24,9 @@ const SankeyChart: React.FC<Props> = (props: Props) => {
         colorByPoint: true,
       },
     },
+    credits: {
+      enabled: false,
+    },
     legend: false,
     series: [
       {
