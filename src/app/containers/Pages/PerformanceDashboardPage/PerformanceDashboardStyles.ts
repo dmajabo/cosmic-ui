@@ -178,6 +178,18 @@ export const PerformanceDashboardStyles = makeStyles(
       lineChartContainer: {
         marginTop: 40,
       },
+      noChartText: {
+        color: '#848DA3',
+        fontSize: 14,
+        fontWeight: 400,
+      },
+      noChartContainer: {
+        padding: 200,
+        textAlign: 'center',
+      },
+      deleteTest: {
+        color: 'red',
+      },
     }),
   {
     index: 1,

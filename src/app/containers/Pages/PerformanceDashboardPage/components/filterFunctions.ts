@@ -1,38 +1,42 @@
-import React from 'react';
 import { Organization } from '../SharedTypes';
 
 export const GetSelectedOrganization = (organizations: Organization[], orgId: string) => {
-  if (orgId !== '') {
-    //TODO: Remove on addition of delete SLA Test
-    if (isNaN(Number(orgId))) {
-      //TODO: Remove on addition of delete SLA Test
-      const selectedOrganization = organizations.filter(organization => {
-        return organization.name === orgId;
-      });
-      return selectedOrganization[0];
-    } else {
-      const selectedOrganization = organizations.filter(organization => {
-        return organization.extId === orgId;
-      });
-      return selectedOrganization[0];
-    }
+  const selectedOrganization = organizations.filter(organization => organization.extId === orgId);
+  if (selectedOrganization.length > 0) {
+    return selectedOrganization[0];
+  } else {
+    return {
+      id: '',
+      name: '',
+      description: '',
+      extId: '',
+      extType: '',
+      extUrl: '',
+      vnets: [],
+      wedges: [],
+      devices: [],
+      vendorType: '',
+    };
   }
-  return organizations[0]; //TODO: Remove on addition of delete SLA Test
 };
 
 export const GetDevicesString = (organization: Organization) => {
   if (typeof organization !== 'undefined') {
     const orgDevices = organization.devices;
 
-    const deviceExtIdList = orgDevices.map(device => {
-      return device.extId;
-    });
+    if (orgDevices.length > 0) {
+      const deviceExtIdList = orgDevices.map(device => {
+        return device.extId;
+      });
 
-    const allDevices = deviceExtIdList.reduce((acc, newValue) => {
-      return acc + ',' + newValue;
-    });
+      const allDevices = deviceExtIdList.reduce((acc, newValue) => {
+        return acc + ',' + newValue;
+      });
 
-    return allDevices;
+      return allDevices;
+    } else {
+      return '';
+    }
   } else {
     return '';
   }

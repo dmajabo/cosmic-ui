@@ -7,7 +7,8 @@ import { Column } from '../SharedTypes';
 import IndeterminateCheckbox from './IndeterminateCheckbox';
 import SortIcon from '../icons/sort.svg';
 
-interface Data {
+export interface Data {
+  readonly id: string;
   readonly name: string;
   readonly sourceOrg: string;
   readonly sourceNetwork: string;
@@ -58,20 +59,16 @@ const Table: React.FC<TableProps> = ({ onSelectedRowsUpdate, columns, data }) =>
     getTableBodyProps,
     headerGroups,
     prepareRow,
-    page, // Instead of using 'rows', we'll use page,
-    // which has only the rows for the active page
-
-    // The rest of these things are super handy, too ;)
+    page,
     canPreviousPage,
     canNextPage,
-    pageOptions,
     pageCount,
     gotoPage,
     nextPage,
     previousPage,
     setPageSize,
     selectedFlatRows,
-    state: { pageIndex, pageSize, selectedRowIds },
+    state: { pageIndex, pageSize },
   } = useTable(
     {
       columns,
@@ -82,18 +79,13 @@ const Table: React.FC<TableProps> = ({ onSelectedRowsUpdate, columns, data }) =>
     useRowSelect,
     hooks => {
       hooks.visibleColumns.push(columns => [
-        // Let's make a column for selection
         {
           id: 'selection',
-          // The header can use the table's getToggleAllRowsSelectedProps method
-          // to render a checkbox
           Header: ({ getToggleAllPageRowsSelectedProps }) => (
             <div>
               <IndeterminateCheckbox {...getToggleAllPageRowsSelectedProps()} />
             </div>
           ),
-          // The cell can use the individual row's getToggleRowSelectedProps method
-          // to the render a checkbox
           Cell: ({ row }) => (
             <div>
               <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
@@ -113,35 +105,22 @@ const Table: React.FC<TableProps> = ({ onSelectedRowsUpdate, columns, data }) =>
   }, [selectedFlatRows]);
 
   return (
-    // apply the table props
     <Styles>
       <table {...getTableProps()}>
         <thead>
-          {
-            // Loop over the header rows
-            headerGroups.map(headerGroup => (
-              // Apply the header row props
-              <tr {...headerGroup.getHeaderGroupProps()}>
-                {
-                  // Loop over the headers in each row
-                  headerGroup.headers.map(column => (
-                    // Apply the header cell props
-                    <th {...column.getHeaderProps(column.getSortByToggleProps())}>
-                      <div className={classes.tableHeaderText}>
-                        {
-                          // Render the header
-                          column.render('Header')
-                        }
-                        <span className={classes.sortIcon}>{column.Header === 'NAME' ? <img src={SortIcon} alt="sort by name" /> : <span />}</span>
-                      </div>
-                    </th>
-                  ))
-                }
-              </tr>
-            ))
-          }
+          {headerGroups.map(headerGroup => (
+            <tr {...headerGroup.getHeaderGroupProps()}>
+              {headerGroup.headers.map(column => (
+                <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                  <div className={classes.tableHeaderText}>
+                    {column.render('Header')}
+                    <span className={classes.sortIcon}>{column.Header === 'NAME' ? <img src={SortIcon} alt="sort by name" /> : <span />}</span>
+                  </div>
+                </th>
+              ))}
+            </tr>
+          ))}
         </thead>
-        {/* Apply the table body props */}
         <tbody {...getTableBodyProps()}>
           {page.map((row, i) => {
             prepareRow(row);

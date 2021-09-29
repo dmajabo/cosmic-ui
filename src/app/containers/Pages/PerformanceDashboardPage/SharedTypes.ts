@@ -93,7 +93,7 @@ export interface Organization {
   readonly extUrl: string;
   readonly vnets: Vnet[];
   readonly wedges: Wedge[];
-  readonly oedges: [];
+  readonly oedges?: [];
   readonly devices: Device[];
   readonly vendorType: string;
 }
@@ -101,6 +101,16 @@ export interface Organization {
 export interface GetOrganizationResponse {
   readonly count?: string;
   readonly organizations?: Organization[];
+}
+
+interface Data {
+  readonly time: string;
+  readonly value: string;
+}
+
+interface AvgSlaTestMetrics {
+  readonly avgLatency: Data;
+  readonly avgPacketLoss: Data;
 }
 
 export interface SLATest {
@@ -111,6 +121,7 @@ export interface SLATest {
   readonly destination: string;
   readonly interface: string;
   readonly description: string;
+  readonly metrics?: AvgSlaTestMetrics;
 }
 
 export interface GetSLATestResponse {
@@ -125,36 +136,26 @@ export interface CreateSLATestResponse {
   readonly id?: string;
 }
 
-interface Data {
-  readonly time: string;
-  readonly value: string;
-}
-
 interface KeyedMap {
   readonly key: string;
   readonly ts: Data[];
 }
 
 interface SLATestMetrics {
-  readonly resourceId: string;
+  readonly resourceId?: string;
   readonly keyedmap: KeyedMap[];
 }
 
 export interface SLATestMetricsResponse {
-  readonly metrics?: SLATestMetrics;
+  readonly metrics: SLATestMetrics;
+  readonly testId: string;
 }
 
-interface AvgMetric {
-  readonly avgVal: string;
-  readonly resourceMetric: SLATestMetrics[];
-}
+export interface DeleteSLATestResponse {}
 
-export interface GetAvgMetricsResponse {
-  readonly avgMetric?: AvgMetric;
-}
 export interface AverageQoe {
-  readonly packetLoss: number;
-  readonly latency: number;
+  readonly packetLoss: string;
+  readonly latency: string;
 }
 
 export interface FinalTableData {

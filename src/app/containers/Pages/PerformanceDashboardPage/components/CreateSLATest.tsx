@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { PerformanceDashboardStyles } from '../PerformanceDashboardStyles';
 import Select from 'react-select';
 import { CreateSLATestRequest, Organization, SLATest } from '../SharedTypes';
-import { createApiClient } from '../apiClient';
 import CloseIcon from '../icons/close.svg';
 import { GetSelectedOrganization } from './filterFunctions';
 
@@ -17,27 +16,12 @@ interface CreateSLATestProps {
 export const CreateSLATest: React.FC<CreateSLATestProps> = ({ organizations, addSlaTest, closeSlaTest, popup }) => {
   const classes = PerformanceDashboardStyles();
 
-  const apiClient = createApiClient();
-
   const [name, setName] = useState<string>('');
   const [sourceOrg, setSourceOrg] = useState<string>('');
   const [sourceNetwork, setSourceNetwork] = useState<string>('');
   const [destination, setDestination] = useState<string>('');
   const [description, setDescription] = useState<string>('');
 
-  const [selectedOrganization, setSelectedOrganization] = useState<Organization>({
-    id: '',
-    name: '',
-    description: '',
-    extId: '',
-    extType: '',
-    extUrl: '',
-    vnets: [],
-    wedges: [],
-    oedges: [],
-    devices: [],
-    vendorType: '',
-  });
   const [selectedOrganizationVnets, setSelectedOrganizationVnets] = useState([]);
 
   const [sourceOrganizationOptions, setSourceOrganizationOptions] = useState([]);
@@ -56,7 +40,6 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ organizations, add
   useEffect(() => {
     if (organizations.length > 0 && sourceOrg !== '') {
       const selectedOrganization = GetSelectedOrganization(organizations, sourceOrg);
-      setSelectedOrganization(selectedOrganization);
       setSelectedOrganizationVnets(selectedOrganization.vnets);
     }
   }, [sourceOrg]);
@@ -105,9 +88,9 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ organizations, add
     const submitData: CreateSLATestRequest = {
       sla_test: testData,
     };
-    apiClient.createSLATest(submitData);
+    closeSlaTest();
+    addSlaTest(submitData);
     clearFormFields();
-    addSlaTest(1);
   };
 
   return (
@@ -118,12 +101,7 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ organizations, add
             <Typography className={classes.itemTitle}>Create SLA Test</Typography>
           </div>
           {popup ? (
-            <div
-              style={{ cursor: 'pointer' }}
-              onClick={() => {
-                closeSlaTest();
-              }}
-            >
+            <div style={{ cursor: 'pointer' }} onClick={() => closeSlaTest()}>
               <img src={CloseIcon} alt="close" />
             </div>
           ) : (
@@ -134,23 +112,9 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ organizations, add
           <span className={classes.tableHeaderText}>NAME</span>
           <input className={classes.slaInput} type="text" value={name} onChange={e => setName(e.target.value)} />
           <span className={classes.tableHeaderText}>SOURCE ORGANIZATION</span>
-          <Select
-            styles={dropdownStyle}
-            label="Single select"
-            options={sourceOrganizationOptions}
-            onChange={e => {
-              setSourceOrg(e.value);
-            }}
-          />
+          <Select styles={dropdownStyle} label="Single select" options={sourceOrganizationOptions} onChange={e => setSourceOrg(e.value)} />
           <span className={classes.tableHeaderText}>SOURCE NETWORK</span>
-          <Select
-            styles={dropdownStyle}
-            label="Single select"
-            options={sourceNetworkOptions}
-            onChange={e => {
-              setSourceNetwork(e.value);
-            }}
-          />
+          <Select styles={dropdownStyle} label="Single select" options={sourceNetworkOptions} onChange={e => setSourceNetwork(e.value)} />
           <span className={classes.tableHeaderText}>DESTINATION</span>
           <input className={classes.slaInput} type="text" value={destination} onChange={e => setDestination(e.target.value)} />
           <span className={classes.tableHeaderText}>DESCRIPTION</span>

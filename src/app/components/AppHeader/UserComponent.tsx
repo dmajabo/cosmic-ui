@@ -1,19 +1,21 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { User, UserName, UserRole, UserWrapper } from './styles';
 import ImgComponent from 'app/components/Basic/ImgComponent';
-import Demo_Photo from 'app/images/Demo_Photo.jpg';
-import { useAuthDataContext } from 'lib/Routes/useAuth';
 import PopupContainer from 'app/components/PopupContainer';
 import { PopupLinkItem } from 'app/components/PopupContainer/styles';
 import { ClickAwayListener } from '@material-ui/core';
+import { useAuth0 } from '@auth0/auth0-react';
+import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
+import { UserRole as UserRoleData } from 'lib/api/ApiModels/Account/account';
 interface Props {}
 
 export const UserComponent: React.FC<Props> = (props: Props) => {
-  const { authData } = useAuthDataContext();
   const [showPopup, setShowPopup] = React.useState<boolean>(false);
+  const { logout } = useAuth0();
+  const userContext = useContext<UserContextState>(UserContext);
 
   const onLogOut = () => {
-    authData?.onLogout();
+    logout({ returnTo: window.location.origin });
   };
 
   const onShowPopup = () => {
@@ -24,21 +26,17 @@ export const UserComponent: React.FC<Props> = (props: Props) => {
     setShowPopup(false);
   };
 
-  if (!authData || !authData.authData) {
+  if (!userContext || !userContext.idToken) {
     return null;
   }
   return (
     <UserWrapper>
-      <ImgComponent width="40px" height="40px" src={Demo_Photo} styles={{ borderRadius: '6px', flexShrink: 0 }} />
+      <ImgComponent width="40px" height="40px" src={userContext.idToken.picture} styles={{ borderRadius: '6px', flexShrink: 0 }} />
       <User onClick={onShowPopup}>
-        {authData.authData.user && (
-          <>
-            <UserName>
-              {authData.authData.user.firstName} {authData.authData.user.lastName}
-            </UserName>
-            <UserRole>{authData.authData.user.role}</UserRole>
-          </>
-        )}
+        <>
+          <UserName>{userContext.idToken.name}</UserName>
+          <UserRole>{UserRoleData.ADMIN}</UserRole>
+        </>
       </User>
       {showPopup && (
         <ClickAwayListener onClickAway={onClosePopup}>

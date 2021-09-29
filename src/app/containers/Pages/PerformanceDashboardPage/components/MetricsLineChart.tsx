@@ -1,59 +1,114 @@
 import React, { useEffect, useState } from 'react';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
-import moment from 'moment';
+import { DateTime } from 'luxon';
+import { MetricKeyValue } from './PacketLoss';
+import { Data } from './Table';
 
-interface DataMetrics {
-  readonly time: string;
-  readonly value: string;
-}
-interface PacketLossMetrics {
-  readonly deviceId: string;
-  readonly metric: DataMetrics[];
+interface DataPoint {
+  readonly name: string;
+  readonly y: number;
 }
 
 interface ChartData {
   readonly name: string;
-  readonly data: number[];
+  readonly data: DataPoint[];
 }
 
 interface LineChartProps {
   readonly dataValueSuffix?: string;
-  readonly inputData: PacketLossMetrics[];
+  readonly selectedRows: Data[];
+  readonly inputData: MetricKeyValue;
   readonly timeFormat?: string;
 }
-export const MetricsLineChart: React.FC<LineChartProps> = ({ dataValueSuffix, inputData }) => {
-  const [categories, setCategories] = useState<string[]>([]);
+
+const OLD_TIME_FORMAT: string = 'yyyy-MM-dd HH:mm:ss ZZZ z';
+const REQUIRED_FORMAT: string = 'yy/MM/dd HH:mm';
+
+const COLORS = [
+  '#004D40',
+  '#00BCD4',
+  '#01579B',
+  '#0277BD',
+  '#0288D1',
+  '#03A9F4',
+  '#1A237E',
+  '#26A69A',
+  '#4527A0',
+  '#4A148C',
+  '#512DA8',
+  '#558B2F',
+  '#5C6BC0',
+  '#673AB7',
+  '#006064',
+  '#00695C',
+  '#00796B',
+  '#00838F',
+  '#009688',
+  '#0097A7',
+  '#26C6DA',
+  '#283593',
+  '#29B6F6',
+  '#303F9F',
+  '#311B92',
+  '#33691E',
+  '#3F51B5',
+  '#689F38',
+  '#6A1B9A',
+  '#7B1FA2',
+  '#7E57C2',
+  '#80CBC4',
+  '#80DEEA',
+  '#81D4FA',
+  '#880E4F',
+  '#8BC34A',
+  '#9C27B0',
+  '#9CCC65',
+  '#9FA8DA',
+  '#AB47BC',
+  '#AD1457',
+  '#B39DDB',
+  '#B71C1C',
+  '#C2185B',
+  '#C5E1A5',
+  '#C62828',
+  '#CE93D8',
+  '#D32F2F',
+  '#E91E63',
+  '#EC407A',
+  '#EF5350',
+  '#EF9A9A',
+  '#F44336',
+  '#F48FB1',
+];
+
+export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataValueSuffix, inputData }) => {
   const [data, setData] = useState<ChartData[]>([]);
   const [tickInterval, setTickInterval] = useState<number>(0);
 
   useEffect(() => {
-    if (inputData.length > 0) {
-      const newCategories = inputData[0].metric.map(item => {
-        return moment(item.time).format('YY/MM/DD HH:mm');
-      });
-      const newData = inputData.map(item => {
-        return {
-          name: item.deviceId,
-          data: item.metric.map(dataItem => {
-            return Number(Number.parseFloat(dataItem.value).toFixed(2));
-          }),
-        };
-      });
-      setCategories(newCategories);
-      setData(newData);
-      setTickInterval(Math.floor(newData[0].data.length / 5));
-    } else {
-      setCategories([]);
-      setTickInterval(0);
-      setData([]);
-    }
+    const tempChartData: ChartData[] = selectedRows.map(row => {
+      return {
+        name: `${row.name} &#9654 ${row.sourceDevice}`,
+        data: inputData[row.id].map(item => {
+          const val = DateTime.fromFormat(item.time, OLD_TIME_FORMAT).toUTC().toFormat(REQUIRED_FORMAT);
+          return {
+            name: val,
+            y: Number(Number.parseFloat(item.value).toFixed(2)),
+            marker: {
+              enabled: false,
+            },
+          };
+        }),
+        turboThreshold: inputData[row.id].length,
+      };
+    });
+    setData(tempChartData);
 
-    return () => {
-      setCategories([]);
-      setTickInterval(0);
-      setData([]);
-    };
+    const dataLength: number[] = selectedRows.map(row => inputData[row.id].length);
+    const maxDataLengthIndex = dataLength.reduce((iMax, x, i, arr) => (x > arr[iMax] ? i : iMax), 0);
+
+    setTickInterval(Math.floor(inputData[selectedRows[maxDataLengthIndex].id].length / 10));
   }, [inputData]);
 
   const lineChartOptions = {
@@ -62,11 +117,8 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ dataValueSuffix, in
     },
     title: false,
     xAxis: {
+      type: 'category',
       tickInterval: tickInterval,
-      categories: categories,
-      labels: {
-        autoRotation: 0,
-      },
     },
     tooltip: {
       valueSuffix: dataValueSuffix ? ` ${dataValueSuffix}` : '',
@@ -77,7 +129,19 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ dataValueSuffix, in
         format: dataValueSuffix ? `{text} ${dataValueSuffix}` : `{text}`,
       },
     },
-    legend: false,
+    plotOptions: {
+      series: {
+        marker: {
+          symbol: 'square',
+          radius: 10,
+        },
+      },
+    },
+    legend: {
+      symbolHeight: 20,
+      symbolPadding: 10,
+    },
+    colors: COLORS,
     credits: {
       enabled: false,
     },
