@@ -1,6 +1,6 @@
 import React from 'react';
 import { ContentWrapper, TableWrapper } from '../../Shared/styles';
-// import Filter from '../Components/Filter';
+// import Filtser from '../Components/Filter';
 import Grid from 'app/components/Grid';
 import { GridColDef, GridToolbarContainer, GridToolbarColumnsButton } from '@mui/x-data-grid';
 
