@@ -1,7 +1,7 @@
 import React from 'react';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 
-axios.defaults.baseURL = process.env.NODE_ENV === 'development' ? process.env.REACT_APP_API_ENDPOINT_DEVELOPMENT : process.env.REACT_APP_API_ENDPOINT_PRODUCTION;
+axios.defaults.baseURL = process.env.REACT_APP_API_ENDPOINT_PRODUCTION; // process.env.NODE_ENV === 'development' ? process.env.REACT_APP_API_ENDPOINT_DEVELOPMENT : process.env.REACT_APP_API_ENDPOINT_PRODUCTION;
 
 const getHeaders = (params?: Object, token?: string) => {
   return {
