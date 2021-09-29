@@ -41,6 +41,12 @@ const Map: React.FC<IProps> = (props: IProps) => {
     }
   }, [response]);
 
+  React.useEffect(() => {
+    if (error && !topology.dataReadyToShow) {
+      topology?.onSetIsDataLoading();
+    }
+  }, [error]);
+
   const onOpenPanel = (_panel: TopologyPanelTypes) => {
     const _objPanel = { type: _panel, show: true };
     const _objMetrick = { ...showMetrickRef.current, show: false };
