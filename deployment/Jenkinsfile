@@ -19,10 +19,13 @@ pipeline {
             steps {
                 echo 'Compiling and building'
                 echo "${env.CI}"
-                sh "echo REACT_APP_API_BASE_URL=${env.REACT_APP_API_BASE_URL} >> ${env.WORKSPACE}/.env.local"
+                sh "echo BROWSER=none >> ${env.WORKSPACE}/.env.local"
+                sh "echo EXTEND_ESLINT=true >> ${env.WORKSPACE}/.env.local"
+                sh "echo FAST_REFRESH=true >> ${env.WORKSPACE}/.env.local"
+                sh "echo GENERATE_SOURCEMAP=false >> ${env.WORKSPACE}/.env.local"
+                sh "echo REACT_APP_API_ENDPOINT_PRODUCTION=${env.REACT_APP_API_ENDPOINT_PRODUCTION} >> ${env.WORKSPACE}/.env.local"
                 sh "echo REACT_APP_AUTH0_DOMAIN=${env.REACT_APP_AUTH0_DOMAIN} >> ${env.WORKSPACE}/.env.local"
                 sh "echo REACT_APP_AUTH0_CLIENT_ID=${env.REACT_APP_AUTH0_CLIENT_ID} >> ${env.WORKSPACE}/.env.local"
-                sh "echo REACT_APP_MAP_ACCESS_TOKEN=${env.REACT_APP_MAP_ACCESS_TOKEN} >> ${env.WORKSPACE}/.env.local"
                 sh 'yarn install'
                 sh 'yarn build --prod'
             }

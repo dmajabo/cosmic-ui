@@ -11,3 +11,18 @@ export const FilterWrapper = styled.div`
   flex-shrink: 0;
   margin-bottom: 20px;
 `;
+
+export const Label = styled.label`
+  margin-bottom: 20px;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 22px;
+  color: var(--_primaryColor);
+`;
+export const InputWrapper = styled.div``;
+
+export const StyledTag = styled.div``;
+
+export const Listbox = styled.ul``;
+
+export const ListItem = styled.li``;

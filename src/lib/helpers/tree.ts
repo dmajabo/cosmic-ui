@@ -74,7 +74,7 @@ export const prepareNodesData = (_data: ITopologyMapData, _groups: ITopologyGrou
         wedges.push(obj);
       });
     }
-    if (org.vnets && org.vnets.length) {
+    if (org.vnets && org.vnets.length && org.vendorType !== 'MERAKI') {
       org.vnets.forEach((v, index) => {
         const obj: IVnetNode = createVnetNode(org, i, v, index, _groups);
         nodes.push(obj);
@@ -133,7 +133,7 @@ export const prepareNodesData = (_data: ITopologyMapData, _groups: ITopologyGrou
           return 25;
         }
         if (d.nodeType === TOPOLOGY_NODE_TYPES.NETWORK_GROUP) {
-          if (!d.collapsed && d.devices && d.devices.length) return 200;
+          if (!d.collapsed && d.devices && d.devices.length) return d.r;
           return 75;
         }
         if (d.nodeType === TOPOLOGY_NODE_TYPES.WEDGE) {
@@ -179,6 +179,13 @@ export const prepareNodesData = (_data: ITopologyMapData, _groups: ITopologyGrou
   while (simulation.alpha() > simulation.alphaMin()) {
     simulation.tick();
   }
+  nodes.forEach(node => {
+    if (node.nodeType === TOPOLOGY_NODE_TYPES.NETWORK_GROUP) {
+      const _item = node as INetworkGroupNode;
+      node.x = _item.collapsed ? _item.x : _item.x - _item.r;
+      node.y = _item.collapsed ? _item.y : _item.y - 50;
+    }
+  });
   const links: ILink[] = generateLinks(nodes, wedges, vnets, devices, topologyGroups);
   return { nodes, links };
 };
