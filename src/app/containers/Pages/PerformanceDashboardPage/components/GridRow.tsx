@@ -1,28 +1,51 @@
 import { Grid } from '@material-ui/core';
 import React from 'react';
-import { HeatmapMetrics } from './Heatmap';
+import { PerformanceDashboardStyles } from '../PerformanceDashboardStyles';
+import { HeatmapMetrics, LegendData } from './Heatmap';
 
 interface RowProps {
   readonly device: string;
   readonly tests: string[];
   readonly heatMapData: HeatmapMetrics;
+  readonly legendData: LegendData[];
 }
 
-const GridRow: React.FC<RowProps> = ({ device, tests, heatMapData }) => {
+const GridRow: React.FC<RowProps> = ({ device, tests, heatMapData, legendData }) => {
+  const classes = PerformanceDashboardStyles();
+
+  const getColor = (data: number) => {
+    const colour = legendData.map((item, index) => {
+      return data >= item.low && data <= item.high ? index : -1;
+    });
+    const index = Math.max(...colour);
+    return index === -1 ? 'black' : legendData[index].color;
+  };
+
   return (
     <>
-      <Grid item xs={4}>
-        <div>{device}</div>
+      <Grid item>
+        <div className={classes.deviceName}>{device}</div>
       </Grid>
       {device === ''
         ? tests.map(test => (
-            <Grid item xs={4}>
-              <div>{test}</div>
+            <Grid key={test} item>
+              <div className={classes.testName}>{test}</div>
             </Grid>
           ))
         : tests.map(test => (
-            <Grid item xs={4}>
-              <div>{heatMapData[`${test}_${device}`]}</div>
+            <Grid key={test} item>
+              {typeof heatMapData[`${test}_${device}`] === 'undefined' ? (
+                <div className={classes.nACell}>N/A</div>
+              ) : (
+                <div
+                  style={{
+                    backgroundColor: getColor(Number(heatMapData[`${test}_${device}`])),
+                  }}
+                  className={classes.heatmapCell}
+                >
+                  {heatMapData[`${test}_${device}`]}
+                </div>
+              )}
             </Grid>
           ))}
     </>

@@ -176,7 +176,7 @@ export interface Column {
 
 interface HeatMapMetric {
   deviceName: string;
-  value: number;
+  value: string;
 }
 
 export interface HeatMapData {

@@ -29,11 +29,11 @@ const heatMapData: HeatMapData[] = [
     metrics: [
       {
         deviceName: 'Device 1',
-        value: 10,
+        value: '10.5',
       },
       {
         deviceName: 'Device 2',
-        value: 9,
+        value: '12.5',
       },
     ],
   },
@@ -42,7 +42,33 @@ const heatMapData: HeatMapData[] = [
     metrics: [
       {
         deviceName: 'Device 3',
-        value: 15,
+        value: '15',
+      },
+    ],
+  },
+  {
+    testId: 'Test 3',
+    metrics: [
+      {
+        deviceName: 'Device 1',
+        value: '20',
+      },
+      {
+        deviceName: 'Device 2',
+        value: '16',
+      },
+    ],
+  },
+  {
+    testId: 'Test 4',
+    metrics: [
+      {
+        deviceName: 'Device 1',
+        value: '20',
+      },
+      {
+        deviceName: 'Device 2',
+        value: '16',
       },
     ],
   },
@@ -96,9 +122,9 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange 
           </div>
         )}
       </div>
-      <hr style={{ backgroundColor: '#CBD2DC' }} />
+      <hr className={classes.hrLine} />
       <div className={classes.flexContainer}>
-        <div className={classes.lineChartContainer}>
+        <div>
           <Typography className={classes.itemTitle}>
             Average packet loss
             <span className={classes.sortIcon}>

@@ -21,11 +21,11 @@ const heatMapData: HeatMapData[] = [
     metrics: [
       {
         deviceName: 'ABC',
-        value: 10,
+        value: '10',
       },
       {
         deviceName: 'XYZ',
-        value: 9,
+        value: '9',
       },
     ],
   },
@@ -34,7 +34,7 @@ const heatMapData: HeatMapData[] = [
     metrics: [
       {
         deviceName: 'DEF',
-        value: 15,
+        value: '15',
       },
     ],
   },
@@ -88,9 +88,9 @@ export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange }) => 
           </div>
         )}
       </div>
-      <hr style={{ backgroundColor: '#CBD2DC' }} />
+      <hr className={classes.hrLine} />
       <div className={classes.flexContainer}>
-        <div className={classes.lineChartContainer}>
+        <div>
           <Typography className={classes.itemTitle}>
             Median latency
             <span className={classes.sortIcon}>
