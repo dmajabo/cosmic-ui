@@ -181,5 +181,20 @@ interface HeatMapMetric {
 
 export interface HeatMapData {
   testId: string;
-  metrics: HeatMapMetric[];
+  metrics: ResourceMetric[];
+}
+
+export interface ResourceMetric {
+  readonly resourceId: string;
+  readonly keyedmap: KeyedMap[];
+}
+
+interface AvgMetricData {
+  readonly resourceMetric: ResourceMetric[];
+  readonly avgVal?: string;
+}
+
+export interface HeatMapResponse {
+  readonly avgMetric: AvgMetricData;
+  readonly testId: string;
 }

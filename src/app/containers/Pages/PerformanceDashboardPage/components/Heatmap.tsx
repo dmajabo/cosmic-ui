@@ -2,13 +2,13 @@ import { Grid } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { PerformanceDashboardStyles } from '../PerformanceDashboardStyles';
 import { HeatMapData } from '../SharedTypes';
-import { Data } from './Table';
 import GridRow from './GridRow';
 import LegendBox from './LegendBox';
+import { TestIdToName } from './PacketLoss';
 
 interface HeatmapProps {
   readonly data: HeatMapData[];
-  readonly selectedRows: Data[];
+  readonly selectedRows: TestIdToName;
   readonly dataSuffix: string;
 }
 
@@ -37,13 +37,15 @@ const Heatmap: React.FC<HeatmapProps> = ({ data, selectedRows, dataSuffix }) => 
     const devices: string[] = [];
     const heatMapData: HeatmapMetrics = {};
     const values: number[] = [];
-    data.forEach(test =>
-      test.metrics.forEach(device => {
-        devices.push(device.deviceName);
-        heatMapData[`${test.testId}_${device.deviceName}`] = device.value;
-        values.push(Number(device.value));
-      }),
-    );
+    data.forEach(test => {
+      if (test.metrics.length > 0) {
+        test.metrics.forEach(device => {
+          devices.push(device.resourceId);
+          heatMapData[`${test.testId}_${device.resourceId}`] = dataSuffix === 'ms' ? Number(device.keyedmap[0].ts[0].value).toFixed(2) : device.keyedmap[0].ts[0].value;
+          values.push(Number(Number(device.keyedmap[0].ts[0].value).toFixed(2)));
+        });
+      }
+    });
     devices.push('');
     const uniqueDevices: string[] = devices.filter(function (item, pos, self) {
       return self.indexOf(item) == pos;
@@ -52,7 +54,7 @@ const Heatmap: React.FC<HeatmapProps> = ({ data, selectedRows, dataSuffix }) => 
     setDevices(uniqueDevices);
     setHeatMapData(heatMapData);
     const maxValue = Math.max(...values);
-    const minValue = Math.min(...values);
+    const minValue = 0;
     const increment = (maxValue - minValue) / 5;
     const legendDataPoints: number[] = [];
     for (let i = 0; i < 5; i++) i === 0 ? legendDataPoints.push(minValue) : legendDataPoints.push(legendDataPoints[i - 1] + increment);
@@ -76,7 +78,7 @@ const Heatmap: React.FC<HeatmapProps> = ({ data, selectedRows, dataSuffix }) => 
         <Grid container spacing={1}>
           {devices.map(device => (
             <Grid key={device} container item spacing={1}>
-              <GridRow legendData={legendData} device={device} tests={tests} heatMapData={heatMapData} />
+              <GridRow dataSuffix={dataSuffix} selectedRows={selectedRows} legendData={legendData} device={device} tests={tests} heatMapData={heatMapData} />
             </Grid>
           ))}
         </Grid>

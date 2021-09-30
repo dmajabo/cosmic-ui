@@ -2,15 +2,18 @@ import { Grid } from '@material-ui/core';
 import React from 'react';
 import { PerformanceDashboardStyles } from '../PerformanceDashboardStyles';
 import { HeatmapMetrics, LegendData } from './Heatmap';
+import { TestIdToName } from './PacketLoss';
 
 interface RowProps {
   readonly device: string;
   readonly tests: string[];
   readonly heatMapData: HeatmapMetrics;
   readonly legendData: LegendData[];
+  readonly selectedRows: TestIdToName;
+  readonly dataSuffix: string;
 }
 
-const GridRow: React.FC<RowProps> = ({ device, tests, heatMapData, legendData }) => {
+const GridRow: React.FC<RowProps> = ({ dataSuffix, selectedRows, device, tests, heatMapData, legendData }) => {
   const classes = PerformanceDashboardStyles();
 
   const getColor = (data: number) => {
@@ -29,7 +32,7 @@ const GridRow: React.FC<RowProps> = ({ device, tests, heatMapData, legendData })
       {device === ''
         ? tests.map(test => (
             <Grid key={test} item>
-              <div className={classes.testName}>{test}</div>
+              <div className={classes.testName}>{selectedRows[test]}</div>
             </Grid>
           ))
         : tests.map(test => (
@@ -43,7 +46,7 @@ const GridRow: React.FC<RowProps> = ({ device, tests, heatMapData, legendData })
                   }}
                   className={classes.heatmapCell}
                 >
-                  {heatMapData[`${test}_${device}`]}
+                  {heatMapData[`${test}_${device}`] + dataSuffix}
                 </div>
               )}
             </Grid>

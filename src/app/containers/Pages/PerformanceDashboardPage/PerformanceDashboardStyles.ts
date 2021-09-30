@@ -197,7 +197,7 @@ export const PerformanceDashboardStyles = makeStyles(
         marginTop: 40,
       },
       legendContainer: {
-        minWidth: 150,
+        minWidth: 200,
         paddingBottom: 20,
       },
       heatMapContainer: {

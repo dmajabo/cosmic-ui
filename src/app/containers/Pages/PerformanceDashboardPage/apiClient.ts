@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig } from 'axios';
-import { CreateSLATestRequest, CreateSLATestResponse, DeleteSLATestResponse, GetOrganizationResponse, GetSLATestResponse, SLATestMetricsResponse } from './SharedTypes';
+import { CreateSLATestRequest, CreateSLATestResponse, DeleteSLATestResponse, GetOrganizationResponse, GetSLATestResponse, HeatMapResponse, SLATestMetricsResponse } from './SharedTypes';
 
 const BASE_URL = process.env.REACT_APP_API_ENDPOINT_PRODUCTION;
 
@@ -10,6 +10,8 @@ interface ApiClient {
   readonly getPacketLossMetrics: (deviceId: string, destination: string, startTime: string, testId: string) => Promise<SLATestMetricsResponse>;
   readonly getLatencyMetrics: (deviceId: string, destination: string, startTime: string, testId: string) => Promise<SLATestMetricsResponse>;
   readonly deleteSLATest: (testId: string) => Promise<DeleteSLATestResponse>;
+  readonly getHeatmapPacketLoss: (sourceNw: string, destination: string, startTime: string, testId: string) => Promise<HeatMapResponse>;
+  readonly getHeatmapLatency: (sourceNw: string, destination: string, startTime: string, testId: string) => Promise<HeatMapResponse>;
 }
 
 const PATHS = Object.freeze({
@@ -19,6 +21,8 @@ const PATHS = Object.freeze({
   GET_PACKET_LOSS: (deviceId: string, destination: string) => `/telemetry/api/v1/metrics/device/${deviceId}/destination/${destination}/packetloss`,
   GET_LATENCY: (deviceId: string, destination: string) => `/telemetry/api/v1/metrics/device/${deviceId}/destination/${destination}/latency`,
   DELETE_SLA_TEST: (testId: string) => `/policy/api/v1/policy/performance/sla-tests/${testId}`,
+  HEATMAP_PACKET_LOSS: (sourceNw: string, destination: string) => `/telemetry/api/v1/metrics/source_nw/${sourceNw}/device/destination/${destination}/avgpacketloss`,
+  HEATMAP_LATENCY: (sourceNw: string, destination: string) => `/telemetry/api/v1/metrics/source_nw/${sourceNw}/device/destination/${destination}/avglatency`,
 });
 
 export const createApiClient = (): ApiClient => {
@@ -114,6 +118,50 @@ export const createApiClient = (): ApiClient => {
     }
   }
 
+  async function getHeatmapPacketLoss(sourceNw: string, destination: string, startTime: string, testId: string): Promise<HeatMapResponse> {
+    try {
+      const response = await axios.get<HeatMapResponse>(PATHS.HEATMAP_PACKET_LOSS(sourceNw, destination), {
+        baseURL: BASE_URL,
+        params: {
+          startTime: startTime,
+        },
+      });
+      return {
+        avgMetric: response.data.avgMetric,
+        testId: testId,
+      };
+    } catch (error) {
+      return {
+        testId: testId,
+        avgMetric: {
+          resourceMetric: [],
+        },
+      };
+    }
+  }
+
+  async function getHeatmapLatency(sourceNw: string, destination: string, startTime: string, testId: string): Promise<HeatMapResponse> {
+    try {
+      const response = await axios.get<HeatMapResponse>(PATHS.HEATMAP_LATENCY(sourceNw, destination), {
+        baseURL: BASE_URL,
+        params: {
+          startTime: startTime,
+        },
+      });
+      return {
+        avgMetric: response.data.avgMetric,
+        testId: testId,
+      };
+    } catch (error) {
+      return {
+        testId: testId,
+        avgMetric: {
+          resourceMetric: [],
+        },
+      };
+    }
+  }
+
   return {
     getOrganizations,
     getSLATests,
@@ -121,5 +169,7 @@ export const createApiClient = (): ApiClient => {
     getPacketLossMetrics,
     getLatencyMetrics,
     deleteSLATest,
+    getHeatmapPacketLoss,
+    getHeatmapLatency,
   };
 };

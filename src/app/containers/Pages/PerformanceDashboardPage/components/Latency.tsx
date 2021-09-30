@@ -5,7 +5,7 @@ import { PerformanceDashboardStyles } from '../PerformanceDashboardStyles';
 import { MetricsLineChart } from './MetricsLineChart';
 import InfoIcon from '../icons/info.svg';
 import LoadingIndicator from '../../../../components/Loading';
-import { MetricKeyValue } from './PacketLoss';
+import { MetricKeyValue, TestIdToName } from './PacketLoss';
 import { Data } from './Table';
 import Heatmap from './Heatmap';
 import { HeatMapData } from '../SharedTypes';
@@ -15,37 +15,17 @@ interface LatencyProps {
   readonly timeRange: string;
 }
 
-const heatMapData: HeatMapData[] = [
-  {
-    testId: '1',
-    metrics: [
-      {
-        deviceName: 'ABC',
-        value: '10',
-      },
-      {
-        deviceName: 'XYZ',
-        value: '9',
-      },
-    ],
-  },
-  {
-    testId: '2',
-    metrics: [
-      {
-        deviceName: 'DEF',
-        value: '15',
-      },
-    ],
-  },
-];
-
 export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange }) => {
   const classes = PerformanceDashboardStyles();
 
   const [latencyData, setLatencyData] = useState<MetricKeyValue>({});
+  const [heatMapLatency, setHeatMapLatency] = useState<HeatMapData[]>([]);
 
   const apiClient = createApiClient();
+
+  const testIdToName: TestIdToName = {};
+  selectedRows.forEach(row => (testIdToName[row.id] = row.name));
+
   useEffect(() => {
     const getLatencyMetrics = async () => {
       const latencyChartData: MetricKeyValue = {};
@@ -55,9 +35,25 @@ export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange }) => 
         setLatencyData(latencyChartData);
       });
     };
+    const getHeatMapLatency = async () => {
+      const tempHeatMapLatency: HeatMapData[] = [];
+      const promises = selectedRows.map(row => apiClient.getHeatmapLatency(row.sourceNetwork, row.destination, timeRange, row.id));
+      Promise.all(promises).then(values => {
+        values.forEach(item => {
+          tempHeatMapLatency.push({
+            testId: item.testId,
+            metrics: item.avgMetric.resourceMetric,
+          });
+        });
+      });
+      setHeatMapLatency(tempHeatMapLatency);
+    };
     getLatencyMetrics();
-
-    return () => setLatencyData({});
+    getHeatMapLatency();
+    return () => {
+      setLatencyData({});
+      setHeatMapLatency([]);
+    };
   }, [selectedRows, timeRange]);
 
   return (
@@ -102,7 +98,13 @@ export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange }) => 
       </div>
       <div className={classes.lineChartContainer}>
         {selectedRows.length > 0 ? (
-          <Heatmap data={heatMapData} selectedRows={selectedRows} dataSuffix="ms" />
+          heatMapLatency.length === selectedRows.length ? (
+            <Heatmap data={heatMapLatency} selectedRows={testIdToName} dataSuffix="ms" />
+          ) : (
+            <div className={classes.noChartContainer}>
+              <LoadingIndicator />
+            </div>
+          )
         ) : (
           <div className={classes.noChartContainer}>
             <Typography className={classes.noChartText}>To see the data select SLA Tests on top</Typography>
