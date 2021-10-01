@@ -8,7 +8,7 @@ import { IAppGroup_PanelDataNode, IDeviceNode, ILink, INetworkGroupNode, IVM_Pan
 import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
 import { useZoom } from '../hooks/useZoom';
 import IconButton from 'app/components/Buttons/IconButton';
-import { zoomInIcon, zoomOutIcon, zoomFullScreenIcon } from 'app/components/SVGIcons/zoom';
+import { zoomInIcon, zoomOutIcon, zoomFullScreenIcon, zoomCenterIcon } from 'app/components/SVGIcons/zoom';
 import NodeWrapper from '../Containers/Nodes/NodeWrapper';
 interface Props {
   isFullScreen: boolean;
@@ -21,7 +21,7 @@ interface Props {
 
 const Graph: React.FC<Props> = (props: Props) => {
   const { topology } = useTopologyDataContext();
-  const { onZoomInit, onZoomIn, onZoomOut, onUnsubscribe } = useZoom({ svgId: TOPOLOGY_IDS.SVG, rootId: TOPOLOGY_IDS.G_ROOT });
+  const { onZoomInit, onZoomIn, onZoomOut, onCentered, onUnsubscribe } = useZoom({ svgId: TOPOLOGY_IDS.SVG, rootId: TOPOLOGY_IDS.G_ROOT });
 
   const [nodes, setNodes] = React.useState<(IWedgeNode | IVnetNode | IDeviceNode | INetworkGroupNode)[] | null>(null);
   const [links, setLinks] = React.useState<ILink[] | null>(null);
@@ -83,7 +83,7 @@ const Graph: React.FC<Props> = (props: Props) => {
       <ZoomButtonsWrapper>
         <IconButton styles={{ margin: '10px 0 0 0' }} icon={zoomInIcon} title="Zoom in" onClick={onZoomIn} />
         <IconButton iconStyles={{ verticalAlign: 'middle', height: '4px' }} styles={{ margin: '10px 0 0 0' }} icon={zoomOutIcon} title="Zoom out" onClick={onZoomOut} />
-        {/* <IconButton styles={{ margin: '10px 0 0 0' }} icon={zoomInIcon} title="Center" onClick={onCentered} /> */}
+        <IconButton styles={{ margin: '10px 0 0 0' }} icon={zoomCenterIcon} title="Center" onClick={onCentered} />
         <IconButton
           styles={{ margin: '30px 0 0 0' }}
           icon={props.isFullScreen ? zoomFullScreenIcon : zoomFullScreenIcon}

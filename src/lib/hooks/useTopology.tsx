@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {
   createGroupNode,
+  // getVPCContainerSize,
   // createPreparedData,
   prepareNodesData,
 } from 'lib/helpers/tree';
@@ -20,7 +21,7 @@ import {
   TOPOLOGY_NODE_TYPES,
   // TOPOLOGY_NODE_TYPES,
 } from 'lib/models/topology';
-import { ISelectedListItem, ITimeTypes, TIME_PERIOD } from 'lib/models/general';
+import { DATA_READY_STATE, ISelectedListItem, ITimeTypes, TIME_PERIOD } from 'lib/models/general';
 import { jsonClone } from 'lib/helpers/cloneHelper';
 import { EntityTypes, IEntity } from 'lib/models/entites';
 import { ITopologyDataRes } from 'lib/api/ApiModels/Topology/endpoints';
@@ -29,7 +30,7 @@ import { ITimeMinMaxRange } from 'app/components/Inputs/TimeSlider/helpers';
 import { reCreateDeviceLinks } from 'lib/helpers/links';
 
 export interface TopologyContextType {
-  dataReadyToShow: boolean;
+  dataReadyToShow: DATA_READY_STATE;
   selectedPeriod: ISelectedListItem<ITimeTypes>;
   selectedTime: Date | null;
   timeRange: ITimeMinMaxRange | null;
@@ -55,10 +56,10 @@ export interface TopologyContextType {
   onUpdateVnetNode: (_item: IVnetNode, _pos: IPosition) => void;
   onUpdateNetworkGroupNode: (_item: INetworkGroupNode, _pos: IPosition, isDrag: boolean, isExpand: boolean) => void;
   onSelectEntity: (entity: IEntity, selected: boolean) => void;
-  onSetIsDataLoading: () => void;
+  onSetIsDataReadyToShow: (_state: DATA_READY_STATE) => void;
 }
 export function useTopologyContext(): TopologyContextType {
-  const [dataReadyToShow, setDataReadyToShow] = React.useState<boolean>(false);
+  const [dataReadyToShow, setDataReadyToShow] = React.useState<DATA_READY_STATE>(DATA_READY_STATE.EMPTY);
   const [originData, setOriginData] = React.useState<ITopologyMapData | null>(null);
   const [originGroupsData, setOriginGroupsData] = React.useState<ITopologyGroup[] | null>(null);
   const [nodes, setNodes] = React.useState<(IWedgeNode | IVnetNode | IDeviceNode | INetworkGroupNode)[] | null>([]);
@@ -74,7 +75,7 @@ export function useTopologyContext(): TopologyContextType {
   const nodesRef = React.useRef(nodes);
   const onSetData = (res: ITopologyDataRes) => {
     if (!res) {
-      setDataReadyToShow(true);
+      setDataReadyToShow(DATA_READY_STATE.EMPTY);
       setLinks(null);
       setOriginData(null);
       setOriginGroupsData(null);
@@ -85,51 +86,32 @@ export function useTopologyContext(): TopologyContextType {
     }
     const _orgObj: ITopologyMapData = res.organizations ? jsonClone(res.organizations) : null;
     const _groupsObj: ITopologyGroupsData = res.groups ? jsonClone(res.groups) : [];
-    // for (let i = 0; i < 2000; i++) {
-    //   const element = onCreateDevice(i);
-    //   _rootObj.organizations[1].devices.push(element);
-    // }
-    // const c = 500;
-    // for (let j = 0; j < c; j++) {
-    //   const device = onCreateDevice(j, '');
+
+    // for (let j = 0; j < 500; j++) {
+    //   const device = onCreateDevice(0, _orgObj.organizations[0].id, j, '');
     //   _orgObj.organizations[0].devices.push(device);
     // }
-    // for (let j = 0; j < 2000; j++) {
+    // for (let j = 0; j < 500; j++) {
     //   const device = onCreateDevice(1, _orgObj.organizations[1].id, j + 250, '');
     //   _orgObj.organizations[1].devices.push(device);
     // }
-    // for (let j = 0; j < 100; j++) {
-    //   const device = onCreateDevice(1, _orgObj.organizations[1].id, j + 2, '');
-    //   _orgObj.organizations[1].devices.push(device);
+    // for (let i = 0; i < 3; i++) {
+    //   const element = onCreateWedge(0, _orgObj.organizations[0].id, i);
+    //   _orgObj.organizations[0].wedges.push(element);
     // }
-    // for (let i = 0; i < _orgObj.organizations.length; i++) {
-    //   const _org = _orgObj.organizations[0];
-    //   const c =  (i + 1) * 103;
-    //   for (let j = 0; j < c; j++) {
-    //     const device = onCreateDevice(j);
-    //     _org.devices.push(device);
-    //   }
-    // }
-    // for (let i = 0; i < 10; i++) {
-    //   const element = onCreateWedge(i);
-    //   _rootObj.organizations[0].wedges.push(element);
+    // for (let i = 0; i < 2; i++) {
+    //   const element = onCreateWedge(1, _orgObj.organizations[1].id, i + 10);
+    //   _orgObj.organizations[0].wedges.push(element);
     // }
     // for (let i = 0; i < 20; i++) {
-    //   const element = onCreateWedge(_rootObj.organizations[0].id, i);
-    //   _rootObj.organizations[0].wedges.push(element);
-    // }
-    // for (let i = 0; i < 500; i++) {
-    //   const element = onCreateWedge(_rootObj.organizations[1].id, i);
-    //   _rootObj.organizations[1].wedges.push(element);
-    // }
-    // for (let i = 0; i < 50; i++) {
-    //   const element = onCreateVnet(_orgObj.organizations[0].id, i);
+    //   const element = onCreateVnet(0, _orgObj.organizations[0].id, i);
     //   _orgObj.organizations[0].vnets.push(element);
     // }
-    // For test
-    // const _data: ITopologyPreparedMapData = res.organizations ? createPreparedData(_orgObj, _groupsObj.groups) : null;
+    // for (let i = 0; i < 40; i++) {
+    //   const element = onCreateVnet(1, _orgObj.organizations[1].id, i);
+    //   _orgObj.organizations[1].vnets.push(element);
+    // }
     const _data: ITopologyPreparedMapData = prepareNodesData(_orgObj, _groupsObj.groups);
-    setDataReadyToShow(true);
     if (_data.links) {
       setLinks(_data.links);
       linksRef.current = _data.links;
@@ -140,6 +122,7 @@ export function useTopologyContext(): TopologyContextType {
       setNodes(_data.nodes);
       nodesRef.current = _data.nodes;
     }
+    setDataReadyToShow(DATA_READY_STATE.SUCCESS);
   };
 
   // const onCreateOrganization = (index: number): IOrganization => {
@@ -185,28 +168,33 @@ export function useTopologyContext(): TopologyContextType {
   //   };
   // };
 
-  // const onCreateWedge = (orgId: string, index: number): IWedge => {
+  // const onCreateWedge = (orgI, orgId: string, index: number): IWedgeNode => {
   //   return {
   //     id: `0xeaa5_temporaryWedge${orgId}${index}`,
-  //     name: "saurabh-tgw",
-  //     description: "",
-  //     extId: "tgw-0a45720eea0e8c4fe",
-  //     vnetkey: "",
+  //     name: 'saurabh-tgw',
+  //     description: '',
+  //     extId: 'tgw-0a45720eea0e8c4fe',
+  //     vnetkey: '',
   //     phys: [],
   //     vpns: [],
   //     networkLinks: [],
   //     ips: [],
   //     x: 0,
   //     y: 0,
+  //     childIndex: index,
+  //     orgIndex: orgI,
+  //     orgId: orgId,
+  //     visible: true,
+  //     nodeType: TOPOLOGY_NODE_TYPES.WEDGE,
   //   };
-  // }
+  // };
 
-  // const onCreateVnet = (orgId: string, index: number): IVnet => {
-  //   return {
+  // const onCreateVnet = (orgI, orgId: string, index: number): IVnetNode => {
+  //   const _obj: IVnetNode = {
   //     id: `0xeaa5_temporaryVnet${orgId}${index}`,
-  //     name: "saurabh-tgw",
-  //     description: "",
-  //     extId: "tgw-0a45720eea0e8c4fe",
+  //     name: 'saurabh-tgw',
+  //     description: '',
+  //     extId: 'tgw-0a45720eea0e8c4fe',
   //     x: 0,
   //     y: 0,
   //     endpoints: [],
@@ -214,8 +202,17 @@ export function useTopologyContext(): TopologyContextType {
   //     cidr: null,
   //     subnets: [],
   //     securityGroups: [],
+  //     nodeSize: null,
+  //     applicationGroups: [],
+  //     childIndex: index,
+  //     orgIndex: orgI,
+  //     orgId: orgId,
+  //     visible: true,
+  //     nodeType: TOPOLOGY_NODE_TYPES.VNET,
   //   };
-  // }
+  //   _obj.nodeSize = getVPCContainerSize(_obj, []);
+  //   return _obj;
+  // };
 
   const onFilterQueryChange = (value: string | null) => {
     setSearchQuery(value);
@@ -427,8 +424,8 @@ export function useTopologyContext(): TopologyContextType {
     setTimeRange(_range);
   };
 
-  const onSetIsDataLoading = () => {
-    setDataReadyToShow(false);
+  const onSetIsDataReadyToShow = (_state: DATA_READY_STATE) => {
+    setDataReadyToShow(_state);
   };
 
   return {
@@ -459,6 +456,6 @@ export function useTopologyContext(): TopologyContextType {
     onChangeTime,
     onUpdateTimeRange,
     onChangeSelectedDay,
-    onSetIsDataLoading,
+    onSetIsDataReadyToShow,
   };
 }

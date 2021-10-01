@@ -19,6 +19,13 @@ export enum TooltipPlacement {
   BOTTOM = 'bottom',
   BOTTOM_END = 'bottom-end',
 }
+
+export enum DATA_READY_STATE {
+  EMPTY = 'empty',
+  ERROR = 'error',
+  LOADING = 'loading',
+  SUCCESS = 'success',
+}
 export const STANDART_DISPLAY_RESOLUTION = {
   width: 1830,
   height: 800,

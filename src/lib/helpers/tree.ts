@@ -106,176 +106,56 @@ export const prepareNodesData = (_data: ITopologyMapData, _groups: ITopologyGrou
             _obj.collapsed = false;
           }
         }
+        for (let i = 0; i < 10; i++) {
+          const element = Object.assign({}, { ..._obj, id: `${_obj.id}${index}${i}` });
+          nodes.push(element);
+          topologyGroups.push(element);
+        }
         nodes.push(_obj);
         topologyGroups.push(_obj);
       }
     });
   }
-  const xScale = d3.scaleLinear().domain([0, 1]).range([0, STANDART_DISPLAY_RESOLUTION.width]);
-  const yScale = d3.scaleLinear().domain([0, 1]).range([0, STANDART_DISPLAY_RESOLUTION.height]);
-  const simulation = d3
-    .forceSimulation(nodes)
-    // .force(
-    //   'link',
-    //   d3
-    //     .forceLink(links)
-    //     .id(d => d.id)
-    //     .distance(100)
-    //     .strength(1),
-    // )
-    // .force('center', d3.forceCenter(STANDART_DISPLAY_RESOLUTION.width / 2, STANDART_DISPLAY_RESOLUTION.height / 2))
-    .force('manyBody', d3.forceManyBody().strength(-20))
-
-    .force(
-      'collision',
-      d3.forceCollide().radius(d => {
-        if (d.nodeType === TOPOLOGY_NODE_TYPES.DEVICE) {
-          return 25;
-        }
-        if (d.nodeType === TOPOLOGY_NODE_TYPES.NETWORK_GROUP) {
-          if (!d.collapsed && d.devices && d.devices.length) return d.r;
-          return 75;
-        }
-        if (d.nodeType === TOPOLOGY_NODE_TYPES.WEDGE) {
-          return 100;
-        }
-        if (d.nodeType === TOPOLOGY_NODE_TYPES.VNET) {
-          return d.nodeSize.r / 2 + 20;
-        }
-        return 50;
-      }),
-    )
-    .force(
-      'x',
-      d3.forceX().x(d => {
-        let s = 0.5;
-        if (d.nodeType === TOPOLOGY_NODE_TYPES.DEVICE || d.nodeType === TOPOLOGY_NODE_TYPES.NETWORK_GROUP) {
-          s = 0.2;
-        }
-        if (d.nodeType === TOPOLOGY_NODE_TYPES.WEDGE) {
-          s = 0.5;
-        }
-        if (d.nodeType === TOPOLOGY_NODE_TYPES.VNET) {
-          s = 0.75;
-        }
-        return xScale(s);
-      }),
-    )
-    .force(
-      'y',
-      d3.forceY().y(d => {
-        let s = 0.5;
-        if (d.nodeType === TOPOLOGY_NODE_TYPES.NETWORK_GROUP) {
-          s = devices && devices.length ? 0.15 : 0.5;
-        }
-        if (d.nodeType === TOPOLOGY_NODE_TYPES.DEVICE) {
-          s = topologyGroups && topologyGroups.length ? 0.55 : 0.5;
-        }
-        return yScale(s);
-      }),
-    )
-    .stop();
-
-  while (simulation.alpha() > simulation.alphaMin()) {
-    simulation.tick();
-  }
-  nodes.forEach(node => {
-    if (node.nodeType === TOPOLOGY_NODE_TYPES.NETWORK_GROUP) {
-      const _item = node as INetworkGroupNode;
-      node.x = _item.collapsed ? _item.x : _item.x - _item.r;
-      node.y = _item.collapsed ? _item.y : _item.y - 50;
-    }
-  });
+  setUpGroupsCoord(topologyGroups);
+  setUpDevicesCoord(devices, topologyGroups);
+  const startY = calculateStartY(devices, topologyGroups);
+  setUpVnetCoord(vnets, startY);
+  setUpWedgesCoord(wedges);
   const links: ILink[] = generateLinks(nodes, wedges, vnets, devices, topologyGroups);
   return { nodes, links };
 };
 
-// export const createPreparedData = (_data: ITopologyMapData, groups: ITopologyGroup[]): ITopologyPreparedMapData => {
-//   if (!_data || !_data.organizations || !_data.organizations.length) {
-//     return { data: null, links: null, wedges: [], networkGroups: [], devices: [], applicationsGroup: [], vnets: [] };
-//   }
-//   const data: ITopologyMapData = jsonClone(_data);
-//   let wedges: IWedgeNode[] = [];
-//   let vnets: IVnetNode[] = [];
-//   let devices: IDeviceNode[] = [];
-//   let devicesInGroup: IDeviceNode[] = [];
-//   let topologyGroups: INetworkGroupNode[] = [];
-//   // data.organizations.forEach((org, i) => {
-//   //   wedges = wedges.concat(org.wedges.map((it, index) => ({ ...it, childIndex: index, orgIndex: i, orgId: org.id, x: 0, y: 0 })));
-//   //   vnets = vnets.concat(org.vnets.map((it, index) => ({ ...it, childIndex: index, orgIndex: i, orgId: org.id, x: 0, y: 0, collapsed: it.vms && it.vms.length ? false : true })));
-//   //   if (org.devices) {
-//   //     org.devices.forEach((dev, index) => {
-//   //       const obj: IDeviceNode = { ...dev, childIndex: index, orgIndex: i, orgId: org.id, x: 0, y: 0, scaleFactor: 1 };
-//   //       if (dev.selectorGroup && groups && groups.length) {
-//   //         devicesInGroup.push(obj);
-//   //       } else {
-//   //         devices.push(obj);
-//   //       }
-//   //     });
-//   //   }
-//   // });
-//   // if (groups && groups.length) {
-//   //   groups.forEach((gr, index) => {
-//   //     if (gr.type === TopologyGroupTypesAsNumber.BRANCH_NETWORKS || gr.type === TopologyGroupTypesAsString.BRANCH_NETWORKS) {
-//   //       const _obg: INetworkGroupNode = createMappedGroupNode(gr, index);
-//   //       if (devicesInGroup.length) {
-//   //         const _devs = devicesInGroup.filter(it => it.selectorGroup === gr.name || it.selectorGroup === gr.id);
-//   //         _obg.devices = _devs;
-//   //         _obg.r = 200;
-//   //       }
-//   //       topologyGroups.push(_obg);
-//   //     }
-//   //   });
-//   // }
-//   const _applicationsGroup: ITopologyGroup[] = groups.filter(group => group.type === TopologyGroupTypesAsNumber.APPLICATION || group.type === TopologyGroupTypesAsString.APPLICATION);
-
-//   setUpGroupsCoord(topologyGroups);
-//   setUpWedgesCoord(wedges);
-//   setUpDevicesCoord(devices, topologyGroups);
-//   setUpVnetCoord(vnets);
-
-//   const links: ILink[] = generateLinks(wedges, vnets, devices, topologyGroups);
-//   return {
-//     data: _data,
-//     links: links,
-//     wedges: wedges,
-//     devices: devices,
-//     vnets: vnets,
-//     networkGroups: topologyGroups,
-//     applicationsGroup: _applicationsGroup,
-//   };
-// };
-
 export const setUpGroupsCoord = (_groupsData: INetworkGroupNode[]) => {
-  if (!_groupsData || !_groupsData.length) {
-    return;
-  }
+  if (!_groupsData || !_groupsData.length) return;
   const _nodes = _groupsData.map(g => Object.assign({}, g));
   _nodes.push({ id: `1` } as INetworkGroupNode);
-  const _links = _groupsData.map(v => Object.create({ target: v.id, source: `1` }));
   const simulation = d3
     .forceSimulation(_nodes)
+    .force('center', d3.forceCenter(STANDART_DISPLAY_RESOLUTION.width / 2, STANDART_DISPLAY_RESOLUTION.height / 3))
     .force(
-      'link',
-      d3
-        .forceLink(_links)
-        .id(d => d.id)
-        .strength(1),
+      'collision',
+      d3.forceCollide().radius(d => {
+        if (d.collapsed || !d.devices || !d.devices.length) return NODES_CONSTANTS.NETWORK_GROUP.r * 2;
+        return 180;
+      }),
     )
-    .force('center', d3.forceCenter(STANDART_DISPLAY_RESOLUTION.width / 2, STANDART_DISPLAY_RESOLUTION.height / 4))
-    // .force('manyBody', d3.forceManyBody().strength(-50))
-    .force('collision', d3.forceCollide().radius(75))
-    .force('x', d3.forceX())
-    .force('y', d3.forceY())
+    .force('x', d3.forceX().strength(0.75))
+    .force('y', d3.forceY().strength(0.25))
     .stop();
 
   while (simulation.alpha() > simulation.alphaMin()) {
     simulation.tick();
   }
+  let offsetX = 0;
+  const maxGrX = Math.max(..._nodes.map(item => item.x + NODES_CONSTANTS.NETWORK_GROUP.r * 2));
+  if (maxGrX >= STANDART_DISPLAY_RESOLUTION.width / 2 - 320) {
+    offsetX = maxGrX - (STANDART_DISPLAY_RESOLUTION.width / 2 - 320);
+  }
   _groupsData.forEach((it, i) => {
-    it.x = _nodes[i].x - 450;
+    it.x = _nodes[i].x - offsetX;
     it.y = _nodes[i].y;
     if (it && it.devices && it.devices.length) {
+      it.x += 160;
       const size = createpackLayout(it);
       it.r = size.r;
     }
@@ -299,31 +179,22 @@ const createpackLayout = (group: INetworkGroupNode) => {
       group.devices[index].x = _cX + child.x * scale - NODES_CONSTANTS.Devisec.width / 2 - 150;
       group.devices[index].y = _cY + child.y * scale;
       group.devices[index].scaleFactor = scale;
-      // data.organizations[child.data.orgIndex].devices[child.data.childIndex].x =
-      // data.organizations[child.data.orgIndex].devices[child.data.childIndex].y =
-      // data.organizations[child.data.orgIndex].devices[child.data.childIndex].scaleFactor = scale;
-      // data.organizations[child.data.orgIndex].devices[child.data.childIndex].visible = !group.collapsed;
     });
   }
   return { r: Math.max(160, size.r * scale), x: _cX, y: _cY, scale: scale };
 };
 
 export const setUpWedgesCoord = (items: IWedgeNode[]) => {
-  const minHeight = Math.max(STANDART_DISPLAY_RESOLUTION.height / 4, (items.length / 1.5) * 200);
+  if (!items || !items.length) return;
   const _root = hierarchy({ id: null, children: items });
-  if (!_root.children || !_root.children.length) {
-    return;
-  }
   const _tree = tree()
-    .nodeSize([NODES_CONSTANTS.WEDGE.r, NODES_CONSTANTS.WEDGE.r])
-    .size([minHeight, STANDART_DISPLAY_RESOLUTION.width / 2]);
+    .nodeSize([NODES_CONSTANTS.WEDGE.r, NODES_CONSTANTS.WEDGE.r + NODES_CONSTANTS.WEDGE.textHeight])
+    .size([STANDART_DISPLAY_RESOLUTION.height, STANDART_DISPLAY_RESOLUTION.width / 2]);
   _tree(_root);
   if (items.length <= 4) {
     _root.children.forEach((child, i) => {
       items[i].x = child.y;
       items[i].y = child.x;
-      // data.organizations[child.data.orgIndex].wedges[child.data.childIndex].x = child.y;
-      // data.organizations[child.data.orgIndex].wedges[child.data.childIndex].y = child.x;
     });
     return;
   }
@@ -338,131 +209,48 @@ export const setUpWedgesCoord = (items: IWedgeNode[]) => {
     }
     items[index].x = x;
     items[index].y = y;
-    // data.organizations[child.data.orgIndex].wedges[child.data.childIndex].x = x;
-    // data.organizations[child.data.orgIndex].wedges[child.data.childIndex].y = y;
   });
 };
 
-// const getVPCHeight = (items: IVnetNode[], _height: number) => {
-//   if (!items || !items.length) {
-//     return null;
-//   }
-//   const itemsHeight = items.reduce((v, n, i) => {
-//     if (n.collapsed || !n.vms || !n.vms.length) {
-//       return v + 50;
-//     }
-//     const _size = getVPCContainerSize(n.vms.length);
-//     return v + _size.r;
-//   }, 0);
-//   return Math.max(_height, itemsHeight);
-// };
-
-export const setUpVnetCoord = (items: IVnetNode[]) => {
-  if (!items || !items.length) {
-    return;
-  }
-  const _nodes = items.map(v => Object.assign({}, v));
-  _nodes.push({ id: `1` } as IVnetNode);
-  const _links = items.map(v => Object.create({ target: v.id, source: `1` }));
-  const simulation = d3
-    .forceSimulation(_nodes)
-    .force(
-      'link',
-      d3
-        .forceLink(_links)
-        .id(d => d.id)
-        .strength(1),
-    )
-    .force('center', d3.forceCenter(STANDART_DISPLAY_RESOLUTION.width / 2, STANDART_DISPLAY_RESOLUTION.height / 2))
-    // .force('manyBody', d3.forceManyBody())
-    // .force(
-    //   'collision',
-    //   d3.forceCollide().radius(d => {
-    //     if (d.collapsed || !d.vms || !d.vms.length) {
-    //       const _r = Math.sqrt(Math.pow(NODES_CONSTANTS.VNet.width, 2) + Math.pow(NODES_CONSTANTS.VNet.height, 2));
-    //       return Math.ceil(_r / 2);
-    //     }
-    //     const _obj = getVPCContainerSize(d, d.);
-    //     return _obj.r + 40;
-    //   }),
-    // )
-    .force('x', d3.forceX())
-    .force('y', d3.forceY())
-    .stop();
-
-  while (simulation.alpha() > simulation.alphaMin()) {
-    simulation.tick();
-  }
-
-  items.forEach((it, i) => {
-    it.x = _nodes[i].x + 450;
-    it.y = _nodes[i].y;
-  });
-
-  // const minHeight = Math.max(STANDART_DISPLAY_RESOLUTION.height, getVPCHeight(items, STANDART_DISPLAY_RESOLUTION.height));
-  // const _root = hierarchy({ id: null, children: items });
-  // if (!_root.children || !_root.children.length) {
-  //   return;
-  // }
-  // const _tree = tree()
-  //   .nodeSize([NODES_CONSTANTS.VNet.width, NODES_CONSTANTS.VNet.height])
-  //   .size([minHeight, STANDART_DISPLAY_RESOLUTION.width / 2 + 300]);
-  // _tree(_root);
-  // let prevNode = null;
-  // if (items.length <= 4) {
-  //   _root.children.forEach((child, i) => {
-  //     if (!prevNode) {
-  //       prevNode = child;
-  //     }
-  //     items[i].x = child.y;
-  //     items[i].y = child.x;
-  //     // data.organizations[child.data.orgIndex].vnets[child.data.childIndex].x = child.y;
-  //     // data.organizations[child.data.orgIndex].vnets[child.data.childIndex].y = child.x;
-  //   });
-  //   return;
-  // }
-  // _root.children.forEach((child, index) => {
-  //   const d = NODES_CONSTANTS.WEDGE.r * 2;
-  //   let x = child.y;
-  //   const y = child.x - d;
-  //   if (index === 0) {
-  //     x -= d;
-  //   } else {
-  //     x = index % 2 === 0 ? x - d : x + d;
-  //   }
-  //   items[index].x = x;
-  //   items[index].y = y;
-  //   // data.organizations[child.data.orgIndex].vnets[child.data.childIndex].x = x;
-  //   // data.organizations[child.data.orgIndex].vnets[child.data.childIndex].y = y;
-  // });
+export const setUpVnetCoord = (items: IVnetNode[], _startYCoord: number) => {
+  if (!items || !items.length) return;
+  let prevNodeBottomY = _startYCoord !== 0 ? _startYCoord : 100;
+  let offsetX = STANDART_DISPLAY_RESOLUTION.width / 2 + STANDART_DISPLAY_RESOLUTION.width / 5 - NODES_CONSTANTS.VNet.width / 2;
+  let col = 0;
+  items
+    .sort((a, b) => (a.vms && b.vms ? b.vms.length - a.vms.length : 0))
+    .forEach((child, i) => {
+      if (i !== 0) {
+        prevNodeBottomY += 50;
+      }
+      if (prevNodeBottomY + child.nodeSize.height > STANDART_DISPLAY_RESOLUTION.height) {
+        col++;
+        prevNodeBottomY = col % 2 === 0 ? 100 : 150;
+        offsetX += child.nodeSize.width + 100;
+      }
+      child.x = offsetX;
+      child.y = prevNodeBottomY;
+      prevNodeBottomY += child.nodeSize.height;
+    });
 };
 
 export const setUpDevicesCoord = (devices: IDeviceNode[], _devicesGroup: INetworkGroupNode[]) => {
-  if (!devices) {
-    return;
-  }
-  const cols = Math.ceil(Math.sqrt(devices.length)) / 1.5;
+  if (!devices || !devices.length) return;
+  const cols = getDevCols(devices);
+  const nodeW = getDevWidth();
+  const nodeH = getDevHeight();
+  const _rowsHeight = getDevRowsHeight(devices, nodeH, cols);
+  const _halfHeight = _rowsHeight / 2;
   let currentRow = 0;
   let currentCol = 0;
-  const nodeW = NODES_CONSTANTS.Devisec.textWidth + NODES_CONSTANTS.Devisec.spaceX;
-  const nodeH = NODES_CONSTANTS.Devisec.height + NODES_CONSTANTS.Devisec.spaceY / 2;
   let nodeOffsetX = 40;
-  let _startX = STANDART_DISPLAY_RESOLUTION.width / 4;
-  const halfRowWidth = (cols * nodeW) / 2;
-  const halfRowsHeight = ((devices.length / cols + 1) * nodeH) / 2;
-  if (_startX + halfRowWidth > STANDART_DISPLAY_RESOLUTION.width / 2.5) {
-    _startX = _startX - (_startX + halfRowWidth - STANDART_DISPLAY_RESOLUTION.width / 2.5);
-  }
-  const maxGroupY = Math.max(..._devicesGroup.map(o => o.y + o.r + 75));
-  const startCoordY = _devicesGroup && _devicesGroup.length ? maxGroupY + halfRowsHeight : STANDART_DISPLAY_RESOLUTION.height / 4 / 2;
+  let nodeOffsetY = 0;
+  const _groupMinX = _devicesGroup && _devicesGroup.length ? Math.min(..._devicesGroup.map(item => item.x - item.r * 2 - NODES_CONSTANTS.NETWORK_GROUP.r)) : STANDART_DISPLAY_RESOLUTION.width / 4;
+  const _startX = Math.min(STANDART_DISPLAY_RESOLUTION.width / 4 - 40, _groupMinX);
+  const _startY = STANDART_DISPLAY_RESOLUTION.height / 2;
   devices.forEach((it, i) => {
-    if (i === 0) {
-      const _x = _startX + nodeOffsetX + currentCol * nodeW - halfRowWidth;
-      const _y = startCoordY + currentRow * nodeH - halfRowsHeight;
-      it.x = _x;
-      it.y = _y;
-      currentCol++;
-      return;
+    if (nodeOffsetY === 0 && currentRow !== 0) {
+      nodeOffsetY = 20;
     }
     if (currentRow % 2 === 0) {
       if (currentCol >= cols - 1) {
@@ -477,12 +265,39 @@ export const setUpDevicesCoord = (devices: IDeviceNode[], _devicesGroup: INetwor
         nodeOffsetX = currentRow % 2 === 0 ? 40 : 0;
       }
     }
-    const _x = _startX + nodeOffsetX + currentCol * nodeW - halfRowWidth;
-    const _y = startCoordY + currentRow * nodeH - halfRowsHeight;
-    it.x = _x;
-    it.y = _y;
+    it.x = _startX - nodeOffsetX - currentCol * nodeW;
+    it.y = currentRow * nodeH + currentRow * nodeOffsetY + _startY - _halfHeight;
     currentCol++;
   });
+};
+
+const getDevCols = (items: any[]): number => {
+  if (!items || !items.length) return 0;
+  return Math.ceil(Math.sqrt(items.length)) / 1.5;
+};
+const getDevWidth = (): number => NODES_CONSTANTS.Devisec.textWidth + NODES_CONSTANTS.Devisec.spaceX;
+const getDevHeight = (): number => NODES_CONSTANTS.Devisec.height + NODES_CONSTANTS.Devisec.spaceY / 2;
+const getDevRowsHeight = (items: any[], nodeH: number, cols: number): number => {
+  if (!items || !items.length) return 0;
+  const rowsCount = Math.ceil(items.length / cols);
+  return rowsCount * nodeH + rowsCount * 20;
+};
+
+const calculateStartY = (devices: any[], topologyGroups: any[]): number => {
+  let minGY = 0;
+  if (topologyGroups && topologyGroups.length) {
+    const _arr = topologyGroups.map(it => it.y);
+    minGY = Math.min(..._arr);
+  }
+  let devY = 0;
+  if (devices && devices.length) {
+    const cols = getDevCols(devices);
+    const devH = getDevHeight();
+    const height = getDevRowsHeight(devices, devH, cols);
+    devY = STANDART_DISPLAY_RESOLUTION.height / 2 - height / 2;
+  }
+  const _stY = Math.min(0, minGY, devY);
+  return _stY;
 };
 
 export interface IVpcSize {
@@ -503,7 +318,10 @@ export const getVPCContainerSize = (node: IVnet, _arr: ITopologyGroup[]): IVpcSi
   const rows = Math.ceil(_vms.length / 3);
   const vmRowH = (NODES_CONSTANTS.VM.height + NODES_CONSTANTS.VM.spaceY * 2) * rows;
   const _nodeH = groupsHeight + vmRowH + NODES_CONSTANTS.VNet.headerHeight;
-  const _height = Math.max(NODES_CONSTANTS.VNet.height, _nodeH) + 2;
+  let _height = Math.max(NODES_CONSTANTS.VNet.height, _nodeH) + 2;
+  if (_height > 200) {
+    _height = 200;
+  }
   const d = Math.ceil(Math.sqrt(Math.pow(NODES_CONSTANTS.VNet.width, 2) + Math.pow(_height + 34, 2)));
   const _r = Math.max(NODES_CONSTANTS.VNet.width, d / 2);
   return { r: _r, width: NODES_CONSTANTS.VNet.width, height: _height, cols: 3, rows: rows };

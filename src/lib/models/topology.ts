@@ -238,6 +238,7 @@ export enum TOPOLOGY_LINKS_TYPES {
   VNET_LINK = 'vnet',
   CONNECTED_TO_LINK = 'connectedTo',
   NETWORKLINK = 'networklink',
+  NETWORK_BRENCH_LINK = 'networkBrenchlink',
 }
 export interface ILink extends IVisible {
   id: string;

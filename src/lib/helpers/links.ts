@@ -49,9 +49,7 @@ export const buildD_GLinks = (devices: IDeviceNode[], g: INetworkGroupNode, link
   devices.forEach(dev => {
     if (!link_D_G_W && dev.vpnlinks && dev.vpnlinks.length) {
       dev.vpnlinks.forEach(vpn => {
-        if (!vpn.linkStates || !vpn.linkStates.length) {
-          return;
-        }
+        if (!vpn.linkStates || !vpn.linkStates.length) return;
         vpn.linkStates.forEach(it => {
           const wedge = getWedge(wedges, it.id);
           if (wedge) {
@@ -181,7 +179,7 @@ export const createG_WLink = (target: INetworkGroupNode, source: IWedgeNode): IC
   const _y2 = source.y + souceObj.r;
   return {
     id: `group_wedge${target.id}${source.id}`,
-    type: TOPOLOGY_LINKS_TYPES.DEVICE_LINK,
+    type: TOPOLOGY_LINKS_TYPES.NETWORK_BRENCH_LINK,
     sourceId: source.id,
     targetId: target.id,
     targetCoord: { x: _x1, y: _y1 },
