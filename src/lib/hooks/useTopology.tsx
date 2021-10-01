@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {
   createGroupNode,
-  // getVPCContainerSize,
+  getVPCContainerSize,
   // createPreparedData,
   prepareNodesData,
 } from 'lib/helpers/tree';
@@ -87,30 +87,30 @@ export function useTopologyContext(): TopologyContextType {
     const _orgObj: ITopologyMapData = res.organizations ? jsonClone(res.organizations) : null;
     const _groupsObj: ITopologyGroupsData = res.groups ? jsonClone(res.groups) : [];
 
-    // for (let j = 0; j < 500; j++) {
-    //   const device = onCreateDevice(0, _orgObj.organizations[0].id, j, '');
-    //   _orgObj.organizations[0].devices.push(device);
-    // }
-    // for (let j = 0; j < 500; j++) {
-    //   const device = onCreateDevice(1, _orgObj.organizations[1].id, j + 250, '');
-    //   _orgObj.organizations[1].devices.push(device);
-    // }
-    // for (let i = 0; i < 3; i++) {
-    //   const element = onCreateWedge(0, _orgObj.organizations[0].id, i);
-    //   _orgObj.organizations[0].wedges.push(element);
-    // }
-    // for (let i = 0; i < 2; i++) {
-    //   const element = onCreateWedge(1, _orgObj.organizations[1].id, i + 10);
-    //   _orgObj.organizations[0].wedges.push(element);
-    // }
-    // for (let i = 0; i < 20; i++) {
-    //   const element = onCreateVnet(0, _orgObj.organizations[0].id, i);
-    //   _orgObj.organizations[0].vnets.push(element);
-    // }
-    // for (let i = 0; i < 40; i++) {
-    //   const element = onCreateVnet(1, _orgObj.organizations[1].id, i);
-    //   _orgObj.organizations[1].vnets.push(element);
-    // }
+    for (let j = 0; j < 500; j++) {
+      const device = onCreateDevice(0, _orgObj.organizations[0].id, j, '');
+      _orgObj.organizations[0].devices.push(device);
+    }
+    for (let j = 0; j < 500; j++) {
+      const device = onCreateDevice(1, _orgObj.organizations[1].id, j + 250, '');
+      _orgObj.organizations[1].devices.push(device);
+    }
+    for (let i = 0; i < 3; i++) {
+      const element = onCreateWedge(0, _orgObj.organizations[0].id, i);
+      _orgObj.organizations[0].wedges.push(element);
+    }
+    for (let i = 0; i < 2; i++) {
+      const element = onCreateWedge(1, _orgObj.organizations[1].id, i + 10);
+      _orgObj.organizations[0].wedges.push(element);
+    }
+    for (let i = 0; i < 20; i++) {
+      const element = onCreateVnet(0, _orgObj.organizations[0].id, i);
+      _orgObj.organizations[0].vnets.push(element);
+    }
+    for (let i = 0; i < 40; i++) {
+      const element = onCreateVnet(1, _orgObj.organizations[1].id, i);
+      _orgObj.organizations[1].vnets.push(element);
+    }
     const _data: ITopologyPreparedMapData = prepareNodesData(_orgObj, _groupsObj.groups);
     if (_data.links) {
       setLinks(_data.links);
@@ -143,76 +143,76 @@ export function useTopologyContext(): TopologyContextType {
   //   };
   // }
 
-  // const onCreateDevice = (orgI, orgId, index: number, groupName: string): IDeviceNode => {
-  //   return {
-  //     id: `0xeaa5_temporaryDevice${index}`,
-  //     name: '',
-  //     description: '',
-  //     extId: 'Q2KN-U958-CSTY',
-  //     type: '',
-  //     serial: 'Q2KN-U958-CSTY',
-  //     model: 'MX64',
-  //     networkId: 'L_624311498344248378',
-  //     publicIp: '73.158.148.119',
-  //     privateIp: '192.168.1.244',
-  //     vpnlinks: [],
-  //     selectorGroup: groupName,
-  //     x: 0,
-  //     y: 0,
-  //     childIndex: index,
-  //     orgIndex: orgI,
-  //     orgId: orgId,
-  //     scaleFactor: 1,
-  //     nodeType: TOPOLOGY_NODE_TYPES.DEVICE,
-  //     visible: true,
-  //   };
-  // };
+  const onCreateDevice = (orgI, orgId, index: number, groupName: string): IDeviceNode => {
+    return {
+      id: `0xeaa5_temporaryDevice${index}`,
+      name: '',
+      description: '',
+      extId: 'Q2KN-U958-CSTY',
+      type: '',
+      serial: 'Q2KN-U958-CSTY',
+      model: 'MX64',
+      networkId: 'L_624311498344248378',
+      publicIp: '73.158.148.119',
+      privateIp: '192.168.1.244',
+      vpnlinks: [],
+      selectorGroup: groupName,
+      x: 0,
+      y: 0,
+      childIndex: index,
+      orgIndex: orgI,
+      orgId: orgId,
+      scaleFactor: 1,
+      nodeType: TOPOLOGY_NODE_TYPES.DEVICE,
+      visible: true,
+    };
+  };
 
-  // const onCreateWedge = (orgI, orgId: string, index: number): IWedgeNode => {
-  //   return {
-  //     id: `0xeaa5_temporaryWedge${orgId}${index}`,
-  //     name: 'saurabh-tgw',
-  //     description: '',
-  //     extId: 'tgw-0a45720eea0e8c4fe',
-  //     vnetkey: '',
-  //     phys: [],
-  //     vpns: [],
-  //     networkLinks: [],
-  //     ips: [],
-  //     x: 0,
-  //     y: 0,
-  //     childIndex: index,
-  //     orgIndex: orgI,
-  //     orgId: orgId,
-  //     visible: true,
-  //     nodeType: TOPOLOGY_NODE_TYPES.WEDGE,
-  //   };
-  // };
+  const onCreateWedge = (orgI, orgId: string, index: number): IWedgeNode => {
+    return {
+      id: `0xeaa5_temporaryWedge${orgId}${index}`,
+      name: 'saurabh-tgw',
+      description: '',
+      extId: 'tgw-0a45720eea0e8c4fe',
+      vnetkey: '',
+      phys: [],
+      vpns: [],
+      networkLinks: [],
+      ips: [],
+      x: 0,
+      y: 0,
+      childIndex: index,
+      orgIndex: orgI,
+      orgId: orgId,
+      visible: true,
+      nodeType: TOPOLOGY_NODE_TYPES.WEDGE,
+    };
+  };
 
-  // const onCreateVnet = (orgI, orgId: string, index: number): IVnetNode => {
-  //   const _obj: IVnetNode = {
-  //     id: `0xeaa5_temporaryVnet${orgId}${index}`,
-  //     name: 'saurabh-tgw',
-  //     description: '',
-  //     extId: 'tgw-0a45720eea0e8c4fe',
-  //     x: 0,
-  //     y: 0,
-  //     endpoints: [],
-  //     vms: [],
-  //     cidr: null,
-  //     subnets: [],
-  //     securityGroups: [],
-  //     nodeSize: null,
-  //     applicationGroups: [],
-  //     childIndex: index,
-  //     orgIndex: orgI,
-  //     orgId: orgId,
-  //     visible: true,
-  //     nodeType: TOPOLOGY_NODE_TYPES.VNET,
-  //   };
-  //   _obj.nodeSize = getVPCContainerSize(_obj, []);
-  //   return _obj;
-  // };
+  const onCreateVnet = (orgI, orgId: string, index: number): IVnetNode => {
+    const _obj: IVnetNode = {
+      id: `0xeaa5_temporaryVnet${orgId}${index}`,
+      name: 'saurabh-tgw',
+      description: '',
+      extId: 'tgw-0a45720eea0e8c4fe',
+      x: 0,
+      y: 0,
+      endpoints: [],
+      vms: [],
+      cidr: null,
+      subnets: [],
+      securityGroups: [],
+      nodeSize: null,
+      applicationGroups: [],
+      childIndex: index,
+      orgIndex: orgI,
+      orgId: orgId,
+      visible: true,
+      nodeType: TOPOLOGY_NODE_TYPES.VNET,
+    };
+    _obj.nodeSize = getVPCContainerSize(_obj, []);
+    return _obj;
+  };
 
   const onFilterQueryChange = (value: string | null) => {
     setSearchQuery(value);

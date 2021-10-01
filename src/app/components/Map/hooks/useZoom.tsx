@@ -84,14 +84,14 @@ export function useZoom(props: IProps) {
     const rootSize = root.node().getBBox();
     const scale = getScaleSizeHelper(svgSize, rootSize.width, rootSize.height);
     const centerX = svgSize.width / 2;
-    const centerY = svgSize.height / 2;
+    const centerY = (svgSize.height - 80) / 2;
     zoom.scaleTo(svg, scale);
     zoom.translateTo(svg, centerX, centerY);
   };
 
   const getScaleSizeHelper = (svg, width, height) => {
     const scaleX = Math.min(1, svg.width / width);
-    const scaleY = Math.min(1, svg.height / height);
+    const scaleY = Math.min(1, (svg.height - 80) / height);
     let k = Math.min(scaleX, scaleY);
     k = checkMinMaxScale(k);
     return k;

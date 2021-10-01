@@ -21,7 +21,7 @@ const SimpleCheckbox: React.FC<Props> = props => {
 
   return (
     <WrapLabel disabled={props.isDisabled || false}>
-      <Checkbox paddingLeft={props.width} minHeight={props.height} alignSvg="unset" disabled={props.isDisabled || false}>
+      <Checkbox paddingLeft={props.width} minHeight={props.height} alignSvg="top" disabled={props.isDisabled || false}>
         <Input type="checkbox" checked={props.isChecked} onChange={onChange} disabled={props.isDisabled || props.readOnly} />
         <Overlay width={props.width} height={props.height}>
           {props.isChecked && сheckboxWithSizeIcon(props.iconSize)}

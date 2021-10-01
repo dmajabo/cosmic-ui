@@ -1,6 +1,5 @@
 import React from 'react';
 import { ContentWrapper, TableWrapper } from '../../Shared/styles';
-// import Filtser from '../Components/Filter';
 import Grid from 'app/components/Grid';
 import { GridColDef, GridToolbarContainer, GridToolbarColumnsButton } from '@mui/x-data-grid';
 
@@ -33,16 +32,13 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
     { field: 'tgwBytesIn', headerName: 'TGW-BYTESIN', minWidth: 200 },
     { field: 'awsAccountId', headerName: 'AWS-Account-Id', minWidth: 200 },
   ];
+
+  // React.useEffect(() => {
+  //   setFilterDataItems()
+  // }, []);
+
   return (
     <>
-      {/* <Filter
-        items={[
-          { id: '1', label: 'test 1' },
-          { id: '2', label: 'test 2' },
-          { id: '3', label: 'app 2' },
-          { id: '4', label: 'app 1' },
-        ]}
-      /> */}
       <ContentWrapper>
         <TableWrapper>
           <Grid checkboxSelection rows={[]} columns={columns} components={{ Toolbar: CustomToolbar, ColumnsPanel: CustomColumnPanel }} />

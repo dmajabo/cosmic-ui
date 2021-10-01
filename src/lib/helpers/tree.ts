@@ -118,8 +118,8 @@ export const prepareNodesData = (_data: ITopologyMapData, _groups: ITopologyGrou
   }
   setUpGroupsCoord(topologyGroups);
   setUpDevicesCoord(devices, topologyGroups);
-  const startY = calculateStartY(devices, topologyGroups);
-  setUpVnetCoord(vnets, startY);
+  // const startY = calculateStartY(devices, topologyGroups);
+  setUpVnetCoord(vnets, 0);
   setUpWedgesCoord(wedges);
   const links: ILink[] = generateLinks(nodes, wedges, vnets, devices, topologyGroups);
   return { nodes, links };
