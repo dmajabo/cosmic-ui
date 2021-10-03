@@ -175,13 +175,13 @@ export interface Column {
 }
 
 interface HeatMapMetric {
-  deviceName: string;
-  value: string;
+  readonly deviceName: string;
+  readonly value: string;
 }
 
 export interface HeatMapData {
-  testId: string;
-  metrics: ResourceMetric[];
+  readonly testId: string;
+  readonly metrics: ResourceMetric[];
 }
 
 export interface ResourceMetric {

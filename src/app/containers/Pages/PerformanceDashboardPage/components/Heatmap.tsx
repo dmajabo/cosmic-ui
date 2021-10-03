@@ -2,7 +2,7 @@ import { Grid } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { PerformanceDashboardStyles } from '../PerformanceDashboardStyles';
 import { HeatMapData } from '../SharedTypes';
-import GridRow from './GridRow';
+import { GridRow } from './GridRow';
 import LegendBox from './LegendBox';
 import { TestIdToName } from './PacketLoss';
 
@@ -22,7 +22,7 @@ export interface LegendData {
   readonly color: string;
 }
 
-const legendColours = ['#FFECDC', '#FED0AB', '#FFC568', '#F9A825', '#DC4545'];
+const LEGEND_COLOURS = ['#FFECDC', '#FED0AB', '#FFC568', '#F9A825', '#DC4545'];
 
 const Heatmap: React.FC<HeatmapProps> = ({ data, selectedRows, dataSuffix }) => {
   const [tests, setTests] = useState<string[]>([]);
@@ -33,34 +33,41 @@ const Heatmap: React.FC<HeatmapProps> = ({ data, selectedRows, dataSuffix }) => 
   const classes = PerformanceDashboardStyles();
 
   useEffect(() => {
-    const tests = data.map(test => test.testId);
+    const testsId = data.map(test => test.testId);
     const devices: string[] = [];
     const heatMapData: HeatmapMetrics = {};
     const values: number[] = [];
+
     data.forEach(test => {
-      if (test.metrics.length > 0) {
-        test.metrics.forEach(device => {
-          devices.push(device.resourceId);
-          heatMapData[`${test.testId}_${device.resourceId}`] = dataSuffix === 'ms' ? Number(device.keyedmap[0].ts[0].value).toFixed(2) : device.keyedmap[0].ts[0].value;
-          values.push(Number(Number(device.keyedmap[0].ts[0].value).toFixed(2)));
-        });
-      }
+      test.metrics.forEach(device => {
+        devices.push(device.resourceId);
+        heatMapData[`${test.testId}_${device.resourceId}`] = dataSuffix === 'ms' ? Number(device.keyedmap[0].ts[0].value).toFixed(2) : device.keyedmap[0].ts[0].value;
+        values.push(Number(Number(device.keyedmap[0].ts[0].value).toFixed(2)));
+      });
     });
+
     devices.push('');
+
     const uniqueDevices: string[] = devices.filter(function (item, pos, self) {
       return self.indexOf(item) == pos;
     });
-    setTests(tests);
+
+    setTests(testsId);
     setDevices(uniqueDevices);
     setHeatMapData(heatMapData);
+
     const maxValue = Math.max(...values);
     const minValue = 0;
     const increment = (maxValue - minValue) / 5;
     const legendDataPoints: number[] = [];
-    for (let i = 0; i < 5; i++) i === 0 ? legendDataPoints.push(minValue) : legendDataPoints.push(legendDataPoints[i - 1] + increment);
+
+    for (let i = 0; i < 5; i++) {
+      i === 0 ? legendDataPoints.push(minValue) : legendDataPoints.push(legendDataPoints[i - 1] + increment);
+    }
     const legendData: LegendData[] = legendDataPoints.map((point, index) => {
-      return { low: Number(point.toFixed(3)), high: Number((point + increment).toFixed(3)), color: legendColours[index] };
+      return { low: Number(point.toFixed(3)), high: Number((point + increment).toFixed(3)), color: LEGEND_COLOURS[index] };
     });
+
     setLegendData(legendData);
   }, []);
 

@@ -4,7 +4,7 @@ import { PerformanceDashboardStyles } from '../PerformanceDashboardStyles';
 import { HeatmapMetrics, LegendData } from './Heatmap';
 import { TestIdToName } from './PacketLoss';
 
-interface RowProps {
+interface GridRowProps {
   readonly device: string;
   readonly tests: string[];
   readonly heatMapData: HeatmapMetrics;
@@ -13,16 +13,16 @@ interface RowProps {
   readonly dataSuffix: string;
 }
 
-const GridRow: React.FC<RowProps> = ({ dataSuffix, selectedRows, device, tests, heatMapData, legendData }) => {
-  const classes = PerformanceDashboardStyles();
+const getColor = (legendData: LegendData[], data: number) => {
+  const colour = legendData.map((item, index) => {
+    return data >= item.low && data <= item.high ? index : -1;
+  });
+  const index = Math.max(...colour);
+  return index === -1 ? 'black' : legendData[index].color;
+};
 
-  const getColor = (data: number) => {
-    const colour = legendData.map((item, index) => {
-      return data >= item.low && data <= item.high ? index : -1;
-    });
-    const index = Math.max(...colour);
-    return index === -1 ? 'black' : legendData[index].color;
-  };
+export const GridRow: React.FC<GridRowProps> = ({ dataSuffix, selectedRows, device, tests, heatMapData, legendData }) => {
+  const classes = PerformanceDashboardStyles();
 
   return (
     <>
@@ -42,7 +42,7 @@ const GridRow: React.FC<RowProps> = ({ dataSuffix, selectedRows, device, tests, 
               ) : (
                 <div
                   style={{
-                    backgroundColor: getColor(Number(heatMapData[`${test}_${device}`])),
+                    backgroundColor: getColor(legendData, Number(heatMapData[`${test}_${device}`])),
                   }}
                   className={classes.heatmapCell}
                 >
@@ -54,4 +54,3 @@ const GridRow: React.FC<RowProps> = ({ dataSuffix, selectedRows, device, tests, 
     </>
   );
 };
-export default GridRow;

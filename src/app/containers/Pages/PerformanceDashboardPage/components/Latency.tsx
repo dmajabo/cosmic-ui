@@ -35,21 +35,23 @@ export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange }) => 
         setLatencyData(latencyChartData);
       });
     };
+
     const getHeatMapLatency = async () => {
-      const tempHeatMapLatency: HeatMapData[] = [];
       const promises = selectedRows.map(row => apiClient.getHeatmapLatency(row.sourceNetwork, row.destination, timeRange, row.id));
       Promise.all(promises).then(values => {
-        values.forEach(item => {
-          tempHeatMapLatency.push({
+        const heatMapLatency: HeatMapData[] = values.map(item => {
+          return {
             testId: item.testId,
             metrics: item.avgMetric.resourceMetric,
-          });
+          };
         });
+        setHeatMapLatency(heatMapLatency);
       });
-      setHeatMapLatency(tempHeatMapLatency);
     };
+
     getLatencyMetrics();
     getHeatMapLatency();
+
     return () => {
       setLatencyData({});
       setHeatMapLatency([]);

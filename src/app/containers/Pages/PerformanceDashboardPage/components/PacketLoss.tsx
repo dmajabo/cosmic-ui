@@ -37,6 +37,7 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange 
   selectedRows.forEach(row => (testIdToName[row.id] = row.name));
 
   const apiClient = createApiClient();
+
   useEffect(() => {
     const getPacketLossMetrics = async () => {
       const packetLossChartData: MetricKeyValue = {};
@@ -46,21 +47,23 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange 
         setPacketLossData(packetLossChartData);
       });
     };
+
     const getHeatMapPacketLoss = async () => {
-      const tempHeatMapPacketLoss: HeatMapData[] = [];
       const promises = selectedRows.map(row => apiClient.getHeatmapPacketLoss(row.sourceNetwork, row.destination, timeRange, row.id));
       Promise.all(promises).then(values => {
-        values.forEach(item => {
-          tempHeatMapPacketLoss.push({
+        const heatMapPacketLoss: HeatMapData[] = values.map(item => {
+          return {
             testId: item.testId,
             metrics: item.avgMetric.resourceMetric,
-          });
+          };
         });
+        setHeatMapPacketLoss(heatMapPacketLoss);
       });
-      setHeatMapPacketLoss(tempHeatMapPacketLoss);
     };
+
     getPacketLossMetrics();
     getHeatMapPacketLoss();
+
     return () => {
       setPacketLossData({});
       setHeatMapPacketLoss([]);

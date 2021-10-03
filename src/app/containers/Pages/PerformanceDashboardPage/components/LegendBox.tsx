@@ -13,7 +13,7 @@ const LegendBox: React.FC<LegendBoxProps> = ({ color }) => {
         paddingTop: 9,
         borderRadius: 6,
       }}
-    ></span>
+    />
   );
 };
 export default LegendBox;
