@@ -53,7 +53,7 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ awsOrganizations, 
         vnet.vms.forEach(vm => {
           vm.nic.forEach(nic => {
             destinationOptions.push({
-              label: vm.name,
+              label: `${vm.name}(${nic.publicIp !== '' ? nic.publicIp : nic.privateIp})`,
               value: nic.publicIp !== '' ? nic.publicIp : nic.privateIp,
             });
           });
