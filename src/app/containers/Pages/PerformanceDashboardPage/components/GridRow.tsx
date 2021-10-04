@@ -32,9 +32,7 @@ export const GridRow: React.FC<GridRowProps> = ({ dataSuffix, selectedRows, devi
       {device
         ? tests.map(test => (
             <Grid key={test} item>
-              {typeof heatMapData[`${test}_${device}`] === 'undefined' ? (
-                <div className={classes.nACell}>N/A</div>
-              ) : (
+              {heatMapData[`${test}_${device}`] ? (
                 <div
                   style={{
                     backgroundColor: getColor(legendData, Number(heatMapData[`${test}_${device}`])),
@@ -43,6 +41,8 @@ export const GridRow: React.FC<GridRowProps> = ({ dataSuffix, selectedRows, devi
                 >
                   {heatMapData[`${test}_${device}`] + dataSuffix}
                 </div>
+              ) : (
+                <div className={classes.nACell}>N/A</div>
               )}
             </Grid>
           ))

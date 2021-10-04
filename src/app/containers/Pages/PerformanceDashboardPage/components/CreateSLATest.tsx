@@ -46,23 +46,21 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ awsOrganizations, 
   }, [merakiOrganizations]);
 
   useEffect(() => {
-    if (awsOrganizations.length > 0) {
-      const destinationOptions: SelectOptions[] = [];
-      awsOrganizations.forEach(organization => {
-        organization.vnets.forEach(vnet => {
-          vnet.vms.forEach(vm => {
-            vm.nic.forEach(nic => {
-              const ipAddress = nic.publicIp ? nic.publicIp : nic.privateIp;
-              destinationOptions.push({
-                label: `${vm.name}(${ipAddress})`,
-                value: ipAddress,
-              });
+    const destinationOptions: SelectOptions[] = [];
+    awsOrganizations.forEach(organization => {
+      organization.vnets.forEach(vnet => {
+        vnet.vms.forEach(vm => {
+          vm.nic.forEach(nic => {
+            const ipAddress = nic.publicIp ? nic.publicIp : nic.privateIp;
+            destinationOptions.push({
+              label: `${vm.name}(${ipAddress})`,
+              value: ipAddress,
             });
           });
         });
       });
-      setDestinationOptions(destinationOptions);
-    }
+    });
+    setDestinationOptions(destinationOptions);
   }, [awsOrganizations]);
 
   useEffect(() => {
