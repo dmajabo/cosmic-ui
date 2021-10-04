@@ -8,8 +8,9 @@ import { IAppGroup_PanelDataNode, IDeviceNode, ILink, INetworkGroupNode, IVM_Pan
 import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
 import { useZoom } from '../hooks/useZoom';
 import IconButton from 'app/components/Buttons/IconButton';
-import { zoomInIcon, zoomOutIcon, zoomFullScreenIcon, zoomCenterIcon } from 'app/components/SVGIcons/zoom';
+import { zoomInIcon, zoomOutIcon, zoomFullScreenIcon, zoomOutFullScreenMode, zoomCenterIcon } from 'app/components/SVGIcons/zoom';
 import NodeWrapper from '../Containers/Nodes/NodeWrapper';
+import DefsComponent from '../Containers/Shared/DefsComponent';
 // import { drawSimulation } from './helper';
 // import Node from './Node';
 interface Props {
@@ -72,7 +73,7 @@ const Graph: React.FC<Props> = (props: Props) => {
         xmlns="http://www.w3.org/2000/svg"
         xmlnsXlink="http://www.w3.org/1999/xlink"
       >
-        {/* <DefsComponent /> */}
+        <DefsComponent />
         <GContainer id={TOPOLOGY_IDS.G_ROOT}>
           {topology && (
             <>
@@ -95,7 +96,7 @@ const Graph: React.FC<Props> = (props: Props) => {
         <IconButton styles={{ margin: '10px 0 0 0' }} icon={zoomCenterIcon} title="Center" onClick={onCentered} />
         <IconButton
           styles={{ margin: '30px 0 0 0' }}
-          icon={props.isFullScreen ? zoomFullScreenIcon : zoomFullScreenIcon}
+          icon={props.isFullScreen ? zoomOutFullScreenMode : zoomFullScreenIcon}
           title={props.isFullScreen ? 'Close fullscreen mode' : 'Open fullscreen mode'}
           onClick={onOpenFullScreen}
         />

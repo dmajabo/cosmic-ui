@@ -23,6 +23,7 @@ import { generateLinks } from './links';
 import * as d3 from 'd3';
 import { NODES_CONSTANTS } from 'app/components/Map/model';
 import { STANDART_DISPLAY_RESOLUTION } from 'lib/models/general';
+// import { jsonClone } from './cloneHelper';
 
 const createDeviceNode = (org: IOrganization, orgIndex: number, node: IDevice, index: number): IDeviceNode => {
   return { ...node, visible: true, childIndex: index, orgIndex: orgIndex, orgId: org.id, x: 0, y: 0, scaleFactor: 1, nodeType: TOPOLOGY_NODE_TYPES.DEVICE };
@@ -135,6 +136,19 @@ export const prepareNodesData = (_data: ITopologyMapData, _groups: ITopologyGrou
       }
     });
   }
+  // for (let i = 0; i < 20; i++) {
+  //   const gr = jsonClone(_groups[0]);
+  //   gr.id = `testGroup${i}`;
+  //   const _obj: INetworkGroupNode = createGroupNode(gr, groupStartIndex + i + 2);
+  //   if (devicesInGroup.length) {
+  //     _obj.devices = devicesInGroup;
+  //     const size = createpackLayout(_obj);
+  //     _obj.r = size.r;
+  //     _obj.collapsed = false;
+  //   }
+  //   nodes.push(_obj);
+  //   topologyGroups.push(_obj);
+  // }
   setUpGroupsCoord(topologyGroups);
   // setUpDevicesCoord(devices, topologyGroups);
   // setUpBrancheCoord(devices, topologyGroups);
@@ -151,6 +165,7 @@ export const setUpGroupsCoord = (_groupsData: INetworkGroupNode[]) => {
   _nodes.push({ id: `1` } as INetworkGroupNode);
   const simulation = d3
     .forceSimulation(_nodes)
+    // .alpha(0.5)
     .force('center', d3.forceCenter(STANDART_DISPLAY_RESOLUTION.width / 2, STANDART_DISPLAY_RESOLUTION.height / 2))
     .force(
       'collision',
@@ -159,8 +174,7 @@ export const setUpGroupsCoord = (_groupsData: INetworkGroupNode[]) => {
         .radius(d => {
           if (d.nodeType === TOPOLOGY_NODE_TYPES.NETWORK_GROUP) {
             if (d.collapsed || !d.devices || !d.devices.length) return NODES_CONSTANTS.NETWORK_GROUP.r * 2 + NODES_CONSTANTS.NETWORK_GROUP.spaceX + NODES_CONSTANTS.NETWORK_GROUP.spaceY;
-
-            return d.r;
+            return d.r + NODES_CONSTANTS.NETWORK_GROUP.r;
           }
           return 50;
         })
@@ -181,10 +195,8 @@ export const setUpGroupsCoord = (_groupsData: INetworkGroupNode[]) => {
   _groupsData.forEach((it, i) => {
     it.x = _nodes[i].x - offsetX;
     it.y = _nodes[i].y;
-    if (it && it.devices && it.devices.length) {
-      it.x = it.x - 10 + it.r / 2;
-    } else {
-      it.x = it.x - 10 + NODES_CONSTANTS.NETWORK_GROUP.r / 2;
+    if (it && it.devices && it.devices.length && !it.collapsed) {
+      it.x = it.x + it.r + NODES_CONSTANTS.NETWORK_GROUP.r;
     }
   });
 };

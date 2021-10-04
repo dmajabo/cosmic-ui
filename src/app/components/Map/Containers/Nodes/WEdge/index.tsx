@@ -2,7 +2,6 @@ import React from 'react';
 import { IWedgeNode } from 'lib/models/topology';
 import { IPosition, NODES_CONSTANTS } from 'app/components/Map/model';
 import { useDrag } from 'app/components/Map/hooks/useDrag';
-import TGW from './TGW';
 import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
 import TransitionContainer from '../../TransitionContainer';
 import NodeName from '../../Shared/NodeName';
@@ -72,33 +71,10 @@ const WEdgeNode: React.FC<IProps> = (props: IProps) => {
   return (
     <TransitionContainer stateIn={visible}>
       <g id={`${NODES_CONSTANTS.WEDGE.type}${props.dataItem.id}`} className="topologyNode" transform={`translate(${pos.x}, ${pos.y})`} data-type={NODES_CONSTANTS.WEDGE.type}>
-        <g>
-          <g
-            // onMouseEnter={e => onTogglePopup(e, true)}
-            // onMouseLeave={e => onTogglePopup(e, false)}
-            onClick={onClick}
-          >
-            {TGW}
-          </g>
-          <NodeName labelBefore="TGW" name={props.dataItem.name} dx={-NODES_CONSTANTS.WEDGE.r} dy={NODES_CONSTANTS.WEDGE.r * 2 + 10} />
-          {/* <text dx={NODES_CONSTANTS.WEDGE.r} dy={NODES_CONSTANTS.WEDGE.r * 2 + 20} fill="var(--_primaryColor)" fontSize="14" textAnchor="middle">
-            <tspan>TGW</tspan>
-          </text> */}
-          {/* <foreignObject pointerEvents="none" x={} y={} width={NODES_CONSTANTS.WEDGE.textWidth} height={NODES_CONSTANTS.WEDGE.textHeight}>
-            <div
-              style={{
-                width: '100%',
-                minHeight: '12px',
-                fontSize: NODES_CONSTANTS.WEDGE.fontSize,
-                textAlign: 'center',
-                pointerEvents: 'none',
-                color: 'var(--_primaryColor)',
-              }}
-            >
-              {props.dataItem.name}
-            </div>
-          </foreignObject> */}
+        <g onClick={onClick}>
+          <use href="#wedgeSvg" />
         </g>
+        <NodeName labelBefore="TGW" name={props.dataItem.name} dx={-NODES_CONSTANTS.WEDGE.r} dy={NODES_CONSTANTS.WEDGE.r * 2 + 10} />
       </g>
     </TransitionContainer>
   );

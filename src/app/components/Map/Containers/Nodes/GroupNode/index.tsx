@@ -2,9 +2,8 @@ import React from 'react';
 import { IDeviceNode, INetworkGroupNode } from 'lib/models/topology';
 import { IPosition, NODES_CONSTANTS } from 'app/components/Map/model';
 import { useDrag } from 'app/components/Map/hooks/useDrag';
-import CISCO_MERAKI from './Cisco_MERAKI';
 // import { IPopupDisplay } from 'lib/models/general';
-// import { Transition } from 'react-transition-group';
+import { Transition } from 'react-transition-group';
 import GroupDevicesContainer from './GroupDevicesContainer';
 import * as d3 from 'd3';
 import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
@@ -41,15 +40,7 @@ const GroupNode: React.FC<IProps> = (props: IProps) => {
       setVisible(props.dataItem.visible);
     }
     if (props.dataItem.collapsed !== collapsed) {
-      d3.select(`#${NODES_CONSTANTS.NETWORK_GROUP.type}${props.dataItem.id}`)
-        .transition()
-        .attr('transform', `translate(${props.dataItem.x}, ${props.dataItem.y})`)
-        .on('end', () => {
-          setCollapsed(props.dataItem.collapsed);
-          setPosition({ x: props.dataItem.x, y: props.dataItem.y });
-          setShouldUpdate(!shouldUpdate);
-        });
-      return;
+      setCollapsed(props.dataItem.collapsed);
     }
     if (pos && (pos.x !== props.dataItem.x || pos.y !== props.dataItem.y)) {
       d3.select(`#${NODES_CONSTANTS.NETWORK_GROUP.type}${props.dataItem.id}`)
@@ -111,15 +102,13 @@ const GroupNode: React.FC<IProps> = (props: IProps) => {
   return (
     <TransitionContainer stateIn={visible}>
       <g id={`${NODES_CONSTANTS.NETWORK_GROUP.type}${props.dataItem.id}`} className="topologyNode" transform={`translate(${pos.x}, ${pos.y})`} data-type={NODES_CONSTANTS.NETWORK_GROUP.type}>
-        {!collapsed && <GroupDevicesContainer dataItem={props.dataItem} onClickDevice={onClickDevice} />}
-        <g
-          // onMouseEnter={e => onTogglePopup(e, true)}
-          // onMouseLeave={e => onTogglePopup(e, false)}
-          onClick={onExpandCollapse}
-          style={{ cursor: 'pointer' }}
-          pointerEvents="all"
-        >
-          <>{CISCO_MERAKI}</>
+        {props.dataItem.devices && props.dataItem.devices.length && (
+          <Transition mountOnEnter unmountOnExit timeout={0} in={!collapsed}>
+            {state => <GroupDevicesContainer dataItem={props.dataItem} className={state} onClickDevice={onClickDevice} />}
+          </Transition>
+        )}
+        <g onClick={onExpandCollapse} style={{ cursor: 'pointer' }} pointerEvents="all">
+          <use href="#ciscoMerakiGroupSvg" />
         </g>
         {collapsed && <NodeName name={props.dataItem.name} dx={-NODES_CONSTANTS.NETWORK_GROUP.spaceX / 2} dy={NODES_CONSTANTS.NETWORK_GROUP.r * 2} />}
       </g>

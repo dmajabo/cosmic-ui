@@ -2,7 +2,6 @@ import React from 'react';
 import { IDeviceNode } from 'lib/models/topology';
 import { IPosition, NODES_CONSTANTS } from 'app/components/Map/model';
 import { useDrag } from 'app/components/Map/hooks/useDrag';
-import CISCO_MERAKI_DEVICE from './CISCO_MERAKI_DEVICE';
 import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
 import TransitionContainer from '../../TransitionContainer';
 // import { IPopupDisplay } from 'lib/models/general';
@@ -87,7 +86,7 @@ const DeviceNode: React.FC<IProps> = (props: IProps) => {
             style={{ cursor: 'pointer' }}
             pointerEvents="all"
           >
-            {CISCO_MERAKI_DEVICE}
+            <use href="#ciscoMerakiDeviceSvg" />
           </g>
           <foreignObject pointerEvents="none" x={NODES_CONSTANTS.Devisec.dx} y={NODES_CONSTANTS.Devisec.dy} width={NODES_CONSTANTS.Devisec.textWidth} height={NODES_CONSTANTS.Devisec.textHeight}>
             <div
