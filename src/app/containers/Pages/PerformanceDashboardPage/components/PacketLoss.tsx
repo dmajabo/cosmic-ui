@@ -6,6 +6,8 @@ import { MetricsLineChart } from './MetricsLineChart';
 import InfoIcon from '../icons/info.svg';
 import LoadingIndicator from '../../../../components/Loading';
 import { Data } from './Table';
+import Heatmap from './Heatmap';
+import { HeatMapData } from '../SharedTypes';
 
 interface PacketLossProps {
   readonly selectedRows: Data[];
@@ -21,12 +23,23 @@ export interface MetricKeyValue {
   [id: string]: DataMetrics[];
 }
 
+export interface TestIdToName {
+  [id: string]: string;
+}
+
 export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange }) => {
   const classes = PerformanceDashboardStyles();
 
   const [packetLossData, setPacketLossData] = useState<MetricKeyValue>({});
+  const [heatMapPacketLoss, setHeatMapPacketLoss] = useState<HeatMapData[]>([]);
+
+  const testIdToName: TestIdToName = selectedRows.reduce((accu, nextValue) => {
+    accu[nextValue.id] = nextValue.name;
+    return accu;
+  }, {});
 
   const apiClient = createApiClient();
+
   useEffect(() => {
     const getPacketLossMetrics = async () => {
       const packetLossChartData: MetricKeyValue = {};
@@ -36,9 +49,27 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange 
         setPacketLossData(packetLossChartData);
       });
     };
-    getPacketLossMetrics();
 
-    return () => setPacketLossData({});
+    const getHeatMapPacketLoss = async () => {
+      const promises = selectedRows.map(row => apiClient.getHeatmapPacketLoss(row.sourceNetwork, row.destination, timeRange, row.id));
+      Promise.all(promises).then(values => {
+        const heatMapPacketLoss: HeatMapData[] = values.map(item => {
+          return {
+            testId: item.testId,
+            metrics: item.avgMetric.resourceMetric,
+          };
+        });
+        setHeatMapPacketLoss(heatMapPacketLoss);
+      });
+    };
+
+    getPacketLossMetrics();
+    getHeatMapPacketLoss();
+
+    return () => {
+      setPacketLossData({});
+      setHeatMapPacketLoss([]);
+    };
   }, [selectedRows, timeRange]);
 
   return (
@@ -58,6 +89,33 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange 
         {selectedRows.length > 0 ? (
           Object.keys(packetLossData).length === selectedRows.length ? (
             <MetricsLineChart dataValueSuffix="%" selectedRows={selectedRows} inputData={packetLossData} />
+          ) : (
+            <div className={classes.noChartContainer}>
+              <LoadingIndicator />
+            </div>
+          )
+        ) : (
+          <div className={classes.noChartContainer}>
+            <Typography className={classes.noChartText}>To see the data select SLA Tests on top</Typography>
+          </div>
+        )}
+      </div>
+      <hr className={classes.hrLine} />
+      <div className={classes.flexContainer}>
+        <div>
+          <Typography className={classes.itemTitle}>
+            Average packet loss
+            <span className={classes.sortIcon}>
+              <img src={InfoIcon} alt="ínfo" />
+            </span>
+          </Typography>
+          <Typography className={classes.subTitleText}>Shows aggregated packet loss between branches and applications.</Typography>
+        </div>
+      </div>
+      <div className={classes.lineChartContainer}>
+        {selectedRows.length > 0 ? (
+          heatMapPacketLoss.length === selectedRows.length ? (
+            <Heatmap data={heatMapPacketLoss} selectedRows={testIdToName} dataSuffix="%" />
           ) : (
             <div className={classes.noChartContainer}>
               <LoadingIndicator />
