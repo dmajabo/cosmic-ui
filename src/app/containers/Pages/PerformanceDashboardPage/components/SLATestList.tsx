@@ -15,7 +15,8 @@ import AverageQoe from './AverageQoe';
 interface SLATestListProps {
   readonly finalTableData: FinalTableData[];
   readonly addSlaTest: Function;
-  readonly organizations: Organization[];
+  readonly merakiOrganizations: Organization[];
+  readonly awsOrganizations: Organization[];
   readonly deleteSlaTest: Function;
 }
 
@@ -69,7 +70,7 @@ const columns: Column[] = [
   },
 ];
 
-export const SLATestList: React.FC<SLATestListProps> = ({ deleteSlaTest, organizations, finalTableData, addSlaTest }) => {
+export const SLATestList: React.FC<SLATestListProps> = ({ deleteSlaTest, awsOrganizations, merakiOrganizations, finalTableData, addSlaTest }) => {
   const classes = PerformanceDashboardStyles();
 
   const [createToggle, setCreateToggle] = React.useState<boolean>(false);
@@ -181,7 +182,7 @@ export const SLATestList: React.FC<SLATestListProps> = ({ deleteSlaTest, organiz
         </TabPanel>
       </div>
       <Backdrop style={{ color: '#fff', zIndex: 5 }} open={createToggle}>
-        <CreateSLATest organizations={organizations} addSlaTest={addTest} popup={true} closeSlaTest={handleClose} />
+        <CreateSLATest awsOrganizations={awsOrganizations} merakiOrganizations={merakiOrganizations} addSlaTest={addTest} popup={true} closeSlaTest={handleClose} />
       </Backdrop>
     </div>
   );
