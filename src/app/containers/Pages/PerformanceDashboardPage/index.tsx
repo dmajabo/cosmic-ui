@@ -35,14 +35,17 @@ const PerformanceDashboardPage: React.FC = () => {
 
   const apiClient = createApiClient();
   const [finalTableData, setFinalTableData] = useState<FinalTableData[]>([]);
-  const [organizations, setOrganizations] = useState<Organization[]>([]);
+  const [merakiOrganizations, setMerakiOrganizations] = useState<Organization[]>([]);
+  const [awsOrganizations, setAwsOrganizations] = useState<Organization[]>([]);
 
   useEffect(() => {
     const getOrganizations = async () => {
       const responseData = await apiClient.getOrganizations();
       if (Object.keys(responseData).length > 0) {
         const merakiOrganizations = responseData.organizations.filter(organization => organization.vendorType === 'MERAKI');
-        setOrganizations(merakiOrganizations);
+        const awsOrganizations = responseData.organizations.filter(organization => organization.vendorType === 'AWS');
+        setMerakiOrganizations(merakiOrganizations);
+        setAwsOrganizations(awsOrganizations);
       }
     };
     getOrganizations();
@@ -53,7 +56,7 @@ const PerformanceDashboardPage: React.FC = () => {
     if (Object.keys(responseData).length > 0) {
       if (Array.isArray(responseData.slaTests) && responseData.slaTests.length) {
         const testData: FinalTableData[] = responseData.slaTests.map(test => {
-          const selectedOrganization = GetSelectedOrganization(organizations, test.sourceOrgId);
+          const selectedOrganization = GetSelectedOrganization(merakiOrganizations, test.sourceOrgId);
           const allDevices: string = GetDevicesString(selectedOrganization);
           return {
             id: test.testId,
@@ -76,10 +79,10 @@ const PerformanceDashboardPage: React.FC = () => {
   };
 
   useEffect(() => {
-    if (organizations.length > 0) {
+    if (merakiOrganizations.length > 0) {
       getSLATests();
     }
-  }, [organizations]);
+  }, [merakiOrganizations]);
 
   const addSlaTest = async (submitData: CreateSLATestRequest) => {
     const responseData = await apiClient.createSLATest(submitData);
@@ -106,9 +109,9 @@ const PerformanceDashboardPage: React.FC = () => {
       </div>
       <TabPanel value={tab} index={'sla_tests'}>
         {finalTableData.length > 0 ? (
-          <SLATestList deleteSlaTest={deleteSlaTest} organizations={organizations} finalTableData={finalTableData} addSlaTest={addSlaTest} />
+          <SLATestList deleteSlaTest={deleteSlaTest} awsOrganizations={awsOrganizations} merakiOrganizations={merakiOrganizations} finalTableData={finalTableData} addSlaTest={addSlaTest} />
         ) : (
-          <CreateSLATest organizations={organizations} addSlaTest={addSlaTest} />
+          <CreateSLATest awsOrganizations={awsOrganizations} merakiOrganizations={merakiOrganizations} addSlaTest={addSlaTest} />
         )}
       </TabPanel>
     </div>

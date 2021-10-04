@@ -5,15 +5,22 @@ import Select from 'react-select';
 import { CreateSLATestRequest, Organization, SLATest } from '../SharedTypes';
 import CloseIcon from '../icons/close.svg';
 import { GetSelectedOrganization } from './filterFunctions';
+import CreatableSelect from 'react-select/creatable';
 
 interface CreateSLATestProps {
   readonly addSlaTest: Function;
-  readonly organizations: Organization[];
+  readonly merakiOrganizations: Organization[];
+  readonly awsOrganizations: Organization[];
   readonly popup?: boolean;
   readonly closeSlaTest?: Function;
 }
 
-export const CreateSLATest: React.FC<CreateSLATestProps> = ({ organizations, addSlaTest, closeSlaTest, popup }) => {
+interface SelectOptions {
+  readonly value: string;
+  readonly label: string;
+}
+
+export const CreateSLATest: React.FC<CreateSLATestProps> = ({ awsOrganizations, merakiOrganizations, addSlaTest, closeSlaTest, popup }) => {
   const classes = PerformanceDashboardStyles();
 
   const [name, setName] = useState<string>('');
@@ -24,28 +31,47 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ organizations, add
 
   const [selectedOrganizationVnets, setSelectedOrganizationVnets] = useState([]);
 
-  const [sourceOrganizationOptions, setSourceOrganizationOptions] = useState([]);
-  const [sourceNetworkOptions, setSourceNetworkOptions] = useState([]);
+  const [sourceOrganizationOptions, setSourceOrganizationOptions] = useState<SelectOptions[]>([]);
+  const [sourceNetworkOptions, setSourceNetworkOptions] = useState<SelectOptions[]>([]);
+  const [destinationOptions, setDestinationOptions] = useState<SelectOptions[]>([]);
 
   useEffect(() => {
-    const organizationOptions = organizations.map(organization => {
+    const organizationOptions = merakiOrganizations.map(organization => {
       return {
         value: `${organization.extId}`,
         label: `${organization.name}`,
       };
     });
     setSourceOrganizationOptions(organizationOptions);
-  }, [organizations]);
+  }, [merakiOrganizations]);
 
   useEffect(() => {
-    if (organizations.length > 0 && sourceOrg !== '') {
-      const selectedOrganization = GetSelectedOrganization(organizations, sourceOrg);
+    const destinationOptions: SelectOptions[] = [];
+    awsOrganizations.forEach(organization => {
+      organization.vnets.forEach(vnet => {
+        vnet.vms.forEach(vm => {
+          vm.nic.forEach(nic => {
+            const ipAddress = nic.publicIp ? nic.publicIp : nic.privateIp;
+            destinationOptions.push({
+              label: `${vm.name}(${ipAddress})`,
+              value: ipAddress,
+            });
+          });
+        });
+      });
+    });
+    setDestinationOptions(destinationOptions);
+  }, [awsOrganizations]);
+
+  useEffect(() => {
+    if (merakiOrganizations.length > 0 && sourceOrg) {
+      const selectedOrganization = GetSelectedOrganization(merakiOrganizations, sourceOrg);
       setSelectedOrganizationVnets(selectedOrganization.vnets);
     }
   }, [sourceOrg]);
 
   useEffect(() => {
-    const networkOptions = selectedOrganizationVnets.map(vnet => {
+    const networkOptions: SelectOptions[] = selectedOrganizationVnets.map(vnet => {
       return {
         value: vnet.extId,
         label: vnet.extId,
@@ -116,7 +142,7 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ organizations, add
           <span className={classes.tableHeaderText}>SOURCE NETWORK</span>
           <Select styles={dropdownStyle} label="Single select" options={sourceNetworkOptions} onChange={e => setSourceNetwork(e.value)} />
           <span className={classes.tableHeaderText}>DESTINATION</span>
-          <input className={classes.slaInput} type="text" value={destination} onChange={e => setDestination(e.target.value)} />
+          <CreatableSelect isClearable styles={dropdownStyle} onChange={e => setDestination(e.value)} options={destinationOptions} />
           <span className={classes.tableHeaderText}>DESCRIPTION</span>
           <input className={classes.slaInput} type="text" value={description} onChange={e => setDescription(e.target.value)} />
         </div>
