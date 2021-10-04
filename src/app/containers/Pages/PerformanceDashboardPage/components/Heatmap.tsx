@@ -23,6 +23,10 @@ export interface LegendData {
   readonly color: string;
 }
 
+const LATENCY_SUFFIX = 'ms';
+
+const MAX_LEGEND_COUNT = 5;
+
 const LEGEND_COLOURS = ['#FFECDC', '#FED0AB', '#FFC568', '#F9A825', '#DC4545'];
 
 const Heatmap: React.FC<HeatmapProps> = ({ data, selectedRows, dataSuffix }) => {
@@ -42,7 +46,7 @@ const Heatmap: React.FC<HeatmapProps> = ({ data, selectedRows, dataSuffix }) => 
     data.forEach(test => {
       test.metrics.forEach(device => {
         devices.push(device.resourceId);
-        heatMapData[`${test.testId}_${device.resourceId}`] = dataSuffix === 'ms' ? Number(device.keyedmap[0].ts[0].value).toFixed(2) : device.keyedmap[0].ts[0].value;
+        heatMapData[`${test.testId}_${device.resourceId}`] = dataSuffix === LATENCY_SUFFIX ? Number(device.keyedmap[0].ts[0].value).toFixed(2) : device.keyedmap[0].ts[0].value;
         values.push(Number(Number(device.keyedmap[0].ts[0].value).toFixed(2)));
       });
     });
@@ -60,7 +64,7 @@ const Heatmap: React.FC<HeatmapProps> = ({ data, selectedRows, dataSuffix }) => 
     const increment = (maxValue - minValue) / 5;
     const legendDataPoints: number[] = [];
 
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < MAX_LEGEND_COUNT; i++) {
       i === 0 ? legendDataPoints.push(minValue) : legendDataPoints.push(legendDataPoints[i - 1] + increment);
     }
     const legendData: LegendData[] = legendDataPoints.map((point, index) => {
