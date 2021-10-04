@@ -33,8 +33,10 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange 
   const [packetLossData, setPacketLossData] = useState<MetricKeyValue>({});
   const [heatMapPacketLoss, setHeatMapPacketLoss] = useState<HeatMapData[]>([]);
 
-  const testIdToName: TestIdToName = {};
-  selectedRows.forEach(row => (testIdToName[row.id] = row.name));
+  const testIdToName: TestIdToName = selectedRows.reduce((accu, nextValue) => {
+    accu[nextValue.id] = nextValue.name;
+    return accu;
+  }, {});
 
   const apiClient = createApiClient();
 

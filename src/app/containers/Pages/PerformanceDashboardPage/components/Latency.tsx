@@ -23,8 +23,10 @@ export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange }) => 
 
   const apiClient = createApiClient();
 
-  const testIdToName: TestIdToName = {};
-  selectedRows.forEach(row => (testIdToName[row.id] = row.name));
+  const testIdToName: TestIdToName = selectedRows.reduce((accu, nextValue) => {
+    accu[nextValue.id] = nextValue.name;
+    return accu;
+  }, {});
 
   useEffect(() => {
     const getLatencyMetrics = async () => {

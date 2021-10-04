@@ -5,6 +5,7 @@ import { HeatMapData } from '../SharedTypes';
 import { GridRow } from './GridRow';
 import LegendBox from './LegendBox';
 import { TestIdToName } from './PacketLoss';
+import { uniq } from 'lodash';
 
 interface HeatmapProps {
   readonly data: HeatMapData[];
@@ -46,11 +47,9 @@ const Heatmap: React.FC<HeatmapProps> = ({ data, selectedRows, dataSuffix }) => 
       });
     });
 
-    devices.push('');
+    devices.push(''); // Adds an extra row to display Test Names.
 
-    const uniqueDevices: string[] = devices.filter(function (item, pos, self) {
-      return self.indexOf(item) == pos;
-    });
+    const uniqueDevices: string[] = uniq(devices);
 
     setTests(testsId);
     setDevices(uniqueDevices);
