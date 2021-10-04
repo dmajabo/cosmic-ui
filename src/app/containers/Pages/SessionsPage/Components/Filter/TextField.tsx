@@ -1,13 +1,13 @@
 import React from 'react';
 import Popover from '@mui/material/Popover';
-import { FilterWrapper, Label, InputWrapper, Input, Listbox, ListItem } from './styles';
+import { Label, Input, Listbox, ListItem } from './styles';
 // import Checkbox from '@mui/material/Checkbox';
 // import TextField from '@mui/material/TextField';
 // import Autocomplete from '@mui/material/Autocomplete';
 // import { useAutocomplete, AutocompleteGetTagProps } from '@mui/core/AutocompleteUnstyled';
 // import Chip from '@mui/material/Chip';
 import { IAutoCompliteItem, IGroupedFilteredItem, instanceOfObject } from './model';
-import SimpleCheckbox from 'app/components/Inputs/Checkbox/SimpleCheckbox';
+// import SimpleCheckbox from 'app/components/Inputs/Checkbox/SimpleCheckbox';
 // import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 // import CheckBoxIcon from '@mui/icons-material/CheckBox';
 // import Tag from './Tag';

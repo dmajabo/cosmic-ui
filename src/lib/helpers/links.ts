@@ -1,5 +1,6 @@
-import { ISize, NODES_CONSTANTS } from 'app/components/Map/model';
+import { IPosition, ISize, NODES_CONSTANTS } from 'app/components/Map/model';
 import { ILink, TOPOLOGY_LINKS_TYPES, IConnectionToLink, INetworkGroupNode, IWedgeNode, IVnetNode, IDeviceNode, TOPOLOGY_NODE_TYPES } from 'lib/models/topology';
+import { jsonClone } from './cloneHelper';
 
 export const generateLinks = (
   nodes: (IWedgeNode | IVnetNode | IDeviceNode | INetworkGroupNode)[],
@@ -188,4 +189,38 @@ export const createG_WLink = (target: INetworkGroupNode, source: IWedgeNode): IC
     sourceType: NODES_CONSTANTS.WEDGE.type,
     visible: true,
   };
+};
+
+export const onUpdateTargetLink = (links: ILink[], itemId: string, _position: IPosition, centerX: number, centerY: number): ILink[] => {
+  const _links: ILink[] = links && links.length ? jsonClone(links) : [];
+  _links.forEach(link => {
+    if (link.sourceId === itemId) {
+      link.sourceCoord.x = _position.x + centerX;
+      link.sourceCoord.y = _position.y + centerY;
+    }
+    if (link.targetId === itemId) {
+      link.targetCoord.x = _position.x + centerX;
+      link.targetCoord.y = _position.y + centerY;
+    }
+  });
+  return _links;
+};
+
+export const onUpdateLinkPos = (links: ILink[], nodes: any[], centerX: number, centerY: number, type: TOPOLOGY_LINKS_TYPES): ILink[] => {
+  const _links: ILink[] = links && links.length ? jsonClone(links) : [];
+  const _lData = _links.filter(it => it.type === type);
+  if (!_lData || !_lData.length) return _links;
+  _lData.forEach(link => {
+    const _n = nodes.find(it => it.id === link.sourceId || it.id === link.targetId);
+    if (!_n) return;
+    if (link.sourceId === _n.id) {
+      link.sourceCoord.x = _n.x + centerX;
+      link.sourceCoord.y = _n.y + centerY;
+    }
+    if (link.targetId === _n.id) {
+      link.targetCoord.x = _n.x + centerX;
+      link.targetCoord.y = _n.y + centerY;
+    }
+  });
+  return _links;
 };

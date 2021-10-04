@@ -10,6 +10,8 @@ import { useZoom } from '../hooks/useZoom';
 import IconButton from 'app/components/Buttons/IconButton';
 import { zoomInIcon, zoomOutIcon, zoomFullScreenIcon, zoomCenterIcon } from 'app/components/SVGIcons/zoom';
 import NodeWrapper from '../Containers/Nodes/NodeWrapper';
+// import { drawSimulation } from './helper';
+// import Node from './Node';
 interface Props {
   isFullScreen: boolean;
   onOpenFullScreen: () => void;
@@ -25,6 +27,7 @@ const Graph: React.FC<Props> = (props: Props) => {
 
   const [nodes, setNodes] = React.useState<(IWedgeNode | IVnetNode | IDeviceNode | INetworkGroupNode)[] | null>(null);
   const [links, setLinks] = React.useState<ILink[] | null>(null);
+
   React.useEffect(() => {
     onZoomInit({ k: 1, x: 0, y: 0 });
     return () => {
@@ -33,6 +36,10 @@ const Graph: React.FC<Props> = (props: Props) => {
   }, []);
 
   React.useEffect(() => {
+    // if (topology.nodes && topology.nodes.length) {
+    //   drawSimulation(topology.nodes, topology.links);
+    // }
+
     setNodes(topology.nodes);
     setLinks(topology.links);
   }, [topology.nodes, topology.links]);
@@ -78,6 +85,8 @@ const Graph: React.FC<Props> = (props: Props) => {
               </g>
             </>
           )}
+          {/* <g id="linkContainer" />
+          <g id="nodesContainer">{nodes && nodes.length && nodes.map(it => <Node key={`node${it.id}`} node={it} />)}</g> */}
         </GContainer>
       </StyledMap>
       <ZoomButtonsWrapper>

@@ -16,6 +16,8 @@ import {
   TOPOLOGY_NODE_TYPES,
   IVnet,
   IVm,
+  DEFAULT_GROUP_ID,
+  DEFAULT_RACK_RADIUS,
 } from 'lib/models/topology';
 import { generateLinks } from './links';
 import * as d3 from 'd3';
@@ -66,6 +68,7 @@ export const prepareNodesData = (_data: ITopologyMapData, _groups: ITopologyGrou
   let devices: IDeviceNode[] = [];
   let topologyGroups: INetworkGroupNode[] = [];
   const devicesInGroup: IDeviceNode[] = [];
+  let createDefGroup = false;
   _data.organizations.forEach((org, i) => {
     if (org.wedges && org.wedges.length) {
       org.wedges.forEach((w, index) => {
@@ -85,18 +88,39 @@ export const prepareNodesData = (_data: ITopologyMapData, _groups: ITopologyGrou
       org.devices.forEach((d, index) => {
         const obj: IDeviceNode = createDeviceNode(org, i, d, index);
         if (d.selectorGroup) {
+          if (!createDefGroup && d.selectorGroup === DEFAULT_GROUP_ID) {
+            createDefGroup = true;
+          }
           devicesInGroup.push(obj);
-        } else {
-          nodes.push(obj);
-          devices.push(obj);
+          return;
         }
+        devices.push(obj);
       });
     }
   });
+  let groupStartIndex = topologyGroups.length;
+  if ((devices && devices.length) || createDefGroup) {
+    const defaultGroup: INetworkGroupNode = createGroupNode(
+      {
+        id: DEFAULT_GROUP_ID,
+        name: 'Default',
+        type: TopologyGroupTypesAsString.BRANCH_NETWORKS,
+        expr: null,
+      },
+      groupStartIndex,
+    );
+    defaultGroup.devices = [...devices];
+    const size = createpackLayout(defaultGroup);
+    defaultGroup.r = size.r;
+    defaultGroup.collapsed = true;
+    topologyGroups.push(defaultGroup);
+    nodes.push(defaultGroup);
+    groupStartIndex = topologyGroups.length;
+  }
   if (_groups && _groups.length) {
     _groups.forEach((gr, index) => {
       if (gr.type === TopologyGroupTypesAsNumber.BRANCH_NETWORKS || gr.type === TopologyGroupTypesAsString.BRANCH_NETWORKS) {
-        const _obj: INetworkGroupNode = createGroupNode(gr, index);
+        const _obj: INetworkGroupNode = createGroupNode(gr, groupStartIndex + index);
         if (devicesInGroup.length) {
           const _devs = devicesInGroup.filter(it => it.selectorGroup === gr.name || it.selectorGroup === gr.id);
           _obj.devices = _devs;
@@ -106,18 +130,14 @@ export const prepareNodesData = (_data: ITopologyMapData, _groups: ITopologyGrou
             _obj.collapsed = false;
           }
         }
-        for (let i = 0; i < 10; i++) {
-          const element = Object.assign({}, { ..._obj, id: `${_obj.id}${index}${i}` });
-          nodes.push(element);
-          topologyGroups.push(element);
-        }
         nodes.push(_obj);
         topologyGroups.push(_obj);
       }
     });
   }
   setUpGroupsCoord(topologyGroups);
-  setUpDevicesCoord(devices, topologyGroups);
+  // setUpDevicesCoord(devices, topologyGroups);
+  // setUpBrancheCoord(devices, topologyGroups);
   // const startY = calculateStartY(devices, topologyGroups);
   setUpVnetCoord(vnets, 0);
   setUpWedgesCoord(wedges);
@@ -127,17 +147,24 @@ export const prepareNodesData = (_data: ITopologyMapData, _groups: ITopologyGrou
 
 export const setUpGroupsCoord = (_groupsData: INetworkGroupNode[]) => {
   if (!_groupsData || !_groupsData.length) return;
-  const _nodes = _groupsData.map(g => Object.assign({}, g));
+  const _nodes: any[] = _groupsData.map(g => Object.assign({}, g));
   _nodes.push({ id: `1` } as INetworkGroupNode);
   const simulation = d3
     .forceSimulation(_nodes)
-    .force('center', d3.forceCenter(STANDART_DISPLAY_RESOLUTION.width / 2, STANDART_DISPLAY_RESOLUTION.height / 3))
+    .force('center', d3.forceCenter(STANDART_DISPLAY_RESOLUTION.width / 2, STANDART_DISPLAY_RESOLUTION.height / 2))
     .force(
       'collision',
-      d3.forceCollide().radius(d => {
-        if (d.collapsed || !d.devices || !d.devices.length) return NODES_CONSTANTS.NETWORK_GROUP.r * 2;
-        return 180;
-      }),
+      d3
+        .forceCollide()
+        .radius(d => {
+          if (d.nodeType === TOPOLOGY_NODE_TYPES.NETWORK_GROUP) {
+            if (d.collapsed || !d.devices || !d.devices.length) return NODES_CONSTANTS.NETWORK_GROUP.r * 2 + NODES_CONSTANTS.NETWORK_GROUP.spaceX + NODES_CONSTANTS.NETWORK_GROUP.spaceY;
+
+            return d.r;
+          }
+          return 50;
+        })
+        .iterations(10),
     )
     .force('x', d3.forceX().strength(0.75))
     .force('y', d3.forceY().strength(0.25))
@@ -155,9 +182,9 @@ export const setUpGroupsCoord = (_groupsData: INetworkGroupNode[]) => {
     it.x = _nodes[i].x - offsetX;
     it.y = _nodes[i].y;
     if (it && it.devices && it.devices.length) {
-      it.x += 160;
-      const size = createpackLayout(it);
-      it.r = size.r;
+      it.x = it.x - 10 + it.r / 2;
+    } else {
+      it.x = it.x - 10 + NODES_CONSTANTS.NETWORK_GROUP.r / 2;
     }
   });
 };
@@ -170,18 +197,23 @@ const createpackLayout = (group: INetworkGroupNode) => {
   const _root = hierarchy(group, d => d.devices);
   _pack(_root);
   const size = packEnclose(_root.children);
-  let scale = 1;
-  if (size.r > 150) {
-    scale = 150 / size.r;
-  }
+  const _r = getPackRadius(size.r);
+  const scale = Math.min(1, _r / size.r);
   if (_root.children && _root.children.length > 0) {
     _root.children.forEach((child, index) => {
-      group.devices[index].x = _cX + child.x * scale - NODES_CONSTANTS.Devisec.width / 2 - 150;
+      group.devices[index].x = _cX + child.x * scale - NODES_CONSTANTS.Devisec.width / 2 - _r;
       group.devices[index].y = _cY + child.y * scale;
       group.devices[index].scaleFactor = scale;
     });
   }
-  return { r: Math.max(160, size.r * scale), x: _cX, y: _cY, scale: scale };
+  return { r: _r + 10, x: _cX, y: _cY, scale: scale };
+};
+
+const getPackRadius = (r: number): number => {
+  if (r <= DEFAULT_RACK_RADIUS) return DEFAULT_RACK_RADIUS;
+  if (r <= DEFAULT_RACK_RADIUS * 2) return DEFAULT_RACK_RADIUS * 1.5;
+  const c = Math.round(r / DEFAULT_RACK_RADIUS) / 2;
+  return r / c;
 };
 
 export const setUpWedgesCoord = (items: IWedgeNode[]) => {
@@ -191,7 +223,7 @@ export const setUpWedgesCoord = (items: IWedgeNode[]) => {
     .nodeSize([NODES_CONSTANTS.WEDGE.r, NODES_CONSTANTS.WEDGE.r + NODES_CONSTANTS.WEDGE.textHeight])
     .size([STANDART_DISPLAY_RESOLUTION.height, STANDART_DISPLAY_RESOLUTION.width / 2]);
   _tree(_root);
-  if (items.length <= 4) {
+  if (items.length <= 8) {
     _root.children.forEach((child, i) => {
       items[i].x = child.y;
       items[i].y = child.x;
@@ -234,72 +266,6 @@ export const setUpVnetCoord = (items: IVnetNode[], _startYCoord: number) => {
     });
 };
 
-export const setUpDevicesCoord = (devices: IDeviceNode[], _devicesGroup: INetworkGroupNode[]) => {
-  if (!devices || !devices.length) return;
-  const cols = getDevCols(devices);
-  const nodeW = getDevWidth();
-  const nodeH = getDevHeight();
-  const _rowsHeight = getDevRowsHeight(devices, nodeH, cols);
-  const _halfHeight = _rowsHeight / 2;
-  let currentRow = 0;
-  let currentCol = 0;
-  let nodeOffsetX = 40;
-  let nodeOffsetY = 0;
-  const _groupMinX = _devicesGroup && _devicesGroup.length ? Math.min(..._devicesGroup.map(item => item.x - item.r * 2 - NODES_CONSTANTS.NETWORK_GROUP.r)) : STANDART_DISPLAY_RESOLUTION.width / 4;
-  const _startX = Math.min(STANDART_DISPLAY_RESOLUTION.width / 4 - 40, _groupMinX);
-  const _startY = STANDART_DISPLAY_RESOLUTION.height / 2;
-  devices.forEach((it, i) => {
-    if (nodeOffsetY === 0 && currentRow !== 0) {
-      nodeOffsetY = 20;
-    }
-    if (currentRow % 2 === 0) {
-      if (currentCol >= cols - 1) {
-        currentRow++;
-        currentCol = 0;
-        nodeOffsetX = currentRow % 2 === 0 ? 40 : 0;
-      }
-    } else {
-      if (currentCol >= cols) {
-        currentRow++;
-        currentCol = 0;
-        nodeOffsetX = currentRow % 2 === 0 ? 40 : 0;
-      }
-    }
-    it.x = _startX - nodeOffsetX - currentCol * nodeW;
-    it.y = currentRow * nodeH + currentRow * nodeOffsetY + _startY - _halfHeight;
-    currentCol++;
-  });
-};
-
-const getDevCols = (items: any[]): number => {
-  if (!items || !items.length) return 0;
-  return Math.ceil(Math.sqrt(items.length)) / 1.5;
-};
-const getDevWidth = (): number => NODES_CONSTANTS.Devisec.textWidth + NODES_CONSTANTS.Devisec.spaceX;
-const getDevHeight = (): number => NODES_CONSTANTS.Devisec.height + NODES_CONSTANTS.Devisec.spaceY / 2;
-const getDevRowsHeight = (items: any[], nodeH: number, cols: number): number => {
-  if (!items || !items.length) return 0;
-  const rowsCount = Math.ceil(items.length / cols);
-  return rowsCount * nodeH + rowsCount * 20;
-};
-
-const calculateStartY = (devices: any[], topologyGroups: any[]): number => {
-  let minGY = 0;
-  if (topologyGroups && topologyGroups.length) {
-    const _arr = topologyGroups.map(it => it.y);
-    minGY = Math.min(..._arr);
-  }
-  let devY = 0;
-  if (devices && devices.length) {
-    const cols = getDevCols(devices);
-    const devH = getDevHeight();
-    const height = getDevRowsHeight(devices, devH, cols);
-    devY = STANDART_DISPLAY_RESOLUTION.height / 2 - height / 2;
-  }
-  const _stY = Math.min(0, minGY, devY);
-  return _stY;
-};
-
 export interface IVpcSize {
   r: number;
   width: number;
@@ -326,3 +292,69 @@ export const getVPCContainerSize = (node: IVnet, _arr: ITopologyGroup[]): IVpcSi
   const _r = Math.max(NODES_CONSTANTS.VNet.width, d / 2);
   return { r: _r, width: NODES_CONSTANTS.VNet.width, height: _height, cols: 3, rows: rows };
 };
+
+// const calculateStartY = (devices: any[], topologyGroups: any[]): number => {
+//   let minGY = 0;
+//   if (topologyGroups && topologyGroups.length) {
+//     const _arr = topologyGroups.map(it => it.y);
+//     minGY = Math.min(..._arr);
+//   }
+//   let devY = 0;
+//   if (devices && devices.length) {
+//     const cols = getDevCols(devices);
+//     const devH = getDevHeight();
+//     const height = getDevRowsHeight(devices, devH, cols);
+//     devY = STANDART_DISPLAY_RESOLUTION.height / 2 - height / 2;
+//   }
+//   const _stY = Math.min(0, minGY, devY);
+//   return _stY;
+// };
+
+// export const setUpDevicesCoord = (devices: IDeviceNode[], _devicesGroup: INetworkGroupNode[]) => {
+//   if (!devices || !devices.length) return;
+//   const cols = getDevCols(devices);
+//   const nodeW = getDevWidth();
+//   const nodeH = getDevHeight();
+//   const _rowsHeight = getDevRowsHeight(devices, nodeH, cols);
+//   const _halfHeight = _rowsHeight / 2;
+//   let currentRow = 0;
+//   let currentCol = 0;
+//   let nodeOffsetX = 40;
+//   let nodeOffsetY = 0;
+//   const _groupMinX = _devicesGroup && _devicesGroup.length ? Math.min(..._devicesGroup.map(item => item.x - item.r * 2 - NODES_CONSTANTS.NETWORK_GROUP.r)) : STANDART_DISPLAY_RESOLUTION.width / 4;
+//   const _startX = Math.min(STANDART_DISPLAY_RESOLUTION.width / 4 - 40, _groupMinX);
+//   const _startY = STANDART_DISPLAY_RESOLUTION.height / 2;
+//   devices.forEach((it, i) => {
+//     if (nodeOffsetY === 0 && currentRow !== 0) {
+//       nodeOffsetY = 20;
+//     }
+//     if (currentRow % 2 === 0) {
+//       if (currentCol >= cols - 1) {
+//         currentRow++;
+//         currentCol = 0;
+//         nodeOffsetX = currentRow % 2 === 0 ? 40 : 0;
+//       }
+//     } else {
+//       if (currentCol >= cols) {
+//         currentRow++;
+//         currentCol = 0;
+//         nodeOffsetX = currentRow % 2 === 0 ? 40 : 0;
+//       }
+//     }
+//     it.x = _startX - nodeOffsetX - currentCol * nodeW;
+//     it.y = currentRow * nodeH + currentRow * nodeOffsetY + _startY - _halfHeight;
+//     currentCol++;
+//   });
+// };
+
+// const getDevCols = (items: any[]): number => {
+//   if (!items || !items.length) return 0;
+//   return Math.ceil(Math.sqrt(items.length)) / 1.5;
+// };
+// const getDevWidth = (): number => NODES_CONSTANTS.Devisec.textWidth + NODES_CONSTANTS.Devisec.spaceX;
+// const getDevHeight = (): number => NODES_CONSTANTS.Devisec.height + NODES_CONSTANTS.Devisec.spaceY / 2;
+// const getDevRowsHeight = (items: any[], nodeH: number, cols: number): number => {
+//   if (!items || !items.length) return 0;
+//   const rowsCount = Math.ceil(items.length / cols);
+//   return rowsCount * nodeH + rowsCount * 20;
+// };
