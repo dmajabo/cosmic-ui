@@ -11,14 +11,15 @@ interface IProps {
 
 const EntitiesItem: React.FC<IProps> = (props: IProps) => {
   const onCheckedChange = () => {
+    if (props.item.disabled) return;
     props.onCheckedChange(props.item, !props.item.selected);
   };
 
   return (
-    <EntityItemWrapper disabled={props.item.disabled} className={props.item.selected ? 'active' : ''} onClick={onCheckedChange}>
+    <EntityItemWrapper disabled={props.item.disabled} onClick={onCheckedChange}>
       <SimpleCheckbox isChecked={props.item.selected || false} isDisabled={props.item.disabled} readOnly />
-      <IconWrapper isIconasStrign styles={{ width: '18px', height: '18px', margin: 'auto 12px auto 20px' }} icon={props.item.icon} />
-      <EntityItemLabel>{props.item.label}</EntityItemLabel>
+      <IconWrapper disabled={props.item.disabled} isIconasStrign styles={{ width: '18px', height: '18px', margin: 'auto 12px auto 20px' }} icon={props.item.icon} />
+      <EntityItemLabel disabled={props.item.disabled}>{props.item.label}</EntityItemLabel>
     </EntityItemWrapper>
   );
 };

@@ -3,6 +3,7 @@ import styled from 'styled-components';
 interface IProps {
   width?: string;
   height?: string;
+  disabled?: boolean;
 }
 export const Icon = styled.span<IProps>`
   display: inline-block;
@@ -10,6 +11,7 @@ export const Icon = styled.span<IProps>`
   height: ${props => props.height || '16px'};
   flex-shrink: 0;
   cursor: pointer;
+  opacity: ${props => (props.disabled ? 0.4 : 1)};
   svg {
     width: 100%;
     height: 100%;

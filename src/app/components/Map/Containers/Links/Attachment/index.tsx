@@ -1,12 +1,14 @@
 import React from 'react';
 import { ICoord, IRotateCoord } from 'lib/models/general';
-import { calculateVPSAttaget } from './helper';
-import { vpcAttachedIcon } from 'app/components/SVGIcons/topologyIcons/vpcAttachedIcon';
+import { calculateAttachmentPosition } from './helper';
 import { GAttachement } from './styles';
 
 interface IProps {
+  label: string;
+  icon: any;
   targetCoord: ICoord;
   sourceCoord: ICoord;
+  iconClass: string;
 }
 const Attachment: React.FC<IProps> = (props: IProps) => {
   const [vpsAttachedPos, setVpcAttachedPos] = React.useState<IRotateCoord>(null);
@@ -17,7 +19,7 @@ const Attachment: React.FC<IProps> = (props: IProps) => {
       [0, 0],
       [props.sourceCoord.x - props.targetCoord.x, props.sourceCoord.y - props.targetCoord.y],
     ];
-    const _pos: IRotateCoord = calculateVPSAttaget(_points);
+    const _pos: IRotateCoord = calculateAttachmentPosition(_points);
     const isRight = _pos.x <= 0;
     setIsRight(isRight);
     setVpcAttachedPos(_pos);
@@ -27,9 +29,9 @@ const Attachment: React.FC<IProps> = (props: IProps) => {
   return (
     <GAttachement className={`networkAttached ${isRight ? 'rightLabel' : ''}`} transform={`translate(${vpsAttachedPos.x}, ${vpsAttachedPos.y}) rotate(${vpsAttachedPos.angle})`}>
       <rect y="-7.5" stroke="var(--_defaultLinkFill)" strokeWidth="1" fill="var(--_primaryBg)" width="85" height="16" rx="4" ry="4" />
-      <g className="attachmentIcon">{vpcAttachedIcon}</g>
+      <g className={props.iconClass}>{props.icon}</g>
       <text className="attachmentLabel" textAnchor="start" fontSize="6" fill="var(--_primaryColor)" fontWeight="500">
-        VPC ATTACHMENT
+        {props.label}
       </text>
     </GAttachement>
   );

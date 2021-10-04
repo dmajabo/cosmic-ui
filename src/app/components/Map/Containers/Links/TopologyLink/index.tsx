@@ -4,6 +4,7 @@ import ConnectedToLink from '../ConnectedToLink';
 import DeviceLink from '../DeviceLink';
 import TransitionContainer from '../../TransitionContainer';
 import NetworkLink from '../NetworkLink';
+import BrenchLink from '../BrenchLink';
 
 interface IProps {
   dataItem: ILink | IConnectionToLink;
@@ -29,6 +30,13 @@ const TopologyLink: React.FC<IProps> = (props: IProps) => {
     return (
       <TransitionContainer stateIn={dataLink.visible}>
         <NetworkLink dataItem={dataLink} />
+      </TransitionContainer>
+    );
+  }
+  if (dataLink.type === TOPOLOGY_LINKS_TYPES.NETWORK_BRENCH_LINK) {
+    return (
+      <TransitionContainer stateIn={dataLink.visible}>
+        <BrenchLink dataItem={dataLink} />
       </TransitionContainer>
     );
   }

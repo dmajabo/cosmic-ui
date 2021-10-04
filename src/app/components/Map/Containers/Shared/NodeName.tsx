@@ -5,6 +5,7 @@ const NameStyles = styled.div`
   width: auto;
   min-width: 100px;
   min-height: 20px;
+  line-height: 20px;
   font-size: 11px;
   font-weight: 500;
   text-align: center;

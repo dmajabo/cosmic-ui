@@ -2,19 +2,16 @@ import React from 'react';
 import { ChartLabel, ChartWrapper, ContentWrapper } from '../../Shared/styles';
 // import Filter from '../Components/Filter';
 import LineChart from 'app/components/Charts/LineChart';
+// import { jsonClone } from 'lib/helpers/cloneHelper';
+// import { IGroupedFilteredItem, trendsfilteredData } from '../Components/Filter/model';
+// import Filter from '../Components/Filter';
 interface IProps {}
 
 const TrendsPage: React.FC<IProps> = (props: IProps) => {
+  // const [filteredDataItems] = React.useState<IGroupedFilteredItem[]>(jsonClone(trendsfilteredData));
   return (
     <>
-      {/* <Filter
-        items={[
-          { id: '1', label: 'test 1' },
-          { id: '2', label: 'test 2' },
-          { id: '3', label: 'app 2' },
-          { id: '4', label: 'app 1' },
-        ]}
-      /> */}
+      {/* <Filter items={filteredDataItems} /> */}
       <ContentWrapper>
         <ChartWrapper>
           <ChartLabel>Destination Applications</ChartLabel>

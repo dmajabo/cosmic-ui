@@ -8,8 +8,10 @@ import { IAppGroup_PanelDataNode, IDeviceNode, ILink, INetworkGroupNode, IVM_Pan
 import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
 import { useZoom } from '../hooks/useZoom';
 import IconButton from 'app/components/Buttons/IconButton';
-import { zoomInIcon, zoomOutIcon, zoomFullScreenIcon } from 'app/components/SVGIcons/zoom';
+import { zoomInIcon, zoomOutIcon, zoomFullScreenIcon, zoomCenterIcon } from 'app/components/SVGIcons/zoom';
 import NodeWrapper from '../Containers/Nodes/NodeWrapper';
+// import { drawSimulation } from './helper';
+// import Node from './Node';
 interface Props {
   isFullScreen: boolean;
   onOpenFullScreen: () => void;
@@ -21,10 +23,11 @@ interface Props {
 
 const Graph: React.FC<Props> = (props: Props) => {
   const { topology } = useTopologyDataContext();
-  const { onZoomInit, onZoomIn, onZoomOut, onUnsubscribe } = useZoom({ svgId: TOPOLOGY_IDS.SVG, rootId: TOPOLOGY_IDS.G_ROOT });
+  const { onZoomInit, onZoomIn, onZoomOut, onCentered, onUnsubscribe } = useZoom({ svgId: TOPOLOGY_IDS.SVG, rootId: TOPOLOGY_IDS.G_ROOT });
 
   const [nodes, setNodes] = React.useState<(IWedgeNode | IVnetNode | IDeviceNode | INetworkGroupNode)[] | null>(null);
   const [links, setLinks] = React.useState<ILink[] | null>(null);
+
   React.useEffect(() => {
     onZoomInit({ k: 1, x: 0, y: 0 });
     return () => {
@@ -33,6 +36,10 @@ const Graph: React.FC<Props> = (props: Props) => {
   }, []);
 
   React.useEffect(() => {
+    // if (topology.nodes && topology.nodes.length) {
+    //   drawSimulation(topology.nodes, topology.links);
+    // }
+
     setNodes(topology.nodes);
     setLinks(topology.links);
   }, [topology.nodes, topology.links]);
@@ -78,12 +85,14 @@ const Graph: React.FC<Props> = (props: Props) => {
               </g>
             </>
           )}
+          {/* <g id="linkContainer" />
+          <g id="nodesContainer">{nodes && nodes.length && nodes.map(it => <Node key={`node${it.id}`} node={it} />)}</g> */}
         </GContainer>
       </StyledMap>
       <ZoomButtonsWrapper>
         <IconButton styles={{ margin: '10px 0 0 0' }} icon={zoomInIcon} title="Zoom in" onClick={onZoomIn} />
         <IconButton iconStyles={{ verticalAlign: 'middle', height: '4px' }} styles={{ margin: '10px 0 0 0' }} icon={zoomOutIcon} title="Zoom out" onClick={onZoomOut} />
-        {/* <IconButton styles={{ margin: '10px 0 0 0' }} icon={zoomInIcon} title="Center" onClick={onCentered} /> */}
+        <IconButton styles={{ margin: '10px 0 0 0' }} icon={zoomCenterIcon} title="Center" onClick={onCentered} />
         <IconButton
           styles={{ margin: '30px 0 0 0' }}
           icon={props.isFullScreen ? zoomFullScreenIcon : zoomFullScreenIcon}

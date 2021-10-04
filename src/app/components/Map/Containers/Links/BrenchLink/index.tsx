@@ -1,12 +1,12 @@
 import React from 'react';
 import { ILink } from 'lib/models/topology';
 import Attachment from '../Attachment';
-import { vpcAttachedIcon } from 'app/components/SVGIcons/topologyIcons/vpcAttachedIcon';
+import { vpnAttachedIcon } from 'app/components/SVGIcons/topologyIcons/vpnAttachedIcon';
 
 interface IProps {
   dataItem: ILink;
 }
-const NetworkLink: React.FC<IProps> = (props: IProps) => {
+const BrenchLink: React.FC<IProps> = (props: IProps) => {
   return (
     <g
       data-link_type={props.dataItem.type}
@@ -29,9 +29,9 @@ const NetworkLink: React.FC<IProps> = (props: IProps) => {
         x2={props.dataItem.sourceCoord.x - props.dataItem.targetCoord.x}
         y2={props.dataItem.sourceCoord.y - props.dataItem.targetCoord.y}
       />
-      <Attachment iconClass="attachmentVpcIcon" icon={vpcAttachedIcon} label="VPC ATTACHMENT" targetCoord={props.dataItem.targetCoord} sourceCoord={props.dataItem.sourceCoord} />
+      <Attachment iconClass="attachmentVpnIcon" icon={vpnAttachedIcon} label="VPN ATTACHMENT" targetCoord={props.dataItem.targetCoord} sourceCoord={props.dataItem.sourceCoord} />
     </g>
   );
 };
 
-export default React.memo(NetworkLink);
+export default React.memo(BrenchLink);

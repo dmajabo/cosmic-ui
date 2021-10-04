@@ -1,5 +1,7 @@
 import { IVpcSize } from 'lib/helpers/tree';
 import { IBaseEntity, ICollapsed, ICoord, ISelectedListItem, IVisible } from './general';
+export const DEFAULT_GROUP_ID = 'default_group_id';
+export const DEFAULT_RACK_RADIUS = 150;
 export interface ITopologyGroupsData {
   groups: ITopologyGroup[];
 }
@@ -232,12 +234,20 @@ export enum TOPOLOGY_NODE_TYPES {
   APPLICATION_GROUP = 'application_group',
 }
 
+export enum ENTITY_NODE_TYPES {
+  VNETS = 'vnets',
+  WEDGES = 'wedges',
+  BRANCHES = 'network_groups',
+  VPNS = 'vpns',
+}
+
 export enum TOPOLOGY_LINKS_TYPES {
   DEVICE_LINK = 'device',
   WEDGE_LINK = 'wedge',
   VNET_LINK = 'vnet',
   CONNECTED_TO_LINK = 'connectedTo',
   NETWORKLINK = 'networklink',
+  NETWORK_BRENCH_LINK = 'networkBrenchlink',
 }
 export interface ILink extends IVisible {
   id: string;

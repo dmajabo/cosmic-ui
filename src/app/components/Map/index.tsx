@@ -7,7 +7,7 @@ import HeadeerAction from './HeadeerAction';
 import { IDeviceNode, IPanelBar, TopologyMetricsPanelTypes, TopologyPanelTypes, IWedgeNode, IVM_PanelDataNode, IAppGroup_PanelDataNode } from 'lib/models/topology';
 import LoadingIndicator from 'app/components/Loading';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
-import { IPanelBarLayoutTypes } from 'lib/models/general';
+import { DATA_READY_STATE, IPanelBarLayoutTypes } from 'lib/models/general';
 import PanelBar from 'app/components/Basic/PanelBar';
 import Entities from './PanelComponents/EntitiesComponent/Entities';
 import GroupsComponent from './PanelComponents/GroupsComponent/GroupsComponent';
@@ -42,8 +42,8 @@ const Map: React.FC<IProps> = (props: IProps) => {
   }, [response]);
 
   React.useEffect(() => {
-    if (error && !topology.dataReadyToShow) {
-      topology?.onSetIsDataLoading();
+    if (error) {
+      topology?.onSetIsDataReadyToShow(DATA_READY_STATE.ERROR);
     }
   }, [error]);
 
@@ -81,14 +81,14 @@ const Map: React.FC<IProps> = (props: IProps) => {
   };
 
   const onTryLoadData = async () => {
-    topology.onSetIsDataLoading();
+    topology.onSetIsDataReadyToShow(DATA_READY_STATE.LOADING);
     const _st = topology.selectedTime || null;
     const param = createTopologyQueryParam(_st);
     await onGetChainData([TopologyGroupApi.getAllGroups(), TopologyOrganizationApi.getAllOrganizations()], ['groups', 'organizations'], param);
   };
 
   const onReloadData = async (startTime: Date | null) => {
-    topology.onSetIsDataLoading();
+    topology.onSetIsDataReadyToShow(DATA_READY_STATE.LOADING);
     const param = createTopologyQueryParam(startTime);
     await onGetChainData([TopologyGroupApi.getAllGroups(), TopologyOrganizationApi.getAllOrganizations()], ['groups', 'organizations'], param);
   };
@@ -162,15 +162,15 @@ const Map: React.FC<IProps> = (props: IProps) => {
                   />
                 </>
               )}
-              {(loading || !topology.dataReadyToShow) && (
+              {(loading || topology.dataReadyToShow === DATA_READY_STATE.LOADING) && (
                 <AbsLoaderWrapper>
                   <LoadingIndicator margin="auto" />
                 </AbsLoaderWrapper>
               )}
-              {error && (
+              {(error || topology.dataReadyToShow === DATA_READY_STATE.ERROR) && (
                 <AbsLoaderWrapper width="100%" height="100%">
                   <ErrorMessage fontSize={28} margin="auto">
-                    {error.message}
+                    {error && error.message ? error.message : 'Something went wrong. Please refresh page'}
                   </ErrorMessage>
                 </AbsLoaderWrapper>
               )}

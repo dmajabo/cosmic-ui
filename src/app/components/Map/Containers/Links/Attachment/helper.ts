@@ -7,10 +7,10 @@ export const getVpsAttachedCoord = (item: ILink): IRotateCoord => {
     [0, 0],
     [item.sourceCoord.x - item.targetCoord.x, item.sourceCoord.y - item.targetCoord.y],
   ];
-  return calculateVPSAttaget(points);
+  return calculateAttachmentPosition(points);
 };
 
-export const calculateVPSAttaget = (points: number[][]): IRotateCoord => {
+export const calculateAttachmentPosition = (points: number[][]): IRotateCoord => {
   const midPoint = geometric.lineMidpoint(points);
   const angle = geometric.lineAngle(points);
   const pt = geometric.pointTranslate(midPoint, angle, -42.5);

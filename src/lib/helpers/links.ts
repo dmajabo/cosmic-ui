@@ -1,5 +1,6 @@
-import { ISize, NODES_CONSTANTS } from 'app/components/Map/model';
+import { IPosition, ISize, NODES_CONSTANTS } from 'app/components/Map/model';
 import { ILink, TOPOLOGY_LINKS_TYPES, IConnectionToLink, INetworkGroupNode, IWedgeNode, IVnetNode, IDeviceNode, TOPOLOGY_NODE_TYPES } from 'lib/models/topology';
+import { jsonClone } from './cloneHelper';
 
 export const generateLinks = (
   nodes: (IWedgeNode | IVnetNode | IDeviceNode | INetworkGroupNode)[],
@@ -49,9 +50,7 @@ export const buildD_GLinks = (devices: IDeviceNode[], g: INetworkGroupNode, link
   devices.forEach(dev => {
     if (!link_D_G_W && dev.vpnlinks && dev.vpnlinks.length) {
       dev.vpnlinks.forEach(vpn => {
-        if (!vpn.linkStates || !vpn.linkStates.length) {
-          return;
-        }
+        if (!vpn.linkStates || !vpn.linkStates.length) return;
         vpn.linkStates.forEach(it => {
           const wedge = getWedge(wedges, it.id);
           if (wedge) {
@@ -181,7 +180,7 @@ export const createG_WLink = (target: INetworkGroupNode, source: IWedgeNode): IC
   const _y2 = source.y + souceObj.r;
   return {
     id: `group_wedge${target.id}${source.id}`,
-    type: TOPOLOGY_LINKS_TYPES.DEVICE_LINK,
+    type: TOPOLOGY_LINKS_TYPES.NETWORK_BRENCH_LINK,
     sourceId: source.id,
     targetId: target.id,
     targetCoord: { x: _x1, y: _y1 },
@@ -190,4 +189,38 @@ export const createG_WLink = (target: INetworkGroupNode, source: IWedgeNode): IC
     sourceType: NODES_CONSTANTS.WEDGE.type,
     visible: true,
   };
+};
+
+export const onUpdateTargetLink = (links: ILink[], itemId: string, _position: IPosition, centerX: number, centerY: number): ILink[] => {
+  const _links: ILink[] = links && links.length ? jsonClone(links) : [];
+  _links.forEach(link => {
+    if (link.sourceId === itemId) {
+      link.sourceCoord.x = _position.x + centerX;
+      link.sourceCoord.y = _position.y + centerY;
+    }
+    if (link.targetId === itemId) {
+      link.targetCoord.x = _position.x + centerX;
+      link.targetCoord.y = _position.y + centerY;
+    }
+  });
+  return _links;
+};
+
+export const onUpdateLinkPos = (links: ILink[], nodes: any[], centerX: number, centerY: number, type: TOPOLOGY_LINKS_TYPES): ILink[] => {
+  const _links: ILink[] = links && links.length ? jsonClone(links) : [];
+  const _lData = _links.filter(it => it.type === type);
+  if (!_lData || !_lData.length) return _links;
+  _lData.forEach(link => {
+    const _n = nodes.find(it => it.id === link.sourceId || it.id === link.targetId);
+    if (!_n) return;
+    if (link.sourceId === _n.id) {
+      link.sourceCoord.x = _n.x + centerX;
+      link.sourceCoord.y = _n.y + centerY;
+    }
+    if (link.targetId === _n.id) {
+      link.targetCoord.x = _n.x + centerX;
+      link.targetCoord.y = _n.y + centerY;
+    }
+  });
+  return _links;
 };

@@ -7,27 +7,26 @@ export const EntityItemWrapper = styled.div<Props>`
   display: flex;
   height: 60px;
   width: 100%;
-  background: var(--_disabledButtonBg);
+  background: var(--_interfaceBg);
   border-radius: 6px;
   padding: 20px;
   align-items: center;
   margin-bottom: 10px;
   cursor: ${props => (props.disabled ? 'default' : 'pointer')};
-  opacity: 0.4;
+  opacity: ${props => (props.disabled ? 0.4 : 1)};
+  * {
+    cursor: ${props => (props.disabled ? 'default' : 'pointer')};
+  }
   &:last-child {
     margin-bottom: 0;
   }
-  &.active {
-    background: var(--_interfaceBg);
-    opacity: 1;
-  }
 `;
 
-export const EntityItemLabel = styled.div`
+export const EntityItemLabel = styled.div<Props>`
   font-style: normal;
   font-weight: 500;
   font-size: 16px;
-  color: var(--_primaryColor);
+  color: ${props => (props.disabled ? 'var(--_disabledTextColor)' : 'var(--_primaryColor)')};
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

@@ -75,7 +75,7 @@ export interface IWEDGENode extends INode<TOPOLOGY_NODE_TYPES> {
   textHeight: number;
 }
 
-export interface INetworkGroupNode extends INode<TOPOLOGY_NODE_TYPES>, ISpace {
+export interface INetworkGroupNode extends INode<TOPOLOGY_NODE_TYPES>, ISize, ISpace {
   r: number;
 }
 
@@ -108,6 +108,8 @@ export const NODES_CONSTANTS: INodes_Types = {
   NETWORK_GROUP: {
     type: TOPOLOGY_NODE_TYPES.NETWORK_GROUP,
     r: 45,
+    width: 90,
+    height: 90,
     spaceX: 10,
     spaceY: 10,
   },

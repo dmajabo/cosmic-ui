@@ -2,8 +2,8 @@ import React from 'react';
 import * as d3 from 'd3';
 import { IPosition } from '../model';
 import { TOPOLOGY_LINKS_TYPES } from 'lib/models/topology';
-import { calculateVPSAttaget } from '../Containers/Links/NetworkLink/helper';
 import { IRotateCoord } from 'lib/models/general';
+import { calculateAttachmentPosition } from '../Containers/Links/Attachment/helper';
 
 interface IProps {
   id: string;
@@ -127,9 +127,9 @@ export function useDrag(props: IProps, onUpdateCallBack: (pos: IPosition) => voi
         const _sY = Number(_g.attr('data-source_y'));
         const _x = _sX - _tX;
         const _y = _sY - _tY;
-        if (_type === TOPOLOGY_LINKS_TYPES.NETWORKLINK) {
+        if (_type === TOPOLOGY_LINKS_TYPES.NETWORKLINK || _type === TOPOLOGY_LINKS_TYPES.NETWORK_BRENCH_LINK) {
           const gAtt = _g.select('.networkAttached');
-          const _data: IRotateCoord = calculateVPSAttaget([
+          const _data: IRotateCoord = calculateAttachmentPosition([
             [0, 0],
             [_x, _y],
           ]);
@@ -155,9 +155,9 @@ export function useDrag(props: IProps, onUpdateCallBack: (pos: IPosition) => voi
         const _sY = Number(_g.attr('data-source_y')) + dy;
         const _x = _sX - _tX;
         const _y = _sY - _tY;
-        if (_type === TOPOLOGY_LINKS_TYPES.NETWORKLINK) {
+        if (_type === TOPOLOGY_LINKS_TYPES.NETWORKLINK || _type === TOPOLOGY_LINKS_TYPES.NETWORK_BRENCH_LINK) {
           const gAtt = _g.select('.networkAttached');
-          const _data: IRotateCoord = calculateVPSAttaget([
+          const _data: IRotateCoord = calculateAttachmentPosition([
             [0, 0],
             [_x, _y],
           ]);

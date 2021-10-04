@@ -4,7 +4,7 @@ import { IPosition, NODES_CONSTANTS } from 'app/components/Map/model';
 import { useDrag } from 'app/components/Map/hooks/useDrag';
 import CISCO_MERAKI from './Cisco_MERAKI';
 // import { IPopupDisplay } from 'lib/models/general';
-import { Transition } from 'react-transition-group';
+// import { Transition } from 'react-transition-group';
 import GroupDevicesContainer from './GroupDevicesContainer';
 import * as d3 from 'd3';
 import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
@@ -26,7 +26,8 @@ const GroupNode: React.FC<IProps> = (props: IProps) => {
     (e: IPosition) => onUpdatePosition(e),
   );
   const [pos, setPosition] = React.useState<IPosition>(null);
-  const [visible, setVisible] = React.useState<boolean>(false);
+  const [visible, setVisible] = React.useState<boolean>(props.dataItem.visible);
+  const [collapsed, setCollapsed] = React.useState<boolean>(props.dataItem.collapsed);
   const [shouldUpdate, setShouldUpdate] = React.useState<boolean>(false);
   // const [showPopup, setShowPopup] = React.useState<IPopupDisplay>({ show: false, x: 0, y: 0 });
   React.useEffect(() => {
@@ -36,7 +37,30 @@ const GroupNode: React.FC<IProps> = (props: IProps) => {
   }, []);
 
   React.useEffect(() => {
-    setVisible(props.dataItem.visible);
+    if (props.dataItem.visible !== visible) {
+      setVisible(props.dataItem.visible);
+    }
+    if (props.dataItem.collapsed !== collapsed) {
+      d3.select(`#${NODES_CONSTANTS.NETWORK_GROUP.type}${props.dataItem.id}`)
+        .transition()
+        .attr('transform', `translate(${props.dataItem.x}, ${props.dataItem.y})`)
+        .on('end', () => {
+          setCollapsed(props.dataItem.collapsed);
+          setPosition({ x: props.dataItem.x, y: props.dataItem.y });
+          setShouldUpdate(!shouldUpdate);
+        });
+      return;
+    }
+    if (pos && (pos.x !== props.dataItem.x || pos.y !== props.dataItem.y)) {
+      d3.select(`#${NODES_CONSTANTS.NETWORK_GROUP.type}${props.dataItem.id}`)
+        .transition()
+        .attr('transform', `translate(${props.dataItem.x}, ${props.dataItem.y})`)
+        .on('end', () => {
+          setPosition({ x: props.dataItem.x, y: props.dataItem.y });
+          setShouldUpdate(!shouldUpdate);
+        });
+      return;
+    }
     setPosition({ x: props.dataItem.x, y: props.dataItem.y });
     setShouldUpdate(!shouldUpdate);
   }, [props.dataItem]);
@@ -87,11 +111,7 @@ const GroupNode: React.FC<IProps> = (props: IProps) => {
   return (
     <TransitionContainer stateIn={visible}>
       <g id={`${NODES_CONSTANTS.NETWORK_GROUP.type}${props.dataItem.id}`} className="topologyNode" transform={`translate(${pos.x}, ${pos.y})`} data-type={NODES_CONSTANTS.NETWORK_GROUP.type}>
-        {props.dataItem.devices && props.dataItem.devices.length && (
-          <Transition mountOnEnter unmountOnExit timeout={100} in={!props.dataItem.collapsed}>
-            {state => <GroupDevicesContainer dataItem={props.dataItem} className={state} onClickDevice={onClickDevice} />}
-          </Transition>
-        )}
+        {!collapsed && <GroupDevicesContainer dataItem={props.dataItem} onClickDevice={onClickDevice} />}
         <g
           // onMouseEnter={e => onTogglePopup(e, true)}
           // onMouseLeave={e => onTogglePopup(e, false)}
@@ -101,7 +121,7 @@ const GroupNode: React.FC<IProps> = (props: IProps) => {
         >
           <>{CISCO_MERAKI}</>
         </g>
-        {props.dataItem.collapsed && <NodeName name={props.dataItem.name} dx={-NODES_CONSTANTS.NETWORK_GROUP.spaceX / 2} dy={NODES_CONSTANTS.NETWORK_GROUP.r * 2} />}
+        {collapsed && <NodeName name={props.dataItem.name} dx={-NODES_CONSTANTS.NETWORK_GROUP.spaceX / 2} dy={NODES_CONSTANTS.NETWORK_GROUP.r * 2} />}
       </g>
     </TransitionContainer>
   );
