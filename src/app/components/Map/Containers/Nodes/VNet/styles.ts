@@ -8,6 +8,7 @@ export const ContainerWrapper = styled.div`
   height: 100%;
   background: ${NODES_CONSTANTS.VNet.VnetFill};
   border-radius: ${NODES_CONSTANTS.VNet.borderRadius + 'px'};
+  cursor: pointer;
 `;
 
 export const HeaderWrapper = styled.div`

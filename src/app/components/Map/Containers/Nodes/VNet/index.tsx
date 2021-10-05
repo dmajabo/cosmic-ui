@@ -1,5 +1,5 @@
 import React from 'react';
-import { IAppGroup_PanelDataNode, ITopologyGroup, IVm, IVM_PanelDataNode, IVnetNode } from 'lib/models/topology';
+import { IVPC_PanelDataNode, ITopologyGroup, IVm, IVnetNode } from 'lib/models/topology';
 import { IPosition, NODES_CONSTANTS } from 'app/components/Map/model';
 import VmsContainer from './VmsContainer';
 import { useDrag } from 'app/components/Map/hooks/useDrag';
@@ -13,8 +13,7 @@ import ApplicationGroupContainer from './ApplicationGroupContainer';
 import TransitionContainer from '../../TransitionContainer';
 interface IProps {
   dataItem: IVnetNode;
-  onClickVm: (_data: IVM_PanelDataNode) => void;
-  onClickGroup: (_data: IAppGroup_PanelDataNode) => void;
+  onClickVpc: (_data: IVPC_PanelDataNode) => void;
 }
 const VNetNode: React.FC<IProps> = (props: IProps) => {
   const { topology } = useTopologyDataContext();
@@ -70,11 +69,16 @@ const VNetNode: React.FC<IProps> = (props: IProps) => {
   // };
 
   const onClickVm = (vm: IVm) => {
-    props.onClickVm({ vm: vm, vnet: { ...props.dataItem } });
+    props.onClickVpc({ vm: vm, group: null, vnet: { ...props.dataItem } });
   };
 
   const onClickGroup = (gr: ITopologyGroup) => {
-    props.onClickGroup({ group: gr, vnet: { ...props.dataItem } });
+    props.onClickVpc({ vm: null, group: gr, vnet: { ...props.dataItem } });
+  };
+
+  const onClickVpc = () => {
+    if ((!props.dataItem.vms && !props.dataItem.applicationGroups) || (!props.dataItem.vms.length && !props.dataItem.applicationGroups.length)) return;
+    props.onClickVpc({ vm: null, group: null, vnet: { ...props.dataItem } });
   };
 
   if (!pos) {
@@ -86,7 +90,7 @@ const VNetNode: React.FC<IProps> = (props: IProps) => {
       <g id={`${NODES_CONSTANTS.VNet.type}${props.dataItem.id}`} className="topologyNode" transform={`translate(${pos.x}, ${pos.y})`} data-type={NODES_CONSTANTS.VNet.type}>
         <foreignObject x="0" y="0" width={props.dataItem.nodeSize.width} height={props.dataItem.nodeSize.height}>
           <ContainerWrapper>
-            <VNetHeder name={props.dataItem.name} extId={props.dataItem.extId} />
+            <VNetHeder name={props.dataItem.name} extId={props.dataItem.extId} onClick={onClickVpc} />
             <ApplicationGroupContainer items={props.dataItem.applicationGroups} showMore={props.dataItem.nodeSize.showMore} onClickGroup={onClickGroup} />
             <VmsContainer
               name={props.dataItem.name}

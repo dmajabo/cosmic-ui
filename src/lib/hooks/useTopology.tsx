@@ -327,7 +327,7 @@ export function useTopologyContext(): TopologyContextType {
     const _groups: ITopologyGroup[] = jsonClone(originGroupsData);
     _groups.push(_group);
     if (_group.type === TopologyGroupTypesAsNumber.BRANCH_NETWORKS || _group.type === TopologyGroupTypesAsString.BRANCH_NETWORKS) {
-      const _obg = createGroupNode(_group, 0);
+      const _obg = createGroupNode(_group, null, 0);
       _nodes.push(_obg);
     } else {
       const vnets: IVnetNode[] = _nodes.filter(node => node.nodeType === TOPOLOGY_NODE_TYPES.VNET) as IVnetNode[];
@@ -356,7 +356,7 @@ export function useTopologyContext(): TopologyContextType {
     _groups.splice(gindex, 1, _group);
     if (_group.type === TopologyGroupTypesAsNumber.BRANCH_NETWORKS || _group.type === TopologyGroupTypesAsString.BRANCH_NETWORKS) {
       const _index: number = _nodes.findIndex(it => it.id === _group.id);
-      const _obg = createGroupNode(_group, _index);
+      const _obg = createGroupNode(_group, _nodes[_index].vendorType, _index);
       _obg.x = _nodes[_index].x;
       _obg.y = _nodes[_index].y;
       _nodes.splice(_index, 1, _obg);

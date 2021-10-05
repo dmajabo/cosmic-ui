@@ -21,10 +21,9 @@ export enum TopologyPanelTypes {
 }
 
 export enum TopologyMetricsPanelTypes {
-  VM = 'Vm',
+  VPC = 'Vpc',
   Device = ' device',
   Wedge = 'wedge',
-  APPLICATION_GROUP = 'application_group',
 }
 
 export enum VendorTypes {
@@ -57,6 +56,7 @@ export interface IMappedNode extends IVisible {
   childIndex: number;
   orgIndex: number;
   orgId: string;
+  vendorType: VendorTypes;
   nodeType: TOPOLOGY_NODE_TYPES;
 }
 
@@ -186,14 +186,16 @@ export interface IWedge extends IBaseEntity<string> {
 
 export interface IWedgeNode extends IWedge, IMappedNode, ICoord {}
 
-export interface IVM_PanelDataNode {
-  vm: IVm;
+export interface IVPC_PanelDataNode {
+  group?: ITopologyGroup;
+  vm?: IVm;
   vnet: IVnetNode;
 }
 
-export interface IAppGroup_PanelDataNode {
-  group: ITopologyGroup;
-  vnet: IVnetNode;
+export interface IApplication_Group extends ITopologyGroup {
+  expanded: boolean;
+  disabled: boolean;
+  items: IVm[];
 }
 
 export interface IOrganization extends IBaseEntity<string>, ICoord {
@@ -222,6 +224,7 @@ export interface INetworkGroupNode extends ITopologyGroup, IVisible, ICoord, ICo
   devices: IDeviceNode[];
   links: ILink[];
   nodeType: TOPOLOGY_NODE_TYPES;
+  vendorType: VendorTypes;
 }
 
 export enum TOPOLOGY_NODE_TYPES {

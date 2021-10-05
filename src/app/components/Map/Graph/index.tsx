@@ -4,7 +4,7 @@ import GContainer from '../Containers/GContainer/GContainer';
 import TopologyLink from '../Containers/Links/TopologyLink';
 import { TOPOLOGY_IDS } from '../model';
 import { StyledMap, ZoomButtonsWrapper } from '../styles';
-import { IAppGroup_PanelDataNode, IDeviceNode, ILink, INetworkGroupNode, IVM_PanelDataNode, IVnetNode, IWedgeNode, TopologyMetricsPanelTypes } from 'lib/models/topology';
+import { IVPC_PanelDataNode, IDeviceNode, ILink, INetworkGroupNode, IVnetNode, IWedgeNode, TopologyMetricsPanelTypes } from 'lib/models/topology';
 import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
 import { useZoom } from '../hooks/useZoom';
 import IconButton from 'app/components/Buttons/IconButton';
@@ -16,8 +16,7 @@ import DefsComponent from '../Containers/Shared/DefsComponent';
 interface Props {
   isFullScreen: boolean;
   onOpenFullScreen: () => void;
-  onClickVm: (_data: IVM_PanelDataNode) => void;
-  onClickAppGroup: (_data: IAppGroup_PanelDataNode) => void;
+  onClickVpc: (_data: IVPC_PanelDataNode) => void;
   onClickDevice: (dev: IDeviceNode, _type: TopologyMetricsPanelTypes) => void;
   onClickWedge: (wedge: IWedgeNode, _type: TopologyMetricsPanelTypes) => void;
 }
@@ -45,11 +44,8 @@ const Graph: React.FC<Props> = (props: Props) => {
     setLinks(topology.links);
   }, [topology.nodes, topology.links]);
 
-  const onClickVm = (_data: IVM_PanelDataNode) => {
-    props.onClickVm(_data);
-  };
-  const onClickAppGroup = (_data: IAppGroup_PanelDataNode) => {
-    props.onClickAppGroup(_data);
+  const onClickVpc = (_data: IVPC_PanelDataNode) => {
+    props.onClickVpc(_data);
   };
   const onClickDevice = (dev: IDeviceNode) => {
     props.onClickDevice(dev, TopologyMetricsPanelTypes.Device);
@@ -80,9 +76,7 @@ const Graph: React.FC<Props> = (props: Props) => {
               <g id="linkContainer">{links && links.length && links.map((link, index) => <TopologyLink dataItem={link} key={`link${link.id}${index}`} />)}</g>
 
               <g id="nodesContainer">
-                {nodes &&
-                  nodes.length &&
-                  nodes.map(it => <NodeWrapper key={`node${it.id}`} dataItem={it} onClickVm={onClickVm} onClickAppGroup={onClickAppGroup} onClickDevice={onClickDevice} onClickWedge={onClickWedge} />)}
+                {nodes && nodes.length && nodes.map(it => <NodeWrapper key={`node${it.id}`} dataItem={it} onClickVpc={onClickVpc} onClickDevice={onClickDevice} onClickWedge={onClickWedge} />)}
               </g>
             </>
           )}

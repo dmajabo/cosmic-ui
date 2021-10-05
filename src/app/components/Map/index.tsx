@@ -4,7 +4,7 @@ import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
 // import mockdataDevices from 'utils/dataDevices.json';
 import { ContainerWithFooter, ContainerWithMetrics, ContainerWithPanel, MapContainer } from './styles';
 import HeadeerAction from './HeadeerAction';
-import { IDeviceNode, IPanelBar, TopologyMetricsPanelTypes, TopologyPanelTypes, IWedgeNode, IVM_PanelDataNode, IAppGroup_PanelDataNode } from 'lib/models/topology';
+import { IDeviceNode, IPanelBar, TopologyMetricsPanelTypes, TopologyPanelTypes, IWedgeNode, IVPC_PanelDataNode } from 'lib/models/topology';
 import LoadingIndicator from 'app/components/Loading';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import { DATA_READY_STATE, IPanelBarLayoutTypes } from 'lib/models/general';
@@ -12,14 +12,14 @@ import PanelBar from 'app/components/Basic/PanelBar';
 import Entities from './PanelComponents/EntitiesComponent/Entities';
 import GroupsComponent from './PanelComponents/GroupsComponent/GroupsComponent';
 import { createTopologyQueryParam, ITopologyDataRes, TopologyGroupApi, TopologyOrganizationApi } from 'lib/api/ApiModels/Topology/endpoints';
-import VmPanel from './PanelComponents/NodePanels/VmPanel';
+import VpcPanel from './PanelComponents/NodePanels/VpcPanel';
 import FooterAction from './FooterAction';
 import Graph from './Graph';
 import DevicePanel from './PanelComponents/NodePanels/DevicePanel';
 import WedgePanel from './PanelComponents/NodePanels/WedgePanel';
 import { useGetTopology } from 'lib/api/http/useAxiosHook';
 import { ErrorMessage } from '../Basic/ErrorMessage/ErrorMessage';
-import ApplicationGroupPanel from './PanelComponents/NodePanels/ApplicationGroupPanel';
+
 interface IProps {}
 
 const Map: React.FC<IProps> = (props: IProps) => {
@@ -106,35 +106,23 @@ const Map: React.FC<IProps> = (props: IProps) => {
     showMetrickRef.current = _objMetrick;
   };
 
-  const onOpenVmPanel = (node: IVM_PanelDataNode) => {
-    const _objPanel = { ...showPanelRef.current, show: false };
+  const onOpenVpcPanel = (node: IVPC_PanelDataNode) => {
+    const _objPanel = { show: false, type: null };
     setShowPanelBar(_objPanel);
     showPanelRef.current = _objPanel;
     setShowFooter(true);
-    if (node && showMetricksBar && showMetricksBar.dataItem && showMetricksBar.dataItem.vm && node.vm.id === showMetricksBar.dataItem.vm.id) {
-      return;
+    if (node && showMetricksBar && showMetricksBar.dataItem && showMetricksBar.dataItem.vnet && node.vnet && node.vnet.id === showMetricksBar.dataItem.vnet.id) {
+      if (!showMetricksBar.dataItem.group && node.vnet && !showMetricksBar.dataItem.vm && !node.group && !node.vm && node.vnet.id === showMetricksBar.dataItem.vnet.id) {
+        return;
+      }
+      if (showMetricksBar.dataItem.group && node.group && node.group.id === showMetricksBar.dataItem.group.id) {
+        return;
+      }
+      if (showMetricksBar.dataItem.vm && node.vm && node.vm.id === showMetricksBar.dataItem.vm.id) {
+        return;
+      }
     }
-    const _objMetrick = { type: TopologyMetricsPanelTypes.VM, show: true, dataItem: node };
-    setShowMetricks(_objMetrick);
-    showMetrickRef.current = _objMetrick;
-  };
-
-  const onOpenAppGroupPanel = (_data: IAppGroup_PanelDataNode) => {
-    const _objPanel = { ...showPanelRef.current, show: false };
-    setShowPanelBar(_objPanel);
-    showPanelRef.current = _objPanel;
-    setShowFooter(true);
-    if (
-      _data &&
-      showMetricksBar &&
-      showMetricksBar.dataItem &&
-      showMetricksBar.dataItem.group &&
-      _data.group.id === showMetricksBar.dataItem.group.id &&
-      _data.vnet.id === showMetricksBar.dataItem.vnet.id
-    ) {
-      return;
-    }
-    const _objMetrick = { type: TopologyMetricsPanelTypes.APPLICATION_GROUP, show: true, dataItem: _data };
+    const _objMetrick = { type: TopologyMetricsPanelTypes.VPC, show: true, dataItem: node };
     setShowMetricks(_objMetrick);
     showMetrickRef.current = _objMetrick;
   };
@@ -152,14 +140,7 @@ const Map: React.FC<IProps> = (props: IProps) => {
               {topology.originData && (
                 <>
                   <HeadeerAction onShowPanel={onOpenPanel} onRefresh={onTryLoadData} />
-                  <Graph
-                    isFullScreen={isFullScreen}
-                    onOpenFullScreen={onOpenFullScreen}
-                    onClickVm={onOpenVmPanel}
-                    onClickAppGroup={onOpenAppGroupPanel}
-                    onClickDevice={onOpenNodePanel}
-                    onClickWedge={onOpenNodePanel}
-                  />
+                  <Graph isFullScreen={isFullScreen} onOpenFullScreen={onOpenFullScreen} onClickVpc={onOpenVpcPanel} onClickDevice={onOpenNodePanel} onClickWedge={onOpenNodePanel} />
                 </>
               )}
               {(loading || topology.dataReadyToShow === DATA_READY_STATE.LOADING) && (
@@ -176,8 +157,8 @@ const Map: React.FC<IProps> = (props: IProps) => {
               )}
             </MapContainer>
             <PanelBar show={showMetricksBar.show} onHidePanel={onHideMetrics} type={IPanelBarLayoutTypes.VERTICAL}>
-              {showMetricksBar.type === TopologyMetricsPanelTypes.APPLICATION_GROUP && <ApplicationGroupPanel dataItem={showMetricksBar.dataItem} />}
-              {showMetricksBar.type === TopologyMetricsPanelTypes.VM && <VmPanel dataItem={showMetricksBar.dataItem} />}
+              {/* {showMetricksBar.type === TopologyMetricsPanelTypes.APPLICATION_GROUP && <ApplicationGroupPanel dataItem={showMetricksBar.dataItem} />} */}
+              {showMetricksBar.type === TopologyMetricsPanelTypes.VPC && <VpcPanel dataItem={showMetricksBar.dataItem} />}
               {showMetricksBar.type === TopologyMetricsPanelTypes.Device && <DevicePanel dataItem={showMetricksBar.dataItem} />}
               {showMetricksBar.type === TopologyMetricsPanelTypes.Wedge && <WedgePanel dataItem={showMetricksBar.dataItem} />}
             </PanelBar>

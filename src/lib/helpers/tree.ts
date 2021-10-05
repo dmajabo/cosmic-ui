@@ -18,6 +18,7 @@ import {
   IVm,
   DEFAULT_GROUP_ID,
   DEFAULT_RACK_RADIUS,
+  VendorTypes,
 } from 'lib/models/topology';
 import { generateLinks } from './links';
 import * as d3 from 'd3';
@@ -26,11 +27,11 @@ import { STANDART_DISPLAY_RESOLUTION } from 'lib/models/general';
 // import { jsonClone } from './cloneHelper';
 
 const createDeviceNode = (org: IOrganization, orgIndex: number, node: IDevice, index: number): IDeviceNode => {
-  return { ...node, visible: true, childIndex: index, orgIndex: orgIndex, orgId: org.id, x: 0, y: 0, scaleFactor: 1, nodeType: TOPOLOGY_NODE_TYPES.DEVICE };
+  return { ...node, vendorType: org.vendorType, visible: true, childIndex: index, orgIndex: orgIndex, orgId: org.id, x: 0, y: 0, scaleFactor: 1, nodeType: TOPOLOGY_NODE_TYPES.DEVICE };
 };
 
 const createWedgeNode = (org: IOrganization, orgIndex: number, node: IWedge, index: number): IWedgeNode => {
-  return { ...node, visible: true, childIndex: index, orgIndex: orgIndex, orgId: org.id, x: 0, y: 0, nodeType: TOPOLOGY_NODE_TYPES.WEDGE };
+  return { ...node, vendorType: org.vendorType, visible: true, childIndex: index, orgIndex: orgIndex, orgId: org.id, x: 0, y: 0, nodeType: TOPOLOGY_NODE_TYPES.WEDGE };
 };
 
 const createVnetNode = (org: IOrganization, orgIndex: number, node: IVnet, index: number, groups: ITopologyGroup[]): IVnetNode => {
@@ -59,13 +60,14 @@ const createVnetNode = (org: IOrganization, orgIndex: number, node: IVnet, index
     orgId: org.id,
     x: 0,
     y: 0,
+    vendorType: org.vendorType,
     nodeType: TOPOLOGY_NODE_TYPES.VNET,
     nodeSize: _size,
   };
 };
 
-export const createGroupNode = (_item: ITopologyGroup, index: number): INetworkGroupNode => {
-  return { ..._item, visible: true, collapsed: true, groupIndex: index, x: 0, y: 0, devices: [], links: [], r: 0, nodeType: TOPOLOGY_NODE_TYPES.NETWORK_GROUP };
+export const createGroupNode = (_item: ITopologyGroup, vendorType: VendorTypes, index: number): INetworkGroupNode => {
+  return { ..._item, vendorType: vendorType, visible: true, collapsed: true, groupIndex: index, x: 0, y: 0, devices: [], links: [], r: 0, nodeType: TOPOLOGY_NODE_TYPES.NETWORK_GROUP };
 };
 
 // export const createTestVMs = (_item: IVm, id: string) => {
@@ -123,6 +125,7 @@ export const prepareNodesData = (_data: ITopologyMapData, _groups: ITopologyGrou
         type: TopologyGroupTypesAsString.BRANCH_NETWORKS,
         expr: null,
       },
+      null,
       groupStartIndex,
     );
     defaultGroup.devices = [...devices];
@@ -136,7 +139,7 @@ export const prepareNodesData = (_data: ITopologyMapData, _groups: ITopologyGrou
   if (_groups && _groups.length) {
     _groups.forEach((gr, index) => {
       if (gr.type === TopologyGroupTypesAsNumber.BRANCH_NETWORKS || gr.type === TopologyGroupTypesAsString.BRANCH_NETWORKS) {
-        const _obj: INetworkGroupNode = createGroupNode(gr, groupStartIndex + index);
+        const _obj: INetworkGroupNode = createGroupNode(gr, null, groupStartIndex + index);
         if (devicesInGroup.length) {
           const _devs = devicesInGroup.filter(it => it.selectorGroup === gr.name || it.selectorGroup === gr.id);
           _obj.devices = _devs;
