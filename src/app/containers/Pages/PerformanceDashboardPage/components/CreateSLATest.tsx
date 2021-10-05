@@ -24,9 +24,18 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ awsOrganizations, 
   const classes = PerformanceDashboardStyles();
 
   const [name, setName] = useState<string>('');
-  const [sourceOrg, setSourceOrg] = useState<string>('');
-  const [sourceNetwork, setSourceNetwork] = useState<string>('');
-  const [destination, setDestination] = useState<string>('');
+  const [sourceOrg, setSourceOrg] = useState<SelectOptions>({
+    label: '',
+    value: '',
+  });
+  const [sourceNetwork, setSourceNetwork] = useState<SelectOptions>({
+    label: '',
+    value: '',
+  });
+  const [destination, setDestination] = useState<SelectOptions>({
+    label: '',
+    value: '',
+  });
   const [description, setDescription] = useState<string>('');
 
   const [selectedOrganizationVnets, setSelectedOrganizationVnets] = useState([]);
@@ -65,7 +74,7 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ awsOrganizations, 
 
   useEffect(() => {
     if (merakiOrganizations.length > 0 && sourceOrg) {
-      const selectedOrganization = GetSelectedOrganization(merakiOrganizations, sourceOrg);
+      const selectedOrganization = GetSelectedOrganization(merakiOrganizations, sourceOrg.value);
       setSelectedOrganizationVnets(selectedOrganization.vnets);
     }
   }, [sourceOrg]);
@@ -95,9 +104,18 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ awsOrganizations, 
 
   const clearFormFields = () => {
     setName('');
-    setSourceOrg('');
-    setSourceNetwork('');
-    setDestination('');
+    setSourceOrg({
+      label: '',
+      value: '',
+    });
+    setSourceNetwork({
+      label: '',
+      value: '',
+    });
+    setDestination({
+      label: '',
+      value: '',
+    });
     setDescription('');
   };
 
@@ -105,9 +123,9 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ awsOrganizations, 
     const testData: SLATest = {
       testId: '',
       name: name,
-      sourceOrgId: sourceOrg,
-      sourceNwExtId: sourceNetwork,
-      destination: destination,
+      sourceOrgId: sourceOrg.value,
+      sourceNwExtId: sourceNetwork.value,
+      destination: destination.value,
       interface: '',
       description: description,
     };
@@ -142,11 +160,11 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ awsOrganizations, 
           <span className={classes.tableHeaderText}>NAME</span>
           <input className={classes.slaInput} type="text" value={name} onChange={e => setName(e.target.value)} />
           <span className={classes.tableHeaderText}>SOURCE ORGANIZATION</span>
-          <Select styles={dropdownStyle} label="Single select" options={sourceOrganizationOptions} onChange={e => setSourceOrg(e.value)} />
+          <Select styles={dropdownStyle} label="Single select" value={sourceOrg} options={sourceOrganizationOptions} onChange={e => setSourceOrg(e)} />
           <span className={classes.tableHeaderText}>SOURCE NETWORK</span>
-          <Select styles={dropdownStyle} label="Single select" options={sourceNetworkOptions} onChange={e => setSourceNetwork(e.value)} />
+          <Select styles={dropdownStyle} label="Single select" value={sourceNetwork} options={sourceNetworkOptions} onChange={e => setSourceNetwork(e)} />
           <span className={classes.tableHeaderText}>DESTINATION</span>
-          <CreatableSelect isClearable styles={dropdownStyle} onChange={e => setDestination(e.value)} options={destinationOptions} />
+          <CreatableSelect isClearable styles={dropdownStyle} value={destination} onChange={e => setDestination(e)} options={destinationOptions} />
           <span className={classes.tableHeaderText}>DESCRIPTION</span>
           <input className={classes.slaInput} type="text" value={description} onChange={e => setDescription(e.target.value)} />
         </div>
