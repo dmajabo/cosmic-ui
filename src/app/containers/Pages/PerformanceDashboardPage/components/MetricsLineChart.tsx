@@ -118,19 +118,20 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
             y: Number(Number.parseFloat(item.value).toFixed(2)),
             marker: {
               enabled: true,
-              radius: 3,
-              color: 'red',
+              radius: 10,
+              colour: 'red',
+              symbol: 'circle',
             },
             states: {
               hover: {
                 lineWidthPlus: 0,
               },
             },
-            lineWidth: 0,
           };
         }),
         turboThreshold: inputData[row.id].length,
         showInLegend: false,
+        lineWidth: 0,
       };
     });
     const finalChartData = tempChartData.concat(anomalyData);

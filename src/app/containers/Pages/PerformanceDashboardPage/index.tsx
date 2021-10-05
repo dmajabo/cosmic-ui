@@ -6,6 +6,7 @@ import { SLATestList } from './components/SLATestList';
 import { CreateSLATestRequest, FinalTableData, Organization } from './SharedTypes';
 import { createApiClient } from './apiClient';
 import { GetDevicesString, GetSelectedOrganization } from './components/filterFunctions';
+import LoadingIndicator from '../../../components/Loading';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -37,6 +38,7 @@ const PerformanceDashboardPage: React.FC = () => {
   const [finalTableData, setFinalTableData] = useState<FinalTableData[]>([]);
   const [merakiOrganizations, setMerakiOrganizations] = useState<Organization[]>([]);
   const [awsOrganizations, setAwsOrganizations] = useState<Organization[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const getOrganizations = async () => {
@@ -74,6 +76,7 @@ const PerformanceDashboardPage: React.FC = () => {
           };
         });
         setFinalTableData(testData);
+        setIsLoading(false);
       }
     }
   };
@@ -108,7 +111,11 @@ const PerformanceDashboardPage: React.FC = () => {
         </Tabs>
       </div>
       <TabPanel value={tab} index={'sla_tests'}>
-        {finalTableData.length > 0 ? (
+        {isLoading ? (
+          <div className={classes.pageCenter}>
+            <LoadingIndicator />
+          </div>
+        ) : finalTableData.length > 0 ? (
           <SLATestList deleteSlaTest={deleteSlaTest} awsOrganizations={awsOrganizations} merakiOrganizations={merakiOrganizations} finalTableData={finalTableData} addSlaTest={addSlaTest} />
         ) : (
           <CreateSLATest awsOrganizations={awsOrganizations} merakiOrganizations={merakiOrganizations} addSlaTest={addSlaTest} />
