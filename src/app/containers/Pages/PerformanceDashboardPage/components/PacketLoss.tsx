@@ -27,6 +27,10 @@ export interface TestIdToName {
   [id: string]: string;
 }
 
+const PACKET_LOSS = 'packetloss';
+
+const PACKET_LOSS_ANOMALY = 'packetloss_anomaly';
+
 export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange }) => {
   const classes = PerformanceDashboardStyles();
 
@@ -46,8 +50,8 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange 
       const promises = selectedRows.map(row => apiClient.getPacketLossMetrics(row.sourceDevice, row.destination, timeRange, row.id));
       Promise.all(promises).then(values => {
         values.forEach(item => {
-          packetLossChartData[item.testId] = item.metrics.keyedmap.find(item => item.key === 'packetloss')?.ts || [];
-          packetLossChartData[`${item.testId}_anomaly`] = item.metrics.keyedmap.find(item => item.key === 'packetloss_anomaly')?.ts || [];
+          packetLossChartData[item.testId] = item.metrics.keyedmap.find(item => item.key === PACKET_LOSS)?.ts || [];
+          packetLossChartData[`${item.testId}_anomaly`] = item.metrics.keyedmap.find(item => item.key === PACKET_LOSS_ANOMALY)?.ts || [];
         });
         setPacketLossData(packetLossChartData);
       });
