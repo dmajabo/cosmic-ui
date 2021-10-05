@@ -14,8 +14,8 @@ interface GridRowProps {
 }
 
 const getColor = (legendData: LegendData[], data: number) => {
-  const selectedLegend = legendData.filter(item => data >= item.low && data <= item.high);
-  return selectedLegend.length > 0 ? selectedLegend[0].color : 'black';
+  const selectedLegend = legendData.find(item => data >= item.low && data <= item.high);
+  return selectedLegend?.color || 'black';
 };
 
 export const GridRow: React.FC<GridRowProps> = ({ dataSuffix, selectedRows, device, tests, heatMapData, legendData }) => {
