@@ -118,14 +118,14 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
             y: Number(Number.parseFloat(item.value).toFixed(2)),
             marker: {
               enabled: true,
-              radius: 10,
+              radius: 5,
               symbol: 'circle',
             },
           };
         }),
         turboThreshold: inputData[row.id].length,
         showInLegend: false,
-        color: 'red',
+        color: '#DC4545',
         states: {
           hover: {
             lineWidthPlus: 0,
