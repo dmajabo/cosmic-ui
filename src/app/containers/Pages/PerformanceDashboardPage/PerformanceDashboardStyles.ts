@@ -262,11 +262,6 @@ export const PerformanceDashboardStyles = makeStyles(
         color: '#05143A',
         textAlign: 'center',
       },
-      toast: {
-        float: 'right',
-        width: 100,
-        height: 50,
-      },
     }),
   {
     index: 1,

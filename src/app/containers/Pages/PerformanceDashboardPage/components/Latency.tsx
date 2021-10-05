@@ -15,6 +15,9 @@ interface LatencyProps {
   readonly timeRange: string;
 }
 
+const LATENCY = 'latency';
+const LATENCY_ANOMALY = 'latency_anomaly';
+
 export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange }) => {
   const classes = PerformanceDashboardStyles();
 
@@ -34,8 +37,8 @@ export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange }) => 
       const promises = selectedRows.map(row => apiClient.getLatencyMetrics(row.sourceDevice, row.destination, timeRange, row.id));
       Promise.all(promises).then(values => {
         values.forEach(item => {
-          latencyChartData[item.testId] = item.metrics.keyedmap.find(item => item.key === 'latency')?.ts;
-          latencyChartData[`${item.testId}_anomaly`] = item.metrics.keyedmap.find(item => item.key === 'latency_anomaly')?.ts;
+          latencyChartData[item.testId] = item.metrics.keyedmap.find(item => item.key === LATENCY)?.ts || [];
+          latencyChartData[`${item.testId}_anomaly`] = item.metrics.keyedmap.find(item => item.key === LATENCY_ANOMALY)?.ts || [];
         });
         setLatencyData(latencyChartData);
       });
@@ -78,7 +81,8 @@ export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange }) => 
       </div>
       <div className={classes.lineChartContainer}>
         {selectedRows.length > 0 ? (
-          Object.keys(latencyData).length / 2 === selectedRows.length ? ( // latencyData contains 2 keys for each selected test
+          // latencyData contains 2 keys for each row. One for the data and one for anomaly
+          Object.keys(latencyData).length / 2 === selectedRows.length ? (
             <MetricsLineChart dataValueSuffix="ms" selectedRows={selectedRows} inputData={latencyData} />
           ) : (
             <div className={classes.noChartContainer}>

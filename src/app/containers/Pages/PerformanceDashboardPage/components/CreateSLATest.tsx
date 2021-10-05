@@ -137,10 +137,7 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ awsOrganizations, 
     clearFormFields();
   };
 
-  const shouldSubmitButtonEnable = () => {
-    return name && sourceOrg.label && sourceNetwork.label && destination.label ? false : true;
-  };
-
+  const shouldSubmitButtonEnable = () => (name && sourceOrg.label && sourceNetwork.label && destination.label ? false : true);
   return (
     <div className={classes.createSlaTestContainer}>
       <div className={classes.slaFormElementContainer}>

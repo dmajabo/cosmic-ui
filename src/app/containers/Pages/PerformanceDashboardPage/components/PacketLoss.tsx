@@ -90,7 +90,8 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange 
       </div>
       <div className={classes.lineChartContainer}>
         {selectedRows.length > 0 ? (
-          Object.keys(packetLossData).length / 2 === selectedRows.length ? ( // packetLossData contains 2 keys for each selected test
+          // packetLossData contains 2 keys for each row. One for the data and one for anomaly
+          Object.keys(packetLossData).length / 2 === selectedRows.length ? (
             <MetricsLineChart dataValueSuffix="%" selectedRows={selectedRows} inputData={packetLossData} />
           ) : (
             <div className={classes.noChartContainer}>

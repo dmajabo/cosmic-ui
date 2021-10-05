@@ -95,7 +95,7 @@ const PerformanceDashboardPage: React.FC = () => {
       toast.success('Test Added Successfully!');
       getSLATests();
     } else {
-      toast.error('Test Not Added! Please try Again!');
+      toast.error('Something went wrong. Please try Again!');
     }
   };
 
@@ -105,7 +105,7 @@ const PerformanceDashboardPage: React.FC = () => {
       toast.success('Test Deleted Successfully!');
       getSLATests();
     } else {
-      toast.error('Test Not Deleted! Please Try Again!');
+      toast.error('Something went wrong. Please try Again!');
     }
   };
 
