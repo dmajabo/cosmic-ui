@@ -82,16 +82,19 @@ export function useZoom(props: IProps) {
     const root = d3.select(`#${rootId}`);
     const svgSize = document.getElementById(svgId).getBoundingClientRect();
     const rootSize = root.node().getBBox();
-    const scale = getScaleSizeHelper(svgSize, rootSize.width, rootSize.height);
-    const centerX = svgSize.width / 2;
-    const centerY = (svgSize.height - 80) / 2;
-    zoom.scaleTo(svg, scale);
-    zoom.translateTo(svg, centerX, centerY);
+    const devWidth = rootSize.width;
+    const devHeight = rootSize.height;
+    const scale = getScaleSizeHelper(svgSize, devWidth, devHeight);
+    const centerX = svgSize.width / 2 - devWidth / 2 - rootSize.x;
+    const centerY = svgSize.height / 2 - devHeight / 2 - rootSize.y;
+    svg.call(zoom.transform, d3.zoomIdentity.translate(centerX, centerY).scale(scale));
+    // zoom.scaleTo(root, scale);
+    // zoom.translateTo(root, );
   };
 
   const getScaleSizeHelper = (svg, width, height) => {
     const scaleX = Math.min(1, svg.width / width);
-    const scaleY = Math.min(1, (svg.height - 80) / height);
+    const scaleY = Math.min(1, svg.height / height);
     let k = Math.min(scaleX, scaleY);
     k = checkMinMaxScale(k);
     return k;

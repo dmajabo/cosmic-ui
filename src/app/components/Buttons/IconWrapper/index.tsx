@@ -11,6 +11,7 @@ interface IProps {
   title?: string;
   onClick?: () => void;
   disabled?: boolean;
+  classes?: string;
 }
 
 const IconWrapper: React.FC<IProps> = (props: IProps) => {
@@ -21,7 +22,7 @@ const IconWrapper: React.FC<IProps> = (props: IProps) => {
     props.onClick();
   };
   return (
-    <Icon title={props.title} style={props.styles} width={props.width} height={props.height} onClick={onClick} disabled={props.disabled}>
+    <Icon className={props.classes} title={props.title} style={props.styles} width={props.width} height={props.height} onClick={onClick} disabled={props.disabled}>
       {!props.customIcon && <>{!props.isIconasStrign ? <>{props.icon}</> : <img src={props.icon as string} width="100%" height="100%" alt="" />}</>}
       {props.customIcon && <>{props.customIcon}</>}
     </Icon>

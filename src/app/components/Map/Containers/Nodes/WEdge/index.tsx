@@ -75,7 +75,7 @@ const WEdgeNode: React.FC<IProps> = (props: IProps) => {
           <use href="#wedgeSvg" />
         </g>
         <TextName fontSize="14" x={NODES_CONSTANTS.WEDGE.r} y={NODES_CONSTANTS.WEDGE.r * 2 + 15} name="TGW" hideTitle />
-        <TextName fontSize="9" x={NODES_CONSTANTS.WEDGE.r} y={NODES_CONSTANTS.WEDGE.r * 2 + 30} maxTextLength={12} name={props.dataItem.name + 'asfsafafafafafafafaff'} />
+        <TextName fontSize="9" x={NODES_CONSTANTS.WEDGE.r} y={NODES_CONSTANTS.WEDGE.r * 2 + 30} maxTextLength={12} name={props.dataItem.name} />
       </g>
     </TransitionContainer>
   );
