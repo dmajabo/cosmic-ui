@@ -81,6 +81,7 @@ const COLORS = [
   '#F44336',
   '#F48FB1',
 ];
+const ANOMALY_POINT_COLOR = 'red';
 
 export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataValueSuffix, inputData }) => {
   const [data, setData] = useState<ChartData[]>([]);
@@ -125,7 +126,7 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
         }),
         turboThreshold: inputData[row.id].length,
         showInLegend: false,
-        color: '#DC4545',
+        color: ANOMALY_POINT_COLOR,
         states: {
           hover: {
             lineWidthPlus: 0,

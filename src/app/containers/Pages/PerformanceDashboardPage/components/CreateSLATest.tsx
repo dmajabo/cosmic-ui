@@ -137,8 +137,8 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ awsOrganizations, 
     clearFormFields();
   };
 
-  const getButtonEnable = () => {
-    return name ? (sourceOrg ? (sourceNetwork ? (destination ? false : true) : true) : true) : true;
+  const shouldSubmitButtonEnable = () => {
+    return name && sourceOrg.label && sourceNetwork.label && destination.label ? false : true;
   };
 
   return (
@@ -169,7 +169,7 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ awsOrganizations, 
           <input className={classes.slaInput} type="text" value={description} onChange={e => setDescription(e.target.value)} />
         </div>
         <div className={classes.slaTestButtonConatiner}>
-          <Button className={classes.slaFormButton} disabled={getButtonEnable()} variant="contained" color="primary" fullWidth={true} size="large" onClick={handleFormSubmit} disableElevation>
+          <Button className={classes.slaFormButton} disabled={shouldSubmitButtonEnable()} variant="contained" color="primary" fullWidth={true} size="large" onClick={handleFormSubmit} disableElevation>
             <Typography className={classes.slaTestButtonText} noWrap>
               CREATE SLA TEST
             </Typography>
