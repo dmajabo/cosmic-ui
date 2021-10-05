@@ -88,7 +88,6 @@ const PerformanceDashboardPage: React.FC = () => {
   }, [merakiOrganizations]);
 
   const addSlaTest = async (submitData: CreateSLATestRequest) => {
-    setIsLoading(true);
     const responseData = await apiClient.createSLATest(submitData);
     if (Object.keys(responseData).length > 0) {
       getSLATests();
@@ -96,7 +95,6 @@ const PerformanceDashboardPage: React.FC = () => {
   };
 
   const deleteSlaTest = async (testId: string) => {
-    setIsLoading(true);
     const responseData = await apiClient.deleteSLATest(testId);
     if (Object.keys(responseData).length === 0) {
       getSLATests();
