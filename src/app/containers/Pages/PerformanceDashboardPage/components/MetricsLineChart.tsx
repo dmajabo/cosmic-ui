@@ -119,7 +119,6 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
             marker: {
               enabled: true,
               radius: 10,
-              colour: 'red',
               symbol: 'circle',
             },
             states: {
@@ -131,6 +130,7 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
         }),
         turboThreshold: inputData[row.id].length,
         showInLegend: false,
+        color: 'red',
         lineWidth: 0,
       };
     });
