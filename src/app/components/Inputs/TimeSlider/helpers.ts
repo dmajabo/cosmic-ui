@@ -36,6 +36,12 @@ export const getTicks = (period: ITimeTypes, _domain: number[], _selected: numbe
   const _ticks = scaleTime().domain(_domain);
   if (period === ITimeTypes.DAY) {
     const arr = _ticks.ticks(24);
+    if (arr[0].getTime() !== _domain[0]) {
+      arr.unshift(new Date(_domain[0]));
+    }
+    if (arr[arr.length - 1].getTime() !== _domain[1]) {
+      arr.push(new Date(_domain[1]));
+    }
     if (arr.length > 24 && arr.length < 48) {
       const a = arr.filter((tick, i) => i % 3 === 0 || i === arr.length - 1);
       return a.map((d, i) => ({ value: +d, label: getTick(period, +d, i, arr.length - 1) }));
@@ -56,6 +62,12 @@ export const getTicks = (period: ITimeTypes, _domain: number[], _selected: numbe
     return arr.map((d, i) => ({ value: +d, label: getTick(period, +d, i, arr.length - 1) }));
   }
   const arr = _ticks.ticks(24);
+  if (arr[0].getTime() !== _domain[0]) {
+    arr.unshift(new Date(_domain[0]));
+  }
+  if (arr[arr.length - 1].getTime() !== _domain[1]) {
+    arr.push(new Date(_domain[1]));
+  }
   return arr.map((d, i) => ({ value: +d, label: getTick(period, +d, i, arr.length - 1) }));
 };
 
@@ -89,7 +101,10 @@ export const getStep = (period: ITimeTypes, min?: number, max?: number) => {
 
 const getTick = (period: ITimeTypes, ms: number, index: number, lastIndex: number) => {
   if (period === ITimeTypes.DAY && (index === 0 || index === lastIndex || getTime(startOfDay(ms)) === ms)) {
-    return format(ms, 'M / d h aa');
+    if (getTime(startOfDay(ms)) === ms) {
+      return format(ms, 'M / d h aa');
+    }
+    return format(ms, 'h aa');
   }
   if (period === ITimeTypes.DAY) {
     return format(ms, 'h aa');
@@ -104,7 +119,10 @@ const getTick = (period: ITimeTypes, ms: number, index: number, lastIndex: numbe
     return format(ms, 'yy / M');
   }
   if (index === 0 || index === lastIndex || getTime(startOfDay(ms)) === ms) {
-    return format(ms, 'M / d h aa');
+    if (getTime(startOfDay(ms)) === ms) {
+      return format(ms, 'M / d h aa');
+    }
+    return format(ms, 'h aa');
   }
   return format(ms, 'h aa');
 };

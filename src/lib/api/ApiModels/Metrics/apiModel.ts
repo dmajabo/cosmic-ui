@@ -90,6 +90,7 @@ export enum SecurityGroupsResourceTypes {
   Vm = 'Vm',
   Nic = 'Nic',
   Wedge = 'WEdge',
+  Device = 'Device',
 }
 
 export enum SubnetResourceTypes {

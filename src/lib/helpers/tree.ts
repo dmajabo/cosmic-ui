@@ -184,7 +184,7 @@ export const setUpGroupsCoord = (_groupsData: INetworkGroupNode[]) => {
   const simulation = d3
     .forceSimulation(_nodes)
     // .alpha(0.5)
-    .force('center', d3.forceCenter(STANDART_DISPLAY_RESOLUTION.width / 2, STANDART_DISPLAY_RESOLUTION.height / 2))
+    .force('center', d3.forceCenter(STANDART_DISPLAY_RESOLUTION.width / 2, (STANDART_DISPLAY_RESOLUTION.height - 100) / 2))
     .force(
       'collision',
       d3
@@ -251,7 +251,7 @@ export const setUpWedgesCoord = (items: IWedgeNode[]) => {
   const _root = hierarchy({ id: null, children: items });
   const _tree = tree()
     .nodeSize([NODES_CONSTANTS.WEDGE.r, NODES_CONSTANTS.WEDGE.r + NODES_CONSTANTS.WEDGE.textHeight])
-    .size([STANDART_DISPLAY_RESOLUTION.height, STANDART_DISPLAY_RESOLUTION.width / 2]);
+    .size([STANDART_DISPLAY_RESOLUTION.height - 100, STANDART_DISPLAY_RESOLUTION.width / 2]);
   _tree(_root);
   if (items.length <= 8) {
     _root.children.forEach((child, i) => {
@@ -285,7 +285,7 @@ export const setUpVnetCoord = (items: IVnetNode[], _startYCoord: number) => {
       if (i !== 0) {
         prevNodeBottomY += 50;
       }
-      if (prevNodeBottomY + child.nodeSize.height > STANDART_DISPLAY_RESOLUTION.height) {
+      if (prevNodeBottomY + child.nodeSize.height > STANDART_DISPLAY_RESOLUTION.height - 100) {
         col++;
         prevNodeBottomY = col % 2 === 0 ? 100 : 150;
         offsetX += child.nodeSize.width + 100;

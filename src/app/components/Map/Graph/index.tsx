@@ -39,7 +39,6 @@ const Graph: React.FC<Props> = (props: Props) => {
     // if (topology.nodes && topology.nodes.length) {
     //   drawSimulation(topology.nodes, topology.links);
     // }
-
     setNodes(topology.nodes);
     setLinks(topology.links);
   }, [topology.nodes, topology.links]);

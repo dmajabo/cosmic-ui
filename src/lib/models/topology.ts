@@ -89,6 +89,19 @@ export interface IVpnLinks extends IBaseEntity<string> {
   privateSubnets: any[];
 }
 
+export interface IVnetwork extends IBaseEntity<string> {
+  name: string;
+  description: string;
+  extId: string;
+  endpoints: any[];
+  vms: IVm[];
+  cidrs: any[];
+  subnets: any[];
+  securityGroups: any[];
+  routeTables: any[];
+  loadBalancers: any[];
+}
+
 export interface IDevice extends IBaseEntity<string> {
   name: string;
   description: string;
@@ -97,6 +110,7 @@ export interface IDevice extends IBaseEntity<string> {
   serial: string;
   model: string;
   networkId: string;
+  vnetworks: IVnetwork[];
   publicIp: string;
   privateIp: string;
   vpnlinks: IVpnLinks[];

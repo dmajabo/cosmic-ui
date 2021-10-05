@@ -15,10 +15,10 @@ import { createTopologyQueryParam, ITopologyDataRes, TopologyGroupApi, TopologyO
 import VpcPanel from './PanelComponents/NodePanels/VpcPanel';
 import FooterAction from './FooterAction';
 import Graph from './Graph';
-import DevicePanel from './PanelComponents/NodePanels/DevicePanel';
 import WedgePanel from './PanelComponents/NodePanels/WedgePanel';
 import { useGetTopology } from 'lib/api/http/useAxiosHook';
 import { ErrorMessage } from '../Basic/ErrorMessage/ErrorMessage';
+import DevicePanel from './PanelComponents/NodePanels/DevicePanel';
 
 interface IProps {}
 
