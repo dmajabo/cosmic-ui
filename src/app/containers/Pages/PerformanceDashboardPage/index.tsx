@@ -7,6 +7,8 @@ import { CreateSLATestRequest, FinalTableData, Organization } from './SharedType
 import { createApiClient } from './apiClient';
 import { GetDevicesString, GetSelectedOrganization } from './components/filterFunctions';
 import LoadingIndicator from '../../../components/Loading';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -90,14 +92,20 @@ const PerformanceDashboardPage: React.FC = () => {
   const addSlaTest = async (submitData: CreateSLATestRequest) => {
     const responseData = await apiClient.createSLATest(submitData);
     if (Object.keys(responseData).length > 0) {
+      toast.success('Test Added Successfully!');
       getSLATests();
+    } else {
+      toast.error('Test Not Added! Please try Again!');
     }
   };
 
   const deleteSlaTest = async (testId: string) => {
     const responseData = await apiClient.deleteSLATest(testId);
     if (Object.keys(responseData).length === 0) {
+      toast.success('Test Deleted Successfully!');
       getSLATests();
+    } else {
+      toast.error('Test Not Deleted! Please Try Again!');
     }
   };
 
@@ -120,6 +128,7 @@ const PerformanceDashboardPage: React.FC = () => {
         ) : (
           <CreateSLATest awsOrganizations={awsOrganizations} merakiOrganizations={merakiOrganizations} addSlaTest={addSlaTest} />
         )}
+        <ToastContainer />
       </TabPanel>
     </div>
   );
