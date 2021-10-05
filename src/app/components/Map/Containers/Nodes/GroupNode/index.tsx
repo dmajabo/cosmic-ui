@@ -8,7 +8,7 @@ import GroupDevicesContainer from './GroupDevicesContainer';
 import * as d3 from 'd3';
 import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
 import TransitionContainer from '../../TransitionContainer';
-import NodeName from '../../Shared/NodeName';
+import TextName from '../../Shared/TextName';
 
 interface IProps {
   dataItem: INetworkGroupNode;
@@ -110,7 +110,7 @@ const GroupNode: React.FC<IProps> = (props: IProps) => {
         <g onClick={onExpandCollapse} style={{ cursor: 'pointer' }} pointerEvents="all">
           <use href="#ciscoMerakiGroupSvg" />
         </g>
-        {collapsed && <NodeName name={props.dataItem.name} dx={-NODES_CONSTANTS.NETWORK_GROUP.spaceX / 2} dy={NODES_CONSTANTS.NETWORK_GROUP.r * 2} />}
+        {collapsed && <TextName fontSize="11" x={NODES_CONSTANTS.NETWORK_GROUP.r} y={NODES_CONSTANTS.NETWORK_GROUP.r * 2 + 15} maxTextLength={12} name={props.dataItem.name} />}
       </g>
     </TransitionContainer>
   );

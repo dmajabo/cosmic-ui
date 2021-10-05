@@ -7,12 +7,13 @@ interface IProps {
   name: string;
   items: IVm[];
   isGroupPresent: boolean;
+  showMore: boolean;
   onClickVm: (vm: IVm) => void;
 }
 
 const VmsContainer: React.FC<IProps> = (props: IProps) => {
   return (
-    <WrapperVms>
+    <WrapperVms showMore={props.showMore}>
       {props.items.map(it => {
         if (it.selectorGroup && props.isGroupPresent) return null;
         return <VmNode key={`vm${it.id}`} dataItem={it} onClick={props.onClickVm} />;

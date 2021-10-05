@@ -40,6 +40,11 @@ const createVnetNode = (org: IOrganization, orgIndex: number, node: IVnet, index
       const gr = groups.find(it => it.name === vm.selectorGroup || it.id === vm.selectorGroup);
       if (gr) {
         _uniqueGroupsSet.add(gr);
+        // for (let i = 0; i < 20; i++) {
+        //   const _gr: ITopologyGroup = jsonClone(gr);
+        //   _gr.id = `testGr${i}`;
+        //   _uniqueGroupsSet.add(_gr);
+        // }
       }
     }
   });
@@ -62,6 +67,10 @@ const createVnetNode = (org: IOrganization, orgIndex: number, node: IVnet, index
 export const createGroupNode = (_item: ITopologyGroup, index: number): INetworkGroupNode => {
   return { ..._item, visible: true, collapsed: true, groupIndex: index, x: 0, y: 0, devices: [], links: [], r: 0, nodeType: TOPOLOGY_NODE_TYPES.NETWORK_GROUP };
 };
+
+// export const createTestVMs = (_item: IVm, id: string) => {
+//   return { ..._item, id: id };
+// };
 export const prepareNodesData = (_data: ITopologyMapData, _groups: ITopologyGroup[]): ITopologyPreparedMapData => {
   const nodes: (IWedgeNode | IVnetNode | IDeviceNode | INetworkGroupNode)[] = [];
   let wedges: IWedgeNode[] = [];
@@ -80,6 +89,12 @@ export const prepareNodesData = (_data: ITopologyMapData, _groups: ITopologyGrou
     }
     if (org.vnets && org.vnets.length && org.vendorType !== 'MERAKI') {
       org.vnets.forEach((v, index) => {
+        // if (v.vms && v.vms.length) {
+        //   for (let i = 0; i < 50; i++) {
+        //     const _vm: IVm = createTestVMs(v.vms[v.vms.length - 1], `vm${v.vms.length + i}`);
+        //     v.vms.push(_vm);
+        //   }
+        // }
         const obj: IVnetNode = createVnetNode(org, i, v, index, _groups);
         nodes.push(obj);
         vnets.push(obj);
@@ -204,13 +219,13 @@ export const setUpGroupsCoord = (_groupsData: INetworkGroupNode[]) => {
 const createpackLayout = (group: INetworkGroupNode) => {
   const _cX = NODES_CONSTANTS.NETWORK_GROUP.r;
   const _cY = NODES_CONSTANTS.NETWORK_GROUP.r;
-  const r = Math.sqrt(Math.pow(NODES_CONSTANTS.Devisec.width, 2) + Math.pow(NODES_CONSTANTS.Devisec.height, 2)) / 1.3;
+  const r = Math.sqrt(Math.pow(NODES_CONSTANTS.Devisec.width, 2) + Math.pow(NODES_CONSTANTS.Devisec.height, 2)) / 2;
   const _pack = pack().radius(d => r);
   const _root = hierarchy(group, d => d.devices);
   _pack(_root);
   const size = packEnclose(_root.children);
   const _r = getPackRadius(size.r);
-  const scale = Math.min(1, _r / size.r);
+  const scale = Math.max(0.1, Math.min(1, _r / size.r));
   if (_root.children && _root.children.length > 0) {
     _root.children.forEach((child, index) => {
       group.devices[index].x = _cX + child.x * scale - NODES_CONSTANTS.Devisec.width / 2 - _r;
@@ -284,12 +299,13 @@ export interface IVpcSize {
   height: number;
   cols: number;
   rows: number;
+  showMore: boolean;
 }
 
 export const getVPCContainerSize = (node: IVnet, _arr: ITopologyGroup[]): IVpcSize => {
   if (!node.vms || !node.vms.length) {
     const _r = Math.sqrt(Math.pow(NODES_CONSTANTS.VNet.width, 2) + Math.pow(NODES_CONSTANTS.VNet.height, 2));
-    return { r: _r, width: NODES_CONSTANTS.VNet.width, height: NODES_CONSTANTS.VNet.height, cols: 3, rows: 2 };
+    return { r: _r, width: NODES_CONSTANTS.VNet.width, height: NODES_CONSTANTS.VNet.height, cols: 3, rows: 2, showMore: false };
   }
   const _vms: IVm[] = node.vms.filter(it => !it.selectorGroup);
   const groupsHeight = _arr.length * (NODES_CONSTANTS.APP_GROUP.height + NODES_CONSTANTS.APP_GROUP.spaceY) + 4;
@@ -297,12 +313,14 @@ export const getVPCContainerSize = (node: IVnet, _arr: ITopologyGroup[]): IVpcSi
   const vmRowH = (NODES_CONSTANTS.VM.height + NODES_CONSTANTS.VM.spaceY * 2) * rows;
   const _nodeH = groupsHeight + vmRowH + NODES_CONSTANTS.VNet.headerHeight;
   let _height = Math.max(NODES_CONSTANTS.VNet.height, _nodeH) + 2;
+  let _showMore = false;
   if (_height > 200) {
     _height = 200;
+    _showMore = true;
   }
   const d = Math.ceil(Math.sqrt(Math.pow(NODES_CONSTANTS.VNet.width, 2) + Math.pow(_height + 34, 2)));
   const _r = Math.max(NODES_CONSTANTS.VNet.width, d / 2);
-  return { r: _r, width: NODES_CONSTANTS.VNet.width, height: _height, cols: 3, rows: rows };
+  return { r: _r, width: NODES_CONSTANTS.VNet.width, height: _height, cols: 3, rows: rows, showMore: _showMore };
 };
 
 // const calculateStartY = (devices: any[], topologyGroups: any[]): number => {

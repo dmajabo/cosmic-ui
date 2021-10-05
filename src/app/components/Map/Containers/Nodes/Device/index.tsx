@@ -4,6 +4,7 @@ import { IPosition, NODES_CONSTANTS } from 'app/components/Map/model';
 import { useDrag } from 'app/components/Map/hooks/useDrag';
 import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
 import TransitionContainer from '../../TransitionContainer';
+import TextName from '../../Shared/TextName';
 // import { IPopupDisplay } from 'lib/models/general';
 // import NodeTooltipPortal from 'components/Basic/NodeTooltipPortal';
 // import DevicePopup from '../../Popups/DevicePopup';
@@ -88,7 +89,8 @@ const DeviceNode: React.FC<IProps> = (props: IProps) => {
           >
             <use href="#ciscoMerakiDeviceSvg" />
           </g>
-          <foreignObject pointerEvents="none" x={NODES_CONSTANTS.Devisec.dx} y={NODES_CONSTANTS.Devisec.dy} width={NODES_CONSTANTS.Devisec.textWidth} height={NODES_CONSTANTS.Devisec.textHeight}>
+          <TextName fontSize="6" x="16" y="40" color="var(--_disabledTextColor)" maxTextLength={12} name={`${props.dataItem.name} ${props.dataItem.model}`} />
+          {/* <foreignObject pointerEvents="none" x={NODES_CONSTANTS.Devisec.dx} y={NODES_CONSTANTS.Devisec.dy} width={NODES_CONSTANTS.Devisec.textWidth} height={NODES_CONSTANTS.Devisec.textHeight}>
             <div
               style={{
                 width: '100%',
@@ -101,7 +103,7 @@ const DeviceNode: React.FC<IProps> = (props: IProps) => {
             >
               {props.dataItem.name} {props.dataItem.model}
             </div>
-          </foreignObject>
+          </foreignObject> */}
         </g>
       </g>
     </TransitionContainer>

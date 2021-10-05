@@ -50,32 +50,54 @@ export const Title = styled.div`
   margin: auto;
   font-style: normal;
   font-weight: 500;
-  font-size: 9px;
-  line-height: 16px;
+  font-size: 10px;
+  line-height: 22px;
   text-align: center;
   color: var(--_primaryBg);
   vertical-align: top;
   margin-right: 4px;
 `;
 
-export const WrapperVms = styled.div`
+interface Props {
+  showMore: boolean;
+}
+export const WrapperVms = styled.div<Props>`
   display: flex;
   flex-direction: row;
   width: calc(100% - 4px);
   flex-wrap: wrap;
   align-content: start;
   margin: 0 2px;
+  max-height: ${props => (props.showMore ? 'calc(100% - 56px)' : 'calc(100% - 32px)')};
+  overflow: hidden;
 `;
 
 export const Icon = styled.div`
   display: inline-block;
-  width: 13px;
-  height: 13px;
+  width: 16px;
+  height: 16px;
   margin-right: 4px;
-  line-height: 21px;
+  line-height: 22px;
   svg {
     vertical-align: top;
     width: 100%;
     height: 100%;
+  }
+`;
+
+export const MoreButton = styled.div`
+  display: inline-block;
+  width: 100%;
+  height: 24px;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 10px;
+  line-height: 26px;
+  text-align: center;
+  color: var(--_disabledTextColor);
+  flex-shrink: 0;
+  span:hover {
+    color: var(--_primaryColor);
+    cursor: pointer;
   }
 `;

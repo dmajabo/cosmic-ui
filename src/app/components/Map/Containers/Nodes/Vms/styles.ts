@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { NODES_CONSTANTS } from 'app/components/Map/model';
+import { Icon } from 'app/components/Buttons/IconWrapper/styles';
 
 export const VmNodeStyles = styled.div`
   display: inline-flex;
@@ -12,21 +13,24 @@ export const VmNodeStyles = styled.div`
   margin: 2px;
   background-color: var(--_vmsContainerBg);
   border-radius: ${NODES_CONSTANTS.VM.borderRadius + 'px'};
-  padding: 1px 5px;
+  padding: 1px 4px;
   white-space: nowrap;
   align-items: center;
   flex-wrap: nowrap;
   cursor: pointer;
+  ${Icon} {
+    margin: auto 0;
+  }
 `;
 
 export const Label = styled.div`
-  font-size: 10px;
+  font-size: 11px;
   color: var(--_disabledTextColor);
   max-width: calc(100% - 14px);
   margin-left: 4px;
   text-overflow: ellipsis;
   white-space: nowrap;
-  line-height: 8px;
+  line-height: 19px;
   overflow: hidden;
   align-self: flex-start;
   margin: auto 0 auto 4px;

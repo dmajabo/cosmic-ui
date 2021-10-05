@@ -59,25 +59,25 @@ const Map: React.FC<IProps> = (props: IProps) => {
 
   const onHidePanel = () => {
     setShowFooter(true);
-    const _objPanel = { ...showPanelRef.current, show: false };
+    const _objPanel = { show: false, type: null };
     setShowPanelBar(_objPanel);
     showPanelRef.current = _objPanel;
-    setTimeout(() => {
-      const _objPanel = { show: false, type: null };
-      setShowPanelBar(_objPanel);
-      showPanelRef.current = _objPanel;
-    }, 800);
+    // setTimeout(() => {
+    //   const _objPanel = { show: false, type: null };
+    //   setShowPanelBar(_objPanel);
+    //   showPanelRef.current = _objPanel;
+    // }, 800);
   };
 
   const onHideMetrics = () => {
-    const _objMetrick = { ...showMetrickRef.current, show: false };
+    const _objMetrick = { show: false, type: null };
     setShowMetricks(_objMetrick);
     showMetrickRef.current = _objMetrick;
-    setTimeout(() => {
-      const _objMetrick = { show: false, type: null };
-      setShowMetricks(_objMetrick);
-      showMetrickRef.current = _objMetrick;
-    }, 800);
+    // setTimeout(() => {
+    //   const _objMetrick = { show: false, type: null };
+    //   setShowMetricks(_objMetrick);
+    //   showMetrickRef.current = _objMetrick;
+    // }, 800);
   };
 
   const onTryLoadData = async () => {

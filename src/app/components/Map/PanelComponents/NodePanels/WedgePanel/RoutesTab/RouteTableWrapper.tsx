@@ -51,12 +51,12 @@ const RouteTableWrapper: React.FC<Props> = (props: Props) => {
               )}
             </TableBody>
           </Table>
+          {props.showLoader && (
+            <AbsLoaderWrapper width="100%" height="calc(100% - 42px)" top="42px">
+              <LoadingIndicator margin="auto" width="24px" height="24px" />
+            </AbsLoaderWrapper>
+          )}
         </TableContainer>
-        {props.showLoader && (
-          <AbsLoaderWrapper width="100%" height="calc(100% - 42px)" top="42px">
-            <LoadingIndicator margin="auto" width="24px" height="24px" />
-          </AbsLoaderWrapper>
-        )}
       </TableWrapperStyles>
     );
   }

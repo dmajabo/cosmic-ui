@@ -12,8 +12,7 @@ const DefsComponent: React.FC<{}> = () => {
   return (
     <defs>
       <pattern id="deviceCiscoMeraki" patternUnits="userSpaceOnUse" width="32" height="32">
-        <rect fill="white" width="32" height="32" />
-        <image href={CiscoMerakiDevice} x="4.5" y="4.5" width="20" height="20" />
+        <image href={CiscoMerakiDevice} x="5" y="7" width="17" height="13" />
       </pattern>
       <pattern id="groupCiscoMeraki" patternUnits="userSpaceOnUse" width="90" height="90">
         <rect fill="white" width="90" height="90" />
@@ -41,6 +40,10 @@ const DefsComponent: React.FC<{}> = () => {
         />
       </svg>
       <svg id="ciscoMerakiDeviceSvg" width={NODES_CONSTANTS.Devisec.width} height={NODES_CONSTANTS.Devisec.height} viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M12 1.1547C13.2376 0.440169 14.7624 0.440169 16 1.1547L24.1244 5.8453C25.362 6.55983 26.1244 7.88034 26.1244 9.3094V18.6906C26.1244 20.1197 25.362 21.4402 24.1244 22.1547L16 26.8453C14.7624 27.5598 13.2376 27.5598 12 26.8453L3.87564 22.1547C2.63804 21.4402 1.87564 20.1197 1.87564 18.6906V9.3094C1.87564 7.88034 2.63804 6.55983 3.87564 5.8453L12 1.1547Z"
+          fill="white"
+        />
         <path
           d="M12 1.1547C13.2376 0.440169 14.7624 0.440169 16 1.1547L24.1244 5.8453C25.362 6.55983 26.1244 7.88034 26.1244 9.3094V18.6906C26.1244 20.1197 25.362 21.4402 24.1244 22.1547L16 26.8453C14.7624 27.5598 13.2376 27.5598 12 26.8453L3.87564 22.1547C2.63804 21.4402 1.87564 20.1197 1.87564 18.6906V9.3094C1.87564 7.88034 2.63804 6.55983 3.87564 5.8453L12 1.1547Z"
           fill="url(#deviceCiscoMeraki)"

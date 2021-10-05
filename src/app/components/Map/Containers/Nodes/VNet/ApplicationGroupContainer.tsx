@@ -5,12 +5,13 @@ import ApplicationGroup from '../ApplicationGroup';
 
 interface IProps {
   items: ITopologyGroup[];
+  showMore: boolean;
   onClickGroup: (vm: ITopologyGroup) => void;
 }
 
 const ApplicationGroupContainer: React.FC<IProps> = (props: IProps) => {
   return (
-    <WrapperVms>
+    <WrapperVms showMore={props.showMore}>
       {props.items.map(it => (
         <ApplicationGroup key={`appGroup${it.id}`} dataItem={it} onClick={props.onClickGroup} />
       ))}

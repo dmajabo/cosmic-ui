@@ -8,7 +8,7 @@ import { useDrag } from 'app/components/Map/hooks/useDrag';
 // import { IPopupDisplay } from 'lib/models/general';
 import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
 import VNetHeder from './VNetHeder';
-import { ContainerWrapper } from './styles';
+import { ContainerWrapper, MoreButton } from './styles';
 import ApplicationGroupContainer from './ApplicationGroupContainer';
 import TransitionContainer from '../../TransitionContainer';
 interface IProps {
@@ -87,8 +87,19 @@ const VNetNode: React.FC<IProps> = (props: IProps) => {
         <foreignObject x="0" y="0" width={props.dataItem.nodeSize.width} height={props.dataItem.nodeSize.height}>
           <ContainerWrapper>
             <VNetHeder name={props.dataItem.name} extId={props.dataItem.extId} />
-            <ApplicationGroupContainer items={props.dataItem.applicationGroups} onClickGroup={onClickGroup} />
-            <VmsContainer name={props.dataItem.name} isGroupPresent={!!props.dataItem.applicationGroups.length} items={props.dataItem.vms} onClickVm={onClickVm} />
+            <ApplicationGroupContainer items={props.dataItem.applicationGroups} showMore={props.dataItem.nodeSize.showMore} onClickGroup={onClickGroup} />
+            <VmsContainer
+              name={props.dataItem.name}
+              showMore={props.dataItem.nodeSize.showMore}
+              isGroupPresent={!!props.dataItem.applicationGroups.length}
+              items={props.dataItem.vms}
+              onClickVm={onClickVm}
+            />
+            {props.dataItem.nodeSize.showMore && (
+              <MoreButton>
+                <span>More</span>
+              </MoreButton>
+            )}
           </ContainerWrapper>
         </foreignObject>
       </g>

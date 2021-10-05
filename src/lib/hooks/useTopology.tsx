@@ -93,7 +93,7 @@ export function useTopologyContext(): TopologyContextType {
     //   const gr = Object.assign({}, { ..._groupsObj.groups[1], id: `${_groupsObj.groups[1].id}_${5}` });
     //   _groupsObj.groups.push(gr);
     // }
-    // for (let j = 0; j < 500; j++) {
+    // for (let j = 0; j < 1000; j++) {
     //   const device = onCreateDevice(0, _orgObj.organizations[0].id, j, '');
     //   _orgObj.organizations[0].devices.push(device);
     // }
@@ -148,12 +148,12 @@ export function useTopologyContext(): TopologyContextType {
   // const onCreateDevice = (orgI, orgId, index: number, groupName: string): IDeviceNode => {
   //   return {
   //     id: `0xeaa5_temporaryDevice${index}`,
-  //     name: '',
+  //     name: `${index + 1}`,
   //     description: '',
   //     extId: 'Q2KN-U958-CSTY',
   //     type: '',
   //     serial: 'Q2KN-U958-CSTY',
-  //     model: 'MX64',
+  //     model: '',
   //     networkId: 'L_624311498344248378',
   //     publicIp: '73.158.148.119',
   //     privateIp: '192.168.1.244',

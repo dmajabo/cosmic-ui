@@ -16,6 +16,7 @@ const layout = (props: Props) => {
       height: ${props.height || '100%'};
       border-top: 2px solid;
       border-top-color: var(--_appBg);
+      transition-property: margin-right;
       margin-right: ${props.show ? '0' : '-450px'};
       overflow: hidden;
     `;
@@ -25,6 +26,7 @@ const layout = (props: Props) => {
     min-width: 100%;
     height: 80px;
     flex-shrink: 0;
+    transition-property: margin-bottom;
     margin-bottom: ${props.show ? '0' : '-80px'};
   `;
 };
@@ -34,8 +36,7 @@ export const PanelWrapperStyles = styled.div<Props>`
   ${PanelLayout};
   display: flex;
   z-index: 10;
-  transition-property: all;
-  transition: 0.8s ease-in;
+  transition: 0.3s linear;
 `;
 
 export const Panel = styled.div`

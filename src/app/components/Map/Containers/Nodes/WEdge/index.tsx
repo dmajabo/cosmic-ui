@@ -4,7 +4,7 @@ import { IPosition, NODES_CONSTANTS } from 'app/components/Map/model';
 import { useDrag } from 'app/components/Map/hooks/useDrag';
 import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
 import TransitionContainer from '../../TransitionContainer';
-import NodeName from '../../Shared/NodeName';
+import TextName from '../../Shared/TextName';
 // import NodeTooltipPortal from 'components/Basic/NodeTooltipPortal';
 // import WedgePopup from '../../Popups/WedgePopup';
 // import { IPopupDisplay } from 'lib/models/general';
@@ -71,10 +71,11 @@ const WEdgeNode: React.FC<IProps> = (props: IProps) => {
   return (
     <TransitionContainer stateIn={visible}>
       <g id={`${NODES_CONSTANTS.WEDGE.type}${props.dataItem.id}`} className="topologyNode" transform={`translate(${pos.x}, ${pos.y})`} data-type={NODES_CONSTANTS.WEDGE.type}>
-        <g onClick={onClick}>
+        <g onClick={onClick} style={{ cursor: 'pointer' }} pointerEvents="all">
           <use href="#wedgeSvg" />
         </g>
-        <NodeName labelBefore="TGW" name={props.dataItem.name} dx={-NODES_CONSTANTS.WEDGE.r} dy={NODES_CONSTANTS.WEDGE.r * 2 + 10} />
+        <TextName fontSize="14" x={NODES_CONSTANTS.WEDGE.r} y={NODES_CONSTANTS.WEDGE.r * 2 + 15} name="TGW" hideTitle />
+        <TextName fontSize="9" x={NODES_CONSTANTS.WEDGE.r} y={NODES_CONSTANTS.WEDGE.r * 2 + 30} maxTextLength={12} name={props.dataItem.name + 'asfsafafafafafafafaff'} />
       </g>
     </TransitionContainer>
   );

@@ -3,13 +3,14 @@ import axios, { AxiosError, AxiosResponse } from 'axios';
 
 axios.defaults.baseURL = process.env.NODE_ENV === 'development' ? process.env.REACT_APP_API_ENDPOINT_DEVELOPMENT : process.env.REACT_APP_API_ENDPOINT_PRODUCTION;
 
-const getHeaders = (params?: Object, token?: string) => {
+const getHeaders = (params?: Object, token?: string, cancelToken?: any) => {
   return {
     headers: {
       'Content-Type': 'application/json',
       Authorization: token ? 'Bearer ' + token : '',
       // 'Accept-Language': language,
     },
+    cancelToken: cancelToken,
     params: params || null,
   };
 };
@@ -31,13 +32,17 @@ export const useGet = <T = any>(): IApiRes<T> => {
   const [loading, setloading] = React.useState<boolean>(false);
 
   const onGet = React.useCallback((url: string, param?: any, token?: string) => {
+    let source = axios.CancelToken.source();
     setloading(true);
     setError(null);
-    getDataAsync(url, param, token);
+    getDataAsync(url, param, token, source.token);
+    return () => {
+      source.cancel('Cancelling in cleanup');
+    };
   }, []);
 
-  const getDataAsync = async (url: string, param?: any, token?: string) => {
-    const _header = getHeaders(param, token);
+  const getDataAsync = async (url: string, param?: any, token?: string, cancelToken?: any) => {
+    const _header = getHeaders(param, token, cancelToken);
     await axios
       .get(url, _header)
       .then((res: AxiosResponse<T>) => {
