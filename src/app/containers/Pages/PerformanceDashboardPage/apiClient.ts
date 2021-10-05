@@ -71,6 +71,7 @@ export const createApiClient = (): ApiClient => {
         baseURL: BASE_URL,
         params: {
           startTime: startTime,
+          include_anomaly: true,
         },
       });
       return {
@@ -93,6 +94,7 @@ export const createApiClient = (): ApiClient => {
         baseURL: BASE_URL,
         params: {
           startTime: startTime,
+          include_anomaly: true,
         },
       });
       return {

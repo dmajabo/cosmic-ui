@@ -45,7 +45,10 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange 
       const packetLossChartData: MetricKeyValue = {};
       const promises = selectedRows.map(row => apiClient.getPacketLossMetrics(row.sourceDevice, row.destination, timeRange, row.id));
       Promise.all(promises).then(values => {
-        values.forEach(item => (packetLossChartData[item.testId] = item.metrics.keyedmap.length > 0 ? item.metrics.keyedmap[0].ts : []));
+        values.forEach(item => {
+          packetLossChartData[item.testId] = item.metrics.keyedmap.length > 0 ? item.metrics.keyedmap[0].ts : [];
+          packetLossChartData[`${item.testId}_anomaly`] = item.metrics.keyedmap.length > 0 ? item.metrics.keyedmap[1].ts : [];
+        });
         setPacketLossData(packetLossChartData);
       });
     };
@@ -87,7 +90,7 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange 
       </div>
       <div className={classes.lineChartContainer}>
         {selectedRows.length > 0 ? (
-          Object.keys(packetLossData).length === selectedRows.length ? (
+          Object.keys(packetLossData).length / 2 === selectedRows.length ? (
             <MetricsLineChart dataValueSuffix="%" selectedRows={selectedRows} inputData={packetLossData} />
           ) : (
             <div className={classes.noChartContainer}>

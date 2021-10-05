@@ -33,7 +33,10 @@ export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange }) => 
       const latencyChartData: MetricKeyValue = {};
       const promises = selectedRows.map(row => apiClient.getLatencyMetrics(row.sourceDevice, row.destination, timeRange, row.id));
       Promise.all(promises).then(values => {
-        values.forEach(item => (latencyChartData[item.testId] = item.metrics.keyedmap.length > 0 ? item.metrics.keyedmap[0].ts : []));
+        values.forEach(item => {
+          latencyChartData[item.testId] = item.metrics.keyedmap.length > 0 ? item.metrics.keyedmap[0].ts : [];
+          latencyChartData[`${item.testId}_anomaly`] = item.metrics.keyedmap.length > 0 ? item.metrics.keyedmap[1].ts : [];
+        });
         setLatencyData(latencyChartData);
       });
     };
@@ -75,7 +78,7 @@ export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange }) => 
       </div>
       <div className={classes.lineChartContainer}>
         {selectedRows.length > 0 ? (
-          Object.keys(latencyData).length === selectedRows.length ? (
+          Object.keys(latencyData).length / 2 === selectedRows.length ? (
             <MetricsLineChart dataValueSuffix="ms" selectedRows={selectedRows} inputData={latencyData} />
           ) : (
             <div className={classes.noChartContainer}>
