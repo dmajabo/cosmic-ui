@@ -1,4 +1,5 @@
 import { Organization } from '../SharedTypes';
+import { isEmpty } from 'lodash';
 
 export const GetSelectedOrganization = (organizations: Organization[], orgId: string) => {
   const selectedOrganization = organizations.find(organization => organization.extId === orgId);
@@ -22,7 +23,7 @@ export const GetDevicesString = (organization: Organization) => {
   if (typeof organization !== 'undefined') {
     const orgDevices = organization.devices;
 
-    if (orgDevices.length > 0) {
+    if (!isEmpty(orgDevices)) {
       const deviceExtIdList = orgDevices.map(device => {
         return device.extId;
       });

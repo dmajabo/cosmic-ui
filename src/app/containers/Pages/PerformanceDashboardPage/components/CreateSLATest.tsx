@@ -6,6 +6,7 @@ import { CreateSLATestRequest, Organization, SLATest } from '../SharedTypes';
 import CloseIcon from '../icons/close.svg';
 import { GetSelectedOrganization } from './filterFunctions';
 import CreatableSelect from 'react-select/creatable';
+import { isEmpty } from 'lodash';
 
 interface CreateSLATestProps {
   readonly addSlaTest: Function;
@@ -73,7 +74,7 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ awsOrganizations, 
   }, [awsOrganizations]);
 
   useEffect(() => {
-    if (merakiOrganizations.length > 0 && sourceOrg) {
+    if (!isEmpty(merakiOrganizations) && sourceOrg) {
       const selectedOrganization = GetSelectedOrganization(merakiOrganizations, sourceOrg.value);
       setSelectedOrganizationVnets(selectedOrganization.vnets);
     }

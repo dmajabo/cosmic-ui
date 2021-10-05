@@ -9,6 +9,7 @@ import { GetDevicesString, GetSelectedOrganization } from './components/filterFu
 import LoadingIndicator from '../../../components/Loading';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { isEmpty } from 'lodash';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -45,7 +46,7 @@ const PerformanceDashboardPage: React.FC = () => {
   useEffect(() => {
     const getOrganizations = async () => {
       const responseData = await apiClient.getOrganizations();
-      if (Object.keys(responseData).length > 0) {
+      if (!isEmpty(responseData)) {
         const merakiOrganizations = responseData.organizations.filter(organization => organization.vendorType === 'MERAKI');
         const awsOrganizations = responseData.organizations.filter(organization => organization.vendorType === 'AWS');
         setMerakiOrganizations(merakiOrganizations);
@@ -57,8 +58,8 @@ const PerformanceDashboardPage: React.FC = () => {
 
   const getSLATests = async () => {
     const responseData = await apiClient.getSLATests();
-    if (Object.keys(responseData).length > 0) {
-      if (Array.isArray(responseData.slaTests) && responseData.slaTests.length) {
+    if (!isEmpty(responseData)) {
+      if (Array.isArray(responseData.slaTests) && !isEmpty(responseData.slaTests)) {
         const testData: FinalTableData[] = responseData.slaTests.map(test => {
           const selectedOrganization = GetSelectedOrganization(merakiOrganizations, test.sourceOrgId);
           const allDevices: string = GetDevicesString(selectedOrganization);
@@ -84,14 +85,14 @@ const PerformanceDashboardPage: React.FC = () => {
   };
 
   useEffect(() => {
-    if (merakiOrganizations.length > 0) {
+    if (!isEmpty(merakiOrganizations)) {
       getSLATests();
     }
   }, [merakiOrganizations]);
 
   const addSlaTest = async (submitData: CreateSLATestRequest) => {
     const responseData = await apiClient.createSLATest(submitData);
-    if (Object.keys(responseData).length > 0) {
+    if (!isEmpty(responseData)) {
       toast.success('Test Added Successfully!');
       getSLATests();
     } else {
@@ -101,7 +102,7 @@ const PerformanceDashboardPage: React.FC = () => {
 
   const deleteSlaTest = async (testId: string) => {
     const responseData = await apiClient.deleteSLATest(testId);
-    if (Object.keys(responseData).length === 0) {
+    if (isEmpty(responseData)) {
       toast.success('Test Deleted Successfully!');
       getSLATests();
     } else {
@@ -123,7 +124,7 @@ const PerformanceDashboardPage: React.FC = () => {
           <div className={classes.pageCenter}>
             <LoadingIndicator />
           </div>
-        ) : finalTableData.length > 0 ? (
+        ) : !isEmpty(finalTableData) ? (
           <SLATestList deleteSlaTest={deleteSlaTest} awsOrganizations={awsOrganizations} merakiOrganizations={merakiOrganizations} finalTableData={finalTableData} addSlaTest={addSlaTest} />
         ) : (
           <CreateSLATest awsOrganizations={awsOrganizations} merakiOrganizations={merakiOrganizations} addSlaTest={addSlaTest} />

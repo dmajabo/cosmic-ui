@@ -8,6 +8,7 @@ import LoadingIndicator from '../../../../components/Loading';
 import { Data } from './Table';
 import Heatmap from './Heatmap';
 import { HeatMapData } from '../SharedTypes';
+import { isEmpty } from 'lodash';
 
 interface PacketLossProps {
   readonly selectedRows: Data[];
@@ -93,7 +94,7 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange 
         </div>
       </div>
       <div className={classes.lineChartContainer}>
-        {selectedRows.length > 0 ? (
+        {!isEmpty(selectedRows) ? (
           // packetLossData contains 2 keys for each row. One for the data and one for anomaly
           Object.keys(packetLossData).length / 2 === selectedRows.length ? (
             <MetricsLineChart dataValueSuffix="%" selectedRows={selectedRows} inputData={packetLossData} />
@@ -121,7 +122,7 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange 
         </div>
       </div>
       <div className={classes.lineChartContainer}>
-        {selectedRows.length > 0 ? (
+        {!isEmpty(selectedRows) ? (
           heatMapPacketLoss.length === selectedRows.length ? (
             <Heatmap data={heatMapPacketLoss} selectedRows={testIdToName} dataSuffix="%" />
           ) : (

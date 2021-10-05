@@ -9,6 +9,7 @@ import { MetricKeyValue, TestIdToName } from './PacketLoss';
 import { Data } from './Table';
 import Heatmap from './Heatmap';
 import { HeatMapData } from '../SharedTypes';
+import { isEmpty } from 'lodash';
 
 interface LatencyProps {
   readonly selectedRows: Data[];
@@ -80,7 +81,7 @@ export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange }) => 
         </div>
       </div>
       <div className={classes.lineChartContainer}>
-        {selectedRows.length > 0 ? (
+        {!isEmpty(selectedRows) ? (
           // latencyData contains 2 keys for each row. One for the data and one for anomaly
           Object.keys(latencyData).length / 2 === selectedRows.length ? (
             <MetricsLineChart dataValueSuffix="ms" selectedRows={selectedRows} inputData={latencyData} />
@@ -108,7 +109,7 @@ export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange }) => 
         </div>
       </div>
       <div className={classes.lineChartContainer}>
-        {selectedRows.length > 0 ? (
+        {!isEmpty(selectedRows) ? (
           heatMapLatency.length === selectedRows.length ? (
             <Heatmap data={heatMapLatency} selectedRows={testIdToName} dataSuffix="ms" />
           ) : (
