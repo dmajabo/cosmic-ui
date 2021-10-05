@@ -8,6 +8,7 @@ import LoadingIndicator from '../../../../components/Loading';
 import { Data } from './Table';
 import Heatmap from './Heatmap';
 import { HeatMapData } from '../SharedTypes';
+import { isEmpty } from 'lodash';
 
 interface PacketLossProps {
   readonly selectedRows: Data[];
@@ -27,6 +28,10 @@ export interface TestIdToName {
   [id: string]: string;
 }
 
+const PACKET_LOSS = 'packetloss';
+
+const PACKET_LOSS_ANOMALY = 'packetloss_anomaly';
+
 export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange }) => {
   const classes = PerformanceDashboardStyles();
 
@@ -45,7 +50,10 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange 
       const packetLossChartData: MetricKeyValue = {};
       const promises = selectedRows.map(row => apiClient.getPacketLossMetrics(row.sourceDevice, row.destination, timeRange, row.id));
       Promise.all(promises).then(values => {
-        values.forEach(item => (packetLossChartData[item.testId] = item.metrics.keyedmap.length > 0 ? item.metrics.keyedmap[0].ts : []));
+        values.forEach(item => {
+          packetLossChartData[item.testId] = item.metrics.keyedmap.find(item => item.key === PACKET_LOSS)?.ts || [];
+          packetLossChartData[`${item.testId}_anomaly`] = item.metrics.keyedmap.find(item => item.key === PACKET_LOSS_ANOMALY)?.ts || [];
+        });
         setPacketLossData(packetLossChartData);
       });
     };
@@ -86,8 +94,9 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange 
         </div>
       </div>
       <div className={classes.lineChartContainer}>
-        {selectedRows.length > 0 ? (
-          Object.keys(packetLossData).length === selectedRows.length ? (
+        {!isEmpty(selectedRows) ? (
+          // packetLossData contains 2 keys for each row. One for the data and one for anomaly
+          Object.keys(packetLossData).length / 2 === selectedRows.length ? (
             <MetricsLineChart dataValueSuffix="%" selectedRows={selectedRows} inputData={packetLossData} />
           ) : (
             <div className={classes.noChartContainer}>
@@ -113,7 +122,7 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange 
         </div>
       </div>
       <div className={classes.lineChartContainer}>
-        {selectedRows.length > 0 ? (
+        {!isEmpty(selectedRows) ? (
           heatMapPacketLoss.length === selectedRows.length ? (
             <Heatmap data={heatMapPacketLoss} selectedRows={testIdToName} dataSuffix="%" />
           ) : (

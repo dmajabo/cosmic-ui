@@ -27,7 +27,7 @@ const LATENCY_SUFFIX = 'ms';
 
 const MAX_LEGEND_COUNT = 5;
 
-const LEGEND_COLOURS = ['#FFECDC', '#FED0AB', '#FFC568', '#F9A825', '#DC4545'];
+const LEGEND_COLOURS = ['#52984E', '#FED0AB', '#FFC568', '#F69442', '#DC4545'];
 
 const Heatmap: React.FC<HeatmapProps> = ({ data, selectedRows, dataSuffix }) => {
   const [tests, setTests] = useState<string[]>([]);
@@ -61,7 +61,7 @@ const Heatmap: React.FC<HeatmapProps> = ({ data, selectedRows, dataSuffix }) => 
 
     const maxValue = Math.max(...values);
     const minValue = 0;
-    const increment = (maxValue - minValue) / 5;
+    const increment = maxValue === minValue ? 0 : (maxValue - minValue) / 5;
     const legendDataPoints: number[] = [];
 
     for (let i = 0; i < MAX_LEGEND_COUNT; i++) {

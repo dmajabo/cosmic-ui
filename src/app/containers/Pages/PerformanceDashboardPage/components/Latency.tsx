@@ -9,11 +9,15 @@ import { MetricKeyValue, TestIdToName } from './PacketLoss';
 import { Data } from './Table';
 import Heatmap from './Heatmap';
 import { HeatMapData } from '../SharedTypes';
+import { isEmpty } from 'lodash';
 
 interface LatencyProps {
   readonly selectedRows: Data[];
   readonly timeRange: string;
 }
+
+const LATENCY = 'latency';
+const LATENCY_ANOMALY = 'latency_anomaly';
 
 export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange }) => {
   const classes = PerformanceDashboardStyles();
@@ -33,7 +37,10 @@ export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange }) => 
       const latencyChartData: MetricKeyValue = {};
       const promises = selectedRows.map(row => apiClient.getLatencyMetrics(row.sourceDevice, row.destination, timeRange, row.id));
       Promise.all(promises).then(values => {
-        values.forEach(item => (latencyChartData[item.testId] = item.metrics.keyedmap.length > 0 ? item.metrics.keyedmap[0].ts : []));
+        values.forEach(item => {
+          latencyChartData[item.testId] = item.metrics.keyedmap.find(item => item.key === LATENCY)?.ts || [];
+          latencyChartData[`${item.testId}_anomaly`] = item.metrics.keyedmap.find(item => item.key === LATENCY_ANOMALY)?.ts || [];
+        });
         setLatencyData(latencyChartData);
       });
     };
@@ -74,8 +81,9 @@ export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange }) => 
         </div>
       </div>
       <div className={classes.lineChartContainer}>
-        {selectedRows.length > 0 ? (
-          Object.keys(latencyData).length === selectedRows.length ? (
+        {!isEmpty(selectedRows) ? (
+          // latencyData contains 2 keys for each row. One for the data and one for anomaly
+          Object.keys(latencyData).length / 2 === selectedRows.length ? (
             <MetricsLineChart dataValueSuffix="ms" selectedRows={selectedRows} inputData={latencyData} />
           ) : (
             <div className={classes.noChartContainer}>
@@ -101,7 +109,7 @@ export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange }) => 
         </div>
       </div>
       <div className={classes.lineChartContainer}>
-        {selectedRows.length > 0 ? (
+        {!isEmpty(selectedRows) ? (
           heatMapLatency.length === selectedRows.length ? (
             <Heatmap data={heatMapLatency} selectedRows={testIdToName} dataSuffix="ms" />
           ) : (
