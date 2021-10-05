@@ -11,6 +11,9 @@ export const PerformanceDashboardStyles = makeStyles(
       performanceDashboardContainer: {
         padding: 20,
       },
+      pageCenter: {
+        marginTop: '40vh',
+      },
       slaTestListContainer: {
         marginTop: 60,
       },

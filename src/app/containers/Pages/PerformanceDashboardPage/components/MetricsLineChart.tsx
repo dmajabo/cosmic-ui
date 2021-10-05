@@ -81,6 +81,7 @@ const COLORS = [
   '#F44336',
   '#F48FB1',
 ];
+const ANOMALY_POINT_COLOR = 'red';
 
 export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataValueSuffix, inputData }) => {
   const [data, setData] = useState<ChartData[]>([]);
@@ -98,12 +99,44 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
             marker: {
               enabled: false,
             },
+            states: {
+              hover: {
+                lineWidthPlus: 0,
+              },
+            },
           };
         }),
         turboThreshold: inputData[row.id].length,
       };
     });
-    setData(tempChartData);
+    const anomalyData: ChartData[] = selectedRows.map(row => {
+      return {
+        name: `${row.name}_anomaly`,
+        data: inputData[`${row.id}_anomaly`].map(item => {
+          const val = DateTime.fromFormat(item.time, OLD_TIME_FORMAT).toUTC().toFormat(REQUIRED_FORMAT);
+          return {
+            name: val,
+            y: Number(Number.parseFloat(item.value).toFixed(2)),
+            marker: {
+              enabled: true,
+              radius: 5,
+              symbol: 'circle',
+            },
+          };
+        }),
+        turboThreshold: inputData[row.id].length,
+        showInLegend: false,
+        color: ANOMALY_POINT_COLOR,
+        states: {
+          hover: {
+            lineWidthPlus: 0,
+          },
+        },
+        lineWidth: 0,
+      };
+    });
+    const finalChartData = tempChartData.concat(anomalyData);
+    setData(finalChartData);
 
     const dataLength: number[] = selectedRows.map(row => inputData[row.id].length);
     const maxDataLengthIndex = dataLength.reduce((iMax, x, i, arr) => (x > arr[iMax] ? i : iMax), 0);

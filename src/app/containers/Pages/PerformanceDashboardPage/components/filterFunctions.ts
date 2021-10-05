@@ -1,30 +1,29 @@
 import { Organization } from '../SharedTypes';
+import { isEmpty } from 'lodash';
 
 export const GetSelectedOrganization = (organizations: Organization[], orgId: string) => {
-  const selectedOrganization = organizations.filter(organization => organization.extId === orgId);
-  if (selectedOrganization.length > 0) {
-    return selectedOrganization[0];
-  } else {
-    return {
-      id: '',
-      name: '',
-      description: '',
-      extId: '',
-      extType: '',
-      extUrl: '',
-      vnets: [],
-      wedges: [],
-      devices: [],
-      vendorType: '',
-    };
-  }
+  const selectedOrganization = organizations.find(organization => organization.extId === orgId);
+  return selectedOrganization
+    ? selectedOrganization
+    : {
+        id: '',
+        name: '',
+        description: '',
+        extId: '',
+        extType: '',
+        extUrl: '',
+        vnets: [],
+        wedges: [],
+        devices: [],
+        vendorType: '',
+      };
 };
 
 export const GetDevicesString = (organization: Organization) => {
   if (typeof organization !== 'undefined') {
     const orgDevices = organization.devices;
 
-    if (orgDevices.length > 0) {
+    if (!isEmpty(orgDevices)) {
       const deviceExtIdList = orgDevices.map(device => {
         return device.extId;
       });

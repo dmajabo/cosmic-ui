@@ -136,7 +136,7 @@ export interface CreateSLATestResponse {
   readonly id?: string;
 }
 
-interface KeyedMap {
+export interface KeyedMap {
   readonly key: string;
   readonly ts: Data[];
 }
