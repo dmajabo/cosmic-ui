@@ -1,6 +1,6 @@
 import React from 'react';
 import { IWedgeNode } from 'lib/models/topology';
-import { IResourceQueryParam, ControllerKeyTypes, SecurityGroupsResourceTypes, IVmPolicyRes, IVmRule, PolicyResKeyEnum, PolicyTableKeyEnum } from 'lib/api/ApiModels/Metrics/apiModel';
+import { IResourceQueryParam, ControllerKeyTypes, SecurityGroupsResourceTypes, IPolicyRes, IVmRule, PolicyResKeyEnum, PolicyTableKeyEnum } from 'lib/api/ApiModels/Metrics/apiModel';
 import { PolicyApi } from 'lib/api/ApiModels/Metrics/endpoints';
 import PolicyTable from './PolicyTable';
 import { useGet } from 'lib/api/http/useAxiosHook';
@@ -11,7 +11,7 @@ interface IProps {
 }
 
 const PolicyTab: React.FC<IProps> = (props: IProps) => {
-  const { response, loading, error, onGet } = useGet<IVmPolicyRes>();
+  const { response, loading, error, onGet } = useGet<IPolicyRes>();
   const [inData, setInData] = React.useState<IVmRule[]>([]);
   const [outData, setOutData] = React.useState<IVmRule[]>([]);
   React.useEffect(() => {

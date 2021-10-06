@@ -2,14 +2,14 @@ import React from 'react';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
 import { TableHeaderStyles, TableWrapperStyles } from 'app/components/Basic/Table/styles';
-import { IVmRule } from 'lib/api/ApiModels/Metrics/apiModel';
+import { IDeviceRule } from 'lib/api/ApiModels/Metrics/apiModel';
 import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import { EmptyText } from 'app/components/Basic/NoDataStyles/NoDataStyles';
 import { TableStyles } from 'app/components/Basic/Table/TableStyles';
 
 interface Props {
-  data: IVmRule[];
+  data: IDeviceRule[];
   showLoader: boolean;
   error?: string;
   styles?: Object;
@@ -53,7 +53,7 @@ const PolicyTable: React.FC<Props> = (props: Props) => {
                         {row.ipProtocol}
                       </TableCell>
                       <TableCell className={classes.tableCell}>{row.cidrs && row.cidrs.length ? row.cidrs[0].name : null}</TableCell>
-                      <TableCell className={classes.tableCell}>{row.fromPort === 0 && row.toPort === 0 ? 'All' : `${row.fromPort} - ${row.toPort}`}</TableCell>
+                      <TableCell className={classes.tableCell}>{`${row.fromPort} - ${row.toPort}`}</TableCell>
                     </TableRow>
                   );
                 })

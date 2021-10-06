@@ -31,30 +31,47 @@ export enum PolicyTableKeyEnum {
   Outbound = 'outbound',
 }
 
-export interface IVmCIDR {
-  id: string;
+export interface ICIDR extends IBaseEntity<string> {
   name: string;
   description: string;
   extId: string;
 }
-export interface IVmRule {
-  id: string;
+export interface IVmRule extends IBaseEntity<string> {
   fromPort: number;
   toPort: number;
   ipProtocol: string;
   ruleType: PolicyTableKeyEnum;
-  cidrs: IVmCIDR[];
+  cidrs: ICIDR[];
 }
 
-export interface IVmPolicy {
-  id: string;
+export interface IVmPolicy extends IBaseEntity<string> {
   name: string;
   description: string;
   extId: string;
   rules: IVmRule[];
 }
 
-export interface IVmPolicyRes {
+export interface IDeviceRule extends IBaseEntity<string> {
+  name: string;
+  ruleType: string;
+  fromPort: string;
+  toPort: string;
+  ipProtocol: string;
+  cidrs: any[];
+  destCidrs: any[];
+  srcCidrs: ICIDR[];
+  syslogEnabled: boolean;
+  comment: string;
+  policy: string;
+}
+export interface IDevicePolicy extends IBaseEntity<string> {
+  name: string;
+  description: string;
+  extId: string;
+  rules: IDeviceRule[];
+}
+
+export interface IPolicyRes {
   readonly securityGroups: IVmPolicy[];
 }
 
