@@ -7,6 +7,7 @@ import TopologyPage from 'app/containers/Pages/TopologyPage';
 import PerformanceDashboardPage from 'app/containers/Pages/PerformanceDashboardPage';
 import SettingsPage from 'app/containers/Pages/SettingsPage';
 import SessionsPage from '../Pages/SessionsPage';
+import AutomationPage from '../Pages/AutomationPage';
 
 export default function BaseRouting() {
   const match = useRouteMatch();
@@ -20,7 +21,7 @@ export default function BaseRouting() {
         <Route exact path={`${match.path}${ROUTE.sessions}`} component={SessionsPage} />
         <Route exact path={`${match.path}${ROUTE.analytics}`} component={AnalyticsPage} />
         <Route exact path={`${match.path}${ROUTE.settings}`} component={SettingsPage} />
-        <Route exact path={`${match.path}${ROUTE.automation}`} component={PolicyPage} />
+        <Route path={`${match.path}${ROUTE.automation}`} component={AutomationPage} />
         <Redirect path={ROUTE.notFound} to={`${match.path}${ROUTE.dashboard}`} />
       </Switch>
     </>

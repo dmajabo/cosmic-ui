@@ -9,6 +9,7 @@ interface IProps {
   searchQuery: string;
   onChange: (value: string | null) => void;
   disabled?: boolean;
+  styles?: Object;
 }
 
 const Search: React.FC<IProps> = (props: IProps) => {
@@ -37,7 +38,7 @@ const Search: React.FC<IProps> = (props: IProps) => {
   };
 
   return (
-    <InputWrapper>
+    <InputWrapper style={props.styles}>
       <InputSearch ref={inputRef} type="text" value={textValue} onChange={onChange} disabled={props.disabled} placeholder="Search" />
       <IconWrapper onClick={onClick} styles={{ position: 'absolute', right: '8px', top: 'calc(50% - 8px)', cursor: 'pointer' }} icon={searchIcon} />
     </InputWrapper>
