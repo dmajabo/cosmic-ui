@@ -140,7 +140,7 @@ export const PerformanceDashboardStyles = makeStyles(
       },
       tabContainer: {
         backgroundColor: '#F3F6FC',
-        width: 330,
+        width: 490,
         borderRadius: 6,
         padding: 5,
         marginBottom: 20,
