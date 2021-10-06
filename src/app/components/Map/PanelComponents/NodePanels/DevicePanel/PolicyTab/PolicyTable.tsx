@@ -29,16 +29,19 @@ const PolicyTable: React.FC<Props> = (props: Props) => {
                 #
               </TableCell>
               <TableCell style={{ minWidth: '70px' }} className={classes.tableHeadCell}>
-                Policy
+                Source
               </TableCell>
               <TableCell className={classes.tableHeadCell} style={{ minWidth: '110px' }}>
-                Protocol
+                Source Port
               </TableCell>
               <TableCell style={{ minWidth: '110px' }} className={classes.tableHeadCell}>
                 Destination
               </TableCell>
               <TableCell className={classes.tableHeadCell} style={{ minWidth: '110px' }}>
-                Port Range
+                Protocol
+              </TableCell>
+              <TableCell className={classes.tableHeadCell} style={{ minWidth: '110px' }}>
+                Policy
               </TableCell>
             </TableRow>
           </TableHead>
@@ -48,12 +51,13 @@ const PolicyTable: React.FC<Props> = (props: Props) => {
                   return (
                     <TableRow hover tabIndex={-1} key={`tableRow${row.id}`} className={classes.row}>
                       <TableCell className={classes.tableCell}>{rowIndex + 1}</TableCell>
-                      <TableCell className={classes.tableCell}>Allow</TableCell>
+                      <TableCell className={classes.tableCell}>{row.srcCidrs && row.srcCidrs.length && row.srcCidrs[0].name ? row.srcCidrs[0].name : '*'}</TableCell>
+                      <TableCell className={classes.tableCell}>{row.fromPort}</TableCell>
+                      <TableCell className={classes.tableCell}>{row.destCidrs && row.destCidrs.length && row.destCidrs[0].name ? row.destCidrs[0].name : '*'}</TableCell>
                       <TableCell className={classes.tableCell} style={{ textTransform: 'uppercase' }}>
                         {row.ipProtocol}
                       </TableCell>
-                      <TableCell className={classes.tableCell}>{row.cidrs && row.cidrs.length ? row.cidrs[0].name : null}</TableCell>
-                      <TableCell className={classes.tableCell}>{`${row.fromPort} - ${row.toPort}`}</TableCell>
+                      <TableCell className={classes.tableCell}>{row.policy}</TableCell>
                     </TableRow>
                   );
                 })
