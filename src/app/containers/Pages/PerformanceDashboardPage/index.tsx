@@ -10,7 +10,6 @@ import LoadingIndicator from '../../../components/Loading';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { isEmpty } from 'lodash';
-import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -38,8 +37,7 @@ function a11yProps(index: any) {
 const PerformanceDashboardPage: React.FC = () => {
   const classes = PerformanceDashboardStyles();
 
-  const userContext = useContext<UserContextState>(UserContext);
-  const apiClient = createApiClient(userContext.idToken!);
+  const apiClient = createApiClient();
   const [finalTableData, setFinalTableData] = useState<FinalTableData[]>([]);
   const [merakiOrganizations, setMerakiOrganizations] = useState<Organization[]>([]);
   const [awsOrganizations, setAwsOrganizations] = useState<Organization[]>([]);

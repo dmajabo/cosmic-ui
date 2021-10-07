@@ -10,7 +10,6 @@ import { Data } from './Table';
 import Heatmap from './Heatmap';
 import { HeatMapData } from '../SharedTypes';
 import { isEmpty } from 'lodash';
-import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 
 interface LatencyProps {
   readonly selectedRows: Data[];
@@ -26,8 +25,7 @@ export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange }) => 
   const [latencyData, setLatencyData] = useState<MetricKeyValue>({});
   const [heatMapLatency, setHeatMapLatency] = useState<HeatMapData[]>([]);
 
-  const userContext = useContext<UserContextState>(UserContext);
-  const apiClient = createApiClient(userContext.idToken!);
+  const apiClient = createApiClient();
 
   const testIdToName: TestIdToName = selectedRows.reduce((accu, nextValue) => {
     accu[nextValue.id] = nextValue.name;

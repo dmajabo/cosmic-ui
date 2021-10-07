@@ -1,5 +1,4 @@
 import axios, { AxiosRequestConfig } from 'axios';
-import { IdToken } from '@auth0/auth0-react';
 import { CreateSLATestRequest, CreateSLATestResponse, DeleteSLATestResponse, GetOrganizationResponse, GetSLATestResponse, HeatMapResponse, SLATestMetricsResponse } from './SharedTypes';
 
 const BASE_URL = process.env.REACT_APP_API_ENDPOINT_PRODUCTION;
@@ -28,12 +27,12 @@ const PATHS = Object.freeze({
   GET_GOODPUT: (deviceId: string, destination: string) => `/telemetry/api/v1/metrics/device/${deviceId}/destination/${destination}/goodput`,
 });
 
-export const createApiClient = (token: IdToken): ApiClient => {
+export const createApiClient = (): ApiClient => {
   const config: AxiosRequestConfig = {
     baseURL: BASE_URL,
-    headers: {
-      Authorization: `Bearer ${token.__raw}`,
-    },
+    // headers: {
+    //   Authorization: `Bearer ${token.__raw}`,
+    // },
   };
 
   async function getOrganizations(): Promise<GetOrganizationResponse> {
@@ -49,9 +48,6 @@ export const createApiClient = (token: IdToken): ApiClient => {
     try {
       const response = await axios.get<GetSLATestResponse>(PATHS.GET_SLA_TESTS, {
         baseURL: BASE_URL,
-        headers: {
-          Authorization: `Bearer ${token.__raw}`,
-        },
         params: {
           include_metrics: true,
         },
@@ -75,9 +71,6 @@ export const createApiClient = (token: IdToken): ApiClient => {
     try {
       const response = await axios.get<SLATestMetricsResponse>(PATHS.GET_PACKET_LOSS(deviceId, destination), {
         baseURL: BASE_URL,
-        headers: {
-          Authorization: `Bearer ${token.__raw}`,
-        },
         params: {
           startTime: startTime,
           include_anomaly: true,
@@ -101,9 +94,6 @@ export const createApiClient = (token: IdToken): ApiClient => {
     try {
       const response = await axios.get<SLATestMetricsResponse>(PATHS.GET_LATENCY(deviceId, destination), {
         baseURL: BASE_URL,
-        headers: {
-          Authorization: `Bearer ${token.__raw}`,
-        },
         params: {
           startTime: startTime,
           include_anomaly: true,
@@ -136,9 +126,6 @@ export const createApiClient = (token: IdToken): ApiClient => {
     try {
       const response = await axios.get<HeatMapResponse>(PATHS.HEATMAP_PACKET_LOSS(sourceNw, destination), {
         baseURL: BASE_URL,
-        headers: {
-          Authorization: `Bearer ${token.__raw}`,
-        },
         params: {
           startTime: startTime,
         },
@@ -161,9 +148,6 @@ export const createApiClient = (token: IdToken): ApiClient => {
     try {
       const response = await axios.get<HeatMapResponse>(PATHS.HEATMAP_LATENCY(sourceNw, destination), {
         baseURL: BASE_URL,
-        headers: {
-          Authorization: `Bearer ${token.__raw}`,
-        },
         params: {
           startTime: startTime,
         },
@@ -186,9 +170,6 @@ export const createApiClient = (token: IdToken): ApiClient => {
     try {
       const response = await axios.get<SLATestMetricsResponse>(PATHS.GET_GOODPUT(deviceId, destination), {
         baseURL: BASE_URL,
-        headers: {
-          Authorization: `Bearer ${token.__raw}`,
-        },
         params: {
           startTime: startTime,
           include_anomaly: true,
