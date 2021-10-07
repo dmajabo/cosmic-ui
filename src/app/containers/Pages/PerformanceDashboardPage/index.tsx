@@ -1,5 +1,5 @@
 import { Tab, Tabs } from '@material-ui/core';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { CreateSLATest } from './components/CreateSLATest';
 import { PerformanceDashboardStyles } from './PerformanceDashboardStyles';
 import { SLATestList } from './components/SLATestList';
@@ -10,6 +10,7 @@ import LoadingIndicator from '../../../components/Loading';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { isEmpty } from 'lodash';
+import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -37,7 +38,8 @@ function a11yProps(index: any) {
 const PerformanceDashboardPage: React.FC = () => {
   const classes = PerformanceDashboardStyles();
 
-  const apiClient = createApiClient();
+  const userContext = useContext<UserContextState>(UserContext);
+  const apiClient = createApiClient(userContext.idToken!);
   const [finalTableData, setFinalTableData] = useState<FinalTableData[]>([]);
   const [merakiOrganizations, setMerakiOrganizations] = useState<Organization[]>([]);
   const [awsOrganizations, setAwsOrganizations] = useState<Organization[]>([]);

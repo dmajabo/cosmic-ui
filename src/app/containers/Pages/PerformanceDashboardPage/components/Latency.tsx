@@ -1,5 +1,5 @@
 import { Typography } from '@material-ui/core';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { createApiClient } from '../apiClient';
 import { PerformanceDashboardStyles } from '../PerformanceDashboardStyles';
 import { MetricsLineChart } from './MetricsLineChart';
@@ -10,6 +10,7 @@ import { Data } from './Table';
 import Heatmap from './Heatmap';
 import { HeatMapData } from '../SharedTypes';
 import { isEmpty } from 'lodash';
+import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 
 interface LatencyProps {
   readonly selectedRows: Data[];
@@ -25,7 +26,8 @@ export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange }) => 
   const [latencyData, setLatencyData] = useState<MetricKeyValue>({});
   const [heatMapLatency, setHeatMapLatency] = useState<HeatMapData[]>([]);
 
-  const apiClient = createApiClient();
+  const userContext = useContext<UserContextState>(UserContext);
+  const apiClient = createApiClient(userContext.idToken!);
 
   const testIdToName: TestIdToName = selectedRows.reduce((accu, nextValue) => {
     accu[nextValue.id] = nextValue.name;

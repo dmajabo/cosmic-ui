@@ -1,5 +1,5 @@
 import { Typography } from '@material-ui/core';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { createApiClient } from '../apiClient';
 import { PerformanceDashboardStyles } from '../PerformanceDashboardStyles';
 import { MetricsLineChart } from './MetricsLineChart';
@@ -8,6 +8,7 @@ import LoadingIndicator from '../../../../components/Loading';
 import { MetricKeyValue } from './PacketLoss';
 import { Data } from './Table';
 import { isEmpty } from 'lodash';
+import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 
 interface GoodputProps {
   readonly selectedRows: Data[];
@@ -22,7 +23,8 @@ export const Goodput: React.FC<GoodputProps> = ({ selectedRows, timeRange }) => 
 
   const [goodputData, setGoodputData] = useState<MetricKeyValue>({});
 
-  const apiClient = createApiClient();
+  const userContext = useContext<UserContextState>(UserContext);
+  const apiClient = createApiClient(userContext.idToken!);
 
   useEffect(() => {
     const getGoodputMetrics = async () => {
