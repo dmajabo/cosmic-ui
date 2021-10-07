@@ -12,6 +12,7 @@ import { Latency } from './Latency';
 import Select from 'react-select';
 import AverageQoe from './AverageQoe';
 import { Goodput } from './Goodput';
+import { MetricTab } from '../../DashboardPage/enum/MetricTab';
 
 interface SLATestListProps {
   readonly finalTableData: FinalTableData[];
@@ -75,7 +76,7 @@ export const SLATestList: React.FC<SLATestListProps> = ({ deleteSlaTest, awsOrga
   const classes = PerformanceDashboardStyles();
 
   const [createToggle, setCreateToggle] = React.useState<boolean>(false);
-  const [tab, setTab] = useState<string>('latency');
+  const [tab, setTab] = useState<string>(MetricTab.latency);
   const [selectedRows, setSelectedRows] = useState<Data[]>([]);
   const [timeRange, setTimeRange] = useState<string>('-7d');
 
@@ -172,9 +173,15 @@ export const SLATestList: React.FC<SLATestListProps> = ({ deleteSlaTest, awsOrga
           <Select label="Single select" styles={dropdownStyle} options={timeRangeOptions} defaultValue={timeRangeOptions[0]} onChange={e => setTimeRange(e.value)} />
         </div>
         <Tabs classes={{ root: classes.tabContainer, indicator: classes.indicator }} value={tab} onChange={handleTabChange} indicatorColor="primary">
-          <Tab classes={{ selected: classes.selectedTab }} value="latency" label={<span className={classes.tableHeaderText}>LATENCY</span>} wrapped {...a11yProps('latency')} />
-          <Tab classes={{ selected: classes.selectedTab }} value="packetLoss" label={<span className={classes.tableHeaderText}>PACKET LOSS</span>} wrapped {...a11yProps('sla_tests')} />
-          <Tab classes={{ selected: classes.selectedTab }} value="goodput" label={<span className={classes.tableHeaderText}>GOODPUT</span>} wrapped {...a11yProps('goodput')} />
+          <Tab classes={{ selected: classes.selectedTab }} value={MetricTab.latency} label={<span className={classes.tableHeaderText}>LATENCY</span>} wrapped {...a11yProps(MetricTab.latency)} />
+          <Tab
+            classes={{ selected: classes.selectedTab }}
+            value={MetricTab.packetLoss}
+            label={<span className={classes.tableHeaderText}>PACKET LOSS</span>}
+            wrapped
+            {...a11yProps(MetricTab.packetLoss)}
+          />
+          <Tab classes={{ selected: classes.selectedTab }} value={MetricTab.goodput} label={<span className={classes.tableHeaderText}>GOODPUT</span>} wrapped {...a11yProps(MetricTab.goodput)} />
         </Tabs>
         <TabPanel value={tab} index={'packetLoss'}>
           <PacketLoss timeRange={timeRange} selectedRows={selectedRows} />
