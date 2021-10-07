@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import mapboxgl from 'mapbox-gl';
 import './Map.css';
 import { DashboardStyles } from '../../DashboardStyles';
+// @ts-ignore
+// eslint-disable-next-line import/no-webpack-loader-syntax
+mapboxgl.workerClass = require('worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker').default;
 
 interface Feature {
   readonly type: string;
