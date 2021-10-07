@@ -1,5 +1,5 @@
 import { Typography } from '@material-ui/core';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { createApiClient } from '../apiClient';
 import { PerformanceDashboardStyles } from '../PerformanceDashboardStyles';
 import { MetricsLineChart } from './MetricsLineChart';
