@@ -42,7 +42,7 @@ export const updateStepById = (steps: IStepperItem<NewAutomationStepperTypes>[],
   const _items: IStepperItem<NewAutomationStepperTypes>[] = steps.slice();
   const _i = _items.findIndex(it => it.id === id);
   const _completed = checkIsStepCompleted(data);
-  _items[_i].state = !_completed ? StepperItemStateType.WARNING : StepperItemStateType.COMPLETE;
+  _items[_i].state = !_completed ? StepperItemStateType.EMPTY : StepperItemStateType.COMPLETE;
   if (_i !== _items.length - 1) {
     if (_completed && _items[_i + 1].disabled) {
       _items[_i + 1].disabled = false;

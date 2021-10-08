@@ -16,7 +16,7 @@ export const ValueWrapper = styled.div`
   border: 1px solid;
   border-color: rgba(109, 121, 134, 0.3);
   border-radius: 6px;
-  padding: 20px 40px 20px 20px;
+  padding: 20px 56px 20px 20px;
   font-family: 'DMSans';
   font-style: normal;
   font-weight: 500;
@@ -25,7 +25,7 @@ export const ValueWrapper = styled.div`
   color: var(--_disabledTextColor);
   cursor: pointer;
   &.active {
-    .inheritFill {
+    .inheritFill:not(.inheritHoverFill) {
       fill: var(--_hoverButtonBg);
     }
   }
@@ -40,6 +40,9 @@ export const DisplayValueStyles = styled.span`
   color: inherit;
   direction: rtl;
   text-align: left;
+  &.filled {
+    color: var(--_primaryColor);
+  }
 `;
 
 export const Popup = styled.div`
@@ -82,7 +85,8 @@ export const ListItemStyles = styled.div`
   height: 40px;
   background: transparent;
   cursor: pointer;
-  &:hover {
+  &:hover,
+  &.selected {
     background: var(--_vmBg);
   }
   ${WrapLabel} {

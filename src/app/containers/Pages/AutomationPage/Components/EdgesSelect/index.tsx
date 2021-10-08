@@ -6,6 +6,7 @@ import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { arrowBottomIcon } from 'app/components/SVGIcons/arrows';
 import ListItem from './ListItem';
 import DisplayValue from './DisplayValue';
+import { closeSmallIcon } from 'app/components/SVGIcons/close';
 interface IProps {
   onChange: (selectedItems: any[]) => void;
   disabled?: boolean;
@@ -65,11 +66,19 @@ const EdgesSelect: React.FC<IProps> = (props: IProps) => {
     setFilteredItems(_items);
   };
 
+  const onClearValues = () => {
+    if (!selectedItems) return;
+    setSelectItems([]);
+  };
+
   return (
     <ClickAwayListener onClickAway={handleClickAway}>
       <Wrapper>
         <ValueWrapper onClick={handleClickOpen} className={open ? 'active' : ''}>
           <DisplayValue placeholder={props.placeholder} selectedItems={selectedItems} />
+          {selectedItems && selectedItems.length ? (
+            <IconWrapper onClick={onClearValues} styles={{ position: 'absolute', right: '32px', top: 'calc(50% - 6px)', width: '12px', height: '12px' }} icon={closeSmallIcon} />
+          ) : null}
           <IconWrapper styles={{ position: 'absolute', right: '12px', top: 'calc(50% - 6px)', width: '12px', height: '12px' }} icon={arrowBottomIcon} />
         </ValueWrapper>
         {open && (

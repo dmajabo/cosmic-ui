@@ -18,7 +18,7 @@ const ListItem: React.FC<IProps> = (props: IProps) => {
     props.onClick(props.item);
   };
   return (
-    <ListItemStyles onClick={onClick}>
+    <ListItemStyles onClick={onClick} className={props.selected ? 'selected' : ''}>
       <SimpleCheckbox isChecked={props.selected} readOnly />
       <ItemLabel primary>{displayValue}</ItemLabel>
       <ItemLabel>{displayValue}</ItemLabel>

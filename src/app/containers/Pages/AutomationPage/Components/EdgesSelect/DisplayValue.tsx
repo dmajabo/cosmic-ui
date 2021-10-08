@@ -18,7 +18,11 @@ const DisplayValue: React.FC<IProps> = (props: IProps) => {
     if (props.selectedItems && props.selectedItems.length) return props.selectedItems.join(', ');
     return '';
   };
-  return <DisplayValueStyles title={props.selectedItems && props.selectedItems.length ? displayValue : null}>{displayValue}</DisplayValueStyles>;
+  return (
+    <DisplayValueStyles className={props.selectedItems && props.selectedItems.length ? 'filled' : ''} title={props.selectedItems && props.selectedItems.length ? displayValue : null}>
+      {displayValue}
+    </DisplayValueStyles>
+  );
 };
 
 export default React.memo(DisplayValue);
