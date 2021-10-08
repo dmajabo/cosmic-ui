@@ -87,3 +87,7 @@ export interface ICollapsed {
 export interface IVisible {
   visible: boolean;
 }
+
+export interface IMappedObject {
+  [key: string]: any;
+}

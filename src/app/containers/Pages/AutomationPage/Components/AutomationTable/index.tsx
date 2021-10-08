@@ -9,7 +9,7 @@ const AutomationTable: React.FC<Props> = (props: Props) => {
     { id: 'automationDescription', field: 'description', label: 'Description' },
     { id: 'automationStatus', field: 'status', label: 'Status' },
     { id: 'automationAction', field: 'action', label: 'Action' },
-    { id: 'automationAction', field: '', label: '', width: 40 },
+    { id: 'automationActionColumn', field: '', label: '', width: 40 },
   ];
   return <TableComponent columns={columns} data={[]} error={null} />;
 };
