@@ -12,6 +12,7 @@ interface ApiClient {
   readonly deleteSLATest: (testId: string) => Promise<DeleteSLATestResponse>;
   readonly getHeatmapPacketLoss: (sourceNw: string, destination: string, startTime: string, testId: string) => Promise<HeatMapResponse>;
   readonly getHeatmapLatency: (sourceNw: string, destination: string, startTime: string, testId: string) => Promise<HeatMapResponse>;
+  readonly getGoodputMetrics: (deviceId: string, destination: string, startTime: string, testId: string) => Promise<SLATestMetricsResponse>;
 }
 
 const PATHS = Object.freeze({
@@ -23,6 +24,7 @@ const PATHS = Object.freeze({
   DELETE_SLA_TEST: (testId: string) => `/policy/api/v1/policy/performance/sla-tests/${testId}`,
   HEATMAP_PACKET_LOSS: (sourceNw: string, destination: string) => `/telemetry/api/v1/metrics/source_nw/${sourceNw}/device/destination/${destination}/avgpacketloss`,
   HEATMAP_LATENCY: (sourceNw: string, destination: string) => `/telemetry/api/v1/metrics/source_nw/${sourceNw}/device/destination/${destination}/avglatency`,
+  GET_GOODPUT: (deviceId: string, destination: string) => `/telemetry/api/v1/metrics/device/${deviceId}/destination/${destination}/goodput`,
 });
 
 export const createApiClient = (): ApiClient => {
@@ -164,6 +166,29 @@ export const createApiClient = (): ApiClient => {
     }
   }
 
+  async function getGoodputMetrics(deviceId: string, destination: string, startTime: string, testId: string): Promise<SLATestMetricsResponse> {
+    try {
+      const response = await axios.get<SLATestMetricsResponse>(PATHS.GET_GOODPUT(deviceId, destination), {
+        baseURL: BASE_URL,
+        params: {
+          startTime: startTime,
+          include_anomaly: true,
+        },
+      });
+      return {
+        metrics: response.data.metrics,
+        testId: testId,
+      };
+    } catch (error) {
+      return {
+        testId: testId,
+        metrics: {
+          keyedmap: [],
+        },
+      };
+    }
+  }
+
   return {
     getOrganizations,
     getSLATests,
@@ -173,5 +198,6 @@ export const createApiClient = (): ApiClient => {
     deleteSLATest,
     getHeatmapPacketLoss,
     getHeatmapLatency,
+    getGoodputMetrics,
   };
 };
