@@ -9,6 +9,7 @@ import { Data } from './Table';
 import Heatmap from './Heatmap';
 import { HeatMapData } from '../SharedTypes';
 import { isEmpty } from 'lodash';
+import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 
 interface PacketLossProps {
   readonly selectedRows: Data[];
@@ -43,7 +44,8 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange 
     return accu;
   }, {});
 
-  const apiClient = createApiClient();
+  const userContext = useContext<UserContextState>(UserContext);
+  const apiClient = createApiClient(userContext.idToken!);
 
   useEffect(() => {
     const getPacketLossMetrics = async () => {
