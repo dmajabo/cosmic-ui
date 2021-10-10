@@ -1,17 +1,22 @@
 import styled from 'styled-components';
 import { TextInputWrapper } from 'app/components/Inputs/TextInput/styles';
 import { ToggleButtonWrapper, Wrapper } from 'app/components/Inputs/Toogle/styles';
+import { PrimaryButtonStyles } from 'app/components/Buttons/PrimaryButton/styles';
 
 export const FormWrapper = styled.div`
   display: flex;
   flex-direction: column;
 `;
 
-export const FieldRow = styled.div`
+interface FieldRowProps {
+  direction?: 'row' | 'column';
+}
+export const FieldRow = styled.div<FieldRowProps>`
   display: flex;
+  flex-direction: ${props => props.direction || 'row'};
+  margin: 0 0 20px 0;
   ${Wrapper} {
     display: inline-flex;
-    margin: 0 0 24px 0;
     height: 34px;
   }
   ${ToggleButtonWrapper} {
@@ -21,7 +26,6 @@ export const FieldRow = styled.div`
     width: 100%;
     max-width: 500px;
     min-width: 180px;
-    margin: 0 0 32px 0;
     label {
       font-weight: bold;
       font-size: 12px;
@@ -29,6 +33,13 @@ export const FieldRow = styled.div`
     }
     input {
       height: 60px;
+    }
+  }
+  ${PrimaryButtonStyles} {
+    border: 1px solid;
+    border-color: var(--_primaryButtonBorder);
+    &:hover {
+      border-color: var(--_hoverButtonBg);
     }
   }
 `;

@@ -4,11 +4,12 @@ import { BpCheckedIcon, BpIcon, Label } from './styles';
 
 interface Props {
   label: string;
+  wrapstyles?: Object;
 }
 
 const RadioButton: React.FC<Props & RadioProps> = props => {
   return (
-    <Label>
+    <Label style={props.wrapstyles}>
       <Radio
         sx={{
           padding: 0,

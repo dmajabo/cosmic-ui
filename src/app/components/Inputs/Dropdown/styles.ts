@@ -1,7 +1,10 @@
 import styled from 'styled-components';
 import { InputLabel } from '../styles/Label';
 
-export const DropdownWrapper = styled.div`
+interface Props {
+  open?: boolean;
+}
+export const DropdownWrapper = styled.div<Props>`
   display: inline-flex;
   width: auto;
   align-items: center;
@@ -9,7 +12,7 @@ export const DropdownWrapper = styled.div`
   font-style: normal;
   font-weight: normal;
   font-size: 14px;
-  z-index: 1;
+  z-index: ${props => (props.open ? 10 : 1)};
   ${InputLabel} {
     margin-right: 12px;
     margin-bottom: 0;

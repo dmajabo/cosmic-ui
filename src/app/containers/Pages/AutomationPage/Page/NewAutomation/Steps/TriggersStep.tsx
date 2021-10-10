@@ -1,5 +1,5 @@
 import React from 'react';
-import { StepTitle, TriggerRow } from '../../../styles/styles';
+import { TriggerRow } from '../../../styles/styles';
 import RadioButton from 'app/components/Inputs/RadioButton';
 import { TriggersTypes } from '../model';
 import Dropdown from 'app/components/Inputs/Dropdown';
@@ -52,6 +52,7 @@ const TriggersStep: React.FC<Props> = (props: Props) => {
           label="Use Created Trigger"
           name="radio-buttons"
           inputProps={{ 'aria-label': TriggersTypes.EXISTING_TRIGGER }}
+          wrapstyles={{ margin: '0 auto 12px 0' }}
         />
         {selectedValue === TriggersTypes.EXISTING_TRIGGER && (
           <>
@@ -75,6 +76,7 @@ const TriggersStep: React.FC<Props> = (props: Props) => {
           name="radio-buttons"
           label="Create New Trigger"
           inputProps={{ 'aria-label': TriggersTypes.NEW_TRIGGER }}
+          wrapstyles={{ margin: selectedValue === TriggersTypes.NEW_TRIGGER ? '0 auto 12px 0' : '0 auto 20px 0' }}
         />
         {selectedValue === TriggersTypes.NEW_TRIGGER && <TriggerForm />}
       </TriggerRow>

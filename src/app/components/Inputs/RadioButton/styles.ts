@@ -7,7 +7,6 @@ export const Label = styled.label`
   font-size: 14px;
   line-height: 18px;
   display: inline-flex;
-  margin: 0 auto 12px 0;
   cursor: pointer;
   width: auto;
   min-height: 20px;

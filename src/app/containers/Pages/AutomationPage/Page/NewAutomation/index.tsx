@@ -158,7 +158,7 @@ const NewAutomation: React.FC<Props> = (props: Props) => {
                   aria-controls={`${NewAutomationStepperTypes.TRIGGERS}-content`}
                   id={`${NewAutomationStepperTypes.TRIGGERS}-header`}
                 >
-                  <StepTitle>Configure Triggers</StepTitle>
+                  <StepTitle>Configure Triggers {dataItem.trigger}</StepTitle>
                 </AccordionSummary>
                 <AccordionDetails className={accordionStyles.deteilItem}>
                   <TriggersStep onSelectTrigger={onSelectTrigger} triggers={triggers} selectedTrigger={dataItem.trigger} />

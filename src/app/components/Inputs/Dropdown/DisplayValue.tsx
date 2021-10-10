@@ -3,7 +3,7 @@ import { DisplayValueStyles } from './styles';
 import { ISelectedListItem } from 'lib/models/general';
 
 interface IProps {
-  selectedItem: ISelectedListItem<any> | null;
+  selectedItem: ISelectedListItem<any> | string | number;
   placeholder?: string;
 }
 
@@ -16,7 +16,12 @@ const DisplayValue: React.FC<IProps> = (props: IProps) => {
   }, [props.selectedItem]);
   const getDisplayValue = (): string => {
     if (props.placeholder && !props.selectedItem) return props.placeholder;
-    if (props.selectedItem) return props.selectedItem.label;
+    if (props.selectedItem) {
+      if (typeof props.selectedItem === 'number' || typeof props.selectedItem === 'string') {
+        return `${props.selectedItem}`;
+      }
+      return props.selectedItem.label;
+    }
     return '';
   };
   return (
