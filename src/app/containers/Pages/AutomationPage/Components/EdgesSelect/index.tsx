@@ -85,10 +85,12 @@ const EdgesSelect: React.FC<IProps> = (props: IProps) => {
           <Popup>
             <Search styles={{ width: 'calc(100% - 40px)', margin: '0 20px 20px 20px', minWidth: 'unset', maxWidth: 'unset' }} searchQuery={searchValue} onChange={onSearchChange} />
             <List>
-              <GroupsWrapper>
-                <GroupName margin="0 0 0 32px">Tag</GroupName>
-                <GroupName>Environment</GroupName>
-              </GroupsWrapper>
+              {filteredItems && filteredItems.length ? (
+                <GroupsWrapper>
+                  <GroupName margin="0 0 0 32px">Tag</GroupName>
+                  <GroupName>Environment</GroupName>
+                </GroupsWrapper>
+              ) : null}
               {filteredItems.map((name, index) => (
                 <ListItem key={`listItem${index}`} selected={selectedItems && selectedItems.indexOf(name) !== -1} item={name} onClick={handleChange} />
               ))}

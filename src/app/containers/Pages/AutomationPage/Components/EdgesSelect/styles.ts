@@ -7,6 +7,7 @@ export const Wrapper = styled.div`
   width: 100%;
   max-width: 500px;
   height: 60px;
+  margin: 0 0 20px 0;
 `;
 
 export const ValueWrapper = styled.div`

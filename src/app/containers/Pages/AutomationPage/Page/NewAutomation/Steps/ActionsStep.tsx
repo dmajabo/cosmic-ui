@@ -1,6 +1,6 @@
 import React from 'react';
 import ActionCardItem from '../../../Components/ActionCardItem';
-import { ActionsListWrapper, StepTitle } from '../../../styles/styles';
+import { ActionsListWrapper } from '../../../styles/styles';
 import { emailIcon } from 'app/components/SVGIcons/automationIcons/email';
 import { slackIcon } from 'app/components/SVGIcons/automationIcons/slack';
 import { ActionTypes } from '../model';
@@ -28,13 +28,10 @@ const ActionsStep: React.FC<Props> = (props: Props) => {
     props.onChooseAction(id);
   };
   return (
-    <>
-      <StepTitle>Choose Actions</StepTitle>
-      <ActionsListWrapper>
-        <ActionCardItem icon={emailIcon} id={ActionTypes.EMAIL} label="Email" selected={selectedMap && selectedMap[ActionTypes.EMAIL]} onSelect={onSelect} />
-        <ActionCardItem icon={slackIcon} id={ActionTypes.SLACK} label="Slack" selected={selectedMap && selectedMap[ActionTypes.SLACK]} onSelect={onSelect} />
-      </ActionsListWrapper>
-    </>
+    <ActionsListWrapper>
+      <ActionCardItem icon={emailIcon} id={ActionTypes.EMAIL} label="Email" selected={selectedMap && selectedMap[ActionTypes.EMAIL]} onSelect={onSelect} />
+      <ActionCardItem icon={slackIcon} id={ActionTypes.SLACK} label="Slack" selected={selectedMap && selectedMap[ActionTypes.SLACK]} onSelect={onSelect} />
+    </ActionsListWrapper>
   );
 };
 

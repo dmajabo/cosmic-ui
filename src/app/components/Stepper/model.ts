@@ -9,7 +9,8 @@ export enum StepperItemStateType {
 export interface IStepperItem<T> extends IBaseEntity<T> {
   label: string;
   icon?: any;
-  value: any;
+  index: any;
+  value?: any;
   disabled: boolean;
   state: StepperItemStateType;
   showEdge: boolean;

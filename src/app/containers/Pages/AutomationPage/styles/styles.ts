@@ -19,10 +19,10 @@ export const ContentStyles = styled.div`
   display: flex;
   flex-direction: column;
   margin: 30px;
-  width: calc(100% - 60px);
+  width: 100%;
   height: calc(100% - 60px);
   background: var(--_primaryBg);
-  padding: 30px 0;
+  padding: 30px;
 `;
 
 export const StepsWrapper = styled.div`
@@ -30,9 +30,9 @@ export const StepsWrapper = styled.div`
   flex-direction: column;
   margin-bottom: auto;
   width: calc(100% + 30px);
-  height: calc(100% - 80px);
+  height: 100%;
   overflow: auto;
-  padding: 0 30px;
+  padding-right: 30px;
 `;
 
 export const FooterWrapper = styled.div`
@@ -40,7 +40,6 @@ export const FooterWrapper = styled.div`
   margin-top: 20px;
   flex-shrink: 0;
   justify-content: space-between;
-  padding: 0 30px;
 `;
 
 export const StepTitle = styled.div`
@@ -50,7 +49,6 @@ export const StepTitle = styled.div`
   font-size: 22px;
   line-height: 29px;
   color: var(--_primaryColor);
-  margin: 0 0 20px 0;
   flex-shrink: 0;
 `;
 
@@ -69,4 +67,20 @@ export const ActionsListWrapper = styled.div`
   width: 100%;
   flex-wrap: wrap;
   height: auto;
+`;
+
+export const TriggerRow = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  flex-shrink: 0;
+`;
+
+export const GeneralFieldsRow = styled.div`
+  display: flex;
+  flex-shrink: 0;
+  flex-wrap: nowrap;
+  @media (max-width: 1024px) {
+    flex-direction: column;
+  }
 `;

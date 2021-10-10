@@ -14,6 +14,7 @@ import { AutomationBreadCrumbItemsType } from 'lib/hooks/Breadcrumb/models';
 import EditorPage from './EditorPage';
 import AutomationTable from '../Components/AutomationTable';
 import TriggersTable from '../Components/TriggersTable';
+import { ITrigger } from 'lib/models/Automation/trigger';
 
 interface IProps {}
 
@@ -22,6 +23,22 @@ const MainPage: React.FC<IProps> = (props: IProps) => {
   const { breadcrumb } = useBreadCrumbDataContext();
   const [editorPage, setEditorPage] = React.useState<AutomationBreadCrumbItemsType>(null);
   const classes = TabsStyles();
+
+  // TO DO
+  React.useEffect(() => {
+    const _triggers: ITrigger[] = [];
+    for (let i = 0; i < 10; i++) {
+      const _obj: ITrigger = {
+        id: 'testTrigger' + i,
+        name: 'testTrigger' + i,
+        anomaly: [],
+        rules: [],
+        createdDate: new Date(2021, 9, 31 - i).toString(),
+      };
+      _triggers.push(_obj);
+    }
+    automation.onSetTriggers(_triggers);
+  }, []);
 
   React.useEffect(() => {
     if (editorPage && !breadcrumb.automationsBreadCrumbItems.length) {
@@ -65,7 +82,7 @@ const MainPage: React.FC<IProps> = (props: IProps) => {
           }}
         >
           {AUTOMATIONS_TABS.map(it => (
-            <Tab label={it.label} classes={{ selected: classes.tabSelected }} {...TabComponentProps(0)} className={classes.tabBigSize} />
+            <Tab key={`automationKey${it.id}`} label={it.label} classes={{ selected: classes.tabSelected }} {...TabComponentProps(0)} className={classes.tabBigSize} />
           ))}
         </Tabs>
       </TabsWrapperStyles>

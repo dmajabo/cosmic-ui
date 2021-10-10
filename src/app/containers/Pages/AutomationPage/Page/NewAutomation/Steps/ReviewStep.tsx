@@ -2,8 +2,8 @@ import React from 'react';
 
 interface Props {}
 
-const ReviewStep: React.FC<Props> = (props: Props) => {
+const GeneralStep: React.FC<Props> = (props: Props) => {
   return <>ReviewStep</>;
 };
 
-export default React.memo(ReviewStep);
+export default React.memo(GeneralStep);
