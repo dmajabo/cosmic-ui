@@ -19,7 +19,7 @@ const DeviceNode: React.FC<IProps> = (props: IProps) => {
   // const [showPopup, setShowPopup] = React.useState<IPopupDisplay>({ show: false, x: 0, y: 0 });
   const { onUpdate, onUnsubscribeDrag } = useDrag(
     {
-      id: `${NODES_CONSTANTS.Devisec.type}${props.dataItem.id}`,
+      id: `${NODES_CONSTANTS.Devisec.type}${props.dataItem.uiId}`,
       // popupId: `popupContainer${props.dataItem.id}`,
     },
     (e: IPosition) => onUpdatePosition(e),
@@ -78,7 +78,7 @@ const DeviceNode: React.FC<IProps> = (props: IProps) => {
   }
   return (
     <TransitionContainer stateIn={visible}>
-      <g id={`${NODES_CONSTANTS.Devisec.type}${props.dataItem.id}`} className="topologyNode" transform={`translate(${pos.x}, ${pos.y})`} data-type={NODES_CONSTANTS.Devisec.type}>
+      <g id={`${NODES_CONSTANTS.Devisec.type}${props.dataItem.uiId}`} className="topologyNode" transform={`translate(${pos.x}, ${pos.y})`} data-type={NODES_CONSTANTS.Devisec.type}>
         <g transform={`scale(${props.dataItem.scaleFactor || 1})`}>
           <g
             // onMouseEnter={e => onTogglePopup(e, true)}

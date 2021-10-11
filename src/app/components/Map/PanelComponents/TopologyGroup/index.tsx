@@ -7,9 +7,9 @@ import { editTopologyIcon } from 'app/components/SVGIcons/edit';
 import { dublicateIcon } from 'app/components/SVGIcons/dublicate';
 import { deleteIcon } from 'app/components/SVGIcons/delete';
 import { applicationIcon } from 'app/components/SVGIcons/topologyIcons/application';
-import SettingsButton from 'app/components/Buttons/SettingsButton';
 import { PopupContent } from 'app/components/Buttons/SettingsButton/PopupItemStyles';
 import PopupItem from 'app/components/Buttons/SettingsButton/PopupItem';
+import SettingsButton from 'app/components/Buttons/SettingsButton';
 
 interface IProps {
   group: ITopologyGroup;

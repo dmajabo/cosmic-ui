@@ -40,10 +40,6 @@ export const reCreateDeviceLinks = (nodes: (IWedgeNode | IVnetNode | IDeviceNode
   });
 };
 
-export const getNodeSize = (): ISize => {
-  return { width: NODES_CONSTANTS.VNet.width, height: NODES_CONSTANTS.VNet.height };
-};
-
 export const buildD_GLinks = (devices: IDeviceNode[], g: INetworkGroupNode, links: ILink[], wedges: IWedgeNode[]) => {
   const _links: ILink[] = [];
   let link_D_G_W = false;
@@ -52,7 +48,8 @@ export const buildD_GLinks = (devices: IDeviceNode[], g: INetworkGroupNode, link
       dev.vpnlinks.forEach(vpn => {
         if (!vpn.linkStates || !vpn.linkStates.length) return;
         vpn.linkStates.forEach(it => {
-          const wedge = getWedge(wedges, it.id);
+          const _id = it.id || it.name;
+          const wedge = getWedge(wedges, _id);
           if (wedge) {
             const link = createG_WLink(g, wedge);
             links.push(link);
@@ -69,7 +66,12 @@ export const buildD_GLinks = (devices: IDeviceNode[], g: INetworkGroupNode, link
 const getWedge = (wedges: IWedgeNode[], connectedTo: string) =>
   wedges.find(
     w =>
-      w.vpns && w.vpns.length && w.vpns.find(vpn => vpn.linkStates && vpn.linkStates && vpn.linkStates.length && vpn.linkStates.find(link => link.connectedTo && link.connectedTo.id === connectedTo)),
+      w.vpns &&
+      w.vpns.length &&
+      w.vpns.find(
+        vpn =>
+          vpn.linkStates && vpn.linkStates && vpn.linkStates.length && vpn.linkStates.find(link => link.connectedTo && (link.connectedTo.id === connectedTo || link.connectedTo.name === connectedTo)),
+      ),
   );
 
 export const buildVpnLinks = (links: ILink[], wedge: IWedgeNode, _devices: IDeviceNode[]) => {
@@ -78,10 +80,12 @@ export const buildVpnLinks = (links: ILink[], wedge: IWedgeNode, _devices: IDevi
       return;
     }
     vpn.linkStates.forEach(state => {
-      if (!state.connectedTo || !state.connectedTo.id) {
+      // !state.connectedTo.id
+      if (!state.connectedTo || (!state.connectedTo.id && !state.connectedTo.name)) {
         return;
       }
-      const devices = getDevices(_devices, state.connectedTo.id);
+      const _id = state.connectedTo.id || state.connectedTo.name;
+      const devices = getDevices(_devices, _id);
       createVpnLink(wedge, devices, links);
     });
   });
@@ -97,13 +101,17 @@ const createVpnLink = (wedge: IWedgeNode, nodes: IDeviceNode[], links: ILink[]) 
 const getDevices = (nodes: IDeviceNode[], connectedTo: string): IDeviceNode[] => {
   const _arr = nodes
     .filter(dev => dev.vpnlinks && dev.vpnlinks.length)
-    .filter(dev => dev.vpnlinks.filter(link => link.linkStates && link.linkStates.length && link.linkStates.filter(state => state.connectedTo && state.connectedTo.id === connectedTo)));
+    .filter(dev =>
+      dev.vpnlinks.filter(
+        link => link.linkStates && link.linkStates.length && link.linkStates.filter(state => state.connectedTo && (state.connectedTo.id === connectedTo || state.connectedTo.name === connectedTo)),
+      ),
+    );
   return _arr;
 };
 
 const buildNetworkLinks = (links: ILink[], wedge: IWedgeNode, vnets: IVnetNode[], nodes: (IWedgeNode | IVnetNode | IDeviceNode | INetworkGroupNode)[]) => {
   wedge.networkLinks.forEach(link => {
-    const vnet = vnets.find(vnet => (link.vnet ? vnet.id === link.vnet.id : vnet.extId === link.peerExtId));
+    const vnet = vnets.find(vnet => (link.vnet ? vnet.name === link.vnet.name : vnet.extId === link.peerExtId));
     if (!vnet) {
       return;
     }
@@ -119,12 +127,12 @@ export const createVNetLink = (source: IWedgeNode, target: IVnetNode, nodes: (IW
   const _x2 = source.x + souceObj.r;
   const _y2 = source.y + souceObj.r;
   return {
-    id: `vnet${target.id}${source.id}`,
+    id: `vnet${target.uiId}${source.uiId}`,
     type: TOPOLOGY_LINKS_TYPES.NETWORKLINK,
     targetType: NODES_CONSTANTS.VNet.type,
     sourceType: NODES_CONSTANTS.WEDGE.type,
-    sourceId: source.id,
-    targetId: target.id,
+    sourceId: source.uiId,
+    targetId: target.uiId,
     targetCoord: { x: _x1, y: _y1 },
     sourceCoord: { x: _x2, y: _y2 },
     visible: true,
@@ -139,10 +147,10 @@ export const createConnectionToD_WLink = (source: IDeviceNode, target: IWedgeNod
   const _x2 = source.x + souceObj.width / 2;
   const _y2 = source.y + souceObj.height / 2;
   return {
-    id: `wedge_device${target.id}${source.id}`,
+    id: `wedge_device${target.uiId}${source.uiId}`,
     type: TOPOLOGY_LINKS_TYPES.DEVICE_LINK,
-    sourceId: source.id,
-    targetId: target.id,
+    sourceId: source.uiId,
+    targetId: target.uiId,
     targetCoord: { x: _x1, y: _y1 },
     sourceCoord: { x: _x2, y: _y2 },
     targetType: NODES_CONSTANTS.WEDGE.type,
@@ -159,10 +167,10 @@ export const createD_GLink = (target: IDeviceNode, source: INetworkGroupNode): I
   const _x2 = souceObj.r;
   const _y2 = souceObj.r;
   return {
-    id: `device_group${target.id}${source.id}`,
+    id: `device_group${target.uiId}${source.uiId}`,
     type: TOPOLOGY_LINKS_TYPES.DEVICE_LINK,
-    sourceId: source.id,
-    targetId: target.id,
+    sourceId: source.uiId,
+    targetId: target.uiId,
     targetCoord: { x: _x1, y: _y1 },
     sourceCoord: { x: _x2, y: _y2 },
     targetType: NODES_CONSTANTS.Devisec.type,
@@ -179,10 +187,10 @@ export const createG_WLink = (target: INetworkGroupNode, source: IWedgeNode): IC
   const _x2 = source.x + souceObj.r;
   const _y2 = source.y + souceObj.r;
   return {
-    id: `group_wedge${target.id}${source.id}`,
+    id: `group_wedge${target.uiId}${source.uiId}`,
     type: TOPOLOGY_LINKS_TYPES.NETWORK_BRENCH_LINK,
-    sourceId: source.id,
-    targetId: target.id,
+    sourceId: source.uiId,
+    targetId: target.uiId,
     targetCoord: { x: _x1, y: _y1 },
     sourceCoord: { x: _x2, y: _y2 },
     targetType: NODES_CONSTANTS.NETWORK_GROUP.type,
@@ -211,16 +219,20 @@ export const onUpdateLinkPos = (links: ILink[], nodes: any[], centerX: number, c
   const _lData = _links.filter(it => it.type === type);
   if (!_lData || !_lData.length) return _links;
   _lData.forEach(link => {
-    const _n = nodes.find(it => it.id === link.sourceId || it.id === link.targetId);
+    const _n = nodes.find(it => it.uiId === link.sourceId || it.uiId === link.targetId);
     if (!_n) return;
-    if (link.sourceId === _n.id) {
+    if (link.sourceId === _n.uiId) {
       link.sourceCoord.x = _n.x + centerX;
       link.sourceCoord.y = _n.y + centerY;
     }
-    if (link.targetId === _n.id) {
+    if (link.targetId === _n.uiId) {
       link.targetCoord.x = _n.x + centerX;
       link.targetCoord.y = _n.y + centerY;
     }
   });
   return _links;
+};
+
+export const getNodeSize = (): ISize => {
+  return { width: NODES_CONSTANTS.VNet.width, height: NODES_CONSTANTS.VNet.height };
 };

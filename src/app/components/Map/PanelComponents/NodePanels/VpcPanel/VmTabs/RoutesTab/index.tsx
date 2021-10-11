@@ -14,7 +14,7 @@ const RoutesTab: React.FC<IProps> = (props: IProps) => {
   const [data, setData] = React.useState<IRouteResDataItem[]>([]);
 
   React.useEffect(() => {
-    const _param: IResourceQueryParam = getQueryResourceParam(RoutesResourceTypes.VNetwork, props.dataItem.id);
+    const _param: IResourceQueryParam = getQueryResourceParam(RoutesResourceTypes.VNetwork, props.dataItem.extId);
     getDataAsync(RoutesApi.getRoutes(ControllerKeyTypes.RouteTables), _param);
   }, [props.dataItem]);
 

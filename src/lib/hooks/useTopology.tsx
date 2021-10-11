@@ -257,7 +257,7 @@ export function useTopologyContext(): TopologyContextType {
     _data[index].x = _position.x;
     _data[index].y = _position.y;
     const _sourceObj = NODES_CONSTANTS.Devisec;
-    const _lData = onUpdateTargetLink(linksRef.current, _item.id, _position, _sourceObj.width / 2, _sourceObj.height / 2);
+    const _lData = onUpdateTargetLink(linksRef.current, _item.uiId, _position, _sourceObj.width / 2, _sourceObj.height / 2);
     setLinks(_lData);
     setNodes(_data);
     nodesRef.current = _data;
@@ -265,11 +265,11 @@ export function useTopologyContext(): TopologyContextType {
   };
   const onUpdateWedgeCoord = (_item: IWedgeNode, _position: IPosition) => {
     const _data: any[] = jsonClone(nodesRef.current);
-    const index = _data.findIndex(it => it.id === _item.id);
+    const index = _data.findIndex(it => it.uiId === _item.uiId);
     _data[index].x = _position.x;
     _data[index].y = _position.y;
     const _sourceObj = NODES_CONSTANTS.WEDGE;
-    const _lData = onUpdateTargetLink(linksRef.current, _item.id, _position, _sourceObj.r, _sourceObj.r);
+    const _lData = onUpdateTargetLink(linksRef.current, _item.uiId, _position, _sourceObj.r, _sourceObj.r);
     setLinks(_lData);
     setNodes(_data);
     nodesRef.current = _data;
@@ -278,11 +278,11 @@ export function useTopologyContext(): TopologyContextType {
 
   const onUpdateVnetNode = (_item: IVnetNode, _position: IPosition) => {
     const _data: any[] = jsonClone(nodesRef.current);
-    const index = _data.findIndex(it => it.id === _item.id);
+    const index = _data.findIndex(it => it.uiId === _item.uiId);
     _data[index].x = _position.x;
     _data[index].y = _position.y;
     const _sourceObj = _data[index].nodeSize;
-    const _lData = onUpdateTargetLink(linksRef.current, _data[index].id, _position, _sourceObj.width / 2, _sourceObj.height / 2);
+    const _lData = onUpdateTargetLink(linksRef.current, _data[index].uiId, _position, _sourceObj.width / 2, _sourceObj.height / 2);
     setLinks(_lData);
     setNodes(_data);
     linksRef.current = _lData;
@@ -291,12 +291,12 @@ export function useTopologyContext(): TopologyContextType {
 
   const onUpdateNetworkGroupNode = (_item: INetworkGroupNode, _position: IPosition, isDrag: boolean, isExpand: boolean) => {
     const _data: any[] = jsonClone(nodesRef.current);
-    const index = _data.findIndex(it => it.id === _item.id);
+    const index = _data.findIndex(it => it.uiId === _item.uiId);
     if (isDrag && _position) {
       _data[index].x = _position.x;
       _data[index].y = _position.y;
       const _sourceObj = NODES_CONSTANTS.NETWORK_GROUP;
-      const _lData = onUpdateTargetLink(linksRef.current, _item.id, _position, _sourceObj.r, _sourceObj.r);
+      const _lData = onUpdateTargetLink(linksRef.current, _item.uiId, _position, _sourceObj.r, _sourceObj.r);
       setLinks(_lData);
       linksRef.current = _lData;
     }

@@ -19,7 +19,7 @@ const VNetNode: React.FC<IProps> = (props: IProps) => {
   const { topology } = useTopologyDataContext();
   const { onUpdate, onUnsubscribeDrag } = useDrag(
     {
-      id: `${NODES_CONSTANTS.VNet.type}${props.dataItem.id}`,
+      id: `${NODES_CONSTANTS.VNet.type}${props.dataItem.uiId}`,
       // popupId: `popupContainer${props.dataItem.id}`,
     },
     (e: IPosition) => onUpdatePosition(e),
@@ -87,7 +87,7 @@ const VNetNode: React.FC<IProps> = (props: IProps) => {
 
   return (
     <TransitionContainer stateIn={visible}>
-      <g id={`${NODES_CONSTANTS.VNet.type}${props.dataItem.id}`} className="topologyNode" transform={`translate(${pos.x}, ${pos.y})`} data-type={NODES_CONSTANTS.VNet.type}>
+      <g id={`${NODES_CONSTANTS.VNet.type}${props.dataItem.uiId}`} className="topologyNode" transform={`translate(${pos.x}, ${pos.y})`} data-type={NODES_CONSTANTS.VNet.type}>
         <foreignObject x="0" y="0" width={props.dataItem.nodeSize.width} height={props.dataItem.nodeSize.height}>
           <ContainerWrapper>
             <VNetHeder name={props.dataItem.name} extId={props.dataItem.extId} onClick={onClickVpc} />

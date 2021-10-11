@@ -41,7 +41,7 @@ const WedgePanel: React.FC<IProps> = (props: IProps) => {
         </Tabs>
       </PanelTabWrapper>
       <PanelHeader direction="column" align="unset">
-        <PanelTitle>{props.dataItem.name ? props.dataItem.name : props.dataItem.id}</PanelTitle>
+        <PanelTitle>{props.dataItem.name ? props.dataItem.name : props.dataItem.extId}</PanelTitle>
         {props.dataItem.description && <SubPanelTitle>{props.dataItem.description}</SubPanelTitle>}
       </PanelHeader>
       <OverflowContainer>

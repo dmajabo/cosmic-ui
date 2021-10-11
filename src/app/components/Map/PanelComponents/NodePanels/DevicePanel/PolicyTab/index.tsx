@@ -14,7 +14,7 @@ const PolicyTab: React.FC<IProps> = (props: IProps) => {
   const { response, loading, error, onGet } = useGet<IPolicyRes>();
   const [data, setData] = React.useState<IDeviceRule[]>([]);
   React.useEffect(() => {
-    const _param: IResourceQueryParam = getQueryResourceParam(SecurityGroupsResourceTypes.VNetwork, props.dataItem.vnetworks[0].id);
+    const _param: IResourceQueryParam = getQueryResourceParam(SecurityGroupsResourceTypes.VNetwork, props.dataItem.vnetworks[0].extId);
     getDataAsync(PolicyApi.getPolicy(ControllerKeyTypes.SecurityGroups), _param);
   }, [props.dataItem]);
 

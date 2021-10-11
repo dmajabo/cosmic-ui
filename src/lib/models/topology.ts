@@ -58,6 +58,7 @@ export interface IMappedNode extends IVisible {
   orgId: string;
   vendorType: VendorTypes;
   nodeType: TOPOLOGY_NODE_TYPES;
+  uiId: string;
 }
 
 export interface IConnectedTo extends IBaseEntity<string> {
@@ -149,6 +150,8 @@ export interface IVm extends IBaseEntity<string> {
   subnet: any;
   dimensions: any;
   tags: ITag;
+
+  uiId?: string;
 }
 
 export interface IVnet extends IBaseEntity<string> {
@@ -239,6 +242,7 @@ export interface INetworkGroupNode extends ITopologyGroup, IVisible, ICoord, ICo
   links: ILink[];
   nodeType: TOPOLOGY_NODE_TYPES;
   vendorType: VendorTypes;
+  uiId: string;
 }
 
 export enum TOPOLOGY_NODE_TYPES {

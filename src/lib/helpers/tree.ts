@@ -24,19 +24,21 @@ import { generateLinks } from './links';
 import * as d3 from 'd3';
 import { NODES_CONSTANTS } from 'app/components/Map/model';
 import { STANDART_DISPLAY_RESOLUTION } from 'lib/models/general';
+import uuid from 'react-uuid';
 // import { jsonClone } from './cloneHelper';
 
 const createDeviceNode = (org: IOrganization, orgIndex: number, node: IDevice, index: number): IDeviceNode => {
-  return { ...node, vendorType: org.vendorType, visible: true, childIndex: index, orgIndex: orgIndex, orgId: org.id, x: 0, y: 0, scaleFactor: 1, nodeType: TOPOLOGY_NODE_TYPES.DEVICE };
+  return { ...node, uiId: uuid(), vendorType: org.vendorType, visible: true, childIndex: index, orgIndex: orgIndex, orgId: org.id, x: 0, y: 0, scaleFactor: 1, nodeType: TOPOLOGY_NODE_TYPES.DEVICE };
 };
 
 const createWedgeNode = (org: IOrganization, orgIndex: number, node: IWedge, index: number): IWedgeNode => {
-  return { ...node, vendorType: org.vendorType, visible: true, childIndex: index, orgIndex: orgIndex, orgId: org.id, x: 0, y: 0, nodeType: TOPOLOGY_NODE_TYPES.WEDGE };
+  return { ...node, uiId: uuid(), vendorType: org.vendorType, visible: true, childIndex: index, orgIndex: orgIndex, orgId: org.id, x: 0, y: 0, nodeType: TOPOLOGY_NODE_TYPES.WEDGE };
 };
 
 const createVnetNode = (org: IOrganization, orgIndex: number, node: IVnet, index: number, groups: ITopologyGroup[]): IVnetNode => {
   const _uniqueGroupsSet: Set<ITopologyGroup> = new Set();
   node.vms.forEach(vm => {
+    vm.uiId = uuid();
     if (vm.selectorGroup) {
       const gr = groups.find(it => it.name === vm.selectorGroup || it.id === vm.selectorGroup);
       if (gr) {
@@ -60,6 +62,7 @@ const createVnetNode = (org: IOrganization, orgIndex: number, node: IVnet, index
     orgId: org.id,
     x: 0,
     y: 0,
+    uiId: uuid(),
     vendorType: org.vendorType,
     nodeType: TOPOLOGY_NODE_TYPES.VNET,
     nodeSize: _size,
@@ -67,7 +70,7 @@ const createVnetNode = (org: IOrganization, orgIndex: number, node: IVnet, index
 };
 
 export const createGroupNode = (_item: ITopologyGroup, vendorType: VendorTypes, index: number): INetworkGroupNode => {
-  return { ..._item, vendorType: vendorType, visible: true, collapsed: true, groupIndex: index, x: 0, y: 0, devices: [], links: [], r: 0, nodeType: TOPOLOGY_NODE_TYPES.NETWORK_GROUP };
+  return { ..._item, uiId: uuid(), vendorType: vendorType, visible: true, collapsed: true, groupIndex: index, x: 0, y: 0, devices: [], links: [], r: 0, nodeType: TOPOLOGY_NODE_TYPES.NETWORK_GROUP };
 };
 
 // export const createTestVMs = (_item: IVm, id: string) => {

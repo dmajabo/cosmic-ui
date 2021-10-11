@@ -15,7 +15,7 @@ const PolicyTab: React.FC<IProps> = (props: IProps) => {
   const [inData, setInData] = React.useState<IVmRule[]>([]);
   const [outData, setOutData] = React.useState<IVmRule[]>([]);
   React.useEffect(() => {
-    const _param: IResourceQueryParam = getQueryResourceParam(SecurityGroupsResourceTypes.Vm, props.dataItem.id);
+    const _param: IResourceQueryParam = getQueryResourceParam(SecurityGroupsResourceTypes.Vm, props.dataItem.extId);
     getDataAsync(PolicyApi.getPolicy(ControllerKeyTypes.SecurityGroups), _param);
   }, [props.dataItem]);
 

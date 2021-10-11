@@ -22,7 +22,7 @@ const MetricsTab: React.FC<IProps> = (props: IProps) => {
   }, []);
 
   React.useEffect(() => {
-    if (props.dataItem && dataItem && props.dataItem.id !== dataItem.id) {
+    if (props.dataItem && dataItem && props.dataItem.extId !== dataItem.extId) {
       const _param: IMetrickQueryParam = getTimeQueryMetricsParamFromRange(topology.timeRange, topology.selectedPeriod);
       if (!isEqual(param, _param)) {
         setParam(_param);
