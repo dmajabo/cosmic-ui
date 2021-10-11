@@ -1,8 +1,8 @@
-import IconWrapper from 'app/components/Buttons/IconWrapper';
-import { successCheckMarkIcon } from 'app/components/SVGIcons/statusIcons';
 import React from 'react';
 import { ActionTypes } from '../../Page/NewAutomation/model';
 import { CardWrapper, Label, SelectedLabel, SelectedWrapper } from './styles';
+import IconWrapper from 'app/components/Buttons/IconWrapper';
+import { successCheckMarkIcon } from 'app/components/SVGIcons/statusIcons';
 
 interface Props {
   id: ActionTypes;

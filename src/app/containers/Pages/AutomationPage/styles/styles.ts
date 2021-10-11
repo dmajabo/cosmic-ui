@@ -22,34 +22,26 @@ export const ContentStyles = styled.div`
   width: 100%;
   height: calc(100% - 60px);
   background: var(--_primaryBg);
-  padding: 30px;
+  padding-top: 30px;
 `;
 
 export const StepsWrapper = styled.div`
   display: flex;
   flex-direction: column;
   margin-bottom: auto;
-  width: calc(100% + 30px);
+  width: 100%;
   height: 100%;
-  overflow: auto;
-  padding-right: 30px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  padding: 0 30px;
 `;
 
 export const FooterWrapper = styled.div`
   display: flex;
-  margin-top: 20px;
   flex-shrink: 0;
   justify-content: space-between;
-`;
-
-export const StepTitle = styled.div`
-  font-family: 'DMSans';
-  font-style: normal;
-  font-weight: bold;
-  font-size: 22px;
-  line-height: 29px;
-  color: var(--_primaryColor);
-  flex-shrink: 0;
+  padding: 30px;
+  border-top: 1px solid var(--_primaryButtonBorder);
 `;
 
 export const PanelStyles = styled.div`
@@ -78,9 +70,15 @@ export const TriggerRow = styled.div`
 
 export const GeneralFieldsRow = styled.div`
   display: flex;
+  flex-direction: column;
   flex-shrink: 0;
   flex-wrap: nowrap;
-  @media (max-width: 1024px) {
-    flex-direction: column;
-  }
+`;
+
+export const TagsWrapper = styled.div`
+  display: flex;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  margin: auto;
 `;
