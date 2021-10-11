@@ -80,30 +80,10 @@ const DeviceNode: React.FC<IProps> = (props: IProps) => {
     <TransitionContainer stateIn={visible}>
       <g id={`${NODES_CONSTANTS.Devisec.type}${props.dataItem.uiId}`} className="topologyNode" transform={`translate(${pos.x}, ${pos.y})`} data-type={NODES_CONSTANTS.Devisec.type}>
         <g transform={`scale(${props.dataItem.scaleFactor || 1})`}>
-          <g
-            // onMouseEnter={e => onTogglePopup(e, true)}
-            // onMouseLeave={e => onTogglePopup(e, false)}
-            onClick={onClickDevice}
-            style={{ cursor: 'pointer' }}
-            pointerEvents="all"
-          >
+          <g onClick={onClickDevice} style={{ cursor: 'pointer' }} pointerEvents="all">
             <use href="#ciscoMerakiDeviceSvg" />
           </g>
           <TextName fontSize="6" x="16" y="40" color="var(--_disabledTextColor)" maxTextLength={12} name={`${props.dataItem.name} ${props.dataItem.model}`} />
-          {/* <foreignObject pointerEvents="none" x={NODES_CONSTANTS.Devisec.dx} y={NODES_CONSTANTS.Devisec.dy} width={NODES_CONSTANTS.Devisec.textWidth} height={NODES_CONSTANTS.Devisec.textHeight}>
-            <div
-              style={{
-                width: '100%',
-                minHeight: '12px',
-                fontSize: NODES_CONSTANTS.Devisec.fontSize,
-                textAlign: 'center',
-                pointerEvents: 'none',
-                color: 'var(--_primaryColor)',
-              }}
-            >
-              {props.dataItem.name} {props.dataItem.model}
-            </div>
-          </foreignObject> */}
         </g>
       </g>
     </TransitionContainer>
