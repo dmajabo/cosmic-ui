@@ -80,5 +80,5 @@ export const TagsWrapper = styled.div`
   max-width: 100%;
   overflow: hidden;
   white-space: nowrap;
-  margin: auto;
+  margin: auto auto auto 0;
 `;

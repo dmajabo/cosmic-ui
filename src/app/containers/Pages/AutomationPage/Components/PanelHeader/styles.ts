@@ -26,6 +26,12 @@ export const StepTitle = styled.div`
   color: var(--_primaryColor);
   flex-shrink: 0;
   margin: auto 12px auto 0;
+  width: 30%;
+  max-width: 300px;
+  min-width: 180px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 `;
 
 export const StepStaus = styled.div`
