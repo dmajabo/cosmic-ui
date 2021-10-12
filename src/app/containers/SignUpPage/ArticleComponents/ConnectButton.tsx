@@ -8,7 +8,7 @@ interface ButtonProps {
   readonly onClick?: () => void;
 }
 
-export const ConnectButton: React.FC<ButtonProps> = ({ logoImg, text, onClick }) => {
+export const ConnectButton: React.FC<ButtonProps> = ({ logoImg, text, onClick = () => {} }) => {
   const classes = SignUpStyles();
   return (
     <div className={classes.buttonContainer}>
