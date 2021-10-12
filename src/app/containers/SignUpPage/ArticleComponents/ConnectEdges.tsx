@@ -4,6 +4,8 @@ import { EdgeBox } from './EdgeBox';
 import AwsIcon from '../icons/aws.svg';
 import MerakiIcon from '../icons/meraki.svg';
 import AddIcon from '../icons/add.svg';
+import { Button, Typography } from '@material-ui/core';
+import SkipIcon from '../icons/skip.svg';
 
 interface EdgeBoxData {
   readonly Img: string;
@@ -43,6 +45,20 @@ export const ConnectEdges: React.FC = () => {
         <div className={classes.newEdgeButton}>
           ADD NEW EDGE
           <img className={classes.whiteArrow} src={AddIcon} alt="add new edge" />
+        </div>
+      </div>
+      <div className={classes.flexContainer}>
+        <div>
+          <div className={classes.skipSetupButton}>
+            SKIP SETUP
+            <img className={classes.whiteArrow} src={SkipIcon} alt="skip setup" />
+          </div>
+          <div className={classes.skipSetupText}>You can finish it in any time.</div>
+        </div>
+        <div>
+          <Button className={classes.startButton} color="primary" disabled={true} variant="contained" disableElevation>
+            START WITH OKULIS
+          </Button>
         </div>
       </div>
     </div>
