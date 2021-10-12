@@ -14,7 +14,7 @@ export const RightBlock = styled.div`
   overflow: hidden;
   position: relative;
   width: 30.52083333333333vw;
-  height: 100%;
+  height: 100vh;
   background: var(--_primaryColor);
   flex-shrink: 0;
   padding: 1.041666666666667vw;
