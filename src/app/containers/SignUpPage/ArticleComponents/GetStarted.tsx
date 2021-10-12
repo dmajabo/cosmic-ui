@@ -13,12 +13,12 @@ export const GetStarted: React.FC = () => {
       <div className={classes.getStartedContainer}>
         <div className={classes.title}>Get Started</div>
         <div className={classes.subTitle}>Many variants have been employed since the early 1960ies, and quite likely since the sixteenth century</div>
-        <ConnectButton text="CONNECT WITH GOOGLE" logoImg={GoogleIcon} />
-        <ConnectButton text="CONNECT WITH OKTA" logoImg={OktaIcon} />
+        <ConnectButton text="CONNECT WITH GOOGLE" Img={GoogleIcon} />
+        <ConnectButton text="CONNECT WITH OKTA" Img={OktaIcon} />
       </div>
       <Divider text="Or" />
       <div className={classes.getStartedContainer}>
-        <ConnectButton text="CONNECT WITH EMAIL" logoImg={EmailIcon} />
+        <ConnectButton text="CONNECT WITH EMAIL" Img={EmailIcon} />
       </div>
     </div>
   );
