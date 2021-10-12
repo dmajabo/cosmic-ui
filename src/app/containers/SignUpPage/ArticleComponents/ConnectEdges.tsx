@@ -4,7 +4,7 @@ import { EdgeBox } from './EdgeBox';
 import AwsIcon from '../icons/aws.svg';
 import MerakiIcon from '../icons/meraki.svg';
 import AddIcon from '../icons/add.svg';
-import { Button, Typography } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import SkipIcon from '../icons/skip.svg';
 
 interface EdgeBoxData {
