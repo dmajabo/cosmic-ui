@@ -141,7 +141,9 @@ const GroupsComponent: React.FC<IProps> = (props: IProps) => {
     <>
       <PanelHeader>
         <PanelTitle>{getPanelBarTitle(view, groupToEdit)}</PanelTitle>
-        {view === TopologyGroupsView.ALL && <PrimaryButton label="create group" icon={addIcon} onClick={onOpenEditorGroup} />}
+        {view === TopologyGroupsView.ALL && (
+          <PrimaryButton styles={{ margin: '0 auto 0 30px', flexShrink: 0 }} borderColor="var(--_disabledButtonColor)" label="create group" icon={addIcon} onClick={onOpenEditorGroup} />
+        )}
       </PanelHeader>
       <OverflowContainer>
         <PanelBarContent>

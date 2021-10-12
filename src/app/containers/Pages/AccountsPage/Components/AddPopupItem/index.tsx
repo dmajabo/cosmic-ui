@@ -1,5 +1,5 @@
 import React from 'react';
-import { AccountTypes } from '../../models';
+import { AccountTypes } from 'lib/api/ApiModels/Accounts/apiModel';
 import { Label, PopupItemWrapper } from './styles';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 

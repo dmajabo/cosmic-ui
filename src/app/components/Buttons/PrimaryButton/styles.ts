@@ -15,7 +15,7 @@ export const PrimaryButtonStyles = styled.button<BProps>`
   background: ${props => props.bgColor || 'var(--_primaryButtonBg)'};
   font-family: 'DMSans', sans-serif;
   width: ${props => props.width || 'auto'};
-  height: ${props => props.width || '40px'};
+  height: ${props => props.height || '40px'};
   border: 1px solid;
   border-color: ${props => props.borderColor || 'transparent'};
   transition: color, border-color, background 0.2s linear;
@@ -35,7 +35,11 @@ export const PrimaryButtonStyles = styled.button<BProps>`
   &:disabled {
     color: var(--_disabledButtonColor);
     background: var(--_disabledButtonBg);
+    border-color: var(--_disabledButtonBg);
     cursor: default;
+    * {
+      cursor: default !important;
+    }
     .inheritFill {
       fill: var(--_disabledButtonColor);
     }

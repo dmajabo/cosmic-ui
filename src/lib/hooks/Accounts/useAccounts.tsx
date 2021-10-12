@@ -1,23 +1,24 @@
+import { IAccount } from 'lib/api/ApiModels/Accounts/apiModel';
 import React from 'react';
 // import { ISelectedListItem } from 'lib/models/general';
 
 export interface AccountsContextType {
-  dataReadyToShow: boolean;
+  data: IAccount[];
   onSetData: (res: any) => void;
 }
 export function useAccountsContext(): AccountsContextType {
-  const [dataReadyToShow, setDataReadyToShow] = React.useState<boolean>(false);
+  const [data, setData] = React.useState<IAccount[] | null>(null);
 
-  const onSetData = (res: any) => {
+  const onSetData = (res: IAccount[]) => {
     if (!res) {
-      setDataReadyToShow(true);
+      setData(null);
       return;
     }
-    setDataReadyToShow(true);
+    setData(res);
   };
 
   return {
-    dataReadyToShow,
+    data,
     onSetData,
   };
 }

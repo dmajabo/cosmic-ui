@@ -3,7 +3,7 @@ import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { ciscoMerakiLogoIcon } from 'app/components/SVGIcons/topologyIcons/ciscoMerakiLogo';
 import { ITopologyGroup, TopologyGroupTypesAsNumber, TopologyGroupTypesAsString } from 'lib/models/topology';
 import { Content, GroupField, GroupWrapper } from './styles';
-import { editTopologyIcon } from 'app/components/SVGIcons/edit';
+import { editIcon } from 'app/components/SVGIcons/edit';
 import { dublicateIcon } from 'app/components/SVGIcons/dublicate';
 import { deleteIcon } from 'app/components/SVGIcons/delete';
 import { applicationIcon } from 'app/components/SVGIcons/topologyIcons/application';
@@ -53,7 +53,7 @@ const TopologyGroup: React.FC<IProps> = (props: IProps) => {
       </Content>
       <SettingsButton id={props.group.id} width="24px" height="40px" hoverIconColor="var(--_hoverButtonBg)" disabled={props.disabled}>
         <PopupContent>
-          <PopupItem label="Edit" icon={editTopologyIcon} onClick={onEdit} />
+          <PopupItem label="Edit" icon={editIcon} onClick={onEdit} />
           <PopupItem label="Duplicate" icon={dublicateIcon} onClick={onDublicate} />
           <PopupItem color="var(--_errorColor)" label="Delete" icon={deleteIcon} onClick={onDelete} />
         </PopupContent>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { IAccount } from '../../models';
+import { IAccount } from 'lib/api/ApiModels/Accounts/apiModel';
 import { closeIcon } from 'app/components/SVGIcons/close';
 import IconButton from 'app/components/Buttons/IconButton';
 import { ModalContent, ModalFooter, ModalHeader, ModalOverflowContainer } from '../../styles/styles';

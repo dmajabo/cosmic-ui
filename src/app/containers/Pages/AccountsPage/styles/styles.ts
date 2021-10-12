@@ -1,15 +1,19 @@
 import styled from 'styled-components';
 
-export const PageWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  min-height: 100%;
-`;
-
 export const ActionRow = styled.div`
   display: flex;
-  padding: 30px;
+  padding: 30px 20px;
+`;
+
+export const ContentWrapper = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  min-height: calc(100% - 100px);
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-content: flex-start;
+  padding: 0 20px;
 `;
 
 export const ModalHeader = styled.div`

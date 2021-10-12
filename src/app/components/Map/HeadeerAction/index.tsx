@@ -2,7 +2,7 @@ import React from 'react';
 import { Side, Wrapper } from './styles';
 import PrimaryButton from 'app/components/Buttons/PrimaryButton';
 import { entitiesIcon } from 'app/components/SVGIcons/entities';
-import { editTopologyIcon } from 'app/components/SVGIcons/edit';
+import { editIcon } from 'app/components/SVGIcons/edit';
 import { TopologyPanelTypes, ITopologySelectTypes, TOPOLOGY_SELECT_VALUES } from 'lib/models/topology';
 import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
 import Dropdown from 'app/components/Inputs/Dropdown';
@@ -39,7 +39,7 @@ const HeadeerAction: React.FC<IProps> = (props: IProps) => {
         <IconButton styles={{ margin: '0' }} icon={refreshIcon} title="Zoom in" onClick={props.onRefresh} />
         <PrimaryButton label="ENTITIES" icon={entitiesIcon} onClick={() => onClick(TopologyPanelTypes.ENTITIES)} disabled={false} styles={{ margin: '0 0 0 20px' }} />
         {/* <Filter onChange={onFilter} searchQuery={topology?.searchQuery || ''} /> */}
-        <PrimaryButton label="Edit Topology" icon={editTopologyIcon} onClick={() => onClick(TopologyPanelTypes.GROUPS)} disabled={false} styles={{ margin: '0 0 0 20px' }} />
+        <PrimaryButton label="Edit Topology" icon={editIcon} onClick={() => onClick(TopologyPanelTypes.GROUPS)} disabled={false} styles={{ margin: '0 0 0 20px' }} />
       </Side>
     </Wrapper>
   );
