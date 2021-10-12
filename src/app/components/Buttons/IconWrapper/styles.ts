@@ -22,4 +22,7 @@ export const Icon = styled.span<IProps>`
     height: 100%;
     vertical-align: top;
   }
+  &:hover .inheritHoverFill {
+    fill: var(--_hoverButtonBg);
+  }
 `;

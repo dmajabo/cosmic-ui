@@ -22,20 +22,26 @@ export const ROUTE = {
   notFound: '*',
 };
 
+export enum BreadCrumbTypes {
+  AUTOMATIONS = 'automations',
+  NETWORKS = 'networks',
+}
+
 export interface IPage {
   id: string;
   path: string;
   pageName: string;
+  breadcrumb: BreadCrumbTypes | null;
   icon: any;
 }
 
 export const APP_PAGES: IPage[] = [
-  { id: 'dashboard', path: ROUTE.dashboard, pageName: 'Dashboard', icon: dashboardIcon },
-  { id: 'topology', path: ROUTE.topology, pageName: 'Topology', icon: topologyIcon },
-  { id: 'performanceDashboard', path: ROUTE.performanceDashboard, pageName: 'Performance Dashboard', icon: performanceDashboard },
-  { id: 'sessions', path: ROUTE.sessions, pageName: 'Sessions', icon: sessionsIcon },
-  { id: 'policy', path: ROUTE.policy, pageName: 'Policy', icon: policyIcon },
-  { id: 'analytics', path: ROUTE.analytics, pageName: 'Analytics', icon: analyticsIcon },
-  { id: 'automation', path: ROUTE.automation, pageName: 'Automation', icon: automationIcon },
-  { id: 'settings', path: ROUTE.settings, pageName: 'Settings', icon: settingsIcon },
+  { id: 'dashboard', path: ROUTE.dashboard, pageName: 'Dashboard', icon: dashboardIcon, breadcrumb: null },
+  { id: 'topology', path: ROUTE.topology, pageName: 'Topology', icon: topologyIcon, breadcrumb: null },
+  { id: 'performanceDashboard', path: ROUTE.performanceDashboard, pageName: 'Performance Dashboard', icon: performanceDashboard, breadcrumb: null },
+  { id: 'sessions', path: ROUTE.sessions, pageName: 'Sessions', icon: sessionsIcon, breadcrumb: null },
+  { id: 'policy', path: ROUTE.policy, pageName: 'Policy', icon: policyIcon, breadcrumb: null },
+  { id: 'analytics', path: ROUTE.analytics, pageName: 'Analytics', icon: analyticsIcon, breadcrumb: null },
+  { id: 'automation', path: ROUTE.automation, pageName: 'Automation', icon: automationIcon, breadcrumb: BreadCrumbTypes.AUTOMATIONS },
+  { id: 'settings', path: ROUTE.settings, pageName: 'Settings', icon: settingsIcon, breadcrumb: null },
 ];

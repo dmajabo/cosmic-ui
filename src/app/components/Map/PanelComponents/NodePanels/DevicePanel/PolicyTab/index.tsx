@@ -1,6 +1,6 @@
 import React from 'react';
 import { IDeviceNode } from 'lib/models/topology';
-import { IResourceQueryParam, ControllerKeyTypes, SecurityGroupsResourceTypes, IVmPolicyRes, IVmRule, PolicyResKeyEnum, PolicyTableKeyEnum } from 'lib/api/ApiModels/Metrics/apiModel';
+import { IResourceQueryParam, ControllerKeyTypes, SecurityGroupsResourceTypes, IPolicyRes, IDeviceRule, PolicyResKeyEnum } from 'lib/api/ApiModels/Metrics/apiModel';
 import { PolicyApi } from 'lib/api/ApiModels/Metrics/endpoints';
 import PolicyTable from './PolicyTable';
 import { useGet } from 'lib/api/http/useAxiosHook';
@@ -11,8 +11,8 @@ interface IProps {
 }
 
 const PolicyTab: React.FC<IProps> = (props: IProps) => {
-  const { response, loading, error, onGet } = useGet<IVmPolicyRes>();
-  const [data, setData] = React.useState<IVmRule[]>([]);
+  const { response, loading, error, onGet } = useGet<IPolicyRes>();
+  const [data, setData] = React.useState<IDeviceRule[]>([]);
   React.useEffect(() => {
     const _param: IResourceQueryParam = getQueryResourceParam(SecurityGroupsResourceTypes.VNetwork, props.dataItem.vnetworks[0].id);
     getDataAsync(PolicyApi.getPolicy(ControllerKeyTypes.SecurityGroups), _param);

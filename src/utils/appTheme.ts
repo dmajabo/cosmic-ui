@@ -68,6 +68,18 @@ const Themes = {
     '--_offBg': '#DEE3EE',
     '--_onBg': '#1565C0',
     '--_thumbBg': '#FFFFFF',
+    // STEPPER
+    '--_defStepperBgColor': '#F3F6FC',
+    '--_defStepperLabelColor': '#848DA3',
+    '--_defStepperNumberTextColor': '#848DA3',
+    '--_selectedStepperBgColor': '#437FEC',
+    '--_selectedStepperLabelColor': '#05143A',
+    '--_selectedStepperNumberTextColor': '#FFFFFF',
+    '--_completedStepperBgColor': '#52984E',
+    '--_completedStepperLabelColor': '#05143A',
+    '--_completedStepperNumberTextColor': '#FFFFFF',
+    '--_stepperEdgeColor': '#CBD2DC',
+    '--_stepperStateCompleteColor': '#52984E',
   },
 };
 

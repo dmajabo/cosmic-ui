@@ -2,14 +2,14 @@ import React from 'react';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { ciscoMerakiLogoIcon } from 'app/components/SVGIcons/topologyIcons/ciscoMerakiLogo';
 import { ITopologyGroup, TopologyGroupTypesAsNumber, TopologyGroupTypesAsString } from 'lib/models/topology';
-import { ButtonStyles, Content, GroupField, GroupWrapper, PopupContent } from './styles';
-import { settingsDotsIcon } from 'app/components/SVGIcons/settingsDots';
-import Popover from '@material-ui/core/Popover';
-import PopupItem from './PopupItem';
+import { Content, GroupField, GroupWrapper } from './styles';
 import { editTopologyIcon } from 'app/components/SVGIcons/edit';
 import { dublicateIcon } from 'app/components/SVGIcons/dublicate';
 import { deleteIcon } from 'app/components/SVGIcons/delete';
 import { applicationIcon } from 'app/components/SVGIcons/topologyIcons/application';
+import SettingsButton from 'app/components/Buttons/SettingsButton';
+import { PopupContent } from 'app/components/Buttons/SettingsButton/PopupItemStyles';
+import PopupItem from 'app/components/Buttons/SettingsButton/PopupItem';
 
 interface IProps {
   group: ITopologyGroup;
@@ -20,30 +20,13 @@ interface IProps {
 }
 
 const TopologyGroup: React.FC<IProps> = (props: IProps) => {
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [showPopup, setShowPopup] = React.useState<boolean>(false);
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    if (props.disabled) {
-      return;
-    }
-    setAnchorEl(anchorEl ? null : event.currentTarget);
-    setShowPopup(!showPopup);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-    setShowPopup(false);
-  };
   const onEdit = () => {
-    handleClose();
     props.onSelectGroup(props.group);
   };
   const onDublicate = () => {
-    handleClose();
     props.onDublicateGroup(props.group);
   };
   const onDelete = () => {
-    handleClose();
     props.onDeleteGroup(props.group);
   };
   return (
@@ -68,39 +51,13 @@ const TopologyGroup: React.FC<IProps> = (props: IProps) => {
         <GroupField primary>{props.group.name}</GroupField>
         <GroupField>{props.group.type}</GroupField>
       </Content>
-      <ButtonStyles
-        width="24px"
-        height="40px"
-        disabled={props.disabled}
-        onClick={handleClick}
-        hoverIconColor="var(--_hoverButtonBg)"
-        className={`${showPopup ? 'active' : ''}`}
-        aria-describedby={`${props.group.id || ''}poper`}
-        type="button"
-      >
-        <IconWrapper icon={settingsDotsIcon} />
-      </ButtonStyles>
-      <Popover
-        id={`${props.group.id || ''}poper`}
-        open={showPopup}
-        anchorEl={anchorEl}
-        onClose={handleClose}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-        className="buttonPopup"
-      >
+      <SettingsButton id={props.group.id} width="24px" height="40px" hoverIconColor="var(--_hoverButtonBg)" disabled={props.disabled}>
         <PopupContent>
           <PopupItem label="Edit" icon={editTopologyIcon} onClick={onEdit} />
           <PopupItem label="Duplicate" icon={dublicateIcon} onClick={onDublicate} />
           <PopupItem color="var(--_errorColor)" label="Delete" icon={deleteIcon} onClick={onDelete} />
         </PopupContent>
-      </Popover>
+      </SettingsButton>
     </GroupWrapper>
   );
 };
