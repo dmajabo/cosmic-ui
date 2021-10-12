@@ -2,21 +2,15 @@ import { IPosition, ISize, NODES_CONSTANTS } from 'app/components/Map/model';
 import { ILink, TOPOLOGY_LINKS_TYPES, IConnectionToLink, INetworkGroupNode, IWedgeNode, IVnetNode, IDeviceNode, TOPOLOGY_NODE_TYPES } from 'lib/models/topology';
 import { jsonClone } from './cloneHelper';
 
-export const generateLinks = (
-  nodes: (IWedgeNode | IVnetNode | IDeviceNode | INetworkGroupNode)[],
-  wedges: IWedgeNode[],
-  vnets: IVnetNode[],
-  devices: IDeviceNode[],
-  groups: INetworkGroupNode[],
-): ILink[] => {
+export const generateLinks = (nodes: (IWedgeNode | IVnetNode | IDeviceNode | INetworkGroupNode)[], wedges: IWedgeNode[], vnets: IVnetNode[], groups: INetworkGroupNode[]): ILink[] => {
   const links: ILink[] = [];
   wedges.forEach(wedge => {
     if (wedge.networkLinks && wedge.networkLinks.length) {
       buildNetworkLinks(links, wedge, vnets, nodes);
     }
-    if (wedge.vpns && wedge.vpns.length) {
-      buildVpnLinks(links, wedge, devices);
-    }
+    // if (wedge.vpns && wedge.vpns.length) {
+    //   buildVpnLinks(links, wedge, devices);
+    // }
   });
   if (groups && groups.length) {
     groups.forEach(g => {

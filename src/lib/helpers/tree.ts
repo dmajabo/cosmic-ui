@@ -176,7 +176,7 @@ export const prepareNodesData = (_data: ITopologyMapData, _groups: ITopologyGrou
   // const startY = calculateStartY(devices, topologyGroups);
   setUpVnetCoord(vnets, 0);
   setUpWedgesCoord(wedges);
-  const links: ILink[] = generateLinks(nodes, wedges, vnets, devices, topologyGroups);
+  const links: ILink[] = generateLinks(nodes, wedges, vnets, topologyGroups);
   return { nodes, links };
 };
 
