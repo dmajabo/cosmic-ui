@@ -19,22 +19,32 @@ export const TabsWrapperStyles = styled.div`
   border-bottom-color: rgba(132, 141, 163, 0.1);
 `;
 
-export const ActionRowStyles = styled.div`
+interface IActionRowProps {
+  height?: string;
+}
+
+export const ActionRowStyles = styled.div<IActionRowProps>`
   display: flex;
   width: 100%;
-  height: 50px;
+  height: ${props => props.height || '50px'};
   flex-shrink: 0;
   margin-bottom: 20px;
 `;
 
 interface IPageActionPart {
   margin?: string;
+  width?: string;
+  minWidth?: string;
+  maxWidth?: string;
+  justifyContent?: string;
 }
 export const ActionPart = styled.div<IPageActionPart>`
   display: flex;
   align-items: center;
-  width: auto;
-  max-width: 100%;
+  justify-content: ${props => props.justifyContent || 'flex-start'};
+  width: ${props => props.width || 'auto'};
+  max-width: ${props => props.maxWidth || '100%'};
+  min-width: ${props => props.minWidth || 'unset'};
   height: 100%;
   flex-shrink: 0;
   margin: ${props => props.margin || 0};

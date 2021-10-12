@@ -4,13 +4,13 @@ import { Wrapper } from './styles';
 import ToogleButton from './ToogleButton';
 
 interface IProps {
-  selectedValue: ISelectedListItem<string> | null;
-  values: ISelectedListItem<string>[];
-  onChange: (value: ISelectedListItem<string>) => void;
+  selectedValue: ISelectedListItem<any> | null;
+  values: ISelectedListItem<any>[];
+  onChange: (value: ISelectedListItem<any>) => void;
 }
 const Toogle: React.FC<IProps> = (props: IProps) => {
-  const onChange = (value: ISelectedListItem<string>) => {
-    if (value === props.selectedValue) {
+  const onChange = (value: ISelectedListItem<any>) => {
+    if (value.id === props.selectedValue.id) {
       return;
     }
     props.onChange(value);

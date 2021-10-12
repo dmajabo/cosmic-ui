@@ -1,71 +1,91 @@
 import React from 'react';
-import { DropdownWrapper, ListWrapper, SelectWrapper } from './styles';
+import { DropdownWrapper, ListWrapper, SelectWrapper, DropWrapper } from './styles';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { ISelectedListItem } from 'lib/models/general';
 import DropdownItem from './DropdownItem';
-import useOnClickOutside from 'lib/hooks/useClickOutside';
 import { arrowBottomIcon } from 'app/components/SVGIcons/arrows';
 import { InputLabel } from '../styles/Label';
 import { ClickAwayListener } from '@material-ui/core';
+import DisplayValue from './DisplayValue';
 
 interface IProps {
-  label: JSX.Element | string;
+  label?: JSX.Element | string;
   selectedValue: number | string | null;
-  values: ISelectedListItem<any>[];
-  onSelectValue: (_item: ISelectedListItem<any> | null) => void;
+  values: ISelectedListItem<any>[] | string[] | number[];
+  onSelectValue: (_item: ISelectedListItem<any> | string | number) => void;
+  placeholder?: string;
   disabled?: boolean;
+  dropWrapStyles?: Object;
   wrapStyles?: Object;
+  selectStyles?: Object;
 }
 
 const Dropdown: React.FC<IProps> = (props: IProps) => {
   const [showPopup, setShowPopup] = React.useState<boolean>(false);
-  const [selectedItem, setSelectedItem] = React.useState<ISelectedListItem<any> | null>(null);
-  const ref = React.useRef(null);
-  useOnClickOutside(ref, () => setShowPopup(false));
+  const [selectedItem, setSelectedItem] = React.useState<string | number | null>(null);
+  const [isSimple, setIsSimple] = React.useState<boolean>(true);
 
   React.useEffect(() => {
-    const _item: ISelectedListItem<any> | null = onGetSelectedValue(props.selectedValue, props.values);
-    if (_item) {
+    const _item: ISelectedListItem<any> | string | number | null = onGetSelectedValue(props.selectedValue, props.values);
+    if (typeof _item === 'string' || typeof _item === 'number') {
       setSelectedItem(_item);
+    } else if (_item !== null) {
+      setSelectedItem(_item.id);
     }
-  }, []);
+    const _isSimple = props.values && props.values.length && typeof props.values[0] !== 'string' && typeof props.values[0] !== 'number' ? false : true;
+    setIsSimple(_isSimple);
+  }, [props.selectedValue, props.values]);
 
   const onToogleDropdown = () => {
     if (props.disabled) {
       return;
     }
-    setShowPopup(!showPopup);
+    setShowPopup(prev => !prev);
   };
 
-  const onChange = (_item: ISelectedListItem<any>) => {
-    setSelectedItem(_item);
+  const onCloseDropdown = () => {
     setShowPopup(false);
-    if (_item.id === props.selectedValue) {
-      return;
+  };
+
+  const onChange = (_item: ISelectedListItem<any> | string | number) => {
+    if (typeof _item === 'string' || typeof _item === 'number') {
+      if (_item === props.selectedValue) {
+        return;
+      }
+      setSelectedItem(_item);
+      setShowPopup(false);
+    } else {
+      if (_item.id === props.selectedValue) {
+        return;
+      }
+      setSelectedItem(_item.id);
+      setShowPopup(false);
     }
     props.onSelectValue(_item);
   };
 
-  const onGetSelectedValue = (id: number | string | null, _values: ISelectedListItem<any>[]): ISelectedListItem<any> | null => _values.find(it => it.id === id) || null;
+  const onGetSelectedValue = (id: number | string | null, _values: any[]): ISelectedListItem<any> | string | number | null =>
+    _values.find(it => (typeof it === 'string' || typeof it === 'number' ? it === id : it.id === id || it.value === id)) || null;
 
   return (
-    <DropdownWrapper style={props.wrapStyles}>
-      <InputLabel>{props.label}</InputLabel>
-      <SelectWrapper onClick={onToogleDropdown} className={showPopup ? 'active' : ''}>
-        {selectedItem ? selectedItem.label : null}
-        <IconWrapper styles={{ position: 'absolute', right: '12px', top: 'calc(50% - 6px)', width: '12px', height: '12px' }} icon={arrowBottomIcon} />
-
-        {showPopup && (
-          <ClickAwayListener onClickAway={onToogleDropdown}>
-            <ListWrapper ref={ref}>
+    <ClickAwayListener onClickAway={onCloseDropdown}>
+      <DropdownWrapper open={showPopup} style={props.dropWrapStyles}>
+        {props.label && <InputLabel>{props.label}</InputLabel>}
+        <DropWrapper style={props.wrapStyles}>
+          <SelectWrapper style={props.selectStyles} onClick={onToogleDropdown} className={showPopup ? 'active' : ''}>
+            <DisplayValue selectedItem={selectedItem} placeholder={props.placeholder} />
+            <IconWrapper styles={{ position: 'absolute', right: '12px', top: 'calc(50% - 6px)', width: '12px', height: '12px' }} icon={arrowBottomIcon} />
+          </SelectWrapper>
+          {showPopup && (
+            <ListWrapper>
               {props.values.map(it => (
-                <DropdownItem key={`${it.id}dropdownItem`} label={props.label} item={it} onClick={onChange} active={it.id === selectedItem?.id} />
+                <DropdownItem key={`${!it.id ? it : it.id}dropdownItem`} simple={isSimple} item={it} onClick={onChange} active={!it.id ? it === selectedItem : it.id === selectedItem} />
               ))}
             </ListWrapper>
-          </ClickAwayListener>
-        )}
-      </SelectWrapper>
-    </DropdownWrapper>
+          )}
+        </DropWrapper>
+      </DropdownWrapper>
+    </ClickAwayListener>
   );
 };
 

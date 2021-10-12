@@ -3,10 +3,10 @@ import { ISelectedListItem } from 'lib/models/general';
 import { DropdownItemWrapper } from './styles';
 
 interface IProps {
-  label: JSX.Element | string;
   item: ISelectedListItem<any>;
   onClick: (_item: ISelectedListItem<any>) => void;
   active: boolean;
+  simple: boolean;
 }
 
 const DropdownItem: React.FC<IProps> = (props: IProps) => {
@@ -16,7 +16,7 @@ const DropdownItem: React.FC<IProps> = (props: IProps) => {
 
   return (
     <DropdownItemWrapper active={props.active} onClick={onClick}>
-      {props.item.label}
+      {props.simple ? props.item : props.item.label}
     </DropdownItemWrapper>
   );
 };

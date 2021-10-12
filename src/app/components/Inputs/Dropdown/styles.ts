@@ -1,7 +1,10 @@
 import styled from 'styled-components';
 import { InputLabel } from '../styles/Label';
 
-export const DropdownWrapper = styled.div`
+interface Props {
+  open?: boolean;
+}
+export const DropdownWrapper = styled.div<Props>`
   display: inline-flex;
   width: auto;
   align-items: center;
@@ -9,28 +12,49 @@ export const DropdownWrapper = styled.div`
   font-style: normal;
   font-weight: normal;
   font-size: 14px;
-  z-index: 1;
+  z-index: ${props => (props.open ? 10 : 1)};
   ${InputLabel} {
     margin-right: 12px;
+    margin-bottom: 0;
   }
 `;
 
 export const SelectWrapper = styled.div`
-  position: relative;
-  width: 180px;
-  height: 40px;
+  width: 100%;
+  height: 100%;
   background: var(--_primaryButtonBg);
   border-radius: 6px;
   outline: 0;
   padding: 8px 24px 8px 16px;
   border: 1px solid;
   border-color: var(--_primaryButtonBg);
-  color: var(--_primaryColor);
   cursor: pointer;
+  display: flex;
+  align-items: center;
   &.active {
     .inheritFill {
       fill: var(--_hoverButtonBg);
     }
+  }
+`;
+
+export const DropWrapper = styled.div`
+  position: relative;
+  width: 180px;
+  height: 40px;
+`;
+
+export const DisplayValueStyles = styled.div`
+  color: var(--_disabledTextColor);
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  font-family: 'DMSans';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  &.filled {
+    color: var(--_primaryColor);
   }
 `;
 
@@ -47,8 +71,8 @@ export const ListWrapper = styled.div`
   position: absolute;
   top: calc(100% + 2px);
   left: 0;
-  width: 180px;
-  max-height: 200px;
+  width: 100%;
+  max-height: 278px;
   height: auto;
   min-height: 100px;
   overflow-x: hidden;

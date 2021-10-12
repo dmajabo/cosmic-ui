@@ -81,7 +81,7 @@ const EditGroupView: React.FC<IProps> = (props: IProps) => {
   return (
     <GroupWrapper>
       <TextInput id="groupName" name="groupName" value={group.name} label="Group Name" onChange={_value => onChangeField(_value, ITopologyGroupFields.NAME)} />
-      <Dropdown label="Type" selectedValue={group.type} values={SelectGroupTypes} onSelectValue={onChangeType} />
+      <Dropdown wrapStyles={{ flexDirection: 'column', width: '100%' }} label="Type" selectedValue={group.type} values={SelectGroupTypes} onSelectValue={onChangeType} />
       <ExpresionComponent
         disabled={!group.type}
         label="Expression"

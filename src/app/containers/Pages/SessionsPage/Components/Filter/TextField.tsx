@@ -11,7 +11,6 @@ import { IAutoCompliteItem, IGroupedFilteredItem, instanceOfObject } from './mod
 // import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 // import CheckBoxIcon from '@mui/icons-material/CheckBox';
 // import Tag from './Tag';
-// import FilterWithPopup from 'app/components/Inputs/FilterWithPopup';
 // const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 // const checkedIcon = <CheckBoxIcon fontSize="small" />;
 

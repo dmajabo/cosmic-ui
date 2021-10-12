@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { TextInputWrapper } from 'app/components/Inputs/TextInput/styles';
-import { DropdownWrapper, SelectWrapper, Label as DropdownLabel, ListWrapper } from 'app/components/Inputs/Dropdown/styles';
+import { DropdownWrapper, DropWrapper, SelectWrapper, Label as DropdownLabel, ListWrapper } from 'app/components/Inputs/Dropdown/styles';
 import { SecondaryButtonStyles } from 'app/components/Buttons/SecondaryButton/styles';
 import { PrimaryButtonStyles } from 'app/components/Buttons/PrimaryButton/styles';
 
@@ -41,8 +41,10 @@ export const GroupWrapper = styled.div`
     text-align: left;
     margin: 0 0 20px 0;
   }
-  ${SelectWrapper} {
+  ${DropWrapper} {
     width: 100%;
+  }
+  ${SelectWrapper} {
     border-color: var(--_disabledButtonColor);
   }
   ${DropdownLabel} {

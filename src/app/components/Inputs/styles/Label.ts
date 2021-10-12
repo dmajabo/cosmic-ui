@@ -17,4 +17,5 @@ export const InputLabel = styled.label<Props>`
   cursor: ${props => (props.disabled ? 'not-allowed' : 'pointer')};
   display: block;
   opacity: ${props => (props.disabled ? '0.5' : '1')};
+  margin-bottom: 6px;
 `;

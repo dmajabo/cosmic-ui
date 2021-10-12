@@ -2,12 +2,15 @@ import styled from 'styled-components';
 
 export const InputWrapper = styled.div`
   position: relative;
+  width: auto;
+  min-width: 280px;
+  max-width: 500px;
+  height: 40px;
 `;
 
 export const InputSearch = styled.input`
-  min-width: 280px;
-  height: 40px;
-  max-width: 500px;
+  width: 100%;
+  height: 100%;
   background: var(--_primaryButtonBg);
   border-radius: 6px;
   outline: 0;
