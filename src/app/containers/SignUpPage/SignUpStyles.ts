@@ -45,6 +45,7 @@ export const SignUpStyles = makeStyles(
       connectButton: {
         width: 450,
         height: 60,
+        cursor: 'pointer',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
