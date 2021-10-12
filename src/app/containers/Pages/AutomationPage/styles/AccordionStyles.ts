@@ -15,7 +15,7 @@ const accordionStyles = makeStyles(
           zIndex: 1,
         },
         '& .MuiCollapse-root': {
-          padding: '0 20px 0 !important',
+          padding: '0 20px 10px 20px !important',
         },
         '&:before': {
           display: 'none !important',
@@ -24,6 +24,7 @@ const accordionStyles = makeStyles(
       panel: {
         padding: '20px !important',
         minHeight: '90px !important',
+        width: '100%',
         '& .MuiAccordionSummary-content': {
           margin: '0 0 0 0 !important',
           alignItems: 'center',

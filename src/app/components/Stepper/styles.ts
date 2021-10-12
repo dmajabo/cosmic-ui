@@ -20,13 +20,14 @@ export const Title = styled.div`
 `;
 
 export interface StepItemWrapperProps {
-  selected: boolean;
+  selected?: boolean;
+  highlighted?: boolean;
   state: StepperItemStateType;
   disabled?: boolean;
 }
 
 export const getNumberStyles = (props: StepItemWrapperProps) => {
-  if (props.selected) {
+  if (props.selected || props.highlighted) {
     return css`
       background: var(--_selectedStepperBgColor);
       color: var(--_selectedStepperNumberTextColor);

@@ -4,9 +4,9 @@ import MainPage from './MainPage';
 interface IProps {}
 
 const AccountsPage: React.FC<IProps> = (props: IProps) => {
-  const automationActions = useAccountsActions();
+  const accountsActions = useAccountsActions();
   return (
-    <AccountsProvider actions={automationActions}>
+    <AccountsProvider actions={accountsActions}>
       <MainPage />
     </AccountsProvider>
   );
