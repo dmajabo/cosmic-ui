@@ -4,9 +4,7 @@ import { SignUpWrapper } from './styles';
 import TryDemoComponent from './ArticleComponents/TryDemoComponent';
 import { ConnectEdges } from './ArticleComponents/ConnectEdges';
 
-interface Props {}
-
-const SignUpPage: React.FC<Props> = (props: Props) => {
+const SignUpPage: React.FC = () => {
   return (
     <UnAuthLayout article={<TryDemoComponent />}>
       <SignUpWrapper>

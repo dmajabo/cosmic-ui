@@ -3,9 +3,7 @@ import { SignUpStyles } from '../SignUpStyles';
 import { Wrapper } from './styles';
 import WhiteArrow from '../icons/demoArrow.svg';
 
-interface Props {}
-
-const TryDemoComponent: React.FC<Props> = (props: Props) => {
+const TryDemoComponent: React.FC = () => {
   const classes = SignUpStyles();
   return (
     <Wrapper>
@@ -19,4 +17,4 @@ const TryDemoComponent: React.FC<Props> = (props: Props) => {
   );
 };
 
-export default React.memo(TryDemoComponent);
+export default TryDemoComponent;

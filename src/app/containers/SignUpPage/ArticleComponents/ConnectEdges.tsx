@@ -6,26 +6,20 @@ import MerakiIcon from '../icons/meraki.svg';
 import AddIcon from '../icons/add.svg';
 import { Button } from '@material-ui/core';
 import SkipIcon from '../icons/skip.svg';
-
-interface EdgeBoxData {
-  readonly Img: string;
-  readonly title: string;
-  readonly content: string;
-  readonly onClick: () => void;
-}
+import { EdgeBoxData } from 'types';
 
 export const ConnectEdges: React.FC = () => {
   const classes = SignUpStyles();
 
   const edgeBoxArray: EdgeBoxData[] = [
     {
-      Img: AwsIcon,
+      img: AwsIcon,
       title: 'AWS',
       content: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
       onClick: () => {},
     },
     {
-      Img: MerakiIcon,
+      img: MerakiIcon,
       title: 'Cisco Meraki',
       content: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
       onClick: () => {},
@@ -40,7 +34,7 @@ export const ConnectEdges: React.FC = () => {
       </div>
       <div className={classes.edgeBoxContainer}>
         {edgeBoxArray.map(edgeBox => (
-          <EdgeBox Img={edgeBox.Img} title={edgeBox.title} content={edgeBox.content} onClick={edgeBox.onClick} />
+          <EdgeBox key={edgeBox.title} img={edgeBox.img} title={edgeBox.title} content={edgeBox.content} onClick={edgeBox.onClick} />
         ))}
         <div className={classes.newEdgeButton}>
           ADD NEW EDGE
@@ -55,11 +49,11 @@ export const ConnectEdges: React.FC = () => {
           </div>
           <div className={classes.skipSetupText}>You can finish it in any time.</div>
         </div>
-        <div>
+        <>
           <Button className={classes.startButton} color="primary" disabled={true} variant="contained" disableElevation>
             START WITH OKULIS
           </Button>
-        </div>
+        </>
       </div>
     </div>
   );
