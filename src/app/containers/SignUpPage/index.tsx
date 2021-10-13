@@ -4,8 +4,8 @@ import { SignUpWrapper } from './styles';
 import TryDemoComponent from './ArticleComponents/TryDemoComponent';
 import { ConnectEdges } from './ArticleComponents/ConnectEdges';
 import { EdgeBoxProps } from 'types';
-import AwsIcon from '../icons/aws.svg';
-import MerakiIcon from '../icons/meraki.svg';
+import AwsIcon from './icons/aws.svg';
+import MerakiIcon from './icons/meraki.svg';
 
 const SignUpPage: React.FC = () => {
   const edgeBoxArray: EdgeBoxProps[] = [
