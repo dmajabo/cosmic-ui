@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import UnAuthLayout from 'app/components/Basic/UnAuthLayout';
 import { SignUpWrapper } from './styles';
 import TryDemoComponent from './ArticleComponents/TryDemoComponent';
@@ -6,8 +6,14 @@ import { ConnectEdges } from './ArticleComponents/ConnectEdges';
 import { EdgeBoxProps } from 'types';
 import AwsIcon from './icons/aws.svg';
 import MerakiIcon from './icons/meraki.svg';
+import { SignUpStyles } from './SignUpStyles';
+import { CircularProgressWithLabel } from './ArticleComponents/CircularProgressWithLabel';
 
 const SignUpPage: React.FC = () => {
+  const [progress, setProgress] = useState<number>(0);
+  //TODO: use setProgress on connecting AWS and Meraki
+  const classes = SignUpStyles();
+
   const edgeBoxArray: EdgeBoxProps[] = [
     {
       img: AwsIcon,
@@ -24,6 +30,13 @@ const SignUpPage: React.FC = () => {
   ];
   return (
     <UnAuthLayout article={<TryDemoComponent />}>
+      <div className={classes.topBar}>
+        <div className={classes.topBarText}>Connect To Your Edges</div>
+        <div className={classes.topBarflexContainer}>
+          <div className={classes.topBarText}>Progress: </div>
+          <CircularProgressWithLabel value={progress} />
+        </div>
+      </div>
       <SignUpWrapper>
         <ConnectEdges edgeBoxArray={edgeBoxArray} />
       </SignUpWrapper>
@@ -31,4 +44,4 @@ const SignUpPage: React.FC = () => {
   );
 };
 
-export default React.memo(SignUpPage);
+export default SignUpPage;

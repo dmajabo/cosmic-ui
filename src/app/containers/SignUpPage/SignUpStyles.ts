@@ -191,6 +191,28 @@ export const SignUpStyles = makeStyles(
         textAlign: 'center',
         padding: 10,
       },
+      topBar: {
+        backgroundColor: '#F3F6FC',
+        height: '80px',
+        width: '70%',
+        padding: 25,
+        paddingRight: 40,
+        position: 'fixed',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+      },
+      topBarText: {
+        fontSize: 18,
+        fontWeight: 700,
+        color: '#05143A',
+        paddingRight: 20,
+      },
+      topBarflexContainer: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
     }),
   {
     index: 1,
