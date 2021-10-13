@@ -78,17 +78,7 @@ const AccountForm: React.FC<Props> = (props: Props) => {
         </ModalOverflowContainer>
       </ModalContent>
       <ModalFooter>
-        <PrimaryButton
-          bgColor="var(--_hoverButtonBg)"
-          hoverBg="var(--_primaryButtonBg)"
-          color="var(--_hoverButtonColor)"
-          hoverColor="var(--_hoverButtonBg)"
-          hoverBorderColor="var(--_hoverButtonBg)"
-          label="Create Account"
-          onClick={onSave}
-          disabled={!dataItem.name}
-          styles={{ width: '100%', height: '60px' }}
-        />
+        <PrimaryButton label="Create Account" onClick={onSave} disabled={!dataItem.name} styles={{ width: '100%', height: '60px' }} />
       </ModalFooter>
     </>
   );

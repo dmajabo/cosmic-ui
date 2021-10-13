@@ -30,18 +30,7 @@ const AccountItem: React.FC<Props> = (props: Props) => {
             <StatusLabel>{props.dataItem.status}</StatusLabel>
           </StatusWrapper>
         )}
-        <SecondaryButton
-          label="Edit"
-          icon={editIcon}
-          styles={{ margin: '0 0 0 auto', height: '40px', width: '142px' }}
-          // bgColor?: string;
-          // hoverBg?: string;
-          // color?: string;
-          // hoverColor?: string;
-          borderColor="var(--_borderColor)"
-          // hoverBorderColor?: string;
-          onClick={onEdit}
-        />
+        <SecondaryButton label="Edit" icon={editIcon} styles={{ margin: '0 0 0 auto', height: '40px', width: '142px' }} onClick={onEdit} />
       </AccountItemFooter>
     </AccountItemWrapper>
   );

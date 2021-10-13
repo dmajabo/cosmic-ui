@@ -17,18 +17,7 @@ const PageHeaderRow: React.FC<Props> = (props: Props) => {
   };
   return (
     <ActionRow>
-      <PrimaryButtonWithPopup
-        bgColor="var(--_hoverButtonBg)"
-        hoverBg="var(--_primaryButtonBg)"
-        color="var(--_hoverButtonColor)"
-        hoverColor="var(--_hoverButtonBg)"
-        hoverBorderColor="var(--_hoverButtonBg)"
-        wrapStyles={{ margin: '0 0 0 auto' }}
-        id="addAccounts"
-        label="ADD account"
-        icon={plusIcon}
-        onClick={onCreateAccount}
-      >
+      <PrimaryButtonWithPopup wrapStyles={{ margin: '0 0 0 auto' }} id="addAccounts" label="ADD account" icon={plusIcon} onClick={onCreateAccount}>
         <AddPopupItem id={AccountTypes.MERRAKI} label="Cisco Meraki" icon={ciscoMerakiLogoIcon(18)} onClick={onCreateAccount} />
         <AddPopupItem id={AccountTypes.AWS} label="AWS" icon={awsIcon(18)} onClick={onCreateAccount} />
       </PrimaryButtonWithPopup>

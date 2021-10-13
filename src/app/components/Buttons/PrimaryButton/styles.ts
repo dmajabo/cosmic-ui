@@ -3,22 +3,18 @@ import styled from 'styled-components';
 interface BProps {
   width?: string;
   height?: string;
-  bgColor?: string;
-  hoverBg?: string;
-  color?: string;
-  hoverColor?: string;
-  borderColor?: string;
-  hoverBorderColor?: string;
 }
+
 export const PrimaryButtonStyles = styled.button<BProps>`
-  color: ${props => props.color || 'var(--_primaryColor)'};
-  background: ${props => props.bgColor || 'var(--_primaryButtonBg)'};
+  color: var(--_pButtonColor);
+  background: var(--_pButtonBg);
   font-family: 'DMSans', sans-serif;
   width: ${props => props.width || 'auto'};
   height: ${props => props.height || '40px'};
   border: 1px solid;
-  border-color: ${props => props.borderColor || 'transparent'};
-  transition: color, border-color, background 0.2s linear;
+  border-color: var(--_pButtonBorder);
+  transition-property: color, background, border-color;
+  transition: 0.2s linear;
   border-radius: 6px;
   padding: 8px 24px;
   text-align: center;
@@ -27,29 +23,31 @@ export const PrimaryButtonStyles = styled.button<BProps>`
   outline: 0;
   cursor: pointer;
   .inheritFill {
-    fill: ${props => props.color || 'var(--_primaryColor)'};
+    transition-property: fill;
+    transition: 0.2s linear;
+    fill: var(--_pButtonColor);
   }
   &:disabled {
     cursor: default;
   }
   &:disabled {
-    color: var(--_disabledButtonColor);
-    background: var(--_disabledButtonBg);
-    border-color: var(--_disabledButtonBg);
+    color: var(--_pDisabledButtonColor);
+    background: var(--_pDisabledButtonBg);
+    border-color: var(--_pDisabledButtonBorder);
     cursor: default;
     * {
       cursor: default !important;
     }
     .inheritFill {
-      fill: var(--_disabledButtonColor);
+      fill: var(--_pDisabledButtonColor);
     }
   }
   &:hover:not(:disabled) {
-    color: ${props => props.hoverColor || 'var(--_hoverButtonColor)'};
-    background: ${props => props.hoverBg || 'var(--_hoverButtonBg)'};
-    border-color: ${props => props.hoverBorderColor || 'transparent'};
+    color: var(--_pHoverButtonColor);
+    background: var(--_pHoverButtonBg);
+    border-color: var(--_pHoverButtonBorder);
     .inheritFill {
-      fill: ${props => props.hoverColor || 'var(--_hoverButtonColor)'};
+      fill: var(--_pHoverButtonColor);
     }
   }
 `;
@@ -71,7 +69,7 @@ export const PopupContent = styled.div`
   position: absolute;
   top: calc(100% + 2px);
   left: 0;
-  background: var(--_primaryButtonBg);
+  background: var(--_primaryBg);
   padding: 8px 0;
   box-shadow: 0px 10px 30px rgba(5, 20, 58, 0.1);
 `;

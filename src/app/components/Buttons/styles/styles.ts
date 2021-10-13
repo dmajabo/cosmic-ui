@@ -2,12 +2,13 @@ import styled from 'styled-components';
 
 interface BProps {
   width?: string;
+  height?: string;
 }
 
 export const ButtonStyles = styled.button<BProps>`
   font-family: 'DMSans', sans-serif;
   width: ${props => props.width || 'auto'};
-  height: 40px;
+  height: ${props => props.height || '40px'};
   border: 1px solid;
   border-color: transparent;
   transition: color, border-color, background 0.2s linear;

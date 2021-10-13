@@ -27,6 +27,26 @@ const Themes = {
     '--_disabledButtonBg': '#E5E8ED',
     '--_disabledButtonColor': '#62707F',
 
+    '--_pButtonBg': '#437FEC',
+    '--_pButtonBorder': '#437FEC',
+    '--_pButtonColor': '#FFFFFF',
+    '--_pHoverButtonBg': '#2969DC',
+    '--_pHoverButtonBorder': '#2969DC',
+    '--_pHoverButtonColor': '#FFFFFF',
+    '--_pDisabledButtonBg': '#E5E8ED',
+    '--_pDisabledButtonBorder': '#E5E8ED',
+    '--_pDisabledButtonColor': '#848DA3',
+
+    '--_sButtonBg': '#FFFFFF',
+    '--_sButtonBorder': '#CBD2DC',
+    '--_sButtonColor': '#05143A',
+    '--_sHoverButtonBg': '#FFFFFF',
+    '--_sHoverButtonBorder': '#437FEC',
+    '--_sHoverButtonColor': '#437FEC',
+    '--_sDisabledButtonBg': '#FFFFFF',
+    '--_sDisabledButtonBorder': '#F2F3F5',
+    '--_sDisabledButtonColor': '#848DA3',
+
     // Inputs
     '--_defaultInputColor': '#848DA3',
     '--_defaultInputBorder': 'rgba(109, 121, 134, 0.3)',

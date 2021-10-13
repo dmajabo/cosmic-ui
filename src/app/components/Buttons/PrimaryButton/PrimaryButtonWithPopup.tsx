@@ -14,12 +14,6 @@ interface IProps {
   onClick?: (e: any) => void;
   width?: string;
   height?: string;
-  bgColor?: string;
-  hoverBg?: string;
-  color?: string;
-  hoverColor?: string;
-  borderColor?: string;
-  hoverBorderColor?: string;
 }
 
 const PrimaryButtonWithPopup: React.FC<IProps> = (props: IProps) => {
@@ -52,19 +46,7 @@ const PrimaryButtonWithPopup: React.FC<IProps> = (props: IProps) => {
   return (
     <ClickAwayListener onClickAway={handleClose}>
       <ButtonWrapper style={props.wrapStyles}>
-        <PrimaryButtonStyles
-          width={props.width}
-          height={props.height}
-          bgColor={props.bgColor}
-          hoverBg={props.hoverBg}
-          color={props.color}
-          hoverColor={props.hoverColor}
-          borderColor={props.borderColor}
-          hoverBorderColor={props.hoverBorderColor}
-          style={props.styles}
-          disabled={props.disabled}
-          onClick={handleClick}
-        >
+        <PrimaryButtonStyles width={props.width} height={props.height} style={props.styles} disabled={props.disabled} onClick={handleClick}>
           <Label margin={props.icon ? '0 12px 0 0' : '0'}>{props.label}</Label>
           {props.icon && <IconWrapper icon={props.icon} />}
         </PrimaryButtonStyles>
