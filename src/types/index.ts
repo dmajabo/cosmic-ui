@@ -2,7 +2,7 @@ import { RootState } from './RootState';
 
 export type { RootState };
 
-export interface EdgeBoxData {
+export interface EdgeBoxProps {
   readonly img: string;
   readonly title: string;
   readonly content: string;

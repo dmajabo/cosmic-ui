@@ -1,9 +1,9 @@
 import React from 'react';
 import { SignUpStyles } from '../SignUpStyles';
 import AddIcon from '../icons/add.svg';
-import { EdgeBoxData } from 'types';
+import { EdgeBoxProps } from 'types';
 
-export const EdgeBox: React.FC<EdgeBoxData> = ({ img, title, content, onClick }) => {
+export const EdgeBox: React.FC<EdgeBoxProps> = ({ img, title, content, onClick }) => {
   const classes = SignUpStyles();
 
   return (

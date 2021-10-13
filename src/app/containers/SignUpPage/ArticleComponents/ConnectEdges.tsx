@@ -1,30 +1,17 @@
 import React from 'react';
 import { SignUpStyles } from '../SignUpStyles';
 import { EdgeBox } from './EdgeBox';
-import AwsIcon from '../icons/aws.svg';
-import MerakiIcon from '../icons/meraki.svg';
 import AddIcon from '../icons/add.svg';
 import { Button } from '@material-ui/core';
 import SkipIcon from '../icons/skip.svg';
-import { EdgeBoxData } from 'types';
+import { EdgeBoxProps } from 'types';
 
-export const ConnectEdges: React.FC = () => {
+interface ConnectEdgesProps {
+  readonly edgeBoxArray: EdgeBoxProps[];
+}
+
+export const ConnectEdges: React.FC<ConnectEdgesProps> = ({ edgeBoxArray }) => {
   const classes = SignUpStyles();
-
-  const edgeBoxArray: EdgeBoxData[] = [
-    {
-      img: AwsIcon,
-      title: 'AWS',
-      content: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-      onClick: () => {},
-    },
-    {
-      img: MerakiIcon,
-      title: 'Cisco Meraki',
-      content: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-      onClick: () => {},
-    },
-  ];
 
   return (
     <div>
