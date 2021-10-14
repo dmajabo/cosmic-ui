@@ -1,13 +1,13 @@
 import React from 'react';
-import { AccountTypes } from 'lib/api/ApiModels/Accounts/apiModel';
+import { AccountVendorTypes } from 'lib/api/ApiModels/Accounts/apiModel';
 import { Label, PopupItemWrapper } from './styles';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 
 interface Props {
-  id: AccountTypes;
+  id: AccountVendorTypes;
   icon: any;
   label: string;
-  onClick: (type: AccountTypes) => void;
+  onClick: (type: AccountVendorTypes) => void;
 }
 
 const AddPopupItem: React.FC<Props> = ({ id, icon, label, onClick }) => {

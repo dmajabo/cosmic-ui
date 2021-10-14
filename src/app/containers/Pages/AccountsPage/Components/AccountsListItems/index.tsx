@@ -13,14 +13,10 @@ const AccountsListItems: React.FC<Props> = (props: Props) => {
     props.onEditAccount(item);
   };
 
-  if (!accounts.data) return null;
-  if (accounts.data && !accounts.data.length) {
-    return <>No data</>;
-  }
   return (
     <>
-      {accounts.data.map(it => (
-        <AccountItem key={`accountDataItem${it.id}`} onEdit={onEdit} dataItem={it} />
+      {accounts.data.map((it, index) => (
+        <AccountItem key={`accountDataItem${it.vendor}${index}`} onEdit={onEdit} dataItem={it} />
       ))}
     </>
   );

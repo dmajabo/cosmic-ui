@@ -1,5 +1,5 @@
 import React from 'react';
-import { AccountStatus, IAccount } from 'lib/api/ApiModels/Accounts/apiModel';
+import { AccountStatus, IAWS_Account, IMeraki_Account } from 'lib/api/ApiModels/Accounts/apiModel';
 import { AccountItemDescription, AccountItemFooter, AccountItemHeader, AccountItemTitle, AccountItemWrapper, StatusLabel, StatusWrapper } from './styles';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { getAccountIcon } from '../AccountForm/helper';
@@ -8,8 +8,8 @@ import { editIcon } from 'app/components/SVGIcons/edit';
 import SecondaryButton from 'app/components/Buttons/SecondaryButton';
 
 interface Props {
-  dataItem: IAccount;
-  onEdit: (item: IAccount) => void;
+  dataItem: IMeraki_Account | IAWS_Account;
+  onEdit: (item: IMeraki_Account | IAWS_Account) => void;
 }
 const AccountItem: React.FC<Props> = (props: Props) => {
   const onEdit = () => {
@@ -18,7 +18,7 @@ const AccountItem: React.FC<Props> = (props: Props) => {
   return (
     <AccountItemWrapper>
       <AccountItemHeader>
-        <IconWrapper styles={{ margin: '0 16px 0 0' }} width="48px" height="48px" icon={getAccountIcon(props.dataItem.type)} />
+        <IconWrapper styles={{ margin: '0 16px 0 0' }} width="48px" height="48px" icon={getAccountIcon(props.dataItem.vendor)} />
         <AccountItemTitle>{props.dataItem.name}</AccountItemTitle>
       </AccountItemHeader>
       <AccountItemDescription>{props.dataItem.description}</AccountItemDescription>

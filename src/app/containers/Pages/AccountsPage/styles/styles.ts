@@ -14,6 +14,7 @@ export const ContentWrapper = styled.div`
   justify-content: flex-start;
   align-content: flex-start;
   padding: 0 20px;
+  flex-grow: 1;
 `;
 
 export const ModalHeader = styled.div`
