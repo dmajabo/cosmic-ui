@@ -98,7 +98,7 @@ const Map: React.FC<IProps> = (props: IProps) => {
     setShowPanelBar(_objPanel);
     showPanelRef.current = _objPanel;
     setShowFooter(true);
-    if (node && showMetricksBar && showMetricksBar.dataItem && node.id === showMetricksBar.dataItem.id) {
+    if (node && showMetricksBar && showMetricksBar.dataItem && node.uiId === showMetricksBar.dataItem.uiId) {
       return;
     }
     const _objMetrick = { type: _type, show: true, dataItem: node };

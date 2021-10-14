@@ -5,18 +5,24 @@ import { RoutesApi } from 'lib/api/ApiModels/Metrics/endpoints';
 import { getQueryResourceParam } from 'lib/api/ApiModels/Metrics/queryRoutesHelper';
 import { useGet } from 'lib/api/http/useAxiosHook';
 import RouteTableWrapper from './RouteTableWrapper';
+import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
+import { toTimestamp } from 'lib/api/ApiModels/Topology/endpoints';
 interface IProps {
   dataItem: IWedgeNode;
 }
 
 const RoutesTab: React.FC<IProps> = (props: IProps) => {
+  const { topology } = useTopologyDataContext();
   const { response, loading, error, onGet } = useGet<IRoutesResData>();
   const [data, setData] = React.useState<IRouteResDataItem[]>([]);
 
   React.useEffect(() => {
     const _param: IResourceQueryParam = getQueryResourceParam(RoutesResourceTypes.WEdge, props.dataItem.extId);
+    if (topology.selectedTime) {
+      _param.timestamp = toTimestamp(topology.selectedTime);
+    }
     getDataAsync(RoutesApi.getRoutes(ControllerKeyTypes.RouteTables), _param);
-  }, [props.dataItem]);
+  }, [props.dataItem, topology.selectedTime]);
 
   React.useEffect(() => {
     if (response !== null && response[RoutesResKeyEnum.RoutesTable] !== undefined) {
