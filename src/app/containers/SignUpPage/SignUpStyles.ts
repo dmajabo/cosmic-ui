@@ -199,6 +199,7 @@ export const SignUpStyles = makeStyles(
         width: '70%',
         padding: 25,
         paddingRight: 40,
+        zIndex: 3,
         position: 'fixed',
         display: 'flex',
         justifyContent: 'space-between',
