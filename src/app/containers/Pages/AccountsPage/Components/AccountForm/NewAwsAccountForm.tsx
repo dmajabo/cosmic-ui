@@ -53,6 +53,7 @@ const NewAwsAccountForm: React.FC<Props> = (props: Props) => {
   React.useEffect(() => {
     if (getResById) {
       accounts.onAddAccount(getResById);
+      onClose();
     }
   }, [getResById]);
 
@@ -106,7 +107,7 @@ const NewAwsAccountForm: React.FC<Props> = (props: Props) => {
   };
 
   const onUpdateGroup = async () => {
-    await onUpdate(AccountsApi.putUpdateAccount(dataItem.name), { controller: dataItem });
+    await onUpdate(AccountsApi.putUpdateAccount(dataItem.id), { controller: dataItem });
   };
 
   const onCreateGroup = async () => {
