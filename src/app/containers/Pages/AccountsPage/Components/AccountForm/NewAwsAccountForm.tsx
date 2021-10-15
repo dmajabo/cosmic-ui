@@ -11,10 +11,11 @@ import AccountFormHeader from './AccountFormHeader';
 import CheckBox from 'app/components/Inputs/Checkbox/CheckBox';
 import MultipleDropdown from 'app/components/Inputs/MultipleDropdown';
 import { useAccountsDataContext } from 'lib/hooks/Accounts/useAccountsDataContext';
-import { usePost, usePut } from 'lib/api/http/useAxiosHook';
+import { useGet, usePost, usePut } from 'lib/api/http/useAxiosHook';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
 import { AccountsApi } from 'lib/api/ApiModels/Accounts/endpoints';
+import { IBaseEntity } from 'lib/models/general';
 
 interface Props {
   isEditMode: boolean;
@@ -25,8 +26,9 @@ interface Props {
 const regions = ['region 1', 'region 2', 'region 3', 'region 4', 'region 5'];
 const NewAwsAccountForm: React.FC<Props> = (props: Props) => {
   const { accounts } = useAccountsDataContext();
-  const { response: postRes, loading: postLoading, onPost } = usePost<IAWS_Account, IAWS_Account>();
-  const { response: postUpdateRes, loading: postUpdateLoading, onPut: onUpdate } = usePut<IAWS_Account, IAWS_Account>();
+  const { response: getResById, loading: getLoading, onGet } = useGet<IAWS_Account>();
+  const { response: postRes, loading: postLoading, onPost } = usePost<IAWS_Account, IBaseEntity<string>>();
+  const { response: postUpdateRes, loading: postUpdateLoading, onPut: onUpdate } = usePut<IAWS_Account, IBaseEntity<string>>();
   const [dataItem, setDataItem] = React.useState<IAWS_Account>(null);
   const [isValid, setIsValid] = React.useState<boolean>(false);
 
@@ -38,15 +40,21 @@ const NewAwsAccountForm: React.FC<Props> = (props: Props) => {
 
   React.useEffect(() => {
     if (postRes) {
-      accounts.onCreateAccount(postRes);
+      onGetAccountById(postRes.id);
     }
   }, [postRes]);
 
   React.useEffect(() => {
     if (postUpdateRes) {
-      accounts.onUpdateAccount(postUpdateRes);
+      onGetAccountById(postUpdateRes.id);
     }
   }, [postUpdateRes]);
+
+  React.useEffect(() => {
+    if (getResById) {
+      accounts.onAddAccount(getResById);
+    }
+  }, [getResById]);
 
   const onClose = () => {
     props.onClose();
@@ -98,12 +106,17 @@ const NewAwsAccountForm: React.FC<Props> = (props: Props) => {
   };
 
   const onUpdateGroup = async () => {
-    await onUpdate(AccountsApi.putUpdateAccount(dataItem.name), dataItem);
+    await onUpdate(AccountsApi.putUpdateAccount(dataItem.name), { controller: dataItem });
   };
 
   const onCreateGroup = async () => {
-    await onPost(AccountsApi.postCreateAccount(), dataItem);
+    await onPost(AccountsApi.postCreateAccount(), { controller: dataItem });
   };
+
+  const onGetAccountById = async (id: string) => {
+    await onGet(AccountsApi.getAccountsById(id));
+  };
+
   if (!dataItem) return null;
   return (
     <>
@@ -181,7 +194,7 @@ const NewAwsAccountForm: React.FC<Props> = (props: Props) => {
             </StepItemFormRow>
           </StepItem>
         </ModalOverflowContainer>
-        {(postLoading || postUpdateLoading) && (
+        {(postLoading || postUpdateLoading || getLoading) && (
           <AbsLoaderWrapper>
             <LoadingIndicator margin="auto" />
           </AbsLoaderWrapper>

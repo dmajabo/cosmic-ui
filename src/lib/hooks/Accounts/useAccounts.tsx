@@ -4,8 +4,7 @@ import { IAWS_Account, IMeraki_Account } from 'lib/api/ApiModels/Accounts/apiMod
 export interface AccountsContextType {
   data: (IMeraki_Account | IAWS_Account)[];
   onSetData: (res: (IMeraki_Account | IAWS_Account)[]) => void;
-  onCreateAccount: (res: IMeraki_Account | IAWS_Account) => void;
-  onUpdateAccount: (res: IMeraki_Account | IAWS_Account) => void;
+  onAddAccount: (res: IMeraki_Account | IAWS_Account) => void;
 }
 export function useAccountsContext(): AccountsContextType {
   const [data, setData] = React.useState<(IMeraki_Account | IAWS_Account)[] | null>([]);
@@ -18,15 +17,11 @@ export function useAccountsContext(): AccountsContextType {
     setData(items);
   };
 
-  const onCreateAccount = (resItem: IMeraki_Account | IAWS_Account) => {
+  const onAddAccount = (resItem: IMeraki_Account | IAWS_Account) => {
     if (!data) {
       setData([resItem]);
       return;
     }
-    setData([...data, resItem]);
-  };
-
-  const onUpdateAccount = (resItem: IMeraki_Account | IAWS_Account) => {
     const _index = data.findIndex(it => it.id === resItem.id);
     if (_index === -1) {
       setData([...data, resItem]);
@@ -40,7 +35,6 @@ export function useAccountsContext(): AccountsContextType {
   return {
     data,
     onSetData,
-    onCreateAccount,
-    onUpdateAccount,
+    onAddAccount,
   };
 }

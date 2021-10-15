@@ -8,11 +8,12 @@ import PrimaryButton from 'app/components/Buttons/PrimaryButton';
 import { jsonClone } from 'lib/helpers/cloneHelper';
 import AccountFormHeader from './AccountFormHeader';
 import CheckBox from 'app/components/Inputs/Checkbox/CheckBox';
-import { usePost, usePut } from 'lib/api/http/useAxiosHook';
+import { useGet, usePost, usePut } from 'lib/api/http/useAxiosHook';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
 import { AccountsApi } from 'lib/api/ApiModels/Accounts/endpoints';
 import { useAccountsDataContext } from 'lib/hooks/Accounts/useAccountsDataContext';
+import { IBaseEntity } from 'lib/models/general';
 interface Props {
   isEditMode: boolean;
   dataItem: IMeraki_Account;
@@ -21,8 +22,9 @@ interface Props {
 
 const NewCiscoMerakiAccountForm: React.FC<Props> = (props: Props) => {
   const { accounts } = useAccountsDataContext();
-  const { response: postRes, loading: postLoading, onPost } = usePost<IMeraki_Account, IMeraki_Account>();
-  const { response: postUpdateRes, loading: postUpdateLoading, onPut: onUpdate } = usePut<IMeraki_Account, IMeraki_Account>();
+  const { response: getResById, loading: getLoading, onGet } = useGet<IMeraki_Account>();
+  const { response: postRes, loading: postLoading, onPost } = usePost<IMeraki_Account, IBaseEntity<string>>();
+  const { response: postUpdateRes, loading: postUpdateLoading, onPut: onUpdate } = usePut<IMeraki_Account, IBaseEntity<string>>();
   const [dataItem, setDataItem] = React.useState<IMeraki_Account>(null);
   const [isValid, setIsValid] = React.useState<boolean>(false);
 
@@ -34,21 +36,21 @@ const NewCiscoMerakiAccountForm: React.FC<Props> = (props: Props) => {
 
   React.useEffect(() => {
     if (postRes) {
-      accounts.onCreateAccount(postRes);
+      onGetAccountById(postRes.id);
     }
   }, [postRes]);
 
   React.useEffect(() => {
     if (postUpdateRes) {
-      accounts.onUpdateAccount(postUpdateRes);
+      onGetAccountById(postUpdateRes.id);
     }
   }, [postUpdateRes]);
 
   React.useEffect(() => {
-    const _dataItem: IMeraki_Account = jsonClone(props.dataItem);
-    setIsValid(onValidate(_dataItem));
-    setDataItem(_dataItem);
-  }, []);
+    if (getResById) {
+      accounts.onAddAccount(getResById);
+    }
+  }, [getResById]);
 
   const onClose = () => {
     props.onClose();
@@ -90,11 +92,15 @@ const NewCiscoMerakiAccountForm: React.FC<Props> = (props: Props) => {
   };
 
   const onUpdateGroup = async () => {
-    await onUpdate(AccountsApi.putUpdateAccount(dataItem.name), dataItem);
+    await onUpdate(AccountsApi.putUpdateAccount(dataItem.name), { controller: dataItem });
   };
 
   const onCreateGroup = async () => {
     await onPost(AccountsApi.postCreateAccount(), { controller: dataItem });
+  };
+
+  const onGetAccountById = async (id: string) => {
+    await onGet(AccountsApi.getAccountsById(id));
   };
 
   if (!dataItem) return null;
@@ -142,7 +148,7 @@ const NewCiscoMerakiAccountForm: React.FC<Props> = (props: Props) => {
             </StepItemFormRow>
           </StepItem>
         </ModalOverflowContainer>
-        {(postLoading || postUpdateLoading) && (
+        {(postLoading || postUpdateLoading || getLoading) && (
           <AbsLoaderWrapper>
             <LoadingIndicator margin="auto" />
           </AbsLoaderWrapper>

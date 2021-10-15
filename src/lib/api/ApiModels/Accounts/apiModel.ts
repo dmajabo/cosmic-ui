@@ -20,6 +20,7 @@ export interface IAccount {
 
 export interface IMerakiFlowLogPolicy {
   enableSyslog: boolean;
+  enableNetflow?: boolean;
 }
 
 export interface IMerakiPolicy {
