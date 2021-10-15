@@ -94,7 +94,7 @@ const NewCiscoMerakiAccountForm: React.FC<Props> = (props: Props) => {
   };
 
   const onCreateGroup = async () => {
-    await onPost(AccountsApi.postCreateAccount(), dataItem);
+    await onPost(AccountsApi.postCreateAccount(), { controller: dataItem });
   };
 
   if (!dataItem) return null;
