@@ -15,15 +15,15 @@ const TrendsPage: React.FC<IProps> = (props: IProps) => {
       <ContentWrapper>
         <ChartWrapper>
           <ChartLabel>Destination Applications</ChartLabel>
-          <LineChart />
+          <LineChart height="356" />
         </ChartWrapper>
         <ChartWrapper>
           <ChartLabel>Destination Gateway</ChartLabel>
-          <LineChart />
+          <LineChart height="356" />
         </ChartWrapper>
         <ChartWrapper>
           <ChartLabel>Source Gateway</ChartLabel>
-          <LineChart />
+          <LineChart height="356" />
         </ChartWrapper>
       </ContentWrapper>
     </>

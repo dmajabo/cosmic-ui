@@ -4,12 +4,14 @@ import HighchartsReact from 'highcharts-react-official';
 
 interface Props {
   readonly data?: number[];
+  height?: string | number;
 }
 
 const LineChart: React.FC<Props> = (props: Props) => {
   const chartOptions = {
     chart: {
       type: 'line',
+      height: props.height || 300,
     },
     title: null,
     yAxis: {
