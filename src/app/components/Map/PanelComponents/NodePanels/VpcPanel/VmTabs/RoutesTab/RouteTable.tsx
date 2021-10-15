@@ -50,7 +50,7 @@ const RouteTable: React.FC<Props> = (props: Props) => {
           <TableBody>
             {props.data.routes && props.data.routes.length
               ? props.data.routes.map((row, rowIndex) => (
-                  <TableRow hover tabIndex={-1} key={`tableRow${props.data.id}${rowIndex}`} className={classes.row}>
+                  <TableRow hover tabIndex={-1} key={`tableRow${props.data.extId}${rowIndex}`} className={classes.row}>
                     <TableCell className={classes.tableCell}>{row.destinationCidr ? row.destinationCidr.name : null}</TableCell>
                     <TableCell className={classes.tableCell}>{row.target}</TableCell>
                     <TableCell className={`${classes.tableCell} ${row.state === IRouteState.Active ? classes.tableCellStatusActive : ''}`}>

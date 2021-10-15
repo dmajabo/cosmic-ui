@@ -1,5 +1,3 @@
-import { IBaseEntity } from 'lib/models/general';
-
 export enum AccountVendorTypes {
   AMAZON_AWS = 'AMAZON_AWS',
   CISCO_MERAKI = 'CISCO_MERAKI',
@@ -10,7 +8,8 @@ export enum AccountStatus {
   DISCONNECTED = 'disconnected',
 }
 
-export interface IAccount extends IBaseEntity<string> {
+export interface IAccount {
+  id?: string;
   vendor: AccountVendorTypes;
   name: string;
   description: string;

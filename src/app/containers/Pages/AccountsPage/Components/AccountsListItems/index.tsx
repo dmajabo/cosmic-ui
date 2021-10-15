@@ -16,7 +16,7 @@ const AccountsListItems: React.FC<Props> = (props: Props) => {
   return (
     <>
       {accounts.data.map((it, index) => (
-        <AccountItem key={`accountDataItem${it.vendor}${index}`} onEdit={onEdit} dataItem={it} />
+        <AccountItem key={`accountDataItem${it.vendor}${it.id}${index}`} onEdit={onEdit} dataItem={it} />
       ))}
     </>
   );

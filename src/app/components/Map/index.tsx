@@ -163,7 +163,7 @@ const Map: React.FC<IProps> = (props: IProps) => {
               {showMetricksBar.type === TopologyMetricsPanelTypes.Wedge && <WedgePanel dataItem={showMetricksBar.dataItem} />}
             </PanelBar>
           </ContainerWithMetrics>
-          <FooterAction onTryLoadData={onReloadData} isMetricks={showMetricksBar && showMetricksBar.show} show={showFooter} />
+          {topology.originData && <FooterAction onTryLoadData={onReloadData} isMetricks={showMetricksBar && showMetricksBar.show} show={showFooter} />}
         </ContainerWithFooter>
         <PanelBar show={showPanelBar.show} onHidePanel={onHidePanel} type={IPanelBarLayoutTypes.VERTICAL}>
           {showPanelBar.type === TopologyPanelTypes.ENTITIES && <Entities />}

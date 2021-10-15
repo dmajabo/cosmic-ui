@@ -63,7 +63,7 @@ const RouteTableWrapper: React.FC<Props> = (props: Props) => {
   return (
     <>
       {props.data.map(table => (
-        <RouteTable key={`table${table.id}`} data={table} styles={props.styles} />
+        <RouteTable key={`table${table.extId}`} data={table} styles={props.styles} />
       ))}
     </>
   );
