@@ -2,15 +2,16 @@ import React from 'react';
 import { SignUpStyles } from '../SignUpStyles';
 import { EdgeBox } from './EdgeBox';
 import AddIcon from '../icons/add.svg';
-import { Button } from '@material-ui/core';
 import SkipIcon from '../icons/skip.svg';
 import { EdgeBoxProps } from 'types';
 
 interface ConnectEdgesProps {
   readonly edgeBoxArray: EdgeBoxProps[];
+  readonly startWithOkulis: boolean;
+  readonly onStartWithOkulis: () => void;
 }
 
-export const ConnectEdges: React.FC<ConnectEdgesProps> = ({ edgeBoxArray }) => {
+export const ConnectEdges: React.FC<ConnectEdgesProps> = ({ edgeBoxArray, startWithOkulis, onStartWithOkulis }) => {
   const classes = SignUpStyles();
 
   return (
@@ -37,9 +38,9 @@ export const ConnectEdges: React.FC<ConnectEdgesProps> = ({ edgeBoxArray }) => {
           <div className={classes.skipSetupText}>You can finish it in any time.</div>
         </div>
         <>
-          <Button className={classes.startButton} color="primary" disabled={true} variant="contained" disableElevation>
+          <button className={startWithOkulis ? classes.connectSourceFormButton : classes.startButton} onClick={onStartWithOkulis} disabled={!startWithOkulis}>
             START WITH OKULIS
-          </Button>
+          </button>
         </>
       </div>
     </div>
