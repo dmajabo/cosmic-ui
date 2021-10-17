@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import UnAuthLayout from 'app/components/Basic/UnAuthLayout';
 import { SignUpWrapper } from './styles';
 import TryDemoComponent from './ArticleComponents/TryDemoComponent';
@@ -12,6 +12,7 @@ import { CircularProgressWithLabel } from './ArticleComponents/CircularProgressW
 import { ConnectSourceForm } from './ArticleComponents/ConnectSourceForm';
 import ReactSelect, { components } from 'react-select';
 import { CustomRadio } from './ArticleComponents/CustomRadio';
+import { isEmpty } from 'lodash';
 
 const Option = props => {
   const classes = SignUpStyles();
@@ -41,7 +42,16 @@ const SignUpPage: React.FC = () => {
   const [progress, setProgress] = useState<number>(0);
   //TODO: use setProgress on connecting AWS and Meraki
   const [connectLocation, setConnectLocation] = useState<string>('');
+  const [isFormFilled, setIsFormFilled] = useState<boolean>(false);
   const classes = SignUpStyles();
+
+  const [awsEnableFlowLog, setAwsEnableFlowLog] = useState<string>('');
+  const [awsLogBucket, setAwsLogBucket] = useState<string>('');
+  const [awsRegion, setAwsRegion] = useState<string[]>([]);
+
+  useEffect(() => {
+    awsEnableFlowLog && awsLogBucket && !isEmpty(awsRegion) ? setIsFormFilled(true) : setIsFormFilled(false);
+  }, [awsRegion, awsEnableFlowLog, awsLogBucket]);
 
   const dropdownStyle = {
     option: provided => ({
@@ -120,6 +130,7 @@ const SignUpPage: React.FC = () => {
             styles={dropdownStyle}
             options={regionOptions}
             allowSelectAll={true}
+            onChange={e => setAwsRegion(e.map(item => item.value))}
           />
         </>
       ),
@@ -129,16 +140,16 @@ const SignUpPage: React.FC = () => {
       stepContent: (
         <>
           <div className={classes.radioTitle}>Enable flow logs</div>
-          <CustomRadio radioOptions={flowLogRadioOptions} />
+          <CustomRadio radioOptions={flowLogRadioOptions} setRadioValue={setAwsEnableFlowLog} />
           <div className={classes.radioTitle}>Write logs to bucket</div>
-          <CustomRadio radioOptions={bucketLogRadioOptions} />
+          <CustomRadio radioOptions={bucketLogRadioOptions} setRadioValue={setAwsLogBucket} />
         </>
       ),
     },
     {
       stepTitle: 'Step 3: Generate Terraform Configuration',
       stepContent: (
-        <div>
+        <>
           <div className={classes.stepSubtitleContainer}>
             <span className={classes.stepSubtitleText}>Copy the generated Terraform configuration and save to a file named</span>
             <code className={classes.codeText}>main.tf</code>
@@ -188,13 +199,13 @@ const SignUpPage: React.FC = () => {
               `}
             </pre>
           </div>
-        </div>
+        </>
       ),
     },
     {
       stepTitle: 'Step 4: Review and Apply Terraform Configuration',
       stepContent: (
-        <div>
+        <>
           <div className={classes.stepSubtitleContainer}>
             <span className={classes.stepSubtitleText}>After you've reviewed the configuration in the main.tf file, apply it in the environment where you run Terraform.</span>
           </div>
@@ -206,7 +217,7 @@ const SignUpPage: React.FC = () => {
               <div className={classes.terraformCodeText}>{command}</div>
             </div>
           ))}
-        </div>
+        </>
       ),
     },
   ];
@@ -219,6 +230,7 @@ const SignUpPage: React.FC = () => {
       onClick: () => {
         setConnectLocation(AWS);
       },
+      isConnected: !isEmpty(awsRegion) && awsLogBucket && awsEnableFlowLog ? true : false,
     },
     {
       img: MerakiIcon,
@@ -227,8 +239,21 @@ const SignUpPage: React.FC = () => {
       onClick: () => {
         setConnectLocation(MERAKI);
       },
+      isConnected: false,
     },
   ];
+
+  const onAwsFormSubmit = () => {
+    setProgress(progress + 50);
+    setConnectLocation('');
+    setIsFormFilled(false);
+  };
+
+  const onMerakiFormSubmit = () => {
+    setProgress(progress + 50);
+    setConnectLocation('');
+    setIsFormFilled(false);
+  };
 
   return (
     <UnAuthLayout article={<TryDemoComponent />}>
@@ -246,9 +271,11 @@ const SignUpPage: React.FC = () => {
             img={AwsIcon}
             subtitle="Configure your AWS integration to enable topology maps and annotate your agent data with important cloud context like regions, availability zones, account, VPC IDs, scaling groups and more."
             steps={awsSteps}
+            isFormFilled={isFormFilled}
+            onFormSubmit={onAwsFormSubmit}
           />
         ) : (
-          <div>Connect with MERAKI</div>
+          <div>Connect To Cisco Meraki</div>
         )
       ) : (
         <SignUpWrapper>

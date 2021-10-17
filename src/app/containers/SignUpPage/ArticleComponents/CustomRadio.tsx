@@ -1,10 +1,9 @@
-import * as React from 'react';
+import React, { useEffect } from 'react';
 import { styled } from '@mui/material/styles';
 import Radio, { RadioProps } from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
-import { SignUpStyles } from '../SignUpStyles';
 import { Options } from '..';
 
 const BpIcon = styled('span')(({ theme }) => ({
@@ -56,13 +55,16 @@ function BpRadio(props: RadioProps) {
 
 interface CustomRadioProps {
   readonly radioOptions: Options[];
+  readonly setRadioValue: (value: string) => void;
 }
 
-export const CustomRadio: React.FC<CustomRadioProps> = ({ radioOptions }) => {
-  const classes = SignUpStyles();
+export const CustomRadio: React.FC<CustomRadioProps> = ({ radioOptions, setRadioValue }) => {
+  useEffect(() => {
+    setRadioValue(radioOptions[0].value);
+  }, []);
   return (
     <FormControl component="fieldset">
-      <RadioGroup defaultValue={radioOptions[0].value} aria-label="options" name="customized-radios">
+      <RadioGroup defaultValue={radioOptions[0].value} onChange={e => setRadioValue(e.target.value)} aria-label="options" name="customized-radios">
         {radioOptions.map(option => (
           <FormControlLabel key={option.value} value={option.value} control={<BpRadio />} label={option.label} />
         ))}

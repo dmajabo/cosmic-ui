@@ -174,6 +174,7 @@ export const SignUpStyles = makeStyles(
         fontWeight: 700,
         borderRadius: 6,
         cursor: 'pointer',
+        border: 'none',
       },
       skipSetupButton: {
         height: 60,
@@ -223,7 +224,7 @@ export const SignUpStyles = makeStyles(
       },
       titleContainer: {
         marginTop: 50,
-        marginLeft: '30%',
+        marginLeft: '16vw',
       },
       titleImg: {
         height: 35,
@@ -318,6 +319,60 @@ export const SignUpStyles = makeStyles(
         fontSize: 16,
         fontWeight: 400,
         color: '#05143A',
+      },
+      connectSourceFormButton: {
+        height: 60,
+        width: 198,
+        fontSize: 12,
+        fontWeight: 700,
+        borderRadius: 6,
+        cursor: 'pointer',
+        border: 'none',
+        background: 'linear-gradient(97.14deg, #F8B40A 6.1%, #F0CA23 55.57%)',
+      },
+      connectedContainer: {
+        marginTop: 30,
+      },
+      edgeBoxConnectedText: {
+        color: '#52984E',
+        fontWeight: 700,
+        fontSize: 12,
+      },
+      connectedTick: {
+        marginRight: 10,
+      },
+      editButton: {
+        border: '1px solid #CBD2DC',
+        backgroundColor: '#FFFFFF',
+        width: 142,
+        height: 40,
+        color: '#05143A',
+        fontSize: 12,
+        fontWeight: 700,
+        cursor: 'pointer',
+        borderRadius: 6,
+        paddingTop: 10,
+        paddingLeft: 40,
+        marginTop: -30,
+        marginLeft: 170,
+      },
+      formInput: {
+        width: '100%',
+        height: 60,
+        borderRadius: 6,
+        fontSize: 16,
+        marginBottom: 10,
+        fontWeight: 500,
+        border: '1px solid rgba(109, 121, 134, 0.3)',
+      },
+      showPassword: {
+        position: 'absolute',
+        marginTop: -50,
+        marginLeft: 430,
+        cursor: 'pointer',
+      },
+      showPasswordIcon: {
+        height: 20,
       },
     }),
   {

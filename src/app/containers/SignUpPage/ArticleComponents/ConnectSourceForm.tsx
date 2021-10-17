@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { SignUpStyles } from '../SignUpStyles';
 import { StepData } from '..';
-import { Button } from '@material-ui/core';
 import SkipIcon from '../icons/skip.svg';
 
 interface ConnectFormProps {
@@ -9,9 +8,11 @@ interface ConnectFormProps {
   readonly img: string;
   readonly subtitle: string;
   readonly steps: StepData[];
+  readonly isFormFilled: boolean;
+  readonly onFormSubmit: () => void;
 }
 
-export const ConnectSourceForm: React.FC<ConnectFormProps> = ({ title, img, subtitle, steps }) => {
+export const ConnectSourceForm: React.FC<ConnectFormProps> = ({ title, img, subtitle, steps, isFormFilled, onFormSubmit }) => {
   const classes = SignUpStyles();
   return (
     <div className={classes.connectFormContainer}>
@@ -40,9 +41,9 @@ export const ConnectSourceForm: React.FC<ConnectFormProps> = ({ title, img, subt
           <div className={classes.skipSetupText}>You can finish it in any time.</div>
         </div>
         <>
-          <Button className={classes.startButton} color="primary" disabled={true} variant="contained" disableElevation>
+          <button className={isFormFilled ? classes.connectSourceFormButton : classes.startButton} onClick={onFormSubmit} disabled={!isFormFilled}>
             CONNECT
-          </Button>
+          </button>
         </>
       </div>
     </div>
