@@ -98,7 +98,7 @@ const Map: React.FC<IProps> = (props: IProps) => {
     setShowPanelBar(_objPanel);
     showPanelRef.current = _objPanel;
     setShowFooter(true);
-    if (node && showMetricksBar && showMetricksBar.dataItem && node.id === showMetricksBar.dataItem.id) {
+    if (node && showMetricksBar && showMetricksBar.dataItem && node.uiId === showMetricksBar.dataItem.uiId) {
       return;
     }
     const _objMetrick = { type: _type, show: true, dataItem: node };
@@ -111,14 +111,14 @@ const Map: React.FC<IProps> = (props: IProps) => {
     setShowPanelBar(_objPanel);
     showPanelRef.current = _objPanel;
     setShowFooter(true);
-    if (node && showMetricksBar && showMetricksBar.dataItem && showMetricksBar.dataItem.vnet && node.vnet && node.vnet.id === showMetricksBar.dataItem.vnet.id) {
-      if (!showMetricksBar.dataItem.group && node.vnet && !showMetricksBar.dataItem.vm && !node.group && !node.vm && node.vnet.id === showMetricksBar.dataItem.vnet.id) {
+    if (node && showMetricksBar && showMetricksBar.dataItem && showMetricksBar.dataItem.vnet && node.vnet && node.vnet.uiId === showMetricksBar.dataItem.vnet.uiId) {
+      if (!showMetricksBar.dataItem.group && node.vnet && !showMetricksBar.dataItem.vm && !node.group && !node.vm && node.vnet.uiId === showMetricksBar.dataItem.vnet.uiId) {
         return;
       }
       if (showMetricksBar.dataItem.group && node.group && node.group.id === showMetricksBar.dataItem.group.id) {
         return;
       }
-      if (showMetricksBar.dataItem.vm && node.vm && node.vm.id === showMetricksBar.dataItem.vm.id) {
+      if (showMetricksBar.dataItem.vm && node.vm && node.vm.uiId === showMetricksBar.dataItem.vm.uiId) {
         return;
       }
     }
@@ -163,7 +163,7 @@ const Map: React.FC<IProps> = (props: IProps) => {
               {showMetricksBar.type === TopologyMetricsPanelTypes.Wedge && <WedgePanel dataItem={showMetricksBar.dataItem} />}
             </PanelBar>
           </ContainerWithMetrics>
-          <FooterAction onTryLoadData={onReloadData} isMetricks={showMetricksBar && showMetricksBar.show} show={showFooter} />
+          {topology.originData && <FooterAction onTryLoadData={onReloadData} isMetricks={showMetricksBar && showMetricksBar.show} show={showFooter} />}
         </ContainerWithFooter>
         <PanelBar show={showPanelBar.show} onHidePanel={onHidePanel} type={IPanelBarLayoutTypes.VERTICAL}>
           {showPanelBar.type === TopologyPanelTypes.ENTITIES && <Entities />}

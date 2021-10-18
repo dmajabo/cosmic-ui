@@ -7,7 +7,7 @@ interface CircularProgressWithLabelProps {
   readonly value: number;
 }
 
-export const CircularProgressWithLabel: React.FC<CircularProgressWithLabelProps> = props => {
+export const CircularProgressWithLabel: React.FC<CircularProgressProps & CircularProgressWithLabelProps> = props => {
   return (
     <Box sx={{ position: 'relative', display: 'inline-flex' }}>
       <CircularProgress variant="determinate" {...props} />

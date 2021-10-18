@@ -17,7 +17,7 @@ const WEdgeNode: React.FC<IProps> = (props: IProps) => {
   const { topology } = useTopologyDataContext();
   const { onUpdate, onUnsubscribeDrag } = useDrag(
     {
-      id: `${NODES_CONSTANTS.WEDGE.type}${props.dataItem.id}`,
+      id: `${NODES_CONSTANTS.WEDGE.type}${props.dataItem.uiId}`,
       // popupId: `popupContainer${props.dataItem.id}`,
     },
     (e: IPosition) => onUpdatePosition(e),
@@ -70,7 +70,7 @@ const WEdgeNode: React.FC<IProps> = (props: IProps) => {
   }
   return (
     <TransitionContainer stateIn={visible}>
-      <g id={`${NODES_CONSTANTS.WEDGE.type}${props.dataItem.id}`} className="topologyNode" transform={`translate(${pos.x}, ${pos.y})`} data-type={NODES_CONSTANTS.WEDGE.type}>
+      <g id={`${NODES_CONSTANTS.WEDGE.type}${props.dataItem.uiId}`} className="topologyNode" transform={`translate(${pos.x}, ${pos.y})`} data-type={NODES_CONSTANTS.WEDGE.type}>
         <g onClick={onClick} style={{ cursor: 'pointer' }} pointerEvents="all">
           <use href="#wedgeSvg" />
         </g>

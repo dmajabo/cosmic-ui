@@ -19,14 +19,15 @@ export const Title = styled.div`
   line-height: 29px;
 `;
 
-interface Props {
-  selected: boolean;
+export interface StepItemWrapperProps {
+  selected?: boolean;
+  highlighted?: boolean;
   state: StepperItemStateType;
-  disabled: boolean;
+  disabled?: boolean;
 }
 
-const getNumberStyles = (props: Props) => {
-  if (props.selected) {
+export const getNumberStyles = (props: StepItemWrapperProps) => {
+  if (props.selected || props.highlighted) {
     return css`
       background: var(--_selectedStepperBgColor);
       color: var(--_selectedStepperNumberTextColor);
@@ -44,7 +45,7 @@ const getNumberStyles = (props: Props) => {
   `;
 };
 
-const getLabelStyles = (props: Props) => {
+const getLabelStyles = (props: StepItemWrapperProps) => {
   if (props.selected) {
     return css`
       color: var(--_selectedStepperLabelColor);
@@ -60,7 +61,7 @@ const getLabelStyles = (props: Props) => {
   `;
 };
 
-const getStateStyles = (props: Props) => {
+const getStateStyles = (props: StepItemWrapperProps) => {
   if (props.state === StepperItemStateType.COMPLETE) {
     return css`
       color: var(--_stepperStateCompleteColor);
@@ -115,7 +116,7 @@ export const Edge = styled.div`
   border-right-color: var(--_stepperEdgeColor);
 `;
 
-export const ItemWrappper = styled.div<Props>`
+export const ItemWrappper = styled.div<StepItemWrapperProps>`
   display: flex;
   border: none;
   box-sizing: border-box;

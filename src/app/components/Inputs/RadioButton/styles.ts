@@ -5,15 +5,17 @@ export const Label = styled.label`
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
-  line-height: 18px;
+  line-height: 24px;
   display: inline-flex;
   cursor: pointer;
   width: auto;
-  min-height: 20px;
+  min-height: 24px;
   align-items: center;
   flex-grow: 0;
   span.labelValue {
     color: var(--_disabledTextColor);
+    display: inline-block;
+    line-height: inherit;
   }
   .Mui-checked + span.labelValue {
     color: var(--_primaryColor);
@@ -44,6 +46,7 @@ const icon = css`
   border-radius: 50%;
   background-color: var(--_disabledTextColor);
   background-image: none;
+  margin: auto 8px auto 0;
 `;
 
 export const BpIcon = styled.span`

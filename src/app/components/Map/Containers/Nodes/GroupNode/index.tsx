@@ -18,7 +18,7 @@ const GroupNode: React.FC<IProps> = (props: IProps) => {
   const { topology } = useTopologyDataContext();
   const { onUpdate, onUnsubscribeDrag } = useDrag(
     {
-      id: `${NODES_CONSTANTS.NETWORK_GROUP.type}${props.dataItem.id}`,
+      id: `${NODES_CONSTANTS.NETWORK_GROUP.type}${props.dataItem.uiId}`,
       skipSourceLinks: true,
       // popupId: `popupContainer${props.dataItem.id}`,
     },
@@ -43,7 +43,7 @@ const GroupNode: React.FC<IProps> = (props: IProps) => {
       setCollapsed(props.dataItem.collapsed);
     }
     if (pos && (pos.x !== props.dataItem.x || pos.y !== props.dataItem.y)) {
-      d3.select(`#${NODES_CONSTANTS.NETWORK_GROUP.type}${props.dataItem.id}`)
+      d3.select(`#${NODES_CONSTANTS.NETWORK_GROUP.type}${props.dataItem.uiId}`)
         .transition()
         .attr('transform', `translate(${props.dataItem.x}, ${props.dataItem.y})`)
         .on('end', () => {
@@ -87,7 +87,7 @@ const GroupNode: React.FC<IProps> = (props: IProps) => {
     if (!props.dataItem.devices || !props.dataItem.devices.length) {
       return;
     }
-    d3.select(`#${NODES_CONSTANTS.NETWORK_GROUP.type}${props.dataItem.id}`).raise();
+    d3.select(`#${NODES_CONSTANTS.NETWORK_GROUP.type}${props.dataItem.uiId}`).raise();
     setShouldUpdate(!shouldUpdate);
     topology?.onUpdateNetworkGroupNode(props.dataItem, null, false, true);
   };
@@ -101,7 +101,7 @@ const GroupNode: React.FC<IProps> = (props: IProps) => {
   }
   return (
     <TransitionContainer stateIn={visible}>
-      <g id={`${NODES_CONSTANTS.NETWORK_GROUP.type}${props.dataItem.id}`} className="topologyNode" transform={`translate(${pos.x}, ${pos.y})`} data-type={NODES_CONSTANTS.NETWORK_GROUP.type}>
+      <g id={`${NODES_CONSTANTS.NETWORK_GROUP.type}${props.dataItem.uiId}`} className="topologyNode" transform={`translate(${pos.x}, ${pos.y})`} data-type={NODES_CONSTANTS.NETWORK_GROUP.type}>
         {props.dataItem.devices && props.dataItem.devices.length && (
           <Transition mountOnEnter unmountOnExit timeout={0} in={!collapsed}>
             {state => <GroupDevicesContainer dataItem={props.dataItem} className={state} onClickDevice={onClickDevice} />}

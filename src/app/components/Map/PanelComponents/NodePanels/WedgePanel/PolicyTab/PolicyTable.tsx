@@ -46,7 +46,7 @@ const PolicyTable: React.FC<Props> = (props: Props) => {
             {props.data && props.data.length
               ? props.data.map((row, rowIndex) => {
                   return (
-                    <TableRow hover tabIndex={-1} key={`tableRow${row.id}`} className={classes.row}>
+                    <TableRow hover tabIndex={-1} key={`tableRow${row.id}${rowIndex}`} className={classes.row}>
                       <TableCell className={classes.tableCell}>{rowIndex + 1}</TableCell>
                       <TableCell className={classes.tableCell}>Allow</TableCell>
                       <TableCell className={classes.tableCell} style={{ textTransform: 'uppercase' }}>

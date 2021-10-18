@@ -1,6 +1,7 @@
 import { IStepperItem, StepperItemStateType } from 'app/components/Stepper/model';
-import { IAutomation, NewAutomationStepperTypes } from './model';
-
+import { ActionTypes, IAutomation, NewAutomationStepperTypes } from './model';
+import { emailIcon } from 'app/components/SVGIcons/automationIcons/email';
+import { slackIcon } from 'app/components/SVGIcons/automationIcons/slack';
 export const updateSteps = (steps: IStepperItem<NewAutomationStepperTypes>[], dataItem: IAutomation): IStepperItem<NewAutomationStepperTypes>[] => {
   const _items: IStepperItem<NewAutomationStepperTypes>[] = steps.slice();
   _items.forEach((step, index) => {
@@ -40,4 +41,10 @@ const checkIsStepCompleted = (data: any): boolean => {
   }
   if (!data) return false;
   return true;
+};
+
+export const getTagIcon = (it: ActionTypes) => {
+  if (it === ActionTypes.EMAIL) return emailIcon;
+  if (it === ActionTypes.SLACK) return slackIcon;
+  return null;
 };

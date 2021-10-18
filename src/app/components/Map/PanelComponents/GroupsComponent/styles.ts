@@ -2,7 +2,6 @@ import styled from 'styled-components';
 import { TextInputWrapper } from 'app/components/Inputs/TextInput/styles';
 import { DropdownWrapper, DropWrapper, SelectWrapper, Label as DropdownLabel, ListWrapper } from 'app/components/Inputs/Dropdown/styles';
 import { SecondaryButtonStyles } from 'app/components/Buttons/SecondaryButton/styles';
-import { PrimaryButtonStyles } from 'app/components/Buttons/PrimaryButton/styles';
 
 export const Wrapper = styled.div`
   margin: auto;
@@ -74,22 +73,4 @@ export const ButtonsGroup = styled.div`
   margin: auto 0 0 0;
   flex-shrink: 0;
   padding: 20px 0 0 0;
-  ${PrimaryButtonStyles} {
-    margin: 0 0 0 12px;
-    &:not(:disabled) {
-      color: var(--_hoverButtonBg);
-      border-color: var(--_hoverButtonBg);
-      .inheritFill {
-        fill: var(--_hoverButtonBg);
-      }
-    }
-    &:hover:not(:disabled) {
-      color: var(--_hoverButtonColor);
-      border-color: var(--_hoverButtonBg);
-      background: var(--_hoverButtonBg);
-      .inheritFill {
-        fill: var(--_hoverButtonColor);
-      }
-    }
-  }
 `;

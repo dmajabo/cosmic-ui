@@ -22,8 +22,8 @@ export const updateDataByEntity = (_entitys: IEntity[], _entity: IEntity, _nodes
     });
     _links.forEach(it => {
       if (_entity.types.indexOf(it.targetType) !== -1 || _entity.types.indexOf(it.sourceType) !== -1) {
-        const _snode = _nodes.find(n => n.id === it.sourceId);
-        const _tnode = _nodes.find(n => n.id === it.targetId);
+        const _snode = _nodes.find(n => n.uiId === it.sourceId);
+        const _tnode = _nodes.find(n => n.uiId === it.targetId);
         it.visible = _snode.visible && _tnode.visible ? true : false;
       }
     });

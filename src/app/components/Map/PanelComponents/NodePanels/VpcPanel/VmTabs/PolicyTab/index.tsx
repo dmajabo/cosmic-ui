@@ -5,19 +5,25 @@ import { PolicyApi } from 'lib/api/ApiModels/Metrics/endpoints';
 import PolicyTable from './PolicyTable';
 import { useGet } from 'lib/api/http/useAxiosHook';
 import { getQueryResourceParam } from 'lib/api/ApiModels/Metrics/queryRoutesHelper';
+import { toTimestamp } from 'lib/api/ApiModels/Topology/endpoints';
+import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
 
 interface IProps {
   dataItem: IVm;
 }
 
 const PolicyTab: React.FC<IProps> = (props: IProps) => {
+  const { topology } = useTopologyDataContext();
   const { response, loading, error, onGet } = useGet<IPolicyRes>();
   const [inData, setInData] = React.useState<IVmRule[]>([]);
   const [outData, setOutData] = React.useState<IVmRule[]>([]);
   React.useEffect(() => {
-    const _param: IResourceQueryParam = getQueryResourceParam(SecurityGroupsResourceTypes.Vm, props.dataItem.id);
+    const _param: IResourceQueryParam = getQueryResourceParam(SecurityGroupsResourceTypes.Vm, props.dataItem.extId);
+    if (topology.selectedTime) {
+      _param.timestamp = toTimestamp(topology.selectedTime);
+    }
     getDataAsync(PolicyApi.getPolicy(ControllerKeyTypes.SecurityGroups), _param);
-  }, [props.dataItem]);
+  }, [props.dataItem, topology.selectedTime]);
 
   React.useEffect(() => {
     if (response !== null && response[PolicyResKeyEnum.SecurityGroups] !== undefined) {

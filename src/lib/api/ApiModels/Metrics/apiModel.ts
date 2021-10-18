@@ -24,6 +24,7 @@ export enum PolicyResKeyEnum {
 export interface IResourceQueryParam {
   resourceType: RoutesResourceTypes | SecurityGroupsResourceTypes | SubnetResourceTypes;
   resourceId: string;
+  timestamp?: number;
 }
 
 export enum PolicyTableKeyEnum {

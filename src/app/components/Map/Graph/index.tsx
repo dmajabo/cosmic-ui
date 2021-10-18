@@ -75,7 +75,7 @@ const Graph: React.FC<Props> = (props: Props) => {
               <g id="linkContainer">{links && links.length && links.map((link, index) => <TopologyLink dataItem={link} key={`link${link.id}${index}`} />)}</g>
 
               <g id="nodesContainer">
-                {nodes && nodes.length && nodes.map(it => <NodeWrapper key={`node${it.id}`} dataItem={it} onClickVpc={onClickVpc} onClickDevice={onClickDevice} onClickWedge={onClickWedge} />)}
+                {nodes && nodes.length && nodes.map(it => <NodeWrapper key={`node${it.uiId}`} dataItem={it} onClickVpc={onClickVpc} onClickDevice={onClickDevice} onClickWedge={onClickWedge} />)}
               </g>
             </>
           )}

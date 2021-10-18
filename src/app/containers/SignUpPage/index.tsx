@@ -6,7 +6,6 @@ import { ConnectEdges } from './ArticleComponents/ConnectEdges';
 import { EdgeBoxProps } from 'types';
 import AwsIcon from './icons/aws.svg';
 import MerakiIcon from './icons/meraki.svg';
-import CopyIcon from './icons/copy.svg';
 import { SignUpStyles } from './SignUpStyles';
 import { CircularProgressWithLabel } from './ArticleComponents/CircularProgressWithLabel';
 import { ConnectSourceForm } from './ArticleComponents/ConnectSourceForm';

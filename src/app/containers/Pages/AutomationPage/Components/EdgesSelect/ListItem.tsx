@@ -19,7 +19,7 @@ const ListItem: React.FC<IProps> = (props: IProps) => {
   };
   return (
     <ListItemStyles onClick={onClick} className={props.selected ? 'selected' : ''}>
-      <SimpleCheckbox isChecked={props.selected} readOnly />
+      <SimpleCheckbox wrapStyles={{ margin: '0 12px 0 0' }} isChecked={props.selected} readOnly />
       <ItemLabel primary>{displayValue}</ItemLabel>
       <ItemLabel>{displayValue}</ItemLabel>
     </ListItemStyles>

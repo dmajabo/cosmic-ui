@@ -1,5 +1,5 @@
 import React from 'react';
-import { ContentStyles, FooterWrapper, MainStyles, PanelStyles, StepsWrapper, StepTitle } from '../../styles/styles';
+import { ContentStyles, FooterWrapper, MainStyles, PanelStyles, StepsWrapper, TagsWrapper } from '../../styles/styles';
 import Stepper from 'app/components/Stepper';
 import { IStepperItem, StepperItemStateType } from 'app/components/Stepper/model';
 import { ActionTypes, AutomationStepperItems, createNewAutomation, IAutomation, NewAutomationStepperTypes, valueFormat } from './model';
@@ -11,14 +11,17 @@ import GeneralStep from './Steps/GeneralStep';
 import Footer from '../../Components/Footer';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
-import { updateStepById, updateSteps } from './helper';
+import { getTagIcon, updateStepById, updateSteps } from './helper';
 import { ITrigger } from 'lib/models/Automation/trigger';
 import { useAutomationDataContext } from 'lib/hooks/Automation/useAutomationDataContext';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { AccordionStyles } from '../../styles/AccordionStyles';
+import accordionStyles from '../../styles/AccordionStyles';
+import PanelHeader from '../../Components/PanelHeader';
+import ExpandedIcon from 'app/components/Basic/ExpandedIcon';
+import HeaderTag from '../../Components/Tag/HeaderTag';
+
 interface Props {
   dataItem?: IAutomation;
 }
@@ -32,13 +35,12 @@ const NewAutomation: React.FC<Props> = (props: Props) => {
   const [saveDisabled, setSaveDisabled] = React.useState<boolean>(true);
   const [selectedStep, setSelectedStep] = React.useState<NewAutomationStepperTypes>(NewAutomationStepperTypes.GENERAL);
   const [expanded, setExpanded] = React.useState<NewAutomationStepperTypes | boolean>(NewAutomationStepperTypes.GENERAL);
-  const accordionStyles = AccordionStyles();
-
+  const AccordionStyles = accordionStyles();
   React.useEffect(() => {
     const _item = props.dataItem || createNewAutomation();
     const _steps: IStepperItem<NewAutomationStepperTypes>[] = jsonClone(AutomationStepperItems);
     const _items: IStepperItem<NewAutomationStepperTypes>[] = updateSteps(_steps, _item);
-    setSelectedStep(_items[0].index);
+    setSelectedStep(_items[0].id);
     setExpanded(_items[0].id);
     setSteps(_items);
     setDataItem(_item);
@@ -106,6 +108,15 @@ const NewAutomation: React.FC<Props> = (props: Props) => {
     setDataItem(_dataItem);
   };
 
+  const onRemoveEdge = (item: string) => {
+    const _dataItem: IAutomation = jsonClone(dataItem);
+    const _index = dataItem.edges.findIndex(it => it === item);
+    _dataItem.edges.splice(_index, 1);
+    const _items: IStepperItem<NewAutomationStepperTypes>[] = updateStepById(steps, NewAutomationStepperTypes.EDGES, _dataItem.edges);
+    setSteps(_items);
+    setDataItem(_dataItem);
+  };
+
   const onSelectTrigger = (_value: string) => {
     const _dataItem: IAutomation = jsonClone(dataItem);
     _dataItem.trigger = _value;
@@ -116,7 +127,7 @@ const NewAutomation: React.FC<Props> = (props: Props) => {
 
   const onAccordionChange = (panel: NewAutomationStepperTypes) => (event: React.SyntheticEvent, isExpanded: boolean) => {
     setExpanded(isExpanded ? panel : false);
-    setSelectedStep(panel);
+    setSelectedStep(isExpanded ? panel : null);
   };
 
   return (
@@ -125,56 +136,99 @@ const NewAutomation: React.FC<Props> = (props: Props) => {
         {steps && (
           <ContentStyles>
             <StepsWrapper>
-              <Accordion className={accordionStyles.accContainer} expanded={expanded === NewAutomationStepperTypes.GENERAL} onChange={onAccordionChange(NewAutomationStepperTypes.GENERAL)}>
+              <Accordion className={AccordionStyles.accContainer} expanded={expanded === NewAutomationStepperTypes.GENERAL} onChange={onAccordionChange(NewAutomationStepperTypes.GENERAL)}>
                 <AccordionSummary
-                  className={accordionStyles.panel}
-                  expandIcon={<ExpandMoreIcon />}
+                  className={AccordionStyles.panel}
+                  expandIcon={<ExpandedIcon />}
                   aria-controls={`${NewAutomationStepperTypes.GENERAL}-content`}
                   id={`${NewAutomationStepperTypes.GENERAL}-header`}
                 >
-                  <StepTitle>General information</StepTitle>
+                  <PanelHeader
+                    index="1"
+                    label="General information"
+                    selected={selectedStep === NewAutomationStepperTypes.GENERAL}
+                    state={steps[0].state !== StepperItemStateType.EMPTY ? steps[0].state : null}
+                  >
+                    {expanded !== NewAutomationStepperTypes.GENERAL && dataItem.name && (
+                      <TagsWrapper>
+                        <HeaderTag highLightValue="Name:" subLabel={dataItem.name} />
+                      </TagsWrapper>
+                    )}
+                  </PanelHeader>
                 </AccordionSummary>
-                <AccordionDetails className={accordionStyles.deteilItem}>
+                <AccordionDetails className={AccordionStyles.deteilItem}>
                   <GeneralStep name={dataItem.name} description={dataItem.description} onChange={onGeneralDataChange} />
                 </AccordionDetails>
               </Accordion>
-              <Accordion className={accordionStyles.accContainer} expanded={expanded === NewAutomationStepperTypes.EDGES} onChange={onAccordionChange(NewAutomationStepperTypes.EDGES)}>
+              <Accordion className={AccordionStyles.accContainer} expanded={expanded === NewAutomationStepperTypes.EDGES} onChange={onAccordionChange(NewAutomationStepperTypes.EDGES)}>
                 <AccordionSummary
-                  className={accordionStyles.panel}
-                  expandIcon={<ExpandMoreIcon />}
+                  className={AccordionStyles.panel}
+                  expandIcon={<ExpandedIcon />}
                   aria-controls={`${NewAutomationStepperTypes.EDGES}-content`}
                   id={`${NewAutomationStepperTypes.EDGES}-header`}
                 >
-                  <StepTitle>Select Edges</StepTitle>
+                  <PanelHeader index="2" label="Select Edges" selected={selectedStep === NewAutomationStepperTypes.EDGES} state={steps[1].state !== StepperItemStateType.EMPTY ? steps[1].state : null}>
+                    {expanded !== NewAutomationStepperTypes.EDGES && dataItem.edges && dataItem.edges.length ? (
+                      <TagsWrapper>
+                        {dataItem.edges.map((it, index) => (
+                          <HeaderTag key={`headerEdgesTag${index}`} highLightValue={it} />
+                        ))}
+                      </TagsWrapper>
+                    ) : null}
+                  </PanelHeader>
                 </AccordionSummary>
-                <AccordionDetails className={accordionStyles.deteilItem}>
-                  <EdgesStep onChangeEdges={onSelectEdges} selectedEdges={dataItem.edges} />
+                <AccordionDetails className={AccordionStyles.deteilItem}>
+                  <EdgesStep onChangeEdges={onSelectEdges} onRemoveEdge={onRemoveEdge} selectedEdges={dataItem.edges} />
                 </AccordionDetails>
               </Accordion>
-              <Accordion className={accordionStyles.accContainer} expanded={expanded === NewAutomationStepperTypes.TRIGGERS} onChange={onAccordionChange(NewAutomationStepperTypes.TRIGGERS)}>
+              <Accordion className={AccordionStyles.accContainer} expanded={expanded === NewAutomationStepperTypes.TRIGGERS} onChange={onAccordionChange(NewAutomationStepperTypes.TRIGGERS)}>
                 <AccordionSummary
-                  className={accordionStyles.panel}
-                  expandIcon={<ExpandMoreIcon />}
+                  className={AccordionStyles.panel}
+                  expandIcon={<ExpandedIcon />}
                   aria-controls={`${NewAutomationStepperTypes.TRIGGERS}-content`}
                   id={`${NewAutomationStepperTypes.TRIGGERS}-header`}
                 >
-                  <StepTitle>Configure Triggers {dataItem.trigger}</StepTitle>
+                  <PanelHeader
+                    index="3"
+                    label="Configure Triggers"
+                    selected={selectedStep === NewAutomationStepperTypes.TRIGGERS}
+                    state={steps[2].state !== StepperItemStateType.EMPTY ? steps[2].state : null}
+                  >
+                    {expanded !== NewAutomationStepperTypes.TRIGGERS && dataItem.trigger && (
+                      <TagsWrapper>
+                        <HeaderTag highLightValue="Trigger:" subLabel={dataItem.trigger} />
+                      </TagsWrapper>
+                    )}
+                  </PanelHeader>
                 </AccordionSummary>
-                <AccordionDetails className={accordionStyles.deteilItem}>
+                <AccordionDetails className={AccordionStyles.deteilItem}>
                   <TriggersStep onSelectTrigger={onSelectTrigger} triggers={triggers} selectedTrigger={dataItem.trigger} />
                 </AccordionDetails>
               </Accordion>
-              <Accordion className={accordionStyles.accContainer} expanded={expanded === NewAutomationStepperTypes.ACTIONS} onChange={onAccordionChange(NewAutomationStepperTypes.ACTIONS)}>
+              <Accordion className={AccordionStyles.accContainer} expanded={expanded === NewAutomationStepperTypes.ACTIONS} onChange={onAccordionChange(NewAutomationStepperTypes.ACTIONS)}>
                 <AccordionSummary
-                  className={accordionStyles.panel}
-                  expandIcon={<ExpandMoreIcon />}
+                  className={AccordionStyles.panel}
+                  expandIcon={<ExpandedIcon />}
                   aria-controls={`${NewAutomationStepperTypes.ACTIONS}-content`}
                   id={`${NewAutomationStepperTypes.ACTIONS}-header`}
                 >
-                  <StepTitle>Choose Actions</StepTitle>
+                  <PanelHeader
+                    index="4"
+                    label="Choose Actions"
+                    selected={selectedStep === NewAutomationStepperTypes.ACTIONS}
+                    state={steps[3].state !== StepperItemStateType.EMPTY ? steps[3].state : null}
+                  >
+                    {expanded !== NewAutomationStepperTypes.ACTIONS && dataItem.actions && dataItem.actions.length ? (
+                      <TagsWrapper>
+                        {dataItem.actions.map((it, index) => (
+                          <HeaderTag key={`headerActionTag${index}`} icon={getTagIcon(it as ActionTypes)} highLightValue={it} />
+                        ))}
+                      </TagsWrapper>
+                    ) : null}
+                  </PanelHeader>
                 </AccordionSummary>
-                <AccordionDetails className={accordionStyles.deteilItem}>
-                  <ActionsStep onChooseAction={onChooseAction} selectedActions={dataItem.actions} />
+                <AccordionDetails className={AccordionStyles.deteilItem}>
+                  <ActionsStep onChooseAction={onChooseAction} selectedActions={dataItem.actions as ActionTypes[] | null} />
                 </AccordionDetails>
               </Accordion>
             </StepsWrapper>

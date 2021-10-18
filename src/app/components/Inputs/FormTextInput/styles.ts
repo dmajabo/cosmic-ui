@@ -18,7 +18,8 @@ export const Label = styled.label`
 
 export const Required = styled.span`
   color: var(--_errorColor);
-  font-size: 16px;
+  font-size: 12px;
+  margin-left: 4px;
 `;
 
 export const Input = styled.input`

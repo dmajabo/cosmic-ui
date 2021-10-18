@@ -56,6 +56,12 @@ export interface IPopupDisplay extends ICoord {
   show: boolean;
 }
 
+export interface IModal<T> {
+  show: boolean;
+  dataItem?: T;
+  isEditMode?: boolean;
+}
+
 export enum TimeRangeFieldTypes {
   START = 'startTime',
   END = 'endTime',

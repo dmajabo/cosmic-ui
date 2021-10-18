@@ -6,8 +6,8 @@ import { slackIcon } from 'app/components/SVGIcons/automationIcons/slack';
 import { ActionTypes } from '../model';
 import { IMappedObject } from 'lib/models/general';
 interface Props {
-  selectedActions: string[] | null;
-  onChooseAction: (id: string) => void;
+  selectedActions: ActionTypes[] | null;
+  onChooseAction: (id: ActionTypes) => void;
 }
 const ActionsStep: React.FC<Props> = (props: Props) => {
   const [selectedMap, setSelectedMap] = React.useState<IMappedObject | null>(null);
@@ -24,7 +24,7 @@ const ActionsStep: React.FC<Props> = (props: Props) => {
       setSelectedMap(_obj);
     }
   }, [props.selectedActions]);
-  const onSelect = (id: string) => {
+  const onSelect = (id: ActionTypes) => {
     props.onChooseAction(id);
   };
   return (

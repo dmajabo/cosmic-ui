@@ -29,20 +29,53 @@ const TopologyLink: React.FC<IProps> = (props: IProps) => {
   if (dataLink.type === TOPOLOGY_LINKS_TYPES.NETWORKLINK) {
     return (
       <TransitionContainer stateIn={dataLink.visible}>
-        <NetworkLink dataItem={dataLink} />
+        <NetworkLink
+          id={dataLink.id}
+          type={dataLink.type}
+          targetId={dataLink.targetId}
+          sourceId={dataLink.sourceId}
+          targetType={dataLink.targetType}
+          sourceType={dataLink.sourceType}
+          x1={dataLink.sourceCoord.x}
+          y1={dataLink.sourceCoord.y}
+          x2={dataLink.targetCoord.x}
+          y2={dataLink.targetCoord.y}
+        />
       </TransitionContainer>
     );
   }
   if (dataLink.type === TOPOLOGY_LINKS_TYPES.NETWORK_BRENCH_LINK) {
     return (
       <TransitionContainer stateIn={dataLink.visible}>
-        <BrenchLink dataItem={dataLink} />
+        <BrenchLink
+          id={dataLink.id}
+          type={dataLink.type}
+          targetId={dataLink.targetId}
+          sourceId={dataLink.sourceId}
+          targetType={dataLink.targetType}
+          sourceType={dataLink.sourceType}
+          x1={dataLink.sourceCoord.x}
+          y1={dataLink.sourceCoord.y}
+          x2={dataLink.targetCoord.x}
+          y2={dataLink.targetCoord.y}
+        />
       </TransitionContainer>
     );
   }
   return (
     <TransitionContainer stateIn={dataLink.visible}>
-      <DeviceLink dataItem={dataLink} />
+      <DeviceLink
+        id={dataLink.id}
+        type={dataLink.type}
+        targetId={dataLink.targetId}
+        sourceId={dataLink.sourceId}
+        targetType={dataLink.targetType}
+        sourceType={dataLink.sourceType}
+        x1={dataLink.sourceCoord.x}
+        y1={dataLink.sourceCoord.y}
+        x2={dataLink.targetCoord.x}
+        y2={dataLink.targetCoord.y}
+      />
     </TransitionContainer>
   );
 };

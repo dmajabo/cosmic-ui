@@ -1,8 +1,9 @@
 import React from 'react';
 import { DEBOUNCE_TIME } from 'lib/constants/general';
 import useDebounce from 'lib/hooks/useDebounce';
-import { Input, TextInputWrapper } from './styles';
+import { Input, TextArea, TextInputWrapper } from './styles';
 import { InputLabel } from '../styles/Label';
+import { Required } from '../FormTextInput/styles';
 
 interface IProps {
   id: string;
@@ -14,6 +15,8 @@ interface IProps {
   readOnly?: boolean;
   styles?: Object;
   placeholder?: string;
+  required?: boolean;
+  area?: boolean;
 }
 
 const TextInput: React.FC<IProps> = (props: IProps) => {
@@ -34,12 +37,42 @@ const TextInput: React.FC<IProps> = (props: IProps) => {
     setTextValue(value);
   };
 
+  const onTextAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setIsTyping(true);
+    const { value } = e.target;
+    setTextValue(value);
+  };
+
   return (
     <TextInputWrapper style={props.styles}>
       <InputLabel htmlFor={props.id} disabled={props.disabled || props.readOnly}>
         {props.label}
+        {props.required && <Required>*</Required>}
       </InputLabel>
-      <Input id={props.id} name={props.name} type="text" value={textValue} onChange={onChange} readOnly={props.readOnly} disabled={props.disabled} placeholder={props.placeholder} />
+      {!props.area ? (
+        <Input
+          required={props.required}
+          id={props.id}
+          name={props.name}
+          type="text"
+          value={textValue}
+          onChange={onChange}
+          readOnly={props.readOnly}
+          disabled={props.disabled}
+          placeholder={props.placeholder}
+        />
+      ) : (
+        <TextArea
+          required={props.required}
+          id={props.id}
+          name={props.name}
+          value={textValue}
+          onChange={onTextAreaChange}
+          readOnly={props.readOnly}
+          disabled={props.disabled}
+          placeholder={props.placeholder}
+        />
+      )}
     </TextInputWrapper>
   );
 };
