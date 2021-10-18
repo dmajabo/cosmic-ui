@@ -13,6 +13,7 @@ import { ConnectSourceForm } from './ArticleComponents/ConnectSourceForm';
 import ReactSelect, { components } from 'react-select';
 import { CustomRadio } from './ArticleComponents/CustomRadio';
 import { isEmpty } from 'lodash';
+import { IntlProvider } from 'react-intl';
 
 const Option = props => {
   const classes = SignUpStyles();
@@ -40,18 +41,16 @@ const MERAKI = 'meraki';
 
 const SignUpPage: React.FC = () => {
   const [progress, setProgress] = useState<number>(0);
-  //TODO: use setProgress on connecting AWS and Meraki
   const [connectLocation, setConnectLocation] = useState<string>('');
   const [isFormFilled, setIsFormFilled] = useState<boolean>(false);
   const classes = SignUpStyles();
 
-  const [awsEnableFlowLog, setAwsEnableFlowLog] = useState<string>('');
-  const [awsLogBucket, setAwsLogBucket] = useState<string>('');
+  const [awsEnableFlowLog, setAwsEnableFlowLog] = useState<string>('enabled');
   const [awsRegion, setAwsRegion] = useState<string[]>([]);
 
   useEffect(() => {
-    awsEnableFlowLog && awsLogBucket && !isEmpty(awsRegion) ? setIsFormFilled(true) : setIsFormFilled(false);
-  }, [awsRegion, awsEnableFlowLog, awsLogBucket]);
+    awsEnableFlowLog && !isEmpty(awsRegion) ? setIsFormFilled(true) : setIsFormFilled(false);
+  }, [awsRegion, awsEnableFlowLog]);
 
   const dropdownStyle = {
     option: provided => ({
@@ -93,27 +92,14 @@ const SignUpPage: React.FC = () => {
 
   const flowLogRadioOptions: Options[] = [
     {
-      value: 'For all VPCs in the selected region(s)',
-      label: 'For all VPCs in the selected region(s)',
+      value: 'enabled',
+      label: 'enabled',
     },
     {
-      value: 'For selected VPCs in the selected region(s)',
-      label: 'For selected VPCs in the selected region(s)',
+      value: 'disabled',
+      label: 'disabled',
     },
   ];
-
-  const bucketLogRadioOptions: Options[] = [
-    {
-      value: 'Every minute (recommended)',
-      label: 'Every minute (recommended)',
-    },
-    {
-      value: 'Every 10 minutes (AWS default)',
-      label: 'Every 10 minutes (AWS default)',
-    },
-  ];
-
-  const terraformCommands: string[] = ['terraform init', 'terraform validate', 'terraform plan', 'terraform apply'];
 
   const awsSteps: StepData[] = [
     {
@@ -140,116 +126,30 @@ const SignUpPage: React.FC = () => {
       stepContent: (
         <>
           <div className={classes.radioTitle}>Enable flow logs</div>
-          <CustomRadio radioOptions={flowLogRadioOptions} setRadioValue={setAwsEnableFlowLog} />
-          <div className={classes.radioTitle}>Write logs to bucket</div>
-          <CustomRadio radioOptions={bucketLogRadioOptions} setRadioValue={setAwsLogBucket} />
-        </>
-      ),
-    },
-    {
-      stepTitle: 'Step 3: Generate Terraform Configuration',
-      stepContent: (
-        <>
-          <div className={classes.stepSubtitleContainer}>
-            <span className={classes.stepSubtitleText}>Copy the generated Terraform configuration and save to a file named</span>
-            <code className={classes.codeText}>main.tf</code>
-            <span className={classes.stepSubtitleText}>in an empty directory</span>
-          </div>
-          <div className={classes.codeBox}>
-            <div className={classes.copyIcon}>
-              <img src={CopyIcon} alt="copy" />
-            </div>
-            <pre className={classes.terraformCodeText}>
-              {`
-              terraform { 
-                required_version = ">= 0.12.0" 
-              
-              }
-
-              provider "aws" { 
-                region = "`}
-              <span className={classes.terraformHighlightedCodeText} />
-              {`" 
-              }
-
-              `}
-              <span className={classes.terraformHighlightedCodeText} />
-              {`
-
-              module "kentik_aws_integration" {
-                source = "github.com/kentik/config-snippets-cloud/cloud_AWS/terraform/module"
-                region = "`}
-              <span className={classes.terraformHighlightedCodeText} />
-              {`"
-                rw_s3_access = true
-                multiple_buckets = false
-                vpc_id_list = `}
-              <span className={classes.terraformHighlightedCodeText} />
-              {`
-                store_logs_more_frequently = `}
-              <span className={classes.terraformHighlightedCodeText} />
-              {`
-                create_role = `}
-              <span className={classes.terraformHighlightedCodeText} />
-              {`
-                external_id = 99701
-
-
-              }
-              `}
-            </pre>
-          </div>
-        </>
-      ),
-    },
-    {
-      stepTitle: 'Step 4: Review and Apply Terraform Configuration',
-      stepContent: (
-        <>
-          <div className={classes.stepSubtitleContainer}>
-            <span className={classes.stepSubtitleText}>After you've reviewed the configuration in the main.tf file, apply it in the environment where you run Terraform.</span>
-          </div>
-          {terraformCommands.map(command => (
-            <div key={command} className={classes.codeBox}>
-              <div className={classes.copyIcon}>
-                <img src={CopyIcon} alt="copy" />
-              </div>
-              <div className={classes.terraformCodeText}>{command}</div>
-            </div>
-          ))}
+          <CustomRadio radioOptions={flowLogRadioOptions} setRadioValue={setAwsEnableFlowLog} defaultValue={flowLogRadioOptions[0]} />
         </>
       ),
     },
   ];
 
-  const edgeBoxArray: EdgeBoxProps[] = [
+  const edgesToConfigure: EdgeBoxProps[] = [
     {
       img: AwsIcon,
       title: 'AWS',
       content: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-      onClick: () => {
-        setConnectLocation(AWS);
-      },
-      isConnected: !isEmpty(awsRegion) && awsLogBucket && awsEnableFlowLog ? true : false,
+      onClick: () => setConnectLocation(AWS),
+      isConnected: !isEmpty(awsRegion) && awsEnableFlowLog ? true : false,
     },
     {
       img: MerakiIcon,
       title: 'Cisco Meraki',
       content: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-      onClick: () => {
-        setConnectLocation(MERAKI);
-      },
+      onClick: () => setConnectLocation(MERAKI),
       isConnected: false,
     },
   ];
 
   const onAwsFormSubmit = () => {
-    setProgress(progress + 50);
-    setConnectLocation('');
-    setIsFormFilled(false);
-  };
-
-  const onMerakiFormSubmit = () => {
     setProgress(progress + 50);
     setConnectLocation('');
     setIsFormFilled(false);
@@ -261,7 +161,9 @@ const SignUpPage: React.FC = () => {
         <div className={classes.topBarText}>Connect To Your Edges</div>
         <div className={classes.topBarflexContainer}>
           <div className={classes.topBarText}>Progress: </div>
-          <CircularProgressWithLabel value={progress} />
+          <IntlProvider locale="en">
+            <CircularProgressWithLabel value={progress} />
+          </IntlProvider>
         </div>
       </div>
       {connectLocation ? (
@@ -279,7 +181,7 @@ const SignUpPage: React.FC = () => {
         )
       ) : (
         <SignUpWrapper>
-          <ConnectEdges edgeBoxArray={edgeBoxArray} />
+          <ConnectEdges edgeBoxArray={edgesToConfigure} />
         </SignUpWrapper>
       )}
     </UnAuthLayout>
