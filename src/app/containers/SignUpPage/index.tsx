@@ -91,11 +91,11 @@ const SignUpPage: React.FC = () => {
 
   const flowLogRadioOptions: Options[] = [
     {
-      value: 'enabled',
+      value: 'Yes',
       label: 'enabled',
     },
     {
-      value: 'disabled',
+      value: 'No',
       label: 'disabled',
     },
   ];
