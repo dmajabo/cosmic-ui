@@ -26,17 +26,35 @@ const Option = props => {
 };
 
 export interface StepData {
-  readonly stepTitle: string;
-  readonly stepContent: JSX.Element;
+  readonly title: string;
+  readonly content: JSX.Element;
 }
 
-export interface Options {
+export interface Option {
   readonly value: string;
   readonly label: string;
 }
 
-const AWS = 'aws';
-const MERAKI = 'meraki';
+enum PreDefinedEdges {
+  Aws = 'aws',
+  Meraki = 'meraki',
+}
+
+enum FlowLogToggle {
+  enabled = 'enabled',
+  disabled = 'disabled',
+}
+
+const FlowLog_Options: Option[] = [
+  {
+    value: FlowLogToggle.enabled,
+    label: 'Yes',
+  },
+  {
+    value: FlowLogToggle.disabled,
+    label: 'No',
+  },
+];
 
 const SignUpPage: React.FC = () => {
   const [progress, setProgress] = useState<number>(0);
@@ -44,12 +62,12 @@ const SignUpPage: React.FC = () => {
   const [isFormFilled, setIsFormFilled] = useState<boolean>(false);
   const classes = SignUpStyles();
 
-  const [awsEnableFlowLog, setAwsEnableFlowLog] = useState<string>('enabled');
+  const [isAwsFlowLogEnabled, setIsFlowLogEnabled] = useState<string>(FlowLogToggle.enabled);
   const [awsRegion, setAwsRegion] = useState<string[]>([]);
 
   useEffect(() => {
-    awsEnableFlowLog && !isEmpty(awsRegion) ? setIsFormFilled(true) : setIsFormFilled(false);
-  }, [awsRegion, awsEnableFlowLog]);
+    isAwsFlowLogEnabled && !isEmpty(awsRegion) ? setIsFormFilled(true) : setIsFormFilled(false);
+  }, [awsRegion, isAwsFlowLogEnabled]);
 
   const dropdownStyle = {
     option: provided => ({
@@ -65,7 +83,7 @@ const SignUpPage: React.FC = () => {
     }),
   };
 
-  const regionOptions: Options[] = [
+  const regionOptions: Option[] = [
     {
       label: 'USA WEST (Oregon)',
       value: 'USA WEST (Oregon)',
@@ -89,21 +107,10 @@ const SignUpPage: React.FC = () => {
     },
   ];
 
-  const flowLogRadioOptions: Options[] = [
-    {
-      value: 'enabled',
-      label: 'Yes',
-    },
-    {
-      value: 'disabled',
-      label: 'No',
-    },
-  ];
-
   const awsSteps: StepData[] = [
     {
-      stepTitle: 'Step 1: Select your region(s)',
-      stepContent: (
+      title: 'Step 1: Select your region(s)',
+      content: (
         <>
           <div className={classes.dropdownLabel}>REGION</div>
           <ReactSelect
@@ -115,17 +122,17 @@ const SignUpPage: React.FC = () => {
             styles={dropdownStyle}
             options={regionOptions}
             allowSelectAll={true}
-            onChange={e => setAwsRegion(e.map(item => item.value))}
+            onChange={values => setAwsRegion(values.map(item => item.value))}
           />
         </>
       ),
     },
     {
-      stepTitle: 'Step 2: Select options',
-      stepContent: (
+      title: 'Step 2: Select options',
+      content: (
         <>
           <div className={classes.radioTitle}>Enable flow logs</div>
-          <CustomRadio radioOptions={flowLogRadioOptions} setRadioValue={setAwsEnableFlowLog} defaultValue={flowLogRadioOptions[0]} />
+          <CustomRadio radioOptions={FlowLog_Options} setRadioValue={setIsFlowLogEnabled} defaultValue={FlowLog_Options[0]} />
         </>
       ),
     },
@@ -136,14 +143,14 @@ const SignUpPage: React.FC = () => {
       img: AwsIcon,
       title: 'AWS',
       content: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-      onClick: () => setConnectLocation(AWS),
-      isConnected: !isEmpty(awsRegion) && awsEnableFlowLog ? true : false,
+      onClick: () => setConnectLocation(PreDefinedEdges.Aws),
+      isConnected: !isEmpty(awsRegion) && isAwsFlowLogEnabled ? true : false,
     },
     {
       img: MerakiIcon,
       title: 'Cisco Meraki',
       content: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-      onClick: () => setConnectLocation(MERAKI),
+      onClick: () => setConnectLocation(PreDefinedEdges.Meraki),
       isConnected: false,
     },
   ];
@@ -166,7 +173,7 @@ const SignUpPage: React.FC = () => {
         </div>
       </div>
       {connectLocation ? (
-        connectLocation === AWS ? (
+        connectLocation === PreDefinedEdges.Aws ? (
           <ConnectSourceForm
             title="Connect To AWS"
             img={AwsIcon}

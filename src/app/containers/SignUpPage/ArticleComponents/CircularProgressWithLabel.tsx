@@ -24,7 +24,7 @@ export const CircularProgressWithLabel: React.FC<CircularProgressProps & Circula
         }}
       >
         <Typography variant="caption" component="div" color="text.secondary">
-          <FormattedNumber style="percent" value={Math.round(props.value)} />
+          <FormattedNumber style="percent" value={props.value / 100} />
         </Typography>
       </Box>
     </Box>

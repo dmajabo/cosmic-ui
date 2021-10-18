@@ -4,7 +4,7 @@ import Radio, { RadioProps } from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
-import { Options } from '..';
+import { Option } from '..';
 
 const BpIcon = styled('span')(({ theme }) => ({
   borderRadius: '50%',
@@ -54,13 +54,14 @@ const BpRadio: React.FC<RadioProps> = props => {
 };
 
 interface CustomRadioProps {
-  readonly radioOptions: Options[];
+  readonly radioOptions: Option[];
   readonly setRadioValue: (value: string) => void;
-  readonly defaultValue: Options;
+  readonly defaultValue: Option;
 }
 
 export const CustomRadio: React.FC<CustomRadioProps> = ({ radioOptions, setRadioValue, defaultValue }) => {
   const onRadioValueChange = event => setRadioValue(event.target.value);
+
   return (
     <FormControl component="fieldset">
       <RadioGroup defaultValue={defaultValue.value} onChange={onRadioValueChange} aria-label="options" name="customized-radios">
