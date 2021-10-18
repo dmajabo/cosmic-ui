@@ -181,25 +181,6 @@ const SignUpPage: React.FC = () => {
         </>
       ),
     },
-    {
-      title: 'Step 3: Configure NetFlow',
-      content: (
-        <>
-          <SubStepComponent subStepCount={3.1}>
-            Open the <b className={classes.bold}>Reporting</b> in your Cisco Meraki account <span className={classes.focusText}>Network-wide/General/Reporting</span>
-          </SubStepComponent>
-          <SubStepComponent subStepCount={3.2}>
-            Select <span className={classes.focusText}>Enable: send netflow traffic statistics</span> option in <b className={classes.bold}>NetFlow traffic reporting</b> input
-          </SubStepComponent>
-          <SubStepComponent subStepCount={3.3}>
-            Add this IP <span className={classes.focusText}>208.145.12.323</span> to the <b className={classes.bold}>NetFlow collector IP</b> input
-          </SubStepComponent>
-          <SubStepComponent subStepCount={3.4}>
-            Add this port <span className={classes.focusText}>30020</span> to the <b className={classes.bold}>NetFlow collector port</b> input
-          </SubStepComponent>
-        </>
-      ),
-    },
   ];
 
   const edgesToConfigure: EdgeBoxProps[] = [
