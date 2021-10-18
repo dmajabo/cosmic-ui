@@ -63,11 +63,12 @@ const SignUpPage: React.FC = () => {
   const classes = SignUpStyles();
 
   const [isAwsFlowLogEnabled, setIsFlowLogEnabled] = useState<string>(FlowLogToggle.enabled);
-  const [awsRegion, setAwsRegion] = useState<string[]>([]);
+  const [awsRegions, setAwsRegions] = useState<string[]>([]);
 
   useEffect(() => {
-    isAwsFlowLogEnabled && !isEmpty(awsRegion) ? setIsFormFilled(true) : setIsFormFilled(false);
-  }, [awsRegion, isAwsFlowLogEnabled]);
+    const isFormFilled = isAwsFlowLogEnabled && !isEmpty(awsRegions) ? true : false;
+    setIsFormFilled(isFormFilled);
+  }, [awsRegions, isAwsFlowLogEnabled]);
 
   const dropdownStyle = {
     option: provided => ({
@@ -122,7 +123,7 @@ const SignUpPage: React.FC = () => {
             styles={dropdownStyle}
             options={regionOptions}
             allowSelectAll={true}
-            onChange={values => setAwsRegion(values.map(item => item.value))}
+            onChange={values => setAwsRegions(values.map(item => item.value))}
           />
         </>
       ),
@@ -144,7 +145,7 @@ const SignUpPage: React.FC = () => {
       title: 'AWS',
       content: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
       onClick: () => setConnectLocation(PreDefinedEdges.Aws),
-      isConnected: !isEmpty(awsRegion) && isAwsFlowLogEnabled ? true : false,
+      isConnected: !isEmpty(awsRegions) && isAwsFlowLogEnabled ? true : false,
     },
     {
       img: MerakiIcon,
