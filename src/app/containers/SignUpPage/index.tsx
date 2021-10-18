@@ -14,6 +14,8 @@ import ReactSelect, { components } from 'react-select';
 import { CustomRadio } from './ArticleComponents/CustomRadio';
 import { isEmpty } from 'lodash';
 import { IntlProvider } from 'react-intl';
+import { createApiClient } from './apiClient';
+import { PostPolicyControllerRequest } from './SharedTypes';
 
 const Option = props => {
   const classes = SignUpStyles();
@@ -46,6 +48,11 @@ enum FlowLogToggle {
   disabled = 'disabled',
 }
 
+enum PolicyVendor {
+  Aws = 'AMAZON_AWS',
+  Meraki = 'CISCO_MERAKI',
+}
+
 const FlowLog_Options: Option[] = [
   {
     value: FlowLogToggle.enabled,
@@ -62,6 +69,7 @@ const SignUpPage: React.FC = () => {
   const [connectLocation, setConnectLocation] = useState<string>('');
   const [isFormFilled, setIsFormFilled] = useState<boolean>(false);
   const [isAppReadyToUSe, setIsAppReadyToUse] = useState<boolean>(false);
+  const [awsRegionsOptions, setAwsRegionsOptions] = useState<Option[]>([]);
   const classes = SignUpStyles();
 
   const [isAwsFlowLogEnabled, setIsAwsFlowLogEnabled] = useState<string>(FlowLogToggle.enabled);
@@ -72,6 +80,8 @@ const SignUpPage: React.FC = () => {
   const [merakiApiKey, setMerakiApiKey] = useState<string>('');
   const [isMerakiSysLogEnabled, setIsMerakiSysLogEnabled] = useState<string>(FlowLogToggle.enabled);
   const [showPassword, setShowPassword] = useState<boolean>(false);
+
+  const apiClient = createApiClient();
 
   useEffect(() => {
     const isFormFilled = isAwsFlowLogEnabled && !isEmpty(awsRegions) ? true : false;
@@ -97,29 +107,18 @@ const SignUpPage: React.FC = () => {
     }),
   };
 
-  const regionOptions: Option[] = [
-    {
-      label: 'USA WEST (Oregon)',
-      value: 'USA WEST (Oregon)',
-    },
-    {
-      label: 'US West (N. California)',
-      value: 'US West (N. California)',
-    },
-    {
-      label: 'US East (Ohio)',
-      value: 'US East (Ohio)',
-    },
-    {
-      label: 'US East (N. Virginia)',
-      value: 'US East (N. Virginia)',
-    },
-
-    {
-      label: 'Asia Pacific (Mumbai)',
-      value: 'Asia Pacific (Mumbai)',
-    },
-  ];
+  useEffect(() => {
+    const getAwsRegions = async () => {
+      const responseData = await apiClient.getAwsRegions();
+      if (!isEmpty(responseData)) {
+        const awsRegionsOptions: Option[] = responseData.awsRegions.map(item => {
+          return { label: item.name, value: item.code };
+        });
+        setAwsRegionsOptions(awsRegionsOptions);
+      }
+    };
+    getAwsRegions();
+  }, []);
 
   const awsSteps: StepData[] = [
     {
@@ -134,7 +133,7 @@ const SignUpPage: React.FC = () => {
             }}
             menuPortalTarget={document.body}
             styles={dropdownStyle}
-            options={regionOptions}
+            options={awsRegionsOptions}
             allowSelectAll={true}
             onChange={values => setAwsRegions(values.map(item => item.value))}
           />
@@ -199,17 +198,48 @@ const SignUpPage: React.FC = () => {
     },
   ];
 
+  const postPolicyController = async (request: PostPolicyControllerRequest) => {
+    const responseData = await apiClient.postPolicyController(request);
+    return responseData;
+  };
+
   const onAwsFormSubmit = () => {
-    setProgress(progress + 50);
-    setConnectLocation(PreDefinedEdges.Meraki);
-    setIsFormFilled(false);
+    const policyResponse = postPolicyController({
+      controller: {
+        name: PreDefinedEdges.Aws,
+        vendor: PolicyVendor.Aws,
+        awsPol: {
+          regions: awsRegions,
+        },
+      },
+    });
+    if (!isEmpty(policyResponse)) {
+      if (progress < 100) {
+        setProgress(progress + 50);
+      }
+      setConnectLocation(PreDefinedEdges.Meraki);
+      setIsFormFilled(false);
+    }
   };
 
   const onMerakiFormSubmit = () => {
-    setProgress(progress + 50);
-    setConnectLocation('');
-    setIsFormFilled(false);
-    setIsAppReadyToUse(true);
+    const policyResponse = postPolicyController({
+      controller: {
+        name: PreDefinedEdges.Meraki,
+        vendor: PolicyVendor.Meraki,
+        merakiPol: {
+          apiKey: merakiApiKey,
+        },
+      },
+    });
+    if (!isEmpty(policyResponse)) {
+      if (progress < 100) {
+        setProgress(progress + 50);
+      }
+      setConnectLocation('');
+      setIsFormFilled(false);
+      setIsAppReadyToUse(true);
+    }
   };
 
   const onAppReadyToUse = () => {
