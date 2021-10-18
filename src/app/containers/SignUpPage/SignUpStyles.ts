@@ -367,8 +367,8 @@ export const SignUpStyles = makeStyles(
       },
       showPassword: {
         position: 'relative',
-        marginTop: -50,
-        marginLeft: 430,
+        marginTop: -53,
+        marginLeft: '95%',
         cursor: 'pointer',
         marginBottom: 20,
       },

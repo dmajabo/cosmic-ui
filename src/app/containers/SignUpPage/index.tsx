@@ -28,17 +28,35 @@ const Option = props => {
 };
 
 export interface StepData {
-  readonly stepTitle: string;
-  readonly stepContent: JSX.Element;
+  readonly title: string;
+  readonly content: JSX.Element;
 }
 
-export interface Options {
+export interface Option {
   readonly value: string;
   readonly label: string;
 }
 
-const AWS = 'aws';
-const MERAKI = 'meraki';
+enum PreDefinedEdges {
+  Aws = 'aws',
+  Meraki = 'meraki',
+}
+
+enum FlowLogToggle {
+  enabled = 'enabled',
+  disabled = 'disabled',
+}
+
+const FlowLog_Options: Option[] = [
+  {
+    value: FlowLogToggle.enabled,
+    label: 'Yes',
+  },
+  {
+    value: FlowLogToggle.disabled,
+    label: 'No',
+  },
+];
 
 const SignUpPage: React.FC = () => {
   const [progress, setProgress] = useState<number>(0);
@@ -47,16 +65,23 @@ const SignUpPage: React.FC = () => {
   const [startWithOkulis, setStartWithOkulis] = useState<boolean>(false);
   const classes = SignUpStyles();
 
-  const [awsEnableFlowLog, setAwsEnableFlowLog] = useState<string>('enabled');
-  const [awsRegion, setAwsRegion] = useState<string[]>([]);
+  const [isAwsFlowLogEnabled, setIsFlowLogEnabled] = useState<string>(FlowLogToggle.enabled);
+  const [awsRegions, setAwsRegions] = useState<string[]>([]);
 
-  const [merakiUsername, setMerakiUsername] = useState<string>('');
-  const [merakiPassword, setMerakiPassword] = useState<string>('');
+  const [merakiName, setMerakiName] = useState<string>('');
+  const [merakiDescription, setMerakiDescription] = useState<string>('');
+  const [merakiApiKey, setMerakiApiKey] = useState<string>('');
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
-  useEffect(() => (awsEnableFlowLog && !isEmpty(awsRegion) ? setIsFormFilled(true) : setIsFormFilled(false)), [awsRegion, awsEnableFlowLog]);
+  useEffect(() => {
+    const isFormFilled = isAwsFlowLogEnabled && !isEmpty(awsRegions) ? true : false;
+    setIsFormFilled(isFormFilled);
+  }, [awsRegions, isAwsFlowLogEnabled]);
 
-  useEffect(() => (merakiUsername && merakiPassword ? setIsFormFilled(true) : setIsFormFilled(false)), [merakiPassword, merakiUsername]);
+  useEffect(() => {
+    const isFormFilled = merakiName && merakiDescription && merakiApiKey ? true : false;
+    setIsFormFilled(isFormFilled);
+  }, [merakiName, merakiDescription, merakiApiKey]);
 
   const dropdownStyle = {
     option: provided => ({
@@ -72,7 +97,7 @@ const SignUpPage: React.FC = () => {
     }),
   };
 
-  const regionOptions: Options[] = [
+  const regionOptions: Option[] = [
     {
       label: 'USA WEST (Oregon)',
       value: 'USA WEST (Oregon)',
@@ -96,21 +121,10 @@ const SignUpPage: React.FC = () => {
     },
   ];
 
-  const flowLogRadioOptions: Options[] = [
-    {
-      value: 'enabled',
-      label: 'enabled',
-    },
-    {
-      value: 'disabled',
-      label: 'disabled',
-    },
-  ];
-
   const awsSteps: StepData[] = [
     {
-      stepTitle: 'Step 1: Select your region(s)',
-      stepContent: (
+      title: 'Step 1: Select your region(s)',
+      content: (
         <>
           <div className={classes.dropdownLabel}>REGION</div>
           <ReactSelect
@@ -122,17 +136,17 @@ const SignUpPage: React.FC = () => {
             styles={dropdownStyle}
             options={regionOptions}
             allowSelectAll={true}
-            onChange={e => setAwsRegion(e.map(item => item.value))}
+            onChange={values => setAwsRegions(values.map(item => item.value))}
           />
         </>
       ),
     },
     {
-      stepTitle: 'Step 2: Select options',
-      stepContent: (
+      title: 'Step 2: Select options',
+      content: (
         <>
           <div className={classes.radioTitle}>Enable flow logs</div>
-          <CustomRadio radioOptions={flowLogRadioOptions} setRadioValue={setAwsEnableFlowLog} defaultValue={flowLogRadioOptions[0]} />
+          <CustomRadio radioOptions={FlowLog_Options} setRadioValue={setIsFlowLogEnabled} defaultValue={FlowLog_Options[0]} />
         </>
       ),
     },
@@ -142,13 +156,15 @@ const SignUpPage: React.FC = () => {
 
   const merakiSteps: StepData[] = [
     {
-      stepTitle: 'Step 1: Sign in into your Cisco Meraki account',
-      stepContent: (
+      title: 'Step 1: Sign in into your Cisco Meraki account',
+      content: (
         <>
-          <span className={classes.dropdownLabel}>EMAIL</span>
-          <input className={classes.formInput} type="text" value={merakiUsername} onChange={e => setMerakiUsername(e.target.value)} />
-          <span className={classes.dropdownLabel}>PASSWORD</span>
-          <input className={classes.formInput} type={showPassword ? 'text' : 'password'} value={merakiPassword} onChange={e => setMerakiPassword(e.target.value)} />
+          <span className={classes.dropdownLabel}>NAME</span>
+          <input className={classes.formInput} type="text" value={merakiName} onChange={e => setMerakiName(e.target.value)} />
+          <span className={classes.dropdownLabel}>DESCRIPTION</span>
+          <input className={classes.formInput} type="text" value={merakiDescription} onChange={e => setMerakiDescription(e.target.value)} />
+          <span className={classes.dropdownLabel}>API KEY</span>
+          <input className={classes.formInput} type={showPassword ? 'text' : 'password'} value={merakiApiKey} onChange={e => setMerakiApiKey(e.target.value)} />
           <div className={classes.showPassword} onClick={togglePasswordVisibility}>
             <img className={classes.showPasswordIcon} src={EyeIcon} alt="show password" />
           </div>
@@ -156,8 +172,8 @@ const SignUpPage: React.FC = () => {
       ),
     },
     {
-      stepTitle: 'Step 2: Configure syslogs',
-      stepContent: (
+      title: 'Step 2: Configure syslogs',
+      content: (
         <>
           <SubStepComponent subStepCount={2.1}>
             Open the <b className={classes.bold}>syslog servers</b> in your Cisco Meraki account <span className={classes.focusText}>Network-wide/General/Reporting</span>
@@ -178,8 +194,8 @@ const SignUpPage: React.FC = () => {
       ),
     },
     {
-      stepTitle: 'Step 3: Configure NetFlow',
-      stepContent: (
+      title: 'Step 3: Configure NetFlow',
+      content: (
         <>
           <SubStepComponent subStepCount={3.1}>
             Open the <b className={classes.bold}>Reporting</b> in your Cisco Meraki account <span className={classes.focusText}>Network-wide/General/Reporting</span>
@@ -203,21 +219,21 @@ const SignUpPage: React.FC = () => {
       img: AwsIcon,
       title: 'AWS',
       content: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-      onClick: () => setConnectLocation(AWS),
-      isConnected: !isEmpty(awsRegion) && awsEnableFlowLog ? true : false,
+      onClick: () => setConnectLocation(PreDefinedEdges.Aws),
+      isConnected: !isEmpty(awsRegions) && isAwsFlowLogEnabled ? true : false,
     },
     {
       img: MerakiIcon,
       title: 'Cisco Meraki',
       content: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-      onClick: () => setConnectLocation(MERAKI),
-      isConnected: merakiUsername && merakiPassword ? true : false,
+      onClick: () => setConnectLocation(PreDefinedEdges.Meraki),
+      isConnected: merakiName && merakiDescription && merakiApiKey ? true : false,
     },
   ];
 
   const onAwsFormSubmit = () => {
     setProgress(progress + 50);
-    setConnectLocation(MERAKI);
+    setConnectLocation(PreDefinedEdges.Meraki);
     setIsFormFilled(false);
   };
 
@@ -244,7 +260,7 @@ const SignUpPage: React.FC = () => {
         </div>
       </div>
       {connectLocation ? (
-        connectLocation === AWS ? (
+        connectLocation === PreDefinedEdges.Aws ? (
           <ConnectSourceForm
             title="Connect To AWS"
             img={AwsIcon}

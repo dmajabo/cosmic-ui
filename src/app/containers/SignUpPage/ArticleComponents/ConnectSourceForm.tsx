@@ -26,8 +26,8 @@ export const ConnectSourceForm: React.FC<ConnectFormProps> = ({ title, img, subt
           <div className={classes.connectFlexContainer}>
             <div className={classes.stepCountBox}>{index + 1}</div>
             <div>
-              <div className={classes.stepTitle}>{step.stepTitle}</div>
-              <div>{step.stepContent}</div>
+              <div className={classes.stepTitle}>{step.title}</div>
+              <div>{step.content}</div>
             </div>
           </div>
         </div>
