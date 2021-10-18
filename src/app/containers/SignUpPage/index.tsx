@@ -13,7 +13,6 @@ import { ConnectSourceForm } from './ArticleComponents/ConnectSourceForm';
 import ReactSelect, { components } from 'react-select';
 import { CustomRadio } from './ArticleComponents/CustomRadio';
 import { isEmpty } from 'lodash';
-import { SubStepComponent } from './ArticleComponents/StepSubTitle';
 import { IntlProvider } from 'react-intl';
 
 const Option = props => {
@@ -62,7 +61,7 @@ const SignUpPage: React.FC = () => {
   const [progress, setProgress] = useState<number>(0);
   const [connectLocation, setConnectLocation] = useState<string>('');
   const [isFormFilled, setIsFormFilled] = useState<boolean>(false);
-  const [startWithOkulis, setStartWithOkulis] = useState<boolean>(false);
+  const [isAppReadyToUSe, setIsAppReadyToUse] = useState<boolean>(false);
   const classes = SignUpStyles();
 
   const [isAwsFlowLogEnabled, setIsAwsFlowLogEnabled] = useState<string>(FlowLogToggle.enabled);
@@ -210,10 +209,10 @@ const SignUpPage: React.FC = () => {
     setProgress(progress + 50);
     setConnectLocation('');
     setIsFormFilled(false);
-    setStartWithOkulis(true);
+    setIsAppReadyToUse(true);
   };
 
-  const onStartWithOkulis = () => {
+  const onAppReadyToUse = () => {
     //TODO: Add Operation for on start with Okulis
   };
 
@@ -250,7 +249,7 @@ const SignUpPage: React.FC = () => {
         )
       ) : (
         <SignUpWrapper>
-          <ConnectEdges edgeBoxArray={edgesToConfigure} startWithOkulis={startWithOkulis} onStartWithOkulis={onStartWithOkulis} />
+          <ConnectEdges edgeBoxArray={edgesToConfigure} isAppReadyToUse={isAppReadyToUSe} onAppReadyToUse={onAppReadyToUse} />
         </SignUpWrapper>
       )}
     </UnAuthLayout>

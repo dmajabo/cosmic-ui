@@ -7,11 +7,11 @@ import { EdgeBoxProps } from 'types';
 
 interface ConnectEdgesProps {
   readonly edgeBoxArray: EdgeBoxProps[];
-  readonly startWithOkulis: boolean;
-  readonly onStartWithOkulis: () => void;
+  readonly isAppReadyToUse: boolean;
+  readonly onAppReadyToUse: () => void;
 }
 
-export const ConnectEdges: React.FC<ConnectEdgesProps> = ({ edgeBoxArray, startWithOkulis, onStartWithOkulis }) => {
+export const ConnectEdges: React.FC<ConnectEdgesProps> = ({ edgeBoxArray, isAppReadyToUse, onAppReadyToUse }) => {
   const classes = SignUpStyles();
 
   return (
@@ -38,7 +38,7 @@ export const ConnectEdges: React.FC<ConnectEdgesProps> = ({ edgeBoxArray, startW
           <div className={classes.skipSetupText}>You can finish it in any time.</div>
         </div>
         <>
-          <button className={startWithOkulis ? classes.connectSourceFormButton : classes.startButton} onClick={onStartWithOkulis} disabled={!startWithOkulis}>
+          <button className={isAppReadyToUse ? classes.connectSourceFormButton : classes.startButton} onClick={onAppReadyToUse} disabled={!isAppReadyToUse}>
             START WITH OKULIS
           </button>
         </>
