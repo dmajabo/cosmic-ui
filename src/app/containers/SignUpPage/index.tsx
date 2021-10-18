@@ -65,12 +65,13 @@ const SignUpPage: React.FC = () => {
   const [startWithOkulis, setStartWithOkulis] = useState<boolean>(false);
   const classes = SignUpStyles();
 
-  const [isAwsFlowLogEnabled, setIsFlowLogEnabled] = useState<string>(FlowLogToggle.enabled);
+  const [isAwsFlowLogEnabled, setIsAwsFlowLogEnabled] = useState<string>(FlowLogToggle.enabled);
   const [awsRegions, setAwsRegions] = useState<string[]>([]);
 
   const [merakiName, setMerakiName] = useState<string>('');
   const [merakiDescription, setMerakiDescription] = useState<string>('');
   const [merakiApiKey, setMerakiApiKey] = useState<string>('');
+  const [isMerakiSysLogEnabled, setIsMerakiSysLogEnabled] = useState<string>(FlowLogToggle.enabled);
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   useEffect(() => {
@@ -79,9 +80,9 @@ const SignUpPage: React.FC = () => {
   }, [awsRegions, isAwsFlowLogEnabled]);
 
   useEffect(() => {
-    const isFormFilled = merakiName && merakiDescription && merakiApiKey ? true : false;
+    const isFormFilled = merakiName && merakiDescription && merakiApiKey && isMerakiSysLogEnabled ? true : false;
     setIsFormFilled(isFormFilled);
-  }, [merakiName, merakiDescription, merakiApiKey]);
+  }, [merakiName, merakiDescription, merakiApiKey, isMerakiSysLogEnabled]);
 
   const dropdownStyle = {
     option: provided => ({
@@ -146,7 +147,7 @@ const SignUpPage: React.FC = () => {
       content: (
         <>
           <div className={classes.radioTitle}>Enable flow logs</div>
-          <CustomRadio radioOptions={FlowLog_Options} setRadioValue={setIsFlowLogEnabled} defaultValue={FlowLog_Options[0]} />
+          <CustomRadio radioOptions={FlowLog_Options} setRadioValue={setIsAwsFlowLogEnabled} defaultValue={FlowLog_Options[0]} />
         </>
       ),
     },
@@ -175,21 +176,8 @@ const SignUpPage: React.FC = () => {
       title: 'Step 2: Configure syslogs',
       content: (
         <>
-          <SubStepComponent subStepCount={2.1}>
-            Open the <b className={classes.bold}>syslog servers</b> in your Cisco Meraki account <span className={classes.focusText}>Network-wide/General/Reporting</span>
-          </SubStepComponent>
-          <SubStepComponent subStepCount={2.2}>
-            Click on <b className={classes.bold}>Add a syslog server</b> button
-          </SubStepComponent>
-          <SubStepComponent subStepCount={2.3}>
-            Add this ID <span className={classes.focusText}>192.164.2.14</span> to<b className={classes.bold}> Server IP</b> column
-          </SubStepComponent>
-          <SubStepComponent subStepCount={2.4}>
-            Add this port number <span className={classes.focusText}>340</span> to <b className={classes.bold}>Port</b> column
-          </SubStepComponent>
-          <SubStepComponent subStepCount={2.5}>
-            Add roles to <b className={classes.bold}>Roles</b> column
-          </SubStepComponent>
+          <div className={classes.radioTitle}>Enable sys logs</div>
+          <CustomRadio radioOptions={FlowLog_Options} setRadioValue={setIsMerakiSysLogEnabled} defaultValue={FlowLog_Options[0]} />
         </>
       ),
     },
