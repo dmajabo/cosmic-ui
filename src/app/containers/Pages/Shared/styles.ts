@@ -83,5 +83,8 @@ export const ChartLabel = styled.div`
 
 export const TableWrapper = styled.div`
   display: flex;
-  min-height: 200px;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+  min-height: 400px;
 `;

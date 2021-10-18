@@ -1,6 +1,6 @@
 import React from 'react';
 import { WrapLabel, Checkbox, Input, Overlay } from './styles';
-import { сheckboxWithSizeIcon } from 'app/components/SVGIcons/checkBoxIcon';
+import { сheckboxIndeterminate, сheckboxWithSizeIcon } from 'app/components/SVGIcons/checkBoxIcon';
 
 interface Props {
   isChecked: boolean;
@@ -11,6 +11,7 @@ interface Props {
   height?: string;
   iconSize?: number;
   wrapStyles?: Object;
+  indeterminate?: boolean;
 }
 const SimpleCheckbox: React.FC<Props> = props => {
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,7 +26,8 @@ const SimpleCheckbox: React.FC<Props> = props => {
       <Checkbox paddingLeft={props.width} minHeight={props.height} alignSvg="top" disabled={props.isDisabled || false}>
         <Input type="checkbox" checked={props.isChecked} onChange={onChange} disabled={props.isDisabled || props.readOnly} />
         <Overlay width={props.width} height={props.height}>
-          {props.isChecked && сheckboxWithSizeIcon(props.iconSize)}
+          {props.isChecked && !props.indeterminate && сheckboxWithSizeIcon(props.iconSize)}
+          {props.isChecked && props.indeterminate && сheckboxIndeterminate(props.iconSize)}
         </Overlay>
       </Checkbox>
     </WrapLabel>

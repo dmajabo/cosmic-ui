@@ -7,3 +7,10 @@ export const сheckboxWithSizeIcon = (size = 20) => (
     />
   </svg>
 );
+
+export const сheckboxIndeterminate = (size = 20) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} fill="none" viewBox="0 0 20 20">
+    <rect width="20" height="20" rx="4" fill="#437FEC" />
+    <rect className="interminate" x="4" y={size / 2 - 1} width={size - 8} height="2" rx="1" ry="1" fill="white" />
+  </svg>
+);

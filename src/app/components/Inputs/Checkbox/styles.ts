@@ -7,7 +7,7 @@ interface WrapLabelProps {
 
 export const WrapLabel = styled.div<WrapLabelProps>`
   display: flex;
-  cursor: ${props => (props.disabled ? 'default' : 'unset')};
+  cursor: ${props => (props.disabled ? 'default' : 'pointer')};
   opacity: ${props => (props.disabled ? 0.4 : 1)};
   width: ${props => (props.isFullWidth ? '100%' : 'auto')};
 `;
@@ -49,8 +49,11 @@ export const Overlay = styled.span<Props>`
   svg {
     width: 100%;
     height: 100%;
-    rect {
+    rect:not(.interminate) {
       fill: transparent;
+    }
+    rect.interminate {
+      fill: var(--_hoverButtonBg);
     }
     path {
       fill: transparent;
@@ -78,8 +81,11 @@ export const Checkbox = styled.label<CheckboxProps>`
     border-color: transparent;
     svg {
       vertical-align: ${props => props.alignSvg || 'top'};
-      rect {
+      rect:not(.interminate) {
         fill: var(--_hoverButtonBg);
+      }
+      rect.interminate {
+        fill: var(--_primaryBg);
       }
       path {
         fill: var(--_primaryBg);

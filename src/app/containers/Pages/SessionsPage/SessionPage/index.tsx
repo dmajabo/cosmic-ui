@@ -1,47 +1,71 @@
 import React from 'react';
-import { ContentWrapper, TableWrapper } from '../../Shared/styles';
-import Grid from 'app/components/Grid';
-import { GridColDef, GridToolbarContainer, GridToolbarColumnsButton } from '@mui/x-data-grid';
+import { ActionPart, ActionRowStyles, ContentWrapper, TableWrapper } from '../../Shared/styles';
+import { useGet } from 'lib/api/http/useAxiosHook';
+import { IAllSessionsRes } from 'lib/api/ApiModels/Sessions/apiModel';
+import { SessionsApi } from 'lib/api/ApiModels/Sessions/endpoints';
+import { useSessionsDataContext } from 'lib/hooks/Sessions/useSessionsDataContext';
+import Table from './Table';
+import Dropdown from 'app/components/Inputs/Dropdown';
+import { SessionsSelectValuesTypes, SessionsTabTypes, SESSIONS_SELECT_VALUES } from 'lib/hooks/Sessions/model';
+import SessionsSwitch from '../Components/SessionsSwitch';
+import { ISelectedListItem } from 'lib/models/general';
+import { sessionsParamBuilder } from 'lib/api/ApiModels/Sessions/paramBuilder';
+import { AbsLoaderWrapper } from 'app/components/Loading/styles';
+import LoadingIndicator from 'app/components/Loading';
 
 interface IProps {}
 
-function CustomToolbar() {
-  return (
-    <GridToolbarContainer>
-      <GridToolbarColumnsButton />
-    </GridToolbarContainer>
-  );
-}
-
-function CustomColumnPanel(props) {
-  console.log(props);
-  return <div>column</div>;
-}
-
 const SessionPage: React.FC<IProps> = (props: IProps) => {
-  const columns: GridColDef[] = [
-    { field: 'id', headerName: '#', minWidth: 40, sortable: false, resizable: false, editable: false, filterable: false, disableReorder: true, disableColumnMenu: true, hideSortIcons: true },
-    { field: 'time', headerName: 'Time', minWidth: 120 },
-    { field: 'sessionId', headerName: 'Session ID', minWidth: 150 },
-    { field: 'name', headerName: 'Endge Name', minWidth: 180 },
-    { field: 'type', headerName: 'Endge Type', minWidth: 180 },
-    { field: 'sourceId', headerName: 'Source IP', minWidth: 150 },
-    { field: 'destinationIp', headerName: 'Destination IP', minWidth: 200 },
-    { field: 'tgwName', headerName: 'TGW Name', minWidth: 200 },
-    { field: 'tgwRegion', headerName: 'TGW Region', minWidth: 200 },
-    { field: 'tgwBytesIn', headerName: 'TGW-BYTESIN', minWidth: 200 },
-    { field: 'awsAccountId', headerName: 'AWS-Account-Id', minWidth: 200 },
-  ];
+  const { sessions } = useSessionsDataContext();
+  const { response, loading, error, onGet } = useGet<IAllSessionsRes>();
 
-  // React.useEffect(() => {
-  //   setFilterDataItems()
-  // }, []);
+  React.useEffect(() => {
+    onTryToLoadData();
+  }, [sessions.sessionsTabPeriod, sessions.sessionsTabSwitch, sessions.sessionsPageSize]);
+
+  React.useEffect(() => {
+    if (response && response.sessions.length) {
+      sessions.onSetSessionsData(response.sessions, response.count);
+    } else {
+      sessions.onSetSessionsData(null, null);
+    }
+  }, [response]);
+
+  const onTryToLoadData = async () => {
+    const _param = sessionsParamBuilder(sessions.sessionsTabPeriod, sessions.sessionsPageSize, sessions.sessionsTabSwitch);
+    await onGet(SessionsApi.getAllSessions(), _param);
+  };
+
+  const onChangePageSize = (_size: number) => {
+    sessions.onChangePageSize(_size);
+  };
+
+  const onChangePeriod = (_value: ISelectedListItem<SessionsSelectValuesTypes>) => {
+    sessions.onChangeSelectedPeriod(_value, SessionsTabTypes.Sessions);
+  };
+
+  const onSwitchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    sessions.onChangeSwitch(e.target.checked, SessionsTabTypes.Sessions);
+  };
 
   return (
     <>
+      <ActionRowStyles>
+        <ActionPart margin="0 auto 0 0">
+          <SessionsSwitch checked={sessions.sessionsTabSwitch} onChange={onSwitchChange} />
+        </ActionPart>
+        <ActionPart margin="0 0 0 auto">
+          <Dropdown label="Show" selectedValue={sessions.sessionsTabPeriod} values={SESSIONS_SELECT_VALUES} onSelectValue={onChangePeriod} />
+        </ActionPart>
+      </ActionRowStyles>
       <ContentWrapper>
         <TableWrapper>
-          <Grid checkboxSelection rows={[]} columns={columns} components={{ Toolbar: CustomToolbar, ColumnsPanel: CustomColumnPanel }} />
+          <Table logCount={sessions.sessionsCount} isError={error} data={sessions.sessionsData} pageSize={sessions.sessionsPageSize} onChangePageSize={onChangePageSize} />
+          {loading && (
+            <AbsLoaderWrapper width="100%" height="calc(100% - 50px)" top="50px">
+              <LoadingIndicator margin="auto" />
+            </AbsLoaderWrapper>
+          )}
         </TableWrapper>
       </ContentWrapper>
     </>

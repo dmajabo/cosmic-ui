@@ -10,10 +10,16 @@ interface Props {
 }
 
 const SessionsSwitch: React.FC<Props> = (props: Props) => {
-  const [checked, setChecked] = React.useState(true);
+  const [checked, setChecked] = React.useState(props.checked || false);
+
+  React.useEffect(() => {
+    if (checked !== props.checked) {
+      setChecked(props.checked);
+    }
+  }, [props.checked]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setChecked(event.target.checked);
+    props.onChange(event);
   };
   return (
     <Wrapper>

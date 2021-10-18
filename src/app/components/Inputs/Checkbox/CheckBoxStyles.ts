@@ -42,8 +42,11 @@ export const Overlay = styled.span<Props>`
   svg {
     width: 100%;
     height: 100%;
-    rect {
+    rect:not(.interminate) {
       fill: transparent;
+    }
+    rect.interminate {
+      fill: var(--_hoverButtonBg);
     }
     path {
       fill: transparent;
@@ -59,20 +62,24 @@ export const Checkbox = styled.div<CheckboxProps>`
   font-weight: normal;
   cursor: ${props => (props.disabled ? 'default' : 'pointer')};
   pointer-events: all;
+  color: var(--_disabledTextColor);
   ${Input} ~ ${Overlay} {
     svg {
       vertical-align: ${props => props.alignSvg || 'top'};
     }
   }
-  ${Input}:checked:not(:disabled) ~ * {
-    color: var(--_hoverButtonBg);
+  ${Input}:checked ~ * {
+    color: var(--_primaryColor);
   }
   ${Input}:checked ~ ${Overlay} {
     border-color: transparent;
     svg {
       vertical-align: ${props => props.alignSvg || 'top'};
-      rect {
+      rect:not(.interminate) {
         fill: var(--_hoverButtonBg);
+      }
+      rect.interminate {
+        fill: var(--_primaryBg);
       }
       path {
         fill: var(--_primaryBg);

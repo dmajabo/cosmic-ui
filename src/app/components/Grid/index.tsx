@@ -1,8 +1,8 @@
 import React from 'react';
-import { DataGrid, GridRowsProp, GridColDef, GridSlotsComponent } from '@mui/x-data-grid';
+import { DataGrid, GridColDef, GridSlotsComponent } from '@mui/x-data-grid';
 
 interface Props {
-  rows: GridRowsProp[];
+  rows: any[];
   columns: GridColDef[];
   checkboxSelection?: boolean;
   components?: GridSlotsComponent;

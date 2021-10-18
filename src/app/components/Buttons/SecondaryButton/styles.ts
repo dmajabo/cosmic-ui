@@ -40,6 +40,7 @@ export const SecondaryButtonStyles = styled.button<BProps>`
       fill: var(--_sDisabledButtonColor);
     }
   }
+  &.active,
   &:hover:not(:disabled) {
     color: var(--_sHoverButtonColor);
     background: var(--_sHoverButtonBg);
@@ -48,4 +49,10 @@ export const SecondaryButtonStyles = styled.button<BProps>`
       fill: var(--_sHoverButtonColor);
     }
   }
+`;
+
+export const SecondaryButtonWrapper = styled.div`
+  position: relative;
+  display: inline-block;
+  flex-shrink: 0;
 `;
