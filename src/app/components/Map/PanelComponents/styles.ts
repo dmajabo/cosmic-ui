@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import { InputWrapper, InputSearch } from 'app/components/Inputs/Search/styles';
-import { PrimaryButtonStyles } from 'app/components/Buttons/PrimaryButton/styles';
 
 export const PanelTabWrapper = styled.div<Props>`
   display: flex;
@@ -30,19 +29,6 @@ export const PanelHeader = styled.div<Props>`
   }
   ${InputWrapper} {
     margin-top: 20px;
-  }
-  ${PrimaryButtonStyles} {
-    border-color: var(--_disabledButtonColor);
-    margin: 0 auto 0 30px;
-    flex-shrink: 0;
-    &:hover:not(:disabled) {
-      .inheritFill {
-        fill: var(--_hoverButtonBg);
-      }
-      border-color: var(--_hoverButtonBg);
-      color: var(--_hoverButtonBg);
-      background-color: var(--_primaryBg);
-    }
   }
 `;
 

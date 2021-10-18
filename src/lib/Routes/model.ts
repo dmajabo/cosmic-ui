@@ -6,6 +6,7 @@ import { performanceDashboard } from 'app/components/SVGIcons/pagesIcons/perform
 import { settingsIcon } from 'app/components/SVGIcons/pagesIcons/settings';
 import { analyticsIcon } from 'app/components/SVGIcons/pagesIcons/analytics';
 import { sessionsIcon } from 'app/components/SVGIcons/pagesIcons/sessions';
+import { accountsIcon } from 'app/components/SVGIcons/pagesIcons/accounts';
 export const ROUTE = {
   base: '/',
   login: '/login',
@@ -15,6 +16,7 @@ export const ROUTE = {
   policy: '/policy',
   performanceDashboard: '/performanceDashboard',
   analytics: '/analytics',
+  accounts: '/accounts',
   settings: '/settings',
   automation: '/automation',
   signUp: '/sign-up',
@@ -43,5 +45,6 @@ export const APP_PAGES: IPage[] = [
   { id: 'policy', path: ROUTE.policy, pageName: 'Policy', icon: policyIcon, breadcrumb: null },
   { id: 'analytics', path: ROUTE.analytics, pageName: 'Analytics', icon: analyticsIcon, breadcrumb: null },
   { id: 'automation', path: ROUTE.automation, pageName: 'Automation', icon: automationIcon, breadcrumb: BreadCrumbTypes.AUTOMATIONS },
+  { id: 'accounts', path: ROUTE.accounts, pageName: 'Accounts', icon: accountsIcon, breadcrumb: null },
   { id: 'settings', path: ROUTE.settings, pageName: 'Settings', icon: settingsIcon, breadcrumb: null },
 ];

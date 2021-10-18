@@ -3,7 +3,7 @@ import * as d3 from 'd3';
 import { IPosition } from '../model';
 import { TOPOLOGY_LINKS_TYPES } from 'lib/models/topology';
 import { IRotateCoord } from 'lib/models/general';
-import { calculateAttachmentPosition } from '../Containers/Links/Attachment/helper';
+import { calculateAttachmentPosition, getPointsData } from '../Containers/Links/Attachment/helper';
 
 interface IProps {
   id: string;
@@ -125,23 +125,14 @@ export function useDrag(props: IProps, onUpdateCallBack: (pos: IPosition) => voi
         const _tY = Number(_g.attr('data-target_y')) + dy;
         const _sX = Number(_g.attr('data-source_x'));
         const _sY = Number(_g.attr('data-source_y'));
-        const _x = _sX - _tX;
-        const _y = _sY - _tY;
         if (_type === TOPOLOGY_LINKS_TYPES.NETWORKLINK || _type === TOPOLOGY_LINKS_TYPES.NETWORK_BRENCH_LINK) {
           const gAtt = _g.select('.networkAttached');
-          const _data: IRotateCoord = calculateAttachmentPosition([
-            [0, 0],
-            [_x, _y],
-          ]);
-          if (_data.x <= 0) {
-            gAtt.classed('rightLabel', true);
-          } else {
-            gAtt.classed('rightLabel', false);
-          }
+          const _points = getPointsData({ x: _tX, y: _tY }, { x: _sX, y: _sY });
+          const _data: IRotateCoord = calculateAttachmentPosition(_points);
           gAtt.attr('transform', `translate(${_data.x}, ${_data.y}) rotate(${_data.angle})`);
         }
-        _g.attr('transform', `translate(${_tX}, ${_tY})`).attr('data-target_x', _tX).attr('data-target_y', _tY);
-        _l.attr('x2', _x).attr('y2', _y);
+        _g.attr('data-target_x', _tX).attr('data-target_y', _tY);
+        _l.attr('x2', _tX).attr('y2', _tY);
       });
     }
     if (sourceLinks) {
@@ -153,23 +144,14 @@ export function useDrag(props: IProps, onUpdateCallBack: (pos: IPosition) => voi
         const _tY = Number(_g.attr('data-target_y'));
         const _sX = Number(_g.attr('data-source_x')) + dx;
         const _sY = Number(_g.attr('data-source_y')) + dy;
-        const _x = _sX - _tX;
-        const _y = _sY - _tY;
         if (_type === TOPOLOGY_LINKS_TYPES.NETWORKLINK || _type === TOPOLOGY_LINKS_TYPES.NETWORK_BRENCH_LINK) {
           const gAtt = _g.select('.networkAttached');
-          const _data: IRotateCoord = calculateAttachmentPosition([
-            [0, 0],
-            [_x, _y],
-          ]);
-          if (_data.x <= 0) {
-            gAtt.classed('rightLabel', true);
-          } else {
-            gAtt.classed('rightLabel', false);
-          }
+          const _points = getPointsData({ x: _tX, y: _tY }, { x: _sX, y: _sY });
+          const _data: IRotateCoord = calculateAttachmentPosition(_points);
           gAtt.attr('transform', `translate(${_data.x}, ${_data.y}) rotate(${_data.angle})`);
         }
         _g.attr('data-source_x', _sX).attr('data-source_y', _sY);
-        _l.attr('x2', _x).attr('y2', _y);
+        _l.attr('x1', _sX).attr('y1', _sY);
       });
     }
     node.attr('transform', `translate(${translateX}, ${translateY})`);

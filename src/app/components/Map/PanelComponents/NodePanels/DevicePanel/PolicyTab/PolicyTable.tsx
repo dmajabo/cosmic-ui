@@ -49,7 +49,7 @@ const PolicyTable: React.FC<Props> = (props: Props) => {
             {props.data && props.data.length
               ? props.data.map((row, rowIndex) => {
                   return (
-                    <TableRow hover tabIndex={-1} key={`tableRow${row.id}`} className={classes.row}>
+                    <TableRow hover tabIndex={-1} key={`tableRow${row.id || row.name}${rowIndex}`} className={classes.row}>
                       <TableCell className={classes.tableCell}>{rowIndex + 1}</TableCell>
                       <TableCell className={classes.tableCell}>{row.srcCidrs && row.srcCidrs.length && row.srcCidrs[0].name ? row.srcCidrs[0].name : '*'}</TableCell>
                       <TableCell className={classes.tableCell}>{row.fromPort}</TableCell>

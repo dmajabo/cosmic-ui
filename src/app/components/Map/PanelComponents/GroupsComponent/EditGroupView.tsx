@@ -96,10 +96,9 @@ const EditGroupView: React.FC<IProps> = (props: IProps) => {
       {error && <ErrorMessage>{error}</ErrorMessage>}
       <ButtonsGroup>
         <SecondaryButton label="cancel" onClick={onCancel} />
-        <PrimaryButton label={group.id ? 'update' : 'create'} icon={group.id ? null : addIcon} onClick={onCreate} disabled={!isGroupValid} />
+        <PrimaryButton styles={{ margin: '0 0 0 12px' }} label={group.id ? 'update' : 'create'} icon={group.id ? null : addIcon} onClick={onCreate} disabled={!isGroupValid} />
       </ButtonsGroup>
     </GroupWrapper>
   );
 };
-
 export default React.memo(EditGroupView);

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { styled } from '@mui/material/styles';
 import Radio, { RadioProps } from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
@@ -36,7 +36,7 @@ const BpCheckedIcon = styled(BpIcon)({
   },
 });
 
-function BpRadio(props: RadioProps) {
+const BpRadio: React.FC<RadioProps> = props => {
   return (
     <Radio
       sx={{
@@ -51,20 +51,19 @@ function BpRadio(props: RadioProps) {
       {...props}
     />
   );
-}
+};
 
 interface CustomRadioProps {
   readonly radioOptions: Options[];
   readonly setRadioValue: (value: string) => void;
+  readonly defaultValue: Options;
 }
 
-export const CustomRadio: React.FC<CustomRadioProps> = ({ radioOptions, setRadioValue }) => {
-  useEffect(() => {
-    setRadioValue(radioOptions[0].value);
-  }, []);
+export const CustomRadio: React.FC<CustomRadioProps> = ({ radioOptions, setRadioValue, defaultValue }) => {
+  const onRadioValueChange = event => setRadioValue(event.target.value);
   return (
     <FormControl component="fieldset">
-      <RadioGroup defaultValue={radioOptions[0].value} onChange={e => setRadioValue(e.target.value)} aria-label="options" name="customized-radios">
+      <RadioGroup defaultValue={defaultValue.value} onChange={onRadioValueChange} aria-label="options" name="customized-radios">
         {radioOptions.map(option => (
           <FormControlLabel key={option.value} value={option.value} control={<BpRadio />} label={option.label} />
         ))}

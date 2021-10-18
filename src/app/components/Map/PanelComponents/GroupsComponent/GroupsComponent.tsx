@@ -6,7 +6,6 @@ import { TopologyGroupsView } from './model';
 import EmptyGroupView from './EmptyGroupView';
 import AllGroupView from './AllGroupView';
 import EditGroupView from './EditGroupView';
-import PrimaryButton from 'app/components/Buttons/PrimaryButton';
 import { addIcon } from 'app/components/SVGIcons/addIcon';
 import { ITopologyGroup } from 'lib/models/topology';
 import { TopologyGroupApi } from 'lib/api/ApiModels/Topology/endpoints';
@@ -15,6 +14,7 @@ import LoadingIndicator from 'app/components/Loading';
 import { useGet, usePost, useDelete, usePut } from 'lib/api/http/useAxiosHook';
 import { jsonClone } from 'lib/helpers/cloneHelper';
 import { getMaxCopyValue } from './helpers';
+import SecondaryButton from 'app/components/Buttons/SecondaryButton';
 
 interface IProps {}
 
@@ -141,9 +141,9 @@ const GroupsComponent: React.FC<IProps> = (props: IProps) => {
     <>
       <PanelHeader>
         <PanelTitle>{getPanelBarTitle(view, groupToEdit)}</PanelTitle>
-        {view === TopologyGroupsView.ALL && <PrimaryButton label="create group" icon={addIcon} onClick={onOpenEditorGroup} />}
+        {view === TopologyGroupsView.ALL && <SecondaryButton styles={{ margin: '0 auto 0 30px', flexShrink: 0 }} label="create group" icon={addIcon} onClick={onOpenEditorGroup} />}
       </PanelHeader>
-      <OverflowContainer>
+      <OverflowContainer margin={view === TopologyGroupsView.EMPTY ? 'auto 0' : 'unset'}>
         <PanelBarContent>
           {view === TopologyGroupsView.EMPTY && <EmptyGroupView onOpenEditorGroup={onOpenEditorGroup} />}
           {view === TopologyGroupsView.EDIT && <EditGroupView group={groupToEdit} onCancel={onCancel} onSave={onSave} error={error ? error.message : null} />}

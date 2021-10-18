@@ -14,14 +14,15 @@ const ReviewStep: React.FC<Props> = (props: Props) => {
   };
   return (
     <GeneralFieldsRow>
-      <TextInput id="automationName" name="automationName" value={props.name} label="Name" onChange={v => onChange(v, 'name')} styles={{ maxWidth: '500px', margin: '0 20px 20px 0' }} />
+      <TextInput required id="automationName" name="automationName" value={props.name} label="Name" onChange={v => onChange(v, 'name')} styles={{ maxWidth: '500px', margin: '0 20px 20px 0' }} />
       <TextInput
+        area
         id="automationDescription"
         name="automationDescription"
         value={props.description}
         label="Description"
         onChange={v => onChange(v, 'description')}
-        styles={{ maxWidth: '500px', margin: '0 20px 20px 0' }}
+        styles={{ margin: '0 20px 20px 0' }}
       />
     </GeneralFieldsRow>
   );

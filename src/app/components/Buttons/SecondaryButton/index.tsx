@@ -9,11 +9,12 @@ interface IProps {
   onClick: () => void;
   disabled?: boolean;
   styles?: Object;
+  withoutBorder?: boolean;
 }
 
 const SecondaryButton: React.FC<IProps> = (props: IProps) => {
   return (
-    <SecondaryButtonStyles style={props.styles} disabled={props.disabled} onClick={props.onClick}>
+    <SecondaryButtonStyles withoutBorder={props.withoutBorder} style={props.styles} disabled={props.disabled} onClick={props.onClick}>
       <Label margin={props.icon ? '0 12px 0 0' : '0'}>{props.label}</Label>
       {props.icon && <IconWrapper icon={props.icon} />}
     </SecondaryButtonStyles>

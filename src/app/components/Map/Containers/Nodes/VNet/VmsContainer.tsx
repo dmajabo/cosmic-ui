@@ -16,7 +16,7 @@ const VmsContainer: React.FC<IProps> = (props: IProps) => {
     <WrapperVms showMore={props.showMore}>
       {props.items.map(it => {
         if (it.selectorGroup && props.isGroupPresent) return null;
-        return <VmNode key={`vm${it.id}`} dataItem={it} onClick={props.onClickVm} />;
+        return <VmNode key={`vm${it.uiId}`} dataItem={it} onClick={props.onClickVm} />;
       })}
     </WrapperVms>
   );

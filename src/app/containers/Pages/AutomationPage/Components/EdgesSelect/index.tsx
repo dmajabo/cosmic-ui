@@ -7,6 +7,8 @@ import { arrowBottomIcon } from 'app/components/SVGIcons/arrows';
 import ListItem from './ListItem';
 import DisplayValue from './DisplayValue';
 import { closeSmallIcon } from 'app/components/SVGIcons/close';
+import { InputLabel } from 'app/components/Inputs/styles/Label';
+import { Required } from 'app/components/Inputs/FormTextInput/styles';
 interface IProps {
   onChange: (selectedItems: any[]) => void;
   disabled?: boolean;
@@ -14,6 +16,8 @@ interface IProps {
   items: any[];
   value: any[];
   styles?: Object;
+  label?: string;
+  required?: boolean;
 }
 
 const EdgesSelect: React.FC<IProps> = (props: IProps) => {
@@ -27,18 +31,17 @@ const EdgesSelect: React.FC<IProps> = (props: IProps) => {
   };
 
   const handleClickAway = () => {
+    if (!open) return;
     setSearchValue('');
     setFilteredItems(props.items || []);
     setOpen(false);
+    props.onChange(selectedItems);
   };
 
   React.useEffect(() => {
     setSelectItems(props.value);
-  }, [props.items]);
-
-  React.useEffect(() => {
-    props.onChange(selectedItems);
-  }, [selectedItems]);
+    setFilteredItems(props.items || []);
+  }, [props.items, props.value]);
 
   const handleChange = (value: any) => {
     if (!selectedItems || !selectedItems.length) {
@@ -67,19 +70,25 @@ const EdgesSelect: React.FC<IProps> = (props: IProps) => {
   };
 
   const onClearValues = () => {
-    if (!selectedItems) return;
     setSelectItems([]);
+    props.onChange([]);
   };
 
   return (
     <ClickAwayListener onClickAway={handleClickAway}>
       <Wrapper>
+        {props.label && (
+          <InputLabel>
+            {props.label}
+            {props.required && <Required>*</Required>}
+          </InputLabel>
+        )}
         <ValueWrapper onClick={handleClickOpen} className={open ? 'active' : ''}>
           <DisplayValue placeholder={props.placeholder} selectedItems={selectedItems} />
           {selectedItems && selectedItems.length ? (
             <IconWrapper onClick={onClearValues} styles={{ position: 'absolute', right: '32px', top: 'calc(50% - 6px)', width: '12px', height: '12px' }} icon={closeSmallIcon} />
           ) : null}
-          <IconWrapper styles={{ position: 'absolute', right: '12px', top: 'calc(50% - 6px)', width: '12px', height: '12px' }} icon={arrowBottomIcon} />
+          <IconWrapper classes="rotation" styles={{ position: 'absolute', right: '12px', top: 'calc(50% - 6px)', width: '12px', height: '12px' }} icon={arrowBottomIcon} />
         </ValueWrapper>
         {open && (
           <Popup>

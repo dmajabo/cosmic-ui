@@ -10,15 +10,4 @@ export const GAttachement = styled.g`
   .attachmentLabel {
     transform: translate(25px, 2px);
   }
-  &.rightLabel {
-    .attachmentVpcIcon {
-      transform: translate(75px, 6px) rotate(180deg);
-    }
-    .attachmentVpnIcon {
-      transform: translate(76px, 6.5px) rotate(180deg);
-    }
-    .attachmentLabel {
-      transform: translate(60px, -2px) rotate(180deg);
-    }
-  }
 `;

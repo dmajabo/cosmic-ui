@@ -1,8 +1,13 @@
 import CircularProgress, { CircularProgressProps } from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+import { FormattedNumber } from 'react-intl';
 
-export function CircularProgressWithLabel(props: CircularProgressProps & { value: number }) {
+interface CircularProgressWithLabelProps {
+  readonly value: number;
+}
+
+export const CircularProgressWithLabel: React.FC<CircularProgressProps & CircularProgressWithLabelProps> = props => {
   return (
     <Box sx={{ position: 'relative', display: 'inline-flex' }}>
       <CircularProgress variant="determinate" {...props} />
@@ -18,8 +23,10 @@ export function CircularProgressWithLabel(props: CircularProgressProps & { value
           justifyContent: 'center',
         }}
       >
-        <Typography variant="caption" component="div" color="text.secondary">{`${Math.round(props.value)}%`}</Typography>
+        <Typography variant="caption" component="div" color="text.secondary">
+          <FormattedNumber style="percent" value={Math.round(props.value) / 100} />
+        </Typography>
       </Box>
     </Box>
   );
-}
+};

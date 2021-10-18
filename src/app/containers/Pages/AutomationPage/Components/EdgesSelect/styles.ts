@@ -1,12 +1,14 @@
+import styled from 'styled-components';
+import { Icon } from 'app/components/Buttons/IconWrapper/styles';
 import { WrapLabel } from 'app/components/Inputs/Checkbox/styles';
 import { InputSearch } from 'app/components/Inputs/Search/styles';
-import styled from 'styled-components';
 
 export const Wrapper = styled.div`
   position: relative;
   width: 100%;
   max-width: 500px;
-  height: 60px;
+  height: auto;
+  min-height: 82px;
   margin: 0 0 20px 0;
 `;
 
@@ -25,9 +27,17 @@ export const ValueWrapper = styled.div`
   line-height: 21px;
   color: var(--_disabledTextColor);
   cursor: pointer;
+  ${Icon} {
+    &.rotation {
+      transform: rotate(0deg);
+      transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    }
+  }
   &.active {
-    .inheritFill:not(.inheritHoverFill) {
-      fill: var(--_hoverButtonBg);
+    ${Icon} {
+      &.rotation {
+        transform: rotate(180deg);
+      }
     }
   }
 `;

@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const TextInputWrapper = styled.div`
   position: relative;
@@ -10,21 +10,32 @@ export const TextInputWrapper = styled.div`
 interface Props {
   disabled?: boolean;
 }
-export const Input = styled.input<Props>`
-  height: 40px;
+
+const InputStyles = css`
   width: 100%;
   background: var(--_primaryButtonBg);
   border-radius: 6px;
   outline: 0;
-  padding: 8px 24px 8px 16px;
   border: 1px solid;
-  border-color: var(--_disabledButtonColor);
+  border-color: var(--_defaultInputBorder);
   color: var(--_primaryColor);
   font-style: normal;
-  font-weight: normal;
+  font-weight: 500;
   font-size: 14px;
-  line-height: 24px;
+  line-height: 23px;
   &::placeholder {
     color: var(--_disabledTextColor);
   }
+`;
+export const Input = styled.input<Props>`
+  ${InputStyles};
+  height: 40px;
+  padding: 8px 24px 8px 16px;
+`;
+
+export const TextArea = styled.textarea<Props>`
+  ${InputStyles};
+  height: 172px;
+  padding: 20px;
+  resize: none;
 `;

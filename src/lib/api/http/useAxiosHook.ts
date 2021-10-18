@@ -3,14 +3,13 @@ import axios, { AxiosError, AxiosResponse } from 'axios';
 
 axios.defaults.baseURL = process.env.NODE_ENV === 'development' ? process.env.REACT_APP_API_ENDPOINT_DEVELOPMENT : process.env.REACT_APP_API_ENDPOINT_PRODUCTION;
 
-const getHeaders = (params?: Object, token?: string, cancelToken?: any) => {
+const getHeaders = (params?: Object, token?: string) => {
   return {
     headers: {
       'Content-Type': 'application/json',
       Authorization: token ? 'Bearer ' + token : '',
       // 'Accept-Language': language,
     },
-    cancelToken: cancelToken,
     params: params || null,
   };
 };
@@ -32,23 +31,25 @@ export const useGet = <T = any>(): IApiRes<T> => {
   const [loading, setloading] = React.useState<boolean>(false);
 
   const onGet = React.useCallback((url: string, param?: any, token?: string) => {
-    let source = axios.CancelToken.source();
+    let isSubscribed = true;
     setloading(true);
     setError(null);
-    getDataAsync(url, param, token, source.token);
+    getDataAsync(isSubscribed, url, param, token);
     return () => {
-      source.cancel('Cancelling in cleanup');
+      isSubscribed = false;
     };
   }, []);
 
-  const getDataAsync = async (url: string, param?: any, token?: string, cancelToken?: any) => {
-    const _header = getHeaders(param, token, cancelToken);
+  const getDataAsync = async (isSubscribed: boolean, url: string, param?: any, token?: string) => {
+    const _header = getHeaders(param, token);
     await axios
       .get(url, _header)
       .then((res: AxiosResponse<T>) => {
+        if (!isSubscribed) return;
         setResponse(res.data);
       })
       .catch(err => {
+        if (!isSubscribed) return;
         if (err.response && err.response.data && err.response.data.message) {
           setError(err.response.data);
           return;
@@ -56,6 +57,7 @@ export const useGet = <T = any>(): IApiRes<T> => {
         setError(err.toJSON());
       })
       .finally(() => {
+        if (!isSubscribed) return;
         setloading(false);
       });
   };
@@ -69,19 +71,25 @@ export const usePost = <T = any, R = any>(): IApiRes<R> => {
   const [loading, setloading] = React.useState<boolean>(false);
 
   const onPost = React.useCallback((url: string, _data: T, param?: any, token?: string) => {
+    let isSubscribed = true;
     setloading(true);
-    postDataAsync(url, _data, param, token);
+    postDataAsync(isSubscribed, url, _data, param, token);
+    return () => {
+      isSubscribed = false;
+    };
   }, []);
 
-  const postDataAsync = async (url: string, _data: T, param?: any, token?: string) => {
+  const postDataAsync = async (isSubscribed: boolean, url: string, _data: T, param?: any, token?: string) => {
     const _header = getHeaders(param, token);
     const data = JSON.stringify(_data);
     await axios
       .post(url, data, _header)
       .then((res: AxiosResponse<R>) => {
+        if (!isSubscribed) return;
         setResponse(res.data);
       })
       .catch(err => {
+        if (!isSubscribed) return;
         if (err.response && err.response.data && err.response.data.message) {
           setError(err.response.data);
           return;
@@ -89,6 +97,7 @@ export const usePost = <T = any, R = any>(): IApiRes<R> => {
         setError(err.toJSON());
       })
       .finally(() => {
+        if (!isSubscribed) return;
         setloading(false);
       });
   };
@@ -102,19 +111,25 @@ export const usePut = <T = any, R = any>(): IApiRes<R> => {
   const [loading, setloading] = React.useState<boolean>(false);
 
   const onPut = React.useCallback((url: string, _data: T, param?: any, token?: string) => {
+    let isSubscribed = true;
     setloading(true);
-    putDataAsync(url, _data, param, token);
+    putDataAsync(isSubscribed, url, _data, param, token);
+    return () => {
+      isSubscribed = false;
+    };
   }, []);
 
-  const putDataAsync = async (url: string, _data: T, param?: any, token?: string) => {
+  const putDataAsync = async (isSubscribed: boolean, url: string, _data: T, param?: any, token?: string) => {
     const _header = getHeaders(param, token);
     const data = JSON.stringify(_data);
     await axios
       .put(url, data, _header)
       .then((res: AxiosResponse<R>) => {
+        if (!isSubscribed) return;
         setResponse(res.data);
       })
       .catch(err => {
+        if (!isSubscribed) return;
         if (err.response && err.response.data && err.response.data.message) {
           setError(err.response.data);
           return;
@@ -122,6 +137,7 @@ export const usePut = <T = any, R = any>(): IApiRes<R> => {
         setError(err.toJSON());
       })
       .finally(() => {
+        if (!isSubscribed) return;
         setloading(false);
       });
   };
@@ -135,18 +151,24 @@ export const useDelete = <T = any>(): IApiRes<T> => {
   const [loading, setloading] = React.useState<boolean>(false);
 
   const onDelete = React.useCallback((url: string, param?: any, token?: string) => {
+    let isSubscribed = true;
     setloading(true);
-    deleteDataAsync(url, param, token);
+    deleteDataAsync(isSubscribed, url, param, token);
+    return () => {
+      isSubscribed = false;
+    };
   }, []);
 
-  const deleteDataAsync = async (url: string, param?: any, token?: string) => {
+  const deleteDataAsync = async (isSubscribed: boolean, url: string, param?: any, token?: string) => {
     const _header = getHeaders(param, token);
     await axios
       .delete(url, _header)
       .then((res: AxiosResponse) => {
+        if (!isSubscribed) return;
         setResponse(res.data);
       })
       .catch(err => {
+        if (!isSubscribed) return;
         if (err.response && err.response.data && err.response.data.message) {
           setError(err.response.data);
           return;
@@ -154,6 +176,7 @@ export const useDelete = <T = any>(): IApiRes<T> => {
         setError(err.toJSON());
       })
       .finally(() => {
+        if (!isSubscribed) return;
         setloading(false);
       });
   };
@@ -167,16 +190,21 @@ export const useGetTopology = <T = any>(): IApiRes<T> => {
   const [loading, setloading] = React.useState<boolean>(false);
 
   const onGetChainData = React.useCallback((url: string[], keys: string[], param?: any, token?: string) => {
+    let isSubscribed = true;
     setloading(true);
     setError(null);
-    getDataAsync(url, keys, param, token);
+    getDataAsync(isSubscribed, url, keys, param, token);
+    return () => {
+      isSubscribed = false;
+    };
   }, []);
 
-  const getDataAsync = async (url: string[], keys: string[], param?: any, token?: string) => {
+  const getDataAsync = async (isSubscribed: boolean, url: string[], keys: string[], param?: any, token?: string) => {
     const _header = getHeaders(param, token);
     await axios
       .all([axios.get(url[0], _header), axios.get(url[1], _header)])
       .then((res: AxiosResponse<any>[]) => {
+        if (!isSubscribed) return;
         const _obj: any = {};
         keys.forEach((key, i) => {
           _obj[key] = res[i].data;
@@ -184,6 +212,7 @@ export const useGetTopology = <T = any>(): IApiRes<T> => {
         setResponse(_obj);
       })
       .catch((err: AxiosError | AxiosError[]) => {
+        if (!isSubscribed) return;
         if (Array.isArray(err)) {
           const _obj: any = {};
           keys.forEach((key, i) => {
@@ -203,6 +232,7 @@ export const useGetTopology = <T = any>(): IApiRes<T> => {
         setError(err);
       })
       .finally(() => {
+        if (!isSubscribed) return;
         setloading(false);
       });
   };

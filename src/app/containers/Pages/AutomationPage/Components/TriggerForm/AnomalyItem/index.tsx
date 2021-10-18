@@ -4,7 +4,7 @@ import { DataItemWrapper } from '../styles/DataItemStyles';
 import SettingsButton from 'app/components/Buttons/SettingsButton';
 import { PopupContent } from 'app/components/Buttons/SettingsButton/PopupItemStyles';
 import PopupItem from 'app/components/Buttons/SettingsButton/PopupItem';
-import { editTopologyIcon } from 'app/components/SVGIcons/edit';
+import { editIcon } from 'app/components/SVGIcons/edit';
 import { deleteIcon } from 'app/components/SVGIcons/delete';
 import Dropdown from 'app/components/Inputs/Dropdown';
 
@@ -30,7 +30,7 @@ const AnomalyItem: React.FC<Props> = (props: Props) => {
       <Dropdown values={itemsAnomaly} selectedValue={selectedValue} onSelectValue={onSelect} placeholder="Choose Anomaly type" />
       <SettingsButton id={`settingsAnomalyButton${props.index}`} width="24px" height="40px" hoverIconColor="var(--_hoverButtonBg)">
         <PopupContent>
-          <PopupItem label="Edit" icon={editTopologyIcon} onClick={onEdit} />
+          <PopupItem label="Edit" icon={editIcon} onClick={onEdit} />
           <PopupItem color="var(--_errorColor)" label="Delete" icon={deleteIcon} onClick={onDelete} />
         </PopupContent>
       </SettingsButton>

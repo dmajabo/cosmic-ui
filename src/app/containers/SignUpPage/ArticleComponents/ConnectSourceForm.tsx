@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { SignUpStyles } from '../SignUpStyles';
 import { StepData } from '..';
 import SkipIcon from '../icons/skip.svg';
