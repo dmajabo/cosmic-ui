@@ -7,4 +7,5 @@ export interface EdgeBoxProps {
   readonly title: string;
   readonly content: string;
   readonly onClick: () => void;
+  readonly isConnected: boolean;
 }

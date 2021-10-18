@@ -21,7 +21,7 @@ export const ConnectEdges: React.FC<ConnectEdgesProps> = ({ edgeBoxArray }) => {
       </div>
       <div className={classes.edgeBoxContainer}>
         {edgeBoxArray.map(edgeBox => (
-          <EdgeBox key={edgeBox.title} img={edgeBox.img} title={edgeBox.title} content={edgeBox.content} onClick={edgeBox.onClick} />
+          <EdgeBox key={edgeBox.title} img={edgeBox.img} title={edgeBox.title} content={edgeBox.content} onClick={edgeBox.onClick} isConnected={edgeBox.isConnected} />
         ))}
         <div className={classes.newEdgeButton}>
           ADD NEW EDGE
