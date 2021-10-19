@@ -127,6 +127,12 @@ const SignUpPage: React.FC = () => {
     getAwsRegions();
   }, []);
 
+  useEffect(() => {
+    if (progress >= 100) {
+      setIsAppReadyToUse(true);
+    }
+  }, [progress]);
+
   const toggleAwsSecretVisibility = () => setShowAwsSecret(!showAwsSecret);
 
   const awsSteps: StepData[] = [
@@ -254,11 +260,8 @@ const SignUpPage: React.FC = () => {
       toast.success('Connected Successfully!');
       if (progress < 100) {
         setProgress(progress + 50);
-      } else {
-        setIsAppReadyToUse(true);
       }
       setConnectLocation('');
-      clearAwsForm();
       setIsFormFilled(false);
     } catch (error) {
       toast.error('Something went wrong. Please try Again!');
@@ -279,11 +282,8 @@ const SignUpPage: React.FC = () => {
       toast.success('Connected Successfully!');
       if (progress < 100) {
         setProgress(progress + 50);
-      } else {
-        setIsAppReadyToUse(true);
       }
       setConnectLocation('');
-      clearMerakiForm();
       setIsFormFilled(false);
     } catch (error) {
       toast.error('Something went wrong. Please try Again!');
@@ -291,6 +291,8 @@ const SignUpPage: React.FC = () => {
   };
 
   const onAppReadyToUse = () => {
+    clearMerakiForm();
+    clearAwsForm();
     setIsEdgesConnected(true);
     //TODO: Add Operation for on start with Okulis
   };
