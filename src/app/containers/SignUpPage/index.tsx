@@ -118,9 +118,10 @@ const SignUpPage: React.FC = () => {
   useEffect(() => {
     const getAwsRegions = async () => {
       const responseData = await apiClient.getAwsRegions();
-      const awsRegionsOptions: Option[] = responseData.awsRegions.map(item => {
-        return { label: item.name, value: item.code };
-      });
+      const awsRegionsOptions: Option[] = responseData.awsRegions.map(item => ({
+        label: item.name,
+        value: item.code,
+      }));
       setAwsRegionsOptions(awsRegionsOptions);
     };
     getAwsRegions();
@@ -250,17 +251,15 @@ const SignUpPage: React.FC = () => {
           },
         },
       });
-      if (!isEmpty(policyResponse)) {
-        toast.success('Connected Successfully!!');
-        if (progress < 100) {
-          setProgress(progress + 50);
-        } else {
-          setIsAppReadyToUse(true);
-        }
-        setConnectLocation('');
-        clearAwsForm();
-        setIsFormFilled(false);
+      toast.success('Connected Successfully!');
+      if (progress < 100) {
+        setProgress(progress + 50);
+      } else {
+        setIsAppReadyToUse(true);
       }
+      setConnectLocation('');
+      clearAwsForm();
+      setIsFormFilled(false);
     } catch (error) {
       toast.error('Something went wrong. Please try Again!');
     }
@@ -277,17 +276,15 @@ const SignUpPage: React.FC = () => {
           },
         },
       });
-      if (!isEmpty(policyResponse)) {
-        toast.success('Connected Successfully!!');
-        if (progress < 100) {
-          setProgress(progress + 50);
-        } else {
-          setIsAppReadyToUse(true);
-        }
-        setConnectLocation('');
-        clearMerakiForm();
-        setIsFormFilled(false);
+      toast.success('Connected Successfully!');
+      if (progress < 100) {
+        setProgress(progress + 50);
+      } else {
+        setIsAppReadyToUse(true);
       }
+      setConnectLocation('');
+      clearMerakiForm();
+      setIsFormFilled(false);
     } catch (error) {
       toast.error('Something went wrong. Please try Again!');
     }
