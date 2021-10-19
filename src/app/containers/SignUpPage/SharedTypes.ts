@@ -32,5 +32,5 @@ export interface DeletePolicyControllerResponse {
 }
 
 export interface GetAwsRegionsResponse {
-  readonly awsRegions?: AwsRegion[];
+  readonly awsRegions: AwsRegion[];
 }

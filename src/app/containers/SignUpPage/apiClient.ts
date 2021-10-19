@@ -25,28 +25,20 @@ export const createApiClient = (): ApiClient => {
       const response = await axios.get<GetAwsRegionsResponse>(PATHS.GET_AWS_REGIONS, config);
       return response.data;
     } catch (error) {
-      return {};
+      return {
+        awsRegions: [],
+      };
     }
   }
 
   async function postPolicyController(request: PostPolicyControllerRequest): Promise<PostPolicyControllerResponse> {
-    try {
-      const response = await axios.post<PostPolicyControllerResponse>(PATHS.POST_POLICY_CONTROLLER, request, config);
-      return response.data;
-    } catch (error) {
-      return {};
-    }
+    const response = await axios.post<PostPolicyControllerResponse>(PATHS.POST_POLICY_CONTROLLER, request, config);
+    return response.data;
   }
 
   async function deletePolicyController(name: string): Promise<DeletePolicyControllerResponse> {
-    try {
-      const response = await axios.delete<DeletePolicyControllerResponse>(PATHS.DELETE_POLICY_CONTROLLER(name), config);
-      return response.data;
-    } catch (error) {
-      return {
-        id: 'error',
-      };
-    }
+    const response = await axios.delete<DeletePolicyControllerResponse>(PATHS.DELETE_POLICY_CONTROLLER(name), config);
+    return response.data;
   }
 
   return {

@@ -17,6 +17,8 @@ import { IntlProvider } from 'react-intl';
 import { createApiClient } from './apiClient';
 import { Redirect } from 'react-router';
 import { ROUTE } from 'lib/Routes/model';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Option = props => {
   const classes = SignUpStyles();
@@ -116,12 +118,10 @@ const SignUpPage: React.FC = () => {
   useEffect(() => {
     const getAwsRegions = async () => {
       const responseData = await apiClient.getAwsRegions();
-      if (!isEmpty(responseData)) {
-        const awsRegionsOptions: Option[] = responseData.awsRegions.map(item => {
-          return { label: item.name, value: item.code };
-        });
-        setAwsRegionsOptions(awsRegionsOptions);
-      }
+      const awsRegionsOptions: Option[] = responseData.awsRegions.map(item => {
+        return { label: item.name, value: item.code };
+      });
+      setAwsRegionsOptions(awsRegionsOptions);
     };
     getAwsRegions();
   }, []);
@@ -222,45 +222,74 @@ const SignUpPage: React.FC = () => {
     },
   ];
 
+  const clearAwsForm = () => {
+    setAwsUsername('');
+    setAwsAccessKey('');
+    setAwsSecret('');
+    setIsAwsFlowLogEnabled(FlowLogToggle.enabled);
+  };
+
+  const clearMerakiForm = () => {
+    setMerakiName('');
+    setMerakiDescription('');
+    setMerakiApiKey('');
+    setIsMerakiSysLogEnabled(FlowLogToggle.enabled);
+  };
+
   const onAwsFormSubmit = async () => {
-    const policyResponse = await apiClient.postPolicyController({
-      controller: {
-        name: PreDefinedEdges.Aws,
-        vendor: PolicyVendor.Aws,
-        awsPol: {
-          username: awsUsername,
-          accessKey: awsAccessKey,
-          secret: awsSecret,
-          regions: awsRegions,
+    try {
+      const policyResponse = await apiClient.postPolicyController({
+        controller: {
+          name: PreDefinedEdges.Aws,
+          vendor: PolicyVendor.Aws,
+          awsPol: {
+            username: awsUsername,
+            accessKey: awsAccessKey,
+            secret: awsSecret,
+            regions: awsRegions,
+          },
         },
-      },
-    });
-    if (!isEmpty(policyResponse)) {
-      if (progress < 100) {
-        setProgress(progress + 50);
+      });
+      if (!isEmpty(policyResponse)) {
+        toast.success('Connected Successfully!!');
+        if (progress < 100) {
+          setProgress(progress + 50);
+        } else {
+          setIsAppReadyToUse(true);
+        }
+        setConnectLocation('');
+        clearAwsForm();
+        setIsFormFilled(false);
       }
-      setConnectLocation('');
-      setIsFormFilled(false);
+    } catch (error) {
+      toast.error('Something went wrong. Please try Again!');
     }
   };
 
   const onMerakiFormSubmit = async () => {
-    const policyResponse = await apiClient.postPolicyController({
-      controller: {
-        name: PreDefinedEdges.Meraki,
-        vendor: PolicyVendor.Meraki,
-        merakiPol: {
-          apiKey: merakiApiKey,
+    try {
+      const policyResponse = await apiClient.postPolicyController({
+        controller: {
+          name: PreDefinedEdges.Meraki,
+          vendor: PolicyVendor.Meraki,
+          merakiPol: {
+            apiKey: merakiApiKey,
+          },
         },
-      },
-    });
-    if (!isEmpty(policyResponse)) {
-      if (progress < 100) {
-        setProgress(progress + 50);
+      });
+      if (!isEmpty(policyResponse)) {
+        toast.success('Connected Successfully!!');
+        if (progress < 100) {
+          setProgress(progress + 50);
+        } else {
+          setIsAppReadyToUse(true);
+        }
+        setConnectLocation('');
+        clearMerakiForm();
+        setIsFormFilled(false);
       }
-      setConnectLocation('');
-      setIsFormFilled(false);
-      setIsAppReadyToUse(true);
+    } catch (error) {
+      toast.error('Something went wrong. Please try Again!');
     }
   };
 
@@ -307,6 +336,7 @@ const SignUpPage: React.FC = () => {
           <ConnectEdges edgeBoxArray={edgesToConfigure} isAppReadyToUse={isAppReadyToUSe} onAppReadyToUse={onAppReadyToUse} />
         </SignUpWrapper>
       )}
+      <ToastContainer />
     </UnAuthLayout>
   );
 };
