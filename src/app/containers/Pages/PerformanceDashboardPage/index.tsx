@@ -6,7 +6,7 @@ import { SLATestList } from './components/SLATestList';
 import { CreateSLATestRequest, FinalTableData, Organization } from './SharedTypes';
 import { createApiClient } from './apiClient';
 import { GetDevicesString, GetSelectedOrganization } from './components/filterFunctions';
-import LoadingIndicator from '../../../components/Loading';
+import LoadingIndicator from 'app/components/Loading';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { isEmpty } from 'lodash';
