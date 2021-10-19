@@ -52,7 +52,7 @@ const Paging: React.FC<Props> = (props: Props) => {
           labelAfter={<SelectLabel margin="auto 0 auto 12px">items per page</SelectLabel>}
           disabled={props.disabled}
           selectedValue={props.pageSize}
-          values={[50, 100]}
+          values={[20, 50, 100]}
           onSelectValue={onPageSizeChange}
           position="above"
         />

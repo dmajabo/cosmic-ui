@@ -1,11 +1,6 @@
 import { IBaseEntity } from 'lib/models/general';
 import { AccountVendorTypes } from '../Accounts/apiModel';
 
-export enum StitchTypes {
-  DEFAULT = 'DEFAULT',
-  STITCHED_ONLY = 'STITCHED_ONLY',
-}
-export const SESSIONS_DEFAULT_PAGE_SIZE: number = 50;
 export interface ISession extends IBaseEntity<string> {
   timestamp: string;
   sessionId: string;

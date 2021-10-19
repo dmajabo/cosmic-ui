@@ -33,12 +33,12 @@ const Table: React.FC<Props> = (props: Props) => {
     {
       field: 'timestamp',
       headerName: 'Time',
-      minWidth: 160,
+      minWidth: 220,
       flex: 0.5,
       resizable: false,
       valueFormatter: (params: GridValueFormatterParams) => {
         const valueFormatted = new Date(params.value as string);
-        return format(valueFormatted, 'yy / MM / dd HH:mm');
+        return format(valueFormatted, `EEE',' LLL d',' yyyy HH:mm aa`);
       },
     },
     { field: 'sessionId', headerName: 'Session ID', minWidth: 370, flex: 0.5, resizable: false },

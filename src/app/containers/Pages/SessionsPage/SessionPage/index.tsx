@@ -12,6 +12,7 @@ import { ISelectedListItem } from 'lib/models/general';
 import { sessionsParamBuilder } from 'lib/api/ApiModels/Sessions/paramBuilder';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
+// import ElasticFilter from 'app/components/Inputs/ElasticFilter';
 
 interface IProps {}
 
@@ -26,8 +27,8 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
   }, []);
 
   React.useEffect(() => {
-    onTryToLoadData(sessions.sessionsPageSize, sessions.sessionsCurrentPage, sessions.sessionsTabSwitch);
-  }, [sessions.sessionsPageSize, sessions.sessionsCurrentPage, sessions.sessionsTabSwitch]);
+    onTryToLoadData(sessions.sessionsPageSize, sessions.sessionsCurrentPage, sessions.sessionsTabPeriod, sessions.sessionsTabSwitch);
+  }, [sessions.sessionsPageSize, sessions.sessionsCurrentPage, sessions.sessionsTabSwitch, sessions.sessionsTabPeriod]);
 
   React.useEffect(() => {
     if (response && response.sessions.length) {
@@ -37,8 +38,8 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
     }
   }, [response]);
 
-  const onTryToLoadData = async (pageSize: number, page: number, stitch: boolean) => {
-    const _param = sessionsParamBuilder(pageSize, page, stitch);
+  const onTryToLoadData = async (pageSize: number, page: number, time: SessionsSelectValuesTypes, stitch: boolean) => {
+    const _param = sessionsParamBuilder(pageSize, page, time, stitch);
     await onGet(SessionsApi.getAllSessions(), _param);
   };
 
@@ -68,6 +69,7 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
           <Dropdown label="Show" selectedValue={sessions.sessionsTabPeriod} values={SESSIONS_SELECT_VALUES} onSelectValue={onChangePeriod} />
         </ActionPart>
       </ActionRowStyles>
+      {/* <ElasticFilter fields={SESSIONS_ELASTIC_FIELDS_VALUES} /> */}
       <ContentWrapper>
         <TableWrapper>
           <Table

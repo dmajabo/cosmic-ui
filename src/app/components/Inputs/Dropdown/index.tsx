@@ -26,14 +26,17 @@ interface IProps {
 const Dropdown: React.FC<IProps> = (props: IProps) => {
   const [showPopup, setShowPopup] = React.useState<boolean>(false);
   const [selectedItem, setSelectedItem] = React.useState<string | number | null>(null);
+  const [selectedItemLabel, setSelectedItemLabel] = React.useState<string | number | null>(null);
   const [isSimple, setIsSimple] = React.useState<boolean>(true);
 
   React.useEffect(() => {
     const _item: ISelectedListItem<any> | string | number | null = onGetSelectedValue(props.selectedValue, props.values);
     if (typeof _item === 'string' || typeof _item === 'number') {
       setSelectedItem(_item);
+      setSelectedItemLabel(_item);
     } else if (_item !== null) {
       setSelectedItem(_item.id);
+      setSelectedItemLabel(_item.label);
     }
     const _isSimple = props.values && props.values.length && typeof props.values[0] !== 'string' && typeof props.values[0] !== 'number' ? false : true;
     setIsSimple(_isSimple);
@@ -56,11 +59,13 @@ const Dropdown: React.FC<IProps> = (props: IProps) => {
         return;
       }
       setSelectedItem(_item);
+      setSelectedItem(_item);
       setShowPopup(false);
     } else {
       if (_item.id === props.selectedValue) {
         return;
       }
+      setSelectedItem(_item.id);
       setSelectedItem(_item.id);
       setShowPopup(false);
     }
@@ -77,7 +82,7 @@ const Dropdown: React.FC<IProps> = (props: IProps) => {
         {props.labelBefore && <>{props.labelBefore}</>}
         <DropWrapper style={props.wrapStyles}>
           <SelectWrapper style={props.selectStyles} onClick={onToogleDropdown} className={showPopup ? 'active' : ''}>
-            <DisplayValue selectedItem={selectedItem} placeholder={props.placeholder} />
+            <DisplayValue selectedItem={selectedItemLabel} placeholder={props.placeholder} />
             <IconWrapper styles={{ position: 'absolute', right: '12px', top: 'calc(50% - 6px)', width: '12px', height: '12px' }} icon={arrowBottomIcon} />
           </SelectWrapper>
           {showPopup && (

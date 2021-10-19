@@ -1,8 +1,8 @@
 import React from 'react';
 import { ITab } from 'lib/models/tabs';
-import { SessionsSelectValuesTypes, SessionsTabTypes, SESSIONS_SELECT_VALUES, SESSIONS_TABS } from './model';
+import { SessionsSelectValuesTypes, SessionsTabTypes, SESSIONS_DEFAULT_PAGE_SIZE, SESSIONS_SELECT_VALUES, SESSIONS_TABS } from './model';
 import { ISelectedListItem } from 'lib/models/general';
-import { ISession, SESSIONS_DEFAULT_PAGE_SIZE } from 'lib/api/ApiModels/Sessions/apiModel';
+import { ISession } from 'lib/api/ApiModels/Sessions/apiModel';
 
 export interface SessionsContextType {
   selectedTab: ITab<SessionsTabTypes>;

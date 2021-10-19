@@ -29,6 +29,7 @@ export const ActionRowStyles = styled.div<IActionRowProps>`
   height: ${props => props.height || '50px'};
   flex-shrink: 0;
   margin-bottom: 20px;
+  z-index: 11;
 `;
 
 interface IPageActionPart {

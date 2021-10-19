@@ -1,9 +1,8 @@
 import React from 'react';
 import { DisplayValueStyles } from './styles';
-import { ISelectedListItem } from 'lib/models/general';
 
 interface IProps {
-  selectedItem: ISelectedListItem<any> | string | number;
+  selectedItem: string | number;
   placeholder?: string;
 }
 
@@ -17,10 +16,7 @@ const DisplayValue: React.FC<IProps> = (props: IProps) => {
   const getDisplayValue = (): string => {
     if (props.placeholder && !props.selectedItem) return props.placeholder;
     if (props.selectedItem) {
-      if (typeof props.selectedItem === 'number' || typeof props.selectedItem === 'string') {
-        return `${props.selectedItem}`;
-      }
-      return props.selectedItem.label;
+      return `${props.selectedItem}`;
     }
     return '';
   };
