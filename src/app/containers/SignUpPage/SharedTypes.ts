@@ -27,6 +27,9 @@ export interface PostPolicyControllerRequest {
 }
 
 export interface PostPolicyControllerResponse {}
+export interface DeletePolicyControllerResponse {
+  readonly id?: string;
+}
 
 export interface GetAwsRegionsResponse {
   readonly awsRegions?: AwsRegion[];

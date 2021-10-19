@@ -15,7 +15,6 @@ import { CustomRadio } from './ArticleComponents/CustomRadio';
 import { isEmpty } from 'lodash';
 import { IntlProvider } from 'react-intl';
 import { createApiClient } from './apiClient';
-import { PostPolicyControllerRequest } from './SharedTypes';
 import { Redirect } from 'react-router';
 import { ROUTE } from 'lib/Routes/model';
 
@@ -223,13 +222,8 @@ const SignUpPage: React.FC = () => {
     },
   ];
 
-  const postPolicyController = async (request: PostPolicyControllerRequest) => {
-    const responseData = await apiClient.postPolicyController(request);
-    return responseData;
-  };
-
-  const onAwsFormSubmit = () => {
-    const policyResponse = postPolicyController({
+  const onAwsFormSubmit = async () => {
+    const policyResponse = await apiClient.postPolicyController({
       controller: {
         name: PreDefinedEdges.Aws,
         vendor: PolicyVendor.Aws,
@@ -245,13 +239,13 @@ const SignUpPage: React.FC = () => {
       if (progress < 100) {
         setProgress(progress + 50);
       }
-      setConnectLocation(PreDefinedEdges.Meraki);
+      setConnectLocation('');
       setIsFormFilled(false);
     }
   };
 
-  const onMerakiFormSubmit = () => {
-    const policyResponse = postPolicyController({
+  const onMerakiFormSubmit = async () => {
+    const policyResponse = await apiClient.postPolicyController({
       controller: {
         name: PreDefinedEdges.Meraki,
         vendor: PolicyVendor.Meraki,

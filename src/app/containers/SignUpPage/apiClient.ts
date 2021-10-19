@@ -1,16 +1,18 @@
 import axios, { AxiosRequestConfig } from 'axios';
-import { GetAwsRegionsResponse, PostPolicyControllerRequest, PostPolicyControllerResponse } from './SharedTypes';
+import { DeletePolicyControllerResponse, GetAwsRegionsResponse, PostPolicyControllerRequest, PostPolicyControllerResponse } from './SharedTypes';
 
 const BASE_URL = process.env.REACT_APP_API_ENDPOINT_PRODUCTION;
 
 interface ApiClient {
   readonly getAwsRegions: () => Promise<GetAwsRegionsResponse>;
   readonly postPolicyController: (request: PostPolicyControllerRequest) => Promise<PostPolicyControllerResponse>;
+  readonly deletePolicyController: (name: string) => Promise<DeletePolicyControllerResponse>;
 }
 
 const PATHS = Object.freeze({
   GET_AWS_REGIONS: '/policy/api/v1/policy/aws-regions',
-  POST_POLICY_CONTROLLER: '/policy/api/v1/policy/controller',
+  POST_POLICY_CONTROLLER: '/policy/api/v1/policy/controllers',
+  DELETE_POLICY_CONTROLLER: (name: string) => `/policy/api/v1/policy/controllers/${name}`,
 });
 
 export const createApiClient = (): ApiClient => {
@@ -36,8 +38,20 @@ export const createApiClient = (): ApiClient => {
     }
   }
 
+  async function deletePolicyController(name: string): Promise<DeletePolicyControllerResponse> {
+    try {
+      const response = await axios.delete<DeletePolicyControllerResponse>(PATHS.DELETE_POLICY_CONTROLLER(name), config);
+      return response.data;
+    } catch (error) {
+      return {
+        id: 'error',
+      };
+    }
+  }
+
   return {
     getAwsRegions,
     postPolicyController,
+    deletePolicyController,
   };
 };
