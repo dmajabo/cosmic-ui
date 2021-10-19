@@ -12,7 +12,7 @@ export const PageLayout = styled.div`
 export const RightBlock = styled.div`
   display: flex;
   overflow: hidden;
-  position: relative;
+  position: fixed;
   width: 30.52083333333333vw;
   height: 100vh;
   background: var(--_primaryColor);
@@ -38,6 +38,7 @@ export const LeftBlock = styled.div`
   display: flex;
   overflow: hidden;
   width: calc(100vw - 30.52083333333333vw);
+  margin-left: 30.52083333333333vw;
   height: 100%;
   flex-shrink: 0;
 `;
