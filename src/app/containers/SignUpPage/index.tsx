@@ -127,6 +127,12 @@ const SignUpPage: React.FC = () => {
     getAwsRegions();
   }, []);
 
+  useEffect(() => {
+    if (progress >= 100) {
+      setIsAppReadyToUse(true);
+    }
+  }, [progress]);
+
   const toggleAwsSecretVisibility = () => setShowAwsSecret(!showAwsSecret);
 
   const awsSteps: StepData[] = [
@@ -254,8 +260,6 @@ const SignUpPage: React.FC = () => {
       toast.success('Connected Successfully!');
       if (progress < 100) {
         setProgress(progress + 50);
-      } else {
-        setIsAppReadyToUse(true);
       }
       setConnectLocation('');
       setIsFormFilled(false);
@@ -278,8 +282,6 @@ const SignUpPage: React.FC = () => {
       toast.success('Connected Successfully!');
       if (progress < 100) {
         setProgress(progress + 50);
-      } else {
-        setIsAppReadyToUse(true);
       }
       setConnectLocation('');
       setIsFormFilled(false);
