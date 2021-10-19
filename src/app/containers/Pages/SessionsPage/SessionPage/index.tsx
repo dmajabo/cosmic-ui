@@ -20,8 +20,14 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
   const { response, loading, error, onGet } = useGet<IAllSessionsRes>();
 
   React.useEffect(() => {
-    onTryToLoadData();
-  }, [sessions.sessionsTabPeriod, sessions.sessionsTabSwitch, sessions.sessionsPageSize]);
+    return () => {
+      sessions.onSetSessionsData(null, null);
+    };
+  }, []);
+
+  React.useEffect(() => {
+    onTryToLoadData(sessions.sessionsPageSize, sessions.sessionsCurrentPage, sessions.sessionsTabSwitch);
+  }, [sessions.sessionsPageSize, sessions.sessionsCurrentPage, sessions.sessionsTabSwitch]);
 
   React.useEffect(() => {
     if (response && response.sessions.length) {
@@ -31,13 +37,17 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
     }
   }, [response]);
 
-  const onTryToLoadData = async () => {
-    const _param = sessionsParamBuilder(sessions.sessionsTabPeriod, sessions.sessionsPageSize, sessions.sessionsTabSwitch);
+  const onTryToLoadData = async (pageSize: number, page: number, stitch: boolean) => {
+    const _param = sessionsParamBuilder(pageSize, page, stitch);
     await onGet(SessionsApi.getAllSessions(), _param);
   };
 
-  const onChangePageSize = (_size: number) => {
-    sessions.onChangePageSize(_size);
+  const onChangePageSize = (_size: number, page?: number) => {
+    sessions.onChangePageSize(_size, page);
+  };
+
+  const onChangeCurrentPage = (_page: number) => {
+    sessions.onChangeCurrentPage(_page);
   };
 
   const onChangePeriod = (_value: ISelectedListItem<SessionsSelectValuesTypes>) => {
@@ -60,7 +70,15 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
       </ActionRowStyles>
       <ContentWrapper>
         <TableWrapper>
-          <Table logCount={sessions.sessionsCount} isError={error} data={sessions.sessionsData} pageSize={sessions.sessionsPageSize} onChangePageSize={onChangePageSize} />
+          <Table
+            currentPage={sessions.sessionsCurrentPage}
+            onChangeCurrentPage={onChangeCurrentPage}
+            logCount={sessions.sessionsCount}
+            isError={error}
+            data={sessions.sessionsData}
+            pageSize={sessions.sessionsPageSize}
+            onChangePageSize={onChangePageSize}
+          />
           {loading && (
             <AbsLoaderWrapper width="100%" height="calc(100% - 50px)" top="50px">
               <LoadingIndicator margin="auto" />

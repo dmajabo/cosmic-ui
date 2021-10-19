@@ -5,14 +5,15 @@ import { ISelectedListItem } from 'lib/models/general';
 import { ISession, SESSIONS_DEFAULT_PAGE_SIZE } from 'lib/api/ApiModels/Sessions/apiModel';
 
 export interface SessionsContextType {
-  // dataReadyToShow: boolean;
   selectedTab: ITab<SessionsTabTypes>;
   sessionsTabPeriod: SessionsSelectValuesTypes;
   sessionsTabSwitch: boolean;
   sessionsCount: number;
   sessionsData: ISession[];
+  sessionsCurrentPage: number;
   sessionsPageSize: number;
-  onChangePageSize: (_size: number) => void;
+  onChangePageSize: (_size: number, _page?: number) => void;
+  onChangeCurrentPage: (_page: number) => void;
   onSetSessionsData: (_items: ISession[], _count: number | string) => void;
   onChangeSelectedTab: (_tabIndex: number) => void;
   onChangeSelectedPeriod: (_value: ISelectedListItem<SessionsSelectValuesTypes>, _page: SessionsTabTypes) => void;
@@ -22,21 +23,24 @@ export function useSessionsContext(): SessionsContextType {
   const [selectedTab, setSelectedTab] = React.useState<ITab<SessionsTabTypes>>(SESSIONS_TABS[0]);
   const [sessionsTabPeriod, setSessionsTabPeriod] = React.useState<SessionsSelectValuesTypes>(SESSIONS_SELECT_VALUES[0].value);
   const [sessionsTabSwitch, setSessionsTabSwitch] = React.useState<boolean>(false);
-  // const [dataReadyToShow, setDataReadyToShow] = React.useState<boolean>(false);
   const [sessionsData, setSessionsData] = React.useState<ISession[]>([]);
-  const [sessionsCount, setSessionsCount] = React.useState<number | null>(null);
+  const [sessionsCount, setSessionsCount] = React.useState<number>(0);
   const [sessionsPageSize, setSessionsPageSize] = React.useState<number>(SESSIONS_DEFAULT_PAGE_SIZE);
+  const [sessionsCurrentPage, setSessionsCurrentPage] = React.useState<number>(1);
 
   const onSetSessionsData = (resItems: ISession[], resCount: number | string) => {
     if (!resItems || !resItems.length) {
-      const _count = !resCount ? null : Number(resCount);
+      const _count = !resCount ? 0 : Number(resCount);
       setSessionsData([]);
+      setSessionsCurrentPage(1);
       setSessionsCount(_count);
       return;
     }
-    const _count = resCount ? Number(resCount) : null;
+    const _count = resCount ? Number(resCount) : 0;
     setSessionsCount(_count);
-    setSessionsData(resItems.map((it, index) => ({ ...it, rowIndex: index + 1 })));
+    const startIndex = (sessionsCurrentPage - 1) * sessionsPageSize;
+    const _items = resItems.map((it, i) => ({ ...it, rowIndex: i + startIndex }));
+    setSessionsData(_items);
   };
 
   const onChangeSelectedTab = (_tabIndex: number) => {
@@ -56,18 +60,26 @@ export function useSessionsContext(): SessionsContextType {
     }
   };
 
-  const onChangePageSize = (_size: number) => {
+  const onChangePageSize = (_size: number, _page?: number) => {
+    if (_page) {
+      setSessionsCurrentPage(_page);
+    }
     setSessionsPageSize(_size);
   };
 
+  const onChangeCurrentPage = (_page: number) => {
+    setSessionsCurrentPage(_page);
+  };
+
   return {
-    // dataReadyToShow,
+    sessionsCurrentPage,
     sessionsData,
     sessionsCount,
     selectedTab,
     sessionsTabPeriod,
     sessionsTabSwitch,
     sessionsPageSize,
+    onChangeCurrentPage,
     onChangePageSize,
     onSetSessionsData,
     onChangeSelectedTab,

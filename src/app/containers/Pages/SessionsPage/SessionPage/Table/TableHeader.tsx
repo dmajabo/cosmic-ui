@@ -20,7 +20,7 @@ const TableHeader: React.FC<Props> = (props: Props) => {
       <GridHeaderWrapper>
         <GridLabelWrapper>
           <GridLabel>Logs</GridLabel>
-          {props.count && <GridCount>{props.count}</GridCount>}
+          {!props.count ? null : <GridCount>{props.count}</GridCount>}
         </GridLabelWrapper>
         <SecondaryButtonWithPopup label="Columns" icon={columnsIcon} direction="rtl">
           <PopupContainer

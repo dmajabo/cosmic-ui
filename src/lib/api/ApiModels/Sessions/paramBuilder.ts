@@ -1,4 +1,3 @@
-import { SessionsSelectValuesTypes } from 'lib/hooks/Sessions/model';
 import { SESSIONS_DEFAULT_PAGE_SIZE, StitchTypes } from './apiModel';
 
 export interface ISessionParam {
@@ -8,15 +7,11 @@ export interface ISessionParam {
   filters?: string;
 }
 
-export const sessionsParamBuilder = (start?: SessionsSelectValuesTypes, size?: number, type?: boolean, filters?: any): ISessionParam => {
+export const sessionsParamBuilder = (size?: number, currentPage?: number, type?: boolean, filters?: any): ISessionParam => {
   let param: ISessionParam = {};
-  if (start) {
-    if (start && start === SessionsSelectValuesTypes.LAST_MONTH) {
-      param.start_from = -30;
-    }
-    if (start && start === SessionsSelectValuesTypes.LAST_WEEK) {
-      param.start_from = -7;
-    }
+  if (currentPage !== 1) {
+    const _size = size || SESSIONS_DEFAULT_PAGE_SIZE;
+    param.start_from = (currentPage - 1) * _size;
   }
   if (size && size !== SESSIONS_DEFAULT_PAGE_SIZE) {
     param.page_size = size;

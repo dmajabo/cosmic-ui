@@ -10,6 +10,8 @@ import DisplayValue from './DisplayValue';
 
 interface IProps {
   label?: JSX.Element | string;
+  labelAfter?: React.ReactNode;
+  labelBefore?: React.ReactNode;
   selectedValue: number | string | null;
   values: ISelectedListItem<any>[] | string[] | number[];
   onSelectValue: (_item: ISelectedListItem<any> | string | number) => void;
@@ -18,6 +20,7 @@ interface IProps {
   dropWrapStyles?: Object;
   wrapStyles?: Object;
   selectStyles?: Object;
+  position?: 'above' | 'below';
 }
 
 const Dropdown: React.FC<IProps> = (props: IProps) => {
@@ -71,19 +74,21 @@ const Dropdown: React.FC<IProps> = (props: IProps) => {
     <ClickAwayListener onClickAway={onCloseDropdown}>
       <DropdownWrapper open={showPopup} style={props.dropWrapStyles}>
         {props.label && <InputLabel>{props.label}</InputLabel>}
+        {props.labelBefore && <>{props.labelBefore}</>}
         <DropWrapper style={props.wrapStyles}>
           <SelectWrapper style={props.selectStyles} onClick={onToogleDropdown} className={showPopup ? 'active' : ''}>
             <DisplayValue selectedItem={selectedItem} placeholder={props.placeholder} />
             <IconWrapper styles={{ position: 'absolute', right: '12px', top: 'calc(50% - 6px)', width: '12px', height: '12px' }} icon={arrowBottomIcon} />
           </SelectWrapper>
           {showPopup && (
-            <ListWrapper>
+            <ListWrapper position={props.position}>
               {props.values.map(it => (
                 <DropdownItem key={`${!it.id ? it : it.id}dropdownItem`} simple={isSimple} item={it} onClick={onChange} active={!it.id ? it === selectedItem : it.id === selectedItem} />
               ))}
             </ListWrapper>
           )}
         </DropWrapper>
+        {props.labelAfter && <>{props.labelAfter}</>}
       </DropdownWrapper>
     </ClickAwayListener>
   );

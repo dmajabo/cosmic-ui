@@ -7,8 +7,6 @@ export enum StitchTypes {
 }
 export const SESSIONS_DEFAULT_PAGE_SIZE: number = 50;
 export interface ISession extends IBaseEntity<string> {
-  rowIndex?: number;
-
   timestamp: string;
   sessionId: string;
   flowId: string;
@@ -29,4 +27,24 @@ export interface ISession extends IBaseEntity<string> {
 export interface IAllSessionsRes {
   count: string | number;
   sessions: ISession[];
+}
+
+export interface ISankeyNode {
+  node: number;
+  name: string;
+}
+
+export interface ISankeyLink {
+  source: number;
+  target: number;
+  value: number;
+}
+
+export interface ISankeyData {
+  time: Date | string;
+  nodes: ISankeyNode[];
+  links: ISankeyLink[];
+}
+export interface ISankeyRes {
+  sankey: ISankeyData;
 }

@@ -39,3 +39,15 @@ export const nextArrow = (
     />
   </svg>
 );
+
+export const gridAscArrow = (
+  <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M5 0L9.33013 6L0.669873 6L5 0Z" fill="#848DA3" />
+  </svg>
+);
+
+export const gridDescArrow = (
+  <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M5 6L0.669873 1.38009e-07L9.33013 8.95112e-07L5 6Z" fill="#848DA3" />
+  </svg>
+);

@@ -1,16 +1,15 @@
 import React from 'react';
-import { CardWrapper, ChartWrapper, ContentWrapper, TableWrapper } from '../../Shared/styles';
+import { CardWrapper, ContentWrapper, TableWrapper } from '../../Shared/styles';
 import SessionCard from 'app/components/SessionCard';
 import { sourcesIcon } from 'app/components/SVGIcons/sessionsIcons/sources';
 import { tgwIcon } from 'app/components/SVGIcons/sessionsIcons/tgw';
 import { destinationIcon } from 'app/components/SVGIcons/sessionsIcons/destination';
 import { dropsIcon } from 'app/components/SVGIcons/sessionsIcons/drops';
 import { securityHitsIcon } from 'app/components/SVGIcons/sessionsIcons/securityHits';
-import SankeyChart from 'app/components/Charts/SankeyChart';
 import Grid from 'app/components/Grid';
 import { GridColDef } from '@mui/x-data-grid';
+import ChartComponent from './ChartComponent';
 interface IProps {}
-
 const OverviewPage: React.FC<IProps> = (props: IProps) => {
   const columns: GridColDef[] = [
     { field: 'id', headerName: '', minWidth: 40 },
@@ -36,9 +35,7 @@ const OverviewPage: React.FC<IProps> = (props: IProps) => {
         <SessionCard label="Security Group Hits" value="6" icon={securityHitsIcon} valueColor="var(--_warningColor)" />
       </CardWrapper>
       <ContentWrapper>
-        <ChartWrapper>
-          <SankeyChart />
-        </ChartWrapper>
+        <ChartComponent />
         <TableWrapper>
           <Grid checkboxSelection rows={[]} columns={columns} />
         </TableWrapper>

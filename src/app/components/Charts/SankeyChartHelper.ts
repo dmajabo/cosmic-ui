@@ -1,14 +1,22 @@
 import * as d3 from 'd3';
 import { sankey, sankeyLinkHorizontal } from 'd3-sankey';
+import { ISankeyData } from 'lib/api/ApiModels/Sessions/apiModel';
 import { jsonClone } from 'lib/helpers/cloneHelper';
 
-export interface ISankeyData {
-  nodes: any[];
-  links: any[];
-}
+const filterCircularLinks = (data: ISankeyData): any[] => {
+  const _links = new Map();
+  data.links.forEach(link => {
+    if (_links.has(`${link.target}${link.source}`)) return;
+    _links.set(`${link.source}${link.target}`, link);
+  });
+  return Array.from(_links).map(it => it[1]);
+};
 
 export const createSankeyChart = (id: string, data: ISankeyData) => {
-  const _ResData = jsonClone(data);
+  if (!data) return;
+  const _links: any[] = filterCircularLinks(data);
+  const _ResData: ISankeyData = jsonClone(data);
+  _ResData.links = _links;
   const container = d3.select(`#${id}`);
   container.select('.sankeyChartContainerLinks').selectAll('*').remove();
   container.select('.sankeyChartContainerNodes').selectAll('*').remove();

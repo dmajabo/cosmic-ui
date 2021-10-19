@@ -67,9 +67,13 @@ export const Label = styled.span`
   color: var(--_disabledTextColor);
 `;
 
-export const ListWrapper = styled.div`
+interface ListProps {
+  position?: 'above' | 'below';
+}
+export const ListWrapper = styled.div<ListProps>`
   position: absolute;
-  top: calc(100% + 2px);
+  top: ${props => (props.position === 'above' ? 'unset' : 'calc(100% + 2px)')};
+  bottom: ${props => (props.position === 'above' ? 'calc(100% + 2px)' : 'unset')};
   left: 0;
   width: 100%;
   max-height: 278px;
