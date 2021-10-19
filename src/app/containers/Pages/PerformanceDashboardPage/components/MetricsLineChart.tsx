@@ -95,7 +95,7 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
           const val = DateTime.fromFormat(item.time, OLD_TIME_FORMAT).toUTC().toFormat(REQUIRED_FORMAT);
           return {
             name: val,
-            y: Number(Number.parseFloat(item.value).toFixed(2)),
+            y: dataValueSuffix === 'mbps' ? Number(item.value) / 1000 : Number(Number.parseFloat(item.value).toFixed(2)),
             marker: {
               enabled: false,
             },

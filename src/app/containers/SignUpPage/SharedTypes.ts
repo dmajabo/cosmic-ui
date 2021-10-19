@@ -4,9 +4,9 @@ interface AwsRegion {
 }
 
 interface AwsPolicy {
-  readonly username?: string;
-  readonly accessKey?: string;
-  readonly secret?: string;
+  readonly username: string;
+  readonly accessKey: string;
+  readonly secret: string;
   readonly regions: string[];
 }
 

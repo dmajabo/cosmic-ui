@@ -16,6 +16,8 @@ import { isEmpty } from 'lodash';
 import { IntlProvider } from 'react-intl';
 import { createApiClient } from './apiClient';
 import { PostPolicyControllerRequest } from './SharedTypes';
+import { Redirect } from 'react-router';
+import { ROUTE } from 'lib/Routes/model';
 
 const Option = props => {
   const classes = SignUpStyles();
@@ -70,10 +72,15 @@ const SignUpPage: React.FC = () => {
   const [isFormFilled, setIsFormFilled] = useState<boolean>(false);
   const [isAppReadyToUSe, setIsAppReadyToUse] = useState<boolean>(false);
   const [awsRegionsOptions, setAwsRegionsOptions] = useState<Option[]>([]);
+  const [isEdgesConnected, setIsEdgesConnected] = useState<boolean>(false);
   const classes = SignUpStyles();
 
+  const [awsUsername, setAwsUsername] = useState<string>('');
+  const [awsAccessKey, setAwsAccessKey] = useState<string>('');
+  const [awsSecret, setAwsSecret] = useState<string>('');
   const [isAwsFlowLogEnabled, setIsAwsFlowLogEnabled] = useState<string>(FlowLogToggle.enabled);
   const [awsRegions, setAwsRegions] = useState<string[]>([]);
+  const [showAwsSecret, setShowAwsSecret] = useState<boolean>(false);
 
   const [merakiName, setMerakiName] = useState<string>('');
   const [merakiDescription, setMerakiDescription] = useState<string>('');
@@ -84,9 +91,9 @@ const SignUpPage: React.FC = () => {
   const apiClient = createApiClient();
 
   useEffect(() => {
-    const isFormFilled = isAwsFlowLogEnabled && !isEmpty(awsRegions) ? true : false;
+    const isFormFilled = awsUsername && awsAccessKey && awsSecret && isAwsFlowLogEnabled && !isEmpty(awsRegions) ? true : false;
     setIsFormFilled(isFormFilled);
-  }, [awsRegions, isAwsFlowLogEnabled]);
+  }, [awsRegions, awsUsername, awsAccessKey, awsSecret, isAwsFlowLogEnabled]);
 
   useEffect(() => {
     const isFormFilled = merakiName && merakiDescription && merakiApiKey && isMerakiSysLogEnabled ? true : false;
@@ -120,9 +127,27 @@ const SignUpPage: React.FC = () => {
     getAwsRegions();
   }, []);
 
+  const toggleAwsSecretVisibility = () => setShowAwsSecret(!showAwsSecret);
+
   const awsSteps: StepData[] = [
     {
-      title: 'Step 1: Select your region(s)',
+      title: 'Step 1: Sign in into your AWS account',
+      content: (
+        <>
+          <span className={classes.dropdownLabel}>USERNAME</span>
+          <input className={classes.formInput} type="text" value={awsUsername} onChange={e => setAwsUsername(e.target.value)} />
+          <span className={classes.dropdownLabel}>ACCESS KEY</span>
+          <input className={classes.formInput} type="text" value={awsAccessKey} onChange={e => setAwsAccessKey(e.target.value)} />
+          <span className={classes.dropdownLabel}>SECRET</span>
+          <input className={classes.formInput} type={showAwsSecret ? 'text' : 'password'} value={awsSecret} onChange={e => setAwsSecret(e.target.value)} />
+          <div className={classes.showPassword} onClick={toggleAwsSecretVisibility}>
+            <img className={classes.showPasswordIcon} src={EyeIcon} alt="show password" />
+          </div>
+        </>
+      ),
+    },
+    {
+      title: 'Step 2: Select your region(s)',
       content: (
         <>
           <div className={classes.dropdownLabel}>REGION</div>
@@ -141,7 +166,7 @@ const SignUpPage: React.FC = () => {
       ),
     },
     {
-      title: 'Step 2: Select options',
+      title: 'Step 3: Select options',
       content: (
         <>
           <div className={classes.radioTitle}>Enable flow logs</div>
@@ -187,7 +212,7 @@ const SignUpPage: React.FC = () => {
       title: 'AWS',
       content: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
       onClick: () => setConnectLocation(PreDefinedEdges.Aws),
-      isConnected: !isEmpty(awsRegions) && isAwsFlowLogEnabled ? true : false,
+      isConnected: !isEmpty(awsRegions) && awsUsername && awsAccessKey && awsSecret && isAwsFlowLogEnabled ? true : false,
     },
     {
       img: MerakiIcon,
@@ -209,6 +234,9 @@ const SignUpPage: React.FC = () => {
         name: PreDefinedEdges.Aws,
         vendor: PolicyVendor.Aws,
         awsPol: {
+          username: awsUsername,
+          accessKey: awsAccessKey,
+          secret: awsSecret,
           regions: awsRegions,
         },
       },
@@ -243,10 +271,13 @@ const SignUpPage: React.FC = () => {
   };
 
   const onAppReadyToUse = () => {
+    setIsEdgesConnected(true);
     //TODO: Add Operation for on start with Okulis
   };
 
-  return (
+  return isEdgesConnected ? (
+    <Redirect to={ROUTE.app} />
+  ) : (
     <UnAuthLayout article={<TryDemoComponent />}>
       <div className={classes.topBar}>
         <div className={classes.topBarText}>Connect To Your Edges</div>

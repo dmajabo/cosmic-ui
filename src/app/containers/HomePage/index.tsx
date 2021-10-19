@@ -5,6 +5,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { useContext, useEffect } from 'react';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { BreadCrumbProvider, useBreadCrumbActions } from 'lib/hooks/Breadcrumb/useBreadcrumbDataContext';
+import LoadingIndicator from 'app/components/Loading';
 
 export const HomePage: React.FC = () => {
   const { getIdTokenClaims } = useAuth0();
@@ -22,6 +23,8 @@ export const HomePage: React.FC = () => {
       </LayoutWithHeaderFooterSidebar>
     </BreadCrumbProvider>
   ) : (
-    <>Loading...</>
+    <div style={{ marginTop: '50vh' }}>
+      <LoadingIndicator />
+    </div>
   );
 };

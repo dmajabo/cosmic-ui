@@ -61,7 +61,7 @@ export const Goodput: React.FC<GoodputProps> = ({ selectedRows, timeRange }) => 
         {!isEmpty(selectedRows) ? (
           // goodputData contains 2 keys for each row. One for the data and one for anomaly
           Object.keys(goodputData).length / 2 === selectedRows.length ? (
-            <MetricsLineChart dataValueSuffix="ms" selectedRows={selectedRows} inputData={goodputData} />
+            <MetricsLineChart dataValueSuffix="mbps" selectedRows={selectedRows} inputData={goodputData} />
           ) : (
             <div className={classes.noChartContainer}>
               <LoadingIndicator />
