@@ -258,7 +258,6 @@ const SignUpPage: React.FC = () => {
         setIsAppReadyToUse(true);
       }
       setConnectLocation('');
-      clearAwsForm();
       setIsFormFilled(false);
     } catch (error) {
       toast.error('Something went wrong. Please try Again!');
@@ -283,7 +282,6 @@ const SignUpPage: React.FC = () => {
         setIsAppReadyToUse(true);
       }
       setConnectLocation('');
-      clearMerakiForm();
       setIsFormFilled(false);
     } catch (error) {
       toast.error('Something went wrong. Please try Again!');
@@ -291,6 +289,8 @@ const SignUpPage: React.FC = () => {
   };
 
   const onAppReadyToUse = () => {
+    clearMerakiForm();
+    clearAwsForm();
     setIsEdgesConnected(true);
     //TODO: Add Operation for on start with Okulis
   };
