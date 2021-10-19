@@ -14,8 +14,11 @@ import ReactSelect, { components } from 'react-select';
 import { CustomRadio } from './ArticleComponents/CustomRadio';
 import { isEmpty } from 'lodash';
 import { IntlProvider } from 'react-intl';
+import { createApiClient } from './apiClient';
 import { Redirect } from 'react-router';
 import { ROUTE } from 'lib/Routes/model';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Option = props => {
   const classes = SignUpStyles();
@@ -48,6 +51,11 @@ enum FlowLogToggle {
   disabled = 'disabled',
 }
 
+enum PolicyVendor {
+  Aws = 'AMAZON_AWS',
+  Meraki = 'CISCO_MERAKI',
+}
+
 const FlowLog_Options: Option[] = [
   {
     value: FlowLogToggle.enabled,
@@ -64,6 +72,7 @@ const SignUpPage: React.FC = () => {
   const [connectLocation, setConnectLocation] = useState<string>('');
   const [isFormFilled, setIsFormFilled] = useState<boolean>(false);
   const [isAppReadyToUSe, setIsAppReadyToUse] = useState<boolean>(false);
+  const [awsRegionsOptions, setAwsRegionsOptions] = useState<Option[]>([]);
   const [isEdgesConnected, setIsEdgesConnected] = useState<boolean>(false);
   const classes = SignUpStyles();
 
@@ -79,6 +88,8 @@ const SignUpPage: React.FC = () => {
   const [merakiApiKey, setMerakiApiKey] = useState<string>('');
   const [isMerakiSysLogEnabled, setIsMerakiSysLogEnabled] = useState<string>(FlowLogToggle.enabled);
   const [showPassword, setShowPassword] = useState<boolean>(false);
+
+  const apiClient = createApiClient();
 
   useEffect(() => {
     const isFormFilled = awsUsername && awsAccessKey && awsSecret && isAwsFlowLogEnabled && !isEmpty(awsRegions) ? true : false;
@@ -104,29 +115,17 @@ const SignUpPage: React.FC = () => {
     }),
   };
 
-  const regionOptions: Option[] = [
-    {
-      label: 'USA WEST (Oregon)',
-      value: 'USA WEST (Oregon)',
-    },
-    {
-      label: 'US West (N. California)',
-      value: 'US West (N. California)',
-    },
-    {
-      label: 'US East (Ohio)',
-      value: 'US East (Ohio)',
-    },
-    {
-      label: 'US East (N. Virginia)',
-      value: 'US East (N. Virginia)',
-    },
-
-    {
-      label: 'Asia Pacific (Mumbai)',
-      value: 'Asia Pacific (Mumbai)',
-    },
-  ];
+  useEffect(() => {
+    const getAwsRegions = async () => {
+      const responseData = await apiClient.getAwsRegions();
+      const awsRegionsOptions: Option[] = responseData.awsRegions.map(item => ({
+        label: item.name,
+        value: item.code,
+      }));
+      setAwsRegionsOptions(awsRegionsOptions);
+    };
+    getAwsRegions();
+  }, []);
 
   const toggleAwsSecretVisibility = () => setShowAwsSecret(!showAwsSecret);
 
@@ -159,7 +158,7 @@ const SignUpPage: React.FC = () => {
             }}
             menuPortalTarget={document.body}
             styles={dropdownStyle}
-            options={regionOptions}
+            options={awsRegionsOptions}
             allowSelectAll={true}
             onChange={values => setAwsRegions(values.map(item => item.value))}
           />
@@ -224,17 +223,71 @@ const SignUpPage: React.FC = () => {
     },
   ];
 
-  const onAwsFormSubmit = () => {
-    setProgress(progress + 50);
-    setConnectLocation('');
-    setIsFormFilled(false);
+  const clearAwsForm = () => {
+    setAwsUsername('');
+    setAwsAccessKey('');
+    setAwsSecret('');
+    setIsAwsFlowLogEnabled(FlowLogToggle.enabled);
   };
 
-  const onMerakiFormSubmit = () => {
-    setProgress(progress + 50);
-    setConnectLocation('');
-    setIsFormFilled(false);
-    setIsAppReadyToUse(true);
+  const clearMerakiForm = () => {
+    setMerakiName('');
+    setMerakiDescription('');
+    setMerakiApiKey('');
+    setIsMerakiSysLogEnabled(FlowLogToggle.enabled);
+  };
+
+  const onAwsFormSubmit = async () => {
+    try {
+      const policyResponse = await apiClient.postPolicyController({
+        controller: {
+          name: PreDefinedEdges.Aws,
+          vendor: PolicyVendor.Aws,
+          awsPol: {
+            username: awsUsername,
+            accessKey: awsAccessKey,
+            secret: awsSecret,
+            regions: awsRegions,
+          },
+        },
+      });
+      toast.success('Connected Successfully!');
+      if (progress < 100) {
+        setProgress(progress + 50);
+      } else {
+        setIsAppReadyToUse(true);
+      }
+      setConnectLocation('');
+      clearAwsForm();
+      setIsFormFilled(false);
+    } catch (error) {
+      toast.error('Something went wrong. Please try Again!');
+    }
+  };
+
+  const onMerakiFormSubmit = async () => {
+    try {
+      const policyResponse = await apiClient.postPolicyController({
+        controller: {
+          name: PreDefinedEdges.Meraki,
+          vendor: PolicyVendor.Meraki,
+          merakiPol: {
+            apiKey: merakiApiKey,
+          },
+        },
+      });
+      toast.success('Connected Successfully!');
+      if (progress < 100) {
+        setProgress(progress + 50);
+      } else {
+        setIsAppReadyToUse(true);
+      }
+      setConnectLocation('');
+      clearMerakiForm();
+      setIsFormFilled(false);
+    } catch (error) {
+      toast.error('Something went wrong. Please try Again!');
+    }
   };
 
   const onAppReadyToUse = () => {
@@ -280,6 +333,7 @@ const SignUpPage: React.FC = () => {
           <ConnectEdges edgeBoxArray={edgesToConfigure} isAppReadyToUse={isAppReadyToUSe} onAppReadyToUse={onAppReadyToUse} />
         </SignUpWrapper>
       )}
+      <ToastContainer />
     </UnAuthLayout>
   );
 };
