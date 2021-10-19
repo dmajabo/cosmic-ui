@@ -17,7 +17,7 @@ export const sessionsParamBuilder = (size?: number, currentPage?: number, time_r
   if (size && size !== SESSIONS_DEFAULT_PAGE_SIZE) {
     param.page_size = size;
   }
-  if (time_range && time_range !== SessionsSelectValuesTypes.LAST_DAY) {
+  if (time_range && time_range !== SessionsSelectValuesTypes.LAST_HOUR) {
     param.time_range = time_range;
   }
   if (type) {

@@ -99,7 +99,7 @@ const Table: React.FC<Props> = (props: Props) => {
         error={props.isError}
         rows={dataRows}
         columns={columns}
-        pageSize={props.pageSize}
+        pageSize={dataRows ? dataRows.length : 5}
         components={{
           ColumnUnsortedIcon: () => null,
           ColumnSortedAscendingIcon: () => <>{gridAscArrow}</>,
