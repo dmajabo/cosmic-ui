@@ -20,6 +20,7 @@ import { ROUTE } from 'lib/Routes/model';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { PolicyController } from './SharedTypes';
+import LoadingIndicator from 'app/components/Loading';
 
 const Option = props => {
   const classes = SignUpStyles();
@@ -72,11 +73,12 @@ const SignUpPage: React.FC = () => {
   const [progress, setProgress] = useState<number>(0);
   const [connectLocation, setConnectLocation] = useState<string>('');
   const [isFormFilled, setIsFormFilled] = useState<boolean>(false);
-  const [isAppReadyToUSe, setIsAppReadyToUse] = useState<boolean>(false);
+  const [isAppReadyToUse, setIsAppReadyToUse] = useState<boolean>(false);
   const [awsRegionsOptions, setAwsRegionsOptions] = useState<Option[]>([]);
   const [policyControllers, setPolicyControllers] = useState<PolicyController[]>([]);
   const [isEdgesConnected, setIsEdgesConnected] = useState<boolean>(false);
   const [updateForm, setUpdateForm] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const classes = SignUpStyles();
 
   const [awsUsername, setAwsUsername] = useState<string>('');
@@ -137,6 +139,19 @@ const SignUpPage: React.FC = () => {
     };
     getPolicyControllers();
   }, [isFormFilled]);
+
+  useEffect(() => {
+    if (!isAppReadyToUse) {
+      const isAwsConnected = policyControllers.find(controller => controller.name === PreDefinedEdges.Aws);
+      const isMerakiConnected = policyControllers.find(controller => controller.name === PreDefinedEdges.Meraki);
+      const isBothConnected = isAwsConnected && isMerakiConnected ? true : false;
+      if (isBothConnected) {
+        setIsEdgesConnected(true);
+      } else {
+        setIsLoading(false);
+      }
+    }
+  }, [policyControllers]);
 
   useEffect(() => {
     if (progress >= 100) {
@@ -376,7 +391,11 @@ const SignUpPage: React.FC = () => {
     setIsEdgesConnected(true);
   };
 
-  return isEdgesConnected ? (
+  return isLoading ? (
+    <div style={{ marginTop: '50vh' }}>
+      <LoadingIndicator />
+    </div>
+  ) : isEdgesConnected ? (
     <Redirect to={ROUTE.app} />
   ) : (
     <UnAuthLayout article={<TryDemoComponent />}>
@@ -415,7 +434,7 @@ const SignUpPage: React.FC = () => {
         )
       ) : (
         <SignUpWrapper>
-          <ConnectEdges edgeBoxArray={edgesToConfigure} isAppReadyToUse={isAppReadyToUSe} onAppReadyToUse={onAppReadyToUse} />
+          <ConnectEdges edgeBoxArray={edgesToConfigure} isAppReadyToUse={isAppReadyToUse} onAppReadyToUse={onAppReadyToUse} />
         </SignUpWrapper>
       )}
       <ToastContainer />
