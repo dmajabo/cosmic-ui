@@ -26,15 +26,15 @@ const Table: React.FC<Props> = (props: Props) => {
       field: 'rowIndex',
       headerName: '#',
       minWidth: 70,
-      flex: 0.1,
+      flex: 0,
       resizable: false,
       valueFormatter: (params: GridValueFormatterParams) => +params.value + 1,
     },
     {
       field: 'timestamp',
       headerName: 'Time',
-      minWidth: 220,
-      flex: 0.5,
+      minWidth: 240,
+      flex: 0.25,
       resizable: false,
       valueFormatter: (params: GridValueFormatterParams) => {
         const valueFormatted = new Date(params.value as string);
