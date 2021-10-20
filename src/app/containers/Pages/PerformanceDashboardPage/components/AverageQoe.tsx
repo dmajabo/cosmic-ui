@@ -8,17 +8,26 @@ interface AvgQoeProps {
   readonly latency: string;
   readonly testId: string;
   readonly deleteTest: (testId: string) => void;
+  readonly updateTest: (testId: string) => void;
 }
 
-const AverageQoe: React.FC<AvgQoeProps> = ({ deleteTest, packetLoss, latency, testId }) => {
+const AverageQoe: React.FC<AvgQoeProps> = ({ updateTest, deleteTest, packetLoss, latency, testId }) => {
   const classes = PerformanceDashboardStyles();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => setAnchorEl(event.currentTarget);
 
-  const handleClose = (testId: string) => {
+  const handleDelete = (testId: string) => {
     deleteTest(testId);
+    setAnchorEl(null);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleUpdate = (testId: string) => {
+    updateTest(testId);
     setAnchorEl(null);
   };
 
@@ -37,10 +46,17 @@ const AverageQoe: React.FC<AvgQoeProps> = ({ deleteTest, packetLoss, latency, te
         <Menu id="test-menu" anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
           <MenuItem
             onClick={() => {
-              handleClose(testId);
+              handleDelete(testId);
             }}
           >
             <Typography className={classes.deleteTest}>Delete</Typography>
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              handleUpdate(testId);
+            }}
+          >
+            <Typography>Update</Typography>
           </MenuItem>
         </Menu>
       </div>
