@@ -22,17 +22,39 @@ const SliderStyles = withStyles({
   },
   thumb: {
     '&:focus, &:hover, &$active': {
-      boxShadow: '0px 4px 15px rgba(5, 20, 58, 0.15) !important',
+      '& .slider-thumb-circle': {
+        boxShadow: '0px 4px 15px rgba(5, 20, 58, 0.15)',
+      },
+      boxShadow: 'none !important',
     },
     '&.MuiSlider-thumb': {
+      display: 'inline-flex',
       boxShadow: 'none',
       marginTop: -8,
       marginLeft: -12,
       height: 24,
-      width: 24,
-      border: '5px solid var(--_primaryBg)',
-      backgroundColor: 'var(--_hoverButtonBg)',
-      borderRadius: '50%',
+      width: 'auto',
+      border: 'none',
+      backgroundColor: 'transparent',
+      borderRadius: 'unset',
+      '& .slider-thumb-circle': {
+        height: 24,
+        width: 24,
+        border: '5px solid var(--_primaryBg)',
+        backgroundColor: 'var(--_hoverButtonBg)',
+        borderRadius: '50%',
+        zIndex: 1,
+      },
+      '& .slider-thumb-gradient': {
+        display: 'inline-block',
+        position: 'absolute',
+        height: '50px',
+        width: '10px',
+        background: 'linear-gradient(180deg, rgba(67, 127, 236, 0) 0%, rgba(67, 127, 236, 0.2) 26.04%, #437FEC 100%)',
+        transform: 'rotate(-90deg)',
+        top: '-12px',
+        right: '30px',
+      },
     },
     '&:after': {
       display: 'none',
@@ -168,6 +190,12 @@ const TimeSlider: React.FC<Props> = (props: Props) => {
         ValueLabelComponent={ValueLabelComponent}
         marks={values}
         onChange={handleChange}
+        ThumbComponent={props => (
+          <span {...props}>
+            <span className="slider-thumb-gradient" />
+            <span className="slider-thumb-circle" />
+          </span>
+        )}
         valueLabelDisplay="auto"
         valueLabelFormat={(value: number) => `${format(value, 'yyyy MMM dd')} ${format(value, 'h aa')}`}
       />

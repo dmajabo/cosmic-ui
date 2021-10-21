@@ -1,4 +1,6 @@
+import { ISessionsGridField } from 'app/containers/Pages/SessionsPage/SessionPage/models';
 import { StitchTypes, SESSIONS_DEFAULT_PAGE_SIZE, SessionsSelectValuesTypes } from 'lib/hooks/Sessions/model';
+import { ISelectionGridCellValue } from 'lib/models/general';
 
 export interface ISessionParam {
   start_from?: number;
@@ -8,7 +10,13 @@ export interface ISessionParam {
   filters?: string;
 }
 
-export const sessionsParamBuilder = (size?: number, currentPage?: number, time_range?: SessionsSelectValuesTypes, type?: boolean, filters?: any): ISessionParam => {
+export const sessionsParamBuilder = (
+  size?: number,
+  currentPage?: number,
+  time_range?: SessionsSelectValuesTypes,
+  type?: boolean,
+  filters?: ISelectionGridCellValue<ISessionsGridField, ISessionsGridField>[],
+): ISessionParam => {
   let param: ISessionParam = {};
   if (currentPage !== 1) {
     const _size = size || SESSIONS_DEFAULT_PAGE_SIZE;
@@ -23,8 +31,11 @@ export const sessionsParamBuilder = (size?: number, currentPage?: number, time_r
   if (type) {
     param.search_type = StitchTypes.STITCHED_ONLY;
   }
-  if (filters) {
-    param.filters = filters;
+  if (filters && filters.length) {
+    const arr = filters.map(item => {
+      return `(${item.field.searchField}:'${item.value.label}')`;
+    });
+    param.filters = arr.join('AND');
   }
   if (!Object.keys(param).length) return null;
   return param;

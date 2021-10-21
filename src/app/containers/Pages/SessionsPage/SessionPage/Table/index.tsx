@@ -7,6 +7,8 @@ import TableHeader from './TableHeader';
 import { AccountVendorTypes } from 'lib/api/ApiModels/Accounts/apiModel';
 import { gridAscArrow, gridDescArrow } from 'app/components/SVGIcons/arrows';
 import Paging from 'app/components/Basic/Paging';
+// import { ISelectionGridCellValue } from 'lib/models/general';
+import { SessionGridColumns } from '../models';
 
 interface Props {
   data: ISession[];
@@ -16,6 +18,7 @@ interface Props {
   currentPage: number;
   onChangeCurrentPage: (_page: number) => void;
   onChangePageSize: (size: number, page?: number) => void;
+  // onSetSelection: (values: ISelectionGridCellValue[]) => void;
 }
 
 const Table: React.FC<Props> = (props: Props) => {
@@ -31,8 +34,8 @@ const Table: React.FC<Props> = (props: Props) => {
       valueFormatter: (params: GridValueFormatterParams) => +params.value + 1,
     },
     {
-      field: 'timestamp',
-      headerName: 'Time',
+      field: SessionGridColumns.timestamp.resField,
+      headerName: SessionGridColumns.timestamp.label,
       minWidth: 240,
       flex: 0.25,
       resizable: false,
@@ -41,21 +44,21 @@ const Table: React.FC<Props> = (props: Props) => {
         return format(valueFormatted, `EEE',' LLL d',' yyyy HH:mm aa`);
       },
     },
-    { field: 'sessionId', headerName: 'Session ID', minWidth: 370, flex: 0.5, resizable: false },
-    { field: 'flowId', headerName: 'Flow ID', minWidth: 300, flex: 0.5, hide: true, resizable: false },
-    { field: 'sourceIp', headerName: 'Source IP', minWidth: 180, flex: 0.5, resizable: false },
-    { field: 'sourcePort', headerName: 'Source Port', minWidth: 180, flex: 0.5, resizable: false },
-    { field: 'destIp', headerName: 'Destination IP', minWidth: 200, flex: 0.5, resizable: false },
-    { field: 'destPort', headerName: 'Destination Port', minWidth: 200, flex: 0.5, resizable: false },
-    { field: 'natSourceIp', headerName: 'Nat Source IP', minWidth: 200, flex: 0.5, resizable: false },
-    { field: 'natSourcePort', headerName: 'Nat Source Port', minWidth: 200, flex: 0.5, resizable: false },
-    { field: 'natDestIp', headerName: 'Nat Destination IP', minWidth: 200, flex: 0.5, hide: true, resizable: false },
-    { field: 'natDestPort', headerName: 'Nat Destination Port', minWidth: 200, flex: 0.5, hide: true, resizable: false },
-    { field: 'deviceName', headerName: 'Device Name', minWidth: 200, flex: 0.5, resizable: false },
-    { field: 'deviceExtId', headerName: 'Device ID', minWidth: 240, flex: 0.5, resizable: false },
+    { field: SessionGridColumns.sessionId.resField, headerName: SessionGridColumns.sessionId.label, minWidth: 370, flex: 0.5, resizable: false },
+    { field: SessionGridColumns.flowId.resField, headerName: SessionGridColumns.flowId.label, minWidth: 300, flex: 0.5, hide: true, resizable: false },
+    { field: SessionGridColumns.sourceIp.resField, headerName: SessionGridColumns.sourceIp.label, minWidth: 180, flex: 0.5, resizable: false },
+    { field: SessionGridColumns.sourcePort.resField, headerName: SessionGridColumns.sourcePort.label, minWidth: 180, flex: 0.5, resizable: false },
+    { field: SessionGridColumns.destIp.resField, headerName: SessionGridColumns.destIp.label, minWidth: 200, flex: 0.5, resizable: false },
+    { field: SessionGridColumns.destPort.resField, headerName: SessionGridColumns.destPort.label, minWidth: 200, flex: 0.5, resizable: false },
+    { field: SessionGridColumns.natSourceIp.resField, headerName: SessionGridColumns.natSourceIp.label, minWidth: 200, flex: 0.5, resizable: false },
+    { field: SessionGridColumns.natSourcePort.resField, headerName: SessionGridColumns.natSourcePort.label, minWidth: 200, flex: 0.5, resizable: false },
+    { field: SessionGridColumns.natDestIp.resField, headerName: SessionGridColumns.natDestIp.label, minWidth: 200, flex: 0.5, hide: true, resizable: false },
+    { field: SessionGridColumns.natDestPort.resField, headerName: SessionGridColumns.natDestPort.label, minWidth: 200, flex: 0.5, hide: true, resizable: false },
+    { field: SessionGridColumns.deviceName.resField, headerName: SessionGridColumns.deviceName.label, minWidth: 200, flex: 0.5, resizable: false },
+    { field: SessionGridColumns.deviceExtId.resField, headerName: SessionGridColumns.deviceExtId.label, minWidth: 240, flex: 0.5, resizable: false },
     {
-      field: 'deviceVendor',
-      headerName: 'Vendor',
+      field: SessionGridColumns.deviceVendor.resField,
+      headerName: SessionGridColumns.deviceVendor.label,
       minWidth: 200,
       flex: 0.5,
       resizable: false,
@@ -83,6 +86,37 @@ const Table: React.FC<Props> = (props: Props) => {
     _items[_index].hide = !col.hide;
     setColumns(_items);
   };
+
+  // const onRowGetSelection = e => {
+  // if (!window.getSelection() || !e || !e.row) return;
+  // const text = window.getSelection().toString();
+  // if (!text) return;
+  // const arr = text.split('\n');
+  // const values: ISelectionGridCellValue<ISessionsGridField, ISessionsGridField>[] = [];
+  // arr.forEach(textValue => {
+  //   const _field = Object.keys(SessionGridColumns).find(field => {
+  //     if (!e.row[field]) return null;
+  //     const _value = e.row[field].toString();
+  //     if (_value.includes(textValue)) return field;
+  //     if (field === 'timestamp') {
+  //       const valueFormatted = new Date(e.row[field] as string);
+  //       const _dataStr = format(valueFormatted, `EEE',' LLL d',' yyyy HH:mm aa`);
+  //       if (_dataStr.includes(textValue)) return field;
+  //     }
+  //     return null;
+  //   });
+  //   if (!_field) return;
+  //   if (_field === 'timestamp') {
+  //     const valueFormatted = new Date(e.row[_field] as string);
+  //     const _dataStr = format(valueFormatted, `EEE',' LLL d',' yyyy HH:mm aa`);
+  //     values.push({ field: _field, value: _dataStr });
+  //     return;
+  //   }
+  //   values.push({ field: _field, value: textValue });
+  // });
+  // props.onSetSelection(values);
+  // };
+
   return (
     <>
       <TableHeader columns={columns} count={props.logCount} onChangeColumn={onChangeColumn} />
@@ -93,13 +127,13 @@ const Table: React.FC<Props> = (props: Props) => {
         headerHeight={50}
         rowHeight={50}
         rowCount={props.logCount}
-        disableSelectionOnClick
+        // onRowClick={onRowGetSelection}
         disableColumnFilter
         autoHeight
         error={props.isError}
         rows={dataRows}
         columns={columns}
-        pageSize={dataRows ? dataRows.length : 5}
+        pageSize={dataRows ? dataRows.length : 0}
         components={{
           ColumnUnsortedIcon: () => null,
           ColumnSortedAscendingIcon: () => <>{gridAscArrow}</>,

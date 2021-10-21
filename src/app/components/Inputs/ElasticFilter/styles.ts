@@ -57,10 +57,16 @@ export const ListItemsWrapper = styled.div`
   box-shadow: 0px 15px 50px rgba(132, 141, 163, 0.15);
   border-radius: 6px;
   width: 100%;
-  min-height: 100px;
+`;
+
+export const ItemsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  max-height: 100px;
   max-height: 340px;
   overflow-y: auto;
   overflow-x: hidden;
+  position: relative;
 `;
 
 interface ListItemProps {
@@ -76,6 +82,9 @@ export const ListItem = styled.div<ListItemProps>`
   color: var(--_primaryColor);
   background: ${props => (props.selected ? 'var(--_vmBg)' : 'var(--_primaryButtonBg)')};
   cursor: ${props => (props.selected ? 'default' : 'pointer')};
+  &:hover {
+    background: var(--_vmBg);
+  }
 `;
 
 export const DisplayField = styled.span`
@@ -98,4 +107,44 @@ export const SearchFieldInput = styled.input`
   &:read-only {
     cursor: pointer;
   }
+`;
+
+export const TagsWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  height: auto;
+  max-height: 50px;
+  align-content: flex-start;
+  margin-top: 20px;
+`;
+
+export const TagItem = styled.span`
+  display: inline-flex;
+  align-items: center;
+  margin: 0 10px 10px 0;
+  height: 24px;
+  flex-shrink: 0;
+  border-radius: 20px;
+  background: var(--_stepperEdgeColor);
+  line-height: 24px;
+  padding: 2px 12px;
+  font-family: 'DMSans';
+  font-style: normal;
+  font-size: 10px;
+`;
+
+interface LabelProps {
+  color?: string;
+  margin?: string;
+  fontSize?: string;
+  lineHeight?: string;
+}
+export const TagItemLabel = styled.span<LabelProps>`
+  display: inline-block;
+  color: ${props => props.color || 'var(--_disabledTextColor)'};
+  margin: ${props => props.margin || 'auto 0'};
+  font-size: ${props => props.fontSize || '10px'};
+  line-height: ${props => props.lineHeight || '24px'};
+  flex-shrink: 0;
 `;

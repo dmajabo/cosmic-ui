@@ -8,18 +8,18 @@ import Table from './Table';
 import Dropdown from 'app/components/Inputs/Dropdown';
 import { SessionsSelectValuesTypes, SessionsTabTypes, SESSIONS_SELECT_VALUES } from 'lib/hooks/Sessions/model';
 import SessionsSwitch from '../Components/SessionsSwitch';
-import { ISelectedListItem } from 'lib/models/general';
+import { ISelectedListItem, ISelectionGridCellValue } from 'lib/models/general';
 import { sessionsParamBuilder } from 'lib/api/ApiModels/Sessions/paramBuilder';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
-// import ElasticFilter from 'app/components/Inputs/ElasticFilter';
+import ElasticFilter from 'app/components/Inputs/ElasticFilter';
+import { ISessionsGridField, SessionGridColumnItems } from './models';
 
 interface IProps {}
 
 const SessionPage: React.FC<IProps> = (props: IProps) => {
   const { sessions } = useSessionsDataContext();
   const { response, loading, error, onGet } = useGet<IAllSessionsRes>();
-
   React.useEffect(() => {
     return () => {
       sessions.onSetSessionsData(null, null);
@@ -27,8 +27,8 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
   }, []);
 
   React.useEffect(() => {
-    onTryToLoadData(sessions.sessionsPageSize, sessions.sessionsCurrentPage, sessions.sessionsTabPeriod, sessions.sessionsTabSwitch);
-  }, [sessions.sessionsPageSize, sessions.sessionsCurrentPage, sessions.sessionsTabSwitch, sessions.sessionsTabPeriod]);
+    onTryToLoadData(sessions.sessionsPageSize, sessions.sessionsCurrentPage, sessions.sessionsTabPeriod, sessions.sessionsTabSwitch, sessions.sessionsFilter);
+  }, [sessions.sessionsPageSize, sessions.sessionsCurrentPage, sessions.sessionsTabSwitch, sessions.sessionsTabPeriod, sessions.sessionsFilter]);
 
   React.useEffect(() => {
     if (response && response.sessions.length) {
@@ -38,8 +38,8 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
     }
   }, [response]);
 
-  const onTryToLoadData = async (pageSize: number, page: number, time: SessionsSelectValuesTypes, stitch: boolean) => {
-    const _param = sessionsParamBuilder(pageSize, page, time, stitch);
+  const onTryToLoadData = async (pageSize: number, page: number, time: SessionsSelectValuesTypes, stitch: boolean, filterValue: ISelectionGridCellValue<ISessionsGridField, ISessionsGridField>[]) => {
+    const _param = sessionsParamBuilder(pageSize, page, time, stitch, filterValue);
     await onGet(SessionsApi.getAllSessions(), _param);
   };
 
@@ -59,6 +59,18 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
     sessions.onChangeSwitch(e.target.checked, SessionsTabTypes.Sessions);
   };
 
+  const onClearFilteredItem = (index: number) => {
+    const _items: ISelectionGridCellValue<ISessionsGridField, ISessionsGridField>[] = sessions.sessionsFilter.slice();
+    _items.splice(index, 1);
+    sessions.onChangeFilter(_items);
+  };
+
+  const onAddFilter = (_item: ISelectionGridCellValue<ISessionsGridField, ISessionsGridField>) => {
+    const _items: ISelectionGridCellValue<ISessionsGridField, ISessionsGridField>[] = sessions.sessionsFilter.slice();
+    _items.push(_item);
+    sessions.onChangeFilter(_items);
+  };
+
   return (
     <>
       <ActionRowStyles>
@@ -69,7 +81,7 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
           <Dropdown label="Show" selectedValue={sessions.sessionsTabPeriod} values={SESSIONS_SELECT_VALUES} onSelectValue={onChangePeriod} />
         </ActionPart>
       </ActionRowStyles>
-      {/* <ElasticFilter fields={SESSIONS_ELASTIC_FIELDS_VALUES} /> */}
+      <ElasticFilter onClearFilteredItem={onClearFilteredItem} placeholder="Search Filter" selectionFilterItems={sessions.sessionsFilter} fields={SessionGridColumnItems} onAddFilter={onAddFilter} />
       <ContentWrapper>
         <TableWrapper>
           <Table
@@ -80,6 +92,7 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
             data={sessions.sessionsData}
             pageSize={sessions.sessionsPageSize}
             onChangePageSize={onChangePageSize}
+            // onSetSelection={onSetFilter}
           />
           {loading && (
             <AbsLoaderWrapper width="100%" height="calc(100% - 50px)" top="50px">
