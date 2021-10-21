@@ -9,9 +9,10 @@ interface ConnectEdgesProps {
   readonly edgeBoxArray: EdgeBoxProps[];
   readonly isAppReadyToUse: boolean;
   readonly onAppReadyToUse: () => void;
+  readonly onAddNewEdge: () => void;
 }
 
-export const ConnectEdges: React.FC<ConnectEdgesProps> = ({ edgeBoxArray, isAppReadyToUse, onAppReadyToUse }) => {
+export const ConnectEdges: React.FC<ConnectEdgesProps> = ({ edgeBoxArray, isAppReadyToUse, onAppReadyToUse, onAddNewEdge }) => {
   const classes = SignUpStyles();
 
   return (
@@ -22,9 +23,18 @@ export const ConnectEdges: React.FC<ConnectEdgesProps> = ({ edgeBoxArray, isAppR
       </div>
       <div className={classes.edgeBoxContainer}>
         {edgeBoxArray.map(edgeBox => (
-          <EdgeBox key={edgeBox.title} img={edgeBox.img} title={edgeBox.title} content={edgeBox.content} onUpdate={edgeBox.onUpdate} onConnect={edgeBox.onConnect} isConnected={edgeBox.isConnected} />
+          <EdgeBox
+            edgeName={edgeBox.edgeName}
+            key={edgeBox.title}
+            img={edgeBox.img}
+            title={edgeBox.title}
+            content={edgeBox.content}
+            onUpdate={edgeBox.onUpdate}
+            onConnect={edgeBox.onConnect}
+            isConnected={edgeBox.isConnected}
+          />
         ))}
-        <div className={classes.newEdgeButton}>
+        <div className={classes.newEdgeButton} onClick={onAddNewEdge}>
           ADD NEW EDGE
           <img className={classes.whiteArrow} src={AddIcon} alt="add new edge" />
         </div>
@@ -39,7 +49,7 @@ export const ConnectEdges: React.FC<ConnectEdgesProps> = ({ edgeBoxArray, isAppR
         </div>
         <>
           <button className={isAppReadyToUse ? classes.connectSourceFormButton : classes.startButton} onClick={onAppReadyToUse} disabled={!isAppReadyToUse}>
-            START WITH OKULIS
+            <span className={classes.buttonText}>START WITH OKULIS</span>
           </button>
         </>
       </div>

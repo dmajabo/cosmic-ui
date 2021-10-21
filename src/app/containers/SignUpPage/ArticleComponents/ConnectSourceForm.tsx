@@ -7,15 +7,25 @@ interface ConnectFormProps {
   readonly title: string;
   readonly img: string;
   readonly subtitle: string;
+  readonly edgeName: string;
   readonly steps: StepData[];
   readonly isFormFilled: boolean;
   readonly updateForm: boolean;
-  readonly onFormSubmit: () => void;
-  readonly onFormUpdate: () => void;
+  readonly onFormSubmit: (edgeTitle: string) => void;
+  readonly onFormUpdate: (edgeTitle: string) => void;
 }
 
-export const ConnectSourceForm: React.FC<ConnectFormProps> = ({ title, img, subtitle, steps, isFormFilled, updateForm, onFormSubmit, onFormUpdate }) => {
+export const ConnectSourceForm: React.FC<ConnectFormProps> = ({ title, img, subtitle, edgeName, steps, isFormFilled, updateForm, onFormSubmit, onFormUpdate }) => {
   const classes = SignUpStyles();
+
+  const onSourceFormSubmit = () => {
+    onFormSubmit(edgeName);
+  };
+
+  const onSourceFormUpdate = () => {
+    onFormUpdate(edgeName);
+  };
+
   return (
     <div className={classes.connectFormContainer}>
       <div className={classes.titleContainer}>
@@ -28,7 +38,7 @@ export const ConnectSourceForm: React.FC<ConnectFormProps> = ({ title, img, subt
           <div className={classes.connectFlexContainer}>
             <div className={classes.stepCountBox}>{index + 1}</div>
             <div>
-              <div className={classes.stepTitle}>{step.title}</div>
+              <div className={classes.stepTitle}>{`Step ${index + 1}: ${step.title}`}</div>
               <div>{step.content}</div>
             </div>
           </div>
@@ -43,7 +53,7 @@ export const ConnectSourceForm: React.FC<ConnectFormProps> = ({ title, img, subt
           <div className={classes.skipSetupText}>You can finish it in any time.</div>
         </div>
         <>
-          <button className={isFormFilled ? classes.connectSourceFormButton : classes.startButton} onClick={updateForm ? onFormUpdate : onFormSubmit} disabled={!isFormFilled}>
+          <button className={isFormFilled ? classes.connectSourceFormButton : classes.startButton} onClick={updateForm ? onSourceFormUpdate : onSourceFormSubmit} disabled={!isFormFilled}>
             {updateForm ? 'UPDATE' : 'CONNECT'}
           </button>
         </>
