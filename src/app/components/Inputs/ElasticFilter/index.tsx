@@ -21,6 +21,7 @@ interface Props {
   onClearFilteredItem: (index: number) => void;
   onAddFilter: (_item: ISelectionGridCellValue<ISessionsGridField, ISessionsGridField>, index: number | null) => void;
   onChangeOperator: (_item: IFilterOpperator, index: number) => void;
+  onClearFilter: () => void;
 }
 
 const ElasticFilter: React.FC<Props> = (props: Props) => {
@@ -154,6 +155,10 @@ const ElasticFilter: React.FC<Props> = (props: Props) => {
     onUpdateState([], null, false, '', false);
   };
 
+  const onClearAll = () => {
+    props.onClearFilter();
+  };
+
   const onSelect = (item: ISessionsGridField) => {
     if (item.isStaticField) {
       onSelectItem(item);
@@ -216,7 +221,8 @@ const ElasticFilter: React.FC<Props> = (props: Props) => {
           <ElasticValueWrapper>
             <SearchFieldInput ref={inputRef} placeholder={props.placeholder && !searchTerm ? props.placeholder : ''} value={searchTerm || ''} onChange={onSearch} onKeyUp={onKeyUp} />
             <IconsWrapper>
-              {searchedField && <IconWrapper onClick={onClear} icon={closeSmallIcon} />}
+              {searchTerm && <IconWrapper onClick={onClear} icon={closeSmallIcon} />}
+              {!searchTerm && props.selectionFilterItems.length && <IconWrapper onClick={onClearAll} icon={closeSmallIcon} />}
               <IconWrapper onClick={onToogleShow} icon={filterIcon} styles={{ margin: '0 0 0 12px' }} />
             </IconsWrapper>
           </ElasticValueWrapper>

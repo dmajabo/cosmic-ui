@@ -23,7 +23,7 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
   const { response, loading, error, onGet } = useGet<IAllSessionsRes>();
   React.useEffect(() => {
     return () => {
-      sessions.onSetSessionsData(null, null);
+      sessions.onClearContext();
     };
   }, []);
 
@@ -32,7 +32,7 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
   }, [sessions.sessionsPageSize, sessions.sessionsCurrentPage, sessions.sessionsTabSwitch, sessions.sessionsTabPeriod, sessions.sessionsFilter]);
 
   React.useEffect(() => {
-    if (response && response.sessions.length) {
+    if (response) {
       sessions.onSetSessionsData(response.sessions, response.count);
     } else {
       sessions.onSetSessionsData(null, null);
@@ -82,6 +82,10 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
     sessions.onChangeFilter(_items);
   };
 
+  const onClearFilter = () => {
+    sessions.onChangeFilter([]);
+  };
+
   const onAddFilter = (_item: ISelectionGridCellValue<ISessionsGridField, ISessionsGridField>, index: number | null) => {
     const _items: (ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> | IFilterOpperator)[] = sessions.sessionsFilter.slice();
     if (index !== null) {
@@ -118,6 +122,7 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
         selectionFilterItems={sessions.sessionsFilter}
         fields={SessionGridColumnItems}
         onAddFilter={onAddFilter}
+        onClearFilter={onClearFilter}
       />
       <ContentWrapper>
         <TableWrapper>

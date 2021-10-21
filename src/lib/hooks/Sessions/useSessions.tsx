@@ -21,6 +21,7 @@ export interface SessionsContextType {
   onChangeSelectedPeriod: (_value: ISelectedListItem<SessionsSelectValuesTypes>, _page: SessionsTabTypes) => void;
   onChangeSwitch: (_value: boolean, _page: SessionsTabTypes) => void;
   onChangeFilter: (_value: (ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> | IFilterOpperator)[]) => void;
+  onClearContext: () => void;
 }
 export function useSessionsContext(): SessionsContextType {
   const [selectedTab, setSelectedTab] = React.useState<ITab<SessionsTabTypes>>(SESSIONS_TABS[0]);
@@ -79,6 +80,13 @@ export function useSessionsContext(): SessionsContextType {
     setSessionsCurrentPage(_page);
   };
 
+  const onClearContext = () => {
+    setSessionsData([]);
+    setSessionsCurrentPage(1);
+    setSessionsCount(0);
+    setSessionsFilterValue([]);
+  };
+
   return {
     selectedTab,
     sessionsData,
@@ -95,5 +103,6 @@ export function useSessionsContext(): SessionsContextType {
     onChangeSelectedPeriod,
     onChangeSwitch,
     onChangeFilter,
+    onClearContext,
   };
 }
