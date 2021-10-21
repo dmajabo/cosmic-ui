@@ -222,7 +222,7 @@ const ElasticFilter: React.FC<Props> = (props: Props) => {
             <SearchFieldInput ref={inputRef} placeholder={props.placeholder && !searchTerm ? props.placeholder : ''} value={searchTerm || ''} onChange={onSearch} onKeyUp={onKeyUp} />
             <IconsWrapper>
               {searchTerm && <IconWrapper onClick={onClear} icon={closeSmallIcon} />}
-              {!searchTerm && props.selectionFilterItems.length && <IconWrapper onClick={onClearAll} icon={closeSmallIcon} />}
+              {!searchTerm && props.selectionFilterItems.length ? <IconWrapper onClick={onClearAll} icon={closeSmallIcon} /> : null}
               <IconWrapper onClick={onToogleShow} icon={filterIcon} styles={{ margin: '0 0 0 12px' }} />
             </IconsWrapper>
           </ElasticValueWrapper>
