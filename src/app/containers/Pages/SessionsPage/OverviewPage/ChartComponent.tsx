@@ -21,17 +21,13 @@ const ChartComponent: React.FC<IProps> = (props: IProps) => {
 
   React.useEffect(() => {
     if (response && response.sankey) {
-      // setData(response);
+      // setData({ ...response });
       // const _data = [];
-      // const _names = new Set();
-      // debugger;
       // response.sankey.links.forEach(link => {
       //   const _s = response.sankey.nodes.find(it => it.node === link.source);
       //   const _t = response.sankey.nodes.find(it => it.node === link.target);
-      //   if (_names.has(`${_t.node}${_s.node}`)) return;
       //   const _item = [_s.name, _t.name, link.value];
       //   _data.push(_item);
-      //   _names.add(`${_s.node}${_t.node}`);
       // });
       // setHighData(_data);
     }

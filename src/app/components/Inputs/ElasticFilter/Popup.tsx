@@ -4,15 +4,14 @@ import LoadingIndicator from 'app/components/Loading';
 import { ISessionsGridField } from 'app/containers/Pages/SessionsPage/SessionPage/models';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 interface Props {
-  items: ISessionsGridField[];
-  onSelectItem: (item: ISessionsGridField) => void;
+  items?: ISessionsGridField[];
+  onSelectItem?: (item: ISessionsGridField) => void;
   loading?: boolean;
 }
 const Popup: React.FC<Props> = (props: Props) => {
   const onSelectField = (item: ISessionsGridField) => {
     props.onSelectItem(item);
   };
-
   return (
     <ListItemsWrapper>
       <ItemsContainer>

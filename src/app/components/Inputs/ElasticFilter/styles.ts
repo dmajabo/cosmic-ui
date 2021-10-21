@@ -28,6 +28,13 @@ export const PopupWrapper = styled.div`
   z-index: 2;
 `;
 
+export const OperatorPopupWrapper = styled.span`
+  width: 100%;
+  display: inline-block;
+  position: relative;
+  z-index: 2;
+`;
+
 export const ElasticValueWrapper = styled.div`
   display: flex;
   align-items: center;
@@ -48,10 +55,15 @@ export const IconsWrapper = styled.div`
   flex-shrink: 0;
 `;
 
-export const ListItemsWrapper = styled.div`
+interface ListProps {
+  minWidth?: string;
+  left?: string;
+}
+export const ListItemsWrapper = styled.div<ListProps>`
   position: absolute;
   top: calc(100% + 2px);
-  left: 0;
+  left: ${props => props.left || '0'};
+  min-width: ${props => props.minWidth || 'unset'};
   padding: 6px 0;
   background: var(--_primaryButtonBg);
   box-shadow: 0px 15px 50px rgba(132, 141, 163, 0.15);

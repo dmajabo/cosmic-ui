@@ -1,4 +1,5 @@
-import { ISessionsGridField } from 'app/containers/Pages/SessionsPage/SessionPage/models';
+import { IFilterOpperator, IQuryFieldtype, ISessionsGridField } from 'app/containers/Pages/SessionsPage/SessionPage/models';
+import { isObjectHasField } from 'lib/helpers/general';
 import { StitchTypes, SESSIONS_DEFAULT_PAGE_SIZE, SessionsSelectValuesTypes } from 'lib/hooks/Sessions/model';
 import { ISelectionGridCellValue } from 'lib/models/general';
 
@@ -15,7 +16,7 @@ export const sessionsParamBuilder = (
   currentPage?: number,
   time_range?: SessionsSelectValuesTypes,
   type?: boolean,
-  filters?: ISelectionGridCellValue<ISessionsGridField, ISessionsGridField>[],
+  filters?: (ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> | IFilterOpperator)[],
 ): ISessionParam => {
   let param: ISessionParam = {};
   if (currentPage !== 1) {
@@ -33,9 +34,16 @@ export const sessionsParamBuilder = (
   }
   if (filters && filters.length) {
     const arr = filters.map(item => {
-      return `(${item.field.searchField}:'${item.value.label}')`;
+      if (isObjectHasField(item, 'isOperator')) {
+        return item.value;
+      }
+      const _el: ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> = item as ISelectionGridCellValue<ISessionsGridField, ISessionsGridField>;
+      if (_el.field.queryType === IQuryFieldtype.NUMBER) {
+        return `(${_el.field.searchField}:${_el.value.label})`;
+      }
+      return `(${_el.field.searchField}:'${_el.value.label}')`;
     });
-    param.filters = arr.join('AND');
+    param.filters = arr.join('');
   }
   if (!Object.keys(param).length) return null;
   return param;
