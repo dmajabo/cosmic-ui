@@ -65,9 +65,13 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
     sessions.onChangeFilter(_items);
   };
 
-  const onAddFilter = (_item: ISelectionGridCellValue<ISessionsGridField, ISessionsGridField>) => {
+  const onAddFilter = (_item: ISelectionGridCellValue<ISessionsGridField, ISessionsGridField>, index: number | null) => {
     const _items: ISelectionGridCellValue<ISessionsGridField, ISessionsGridField>[] = sessions.sessionsFilter.slice();
-    _items.push(_item);
+    if (index !== null) {
+      _items.splice(index, 1, _item);
+    } else {
+      _items.push(_item);
+    }
     sessions.onChangeFilter(_items);
   };
 

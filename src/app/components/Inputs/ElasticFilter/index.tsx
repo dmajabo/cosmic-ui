@@ -11,7 +11,7 @@ import { KEYBOARD_KEYS } from 'lib/constants/general';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { closeSmallIcon } from 'app/components/SVGIcons/close';
 import { filterIcon } from 'app/components/SVGIcons/filter';
-import { getSearchedField, getSearchedFields, ISearchData } from './helper';
+import { getField, getSearchedField, getSearchedFields, ISearchData } from './helper';
 
 interface Props {
   fields: ISessionsGridField[];
@@ -19,7 +19,7 @@ interface Props {
   disabled?: boolean;
   placeholder?: string;
   onClearFilteredItem: (index: number) => void;
-  onAddFilter: (_item: ISelectionGridCellValue<ISessionsGridField, ISessionsGridField>) => void;
+  onAddFilter: (_item: ISelectionGridCellValue<ISessionsGridField, ISessionsGridField>, index: number | null) => void;
 }
 
 const ElasticFilter: React.FC<Props> = (props: Props) => {
@@ -27,9 +27,9 @@ const ElasticFilter: React.FC<Props> = (props: Props) => {
   const [popupItems, setPopupItems] = React.useState<ISessionsGridField[]>([]);
   const [showPopup, setShowPopup] = React.useState<boolean>(false);
   const [searchedField, setSearchedField] = React.useState<ISessionsGridField>(null);
-  const [searchedValue, setSearchedValue] = React.useState<ISessionsGridField>(null);
   const [searchTerm, setSearchTerm] = React.useState<string>('');
   const [isTyping, setIsTyping] = React.useState(false);
+  const [selectedTagIndex, setSelectedTagIndex] = React.useState<number>(null);
   const inputRef = React.useRef(null);
 
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
@@ -71,24 +71,24 @@ const ElasticFilter: React.FC<Props> = (props: Props) => {
   const onSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     if (!value) {
-      onUpdateState([], null, null, false, '', false);
+      onUpdateState([], null, false, '', false);
       return;
     }
     const _arr = value.split(':');
     if (!_arr || !_arr.length) {
-      onUpdateState([], null, null, false, value, false);
+      onUpdateState([], null, false, value, false);
       return;
     }
     if (_arr.length === 1) {
       const _data: ISearchData = getSearchedFields(_arr[0], props.fields);
-      onUpdateState(_data.items, _data.field, null, !!_data.items.length, value, false);
+      onUpdateState(_data.items, _data.field, !!_data.items.length, value, false);
       return;
     }
     if (_arr.length > 1) {
       const _currentField: ISearchData = getSearchedField(_arr[0], props.fields);
       if (!_currentField.field) {
         const _data: ISearchData = getSearchedFields(_arr[0], props.fields);
-        onUpdateState(_data.items, _data.field, null, !!_data.items.length, value, false);
+        onUpdateState(_data.items, _data.field, !!_data.items.length, value, false);
         return;
       }
     }
@@ -97,33 +97,45 @@ const ElasticFilter: React.FC<Props> = (props: Props) => {
     setSearchTerm(value);
   };
 
-  const onUpdateState = (items, field, value, show, search, typing) => {
+  const onUpdateState = (items, field, show, search, typing) => {
     setShowPopup(show);
     setPopupItems(items);
     setSearchedField(field);
-    setSearchedValue(value);
     setSearchTerm(search);
     setIsTyping(typing);
   };
 
   const onKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === KEYBOARD_KEYS.ENTER.key && searchedField && searchedValue) {
-      props.onAddFilter({ field: searchedField, value: searchedValue });
-      onUpdateState([], null, null, false, '', false);
+    if (e.key === KEYBOARD_KEYS.ENTER.key && searchTerm) {
+      const _arr = searchTerm.split(': ');
+      if (_arr && _arr.length > 1) {
+        const _field = getField(_arr[0], props.fields);
+        if (!_field) return;
+        const _str = _arr[1].split(' ').join('');
+        if (!_str.length) return;
+
+        if (selectedTagIndex || selectedTagIndex === 0) {
+          setSelectedTagIndex(null);
+          props.onAddFilter({ field: _field, value: { label: _arr[1], resField: null, searchField: null, isStaticField: false } }, selectedTagIndex);
+        } else {
+          props.onAddFilter({ field: _field, value: { label: _arr[1], resField: null, searchField: null, isStaticField: false } }, null);
+        }
+        onUpdateState([], null, false, '', false);
+      }
     }
   };
 
   const onToogleShow = () => {
     if (props.disabled) return;
     if (!searchTerm) {
-      onUpdateState(props.fields, null, null, true, '', false);
+      onUpdateState(props.fields, null, true, '', false);
       return;
     }
     if (searchTerm) {
       const _arr = searchTerm.split(': ');
       if (!searchedField && _arr[0]) {
         const _data: ISearchData = getSearchedFields(_arr[0], props.fields);
-        onUpdateState(_data.items, _data.field, null, !!_data.items.length, searchTerm, false);
+        onUpdateState(_data.items, _data.field, !!_data.items.length, searchTerm, false);
         return;
       } else if (searchedField) {
         if (!_arr[1] || !_arr[1].length) return;
@@ -138,7 +150,7 @@ const ElasticFilter: React.FC<Props> = (props: Props) => {
   };
 
   const onClear = () => {
-    onUpdateState([], null, null, false, '', false);
+    onUpdateState([], null, false, '', false);
   };
 
   const onSelect = (item: ISessionsGridField) => {
@@ -153,7 +165,7 @@ const ElasticFilter: React.FC<Props> = (props: Props) => {
     if (searchTerm) {
       const _arr = searchTerm.split(':');
       if (_arr.length <= 1) {
-        onUpdateState([], item, null, false, `${item.label}: `, false);
+        onUpdateState([], item, false, `${item.label}: `, false);
         inputRef.current.focus();
         return;
       }
@@ -165,18 +177,26 @@ const ElasticFilter: React.FC<Props> = (props: Props) => {
       inputRef.current.focus();
       return;
     }
-    onUpdateState([], item, null, false, `${item.label}: `, false);
+    onUpdateState([], item, false, `${item.label}: `, false);
     inputRef.current.focus();
   };
 
   const onSelectValue = (item: ISessionsGridField) => {
     const _fieldLabel = searchedField ? searchedField.label : '';
-    onUpdateState(popupItems, searchedField, item, false, `${_fieldLabel}: ${item.label}`, false);
+    onUpdateState(popupItems, searchedField, false, `${_fieldLabel}: ${item.label}`, false);
     inputRef.current.focus();
   };
 
   const onClearFilteredItem = (index: number) => {
     props.onClearFilteredItem(index);
+  };
+
+  const onSelectTag = (item: ISelectionGridCellValue<ISessionsGridField, ISessionsGridField>, index: number) => {
+    setSearchedField(item.field);
+    setShowPopup(false);
+    setSelectedTagIndex(index);
+    setSearchTerm(`${item.field.label}: ${item.value.label}`);
+    inputRef.current.focus();
   };
 
   const onTryLoadPossibleValues = async (v: string) => {
@@ -199,7 +219,7 @@ const ElasticFilter: React.FC<Props> = (props: Props) => {
           {showPopup && <Popup loading={loading} items={popupItems} onSelectItem={onSelect} />}
         </PopupWrapper>
       </ClickAwayListener>
-      <Tags items={props.selectionFilterItems} onRemoveTag={onClearFilteredItem} />
+      <Tags items={props.selectionFilterItems} onRemoveTag={onClearFilteredItem} onSelectTag={onSelectTag} />
     </ElasticFilterWrapper>
   );
 };

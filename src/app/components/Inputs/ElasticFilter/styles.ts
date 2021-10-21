@@ -136,15 +136,23 @@ export const TagItem = styled.span`
 
 interface LabelProps {
   color?: string;
-  margin?: string;
   fontSize?: string;
   lineHeight?: string;
+  padding?: string;
 }
 export const TagItemLabel = styled.span<LabelProps>`
   display: inline-block;
   color: ${props => props.color || 'var(--_disabledTextColor)'};
-  margin: ${props => props.margin || 'auto 0'};
   font-size: ${props => props.fontSize || '10px'};
   line-height: ${props => props.lineHeight || '24px'};
+  padding: ${props => props.padding || '0'};
   flex-shrink: 0;
+`;
+
+export const TextWrapper = styled.span`
+  display: inline-flex;
+  align-items: center;
+  margin: auto 4px auto 0;
+  height: 100%;
+  cursor: pointer;
 `;
