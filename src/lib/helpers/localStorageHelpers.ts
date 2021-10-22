@@ -1,13 +1,13 @@
 import { getFromBase64, getToBase64, OKULIS_LOCAL_STORAGE_KEYS } from 'lib/api/http/utils';
 
-export enum LocalStoragePreferenceKeys {
+export enum SessionStoragePreferenceKeys {
   SESSIONS_FILTER = 'sessions_filter',
   SESSIONS_TIME_PERIOD = 'sessions_time_period',
   SESSIONS_STITCH = 'sessions_stitch',
 }
 
-export const updateLocalStoragePreference = (_value: any, _key: OKULIS_LOCAL_STORAGE_KEYS, _subKey?: LocalStoragePreferenceKeys) => {
-  let data: any = localStorage.getItem(_key);
+export const updateSessionStoragePreference = (_value: any, _key: OKULIS_LOCAL_STORAGE_KEYS, _subKey?: SessionStoragePreferenceKeys) => {
+  let data: any = sessionStorage.getItem(_key);
   if (data) {
     data = getFromBase64(data);
   } else {
@@ -19,14 +19,14 @@ export const updateLocalStoragePreference = (_value: any, _key: OKULIS_LOCAL_STO
     data[_key] = _value;
   }
   if (!Object.keys(data).length) {
-    localStorage.removeItem(_key);
+    sessionStorage.removeItem(_key);
     return;
   }
-  localStorage.setItem(_key, getToBase64(data));
+  sessionStorage.setItem(_key, getToBase64(data));
 };
 
-export const getLocalStoragePreference = (_key: OKULIS_LOCAL_STORAGE_KEYS, _subKey?: LocalStoragePreferenceKeys) => {
-  const data: any = localStorage.getItem(_key);
+export const getSessionStoragePreference = (_key: OKULIS_LOCAL_STORAGE_KEYS, _subKey?: SessionStoragePreferenceKeys) => {
+  const data: any = sessionStorage.getItem(_key);
   if (!data) return null;
   const _obj = getFromBase64(data);
   if (_subKey) {
@@ -37,8 +37,8 @@ export const getLocalStoragePreference = (_key: OKULIS_LOCAL_STORAGE_KEYS, _subK
   return _obj[_key];
 };
 
-export const getLocalStoragePreferences = (_key: OKULIS_LOCAL_STORAGE_KEYS, _subKey: LocalStoragePreferenceKeys[]) => {
-  const data: any = localStorage.getItem(_key);
+export const getSessionStoragePreferences = (_key: OKULIS_LOCAL_STORAGE_KEYS, _subKey: SessionStoragePreferenceKeys[]) => {
+  const data: any = sessionStorage.getItem(_key);
   if (!data) return null;
   const _obj = getFromBase64(data);
   const _objItem = {};

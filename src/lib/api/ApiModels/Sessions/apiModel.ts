@@ -1,6 +1,12 @@
 import { IBaseEntity } from 'lib/models/general';
 import { AccountVendorTypes } from '../Accounts/apiModel';
 
+export enum SankeyNodeType {
+  SANKEY_NETWORK = 'SANKEY_APPLICATION',
+  SANKEY_DESTINATION = 'SANKEY_DESTINATION',
+  SANKEY_APPLICATION = 'SANKEY_APPLICATION',
+}
+
 export interface ISession extends IBaseEntity<string> {
   timestamp: string;
   sessionId: string;
@@ -27,6 +33,7 @@ export interface IAllSessionsRes {
 export interface ISankeyNode {
   node: number;
   name: string;
+  type: SankeyNodeType;
 }
 
 export interface ISankeyLink {
