@@ -33,6 +33,7 @@ const SliderStyles = withStyles({
       backgroundColor: 'var(--_hoverButtonBg)',
       borderRadius: '50%',
       boxShadow: '0px 4px 15px rgba(5, 20, 58, 0.15) !important',
+      zIndex: 1,
     },
     '&:after': {
       display: 'none',
