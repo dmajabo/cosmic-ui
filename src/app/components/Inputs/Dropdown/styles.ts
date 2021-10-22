@@ -31,6 +31,10 @@ export const SelectWrapper = styled.div`
   cursor: pointer;
   display: flex;
   align-items: center;
+  font-family: 'DMSans';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
   &.active {
     .inheritFill {
       fill: var(--_hoverButtonBg);
@@ -49,10 +53,8 @@ export const DisplayValueStyles = styled.div`
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
-  font-family: 'DMSans';
-  font-style: normal;
-  font-weight: 500;
-  font-size: 16px;
+  font-weight: inherit;
+  font-size: inherit;
   &.filled {
     color: var(--_primaryColor);
   }

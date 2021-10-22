@@ -1,6 +1,7 @@
-export const OKULIS_CONST = {
-  okulisUser: 'okulisUser',
-};
+export enum OKULIS_LOCAL_STORAGE_KEYS {
+  OKULIS_USER = 'okulisUser',
+  OKULIS_PREFERENCE = 'okulisPreference',
+}
 
 export const combineStrings = (root: string, index: string, separator: string = '/') => {
   return root + separator + index;

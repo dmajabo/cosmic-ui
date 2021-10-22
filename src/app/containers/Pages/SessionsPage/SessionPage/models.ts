@@ -1,3 +1,5 @@
+import { ISelectedListItem } from 'lib/models/general';
+
 export enum IQuryFieldtype {
   STRING = 'string',
   NUMBER = 'number',
@@ -135,25 +137,15 @@ export enum FilterOpperatorTypes {
   OR = 'OR',
 }
 
-export interface IFilterOpperator {
-  label: string;
-  value: FilterOpperatorTypes;
-  isOperator: boolean;
-}
-
-export interface IFilterOpperators {
-  [key: string]: IFilterOpperator;
-}
-
-export const FilterOpperators: IFilterOpperators = {
-  AND: {
+export const FilterOpperatorsList: ISelectedListItem<FilterOpperatorTypes>[] = [
+  {
+    id: FilterOpperatorTypes.AND,
     label: 'And',
     value: FilterOpperatorTypes.AND,
-    isOperator: true,
   },
-  OR: {
+  {
+    id: FilterOpperatorTypes.OR,
     label: 'Or',
     value: FilterOpperatorTypes.OR,
-    isOperator: true,
   },
-};
+];

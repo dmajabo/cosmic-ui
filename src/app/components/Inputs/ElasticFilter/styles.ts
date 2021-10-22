@@ -25,7 +25,7 @@ export const PopupWrapper = styled.div`
   width: 100%;
   height: 40px;
   position: relative;
-  z-index: 2;
+  z-index: 3;
 `;
 
 export const OperatorPopupWrapper = styled.span`
@@ -51,7 +51,6 @@ export const ElasticValueWrapper = styled.div`
 export const IconsWrapper = styled.div`
   display: inline-flex;
   margin: auto 0 auto auto;
-  padding: 0 0 0 12px;
   flex-shrink: 0;
 `;
 

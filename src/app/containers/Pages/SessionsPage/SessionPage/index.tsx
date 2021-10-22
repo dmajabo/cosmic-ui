@@ -13,8 +13,7 @@ import { sessionsParamBuilder } from 'lib/api/ApiModels/Sessions/paramBuilder';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
 import ElasticFilter from 'app/components/Inputs/ElasticFilter';
-import { FilterOpperators, IFilterOpperator, ISessionsGridField, SessionGridColumnItems } from './models';
-import { isObjectHasField } from 'lib/helpers/general';
+import { FilterOpperatorsList, ISessionsGridField, SessionGridColumnItems } from './models';
 
 interface IProps {}
 
@@ -28,8 +27,8 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
   }, []);
 
   React.useEffect(() => {
-    onTryToLoadData(sessions.sessionsPageSize, sessions.sessionsCurrentPage, sessions.sessionsTabPeriod, sessions.sessionsTabSwitch, sessions.sessionsFilter);
-  }, [sessions.sessionsPageSize, sessions.sessionsCurrentPage, sessions.sessionsTabSwitch, sessions.sessionsTabPeriod, sessions.sessionsFilter]);
+    onTryToLoadData(sessions.sessionsPageSize, sessions.sessionsCurrentPage, sessions.sessionsPeriod, sessions.sessionsStitch, sessions.sessionsFilter);
+  }, [sessions.sessionsPageSize, sessions.sessionsCurrentPage, sessions.sessionsStitch, sessions.sessionsPeriod, sessions.sessionsFilter]);
 
   React.useEffect(() => {
     if (response) {
@@ -44,7 +43,7 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
     page: number,
     time: SessionsSelectValuesTypes,
     stitch: boolean,
-    filterValue: (ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> | IFilterOpperator)[],
+    filterValue: (ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> | string)[],
   ) => {
     const _param = sessionsParamBuilder(pageSize, page, time, stitch, filterValue);
     await onGet(SessionsApi.getAllSessions(), _param);
@@ -67,13 +66,13 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
   };
 
   const onClearFilteredItem = (index: number) => {
-    const _items: (ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> | IFilterOpperator)[] = sessions.sessionsFilter.slice();
+    const _items: (ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> | string)[] = sessions.sessionsFilter.slice();
     let stIndex = index;
     let count = 1;
     if (_items.length > 1) {
-      if (_items[index + 1] && isObjectHasField(_items[index + 1], 'isOperator')) {
+      if (_items[index + 1] && typeof _items[index + 1] === 'string') {
         count = 2;
-      } else if (_items[index - 1] && isObjectHasField(_items[index - 1], 'isOperator')) {
+      } else if (_items[index - 1] && typeof _items[index - 1] === 'string') {
         stIndex = index - 1;
         count = 2;
       }
@@ -87,20 +86,20 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
   };
 
   const onAddFilter = (_item: ISelectionGridCellValue<ISessionsGridField, ISessionsGridField>, index: number | null) => {
-    const _items: (ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> | IFilterOpperator)[] = sessions.sessionsFilter.slice();
+    const _items: (ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> | string)[] = sessions.sessionsFilter.slice();
     if (index !== null) {
       _items.splice(index, 1, _item);
     } else {
       if (_items.length >= 1) {
-        _items.push(FilterOpperators.AND);
+        _items.push(FilterOpperatorsList[0].value);
       }
       _items.push(_item);
     }
     sessions.onChangeFilter(_items);
   };
 
-  const onChangeOperator = (_item: IFilterOpperator, index: number) => {
-    const _items: (ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> | IFilterOpperator)[] = sessions.sessionsFilter.slice();
+  const onChangeOperator = (_item: string, index: number) => {
+    const _items: (ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> | string)[] = sessions.sessionsFilter.slice();
     _items.splice(index, 1, _item);
     sessions.onChangeFilter(_items);
   };
@@ -109,10 +108,10 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
     <>
       <ActionRowStyles>
         <ActionPart margin="0 auto 0 0">
-          <SessionsSwitch checked={sessions.sessionsTabSwitch} onChange={onSwitchChange} />
+          <SessionsSwitch checked={sessions.sessionsStitch} onChange={onSwitchChange} />
         </ActionPart>
         <ActionPart margin="0 0 0 auto">
-          <Dropdown label="Show" selectedValue={sessions.sessionsTabPeriod} values={SESSIONS_SELECT_VALUES} onSelectValue={onChangePeriod} />
+          <Dropdown label="Show" selectedValue={sessions.sessionsPeriod} values={SESSIONS_SELECT_VALUES} onSelectValue={onChangePeriod} />
         </ActionPart>
       </ActionRowStyles>
       <ElasticFilter

@@ -5,7 +5,7 @@ import { ISelectionGridCellValue } from 'lib/models/general';
 import Popup from './Popup';
 import Tags from './Tags';
 // import { useGet } from 'lib/api/http/useAxiosHook';
-import { IFilterOpperator, ISessionsGridField } from 'app/containers/Pages/SessionsPage/SessionPage/models';
+import { ISessionsGridField } from 'app/containers/Pages/SessionsPage/SessionPage/models';
 // import useDebounce from 'lib/hooks/useDebounce';
 import { KEYBOARD_KEYS } from 'lib/constants/general';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
@@ -15,12 +15,12 @@ import { getField, getSearchedField, getSearchedFields, ISearchData } from './he
 
 interface Props {
   fields: ISessionsGridField[];
-  selectionFilterItems: (ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> | IFilterOpperator)[];
+  selectionFilterItems: (ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> | string)[];
   disabled?: boolean;
   placeholder?: string;
   onClearFilteredItem: (index: number) => void;
   onAddFilter: (_item: ISelectionGridCellValue<ISessionsGridField, ISessionsGridField>, index: number | null) => void;
-  onChangeOperator: (_item: IFilterOpperator, index: number) => void;
+  onChangeOperator: (_item: string, index: number) => void;
   onClearFilter: () => void;
 }
 
@@ -155,10 +155,6 @@ const ElasticFilter: React.FC<Props> = (props: Props) => {
     onUpdateState([], null, false, '', false);
   };
 
-  const onClearAll = () => {
-    props.onClearFilter();
-  };
-
   const onSelect = (item: ISessionsGridField) => {
     if (item.isStaticField) {
       onSelectItem(item);
@@ -205,7 +201,7 @@ const ElasticFilter: React.FC<Props> = (props: Props) => {
     inputRef.current.focus();
   };
 
-  const onChangeOperator = (_item: IFilterOpperator, index: number) => {
+  const onChangeOperator = (_item: string, index: number) => {
     props.onChangeOperator(_item, index);
   };
 
@@ -221,8 +217,7 @@ const ElasticFilter: React.FC<Props> = (props: Props) => {
           <ElasticValueWrapper>
             <SearchFieldInput ref={inputRef} placeholder={props.placeholder && !searchTerm ? props.placeholder : ''} value={searchTerm || ''} onChange={onSearch} onKeyUp={onKeyUp} />
             <IconsWrapper>
-              {searchTerm && <IconWrapper onClick={onClear} icon={closeSmallIcon} />}
-              {!searchTerm && props.selectionFilterItems.length ? <IconWrapper onClick={onClearAll} icon={closeSmallIcon} /> : null}
+              {searchTerm && <IconWrapper styles={{ margin: '0 0 0 12px' }} onClick={onClear} icon={closeSmallIcon} />}
               <IconWrapper onClick={onToogleShow} icon={filterIcon} styles={{ margin: '0 0 0 12px' }} />
             </IconsWrapper>
           </ElasticValueWrapper>

@@ -3,7 +3,9 @@ import { ITab } from 'lib/models/tabs';
 import { SessionsSelectValuesTypes, SessionsTabTypes, SESSIONS_DEFAULT_PAGE_SIZE, SESSIONS_SELECT_VALUES, SESSIONS_TABS } from './model';
 import { ISelectedListItem, ISelectionGridCellValue } from 'lib/models/general';
 import { ISession } from 'lib/api/ApiModels/Sessions/apiModel';
-import { IFilterOpperator, ISessionsGridField } from 'app/containers/Pages/SessionsPage/SessionPage/models';
+import { ISessionsGridField } from 'app/containers/Pages/SessionsPage/SessionPage/models';
+import { OKULIS_LOCAL_STORAGE_KEYS } from 'lib/api/http/utils';
+import { getLocalStoragePreferences, LocalStoragePreferenceKeys, updateLocalStoragePreference } from 'lib/helpers/localStorageHelpers';
 
 export interface SessionsContextType {
   selectedTab: ITab<SessionsTabTypes>;
@@ -11,16 +13,16 @@ export interface SessionsContextType {
   sessionsData: ISession[];
   sessionsCurrentPage: number;
   sessionsPageSize: number;
-  sessionsTabPeriod: SessionsSelectValuesTypes;
-  sessionsTabSwitch: boolean;
-  sessionsFilter: (ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> | IFilterOpperator)[];
+  sessionsPeriod: SessionsSelectValuesTypes;
+  sessionsStitch: boolean;
+  sessionsFilter: (ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> | string)[];
   onChangePageSize: (_size: number, _page?: number) => void;
   onChangeCurrentPage: (_page: number) => void;
   onSetSessionsData: (_items: ISession[], _count: number | string) => void;
   onChangeSelectedTab: (_tabIndex: number) => void;
   onChangeSelectedPeriod: (_value: ISelectedListItem<SessionsSelectValuesTypes>, _page: SessionsTabTypes) => void;
   onChangeSwitch: (_value: boolean, _page: SessionsTabTypes) => void;
-  onChangeFilter: (_value: (ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> | IFilterOpperator)[]) => void;
+  onChangeFilter: (_value: (ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> | string)[]) => void;
   onClearContext: () => void;
 }
 export function useSessionsContext(): SessionsContextType {
@@ -29,9 +31,28 @@ export function useSessionsContext(): SessionsContextType {
   const [sessionsCount, setSessionsCount] = React.useState<number>(0);
   const [sessionsPageSize, setSessionsPageSize] = React.useState<number>(SESSIONS_DEFAULT_PAGE_SIZE);
   const [sessionsCurrentPage, setSessionsCurrentPage] = React.useState<number>(1);
-  const [sessionsTabPeriod, setSessionsTabPeriod] = React.useState<SessionsSelectValuesTypes>(SESSIONS_SELECT_VALUES[0].value);
-  const [sessionsTabSwitch, setSessionsTabSwitch] = React.useState<boolean>(false);
-  const [sessionsFilter, setSessionsFilterValue] = React.useState<(ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> | IFilterOpperator)[]>([]);
+  const [sessionsPeriod, setSessionsPeriod] = React.useState<SessionsSelectValuesTypes>(SESSIONS_SELECT_VALUES[0].value);
+  const [sessionsStitch, setSessionsStitch] = React.useState<boolean>(false);
+  const [sessionsFilter, setSessionsFilterValue] = React.useState<(ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> | string)[]>([]);
+
+  React.useEffect(() => {
+    const _preference = getLocalStoragePreferences(OKULIS_LOCAL_STORAGE_KEYS.OKULIS_PREFERENCE, [
+      LocalStoragePreferenceKeys.SESSIONS_FILTER,
+      LocalStoragePreferenceKeys.SESSIONS_TIME_PERIOD,
+      LocalStoragePreferenceKeys.SESSIONS_STITCH,
+    ]);
+    if (_preference) {
+      if (_preference[LocalStoragePreferenceKeys.SESSIONS_FILTER]) {
+        setSessionsFilterValue(_preference[LocalStoragePreferenceKeys.SESSIONS_FILTER]);
+      }
+      if (_preference[LocalStoragePreferenceKeys.SESSIONS_TIME_PERIOD]) {
+        setSessionsPeriod(_preference[LocalStoragePreferenceKeys.SESSIONS_TIME_PERIOD]);
+      }
+      if (_preference[LocalStoragePreferenceKeys.SESSIONS_STITCH]) {
+        setSessionsStitch(_preference[LocalStoragePreferenceKeys.SESSIONS_STITCH]);
+      }
+    }
+  }, []);
 
   const onSetSessionsData = (resItems: ISession[], resCount: number | string) => {
     if (!resItems || !resItems.length) {
@@ -53,19 +74,22 @@ export function useSessionsContext(): SessionsContextType {
     setSelectedTab(_tab);
   };
 
-  const onChangeFilter = (value: (ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> | IFilterOpperator)[]) => {
+  const onChangeFilter = (value: (ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> | string)[]) => {
+    updateLocalStoragePreference(value, OKULIS_LOCAL_STORAGE_KEYS.OKULIS_PREFERENCE, LocalStoragePreferenceKeys.SESSIONS_FILTER);
     setSessionsFilterValue(value);
   };
 
   const onChangeSelectedPeriod = (_item: ISelectedListItem<SessionsSelectValuesTypes>, _page: SessionsTabTypes) => {
     if (_page === SessionsTabTypes.Sessions) {
-      setSessionsTabPeriod(_item.value);
+      updateLocalStoragePreference(_item.value, OKULIS_LOCAL_STORAGE_KEYS.OKULIS_PREFERENCE, LocalStoragePreferenceKeys.SESSIONS_TIME_PERIOD);
+      setSessionsPeriod(_item.value);
     }
   };
 
   const onChangeSwitch = (_v: boolean, _page: SessionsTabTypes) => {
     if (_page === SessionsTabTypes.Sessions) {
-      setSessionsTabSwitch(_v);
+      updateLocalStoragePreference(_v, OKULIS_LOCAL_STORAGE_KEYS.OKULIS_PREFERENCE, LocalStoragePreferenceKeys.SESSIONS_STITCH);
+      setSessionsStitch(_v);
     }
   };
 
@@ -91,8 +115,8 @@ export function useSessionsContext(): SessionsContextType {
     selectedTab,
     sessionsData,
     sessionsCount,
-    sessionsTabPeriod,
-    sessionsTabSwitch,
+    sessionsPeriod,
+    sessionsStitch,
     sessionsCurrentPage,
     sessionsPageSize,
     sessionsFilter,

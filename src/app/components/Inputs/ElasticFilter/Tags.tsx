@@ -1,17 +1,16 @@
 import React from 'react';
 import { ISelectionGridCellValue } from 'lib/models/general';
 import { TagsWrapper } from './styles';
-import { IFilterOpperator, ISessionsGridField } from 'app/containers/Pages/SessionsPage/SessionPage/models';
-import { isObjectHasField } from 'lib/helpers/general';
+import { ISessionsGridField } from 'app/containers/Pages/SessionsPage/SessionPage/models';
 import FieldValueTag from './FieldValueTag';
 import uuid from 'react-uuid';
 import OperatorTag from './OperatorTag';
 
 interface Props {
-  items: (ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> | IFilterOpperator)[];
+  items: (ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> | string)[];
   onRemoveTag: (index: number) => void;
   onSelectTag: (_item: ISelectionGridCellValue<ISessionsGridField, ISessionsGridField>, index: number) => void;
-  onChangeOperator: (_item: IFilterOpperator, index: number) => void;
+  onChangeOperator: (_item: string, index: number) => void;
 }
 
 const Tags: React.FC<Props> = (props: Props) => {
@@ -23,7 +22,7 @@ const Tags: React.FC<Props> = (props: Props) => {
     props.onSelectTag(item, index);
   };
 
-  const onChangeOperator = (_item: IFilterOpperator, index: number) => {
+  const onChangeOperator = (_item: string, index: number) => {
     props.onChangeOperator(_item, index);
   };
 
@@ -31,8 +30,8 @@ const Tags: React.FC<Props> = (props: Props) => {
   return (
     <TagsWrapper>
       {props.items.map((it, index) => {
-        if (isObjectHasField(it, 'isOperator')) {
-          return <OperatorTag item={it as IFilterOpperator} index={index} onChangeOperator={onChangeOperator} />;
+        if (typeof it === 'string') {
+          return <OperatorTag item={it} index={index} onChangeOperator={onChangeOperator} />;
         }
         return (
           <FieldValueTag

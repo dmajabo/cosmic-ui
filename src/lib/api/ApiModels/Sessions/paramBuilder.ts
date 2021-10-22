@@ -1,5 +1,4 @@
-import { IFilterOpperator, IQuryFieldtype, ISessionsGridField } from 'app/containers/Pages/SessionsPage/SessionPage/models';
-import { isObjectHasField } from 'lib/helpers/general';
+import { IQuryFieldtype, ISessionsGridField } from 'app/containers/Pages/SessionsPage/SessionPage/models';
 import { StitchTypes, SESSIONS_DEFAULT_PAGE_SIZE, SessionsSelectValuesTypes } from 'lib/hooks/Sessions/model';
 import { ISelectionGridCellValue } from 'lib/models/general';
 
@@ -16,7 +15,7 @@ export const sessionsParamBuilder = (
   currentPage?: number,
   time_range?: SessionsSelectValuesTypes,
   type?: boolean,
-  filters?: (ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> | IFilterOpperator)[],
+  filters?: (ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> | string)[],
 ): ISessionParam => {
   let param: ISessionParam = {};
   if (currentPage !== 1) {
@@ -34,8 +33,8 @@ export const sessionsParamBuilder = (
   }
   if (filters && filters.length) {
     const arr = filters.map(item => {
-      if (isObjectHasField(item, 'isOperator')) {
-        return item.value;
+      if (typeof item === 'string') {
+        return item;
       }
       const _el: ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> = item as ISelectionGridCellValue<ISessionsGridField, ISessionsGridField>;
       if (_el.field.queryType === IQuryFieldtype.NUMBER) {
