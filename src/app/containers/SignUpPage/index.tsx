@@ -83,7 +83,7 @@ interface EdgeData {
 }
 
 const SignUpPage: React.FC = () => {
-  const [progress, setProgress] = useState<number>(0);
+  const [progress, setProgress] = useState<number>(50);
   const [connectLocation, setConnectLocation] = useState<string>('');
   const [isFormFilled, setIsFormFilled] = useState<boolean>(false);
   const [isAppReadyToUse, setIsAppReadyToUse] = useState<boolean>(false);
