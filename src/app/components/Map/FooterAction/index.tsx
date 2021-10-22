@@ -6,7 +6,6 @@ import Toogle from 'app/components/Inputs/Toogle';
 import { PanelWrapperStyles } from 'app/components/Basic/PanelBar/styles';
 import TimeSlider from 'app/components/Inputs/TimeSlider';
 import CalendarComponent from 'app/components/Inputs/Calendar';
-import { SLIDER_RANGE_INPUT } from 'app/components/Inputs/TimeSlider/models';
 import { ITimeMinMaxRange } from 'app/components/Inputs/TimeSlider/helpers';
 // import { getTimeQueryMetricsString } from 'lib/api/ApiModels/Metrics/queryTimeRangeHelper';
 // import { format } from 'date-fns';
@@ -81,13 +80,7 @@ const FooterAction: React.FC<IProps> = (props: IProps) => {
         <Toogle selectedValue={selectedPeriod} values={TIME_PERIOD} onChange={onChangeTimePeriod} />
         <CalendarComponent onChange={onSetCurrentDay} selectedDay={selectedTime} />
         <SliderWrapper>
-          <TimeSlider
-            rangeId={SLIDER_RANGE_INPUT}
-            onUpdateRange={onUpdateRange}
-            selectedCalendarDay={selectedTime}
-            currentPeriod={selectedPeriod ? selectedPeriod.value : null}
-            onUpdate={onUpdateTime}
-          />
+          <TimeSlider onUpdateRange={onUpdateRange} selectedCalendarDay={selectedTime} currentPeriod={selectedPeriod ? selectedPeriod.value : null} onUpdate={onUpdateTime} />
         </SliderWrapper>
       </Wrapper>
     </PanelWrapperStyles>
