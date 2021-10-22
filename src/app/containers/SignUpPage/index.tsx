@@ -15,7 +15,7 @@ import { CustomRadio } from './ArticleComponents/CustomRadio';
 import { isEmpty } from 'lodash';
 import { IntlProvider } from 'react-intl';
 import { createApiClient } from './apiClient';
-import { Redirect } from 'react-router';
+import { Redirect, useHistory } from 'react-router';
 import { ROUTE } from 'lib/Routes/model';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -537,6 +537,16 @@ const SignUpPage: React.FC = () => {
 
   const onNewEdgeSelected = (edgeLocation: string) => setNewEdgeLocation(edgeLocation);
 
+  const history = useHistory();
+  const onTryDemo = () => {
+    history.push({
+      pathname: ROUTE.app + ROUTE.dashboard,
+      state: {
+        demo: true,
+      },
+    });
+  };
+
   return isLoading ? (
     <div style={{ marginTop: '50vh' }}>
       <LoadingIndicator />
@@ -544,7 +554,7 @@ const SignUpPage: React.FC = () => {
   ) : isEdgesConnected ? (
     <Redirect to={ROUTE.app} />
   ) : (
-    <UnAuthLayout article={<TryDemoComponent />}>
+    <UnAuthLayout article={<TryDemoComponent onTryDemo={onTryDemo} />}>
       <div className={classes.topBar}>
         <div className={classes.topBarText}>Connect To Your Edges</div>
         <div className={classes.topBarflexContainer}>

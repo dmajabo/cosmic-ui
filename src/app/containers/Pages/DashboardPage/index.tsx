@@ -1,6 +1,6 @@
 import { Button, FormControl, MenuItem, Typography, Select, CardContent } from '@material-ui/core';
 import { Add as AddIcon } from '@material-ui/icons';
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useEffect } from 'react';
 import { useState } from 'react';
 import { CardTitle } from './enum/CardTitle';
 import { DashboardStyles } from './DashboardStyles';
@@ -13,6 +13,9 @@ import { BarChart } from './components/BarChart';
 import { PieChart } from './components/PieChart';
 import { TroubleshootingCounter } from './components/TroubleshootingCounter';
 import { Map } from './components/Map/Map';
+import { useLocation } from 'react-router';
+import { Backdrop } from '@mui/material';
+import { AddSourcePopup } from './components/AddSourcePopup';
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
 interface IProps {}
@@ -35,6 +38,10 @@ interface Layout {
   readonly y: number;
   readonly w: number;
   readonly h: number;
+}
+
+interface DemoInterface {
+  demo: boolean;
 }
 
 const DashboardPage: React.FC<IProps> = (props: IProps) => {
@@ -158,6 +165,21 @@ const DashboardPage: React.FC<IProps> = (props: IProps) => {
     setLayouts({ layouts });
   };
 
+  const [isDemo, setIsDemo] = useState<boolean>(false);
+  const [demoPopupToggle, setDemoPopupToggle] = useState<boolean>(false);
+
+  const location = useLocation<DemoInterface>();
+
+  useEffect(() => {
+    const isDemoEnviornment = location.state?.demo || false;
+    setIsDemo(isDemoEnviornment);
+    setDemoPopupToggle(isDemoEnviornment);
+  }, []);
+
+  const handleDemoPopupClose = () => {
+    setDemoPopupToggle(false);
+  };
+
   return (
     <div>
       <div className={classes.flexContainer}>
@@ -206,6 +228,9 @@ const DashboardPage: React.FC<IProps> = (props: IProps) => {
           );
         })}
       </ResponsiveGridLayout>
+      <Backdrop sx={{ background: 'rgb(243,246,252,0.9)' }} open={demoPopupToggle} onClick={handleDemoPopupClose}>
+        <AddSourcePopup />
+      </Backdrop>
     </div>
   );
 };
