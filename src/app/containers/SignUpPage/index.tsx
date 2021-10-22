@@ -624,7 +624,7 @@ const SignUpPage: React.FC = () => {
         )
       ) : (
         <SignUpWrapper>
-          <ConnectEdges edgeBoxArray={edgesToConfigure} isAppReadyToUse={isAppReadyToUse} onAppReadyToUse={onAppReadyToUse} onAddNewEdge={onAddNewEdge} />
+          <ConnectEdges onSkipSetup={onTryDemo} edgeBoxArray={edgesToConfigure} isAppReadyToUse={isAppReadyToUse} onAppReadyToUse={onAppReadyToUse} onAddNewEdge={onAddNewEdge} />
         </SignUpWrapper>
       )}
 
