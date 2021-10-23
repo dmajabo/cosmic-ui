@@ -1,7 +1,6 @@
 import React from 'react';
 import { DataGrid, GridColDef, GridValueFormatterParams } from '@mui/x-data-grid';
 import { ISession } from 'lib/api/ApiModels/Sessions/apiModel';
-import { format } from 'date-fns';
 import { GridStyles } from 'app/components/Grid/GridStyles';
 import TableHeader from './TableHeader';
 import { AccountVendorTypes } from 'lib/api/ApiModels/Accounts/apiModel';
@@ -9,6 +8,7 @@ import { gridAscArrow, gridDescArrow } from 'app/components/SVGIcons/arrows';
 import Paging from 'app/components/Basic/Paging';
 // import { ISelectionGridCellValue } from 'lib/models/general';
 import { SessionGridColumns } from '../models';
+import { parseFieldAsDate } from 'lib/helpers/general';
 
 interface Props {
   data: ISession[];
@@ -39,10 +39,7 @@ const Table: React.FC<Props> = (props: Props) => {
       minWidth: 240,
       flex: 0.25,
       resizable: false,
-      valueFormatter: (params: GridValueFormatterParams) => {
-        const valueFormatted = new Date(params.value as string);
-        return format(valueFormatted, `EEE',' LLL d',' yyyy HH:mm aa`);
-      },
+      valueFormatter: (params: GridValueFormatterParams) => parseFieldAsDate(params.value, `EEE',' LLL d',' yyyy HH:mm aa`),
     },
     { field: SessionGridColumns.sessionId.resField, headerName: SessionGridColumns.sessionId.label, minWidth: 370, flex: 0.5, resizable: false },
     { field: SessionGridColumns.flowId.resField, headerName: SessionGridColumns.flowId.label, minWidth: 300, flex: 0.5, hide: true, resizable: false },

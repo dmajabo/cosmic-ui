@@ -1,5 +1,5 @@
 import * as d3 from 'd3';
-import { sankey, sankeyLinkHorizontal } from 'd3-sankey';
+import { sankeyCircular, sankeyCenter } from 'd3-sankey-circular';
 import { ISankeyData } from 'lib/api/ApiModels/Sessions/apiModel';
 import { jsonClone } from 'lib/helpers/cloneHelper';
 
@@ -10,45 +10,59 @@ import { jsonClone } from 'lib/helpers/cloneHelper';
 // }
 export const createSankeyChart = (id: string, data: ISankeyData) => {
   if (!data) return;
-  const _links = jsonClone(data.links);
-  let _nodes = jsonClone(data.nodes);
+  const _data = jsonClone({ nodes: data.nodes, links: data.links });
+  // const nodesMap = new Map();
+  // _links.forEach(link => {
+  //   const _snode = data.nodes.find(it => link.source === it.node || link.target === it.node);
+  //   const _tnode = data.nodes.find(it => link.target === it.node);
+  //   if (_snode && !nodesMap.has(`${_snode.node}`)) {
+  //     nodesMap.set(`${_snode.node}`, _snode);
+  //   }
+  //   if (_tnode && !nodesMap.has(`${_tnode.node}`)) {
+  //     nodesMap.set(`${_tnode.node}`, _tnode);
+  //   }
+  // });
+  // const _nodes = Array.from(nodesMap, ([name, value]) => ({ ...value }));
   const container = d3.select(`#${id}`);
   container.select('.sankeyChartContainerLinks').selectAll('*').remove();
   container.select('.sankeyChartContainerNodes').selectAll('*').remove();
   const size = container.node().getBoundingClientRect();
+  container.attr('viewBox', `0 0 ${size.width} ${size.height}`);
   const rootG = container.select('#sankeyChartContainerRoot');
-  const _sankey = sankey()
+  const _sankey = sankeyCircular()
     .nodeWidth(180)
     .nodePadding(10)
+    .nodePaddingRatio(0.7)
     .nodeId(d => d.node)
+    .nodeAlign(sankeyCenter)
     .extent([
       [1, 1],
       [size.width - 1, size.height - 1],
     ])
     .size([size.width, size.height])
-    .iterations(0);
-  _sankey({ links: _links, nodes: _nodes });
-  _nodes = _nodes.filter(it => it.sourceLinks.length || it.targetLinks.length);
-  _sankey({ links: _links, nodes: _nodes });
-  createLinks(rootG, _links);
-  createNodes(rootG, _nodes, _sankey);
+    .iterations(32)
+    .circularLinkGap(2);
+  _sankey(_data);
+  console.log(_data);
+  createLinks(rootG, _data.links);
+  createNodes(rootG, _data.nodes, _sankey);
 };
 
 const createLinks = (g: any, links: any[]) => {
-  const _linksG = g.select('#sankeyChartContainerLinks');
-  const link = _linksG.selectAll('.link').data(links).enter();
-  link
-    .append('path')
-    .attr('class', 'link')
-    .attr('fill', 'none')
-    .attr('stroke', '#52984E')
-    .attr('stroke-opacity', '0.4')
-    .attr('d', sankeyLinkHorizontal())
-    .attr('stroke-width', d => {
-      const target = d.target.y1 - d.target.y0;
-      const source = d.source.y1 - d.source.y0;
-      return Math.max(0.5, source - target) + 'px';
-    });
+  // const _linksG = g.select('#sankeyChartContainerLinks');
+  // const link = _linksG.selectAll('.link').data(links).enter();
+  // link
+  //   .append('path')
+  //   .attr('class', 'link')
+  //   .attr('fill', 'none')
+  //   .attr('stroke', '#52984E')
+  //   .attr('stroke-opacity', '0.4')
+  //   .attr('d', sankeyLinkHorizontal())
+  //   .attr('stroke-width', d => {
+  //     const target = d.target.y1 - d.target.y0;
+  //     const source = d.source.y1 - d.source.y0;
+  //     return Math.max(0.5, source - target) + 'px';
+  //   });
 };
 
 const createNodes = (g: any, nodes: any[], d3Sankey: any) => {

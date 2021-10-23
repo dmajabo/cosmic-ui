@@ -108,7 +108,7 @@ const ChartComponent: React.FC<IProps> = (props: IProps) => {
     <>
       <ChartWrapper>
         {loading && (
-          <AbsLoaderWrapper width="100%" height="100%" top="50px">
+          <AbsLoaderWrapper width="100%" height="100%">
             <LoadingIndicator margin="auto" />
           </AbsLoaderWrapper>
         )}
