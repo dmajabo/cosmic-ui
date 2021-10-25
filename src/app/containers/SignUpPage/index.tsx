@@ -77,7 +77,7 @@ const SignUpPage: React.FC = () => {
   const [awsRegionsOptions, setAwsRegionsOptions] = useState<Option[]>([]);
   const [policyControllers, setPolicyControllers] = useState<PolicyController[]>([]);
   const [isEdgesConnected, setIsEdgesConnected] = useState<boolean>(false);
-  const [updateForm, setUpdateForm] = useState<boolean>(false);
+  const [isUpdateForm, setIsUpdateForm] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const classes = SignUpStyles();
 
@@ -247,7 +247,7 @@ const SignUpPage: React.FC = () => {
       onConnect: () => setConnectLocation(PreDefinedEdges.Aws),
       isConnected: !isEmpty(awsRegions) && awsUsername && awsAccessKey && awsSecret && isAwsFlowLogEnabled ? true : false,
       onUpdate: () => {
-        setUpdateForm(true);
+        setIsUpdateForm(true);
         setConnectLocation(PreDefinedEdges.Aws);
       },
     },
@@ -258,7 +258,7 @@ const SignUpPage: React.FC = () => {
       onConnect: () => setConnectLocation(PreDefinedEdges.Meraki),
       isConnected: merakiName && merakiDescription && merakiApiKey ? true : false,
       onUpdate: () => {
-        setUpdateForm(true);
+        setIsUpdateForm(true);
         setConnectLocation(PreDefinedEdges.Meraki);
       },
     },
@@ -416,7 +416,7 @@ const SignUpPage: React.FC = () => {
             subtitle="Configure your AWS integration to enable topology maps and annotate your agent data with important cloud context like regions, availability zones, account, VPC IDs, scaling groups and more."
             steps={awsSteps}
             isFormFilled={isFormFilled}
-            updateForm={updateForm}
+            isUpdateForm={isUpdateForm}
             onFormSubmit={onAwsFormSubmit}
             onFormUpdate={onAwsFormUpdate}
           />
@@ -427,7 +427,7 @@ const SignUpPage: React.FC = () => {
             subtitle="Configure your Cisco Meraki integration to enable topology maps and annotate your agent data with important cloud context like regions, availability zones, account, VPC IDs, scaling groups and more."
             steps={merakiSteps}
             isFormFilled={isFormFilled}
-            updateForm={updateForm}
+            isUpdateForm={isUpdateForm}
             onFormSubmit={onMerakiFormSubmit}
             onFormUpdate={onMerakiFormUpdate}
           />
