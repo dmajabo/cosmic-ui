@@ -207,6 +207,77 @@ const SignUpPage: React.FC = () => {
     }
   }, [progress]);
 
+  useEffect(() => {
+    const addedEdge = edgeData.slice(-1);
+    if (!isEmpty(addedEdge)) {
+      const isNewEdge = edgesToConfigure.find(edge => edge.edgeName === addedEdge[0].edgeName) ? false : true;
+      if (isNewEdge) {
+        addedEdge[0].vendor === PolicyVendor.Aws
+          ? setEdgesToConfigure(
+              edgesToConfigure.concat({
+                img: AwsIcon,
+                title: newEdgeName,
+                edgeName: newEdgeName.toLowerCase().replaceAll(' ', ''),
+                content: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+                onConnect: () => setConnectLocation(PreDefinedEdges.Aws),
+                isConnected: edgeData.find(edge => edge.edgeName === newEdgeName.toLowerCase().replaceAll(' ', '')) ? true : false,
+                onUpdate: () => {
+                  setEdgeDataToUpdate(newEdgeName.toLowerCase().replaceAll(' ', ''));
+                  setUpdateForm(true);
+                  setConnectLocation(PreDefinedEdges.Aws);
+                },
+              }),
+            )
+          : setEdgesToConfigure(
+              edgesToConfigure.concat({
+                img: MerakiIcon,
+                title: newEdgeName,
+                edgeName: newEdgeName.toLowerCase().replaceAll(' ', ''),
+                content: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+                onConnect: () => setConnectLocation(PreDefinedEdges.Meraki),
+                isConnected: edgeData.find(edge => edge.edgeName === newEdgeName.toLowerCase().replaceAll(' ', '')) ? true : false,
+                onUpdate: () => {
+                  setEdgeDataToUpdate(newEdgeName.toLowerCase().replaceAll(' ', ''));
+                  setUpdateForm(true);
+                  setConnectLocation(PreDefinedEdges.Meraki);
+                },
+              }),
+            );
+      } else {
+        const filteredEdges = edgesToConfigure.filter(edge => edge.edgeName !== PreDefinedEdges.Aws && edge.edgeName !== PreDefinedEdges.Meraki);
+        setEdgesToConfigure([
+          {
+            img: AwsIcon,
+            title: 'AWS',
+            edgeName: PreDefinedEdges.Aws,
+            content: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+            onConnect: () => setConnectLocation(PreDefinedEdges.Aws),
+            isConnected: edgeData.find(edge => edge.edgeName === PreDefinedEdges.Aws) ? true : false,
+            onUpdate: () => {
+              setEdgeDataToUpdate(PreDefinedEdges.Aws);
+              setUpdateForm(true);
+              setConnectLocation(PreDefinedEdges.Aws);
+            },
+          },
+          {
+            img: MerakiIcon,
+            title: 'Cisco Meraki',
+            edgeName: PreDefinedEdges.Meraki,
+            content: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+            onConnect: () => setConnectLocation(PreDefinedEdges.Meraki),
+            isConnected: edgeData.find(edge => edge.edgeName === PreDefinedEdges.Meraki) ? true : false,
+            onUpdate: () => {
+              setEdgeDataToUpdate(PreDefinedEdges.Meraki);
+              setUpdateForm(true);
+              setConnectLocation(PreDefinedEdges.Meraki);
+            },
+          },
+          ...filteredEdges,
+        ]);
+      }
+    }
+  }, [edgeData]);
+
   const toggleAwsSecretVisibility = () => setShowAwsSecret(!showAwsSecret);
 
   const setEdgeDataToUpdate = (edgeName: string) => {
@@ -337,6 +408,7 @@ const SignUpPage: React.FC = () => {
     setAwsUsername('');
     setAwsAccessKey('');
     setAwsSecret('');
+    setAwsRegions([]);
     setNewEdgeName('');
     setNewEdgeDescription('');
     setIsAwsFlowLogEnabled(FlowLogToggle.enabled);
@@ -363,51 +435,34 @@ const SignUpPage: React.FC = () => {
         vendor: PolicyVendor.Aws,
       }),
     );
-    const isNewEdge = edgesToConfigure.find(edge => edge.edgeName === edgeName) ? false : true;
-    if (isNewEdge) {
-      setEdgesToConfigure(
-        edgesToConfigure.concat({
-          img: AwsIcon,
-          title: newEdgeName,
-          edgeName: newEdgeName.toLowerCase().replaceAll(' ', ''),
-          content: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-          onConnect: () => setConnectLocation(PreDefinedEdges.Aws),
-          isConnected: edgeData.find(edge => edge.edgeName === newEdgeName.toLowerCase().replaceAll(' ', '')) ? true : false,
-          onUpdate: () => {
-            setEdgeDataToUpdate(newEdgeName.toLowerCase().replaceAll(' ', ''));
-            setUpdateForm(true);
-            setConnectLocation(PreDefinedEdges.Aws);
-          },
-        }),
-      );
-      try {
-        const policyResponse = await apiClient.postPolicyController({
-          controller: {
-            name: edgeName,
-            vendor: PolicyVendor.Aws,
-            awsPol: {
-              username: awsUsername,
-              accessKey: awsAccessKey,
-              secret: awsSecret,
-              regions: awsRegions,
-              flowlog_pol: {
-                enable: isAwsFlowLogEnabled === FlowLogToggle.enabled ? true : false,
-              },
+
+    try {
+      const policyResponse = await apiClient.postPolicyController({
+        controller: {
+          name: edgeName,
+          vendor: PolicyVendor.Aws,
+          awsPol: {
+            username: awsUsername,
+            accessKey: awsAccessKey,
+            secret: awsSecret,
+            regions: awsRegions,
+            flowlog_pol: {
+              enable: isAwsFlowLogEnabled === FlowLogToggle.enabled ? true : false,
             },
           },
-        });
-        clearAwsForm();
-        toast.success('Connected Successfully!');
-        if (progress < 100) {
-          setProgress(progress + 50);
-        }
-        setConnectLocation('');
-        setNewEdgeLocation('');
-        setIsAddNewEdge(false);
-        setIsFormFilled(false);
-      } catch (error) {
-        toast.error('Something went wrong. Please try Again!');
+        },
+      });
+      clearAwsForm();
+      toast.success('Connected Successfully!');
+      if (progress < 100) {
+        setProgress(progress + 50);
       }
+      setConnectLocation('');
+      setNewEdgeLocation('');
+      setIsAddNewEdge(false);
+      setIsFormFilled(false);
+    } catch (error) {
+      toast.error('Something went wrong. Please try Again!');
     }
   };
 
@@ -422,24 +477,6 @@ const SignUpPage: React.FC = () => {
         vendor: PolicyVendor.Meraki,
       }),
     );
-    const isNewEdge = edgesToConfigure.find(edge => edge.edgeName === edgeName) ? false : true;
-    if (isNewEdge) {
-      setEdgesToConfigure(
-        edgesToConfigure.concat({
-          img: MerakiIcon,
-          title: newEdgeName,
-          edgeName: newEdgeName.toLowerCase().replaceAll(' ', ''),
-          content: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-          onConnect: () => setConnectLocation(PreDefinedEdges.Meraki),
-          isConnected: edgeData.find(edge => edge.edgeName === newEdgeName.toLowerCase().replaceAll(' ', '')) ? true : false,
-          onUpdate: () => {
-            setEdgeDataToUpdate(newEdgeName.toLowerCase().replaceAll(' ', ''));
-            setUpdateForm(true);
-            setConnectLocation(PreDefinedEdges.Meraki);
-          },
-        }),
-      );
-    }
     try {
       const policyResponse = await apiClient.postPolicyController({
         controller: {
