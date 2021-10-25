@@ -39,7 +39,7 @@ const PATHS = Object.freeze({
   HEATMAP_PACKET_LOSS: (sourceNw: string, destination: string) => `/telemetry/api/v1/metrics/source_nw/${sourceNw}/device/destination/${destination}/avgpacketloss`,
   HEATMAP_LATENCY: (sourceNw: string, destination: string) => `/telemetry/api/v1/metrics/source_nw/${sourceNw}/device/destination/${destination}/avglatency`,
   GET_GOODPUT: (deviceId: string, destination: string) => `/telemetry/api/v1/metrics/device/${deviceId}/destination/${destination}/goodput`,
-  GET_SELECTED_SLA_TEST: (testId: string) => `/policy/api/v1/policy/performance/sla-tests/${testId}`,
+  GET_SLA_TEST: (testId: string) => `/policy/api/v1/policy/performance/sla-tests/${testId}`,
   UPDATE_SLA_TEST: (testId: string) => `/policy/api/v1/policy/performance/sla-tests/${testId}`,
 });
 
@@ -207,7 +207,7 @@ export const createApiClient = (token: IdToken): ApiClient => {
 
   async function getSLATest(testId: string): Promise<SLATest> {
     try {
-      const response = await axios.get<SLATest>(PATHS.GET_SELECTED_SLA_TEST(testId), {
+      const response = await axios.get<SLATest>(PATHS.GET_SLA_TEST(testId), {
         ...config,
         params: {
           include_metrics: true,
