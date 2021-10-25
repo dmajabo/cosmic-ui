@@ -18,13 +18,9 @@ interface ConnectFormProps {
 export const ConnectSourceForm: React.FC<ConnectFormProps> = ({ title, img, subtitle, edgeName, steps, isFormFilled, updateForm, onFormSubmit, onFormUpdate }) => {
   const classes = SignUpStyles();
 
-  const onSourceFormSubmit = () => {
-    onFormSubmit(edgeName);
-  };
+  const onSourceFormSubmit = () => onFormSubmit(edgeName);
 
-  const onSourceFormUpdate = () => {
-    onFormUpdate(edgeName);
-  };
+  const onSourceFormUpdate = () => onFormUpdate(edgeName);
 
   return (
     <div className={classes.connectFormContainer}>
