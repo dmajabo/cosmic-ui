@@ -25,7 +25,7 @@ interface ApiClient {
   readonly getHeatmapPacketLoss: (sourceNw: string, destination: string, startTime: string, testId: string) => Promise<HeatMapResponse>;
   readonly getHeatmapLatency: (sourceNw: string, destination: string, startTime: string, testId: string) => Promise<HeatMapResponse>;
   readonly getGoodputMetrics: (deviceId: string, destination: string, startTime: string, testId: string) => Promise<SLATestMetricsResponse>;
-  readonly getSelectedSLATest: (testId: string) => Promise<SLATest>;
+  readonly getSLATest: (testId: string) => Promise<SLATest>;
   readonly updateSLATest: (testData: UpdateSLATestRequest) => Promise<UpdateSLATestResponse>;
 }
 
@@ -205,7 +205,7 @@ export const createApiClient = (token: IdToken): ApiClient => {
     }
   }
 
-  async function getSelectedSLATest(testId: string): Promise<SLATest> {
+  async function getSLATest(testId: string): Promise<SLATest> {
     try {
       const response = await axios.get<SLATest>(PATHS.GET_SELECTED_SLA_TEST(testId), {
         ...config,
@@ -251,7 +251,7 @@ export const createApiClient = (token: IdToken): ApiClient => {
     getHeatmapPacketLoss,
     getHeatmapLatency,
     getGoodputMetrics,
-    getSelectedSLATest,
+    getSLATest,
     updateSLATest,
   };
 };

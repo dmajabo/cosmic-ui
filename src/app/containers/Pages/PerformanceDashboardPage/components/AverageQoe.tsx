@@ -22,9 +22,7 @@ const AverageQoe: React.FC<AvgQoeProps> = ({ updateTest, deleteTest, packetLoss,
     deleteTest(testId);
     setAnchorEl(null);
   };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+  const handleClose = () => setAnchorEl(null);
 
   const handleUpdate = (testId: string) => {
     updateTest(testId);
