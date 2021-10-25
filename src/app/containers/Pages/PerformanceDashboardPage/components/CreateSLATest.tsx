@@ -14,7 +14,7 @@ interface CreateSLATestProps {
   readonly awsOrganizations: Organization[];
   readonly popup?: boolean;
   readonly closeSlaTest?: Function;
-  readonly updateTest?: boolean;
+  readonly isUpdateTest?: boolean;
   readonly slaTestDataToUpdate?: SLATest;
   readonly updateSlaTest?: (submitData: UpdateSLATestRequest) => void;
 }
@@ -93,16 +93,20 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ slaTestDataToUpdat
     setSourceNetworkOptions(networkOptions);
   }, [selectedOrganizationVnets]);
 
+  const populateFormFields = (testData: SLATest) => {
+    setName(testData.name);
+    const currentSourceOrg = sourceOrganizationOptions.find(item => item.value === testData.sourceOrgId) || { label: '', value: '' };
+    setSourceOrg(currentSourceOrg);
+    const currentSourceNetwork = sourceNetworkOptions.find(item => item.value === testData.sourceNwExtId) || { label: '', value: '' };
+    setSourceNetwork(currentSourceNetwork);
+    const currentDestination = destinationOptions.find(item => item.value === testData.destination) || { label: testData.destination, value: testData.destination };
+    setDestination(currentDestination);
+    setDescription(testData.description);
+  };
+
   useEffect(() => {
     if (updateSlaTest) {
-      setName(slaTestDataToUpdate.name);
-      const currentSourceOrg = sourceOrganizationOptions.find(item => item.value === slaTestDataToUpdate.sourceOrgId) || { label: '', value: '' };
-      setSourceOrg(currentSourceOrg);
-      const currentSourceNetwork = sourceNetworkOptions.find(item => item.value === slaTestDataToUpdate.sourceNwExtId) || { label: '', value: '' };
-      setSourceNetwork(currentSourceNetwork);
-      const currentDestination = destinationOptions.find(item => item.value === slaTestDataToUpdate.destination) || { label: slaTestDataToUpdate.destination, value: slaTestDataToUpdate.destination };
-      setDestination(currentDestination);
-      setDescription(slaTestDataToUpdate.description);
+      populateFormFields(slaTestDataToUpdate);
     }
   }, [slaTestDataToUpdate]);
 
@@ -136,7 +140,7 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ slaTestDataToUpdat
     setDescription('');
   };
 
-  const handleFormSubmit = () => {
+  const generateRequest = () => {
     const testData: SLATest = {
       testId: '',
       name: name,
@@ -149,24 +153,18 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ slaTestDataToUpdat
     const submitData: CreateSLATestRequest = {
       sla_test: testData,
     };
+    return submitData;
+  };
+
+  const handleFormSubmit = () => {
+    const submitData = generateRequest();
     closeSlaTest();
     addSlaTest(submitData);
     clearFormFields();
   };
 
   const handleFormUpdate = () => {
-    const newTestData: SLATest = {
-      testId: slaTestDataToUpdate.testId,
-      name: name,
-      sourceOrgId: sourceOrg.value,
-      sourceNwExtId: sourceNetwork.value,
-      destination: destination.value,
-      interface: '',
-      description: description,
-    };
-    const submitData: UpdateSLATestRequest = {
-      sla_test: newTestData,
-    };
+    const submitData = generateRequest();
     closeSlaTest();
     updateSlaTest(submitData);
     clearFormFields();

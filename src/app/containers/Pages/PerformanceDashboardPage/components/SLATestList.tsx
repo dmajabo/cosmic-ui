@@ -116,7 +116,7 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
   const deleteTest = (testId: string) => deleteSlaTest(testId);
 
   const getTestDataToUpdate = async (testId: string) => {
-    const responseData = await apiClient.getSelectedSLATest(testId);
+    const responseData = await apiClient.getSLATest(testId);
     setTestDataToUpdate(responseData);
     handleUpdateTestToggle();
   };
@@ -239,7 +239,7 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
         <CreateSLATest
           updateSlaTest={updateSlaTest}
           slaTestDataToUpdate={testDataToUpdate}
-          updateTest={true}
+          isUpdateTest={true}
           awsOrganizations={awsOrganizations}
           merakiOrganizations={merakiOrganizations}
           popup={true}

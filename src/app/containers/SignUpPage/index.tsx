@@ -90,7 +90,7 @@ const SignUpPage: React.FC = () => {
   const [awsRegionsOptions, setAwsRegionsOptions] = useState<Option[]>([]);
   const [policyControllers, setPolicyControllers] = useState<PolicyController[]>([]);
   const [isEdgesConnected, setIsEdgesConnected] = useState<boolean>(false);
-  const [updateForm, setUpdateForm] = useState<boolean>(false);
+  const [isUpdateForm, setIsUpdateForm] = useState<boolean>(false);
   const [isAddNewEdge, setIsAddNewEdge] = useState<boolean>(false);
   const [newEdgeLocation, setNewEdgeLocation] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -110,7 +110,7 @@ const SignUpPage: React.FC = () => {
       isConnected: edgeData.find(edge => edge.edgeName === PreDefinedEdges.Aws) ? true : false,
       onUpdate: () => {
         setEdgeDataToUpdate(PreDefinedEdges.Aws);
-        setUpdateForm(true);
+        setIsUpdateForm(true);
         setConnectLocation(PreDefinedEdges.Aws);
       },
     },
@@ -123,7 +123,7 @@ const SignUpPage: React.FC = () => {
       isConnected: edgeData.find(edge => edge.edgeName === PreDefinedEdges.Meraki) ? true : false,
       onUpdate: () => {
         setEdgeDataToUpdate(PreDefinedEdges.Meraki);
-        setUpdateForm(true);
+        setIsUpdateForm(true);
         setConnectLocation(PreDefinedEdges.Meraki);
       },
     },
@@ -223,7 +223,7 @@ const SignUpPage: React.FC = () => {
                 isConnected: edgeData.find(edge => edge.edgeName === newEdgeName.toLowerCase().replaceAll(' ', '')) ? true : false,
                 onUpdate: () => {
                   setEdgeDataToUpdate(newEdgeName.toLowerCase().replaceAll(' ', ''));
-                  setUpdateForm(true);
+                  setIsUpdateForm(true);
                   setConnectLocation(PreDefinedEdges.Aws);
                 },
               }),
@@ -238,7 +238,7 @@ const SignUpPage: React.FC = () => {
                 isConnected: edgeData.find(edge => edge.edgeName === newEdgeName.toLowerCase().replaceAll(' ', '')) ? true : false,
                 onUpdate: () => {
                   setEdgeDataToUpdate(newEdgeName.toLowerCase().replaceAll(' ', ''));
-                  setUpdateForm(true);
+                  setIsUpdateForm(true);
                   setConnectLocation(PreDefinedEdges.Meraki);
                 },
               }),
@@ -255,7 +255,7 @@ const SignUpPage: React.FC = () => {
             isConnected: edgeData.find(edge => edge.edgeName === PreDefinedEdges.Aws) ? true : false,
             onUpdate: () => {
               setEdgeDataToUpdate(PreDefinedEdges.Aws);
-              setUpdateForm(true);
+              setIsUpdateForm(true);
               setConnectLocation(PreDefinedEdges.Aws);
             },
           },
@@ -268,7 +268,7 @@ const SignUpPage: React.FC = () => {
             isConnected: edgeData.find(edge => edge.edgeName === PreDefinedEdges.Meraki) ? true : false,
             onUpdate: () => {
               setEdgeDataToUpdate(PreDefinedEdges.Meraki);
-              setUpdateForm(true);
+              setIsUpdateForm(true);
               setConnectLocation(PreDefinedEdges.Meraki);
             },
           },
@@ -600,7 +600,7 @@ const SignUpPage: React.FC = () => {
             subtitle="Configure your AWS integration to enable topology maps and annotate your agent data with important cloud context like regions, availability zones, account, VPC IDs, scaling groups and more."
             steps={awsSteps}
             isFormFilled={isFormFilled}
-            updateForm={updateForm}
+            isUpdateForm={isUpdateForm}
             onFormSubmit={onAwsFormSubmit}
             onFormUpdate={onAwsFormUpdate}
           />
@@ -612,7 +612,7 @@ const SignUpPage: React.FC = () => {
             subtitle="Configure your Cisco Meraki integration to enable topology maps and annotate your agent data with important cloud context like regions, availability zones, account, VPC IDs, scaling groups and more."
             steps={merakiSteps}
             isFormFilled={isFormFilled}
-            updateForm={updateForm}
+            isUpdateForm={isUpdateForm}
             onFormSubmit={onMerakiFormSubmit}
             onFormUpdate={onMerakiFormUpdate}
           />
@@ -627,7 +627,7 @@ const SignUpPage: React.FC = () => {
               subtitle="Configure your AWS integration to enable topology maps and annotate your agent data with important cloud context like regions, availability zones, account, VPC IDs, scaling groups and more."
               steps={newAwsEdgeSteps}
               isFormFilled={isFormFilled}
-              updateForm={updateForm}
+              isUpdateForm={isUpdateForm}
               onFormSubmit={onAwsFormSubmit}
               onFormUpdate={onAwsFormUpdate}
             />
@@ -639,7 +639,7 @@ const SignUpPage: React.FC = () => {
               subtitle="Configure your Cisco Meraki integration to enable topology maps and annotate your agent data with important cloud context like regions, availability zones, account, VPC IDs, scaling groups and more."
               steps={newMerakiEdgeSteps}
               isFormFilled={isFormFilled}
-              updateForm={updateForm}
+              isUpdateForm={isUpdateForm}
               onFormSubmit={onMerakiFormSubmit}
               onFormUpdate={onMerakiFormUpdate}
             />
