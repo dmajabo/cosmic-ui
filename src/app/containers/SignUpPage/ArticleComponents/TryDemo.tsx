@@ -8,7 +8,7 @@ interface TryDemoProps {
   readonly onTryDemo: () => void;
 }
 
-const TryDemoComponent: React.FC<TryDemoProps> = ({ onTryDemo }) => {
+const TryDemo: React.FC<TryDemoProps> = ({ onTryDemo }) => {
   const [isMouseHover, setIsMouseHover] = useState<boolean>(false);
   const classes = SignUpStyles();
 
@@ -28,4 +28,4 @@ const TryDemoComponent: React.FC<TryDemoProps> = ({ onTryDemo }) => {
   );
 };
 
-export default TryDemoComponent;
+export default TryDemo;

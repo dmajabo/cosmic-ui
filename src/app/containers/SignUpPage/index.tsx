@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import UnAuthLayout from 'app/components/Basic/UnAuthLayout';
 import { SignUpWrapper } from './styles';
-import TryDemoComponent from './ArticleComponents/TryDemoComponent';
+import TryDemo from './ArticleComponents/TryDemo';
 import { ConnectEdges } from './ArticleComponents/ConnectEdges';
 import { EdgeBoxProps } from 'types';
 import AwsIcon from './icons/aws.svg';
@@ -538,14 +538,13 @@ const SignUpPage: React.FC = () => {
   const onNewEdgeSelected = (edgeLocation: string) => setNewEdgeLocation(edgeLocation);
 
   const history = useHistory();
-  const onTryDemo = () => {
+  const onTryDemo = () =>
     history.push({
       pathname: ROUTE.app + ROUTE.dashboard,
       state: {
-        demo: true,
+        isDemoEnviornment: true,
       },
     });
-  };
 
   return isLoading ? (
     <div style={{ marginTop: '50vh' }}>
@@ -554,7 +553,7 @@ const SignUpPage: React.FC = () => {
   ) : isEdgesConnected ? (
     <Redirect to={ROUTE.app} />
   ) : (
-    <UnAuthLayout article={<TryDemoComponent onTryDemo={onTryDemo} />}>
+    <UnAuthLayout article={<TryDemo onTryDemo={onTryDemo} />}>
       <div className={classes.topBar}>
         <div className={classes.topBarText}>Connect To Your Edges</div>
         <div className={classes.topBarflexContainer}>
