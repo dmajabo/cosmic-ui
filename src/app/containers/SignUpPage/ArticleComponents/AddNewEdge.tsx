@@ -14,31 +14,17 @@ interface AddNewEdgeProps {
 export const AddNewEdge: React.FC<AddNewEdgeProps> = ({ onNewEdgeSelected, onCancelNewEdge }) => {
   const classes = SignUpStyles();
 
-  const [isAwsSelected, setIsAwsSelected] = useState<boolean>(false);
-  const [isMerakiSelected, setIsMerakiSelected] = useState<boolean>(false);
   const [isButtonEnabled, setIsButtonEnabled] = useState<boolean>(false);
   const [edgeLocation, setEdgeLocation] = useState<string>('');
 
   useEffect(() => {
-    const isButtonEnabled = isAwsSelected || isMerakiSelected;
+    const isButtonEnabled = edgeLocation ? true : false;
     setIsButtonEnabled(isButtonEnabled);
-  }, [isAwsSelected, isMerakiSelected]);
+  }, [edgeLocation]);
 
-  const onEdgeSelect = () => {
-    onNewEdgeSelected(edgeLocation);
-  };
+  const onEdgeSelect = () => onNewEdgeSelected(edgeLocation);
 
-  const onAwsSelect = () => {
-    setIsAwsSelected(true);
-    setIsMerakiSelected(false);
-    setEdgeLocation(PreDefinedEdges.Aws);
-  };
-
-  const onMerakiSelect = () => {
-    setIsAwsSelected(false);
-    setIsMerakiSelected(true);
-    setEdgeLocation(PreDefinedEdges.Meraki);
-  };
+  const onLocationSelect = (edgeLocation: string) => setEdgeLocation(edgeLocation);
 
   return (
     <div>
@@ -48,11 +34,11 @@ export const AddNewEdge: React.FC<AddNewEdgeProps> = ({ onNewEdgeSelected, onCan
       </div>
       <div className={classes.edgeBoxContainer}>
         <div className={classes.newEdgePadding}>
-          <div className={isAwsSelected ? classes.newEdgeHighlightedBox : classes.newEdgeBox} onClick={onAwsSelect}>
+          <div className={edgeLocation === PreDefinedEdges.Aws ? classes.newEdgeHighlightedBox : classes.newEdgeBox} onClick={() => onLocationSelect(PreDefinedEdges.Aws)}>
             <img className={classes.newEdgeIcon} src={AwsIcon} alt="aws" />
             <span className={classes.newEdgeTitleText}>AWS</span>
           </div>
-          <div className={isMerakiSelected ? classes.newEdgeHighlightedBox : classes.newEdgeBox} onClick={onMerakiSelect}>
+          <div className={edgeLocation === PreDefinedEdges.Meraki ? classes.newEdgeHighlightedBox : classes.newEdgeBox} onClick={() => onLocationSelect(PreDefinedEdges.Meraki)}>
             <img className={classes.titleImg} src={MerakiIcon} alt="meraki" />
             <span className={classes.newEdgeTitleText}>Cisco Meraki</span>
           </div>
