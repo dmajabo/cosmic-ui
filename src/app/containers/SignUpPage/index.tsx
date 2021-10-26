@@ -87,7 +87,6 @@ const dropdownStyle = {
 const SignUpPage: React.FC = () => {
   const [progress, setProgress] = useState<number>(50);
   const [connectLocation, setConnectLocation] = useState<string>('');
-  const [isFormFilled, setIsFormFilled] = useState<boolean>(false);
   const [isAppReadyToUse, setIsAppReadyToUse] = useState<boolean>(false);
   const [awsRegionsOptions, setAwsRegionsOptions] = useState<Option[]>([]);
   const [policyControllers, setPolicyControllers] = useState<PolicyController[]>([]);
@@ -118,15 +117,11 @@ const SignUpPage: React.FC = () => {
 
   const apiClient = createApiClient();
 
-  useEffect(() => {
-    const isFormFilled = awsUsername && awsAccessKey && awsSecret && isAwsFlowLogEnabled && !isEmpty(awsRegions) ? true : false;
-    setIsFormFilled(isFormFilled);
-  }, [awsRegions, awsUsername, awsAccessKey, awsSecret, isAwsFlowLogEnabled]);
-
-  useEffect(() => {
-    const isFormFilled = merakiName && merakiDescription && merakiApiKey && isMerakiSysLogEnabled ? true : false;
-    setIsFormFilled(isFormFilled);
-  }, [merakiName, merakiDescription, merakiApiKey, isMerakiSysLogEnabled]);
+  const isFormFilled = () => {
+    const isAwsFormFilled = awsUsername && awsAccessKey && awsSecret && isAwsFlowLogEnabled && !isEmpty(awsRegions) ? true : false;
+    const isMerakiFormFilled = merakiName && merakiDescription && merakiApiKey && isMerakiSysLogEnabled ? true : false;
+    return isAwsFormFilled || isMerakiFormFilled;
+  };
 
   const getPolicyControllers = async () => {
     const responseData = await apiClient.getControllerList();
@@ -163,25 +158,22 @@ const SignUpPage: React.FC = () => {
       },
     ];
     const filteredEdges = policyControllers.filter(edge => edge.name !== PreDefinedEdges.Aws && edge.name !== PreDefinedEdges.Meraki);
-    setEdgesToConfigure(
-      preDefinedEdges.concat(
-        filteredEdges.map(edge => {
-          return {
-            img: edge.vendor === PolicyVendor.Aws ? AwsIcon : MerakiIcon,
-            title: edge.name,
-            edgeName: edge.name,
-            content: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-            onConnect: () => setConnectLocation(edge.vendor === PolicyVendor.Aws ? PreDefinedEdges.Aws : PreDefinedEdges.Meraki),
-            isConnected: policyControllers.find(edge => edge.name === edge.name) ? true : false,
-            onUpdate: () => {
-              setEdgeDataToUpdate(edge.name);
-              setIsUpdateForm(true);
-              setConnectLocation(edge.vendor === PolicyVendor.Aws ? PreDefinedEdges.Aws : PreDefinedEdges.Meraki);
-            },
-          };
-        }),
-      ),
-    );
+    const newEdges = filteredEdges.map(edge => {
+      return {
+        img: edge.vendor === PolicyVendor.Aws ? AwsIcon : MerakiIcon,
+        title: edge.name,
+        edgeName: edge.name,
+        content: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+        onConnect: () => setConnectLocation(edge.vendor === PolicyVendor.Aws ? PreDefinedEdges.Aws : PreDefinedEdges.Meraki),
+        isConnected: policyControllers.find(item => item.name === edge.name) ? true : false,
+        onUpdate: () => {
+          setEdgeDataToUpdate(edge.name);
+          setIsUpdateForm(true);
+          setConnectLocation(edge.vendor === PolicyVendor.Aws ? PreDefinedEdges.Aws : PreDefinedEdges.Meraki);
+        },
+      };
+    });
+    setEdgesToConfigure(preDefinedEdges.concat(newEdges));
   };
 
   useEffect(() => {
@@ -199,6 +191,7 @@ const SignUpPage: React.FC = () => {
 
   useEffect(() => {
     if (!isAppReadyToUse) {
+      //TODO: Change policyControllers.length > 0 in final implementation
       policyControllers.length > 2 ? setIsEdgesConnected(true) : edgesToConfigure.length >= 2 ? setIsLoading(false) : setIsLoading(true);
     }
     setUpdatedEdgesToConfigure();
@@ -355,9 +348,15 @@ const SignUpPage: React.FC = () => {
     setIsMerakiSysLogEnabled(FlowLogToggle.enabled);
   };
 
+  const redirectToInitialScreen = () => {
+    setConnectLocation('');
+    setNewEdgeLocation('');
+    setIsAddNewEdge(false);
+  };
+
   const onAwsFormSubmit = async (edgeName: string) => {
     try {
-      const policyResponse = await apiClient.postPolicyController({
+      await apiClient.postPolicyController({
         controller: {
           name: edgeName,
           vendor: PolicyVendor.Aws,
@@ -379,10 +378,7 @@ const SignUpPage: React.FC = () => {
       if (progress < 100) {
         setProgress(progress + 50);
       }
-      setConnectLocation('');
-      setNewEdgeLocation('');
-      setIsAddNewEdge(false);
-      setIsFormFilled(false);
+      redirectToInitialScreen();
     } catch (error) {
       toast.error('Something went wrong. Please try Again!');
     }
@@ -390,7 +386,7 @@ const SignUpPage: React.FC = () => {
 
   const onMerakiFormSubmit = async (edgeName: string) => {
     try {
-      const policyResponse = await apiClient.postPolicyController({
+      await apiClient.postPolicyController({
         controller: {
           name: edgeName,
           vendor: PolicyVendor.Meraki,
@@ -409,10 +405,7 @@ const SignUpPage: React.FC = () => {
       if (progress < 100) {
         setProgress(progress + 50);
       }
-      setConnectLocation('');
-      setNewEdgeLocation('');
-      setIsAddNewEdge(false);
-      setIsFormFilled(false);
+      redirectToInitialScreen();
     } catch (error) {
       toast.error('Something went wrong. Please try Again!');
     }
@@ -422,7 +415,7 @@ const SignUpPage: React.FC = () => {
     const awsEdge = policyControllers.find(controller => controller.name === edgeName);
     const awsEdgeId = awsEdge?.id || '';
     try {
-      const updatedPolicyResponse = await apiClient.updatePolicyController(awsEdgeId, {
+      await apiClient.updatePolicyController(awsEdgeId, {
         controller: {
           name: edgeName,
           vendor: PolicyVendor.Aws,
@@ -441,10 +434,7 @@ const SignUpPage: React.FC = () => {
       getPolicyControllers();
       clearAwsForm();
       toast.success('Updated Successfully!');
-      setConnectLocation('');
-      setNewEdgeLocation('');
-      setIsAddNewEdge(false);
-      setIsFormFilled(false);
+      redirectToInitialScreen();
     } catch (error) {
       toast.error('Something went wrong. Please try Again!');
     }
@@ -454,7 +444,7 @@ const SignUpPage: React.FC = () => {
     const merakiEdge = policyControllers.find(controller => controller.name === edgeName);
     const merakiEdgeId = merakiEdge?.id || '';
     try {
-      const updatedPolicyResponse = await apiClient.updatePolicyController(merakiEdgeId, {
+      await apiClient.updatePolicyController(merakiEdgeId, {
         controller: {
           name: edgeName,
           vendor: PolicyVendor.Meraki,
@@ -473,10 +463,7 @@ const SignUpPage: React.FC = () => {
       if (progress < 100) {
         setProgress(progress + 50);
       }
-      setConnectLocation('');
-      setNewEdgeLocation('');
-      setIsAddNewEdge(false);
-      setIsFormFilled(false);
+      redirectToInitialScreen();
     } catch (error) {
       toast.error('Something went wrong. Please try Again!');
     }
@@ -517,7 +504,7 @@ const SignUpPage: React.FC = () => {
             edgeName={PreDefinedEdges.Aws}
             subtitle="Configure your AWS integration to enable topology maps and annotate your agent data with important cloud context like regions, availability zones, account, VPC IDs, scaling groups and more."
             steps={awsSteps}
-            isFormFilled={isFormFilled}
+            isFormFilled={isFormFilled()}
             isUpdateForm={isUpdateForm}
             onFormSubmit={onAwsFormSubmit}
             onFormUpdate={onAwsFormUpdate}
@@ -529,7 +516,7 @@ const SignUpPage: React.FC = () => {
             edgeName={PreDefinedEdges.Meraki}
             subtitle="Configure your Cisco Meraki integration to enable topology maps and annotate your agent data with important cloud context like regions, availability zones, account, VPC IDs, scaling groups and more."
             steps={merakiSteps}
-            isFormFilled={isFormFilled}
+            isFormFilled={isFormFilled()}
             isUpdateForm={isUpdateForm}
             onFormSubmit={onMerakiFormSubmit}
             onFormUpdate={onMerakiFormUpdate}
@@ -544,7 +531,7 @@ const SignUpPage: React.FC = () => {
               edgeName={newEdgeName.toLowerCase().replaceAll(' ', '')}
               subtitle="Configure your AWS integration to enable topology maps and annotate your agent data with important cloud context like regions, availability zones, account, VPC IDs, scaling groups and more."
               steps={newAwsEdgeSteps}
-              isFormFilled={isFormFilled}
+              isFormFilled={isFormFilled()}
               isUpdateForm={isUpdateForm}
               onFormSubmit={onAwsFormSubmit}
               onFormUpdate={onAwsFormUpdate}
@@ -556,7 +543,7 @@ const SignUpPage: React.FC = () => {
               edgeName={newEdgeName.toLowerCase().replaceAll(' ', '')}
               subtitle="Configure your Cisco Meraki integration to enable topology maps and annotate your agent data with important cloud context like regions, availability zones, account, VPC IDs, scaling groups and more."
               steps={newMerakiEdgeSteps}
-              isFormFilled={isFormFilled}
+              isFormFilled={isFormFilled()}
               isUpdateForm={isUpdateForm}
               onFormSubmit={onMerakiFormSubmit}
               onFormUpdate={onMerakiFormUpdate}
