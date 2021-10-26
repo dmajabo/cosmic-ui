@@ -5,12 +5,12 @@ import EditIcon from '../icons/edit.svg';
 import ConnectedIcon from '../icons/connected.svg';
 import { EdgeBoxProps } from 'types';
 
-export const EdgeBox: React.FC<EdgeBoxProps> = ({ img, title, content, isConnected, onConnect, onUpdate }) => {
+export const EdgeBox: React.FC<EdgeBoxProps> = ({ img, title, edgeName, content, isConnected, onConnect, onUpdate }) => {
   const classes = SignUpStyles();
 
   return (
     <div className={classes.edgeContainer}>
-      <img className={classes.edgeBoxImage} src={img} alt={title} />
+      <img className={classes.edgeBoxImage} src={img} alt={edgeName} />
       <div className={classes.edgeBoxTitle}>{title}</div>
       <div className={classes.edgeBoxContent}>{content}</div>
       {isConnected ? (
