@@ -14,17 +14,11 @@ interface AddNewEdgeProps {
 export const AddNewEdge: React.FC<AddNewEdgeProps> = ({ onNewEdgeSelected, onCancelNewEdge }) => {
   const classes = SignUpStyles();
 
-  const [isButtonEnabled, setIsButtonEnabled] = useState<boolean>(false);
   const [edgeLocation, setEdgeLocation] = useState<string>('');
-
-  useEffect(() => {
-    const isButtonEnabled = edgeLocation ? true : false;
-    setIsButtonEnabled(isButtonEnabled);
-  }, [edgeLocation]);
 
   const onEdgeSelect = () => onNewEdgeSelected(edgeLocation);
 
-  const onLocationSelect = (edgeLocation: string) => setEdgeLocation(edgeLocation);
+  const onLocationSelect = (edgeLocation: PreDefinedEdges) => setEdgeLocation(edgeLocation);
 
   return (
     <div>
@@ -56,7 +50,7 @@ export const AddNewEdge: React.FC<AddNewEdgeProps> = ({ onNewEdgeSelected, onCan
           <div className={classes.skipSetupButton} onClick={onCancelNewEdge}>
             CANCEL
           </div>
-          <button className={isButtonEnabled ? classes.connectSourceFormButton : classes.startButton} onClick={onEdgeSelect} disabled={!isButtonEnabled}>
+          <button className={edgeLocation ? classes.connectSourceFormButton : classes.startButton} onClick={onEdgeSelect} disabled={edgeLocation ? false : true}>
             <span className={classes.buttonText}>NEXT</span>
             <img className={classes.whiteArrow} src={ArrowIcon} alt="next arrow" />
           </button>
