@@ -10,41 +10,32 @@ interface Props {
 }
 
 const SankeyChart: React.FC<Props> = (props: Props) => {
-  // const chartOptions = {
-  //   chart: {
-  //     type: 'sankey',
-  //   },
-  //   title: null,
-  //   // tooltip: {
-  //   //   valueSuffix: ` ${dataValueSuffix}`,
-  //   // },
-  //   plotOptions: {
-  //     sankey: {
-  //       dataLabels: {
-  //         enabled: true,
-  //       },
-  //       colorByPoint: true,
-  //     },
-  //   },
-  //   credits: {
-  //     enabled: false,
-  //   },
-  //   legend: false,
-  //   series: [
-  //     {
-  //       keys: ['source', 'target', 'value'],
-  //       data: _d,
-  //       type: 'sankey',
-  //     },
-  //   ],
-  // };
   React.useEffect(() => {
-    createSankeyChart('sankeyChartContainer', props.data);
+    document.addEventListener('resize', onResize, false);
+    return () => {
+      document.removeEventListener('resize', onResize);
+    };
+  }, []);
+  React.useEffect(() => {
+    createSankeyChart('sankeyChartContainerSvg', props.data);
   }, [props.data]);
+
+  const onResize = () => {
+    createSankeyChart('sankeyChartContainerSvg', props.data);
+  };
   // return <HighchartsReact highcharts={HighchartsSankey(Highcharts)} options={chartOptions} />;
   return (
     <div style={{ width: '100%', height: '100%' }}>
-      <svg id="sankeyChartContainer" style={{ backgroundColor: 'var(--_chartBg)' }} width="100%" height="100%" fill="none" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
+      <svg
+        id="sankeyChartContainerSvg"
+        style={{ backgroundColor: 'var(--_chartBg)' }}
+        width="100%"
+        height="100%"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlnsXlink="http://www.w3.org/1999/xlink"
+        preserveAspectRatio="none"
+      >
         <g id="sankeyChartContainerRoot">
           <g id="sankeyChartContainerLinks" />
           <g id="sankeyChartContainerNodes" />

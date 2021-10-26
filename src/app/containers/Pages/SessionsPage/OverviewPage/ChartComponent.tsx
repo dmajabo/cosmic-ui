@@ -21,17 +21,13 @@ const ChartComponent: React.FC<IProps> = (props: IProps) => {
 
   React.useEffect(() => {
     if (response && response.sankey) {
-      // setData(response);
+      // setData({ ...response });
       // const _data = [];
-      // const _names = new Set();
-      // debugger;
-      // response.sankey.links.forEach(link => {
+      // response.sankey.links.forEach((link, index) => {
       //   const _s = response.sankey.nodes.find(it => it.node === link.source);
       //   const _t = response.sankey.nodes.find(it => it.node === link.target);
-      //   if (_names.has(`${_t.node}${_s.node}`)) return;
-      //   const _item = [_s.name, _t.name, link.value];
+      //   const _item = [_s.name, _t.name, link.value, _t.type];
       //   _data.push(_item);
-      //   _names.add(`${_s.node}${_t.node}`);
       // });
       // setHighData(_data);
     }
@@ -54,6 +50,44 @@ const ChartComponent: React.FC<IProps> = (props: IProps) => {
   //       dataLabels: {
   //         enabled: true,
   //       },
+  //       nodes: [
+  //         // {
+  //         //   id: SankeyNodeType.SANKEY_DESTINATION,
+  //         //   //offset: 130 // deprecated
+  //         //   // offsetHorizontal: -50,
+  //         //   // offsetVertical: 130,
+  //         //   column: 2,
+  //         // },
+  //         {
+  //           id: 'ppa.launchpad.net_0',
+  //           //offset: 130 // deprecated
+  //           // offsetHorizontal: -50,
+  //           // offsetVertical: 130,
+  //           column: 2,
+  //         },
+  //         // {
+  //         //   id: SankeyNodeType.SANKEY_NETWORK,
+  //         //   //offset: 130 // deprecated
+  //         //   // offsetHorizontal: -50,
+  //         //   // offsetVertical: 130,
+  //         //   column: 1,
+  //         // },
+  //         // {
+  //         //   id: SankeyNodeType.SANKEY_DESTINATION,
+  //         //   //offset: 130 // deprecated
+  //         //   offsetHorizontal: -100,
+  //         //   // offsetVertical: 130,
+  //         // },
+  //         // {
+  //         //   id: SankeyNodeType.SANKEY_APPLICATION,
+  //         //   //offset: 130 // deprecated
+  //         //   offsetHorizontal: 0,
+  //         //   // offsetVertical: 130,
+  //         //   column: 3,
+  //         // },
+  //       ],
+  //       nodeWidth: 180,
+  //       centerInCategory: true,
   //       colorByPoint: true,
   //     },
   //   },
@@ -63,7 +97,7 @@ const ChartComponent: React.FC<IProps> = (props: IProps) => {
   //   legend: false,
   //   series: [
   //     {
-  //       keys: ['from', 'to', 'weight'],
+  //       keys: ['from', 'to', 'weight', 'type'],
   //       data: dataHigh,
   //       type: 'sankey',
   //     },
@@ -74,7 +108,7 @@ const ChartComponent: React.FC<IProps> = (props: IProps) => {
     <>
       <ChartWrapper>
         {loading && (
-          <AbsLoaderWrapper width="100%" height="100%" top="50px">
+          <AbsLoaderWrapper width="100%" height="100%">
             <LoadingIndicator margin="auto" />
           </AbsLoaderWrapper>
         )}

@@ -25,6 +25,13 @@ export const PopupWrapper = styled.div`
   width: 100%;
   height: 40px;
   position: relative;
+  z-index: 3;
+`;
+
+export const OperatorPopupWrapper = styled.span`
+  width: 100%;
+  display: inline-block;
+  position: relative;
   z-index: 2;
 `;
 
@@ -44,23 +51,33 @@ export const ElasticValueWrapper = styled.div`
 export const IconsWrapper = styled.div`
   display: inline-flex;
   margin: auto 0 auto auto;
-  padding: 0 0 0 12px;
   flex-shrink: 0;
 `;
 
-export const ListItemsWrapper = styled.div`
+interface ListProps {
+  minWidth?: string;
+  left?: string;
+}
+export const ListItemsWrapper = styled.div<ListProps>`
   position: absolute;
   top: calc(100% + 2px);
-  left: 0;
+  left: ${props => props.left || '0'};
+  min-width: ${props => props.minWidth || 'unset'};
   padding: 6px 0;
   background: var(--_primaryButtonBg);
   box-shadow: 0px 15px 50px rgba(132, 141, 163, 0.15);
   border-radius: 6px;
   width: 100%;
-  min-height: 100px;
+`;
+
+export const ItemsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  max-height: 100px;
   max-height: 340px;
   overflow-y: auto;
   overflow-x: hidden;
+  position: relative;
 `;
 
 interface ListItemProps {
@@ -76,6 +93,9 @@ export const ListItem = styled.div<ListItemProps>`
   color: var(--_primaryColor);
   background: ${props => (props.selected ? 'var(--_vmBg)' : 'var(--_primaryButtonBg)')};
   cursor: ${props => (props.selected ? 'default' : 'pointer')};
+  &:hover {
+    background: var(--_vmBg);
+  }
 `;
 
 export const DisplayField = styled.span`
@@ -98,4 +118,52 @@ export const SearchFieldInput = styled.input`
   &:read-only {
     cursor: pointer;
   }
+`;
+
+export const TagsWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  height: auto;
+  max-height: 50px;
+  align-content: flex-start;
+  margin-top: 20px;
+`;
+
+export const TagItem = styled.span`
+  display: inline-flex;
+  align-items: center;
+  margin: 0 10px 10px 0;
+  height: 24px;
+  flex-shrink: 0;
+  border-radius: 20px;
+  background: var(--_stepperEdgeColor);
+  line-height: 24px;
+  padding: 2px 12px;
+  font-family: 'DMSans';
+  font-style: normal;
+  font-size: 10px;
+`;
+
+interface LabelProps {
+  color?: string;
+  fontSize?: string;
+  lineHeight?: string;
+  padding?: string;
+}
+export const TagItemLabel = styled.span<LabelProps>`
+  display: inline-block;
+  color: ${props => props.color || 'var(--_disabledTextColor)'};
+  font-size: ${props => props.fontSize || '10px'};
+  line-height: ${props => props.lineHeight || '24px'};
+  padding: ${props => props.padding || '0'};
+  flex-shrink: 0;
+`;
+
+export const TextWrapper = styled.span`
+  display: inline-flex;
+  align-items: center;
+  margin: auto 4px auto 0;
+  height: 100%;
+  cursor: pointer;
 `;

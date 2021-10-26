@@ -64,6 +64,7 @@ export const ContentWrapper = styled.div`
 `;
 
 export const ChartWrapper = styled.div`
+  position: relative;
   background: var(--_chartBg);
   border: 1px solid;
   border-color: var(--_primaryButtonBorder);

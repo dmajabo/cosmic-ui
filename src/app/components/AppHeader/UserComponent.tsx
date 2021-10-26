@@ -7,7 +7,9 @@ import { ClickAwayListener } from '@material-ui/core';
 import { useAuth0 } from '@auth0/auth0-react';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { UserRole as UserRoleData } from 'lib/api/ApiModels/Account/account';
-interface Props {}
+interface Props {
+  onOpenAbout: (value: boolean) => void;
+}
 
 export const UserComponent: React.FC<Props> = (props: Props) => {
   const [showPopup, setShowPopup] = React.useState<boolean>(false);
@@ -26,6 +28,11 @@ export const UserComponent: React.FC<Props> = (props: Props) => {
     setShowPopup(false);
   };
 
+  const onOpenAbout = () => {
+    onClosePopup();
+    props.onOpenAbout(true);
+  };
+
   if (!userContext || !userContext.idToken) {
     return null;
   }
@@ -41,7 +48,8 @@ export const UserComponent: React.FC<Props> = (props: Props) => {
       {showPopup && (
         <ClickAwayListener onClickAway={onClosePopup}>
           <span>
-            <PopupContainer styles={{ position: 'absolute', top: 'calc(100% + 20px)', left: '0' }}>
+            <PopupContainer styles={{ position: 'absolute', top: 'calc(100% + 20px)', left: '0', padding: '6px 0' }}>
+              <PopupLinkItem onClick={onOpenAbout}>About</PopupLinkItem>
               <PopupLinkItem onClick={onLogOut}>Logout</PopupLinkItem>
             </PopupContainer>
           </span>

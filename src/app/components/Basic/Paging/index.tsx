@@ -3,6 +3,7 @@ import Pagination from '@mui/material/Pagination';
 import { PagingWrapper, SelectLabel, SelectWrapper } from './styles';
 import DisplayRange from './DisplayRange';
 import Dropdown from 'app/components/Inputs/Dropdown';
+import { PagingStyles } from './PagingStyles';
 
 interface Props {
   count: number;
@@ -14,6 +15,7 @@ interface Props {
 }
 
 const Paging: React.FC<Props> = (props: Props) => {
+  const classes = PagingStyles();
   const onChangePage = (_e: any, page: number) => {
     if (props.disabled || !page || page === props.currentPage) return;
     props.onChangePage(page);
@@ -34,6 +36,7 @@ const Paging: React.FC<Props> = (props: Props) => {
   return (
     <PagingWrapper>
       <Pagination
+        className={classes.root}
         onChange={onChangePage}
         disabled={!props.count}
         count={Math.ceil(props.count / props.pageSize)}

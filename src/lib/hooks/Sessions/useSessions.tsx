@@ -1,32 +1,58 @@
 import React from 'react';
 import { ITab } from 'lib/models/tabs';
 import { SessionsSelectValuesTypes, SessionsTabTypes, SESSIONS_DEFAULT_PAGE_SIZE, SESSIONS_SELECT_VALUES, SESSIONS_TABS } from './model';
-import { ISelectedListItem } from 'lib/models/general';
+import { ISelectedListItem, ISelectionGridCellValue } from 'lib/models/general';
 import { ISession } from 'lib/api/ApiModels/Sessions/apiModel';
+import { ISessionsGridField } from 'app/containers/Pages/SessionsPage/SessionPage/models';
+import { OKULIS_LOCAL_STORAGE_KEYS } from 'lib/api/http/utils';
+import { getSessionStoragePreferences, SessionStoragePreferenceKeys, updateSessionStoragePreference } from 'lib/helpers/localStorageHelpers';
 
 export interface SessionsContextType {
   selectedTab: ITab<SessionsTabTypes>;
-  sessionsTabPeriod: SessionsSelectValuesTypes;
-  sessionsTabSwitch: boolean;
   sessionsCount: number;
   sessionsData: ISession[];
   sessionsCurrentPage: number;
   sessionsPageSize: number;
+  sessionsPeriod: SessionsSelectValuesTypes;
+  sessionsStitch: boolean;
+  sessionsFilter: (ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> | string)[];
   onChangePageSize: (_size: number, _page?: number) => void;
   onChangeCurrentPage: (_page: number) => void;
   onSetSessionsData: (_items: ISession[], _count: number | string) => void;
   onChangeSelectedTab: (_tabIndex: number) => void;
   onChangeSelectedPeriod: (_value: ISelectedListItem<SessionsSelectValuesTypes>, _page: SessionsTabTypes) => void;
   onChangeSwitch: (_value: boolean, _page: SessionsTabTypes) => void;
+  onChangeFilter: (_value: (ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> | string)[]) => void;
+  onClearContext: () => void;
 }
 export function useSessionsContext(): SessionsContextType {
   const [selectedTab, setSelectedTab] = React.useState<ITab<SessionsTabTypes>>(SESSIONS_TABS[0]);
-  const [sessionsTabPeriod, setSessionsTabPeriod] = React.useState<SessionsSelectValuesTypes>(SESSIONS_SELECT_VALUES[0].value);
-  const [sessionsTabSwitch, setSessionsTabSwitch] = React.useState<boolean>(false);
   const [sessionsData, setSessionsData] = React.useState<ISession[]>([]);
   const [sessionsCount, setSessionsCount] = React.useState<number>(0);
   const [sessionsPageSize, setSessionsPageSize] = React.useState<number>(SESSIONS_DEFAULT_PAGE_SIZE);
   const [sessionsCurrentPage, setSessionsCurrentPage] = React.useState<number>(1);
+  const [sessionsPeriod, setSessionsPeriod] = React.useState<SessionsSelectValuesTypes>(SESSIONS_SELECT_VALUES[0].value);
+  const [sessionsStitch, setSessionsStitch] = React.useState<boolean>(false);
+  const [sessionsFilter, setSessionsFilterValue] = React.useState<(ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> | string)[]>([]);
+
+  React.useEffect(() => {
+    const _preference = getSessionStoragePreferences(OKULIS_LOCAL_STORAGE_KEYS.OKULIS_PREFERENCE, [
+      SessionStoragePreferenceKeys.SESSIONS_FILTER,
+      SessionStoragePreferenceKeys.SESSIONS_TIME_PERIOD,
+      SessionStoragePreferenceKeys.SESSIONS_STITCH,
+    ]);
+    if (_preference) {
+      if (_preference[SessionStoragePreferenceKeys.SESSIONS_FILTER]) {
+        setSessionsFilterValue(_preference[SessionStoragePreferenceKeys.SESSIONS_FILTER]);
+      }
+      if (_preference[SessionStoragePreferenceKeys.SESSIONS_TIME_PERIOD]) {
+        setSessionsPeriod(_preference[SessionStoragePreferenceKeys.SESSIONS_TIME_PERIOD]);
+      }
+      if (_preference[SessionStoragePreferenceKeys.SESSIONS_STITCH]) {
+        setSessionsStitch(_preference[SessionStoragePreferenceKeys.SESSIONS_STITCH]);
+      }
+    }
+  }, []);
 
   const onSetSessionsData = (resItems: ISession[], resCount: number | string) => {
     if (!resItems || !resItems.length) {
@@ -48,15 +74,22 @@ export function useSessionsContext(): SessionsContextType {
     setSelectedTab(_tab);
   };
 
+  const onChangeFilter = (value: (ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> | string)[]) => {
+    updateSessionStoragePreference(value, OKULIS_LOCAL_STORAGE_KEYS.OKULIS_PREFERENCE, SessionStoragePreferenceKeys.SESSIONS_FILTER);
+    setSessionsFilterValue(value);
+  };
+
   const onChangeSelectedPeriod = (_item: ISelectedListItem<SessionsSelectValuesTypes>, _page: SessionsTabTypes) => {
     if (_page === SessionsTabTypes.Sessions) {
-      setSessionsTabPeriod(_item.value);
+      updateSessionStoragePreference(_item.value, OKULIS_LOCAL_STORAGE_KEYS.OKULIS_PREFERENCE, SessionStoragePreferenceKeys.SESSIONS_TIME_PERIOD);
+      setSessionsPeriod(_item.value);
     }
   };
 
   const onChangeSwitch = (_v: boolean, _page: SessionsTabTypes) => {
     if (_page === SessionsTabTypes.Sessions) {
-      setSessionsTabSwitch(_v);
+      updateSessionStoragePreference(_v, OKULIS_LOCAL_STORAGE_KEYS.OKULIS_PREFERENCE, SessionStoragePreferenceKeys.SESSIONS_STITCH);
+      setSessionsStitch(_v);
     }
   };
 
@@ -71,19 +104,29 @@ export function useSessionsContext(): SessionsContextType {
     setSessionsCurrentPage(_page);
   };
 
+  const onClearContext = () => {
+    setSessionsData([]);
+    setSessionsCurrentPage(1);
+    setSessionsCount(0);
+    setSessionsFilterValue([]);
+  };
+
   return {
-    sessionsCurrentPage,
+    selectedTab,
     sessionsData,
     sessionsCount,
-    selectedTab,
-    sessionsTabPeriod,
-    sessionsTabSwitch,
+    sessionsPeriod,
+    sessionsStitch,
+    sessionsCurrentPage,
     sessionsPageSize,
+    sessionsFilter,
     onChangeCurrentPage,
     onChangePageSize,
     onSetSessionsData,
     onChangeSelectedTab,
     onChangeSelectedPeriod,
     onChangeSwitch,
+    onChangeFilter,
+    onClearContext,
   };
 }

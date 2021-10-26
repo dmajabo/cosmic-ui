@@ -1,4 +1,3 @@
-export const SLIDER_RANGE_INPUT = 'sliderRangeInput';
 export interface ITrack {
   id: string;
   value: number;
@@ -27,5 +26,6 @@ export interface ITimeConfig {
 
 export interface ITimeValue {
   value: number;
-  label: string;
+  label: string | React.ReactNode;
+  highlight: boolean;
 }

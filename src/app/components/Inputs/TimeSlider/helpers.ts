@@ -20,6 +20,7 @@ import {
   addDays,
   isToday,
   isFuture,
+  startOfWeek,
 } from 'date-fns';
 
 export interface ITimeMinMaxRange {
@@ -44,22 +45,37 @@ export const getTicks = (period: ITimeTypes, _domain: number[], _selected: numbe
     }
     if (arr.length > 24 && arr.length < 48) {
       const a = arr.filter((tick, i) => i % 3 === 0 || i === arr.length - 1);
-      return a.map((d, i) => ({ value: +d, label: getTick(period, +d, i, arr.length - 1) }));
+      return a.map((d, i) => {
+        const _tick = getTick(period, +d, i, arr.length - 1);
+        return { value: +d, label: _tick.label, highlight: _tick.highlight };
+      });
     }
-    return arr.map((d, i) => ({ value: +d, label: getTick(period, +d, i, arr.length - 1) }));
+    return arr.map((d, i) => {
+      const _tick = getTick(period, +d, i, arr.length - 1);
+      return { value: +d, label: _tick.label, highlight: _tick.highlight };
+    });
     // 24 hours
   } else if (period === ITimeTypes.WEEK) {
     const arr = _ticks.ticks(7);
-    return arr.map((d, i) => ({ value: +d, label: getTick(period, +d, i, arr.length - 1) }));
+    return arr.map((d, i) => {
+      const _tick = getTick(period, +d, i, arr.length - 1);
+      return { value: +d, label: _tick.label, highlight: _tick.highlight };
+    });
   } else if (period === ITimeTypes.MONTH) {
-    const _arr = _ticks.ticks(31);
-    const _d: Date = _arr[_arr.length - 1];
+    const arr = _ticks.ticks(31);
+    const _d: Date = arr[arr.length - 1];
     const isOdd = _d.getDate() % 2 === 0;
-    const filteredTicks = getFilteredTicks(_arr, isOdd, _selected, period);
-    return filteredTicks.map((d, i) => ({ value: +d, label: getTick(period, +d, i, filteredTicks.length - 1) }));
+    const filteredTicks = getFilteredTicks(arr, isOdd, _selected, period);
+    return filteredTicks.map((d, i) => {
+      const _tick = getTick(period, +d, i, filteredTicks.length - 1);
+      return { value: +d, label: _tick.label, highlight: _tick.highlight };
+    });
   } else if (period === ITimeTypes.YEAR) {
     const arr = _ticks.ticks(12);
-    return arr.map((d, i) => ({ value: +d, label: getTick(period, +d, i, arr.length - 1) }));
+    return arr.map((d, i) => {
+      const _tick = getTick(period, +d, i, arr.length - 1);
+      return { value: +d, label: _tick.label, highlight: _tick.highlight };
+    });
   }
   const arr = _ticks.ticks(24);
   if (arr[0].getTime() !== _domain[0]) {
@@ -68,7 +84,10 @@ export const getTicks = (period: ITimeTypes, _domain: number[], _selected: numbe
   if (arr[arr.length - 1].getTime() !== _domain[1]) {
     arr.push(new Date(_domain[1]));
   }
-  return arr.map((d, i) => ({ value: +d, label: getTick(period, +d, i, arr.length - 1) }));
+  return arr.map((d, i) => {
+    const _tick = getTick(period, +d, i, arr.length - 1);
+    return { value: +d, label: _tick.label, highlight: _tick.highlight };
+  });
 };
 
 const getFilteredTicks = (_arr: Date[], isOdd: boolean, _selected: number, period: ITimeTypes): Date[] => {
@@ -100,31 +119,38 @@ export const getStep = (period: ITimeTypes, min?: number, max?: number) => {
 };
 
 const getTick = (period: ITimeTypes, ms: number, index: number, lastIndex: number) => {
+  const hour = getHours(ms);
   if (period === ITimeTypes.DAY && (index === 0 || index === lastIndex || getTime(startOfDay(ms)) === ms)) {
     if (getTime(startOfDay(ms)) === ms) {
-      return format(ms, 'M / d h aa');
+      return { label: format(ms, 'M / d h aa'), highlight: true };
     }
-    return format(ms, 'h aa');
+    return { label: format(ms, 'h aa'), highlight: hour !== 6 && hour !== 12 && hour !== 18 ? false : true };
   }
   if (period === ITimeTypes.DAY) {
-    return format(ms, 'h aa');
+    return { label: format(ms, 'h aa'), highlight: hour !== 6 && hour !== 12 && hour !== 18 ? false : true };
   } // 1 hour
   if (period === ITimeTypes.WEEK) {
-    return format(ms, 'M / d');
+    if (getTime(startOfWeek(ms)) === ms) {
+      return { label: format(ms, 'M / d'), highlight: true };
+    }
+    return { label: format(ms, 'M / d'), highlight: index !== 0 && index !== lastIndex ? false : true };
   }
   if (period === ITimeTypes.MONTH) {
-    return format(ms, 'M / d');
+    if (getTime(startOfMonth(ms)) === ms) {
+      return { label: format(ms, 'M / d'), highlight: true };
+    }
+    return { label: format(ms, 'M / d'), highlight: index !== 0 && index !== lastIndex ? false : true };
   }
   if (period === ITimeTypes.YEAR) {
-    return format(ms, 'yy / M');
+    return { label: format(ms, 'yy / M'), highlight: index !== 0 && index !== lastIndex ? false : true };
   }
   if (index === 0 || index === lastIndex || getTime(startOfDay(ms)) === ms) {
     if (getTime(startOfDay(ms)) === ms) {
-      return format(ms, 'M / d h aa');
+      return { label: format(ms, 'M / d h aa'), highlight: true };
     }
-    return format(ms, 'h aa');
+    return { label: format(ms, 'h aa'), highlight: hour !== 6 && hour !== 12 && hour !== 18 ? false : true };
   }
-  return format(ms, 'h aa');
+  return { label: format(ms, 'h aa'), highlight: hour !== 6 && hour !== 12 && hour !== 18 ? false : true };
 };
 
 export const getSliderValuesConfig = (period: ITimeTypes, startDate: Date | null): ITimeConfig => {

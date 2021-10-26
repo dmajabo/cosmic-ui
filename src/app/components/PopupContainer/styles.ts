@@ -21,6 +21,9 @@ export const PopupLinkItem = styled.div`
   font-weight: 500;
   font-size: 16px;
   color: var(--_primaryColor);
-  padding: 24px;
+  padding: 12px 24px;
   cursor: pointer;
+  &:hover {
+    background: var(--_appBg);
+  }
 `;

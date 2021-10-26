@@ -1,17 +1,25 @@
 import React from 'react';
-import { ModalWrapper } from './styles';
+import { ModalHeader, ModalTitle, ModalWrapper } from './styles';
 import Backdrop from '@mui/material/Backdrop';
 import Modal from '@mui/material/Modal';
 import Zoom from '@mui/material/Zoom';
-
+import Fade from '@mui/material/Fade';
+import IconWrapper from '../Buttons/IconWrapper';
+import { closeIcon } from '../SVGIcons/close';
 interface Props {
   id: string;
   open: boolean;
   children: React.ReactNode;
   onClose: () => void;
+  useFadeAnimation?: boolean;
+  isCustom?: boolean;
+  modalStyles?: Object;
+  showHeader?: boolean;
+  title?: string;
+  showCloseButton?: boolean;
 }
 
-const ModalComponent: React.FC<Props> = ({ open, id, children, onClose }) => {
+const ModalComponent: React.FC<Props> = ({ open, id, children, onClose, useFadeAnimation, isCustom, modalStyles, showHeader, title, showCloseButton }) => {
   const handleClose = () => {
     onClose();
   };
@@ -37,9 +45,45 @@ const ModalComponent: React.FC<Props> = ({ open, id, children, onClose }) => {
         display: 'flex',
       }}
     >
-      <Zoom timeout={300} in={open}>
-        <ModalWrapper>{children}</ModalWrapper>
-      </Zoom>
+      <>
+        {!useFadeAnimation && !isCustom && (
+          <Zoom timeout={300} in={open}>
+            <ModalWrapper style={modalStyles}>
+              {showHeader && (
+                <ModalHeader>
+                  <ModalTitle>{title}</ModalTitle>
+                  {showCloseButton && <IconWrapper styles={{ margin: '0 0 auto auto' }} onClick={onClose} icon={closeIcon} />}
+                </ModalHeader>
+              )}
+              {children}
+            </ModalWrapper>
+          </Zoom>
+        )}
+        {useFadeAnimation && !isCustom && (
+          <Fade timeout={300} in={open}>
+            <ModalWrapper style={modalStyles}>
+              {showHeader && (
+                <ModalHeader>
+                  <ModalTitle>{title}</ModalTitle>
+                  {showCloseButton && <IconWrapper styles={{ margin: '0 0 auto auto' }} onClick={onClose} icon={closeIcon} />}
+                </ModalHeader>
+              )}
+              {children}
+            </ModalWrapper>
+          </Fade>
+        )}
+        {isCustom && (
+          <ModalWrapper style={modalStyles}>
+            {showHeader && (
+              <ModalHeader>
+                <ModalTitle>{title}</ModalTitle>
+                {showCloseButton && <IconWrapper styles={{ margin: '0 0 auto auto' }} onClick={onClose} icon={closeIcon} />}
+              </ModalHeader>
+            )}
+            {children}
+          </ModalWrapper>
+        )}
+      </>
     </Modal>
   );
 };
