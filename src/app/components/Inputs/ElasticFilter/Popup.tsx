@@ -1,25 +1,29 @@
 import React from 'react';
-import { ListItemsWrapper, ListItem } from './styles';
-import { ISelectedListItem } from 'lib/models/general';
-
+import { ListItemsWrapper, ListItem, ItemsContainer } from './styles';
+import LoadingIndicator from 'app/components/Loading';
+import { ISessionsGridField } from 'app/containers/Pages/SessionsPage/SessionPage/models';
+import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 interface Props {
-  items: ISelectedListItem<string>[];
-  selectedItem: ISelectedListItem<string>;
-  onSelectItem: (item: ISelectedListItem<string>) => void;
+  items?: ISessionsGridField[];
+  onSelectItem?: (item: ISessionsGridField) => void;
+  loading?: boolean;
 }
 const Popup: React.FC<Props> = (props: Props) => {
-  const onSelectField = (item: ISelectedListItem<string>) => {
-    if (props.selectedItem && item.id === props.selectedItem.id) return;
+  const onSelectField = (item: ISessionsGridField) => {
     props.onSelectItem(item);
   };
-
   return (
     <ListItemsWrapper>
-      {props.items.map(it => (
-        <ListItem selected={props.selectedItem && it.id === props.selectedItem.id} onClick={() => onSelectField(it)} key={`suggestField${it.id}`}>
-          {it.label}
-        </ListItem>
-      ))}
+      <ItemsContainer>
+        {props.items.map(it => (
+          <ListItem selected={false} onClick={() => onSelectField(it)} key={`suggestField${it.resField}`}>
+            {it.label}
+          </ListItem>
+        ))}
+        <AbsLoaderWrapper width="100%" height="100%">
+          {props.loading && <LoadingIndicator margin="auto" />}
+        </AbsLoaderWrapper>
+      </ItemsContainer>
     </ListItemsWrapper>
   );
 };

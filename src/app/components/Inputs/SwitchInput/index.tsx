@@ -1,44 +1,6 @@
 import React from 'react';
-import { Switch } from '@material-ui/core';
-import { styled } from '@mui/material/styles';
 import { Label, Wrapper } from './styles';
-
-export const CustomSwitch = styled(Switch)(({ theme }) => ({
-  width: 38,
-  height: 20,
-  padding: 0,
-  display: 'flex',
-  margin: 0,
-  '& .MuiSwitch-switchBase': {
-    padding: '3px 4px',
-    '&.Mui-checked': {
-      transform: 'translateX(16px)',
-      color: 'transparent',
-      '& + .MuiSwitch-track': {
-        opacity: 1,
-        backgroundColor: 'var(--_onBg)',
-      },
-    },
-  },
-  '& .MuiSwitch-thumb': {
-    boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
-    backgroundColor: 'var(--_thumbBg)',
-    width: 14,
-    height: 14,
-    borderRadius: '50%',
-    transition: theme.transitions.create(['width'], {
-      duration: 200,
-    }),
-  },
-  '& .MuiSwitch-track': {
-    borderRadius: '30px',
-    width: '100%',
-    height: '100%',
-    opacity: 1,
-    backgroundColor: 'var(--_offBg)',
-    boxSizing: 'border-box',
-  },
-}));
+import ToggleSwitch from './ToggleSwitch';
 
 interface Props {
   checked: boolean;
@@ -66,7 +28,7 @@ const SwitchInput: React.FC<Props> = (props: Props) => {
           Off
         </Label>
       )}
-      <CustomSwitch checked={checked} onChange={handleChange} inputProps={{ 'aria-label': 'controlled' }} />
+      <ToggleSwitch checked={checked} onChange={handleChange} />
       {props.showLabels && (
         <Label active={checked} margin="0 0 0 8px">
           On

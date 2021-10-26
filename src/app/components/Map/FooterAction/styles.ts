@@ -17,4 +17,21 @@ export const SliderWrapper = styled.div`
   margin: 0 0 0 12px;
   display: flex;
   padding: 0 20px;
+  position: relative;
+  &:after,
+  &:before {
+    content: '';
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    width: 50px;
+    height: 26px;
+    background: var(--_primaryBg);
+  }
+  &:after {
+    right: -30px;
+  }
+  &:before {
+    left: -30px;
+  }
 `;

@@ -97,3 +97,8 @@ export interface IVisible {
 export interface IMappedObject {
   [key: string]: any;
 }
+
+export interface ISelectionGridCellValue<T, P> {
+  field: T;
+  value: P;
+}

@@ -8,38 +8,44 @@ import Table from './Table';
 import Dropdown from 'app/components/Inputs/Dropdown';
 import { SessionsSelectValuesTypes, SessionsTabTypes, SESSIONS_SELECT_VALUES } from 'lib/hooks/Sessions/model';
 import SessionsSwitch from '../Components/SessionsSwitch';
-import { ISelectedListItem } from 'lib/models/general';
+import { ISelectedListItem, ISelectionGridCellValue } from 'lib/models/general';
 import { sessionsParamBuilder } from 'lib/api/ApiModels/Sessions/paramBuilder';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
-// import ElasticFilter from 'app/components/Inputs/ElasticFilter';
+import ElasticFilter from 'app/components/Inputs/ElasticFilter';
+import { FilterOpperatorsList, ISessionsGridField, SessionGridColumnItems } from './models';
 
 interface IProps {}
 
 const SessionPage: React.FC<IProps> = (props: IProps) => {
   const { sessions } = useSessionsDataContext();
   const { response, loading, error, onGet } = useGet<IAllSessionsRes>();
-
   React.useEffect(() => {
     return () => {
-      sessions.onSetSessionsData(null, null);
+      sessions.onClearContext();
     };
   }, []);
 
   React.useEffect(() => {
-    onTryToLoadData(sessions.sessionsPageSize, sessions.sessionsCurrentPage, sessions.sessionsTabPeriod, sessions.sessionsTabSwitch);
-  }, [sessions.sessionsPageSize, sessions.sessionsCurrentPage, sessions.sessionsTabSwitch, sessions.sessionsTabPeriod]);
+    onTryToLoadData(sessions.sessionsPageSize, sessions.sessionsCurrentPage, sessions.sessionsPeriod, sessions.sessionsStitch, sessions.sessionsFilter);
+  }, [sessions.sessionsPageSize, sessions.sessionsCurrentPage, sessions.sessionsStitch, sessions.sessionsPeriod, sessions.sessionsFilter]);
 
   React.useEffect(() => {
-    if (response && response.sessions.length) {
+    if (response) {
       sessions.onSetSessionsData(response.sessions, response.count);
     } else {
       sessions.onSetSessionsData(null, null);
     }
   }, [response]);
 
-  const onTryToLoadData = async (pageSize: number, page: number, time: SessionsSelectValuesTypes, stitch: boolean) => {
-    const _param = sessionsParamBuilder(pageSize, page, time, stitch);
+  const onTryToLoadData = async (
+    pageSize: number,
+    page: number,
+    time: SessionsSelectValuesTypes,
+    stitch: boolean,
+    filterValue: (ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> | string)[],
+  ) => {
+    const _param = sessionsParamBuilder(pageSize, page, time, stitch, filterValue);
     await onGet(SessionsApi.getAllSessions(), _param);
   };
 
@@ -59,17 +65,64 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
     sessions.onChangeSwitch(e.target.checked, SessionsTabTypes.Sessions);
   };
 
+  const onClearFilteredItem = (index: number) => {
+    const _items: (ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> | string)[] = sessions.sessionsFilter.slice();
+    let stIndex = index;
+    let count = 1;
+    if (_items.length > 1) {
+      if (_items[index + 1] && typeof _items[index + 1] === 'string') {
+        count = 2;
+      } else if (_items[index - 1] && typeof _items[index - 1] === 'string') {
+        stIndex = index - 1;
+        count = 2;
+      }
+    }
+    _items.splice(stIndex, count);
+    sessions.onChangeFilter(_items);
+  };
+
+  const onClearFilter = () => {
+    sessions.onChangeFilter([]);
+  };
+
+  const onAddFilter = (_item: ISelectionGridCellValue<ISessionsGridField, ISessionsGridField>, index: number | null) => {
+    const _items: (ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> | string)[] = sessions.sessionsFilter.slice();
+    if (index !== null) {
+      _items.splice(index, 1, _item);
+    } else {
+      if (_items.length >= 1) {
+        _items.push(FilterOpperatorsList[0].value);
+      }
+      _items.push(_item);
+    }
+    sessions.onChangeFilter(_items);
+  };
+
+  const onChangeOperator = (_item: string, index: number) => {
+    const _items: (ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> | string)[] = sessions.sessionsFilter.slice();
+    _items.splice(index, 1, _item);
+    sessions.onChangeFilter(_items);
+  };
+
   return (
     <>
       <ActionRowStyles>
         <ActionPart margin="0 auto 0 0">
-          <SessionsSwitch checked={sessions.sessionsTabSwitch} onChange={onSwitchChange} />
+          <SessionsSwitch checked={sessions.sessionsStitch} onChange={onSwitchChange} />
         </ActionPart>
         <ActionPart margin="0 0 0 auto">
-          <Dropdown label="Show" selectedValue={sessions.sessionsTabPeriod} values={SESSIONS_SELECT_VALUES} onSelectValue={onChangePeriod} />
+          <Dropdown label="Show" selectedValue={sessions.sessionsPeriod} values={SESSIONS_SELECT_VALUES} onSelectValue={onChangePeriod} />
         </ActionPart>
       </ActionRowStyles>
-      {/* <ElasticFilter fields={SESSIONS_ELASTIC_FIELDS_VALUES} /> */}
+      <ElasticFilter
+        onChangeOperator={onChangeOperator}
+        onClearFilteredItem={onClearFilteredItem}
+        placeholder="Search Filter"
+        selectionFilterItems={sessions.sessionsFilter}
+        fields={SessionGridColumnItems}
+        onAddFilter={onAddFilter}
+        onClearFilter={onClearFilter}
+      />
       <ContentWrapper>
         <TableWrapper>
           <Table

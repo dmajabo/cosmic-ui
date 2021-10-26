@@ -16,6 +16,7 @@ export const Wrap = styled.div`
   width: auto;
   margin: auto 20px auto 0;
   align-items: center;
+  flex-shrink: 0;
 `;
 
 export const StitchStyles = styled.span`

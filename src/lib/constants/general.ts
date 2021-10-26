@@ -1,3 +1,8 @@
+export const APP_GENERAL_CONST = {
+  support: 'support@okulis.ai',
+  feedback: 'info@okulis.ai',
+};
+
 export const DEBOUNCE_TIME = 300;
 
 export interface IKEYBOARD_KEY {
