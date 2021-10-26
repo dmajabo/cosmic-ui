@@ -9,10 +9,12 @@ interface ConnectFormProps {
   readonly subtitle: string;
   readonly steps: StepData[];
   readonly isFormFilled: boolean;
+  readonly isUpdateForm: boolean;
   readonly onFormSubmit: () => void;
+  readonly onFormUpdate: () => void;
 }
 
-export const ConnectSourceForm: React.FC<ConnectFormProps> = ({ title, img, subtitle, steps, isFormFilled, onFormSubmit }) => {
+export const ConnectSourceForm: React.FC<ConnectFormProps> = ({ title, img, subtitle, steps, isFormFilled, isUpdateForm, onFormSubmit, onFormUpdate }) => {
   const classes = SignUpStyles();
   return (
     <div className={classes.connectFormContainer}>
@@ -41,8 +43,8 @@ export const ConnectSourceForm: React.FC<ConnectFormProps> = ({ title, img, subt
           <div className={classes.skipSetupText}>You can finish it in any time.</div>
         </div>
         <>
-          <button className={isFormFilled ? classes.connectSourceFormButton : classes.startButton} onClick={onFormSubmit} disabled={!isFormFilled}>
-            CONNECT
+          <button className={isFormFilled ? classes.connectSourceFormButton : classes.startButton} onClick={isUpdateForm ? onFormUpdate : onFormSubmit} disabled={!isFormFilled}>
+            {isUpdateForm ? 'UPDATE' : 'CONNECT'}
           </button>
         </>
       </div>

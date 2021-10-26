@@ -19,6 +19,8 @@ import { Redirect } from 'react-router';
 import { ROUTE } from 'lib/Routes/model';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { PolicyController } from './SharedTypes';
+import LoadingIndicator from 'app/components/Loading';
 
 const Option = props => {
   const classes = SignUpStyles();
@@ -71,9 +73,12 @@ const SignUpPage: React.FC = () => {
   const [progress, setProgress] = useState<number>(0);
   const [connectLocation, setConnectLocation] = useState<string>('');
   const [isFormFilled, setIsFormFilled] = useState<boolean>(false);
-  const [isAppReadyToUSe, setIsAppReadyToUse] = useState<boolean>(false);
+  const [isAppReadyToUse, setIsAppReadyToUse] = useState<boolean>(false);
   const [awsRegionsOptions, setAwsRegionsOptions] = useState<Option[]>([]);
+  const [policyControllers, setPolicyControllers] = useState<PolicyController[]>([]);
   const [isEdgesConnected, setIsEdgesConnected] = useState<boolean>(false);
+  const [isUpdateForm, setIsUpdateForm] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const classes = SignUpStyles();
 
   const [awsUsername, setAwsUsername] = useState<string>('');
@@ -128,6 +133,27 @@ const SignUpPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    const getPolicyControllers = async () => {
+      const responseData = await apiClient.getControllerList();
+      setPolicyControllers(responseData.controllers);
+    };
+    getPolicyControllers();
+  }, [isFormFilled]);
+
+  useEffect(() => {
+    if (!isAppReadyToUse) {
+      const isAwsConnected = policyControllers.find(controller => controller.name === PreDefinedEdges.Aws);
+      const isMerakiConnected = policyControllers.find(controller => controller.name === PreDefinedEdges.Meraki);
+      const isBothConnected = isAwsConnected && isMerakiConnected ? true : false;
+      if (isBothConnected) {
+        setIsEdgesConnected(true);
+      } else {
+        setIsLoading(false);
+      }
+    }
+  }, [policyControllers]);
+
+  useEffect(() => {
     if (progress >= 100) {
       setIsAppReadyToUse(true);
     }
@@ -164,6 +190,7 @@ const SignUpPage: React.FC = () => {
             }}
             menuPortalTarget={document.body}
             styles={dropdownStyle}
+            value={awsRegions.map(region => awsRegionsOptions.find(option => option.value === region))}
             options={awsRegionsOptions}
             allowSelectAll={true}
             onChange={values => setAwsRegions(values.map(item => item.value))}
@@ -217,15 +244,23 @@ const SignUpPage: React.FC = () => {
       img: AwsIcon,
       title: 'AWS',
       content: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-      onClick: () => setConnectLocation(PreDefinedEdges.Aws),
+      onConnect: () => setConnectLocation(PreDefinedEdges.Aws),
       isConnected: !isEmpty(awsRegions) && awsUsername && awsAccessKey && awsSecret && isAwsFlowLogEnabled ? true : false,
+      onUpdate: () => {
+        setIsUpdateForm(true);
+        setConnectLocation(PreDefinedEdges.Aws);
+      },
     },
     {
       img: MerakiIcon,
       title: 'Cisco Meraki',
       content: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-      onClick: () => setConnectLocation(PreDefinedEdges.Meraki),
+      onConnect: () => setConnectLocation(PreDefinedEdges.Meraki),
       isConnected: merakiName && merakiDescription && merakiApiKey ? true : false,
+      onUpdate: () => {
+        setIsUpdateForm(true);
+        setConnectLocation(PreDefinedEdges.Meraki);
+      },
     },
   ];
 
@@ -254,6 +289,9 @@ const SignUpPage: React.FC = () => {
             accessKey: awsAccessKey,
             secret: awsSecret,
             regions: awsRegions,
+            flowlog_pol: {
+              enable: isAwsFlowLogEnabled === FlowLogToggle.enabled ? true : false,
+            },
           },
         },
       });
@@ -276,6 +314,9 @@ const SignUpPage: React.FC = () => {
           vendor: PolicyVendor.Meraki,
           merakiPol: {
             apiKey: merakiApiKey,
+            flowlog_pol: {
+              enable_syslog: isMerakiSysLogEnabled === FlowLogToggle.enabled ? true : false,
+            },
           },
         },
       });
@@ -290,14 +331,71 @@ const SignUpPage: React.FC = () => {
     }
   };
 
+  const onAwsFormUpdate = async () => {
+    const awsEdge = policyControllers.find(controller => controller.name === PreDefinedEdges.Aws);
+    const awsEdgeId = awsEdge?.id || '';
+    try {
+      const updatedPolicyResponse = await apiClient.updatePolicyController(awsEdgeId, {
+        controller: {
+          name: PreDefinedEdges.Aws,
+          vendor: PolicyVendor.Aws,
+          awsPol: {
+            username: awsUsername,
+            accessKey: awsAccessKey,
+            secret: awsSecret,
+            regions: awsRegions,
+            flowlog_pol: {
+              enable: isAwsFlowLogEnabled === FlowLogToggle.enabled ? true : false,
+            },
+          },
+        },
+      });
+      toast.success('Updated Successfully!');
+      setConnectLocation('');
+      setIsFormFilled(false);
+    } catch (error) {
+      toast.error('Something went wrong. Please try Again!');
+    }
+  };
+
+  const onMerakiFormUpdate = async () => {
+    const merakiEdge = policyControllers.find(controller => controller.name === PreDefinedEdges.Meraki);
+    const merakiEdgeId = merakiEdge?.id || '';
+    try {
+      const updatedPolicyResponse = await apiClient.updatePolicyController(merakiEdgeId, {
+        controller: {
+          name: PreDefinedEdges.Meraki,
+          vendor: PolicyVendor.Meraki,
+          merakiPol: {
+            apiKey: merakiApiKey,
+            flowlog_pol: {
+              enable_syslog: isMerakiSysLogEnabled === FlowLogToggle.enabled ? true : false,
+            },
+          },
+        },
+      });
+      toast.success('Updated Successfully!');
+      if (progress < 100) {
+        setProgress(progress + 50);
+      }
+      setConnectLocation('');
+      setIsFormFilled(false);
+    } catch (error) {
+      toast.error('Something went wrong. Please try Again!');
+    }
+  };
+
   const onAppReadyToUse = () => {
     clearMerakiForm();
     clearAwsForm();
     setIsEdgesConnected(true);
-    //TODO: Add Operation for on start with Okulis
   };
 
-  return isEdgesConnected ? (
+  return isLoading ? (
+    <div style={{ marginTop: '50vh' }}>
+      <LoadingIndicator />
+    </div>
+  ) : isEdgesConnected ? (
     <Redirect to={ROUTE.app} />
   ) : (
     <UnAuthLayout article={<TryDemoComponent />}>
@@ -318,7 +416,9 @@ const SignUpPage: React.FC = () => {
             subtitle="Configure your AWS integration to enable topology maps and annotate your agent data with important cloud context like regions, availability zones, account, VPC IDs, scaling groups and more."
             steps={awsSteps}
             isFormFilled={isFormFilled}
+            isUpdateForm={isUpdateForm}
             onFormSubmit={onAwsFormSubmit}
+            onFormUpdate={onAwsFormUpdate}
           />
         ) : (
           <ConnectSourceForm
@@ -327,12 +427,14 @@ const SignUpPage: React.FC = () => {
             subtitle="Configure your Cisco Meraki integration to enable topology maps and annotate your agent data with important cloud context like regions, availability zones, account, VPC IDs, scaling groups and more."
             steps={merakiSteps}
             isFormFilled={isFormFilled}
+            isUpdateForm={isUpdateForm}
             onFormSubmit={onMerakiFormSubmit}
+            onFormUpdate={onMerakiFormUpdate}
           />
         )
       ) : (
         <SignUpWrapper>
-          <ConnectEdges edgeBoxArray={edgesToConfigure} isAppReadyToUse={isAppReadyToUSe} onAppReadyToUse={onAppReadyToUse} />
+          <ConnectEdges edgeBoxArray={edgesToConfigure} isAppReadyToUse={isAppReadyToUse} onAppReadyToUse={onAppReadyToUse} />
         </SignUpWrapper>
       )}
       <ToastContainer />
