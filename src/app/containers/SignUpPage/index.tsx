@@ -199,18 +199,10 @@ const SignUpPage: React.FC = () => {
 
   useEffect(() => {
     if (!isAppReadyToUse) {
-      if (policyControllers.length > 2) {
-        setIsEdgesConnected(true);
-      }
+      policyControllers.length > 2 ? setIsEdgesConnected(true) : edgesToConfigure.length >= 2 ? setIsLoading(false) : setIsLoading(true);
     }
     setUpdatedEdgesToConfigure();
   }, [policyControllers]);
-
-  useEffect(() => {
-    if (edgesToConfigure.length > 2) {
-      setIsLoading(false);
-    }
-  }, [edgesToConfigure]);
 
   useEffect(() => {
     if (progress >= 100) {
@@ -222,7 +214,6 @@ const SignUpPage: React.FC = () => {
 
   const setEdgeDataToUpdate = (edgeName: string) => {
     const selectedEdge = policyControllers.find(edge => edge.name === edgeName);
-    console.log(selectedEdge);
     if (selectedEdge.vendor === PolicyVendor.Aws) {
       setAwsUsername(selectedEdge.name);
       setAwsAccessKey(selectedEdge.awsPol.accessKey);
