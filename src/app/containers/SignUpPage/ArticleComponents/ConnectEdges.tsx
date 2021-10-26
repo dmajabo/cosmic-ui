@@ -10,9 +10,10 @@ interface ConnectEdgesProps {
   readonly isAppReadyToUse: boolean;
   readonly onAppReadyToUse: () => void;
   readonly onAddNewEdge: () => void;
+  readonly onSkipSetup: () => void;
 }
 
-export const ConnectEdges: React.FC<ConnectEdgesProps> = ({ edgeBoxArray, isAppReadyToUse, onAppReadyToUse, onAddNewEdge }) => {
+export const ConnectEdges: React.FC<ConnectEdgesProps> = ({ onSkipSetup, edgeBoxArray, isAppReadyToUse, onAppReadyToUse, onAddNewEdge }) => {
   const classes = SignUpStyles();
 
   return (
@@ -41,7 +42,7 @@ export const ConnectEdges: React.FC<ConnectEdgesProps> = ({ edgeBoxArray, isAppR
       </div>
       <div className={classes.flexContainer}>
         <div>
-          <div className={classes.skipSetupButton}>
+          <div className={classes.skipSetupButton} onClick={onSkipSetup}>
             SKIP SETUP
             <img className={classes.whiteArrow} src={SkipIcon} alt="skip setup" />
           </div>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import UnAuthLayout from 'app/components/Basic/UnAuthLayout';
 import { SignUpWrapper } from './styles';
-import TryDemoComponent from './ArticleComponents/TryDemoComponent';
+import TryDemo from './ArticleComponents/TryDemo';
 import { ConnectEdges } from './ArticleComponents/ConnectEdges';
 import { EdgeBoxProps } from 'types';
 import AwsIcon from './icons/aws.svg';
@@ -15,7 +15,7 @@ import { CustomRadio } from './ArticleComponents/CustomRadio';
 import { isEmpty } from 'lodash';
 import { IntlProvider } from 'react-intl';
 import { createApiClient } from './apiClient';
-import { Redirect } from 'react-router';
+import { Redirect, useHistory } from 'react-router';
 import { ROUTE } from 'lib/Routes/model';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -479,6 +479,15 @@ const SignUpPage: React.FC = () => {
 
   const onNewEdgeSelected = (edgeLocation: string) => setNewEdgeLocation(edgeLocation);
 
+  const history = useHistory();
+  const onTryDemo = () =>
+    history.push({
+      pathname: ROUTE.app + ROUTE.dashboard,
+      state: {
+        isDemoEnviornment: true,
+      },
+    });
+
   return isEdgesConnected ? (
     <Redirect to={ROUTE.app} />
   ) : isLoading ? (
@@ -486,7 +495,7 @@ const SignUpPage: React.FC = () => {
       <LoadingIndicator />
     </div>
   ) : (
-    <UnAuthLayout article={<TryDemoComponent />}>
+    <UnAuthLayout article={<TryDemo onTryDemo={onTryDemo} />}>
       <div className={classes.topBar}>
         <div className={classes.topBarText}>Connect To Your Edges</div>
         <div className={classes.topBarflexContainer}>
@@ -556,7 +565,7 @@ const SignUpPage: React.FC = () => {
         )
       ) : (
         <SignUpWrapper>
-          <ConnectEdges edgeBoxArray={edgesToConfigure} isAppReadyToUse={isAppReadyToUse} onAppReadyToUse={onAppReadyToUse} onAddNewEdge={onAddNewEdge} />
+          <ConnectEdges onSkipSetup={onTryDemo} edgeBoxArray={edgesToConfigure} isAppReadyToUse={isAppReadyToUse} onAppReadyToUse={onAppReadyToUse} onAddNewEdge={onAddNewEdge} />
         </SignUpWrapper>
       )}
 

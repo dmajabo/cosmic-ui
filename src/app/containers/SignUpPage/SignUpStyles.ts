@@ -94,6 +94,11 @@ export const SignUpStyles = makeStyles(
         borderRadius: 6,
         cursor: 'pointer',
         marginLeft: 10,
+        '&:hover': {
+          color: '#230202',
+          background: 'linear-gradient(97.14deg, #F8B40A 6.1%, #F0CA23 55.57%)',
+          border: 'none',
+        },
       },
       whiteArrow: {
         marginLeft: 10,
