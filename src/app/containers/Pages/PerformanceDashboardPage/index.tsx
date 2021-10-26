@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { CreateSLATest } from './components/CreateSLATest';
 import { PerformanceDashboardStyles } from './PerformanceDashboardStyles';
 import { SLATestList } from './components/SLATestList';
-import { CreateSLATestRequest, FinalTableData, Organization } from './SharedTypes';
+import { CreateSLATestRequest, FinalTableData, Organization, SLATest, UpdateSLATestRequest } from './SharedTypes';
 import { createApiClient } from './apiClient';
 import { GetDevicesString, GetSelectedOrganization } from './components/filterFunctions';
 import LoadingIndicator from 'app/components/Loading';
@@ -112,6 +112,16 @@ const PerformanceDashboardPage: React.FC = () => {
     }
   };
 
+  const updateSlaTest = async (submitData: UpdateSLATestRequest) => {
+    const responseData = await apiClient.updateSLATest(submitData);
+    if (!isEmpty(responseData)) {
+      toast.success('Test Updated Successfully!');
+      getSLATests();
+    } else {
+      toast.error('Something went wrong. Please try Again!');
+    }
+  };
+
   const tab = 'sla_tests';
 
   return (
@@ -127,7 +137,14 @@ const PerformanceDashboardPage: React.FC = () => {
             <LoadingIndicator />
           </div>
         ) : !isEmpty(finalTableData) ? (
-          <SLATestList deleteSlaTest={deleteSlaTest} awsOrganizations={awsOrganizations} merakiOrganizations={merakiOrganizations} finalTableData={finalTableData} addSlaTest={addSlaTest} />
+          <SLATestList
+            updateSlaTest={updateSlaTest}
+            deleteSlaTest={deleteSlaTest}
+            awsOrganizations={awsOrganizations}
+            merakiOrganizations={merakiOrganizations}
+            finalTableData={finalTableData}
+            addSlaTest={addSlaTest}
+          />
         ) : (
           <CreateSLATest awsOrganizations={awsOrganizations} merakiOrganizations={merakiOrganizations} addSlaTest={addSlaTest} />
         )}

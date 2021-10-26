@@ -1,18 +1,20 @@
 import { Backdrop, Button, Tab, Tabs, Typography } from '@material-ui/core';
 import { Add as AddIcon } from '@material-ui/icons';
-import React, { useMemo, useState } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import { PerformanceDashboardStyles } from '../PerformanceDashboardStyles';
 import ColumnsIcon from '../icons/columns.svg';
 import FilterIcon from '../icons/filter.svg';
 import Table, { Data } from './Table';
 import { CreateSLATest } from './CreateSLATest';
-import { Organization, Column, FinalTableData } from '../SharedTypes';
+import { Organization, Column, FinalTableData, SLATest, UpdateSLATestRequest } from '../SharedTypes';
 import { PacketLoss } from './PacketLoss';
 import { Latency } from './Latency';
 import Select from 'react-select';
 import AverageQoe from './AverageQoe';
 import { Goodput } from './Goodput';
 import { MetricTabValue } from '../../DashboardPage/enum/MetricTabValue';
+import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
+import { createApiClient } from '../apiClient';
 
 interface SLATestListProps {
   readonly finalTableData: FinalTableData[];
@@ -20,6 +22,7 @@ interface SLATestListProps {
   readonly merakiOrganizations: Organization[];
   readonly awsOrganizations: Organization[];
   readonly deleteSlaTest: Function;
+  readonly updateSlaTest: (submitData: UpdateSLATestRequest) => void;
 }
 
 interface TabPanelProps {
@@ -72,19 +75,37 @@ const columns: Column[] = [
   },
 ];
 
-export const SLATestList: React.FC<SLATestListProps> = ({ deleteSlaTest, awsOrganizations, merakiOrganizations, finalTableData, addSlaTest }) => {
+export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteSlaTest, awsOrganizations, merakiOrganizations, finalTableData, addSlaTest }) => {
   const classes = PerformanceDashboardStyles();
 
   const [createToggle, setCreateToggle] = React.useState<boolean>(false);
   const [tab, setTab] = useState<string>(MetricTabValue.latency);
   const [selectedRows, setSelectedRows] = useState<Data[]>([]);
   const [timeRange, setTimeRange] = useState<string>('-7d');
+  const [testDataToUpdate, setTestDataToUpdate] = useState<SLATest>({
+    testId: '',
+    name: '',
+    sourceOrgId: '',
+    sourceNwExtId: '',
+    destination: '',
+    interface: '',
+    description: '',
+  });
+  const [updateTestToggle, setUpdateTestToggle] = useState<boolean>(false);
+
+  const userContext = useContext<UserContextState>(UserContext);
+  const apiClient = createApiClient(userContext.idToken!);
 
   const handleTabChange = (event, newValue: string) => setTab(newValue);
 
-  const handleClose = () => setCreateToggle(false);
+  const handleClose = () => {
+    setCreateToggle(false);
+    setUpdateTestToggle(false);
+  };
 
   const handleToggle = () => setCreateToggle(!createToggle);
+
+  const handleUpdateTestToggle = () => setUpdateTestToggle(!updateTestToggle);
 
   const addTest = (value: FinalTableData) => {
     addSlaTest(value);
@@ -92,7 +113,13 @@ export const SLATestList: React.FC<SLATestListProps> = ({ deleteSlaTest, awsOrga
 
   const onSelectedRowsUpdate = (value: Data[]) => setSelectedRows(value);
 
-  const deleteTest = async (testId: string) => deleteSlaTest(testId);
+  const deleteTest = (testId: string) => deleteSlaTest(testId);
+
+  const getTestDataToUpdate = async (testId: string) => {
+    const responseData = await apiClient.getSLATest(testId);
+    setTestDataToUpdate(responseData);
+    handleUpdateTestToggle();
+  };
 
   const data = useMemo(
     () =>
@@ -104,7 +131,7 @@ export const SLATestList: React.FC<SLATestListProps> = ({ deleteSlaTest, awsOrga
           sourceNetwork: item.sourceNetwork,
           sourceDevice: item.sourceDevice,
           destination: item.destination,
-          averageQoe: <AverageQoe deleteTest={deleteTest} packetLoss={item.averageQoe.packetLoss} latency={item.averageQoe.latency} testId={item.id} />,
+          averageQoe: <AverageQoe updateTest={getTestDataToUpdate} deleteTest={deleteTest} packetLoss={item.averageQoe.packetLoss} latency={item.averageQoe.latency} testId={item.id} />,
         };
       }),
     [finalTableData],
@@ -207,6 +234,17 @@ export const SLATestList: React.FC<SLATestListProps> = ({ deleteSlaTest, awsOrga
       </div>
       <Backdrop style={{ color: '#fff', zIndex: 5 }} open={createToggle}>
         <CreateSLATest awsOrganizations={awsOrganizations} merakiOrganizations={merakiOrganizations} addSlaTest={addTest} popup={true} closeSlaTest={handleClose} />
+      </Backdrop>
+      <Backdrop style={{ color: '#fff', zIndex: 5 }} open={updateTestToggle}>
+        <CreateSLATest
+          updateSlaTest={updateSlaTest}
+          slaTestDataToUpdate={testDataToUpdate}
+          isUpdateTest={true}
+          awsOrganizations={awsOrganizations}
+          merakiOrganizations={merakiOrganizations}
+          popup={true}
+          closeSlaTest={handleClose}
+        />
       </Backdrop>
     </div>
   );

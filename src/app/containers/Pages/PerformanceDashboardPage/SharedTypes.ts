@@ -136,6 +136,14 @@ export interface CreateSLATestResponse {
   readonly id?: string;
 }
 
+export interface UpdateSLATestRequest {
+  readonly sla_test: SLATest;
+}
+
+export interface UpdateSLATestResponse {
+  readonly id?: string;
+}
+
 export interface KeyedMap {
   readonly key: string;
   readonly ts: Data[];

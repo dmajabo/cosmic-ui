@@ -2,18 +2,21 @@ import { Button, Typography } from '@material-ui/core';
 import React, { useState, useEffect } from 'react';
 import { PerformanceDashboardStyles } from '../PerformanceDashboardStyles';
 import Select from 'react-select';
-import { CreateSLATestRequest, Organization, SLATest } from '../SharedTypes';
+import { CreateSLATestRequest, Organization, SLATest, UpdateSLATestRequest } from '../SharedTypes';
 import CloseIcon from '../icons/close.svg';
 import { GetSelectedOrganization } from './filterFunctions';
 import CreatableSelect from 'react-select/creatable';
 import { isEmpty } from 'lodash';
 
 interface CreateSLATestProps {
-  readonly addSlaTest: Function;
+  readonly addSlaTest?: Function;
   readonly merakiOrganizations: Organization[];
   readonly awsOrganizations: Organization[];
   readonly popup?: boolean;
   readonly closeSlaTest?: Function;
+  readonly isUpdateTest?: boolean;
+  readonly slaTestDataToUpdate?: SLATest;
+  readonly updateSlaTest?: (submitData: UpdateSLATestRequest) => void;
 }
 
 interface SelectOptions {
@@ -21,7 +24,7 @@ interface SelectOptions {
   readonly label: string;
 }
 
-export const CreateSLATest: React.FC<CreateSLATestProps> = ({ awsOrganizations, merakiOrganizations, addSlaTest, closeSlaTest, popup }) => {
+export const CreateSLATest: React.FC<CreateSLATestProps> = ({ slaTestDataToUpdate, updateSlaTest, awsOrganizations, merakiOrganizations, addSlaTest, closeSlaTest, popup }) => {
   const classes = PerformanceDashboardStyles();
 
   const [name, setName] = useState<string>('');
@@ -90,6 +93,23 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ awsOrganizations, 
     setSourceNetworkOptions(networkOptions);
   }, [selectedOrganizationVnets]);
 
+  const populateFormFields = (testData: SLATest) => {
+    setName(testData.name);
+    const currentSourceOrg = sourceOrganizationOptions.find(item => item.value === testData.sourceOrgId) || { label: '', value: '' };
+    setSourceOrg(currentSourceOrg);
+    const currentSourceNetwork = sourceNetworkOptions.find(item => item.value === testData.sourceNwExtId) || { label: '', value: '' };
+    setSourceNetwork(currentSourceNetwork);
+    const currentDestination = destinationOptions.find(item => item.value === testData.destination) || { label: testData.destination, value: testData.destination };
+    setDestination(currentDestination);
+    setDescription(testData.description);
+  };
+
+  useEffect(() => {
+    if (updateSlaTest) {
+      populateFormFields(slaTestDataToUpdate);
+    }
+  }, [slaTestDataToUpdate]);
+
   const dropdownStyle = {
     option: provided => ({
       ...provided,
@@ -120,7 +140,7 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ awsOrganizations, 
     setDescription('');
   };
 
-  const handleFormSubmit = () => {
+  const generateRequest = () => {
     const testData: SLATest = {
       testId: '',
       name: name,
@@ -133,8 +153,20 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ awsOrganizations, 
     const submitData: CreateSLATestRequest = {
       sla_test: testData,
     };
+    return submitData;
+  };
+
+  const handleFormSubmit = () => {
+    const submitData = generateRequest();
     closeSlaTest();
     addSlaTest(submitData);
+    clearFormFields();
+  };
+
+  const handleFormUpdate = () => {
+    const submitData = generateRequest();
+    closeSlaTest();
+    updateSlaTest(submitData);
     clearFormFields();
   };
 
@@ -144,7 +176,7 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ awsOrganizations, 
       <div className={classes.slaFormElementContainer}>
         <div className={classes.flexContainer}>
           <div>
-            <Typography className={classes.itemTitle}>Create SLA Test</Typography>
+            <Typography className={classes.itemTitle}>{updateSlaTest ? 'Update SLA Test' : 'Create SLA Test'}</Typography>
           </div>
           {popup ? (
             <div style={{ cursor: 'pointer' }} onClick={() => closeSlaTest()}>
@@ -167,9 +199,18 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ awsOrganizations, 
           <input className={classes.slaInput} type="text" value={description} onChange={e => setDescription(e.target.value)} />
         </div>
         <div className={classes.slaTestButtonConatiner}>
-          <Button className={classes.slaFormButton} disabled={shouldSubmitButtonEnable()} variant="contained" color="primary" fullWidth={true} size="large" onClick={handleFormSubmit} disableElevation>
+          <Button
+            className={classes.slaFormButton}
+            disabled={shouldSubmitButtonEnable()}
+            variant="contained"
+            color="primary"
+            fullWidth={true}
+            size="large"
+            onClick={updateSlaTest ? handleFormUpdate : handleFormSubmit}
+            disableElevation
+          >
             <Typography className={classes.slaTestButtonText} noWrap>
-              CREATE SLA TEST
+              {updateSlaTest ? 'UPDATE SLA TEST' : 'CREATE SLA TEST'}
             </Typography>
           </Button>
         </div>
