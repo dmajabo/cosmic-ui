@@ -17,7 +17,7 @@ export const ConnectEdges: React.FC<ConnectEdgesProps> = ({ onSkipSetup, edgeBox
   const classes = SignUpStyles();
 
   return (
-    <div>
+    <div className={classes.connectEdgesContainer}>
       <div className={classes.title}>Connect To Your Edges</div>
       <div className={classes.subTitle}>
         In a professional context it often happens that private or corporate clients corder a publication to be made and presented with the actual content still not being ready.
@@ -26,9 +26,9 @@ export const ConnectEdges: React.FC<ConnectEdgesProps> = ({ onSkipSetup, edgeBox
         {edgeBoxArray.map(edgeBox => (
           <EdgeBox
             edgeName={edgeBox.edgeName}
-            key={edgeBox.title}
-            img={edgeBox.img}
             title={edgeBox.title}
+            key={edgeBox.edgeName}
+            img={edgeBox.img}
             content={edgeBox.content}
             onUpdate={edgeBox.onUpdate}
             onConnect={edgeBox.onConnect}

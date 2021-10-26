@@ -103,6 +103,10 @@ export const SignUpStyles = makeStyles(
       whiteArrow: {
         marginLeft: 10,
       },
+      connectEdgesContainer: {
+        marginTop: 80,
+        overflow: 'auto',
+      },
       edgeBoxContainer: {
         display: 'flex',
         justifyContent: 'center',

@@ -70,17 +70,19 @@ const FlowLog_Options: Option[] = [
   },
 ];
 
-interface EdgeData {
-  readonly edgeName: string;
-  readonly name: string;
-  readonly accessKey?: string;
-  readonly secret?: string;
-  readonly apiKey?: string;
-  readonly description?: string;
-  readonly isLogEnabled: string;
-  readonly regions?: string[];
-  readonly vendor: string;
-}
+const dropdownStyle = {
+  option: provided => ({
+    ...provided,
+    padding: 20,
+    color: 'black',
+  }),
+  control: provided => ({
+    ...provided,
+    height: 60,
+    width: 500,
+    marginTop: 5,
+  }),
+};
 
 const SignUpPage: React.FC = () => {
   const [progress, setProgress] = useState<number>(50);
@@ -99,35 +101,7 @@ const SignUpPage: React.FC = () => {
 
   const classes = SignUpStyles();
 
-  const [edgeData, setEdgeData] = useState<EdgeData[]>([]);
-  const [edgesToConfigure, setEdgesToConfigure] = useState<EdgeBoxProps[]>([
-    {
-      img: AwsIcon,
-      title: 'AWS',
-      edgeName: PreDefinedEdges.Aws,
-      content: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-      onConnect: () => setConnectLocation(PreDefinedEdges.Aws),
-      isConnected: edgeData.find(edge => edge.edgeName === PreDefinedEdges.Aws) ? true : false,
-      onUpdate: () => {
-        setEdgeDataToUpdate(PreDefinedEdges.Aws);
-        setIsUpdateForm(true);
-        setConnectLocation(PreDefinedEdges.Aws);
-      },
-    },
-    {
-      img: MerakiIcon,
-      title: 'Cisco Meraki',
-      edgeName: PreDefinedEdges.Meraki,
-      content: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-      onConnect: () => setConnectLocation(PreDefinedEdges.Meraki),
-      isConnected: edgeData.find(edge => edge.edgeName === PreDefinedEdges.Meraki) ? true : false,
-      onUpdate: () => {
-        setEdgeDataToUpdate(PreDefinedEdges.Meraki);
-        setIsUpdateForm(true);
-        setConnectLocation(PreDefinedEdges.Meraki);
-      },
-    },
-  ]);
+  const [edgesToConfigure, setEdgesToConfigure] = useState<EdgeBoxProps[]>([]);
 
   const [awsUsername, setAwsUsername] = useState<string>('');
   const [awsAccessKey, setAwsAccessKey] = useState<string>('');
@@ -154,18 +128,60 @@ const SignUpPage: React.FC = () => {
     setIsFormFilled(isFormFilled);
   }, [merakiName, merakiDescription, merakiApiKey, isMerakiSysLogEnabled]);
 
-  const dropdownStyle = {
-    option: provided => ({
-      ...provided,
-      padding: 20,
-      color: 'black',
-    }),
-    control: provided => ({
-      ...provided,
-      height: 60,
-      width: 500,
-      marginTop: 5,
-    }),
+  const getPolicyControllers = async () => {
+    const responseData = await apiClient.getControllerList();
+    setPolicyControllers(responseData.controllers);
+  };
+
+  const setUpdatedEdgesToConfigure = () => {
+    const preDefinedEdges: EdgeBoxProps[] = [
+      {
+        img: AwsIcon,
+        title: 'AWS',
+        edgeName: PreDefinedEdges.Aws,
+        content: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+        onConnect: () => setConnectLocation(PreDefinedEdges.Aws),
+        isConnected: policyControllers.find(edge => edge.name === PreDefinedEdges.Aws) ? true : false,
+        onUpdate: () => {
+          setEdgeDataToUpdate(PreDefinedEdges.Aws);
+          setIsUpdateForm(true);
+          setConnectLocation(PreDefinedEdges.Aws);
+        },
+      },
+      {
+        img: MerakiIcon,
+        title: 'Cisco Meraki',
+        edgeName: PreDefinedEdges.Meraki,
+        content: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+        onConnect: () => setConnectLocation(PreDefinedEdges.Meraki),
+        isConnected: policyControllers.find(edge => edge.name === PreDefinedEdges.Meraki) ? true : false,
+        onUpdate: () => {
+          setEdgeDataToUpdate(PreDefinedEdges.Meraki);
+          setIsUpdateForm(true);
+          setConnectLocation(PreDefinedEdges.Meraki);
+        },
+      },
+    ];
+    const filteredEdges = policyControllers.filter(edge => edge.name !== PreDefinedEdges.Aws && edge.name !== PreDefinedEdges.Meraki);
+    setEdgesToConfigure(
+      preDefinedEdges.concat(
+        filteredEdges.map(edge => {
+          return {
+            img: edge.vendor === PolicyVendor.Aws ? AwsIcon : MerakiIcon,
+            title: edge.name,
+            edgeName: edge.name,
+            content: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+            onConnect: () => setConnectLocation(edge.vendor === PolicyVendor.Aws ? PreDefinedEdges.Aws : PreDefinedEdges.Meraki),
+            isConnected: policyControllers.find(edge => edge.name === edge.name) ? true : false,
+            onUpdate: () => {
+              setEdgeDataToUpdate(edge.name);
+              setIsUpdateForm(true);
+              setConnectLocation(edge.vendor === PolicyVendor.Aws ? PreDefinedEdges.Aws : PreDefinedEdges.Meraki);
+            },
+          };
+        }),
+      ),
+    );
   };
 
   useEffect(() => {
@@ -178,27 +194,14 @@ const SignUpPage: React.FC = () => {
       setAwsRegionsOptions(awsRegionsOptions);
     };
     getAwsRegions();
+    getPolicyControllers();
   }, []);
 
   useEffect(() => {
-    const getPolicyControllers = async () => {
-      const responseData = await apiClient.getControllerList();
-      setPolicyControllers(responseData.controllers);
-    };
-    getPolicyControllers();
-  }, [isFormFilled]);
-
-  useEffect(() => {
     if (!isAppReadyToUse) {
-      const isAwsConnected = policyControllers.find(controller => controller.name === PreDefinedEdges.Aws);
-      const isMerakiConnected = policyControllers.find(controller => controller.name === PreDefinedEdges.Meraki);
-      const isBothConnected = isAwsConnected && isMerakiConnected ? true : false;
-      if (isBothConnected) {
-        setIsEdgesConnected(true);
-      } else {
-        setIsLoading(false);
-      }
+      policyControllers.length > 2 ? setIsEdgesConnected(true) : edgesToConfigure.length >= 2 ? setIsLoading(false) : setIsLoading(true);
     }
+    setUpdatedEdgesToConfigure();
   }, [policyControllers]);
 
   useEffect(() => {
@@ -207,92 +210,21 @@ const SignUpPage: React.FC = () => {
     }
   }, [progress]);
 
-  useEffect(() => {
-    const addedEdge = edgeData.slice(-1);
-    if (!isEmpty(addedEdge)) {
-      const isNewEdge = edgesToConfigure.find(edge => edge.edgeName === addedEdge[0].edgeName) ? false : true;
-      if (isNewEdge) {
-        addedEdge[0].vendor === PolicyVendor.Aws
-          ? setEdgesToConfigure(
-              edgesToConfigure.concat({
-                img: AwsIcon,
-                title: newEdgeName,
-                edgeName: newEdgeName.toLowerCase().replaceAll(' ', ''),
-                content: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-                onConnect: () => setConnectLocation(PreDefinedEdges.Aws),
-                isConnected: edgeData.find(edge => edge.edgeName === newEdgeName.toLowerCase().replaceAll(' ', '')) ? true : false,
-                onUpdate: () => {
-                  setEdgeDataToUpdate(newEdgeName.toLowerCase().replaceAll(' ', ''));
-                  setIsUpdateForm(true);
-                  setConnectLocation(PreDefinedEdges.Aws);
-                },
-              }),
-            )
-          : setEdgesToConfigure(
-              edgesToConfigure.concat({
-                img: MerakiIcon,
-                title: newEdgeName,
-                edgeName: newEdgeName.toLowerCase().replaceAll(' ', ''),
-                content: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-                onConnect: () => setConnectLocation(PreDefinedEdges.Meraki),
-                isConnected: edgeData.find(edge => edge.edgeName === newEdgeName.toLowerCase().replaceAll(' ', '')) ? true : false,
-                onUpdate: () => {
-                  setEdgeDataToUpdate(newEdgeName.toLowerCase().replaceAll(' ', ''));
-                  setIsUpdateForm(true);
-                  setConnectLocation(PreDefinedEdges.Meraki);
-                },
-              }),
-            );
-      } else {
-        const filteredEdges = edgesToConfigure.filter(edge => edge.edgeName !== PreDefinedEdges.Aws && edge.edgeName !== PreDefinedEdges.Meraki);
-        setEdgesToConfigure([
-          {
-            img: AwsIcon,
-            title: 'AWS',
-            edgeName: PreDefinedEdges.Aws,
-            content: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-            onConnect: () => setConnectLocation(PreDefinedEdges.Aws),
-            isConnected: edgeData.find(edge => edge.edgeName === PreDefinedEdges.Aws) ? true : false,
-            onUpdate: () => {
-              setEdgeDataToUpdate(PreDefinedEdges.Aws);
-              setIsUpdateForm(true);
-              setConnectLocation(PreDefinedEdges.Aws);
-            },
-          },
-          {
-            img: MerakiIcon,
-            title: 'Cisco Meraki',
-            edgeName: PreDefinedEdges.Meraki,
-            content: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-            onConnect: () => setConnectLocation(PreDefinedEdges.Meraki),
-            isConnected: edgeData.find(edge => edge.edgeName === PreDefinedEdges.Meraki) ? true : false,
-            onUpdate: () => {
-              setEdgeDataToUpdate(PreDefinedEdges.Meraki);
-              setIsUpdateForm(true);
-              setConnectLocation(PreDefinedEdges.Meraki);
-            },
-          },
-          ...filteredEdges,
-        ]);
-      }
-    }
-  }, [edgeData]);
-
   const toggleAwsSecretVisibility = () => setShowAwsSecret(!showAwsSecret);
 
   const setEdgeDataToUpdate = (edgeName: string) => {
-    const selectedEdge = edgeData.find(edge => edge.edgeName === edgeName);
+    const selectedEdge = policyControllers.find(edge => edge.name === edgeName);
     if (selectedEdge.vendor === PolicyVendor.Aws) {
       setAwsUsername(selectedEdge.name);
-      setAwsAccessKey(selectedEdge.accessKey);
-      setAwsRegions(selectedEdge.regions);
-      setAwsSecret(selectedEdge.secret);
-      setIsAwsFlowLogEnabled(selectedEdge.isLogEnabled);
+      setAwsAccessKey(selectedEdge.awsPol.accessKey);
+      setAwsRegions(selectedEdge.awsPol.regions);
+      setAwsSecret(selectedEdge.awsPol.secret);
+      setIsAwsFlowLogEnabled(selectedEdge.awsPol.flowlog_pol?.enable ? FlowLogToggle.enabled : FlowLogToggle.disabled);
     } else {
       setMerakiName(selectedEdge.name);
-      setMerakiApiKey(selectedEdge.apiKey);
+      setMerakiApiKey(selectedEdge.merakiPol.apiKey);
       setMerakiDescription(selectedEdge.description);
-      setIsMerakiSysLogEnabled(selectedEdge.isLogEnabled);
+      setIsMerakiSysLogEnabled(selectedEdge.merakiPol.flowlog_pol?.enable_syslog ? FlowLogToggle.enabled : FlowLogToggle.disabled);
     }
   };
 
@@ -424,23 +356,12 @@ const SignUpPage: React.FC = () => {
   };
 
   const onAwsFormSubmit = async (edgeName: string) => {
-    setEdgeData(
-      edgeData.concat({
-        edgeName: edgeName,
-        name: awsUsername,
-        accessKey: awsAccessKey,
-        secret: awsSecret,
-        regions: awsRegions,
-        isLogEnabled: isAwsFlowLogEnabled,
-        vendor: PolicyVendor.Aws,
-      }),
-    );
-
     try {
       const policyResponse = await apiClient.postPolicyController({
         controller: {
           name: edgeName,
           vendor: PolicyVendor.Aws,
+          description: newEdgeDescription,
           awsPol: {
             username: awsUsername,
             accessKey: awsAccessKey,
@@ -452,6 +373,7 @@ const SignUpPage: React.FC = () => {
           },
         },
       });
+      getPolicyControllers();
       clearAwsForm();
       toast.success('Connected Successfully!');
       if (progress < 100) {
@@ -467,21 +389,12 @@ const SignUpPage: React.FC = () => {
   };
 
   const onMerakiFormSubmit = async (edgeName: string) => {
-    setEdgeData(
-      edgeData.concat({
-        edgeName: edgeName,
-        name: merakiName,
-        apiKey: merakiApiKey,
-        description: merakiDescription,
-        isLogEnabled: isMerakiSysLogEnabled,
-        vendor: PolicyVendor.Meraki,
-      }),
-    );
     try {
       const policyResponse = await apiClient.postPolicyController({
         controller: {
           name: edgeName,
           vendor: PolicyVendor.Meraki,
+          description: merakiDescription,
           merakiPol: {
             apiKey: merakiApiKey,
             flowlog_pol: {
@@ -490,6 +403,7 @@ const SignUpPage: React.FC = () => {
           },
         },
       });
+      getPolicyControllers();
       clearMerakiForm();
       toast.success('Connected Successfully!');
       if (progress < 100) {
@@ -512,6 +426,7 @@ const SignUpPage: React.FC = () => {
         controller: {
           name: edgeName,
           vendor: PolicyVendor.Aws,
+          description: awsEdge?.description,
           awsPol: {
             username: awsUsername,
             accessKey: awsAccessKey,
@@ -523,6 +438,7 @@ const SignUpPage: React.FC = () => {
           },
         },
       });
+      getPolicyControllers();
       clearAwsForm();
       toast.success('Updated Successfully!');
       setConnectLocation('');
@@ -542,6 +458,7 @@ const SignUpPage: React.FC = () => {
         controller: {
           name: edgeName,
           vendor: PolicyVendor.Meraki,
+          description: merakiDescription,
           merakiPol: {
             apiKey: merakiApiKey,
             flowlog_pol: {
@@ -550,6 +467,7 @@ const SignUpPage: React.FC = () => {
           },
         },
       });
+      getPolicyControllers();
       clearMerakiForm();
       toast.success('Updated Successfully!');
       if (progress < 100) {
@@ -583,12 +501,12 @@ const SignUpPage: React.FC = () => {
       },
     });
 
-  return isLoading ? (
+  return isEdgesConnected ? (
+    <Redirect to={ROUTE.app} />
+  ) : isLoading ? (
     <div style={{ marginTop: '50vh' }}>
       <LoadingIndicator />
     </div>
-  ) : isEdgesConnected ? (
-    <Redirect to={ROUTE.app} />
   ) : (
     <UnAuthLayout article={<TryDemo onTryDemo={onTryDemo} />}>
       <div className={classes.topBar}>
