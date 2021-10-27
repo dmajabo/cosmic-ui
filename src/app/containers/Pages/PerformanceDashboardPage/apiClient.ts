@@ -1,6 +1,17 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { IdToken } from '@auth0/auth0-react';
-import { CreateSLATestRequest, CreateSLATestResponse, DeleteSLATestResponse, GetOrganizationResponse, GetSLATestResponse, HeatMapResponse, SLATestMetricsResponse } from './SharedTypes';
+import {
+  CreateSLATestRequest,
+  CreateSLATestResponse,
+  DeleteSLATestResponse,
+  GetOrganizationResponse,
+  GetSLATestResponse,
+  HeatMapResponse,
+  SLATest,
+  SLATestMetricsResponse,
+  UpdateSLATestRequest,
+  UpdateSLATestResponse,
+} from './SharedTypes';
 
 const BASE_URL = process.env.REACT_APP_API_ENDPOINT_PRODUCTION;
 
@@ -14,6 +25,8 @@ interface ApiClient {
   readonly getHeatmapPacketLoss: (sourceNw: string, destination: string, startTime: string, testId: string) => Promise<HeatMapResponse>;
   readonly getHeatmapLatency: (sourceNw: string, destination: string, startTime: string, testId: string) => Promise<HeatMapResponse>;
   readonly getGoodputMetrics: (deviceId: string, destination: string, startTime: string, testId: string) => Promise<SLATestMetricsResponse>;
+  readonly getSLATest: (testId: string) => Promise<SLATest>;
+  readonly updateSLATest: (testData: UpdateSLATestRequest) => Promise<UpdateSLATestResponse>;
 }
 
 const PATHS = Object.freeze({
@@ -26,6 +39,8 @@ const PATHS = Object.freeze({
   HEATMAP_PACKET_LOSS: (sourceNw: string, destination: string) => `/telemetry/api/v1/metrics/source_nw/${sourceNw}/device/destination/${destination}/avgpacketloss`,
   HEATMAP_LATENCY: (sourceNw: string, destination: string) => `/telemetry/api/v1/metrics/source_nw/${sourceNw}/device/destination/${destination}/avglatency`,
   GET_GOODPUT: (deviceId: string, destination: string) => `/telemetry/api/v1/metrics/device/${deviceId}/destination/${destination}/goodput`,
+  GET_SLA_TEST: (testId: string) => `/policy/api/v1/policy/performance/sla-tests/${testId}`,
+  UPDATE_SLA_TEST: (testId: string) => `/policy/api/v1/policy/performance/sla-tests/${testId}`,
 });
 
 export const createApiClient = (token: IdToken): ApiClient => {
@@ -190,6 +205,42 @@ export const createApiClient = (token: IdToken): ApiClient => {
     }
   }
 
+  async function getSLATest(testId: string): Promise<SLATest> {
+    try {
+      const response = await axios.get<SLATest>(PATHS.GET_SLA_TEST(testId), {
+        ...config,
+        params: {
+          include_metrics: true,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      return {
+        testId: '',
+        name: '',
+        sourceOrgId: '',
+        sourceNwExtId: '',
+        destination: '',
+        interface: '',
+        description: '',
+      };
+    }
+  }
+
+  async function updateSLATest(testData: UpdateSLATestRequest): Promise<UpdateSLATestResponse> {
+    try {
+      const response = await axios.put<UpdateSLATestResponse>(PATHS.UPDATE_SLA_TEST(testData.sla_test.testId), testData, {
+        ...config,
+        params: {
+          test_id: testData.sla_test.testId,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      return {};
+    }
+  }
+
   return {
     getOrganizations,
     getSLATests,
@@ -200,5 +251,7 @@ export const createApiClient = (token: IdToken): ApiClient => {
     getHeatmapPacketLoss,
     getHeatmapLatency,
     getGoodputMetrics,
+    getSLATest,
+    updateSLATest,
   };
 };

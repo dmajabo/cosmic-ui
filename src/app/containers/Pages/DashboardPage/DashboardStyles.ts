@@ -108,6 +108,56 @@ export const DashboardStyles = makeStyles(
       mapHeight: {
         height: '375px',
       },
+      demoPopupContainer: {
+        backgroundColor: '#FFFFFF',
+        width: 543,
+        padding: 70,
+      },
+      demoIconContainer: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        paddingRight: 80,
+        paddingLeft: 80,
+      },
+      demoAwsIcon: {
+        width: 80,
+      },
+      demoMerakiIcon: {
+        width: 85,
+      },
+      demoPopupTitle: {
+        color: '#05143A',
+        fontWeight: 700,
+        fontSize: 34,
+        textAlign: 'center',
+        width: 405,
+        marginTop: 30,
+      },
+      demoPopupSubtitle: {
+        color: '#848DA3',
+        fontWeight: 400,
+        fontSize: 20,
+        textAlign: 'center',
+        width: 405,
+        marginTop: 20,
+      },
+      demoPopUpButtonContainer: {
+        display: 'flex',
+        justifyContent: 'center',
+        marginTop: 40,
+      },
+      demoPopupButton: {
+        width: 200,
+        height: 60,
+        backgroundColor: '#437FEC',
+        color: 'white',
+        borderRadius: 6,
+        fontSize: 12,
+        fontWeight: 700,
+        paddingTop: 20,
+        paddingLeft: 60,
+        cursor: 'pointer',
+      },
     }),
   {
     index: 1,

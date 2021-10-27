@@ -7,13 +7,21 @@ interface ConnectFormProps {
   readonly title: string;
   readonly img: string;
   readonly subtitle: string;
+  readonly edgeName: string;
   readonly steps: StepData[];
   readonly isFormFilled: boolean;
-  readonly onFormSubmit: () => void;
+  readonly isUpdateForm: boolean;
+  readonly onFormSubmit: (edgeTitle: string) => void;
+  readonly onFormUpdate: (edgeTitle: string) => void;
 }
 
-export const ConnectSourceForm: React.FC<ConnectFormProps> = ({ title, img, subtitle, steps, isFormFilled, onFormSubmit }) => {
+export const ConnectSourceForm: React.FC<ConnectFormProps> = ({ title, img, subtitle, edgeName, steps, isFormFilled, isUpdateForm, onFormSubmit, onFormUpdate }) => {
   const classes = SignUpStyles();
+
+  const onSourceFormSubmit = () => onFormSubmit(edgeName);
+
+  const onSourceFormUpdate = () => onFormUpdate(edgeName);
+
   return (
     <div className={classes.connectFormContainer}>
       <div className={classes.titleContainer}>
@@ -26,7 +34,7 @@ export const ConnectSourceForm: React.FC<ConnectFormProps> = ({ title, img, subt
           <div className={classes.connectFlexContainer}>
             <div className={classes.stepCountBox}>{index + 1}</div>
             <div>
-              <div className={classes.stepTitle}>{step.title}</div>
+              <div className={classes.stepTitle}>{`Step ${index + 1}: ${step.title}`}</div>
               <div>{step.content}</div>
             </div>
           </div>
@@ -41,8 +49,8 @@ export const ConnectSourceForm: React.FC<ConnectFormProps> = ({ title, img, subt
           <div className={classes.skipSetupText}>You can finish it in any time.</div>
         </div>
         <>
-          <button className={isFormFilled ? classes.connectSourceFormButton : classes.startButton} onClick={onFormSubmit} disabled={!isFormFilled}>
-            CONNECT
+          <button className={isFormFilled ? classes.connectSourceFormButton : classes.startButton} onClick={isUpdateForm ? onSourceFormUpdate : onSourceFormSubmit} disabled={!isFormFilled}>
+            {isUpdateForm ? 'UPDATE' : 'CONNECT'}
           </button>
         </>
       </div>

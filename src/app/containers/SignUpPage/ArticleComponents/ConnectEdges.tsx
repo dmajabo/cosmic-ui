@@ -9,29 +9,40 @@ interface ConnectEdgesProps {
   readonly edgeBoxArray: EdgeBoxProps[];
   readonly isAppReadyToUse: boolean;
   readonly onAppReadyToUse: () => void;
+  readonly onAddNewEdge: () => void;
+  readonly onSkipSetup: () => void;
 }
 
-export const ConnectEdges: React.FC<ConnectEdgesProps> = ({ edgeBoxArray, isAppReadyToUse, onAppReadyToUse }) => {
+export const ConnectEdges: React.FC<ConnectEdgesProps> = ({ onSkipSetup, edgeBoxArray, isAppReadyToUse, onAppReadyToUse, onAddNewEdge }) => {
   const classes = SignUpStyles();
 
   return (
-    <div>
+    <div className={classes.connectEdgesContainer}>
       <div className={classes.title}>Connect To Your Edges</div>
       <div className={classes.subTitle}>
         In a professional context it often happens that private or corporate clients corder a publication to be made and presented with the actual content still not being ready.
       </div>
       <div className={classes.edgeBoxContainer}>
         {edgeBoxArray.map(edgeBox => (
-          <EdgeBox key={edgeBox.title} img={edgeBox.img} title={edgeBox.title} content={edgeBox.content} onClick={edgeBox.onClick} isConnected={edgeBox.isConnected} />
+          <EdgeBox
+            edgeName={edgeBox.edgeName}
+            title={edgeBox.title}
+            key={edgeBox.edgeName}
+            img={edgeBox.img}
+            content={edgeBox.content}
+            onUpdate={edgeBox.onUpdate}
+            onConnect={edgeBox.onConnect}
+            isConnected={edgeBox.isConnected}
+          />
         ))}
-        <div className={classes.newEdgeButton}>
+        <div className={classes.newEdgeButton} onClick={onAddNewEdge}>
           ADD NEW EDGE
           <img className={classes.whiteArrow} src={AddIcon} alt="add new edge" />
         </div>
       </div>
       <div className={classes.flexContainer}>
         <div>
-          <div className={classes.skipSetupButton}>
+          <div className={classes.skipSetupButton} onClick={onSkipSetup}>
             SKIP SETUP
             <img className={classes.whiteArrow} src={SkipIcon} alt="skip setup" />
           </div>
@@ -39,7 +50,7 @@ export const ConnectEdges: React.FC<ConnectEdgesProps> = ({ edgeBoxArray, isAppR
         </div>
         <>
           <button className={isAppReadyToUse ? classes.connectSourceFormButton : classes.startButton} onClick={onAppReadyToUse} disabled={!isAppReadyToUse}>
-            START WITH OKULIS
+            <span className={classes.buttonText}>START WITH OKULIS</span>
           </button>
         </>
       </div>
