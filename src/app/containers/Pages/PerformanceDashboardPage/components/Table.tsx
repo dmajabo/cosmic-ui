@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { usePagination, useRowSelect, useSortBy, useTable } from 'react-table';
 import styled from 'styled-components';
 import { PerformanceDashboardStyles } from '../PerformanceDashboardStyles';
-import { Column } from '../SharedTypes';
+import { Column } from 'lib/api/http/SharedTypes';
 import IndeterminateCheckbox from './IndeterminateCheckbox';
 import SortIcon from '../icons/sort.svg';
 

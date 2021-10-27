@@ -6,7 +6,7 @@ import ColumnsIcon from '../icons/columns.svg';
 import FilterIcon from '../icons/filter.svg';
 import Table, { Data } from './Table';
 import { CreateSLATest } from './CreateSLATest';
-import { Organization, Column, FinalTableData, SLATest, UpdateSLATestRequest } from '../SharedTypes';
+import { Organization, Column, FinalTableData, SLATest, UpdateSLATestRequest } from 'lib/api/http/SharedTypes';
 import { PacketLoss } from './PacketLoss';
 import { Latency } from './Latency';
 import Select from 'react-select';
@@ -14,7 +14,7 @@ import AverageQoe from './AverageQoe';
 import { Goodput } from './Goodput';
 import { MetricTabValue } from '../../DashboardPage/enum/MetricTabValue';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
-import { createApiClient } from '../apiClient';
+import { createApiClient } from 'lib/api/http/apiClient';
 
 interface SLATestListProps {
   readonly finalTableData: FinalTableData[];
