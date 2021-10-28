@@ -1,116 +1,121 @@
 import * as d3 from 'd3';
-import { sankeyCircular, sankeyCenter } from 'd3-sankey-circular';
-import { ISankeyData } from 'lib/api/ApiModels/Sessions/apiModel';
+import { sankey, sankeyLinkHorizontal } from 'd3-sankey';
+import { ISankeyData, SankeyNodeType } from 'lib/api/ApiModels/Sessions/apiModel';
 import { jsonClone } from 'lib/helpers/cloneHelper';
 
-// enum SankeyNodeType {
-//   SANKEY_NETWORK = 'SANKEY_APPLICATION',
-//   SANKEY_DESTINATION = 'SANKEY_DESTINATION',
-//   SANKEY_APPLICATION = 'SANKEY_APPLICATION',
-// }
 export const createSankeyChart = (id: string, data: ISankeyData) => {
-  if (!data) return;
-  const _data = jsonClone({ nodes: data.nodes, links: data.links });
-  // const nodesMap = new Map();
-  // _links.forEach(link => {
-  //   const _snode = data.nodes.find(it => link.source === it.node || link.target === it.node);
-  //   const _tnode = data.nodes.find(it => link.target === it.node);
-  //   if (_snode && !nodesMap.has(`${_snode.node}`)) {
-  //     nodesMap.set(`${_snode.node}`, _snode);
-  //   }
-  //   if (_tnode && !nodesMap.has(`${_tnode.node}`)) {
-  //     nodesMap.set(`${_tnode.node}`, _tnode);
-  //   }
-  // });
-  // const _nodes = Array.from(nodesMap, ([name, value]) => ({ ...value }));
+  if (!data || !data.links || !data.nodes || !data.links.length || !data.nodes.length) return;
+  const _data = jsonClone(data);
   const container = d3.select(`#${id}`);
-  container.select('.sankeyChartContainerLinks').selectAll('*').remove();
-  container.select('.sankeyChartContainerNodes').selectAll('*').remove();
+  container.select(`#sankeyHeader`).attr('opacity', 1);
+  container.select('#sankeyChartContainerLinks').selectAll('*').remove();
+  container.select('#sankeyChartContainerNodes').selectAll('*').remove();
   const size = container.node().getBoundingClientRect();
-  container.attr('viewBox', `0 0 ${size.width} ${size.height}`);
+
   const rootG = container.select('#sankeyChartContainerRoot');
-  const _sankey = sankeyCircular()
-    .nodeWidth(180)
-    .nodePadding(10)
-    .nodePaddingRatio(0.7)
+  const _sankey = sankey()
     .nodeId(d => d.node)
-    .nodeAlign(sankeyCenter)
     .extent([
       [1, 1],
-      [size.width - 1, size.height - 1],
+      [size.width - 60, size.height - 82],
     ])
-    .size([size.width, size.height])
-    .iterations(32)
-    .circularLinkGap(2);
+    .nodePadding(10)
+    .size([size.width - 60, size.height - 82])
+    .iterations(32);
   _sankey(_data);
-  console.log(_data);
   createLinks(rootG, _data.links);
-  createNodes(rootG, _data.nodes, _sankey);
+  createNodes(rootG, _data.nodes);
 };
 
 const createLinks = (g: any, links: any[]) => {
-  // const _linksG = g.select('#sankeyChartContainerLinks');
-  // const link = _linksG.selectAll('.link').data(links).enter();
-  // link
-  //   .append('path')
-  //   .attr('class', 'link')
-  //   .attr('fill', 'none')
-  //   .attr('stroke', '#52984E')
-  //   .attr('stroke-opacity', '0.4')
-  //   .attr('d', sankeyLinkHorizontal())
-  //   .attr('stroke-width', d => {
-  //     const target = d.target.y1 - d.target.y0;
-  //     const source = d.source.y1 - d.source.y0;
-  //     return Math.max(0.5, source - target) + 'px';
-  //   });
+  const _linksG = g.select('#sankeyChartContainerLinks');
+  const link = _linksG.selectAll('.link').data(links).enter();
+  const _pathEl = link.append('path').classed('link', true);
+  _pathEl.attr('data-source', d => d.source.node).attr('data-target', d => d.target.node);
+  _pathEl.append('title').text(d => d.value);
+  _pathEl
+    .attr('fill', 'none')
+    .attr('stroke', d => {
+      if (d.target.type === SankeyNodeType.SANKEY_APPLICATION) return '#F69442';
+      if (d.target.type === SankeyNodeType.SANKEY_DESTINATION) return 'var(--_successColor)';
+      return 'grey';
+    })
+    .attr('d', it => {
+      let _link = sankeyLinkHorizontal()
+        .source(d => [d.source.x1, d.y0])
+        .target(d => [d.target.x0, d.y1]);
+      return _link(it);
+    })
+
+    .attr('stroke-width', d => Math.max(1, d.width));
+  _pathEl.on('mouseenter', onRaise);
+
+  function onRaise(this: any, e) {
+    d3.select(this).raise();
+  }
 };
 
-const createNodes = (g: any, nodes: any[], d3Sankey: any) => {
+const createNodes = (g: any, nodes: any[]) => {
   const _nodesG = g.select('#sankeyChartContainerNodes');
   const node = _nodesG.selectAll('.node').data(nodes).enter();
+  const nodeG = node.append('g').attr('class', 'node');
+  buildNode(nodeG);
+};
 
-  const nodeG = node
-    .append('g')
-    .attr('class', 'node')
-    .attr('transform', d => {
-      console.log(d);
-      return 'translate(' + d.x0 + ',' + d.y0 + ')';
-    });
-
-  const rect = nodeG.append('rect');
-  const text = nodeG.append('text');
-  const type = nodeG.append('text');
+const buildNode = (nodeContainer: any) => {
+  const rect = nodeContainer.append('rect');
+  const textG = nodeContainer.append('g');
 
   rect
-    .attr('width', d3Sankey.nodeWidth())
-    .attr('height', d => d.y1 - d.y0)
-    .attr('width', d => d.x1 - d.x0)
+    .attr('width', 24)
+    .attr('height', d => Math.max(1, d.y1 - d.y0))
     .attr('rx', 4)
     .attr('ry', 4)
-    .style('fill', '#F3F6FC')
-    .style('stroke', '#F3F6FC')
+    .attr('fill', d => {
+      if (d.type === SankeyNodeType.SANKEY_DESTINATION) return '#52984E';
+      if (d.type === SankeyNodeType.SANKEY_APPLICATION) return '#F69442';
+      return 'var(--_pButtonBg)';
+    })
+    .attr('stroke', '#F3F6FC')
     .append('title')
     .text(d => {
-      return d.name + '\n' + d.value;
+      return d.name;
     });
-  text
-    .attr('text-anchor', d => (d.type && d.type === 1 ? 'middle' : 'start'))
-    .attr('font-size', '14')
-    .attr('font-style', 'normal')
-    .attr('font-weight', '500')
-    .attr('fill', 'var(--_primaryColor)')
-    .attr('transform', null)
-    .attr('y', d => (d.y1 - d.y0) / 2 + 6)
-    .attr('x', d => (d.type && d.type === 1 ? d3Sankey.nodeWidth() / 2 : 30))
+  textG
+    .append('text')
+    .attr('class', d => {
+      if (d.type === SankeyNodeType.SANKEY_NETWORK) return 'networkNode';
+      if (d.type === SankeyNodeType.SANKEY_DESTINATION) return 'destinationNode';
+      if (d.type === SankeyNodeType.SANKEY_APPLICATION) return 'applicationNode';
+      return null;
+    })
+    .attr('text-anchor', d => {
+      if (d.type === SankeyNodeType.SANKEY_NETWORK) return 'start';
+      if (d.type === SankeyNodeType.SANKEY_DESTINATION) return 'end';
+      if (d.type === SankeyNodeType.SANKEY_APPLICATION) return 'end';
+      return 'start';
+    })
+    .attr('y', d => {
+      return (d.y1 - d.y0) / 2;
+    })
+    .attr('dy', '2')
+    .attr('x', d => {
+      if (d.type === SankeyNodeType.SANKEY_NETWORK) return 28;
+      if (d.type === SankeyNodeType.SANKEY_DESTINATION) return -4;
+      if (d.type === SankeyNodeType.SANKEY_APPLICATION) return -4;
+      return 0;
+    })
     .text(d => d.name);
-  type
-    .attr('text-anchor', d => (d.type && d.type === 1 ? 'middle' : 'start'))
-    .attr('font-size', '14')
-    .attr('font-style', 'normal')
-    .attr('font-weight', '500')
-    .attr('fill', 'var(--_primaryColor)')
-    .attr('transform', null)
-    .attr('y', d => (d.y1 - d.y0) / 2 + 26)
-    .attr('x', d => (d.type && d.type === 1 ? d3Sankey.nodeWidth() / 2 : 30))
-    .text(d => d.type);
+  nodeContainer.attr('transform', d => `translate(${d.x0}, ${d.y0})`);
+  nodeContainer.on('mouseenter', (e, d) => onHighLightLink(e, d));
+  nodeContainer.on('mouseleave', (e, d) => onUnHighLightLink(e, d));
+
+  function onHighLightLink(e, d) {
+    d3.selectAll(`path[data-source='${d.node}']`).style('opacity', 0.6);
+    d3.selectAll(`path[data-target='${d.node}']`).style('opacity', 0.6);
+  }
+  function onUnHighLightLink(e, d) {
+    d3.selectAll(`path[data-source='${d.node}']`).style('opacity', null);
+    d3.selectAll(`path[data-target='${d.node}']`).style('opacity', null);
+  }
 };

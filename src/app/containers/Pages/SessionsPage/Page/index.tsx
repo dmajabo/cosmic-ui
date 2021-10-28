@@ -7,7 +7,7 @@ import { useSessionsDataContext } from 'lib/hooks/Sessions/useSessionsDataContex
 import { PageWrapperStyles, TabsWrapperStyles } from '../../Shared/styles';
 import OverviewPage from '../OverviewPage';
 import TabPanel from 'app/components/Tabs/TabPanel';
-import TrendsPage from '../TrendsPage';
+// import TrendsPage from '../TrendsPage';
 import SessionPage from '../SessionPage';
 
 interface IProps {}
@@ -43,10 +43,10 @@ const Page: React.FC<IProps> = (props: IProps) => {
       <TabPanel value={sessions.selectedTab.index} index={SESSIONS_TABS[0].index}>
         <OverviewPage />
       </TabPanel>
-      <TabPanel value={sessions.selectedTab.index} index={SESSIONS_TABS[1].index}>
+      {/* <TabPanel value={sessions.selectedTab.index} index={SESSIONS_TABS[1].index}>
         <TrendsPage />
-      </TabPanel>
-      <TabPanel value={sessions.selectedTab.index} index={SESSIONS_TABS[2].index}>
+      </TabPanel> */}
+      <TabPanel value={sessions.selectedTab.index} index={SESSIONS_TABS[1].index}>
         <SessionPage />
       </TabPanel>
     </PageWrapperStyles>

@@ -37,7 +37,6 @@ export const ConnectEdges: React.FC<ConnectEdgesProps> = ({ edgeBoxArray, isAppR
         </div>
       </div>
       <div className={classes.flexContainer}>
-        <div></div>
         <>
           <button className={isAppReadyToUse ? classes.connectSourceFormButton : classes.startButton} onClick={onAppReadyToUse} disabled={!isAppReadyToUse}>
             <span className={classes.buttonText}>START WITH OKULIS</span>

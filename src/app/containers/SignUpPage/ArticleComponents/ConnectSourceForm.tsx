@@ -40,7 +40,6 @@ export const ConnectSourceForm: React.FC<ConnectFormProps> = ({ title, img, subt
         </div>
       ))}
       <div className={classes.flexContainer}>
-        <div></div>
         <>
           <button className={isFormFilled ? classes.connectSourceFormButton : classes.startButton} onClick={isUpdateForm ? onSourceFormUpdate : onSourceFormSubmit} disabled={!isFormFilled}>
             {isUpdateForm ? 'UPDATE' : 'CONNECT'}

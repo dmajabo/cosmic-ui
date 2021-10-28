@@ -63,16 +63,21 @@ export const ContentWrapper = styled.div`
   padding: 30px;
 `;
 
-export const ChartWrapper = styled.div`
+interface ChartProps {
+  height?: string;
+  padding?: string;
+}
+export const ChartWrapper = styled.div<ChartProps>`
+  display: flex;
   position: relative;
   background: var(--_chartBg);
   border: 1px solid;
   border-color: var(--_primaryButtonBorder);
   border-radius: 6px;
   margin-bottom: 30px;
-  padding: 36px 30px 30px 30px;
+  padding: ${props => props.padding || '36px 30px 30px 30px'};
   overflow: hidden;
-  height: 480px;
+  height: ${props => props.height || '480px'};
 `;
 
 export const ChartLabel = styled.div`

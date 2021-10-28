@@ -3,7 +3,7 @@ import { PolicyController } from 'lib/api/http/SharedTypes';
 import { UserContext, UserContextState } from './UserProvider';
 import { createApiClient } from 'lib/api/http/apiClient';
 import LoadingIndicator from 'app/components/Loading';
-import SignUpPage from 'app/containers/SignUpPage';
+import AddEdges from 'app/containers/SignUpPage';
 import { Redirect } from 'react-router';
 import { ROUTE } from './model';
 
@@ -33,6 +33,6 @@ export const UserRedirect: React.FC = () => {
   policyControllers.length > 2 ? (
     <Redirect to={ROUTE.app} />
   ) : (
-    <SignUpPage />
+    <AddEdges />
   );
 };
