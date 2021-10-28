@@ -11,6 +11,7 @@ interface HeatmapProps {
   readonly data: HeatMapData[];
   readonly selectedRows: TestIdToName;
   readonly dataSuffix: string;
+  readonly legendData: LegendData[];
 }
 
 export interface HeatmapMetrics {
@@ -25,15 +26,10 @@ export interface LegendData {
 
 const LATENCY_SUFFIX = 'ms';
 
-const MAX_LEGEND_COUNT = 5;
-
-const LEGEND_COLOURS = ['#52984E', '#FED0AB', '#FFC568', '#F69442', '#DC4545'];
-
-const Heatmap: React.FC<HeatmapProps> = ({ data, selectedRows, dataSuffix }) => {
+const Heatmap: React.FC<HeatmapProps> = ({ data, legendData, selectedRows, dataSuffix }) => {
   const [tests, setTests] = useState<string[]>([]);
   const [devices, setDevices] = useState<string[]>([]);
   const [heatMapData, setHeatMapData] = useState<HeatmapMetrics>({});
-  const [legendData, setLegendData] = useState<LegendData[]>([]);
 
   const classes = PerformanceDashboardStyles();
 
@@ -58,20 +54,6 @@ const Heatmap: React.FC<HeatmapProps> = ({ data, selectedRows, dataSuffix }) => 
     setTests(testsId);
     setDevices(uniqueDevices);
     setHeatMapData(heatMapData);
-
-    const maxValue = Math.max(...values);
-    const minValue = 0;
-    const increment = maxValue === minValue ? 0 : (maxValue - minValue) / 5;
-    const legendDataPoints: number[] = [];
-
-    for (let i = 0; i < MAX_LEGEND_COUNT; i++) {
-      i === 0 ? legendDataPoints.push(minValue) : legendDataPoints.push(legendDataPoints[i - 1] + increment);
-    }
-    const legendData: LegendData[] = legendDataPoints.map((point, index) => {
-      return { low: Number(point.toFixed(3)), high: Number((point + increment).toFixed(3)), color: LEGEND_COLOURS[index] };
-    });
-
-    setLegendData(legendData);
   }, []);
 
   return (
