@@ -1,7 +1,7 @@
 import { Grid } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { PerformanceDashboardStyles } from '../PerformanceDashboardStyles';
-import { HeatMapData } from '../SharedTypes';
+import { HeatMapData } from 'lib/api/http/SharedTypes';
 import { GridRow } from './GridRow';
 import LegendBox from './LegendBox';
 import { TestIdToName } from './PacketLoss';

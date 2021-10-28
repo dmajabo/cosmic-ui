@@ -1,6 +1,6 @@
 import { Typography } from '@material-ui/core';
 import React, { useContext, useEffect, useState } from 'react';
-import { createApiClient } from '../apiClient';
+import { createApiClient } from 'lib/api/http/apiClient';
 import { PerformanceDashboardStyles } from '../PerformanceDashboardStyles';
 import { MetricsLineChart } from './MetricsLineChart';
 import InfoIcon from '../icons/info.svg';
@@ -8,7 +8,7 @@ import LoadingIndicator from '../../../../components/Loading';
 import { MetricKeyValue, TestIdToName } from './PacketLoss';
 import { Data } from './Table';
 import Heatmap from './Heatmap';
-import { HeatMapData } from '../SharedTypes';
+import { HeatMapData } from 'lib/api/http/SharedTypes';
 import { isEmpty } from 'lodash';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 

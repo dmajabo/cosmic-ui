@@ -3,14 +3,14 @@ import React, { useContext, useEffect, useState } from 'react';
 import { CreateSLATest } from './components/CreateSLATest';
 import { PerformanceDashboardStyles } from './PerformanceDashboardStyles';
 import { SLATestList } from './components/SLATestList';
-import { CreateSLATestRequest, FinalTableData, Organization, SLATest, UpdateSLATestRequest } from './SharedTypes';
-import { createApiClient } from './apiClient';
+import { CreateSLATestRequest, FinalTableData, Organization, UpdateSLATestRequest } from 'lib/api/http/SharedTypes';
 import { GetDevicesString, GetSelectedOrganization } from './components/filterFunctions';
 import LoadingIndicator from 'app/components/Loading';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { isEmpty } from 'lodash';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
+import { createApiClient } from 'lib/api/http/apiClient';
 
 interface TabPanelProps {
   children?: React.ReactNode;

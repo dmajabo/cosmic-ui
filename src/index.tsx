@@ -28,13 +28,14 @@ import reportWebVitals from 'reportWebVitals';
 
 // Initialize languages
 import './locales/i18n';
+import { ROUTE } from 'lib/Routes/model';
 
 const store = configureAppStore();
 const MOUNT_NODE = document.getElementById('root') as HTMLElement;
 
 ReactDOM.render(
   <Provider store={store}>
-    <Auth0Provider domain={process.env.REACT_APP_AUTH0_DOMAIN || ''} clientId={process.env.REACT_APP_AUTH0_CLIENT_ID || ''} redirectUri={window.location.origin + '/app'}>
+    <Auth0Provider domain={process.env.REACT_APP_AUTH0_DOMAIN || ''} clientId={process.env.REACT_APP_AUTH0_CLIENT_ID || ''} redirectUri={window.location.origin + ROUTE.signUp}>
       <HelmetProvider>
         <React.StrictMode>
           <App />
