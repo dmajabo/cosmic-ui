@@ -7,7 +7,7 @@ import InfoIcon from '../icons/info.svg';
 import LoadingIndicator from '../../../../components/Loading';
 import { MetricKeyValue, TestIdToName } from './PacketLoss';
 import { Data } from './Table';
-import Heatmap from './Heatmap';
+import Heatmap, { LegendData } from './Heatmap';
 import { HeatMapData } from 'lib/api/http/SharedTypes';
 import { isEmpty } from 'lodash';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
@@ -19,6 +19,34 @@ interface LatencyProps {
 
 const LATENCY = 'latency';
 const LATENCY_ANOMALY = 'latency_anomaly';
+
+const LATENCY_HEATMAP_LEGEND: LegendData[] = [
+  {
+    low: 0,
+    high: 30,
+    color: '#52984E',
+  },
+  {
+    low: 30,
+    high: 50,
+    color: '#FED0AB',
+  },
+  {
+    low: 50,
+    high: 80,
+    color: '#FFC568',
+  },
+  {
+    low: 80,
+    high: 120,
+    color: '#F69442',
+  },
+  {
+    low: 120,
+    high: Infinity,
+    color: '#DC4545',
+  },
+];
 
 export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange }) => {
   const classes = PerformanceDashboardStyles();
@@ -113,7 +141,7 @@ export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange }) => 
       <div className={classes.lineChartContainer}>
         {!isEmpty(selectedRows) ? (
           heatMapLatency.length === selectedRows.length ? (
-            <Heatmap data={heatMapLatency} selectedRows={testIdToName} dataSuffix="ms" />
+            <Heatmap data={heatMapLatency} selectedRows={testIdToName} legendData={LATENCY_HEATMAP_LEGEND} dataSuffix="ms" />
           ) : (
             <div className={classes.noChartContainer}>
               <LoadingIndicator />
