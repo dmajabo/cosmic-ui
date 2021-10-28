@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import UnAuthLayout from 'app/components/Basic/UnAuthLayout';
 import { SignUpWrapper } from './styles';
 import TryDemo from './ArticleComponents/TryDemo';
@@ -14,14 +14,15 @@ import ReactSelect, { components } from 'react-select';
 import { CustomRadio } from './ArticleComponents/CustomRadio';
 import { isEmpty } from 'lodash';
 import { IntlProvider } from 'react-intl';
-import { createApiClient } from './apiClient';
 import { Redirect, useHistory } from 'react-router';
 import { ROUTE } from 'lib/Routes/model';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { PolicyController } from './SharedTypes';
+import { PolicyController } from 'lib/api/http/SharedTypes';
 import LoadingIndicator from 'app/components/Loading';
 import { AddNewEdge } from './ArticleComponents/AddNewEdge';
+import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
+import { createApiClient } from 'lib/api/http/apiClient';
 
 const Option = props => {
   const classes = SignUpStyles();
@@ -84,7 +85,7 @@ const dropdownStyle = {
   }),
 };
 
-const SignUpPage: React.FC = () => {
+const AddEdges: React.FC = () => {
   const [progress, setProgress] = useState<number>(50);
   const [connectLocation, setConnectLocation] = useState<string>('');
   const [isAppReadyToUse, setIsAppReadyToUse] = useState<boolean>(false);
@@ -115,7 +116,8 @@ const SignUpPage: React.FC = () => {
   const [isMerakiSysLogEnabled, setIsMerakiSysLogEnabled] = useState<string>(FlowLogToggle.enabled);
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
-  const apiClient = createApiClient();
+  const userContext = useContext<UserContextState>(UserContext);
+  const apiClient = createApiClient(userContext.idToken!);
 
   const isFormFilled = () => {
     const isAwsFormFilled = awsUsername && awsAccessKey && awsSecret && isAwsFlowLogEnabled && !isEmpty(awsRegions) ? true : false;
@@ -190,10 +192,7 @@ const SignUpPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (!isAppReadyToUse) {
-      //TODO: Change policyControllers.length > 0 in final implementation
-      policyControllers.length > 2 ? setIsEdgesConnected(true) : edgesToConfigure.length >= 2 ? setIsLoading(false) : setIsLoading(true);
-    }
+    edgesToConfigure.length >= 2 ? setIsLoading(false) : setIsLoading(true);
     setUpdatedEdgesToConfigure();
   }, [policyControllers]);
 
@@ -574,4 +573,4 @@ const SignUpPage: React.FC = () => {
   );
 };
 
-export default SignUpPage;
+export default AddEdges;

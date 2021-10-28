@@ -1,4 +1,4 @@
-import { Organization } from '../SharedTypes';
+import { Organization } from 'lib/api/http/SharedTypes';
 import { isEmpty } from 'lodash';
 
 export const GetSelectedOrganization = (organizations: Organization[], orgId: string) => {
