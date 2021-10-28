@@ -26,8 +26,8 @@ pipeline {
                 sh "echo REACT_APP_API_ENDPOINT_PRODUCTION=${env.REACT_APP_API_ENDPOINT_PRODUCTION} >> ${env.WORKSPACE}/.env.local"
                 sh "echo REACT_APP_AUTH0_DOMAIN=${env.REACT_APP_AUTH0_DOMAIN} >> ${env.WORKSPACE}/.env.local"
                 sh "echo REACT_APP_AUTH0_CLIENT_ID=${env.REACT_APP_AUTH0_CLIENT_ID} >> ${env.WORKSPACE}/.env.local"
-                sh "echo VERSION=0.1.${BUILD_NUMBER}-build >> ${env.WORKSPACE}/.env.local"
-                sh 'echo DEPLOYED_AT=$(date +%s) >> $WORKSPACE/.env.local'
+                sh "echo REACT_APP_VERSION=0.1.${BUILD_NUMBER}-build >> ${env.WORKSPACE}/.env.local"
+                sh 'echo REACT_APP_DEPLOYED_AT=$(date +%s) >> $WORKSPACE/.env.local'
                 sh 'yarn install'
                 sh 'yarn build --prod'
             }
