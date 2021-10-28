@@ -171,7 +171,7 @@ export const SignUpStyles = makeStyles(
       },
       flexContainer: {
         display: 'flex',
-        justifyContent: 'space-between',
+        justifyContent: 'end',
         paddingRight: 15,
         paddingLeft: 15,
         marginTop: 30,

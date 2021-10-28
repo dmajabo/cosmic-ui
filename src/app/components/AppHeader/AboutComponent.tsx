@@ -1,10 +1,24 @@
 import React from 'react';
 import { Container, ItemContainer, ItemTitle, ItemLink, ItemValue } from './AboutStyles';
 import { APP_GENERAL_CONST } from 'lib/constants/general';
+import { format } from 'date-fns';
 
 interface Props {}
 
 const AboutComponent: React.FC<Props> = (props: Props) => {
+  const [version, setVersion] = React.useState<string>('');
+  const [latestSuccessTime, setLatestSuccessTime] = React.useState<any>('');
+
+  React.useEffect(() => {
+    const _v = process.env.REACT_APP_VERSION || null;
+    let _t = process.env.REACT_APP_DEPLOYED_AT + '000' || null;
+    if (_t && Number(_t)) {
+      _t = format(Number(_t), `EEE',' LLL d',' yyyy HH:mm aa`);
+    }
+    setVersion(_v);
+    setLatestSuccessTime(_t);
+  }, []);
+
   return (
     <Container>
       <ItemContainer>
@@ -21,7 +35,9 @@ const AboutComponent: React.FC<Props> = (props: Props) => {
       </ItemContainer>
       <ItemContainer>
         <ItemTitle>Version:</ItemTitle>
-        <ItemValue>1.1.1.1</ItemValue>
+        <ItemValue>
+          {version} {latestSuccessTime ? `(${latestSuccessTime})` : null}
+        </ItemValue>
       </ItemContainer>
     </Container>
   );

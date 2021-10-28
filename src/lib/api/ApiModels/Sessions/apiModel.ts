@@ -2,7 +2,7 @@ import { IBaseEntity } from 'lib/models/general';
 import { AccountVendorTypes } from '../Accounts/apiModel';
 
 export enum SankeyNodeType {
-  SANKEY_NETWORK = 'SANKEY_APPLICATION',
+  SANKEY_NETWORK = 'SANKEY_NETWORK',
   SANKEY_DESTINATION = 'SANKEY_DESTINATION',
   SANKEY_APPLICATION = 'SANKEY_APPLICATION',
 }
@@ -46,6 +46,7 @@ export interface ISankeyData {
   time: Date | string;
   nodes: ISankeyNode[];
   links: ISankeyLink[];
+  order?: string[][];
 }
 export interface ISankeyRes {
   sankey: ISankeyData;
