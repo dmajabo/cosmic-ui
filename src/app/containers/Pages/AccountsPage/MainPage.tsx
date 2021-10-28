@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { ContentWrapper } from './styles/styles';
 import { IModal } from 'lib/models/general';
 import ModalComponent from 'app/components/Modal';
@@ -16,10 +16,12 @@ import { PageWrapperStyles } from '../Shared/styles';
 import { createNewCiscoMerakiAccount, createNewAwsAccount } from 'lib/api/ApiModels/Accounts/newAccount';
 import { getPreparedAccountsRes } from 'lib/api/ApiModels/Accounts/helpers';
 import AccountsEmptyPage from './Components/AccountsEmptyPage';
+import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 interface IProps {}
 
 const MainPage: React.FC<IProps> = (props: IProps) => {
   const { accounts } = useAccountsDataContext();
+  const userContext = useContext<UserContextState>(UserContext);
   const { response, loading, error, onGet } = useGet<IAccountsRes>();
   const [showModal, setShowModal] = React.useState<IModal<IMeraki_Account | IAWS_Account>>({ show: false, dataItem: null, isEditMode: false });
 
@@ -61,7 +63,7 @@ const MainPage: React.FC<IProps> = (props: IProps) => {
   };
 
   const onTryToLoadData = async () => {
-    await onGet(AccountsApi.getAccounts());
+    await onGet(AccountsApi.getAccounts(), userContext.idToken!);
   };
 
   return (

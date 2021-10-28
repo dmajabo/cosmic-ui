@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
 // import mockdata from 'utils/data.json';
 // import mockdataDevices from 'utils/dataDevices.json';
@@ -19,11 +19,13 @@ import WedgePanel from './PanelComponents/NodePanels/WedgePanel';
 import { useGetTopology } from 'lib/api/http/useAxiosHook';
 import { ErrorMessage } from '../Basic/ErrorMessage/ErrorMessage';
 import DevicePanel from './PanelComponents/NodePanels/DevicePanel';
+import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 
 interface IProps {}
 
 const Map: React.FC<IProps> = (props: IProps) => {
   const { topology } = useTopologyDataContext();
+  const userContext = useContext<UserContextState>(UserContext);
   const { response, loading, error, onGetChainData } = useGetTopology<ITopologyDataRes>();
   const [showPanelBar, setShowPanelBar] = React.useState<IPanelBar<TopologyPanelTypes>>({ show: false, type: null });
   const [showMetricksBar, setShowMetricks] = React.useState<IPanelBar<TopologyMetricsPanelTypes>>({ show: false, type: null });
@@ -58,9 +60,9 @@ const Map: React.FC<IProps> = (props: IProps) => {
   };
 
   const onHidePanel = () => {
-    setShowFooter(true);
     const _objPanel = { show: false, type: null };
     setShowPanelBar(_objPanel);
+    setShowFooter(true);
     showPanelRef.current = _objPanel;
     // setTimeout(() => {
     //   const _objPanel = { show: false, type: null };
@@ -84,13 +86,13 @@ const Map: React.FC<IProps> = (props: IProps) => {
     topology.onSetIsDataReadyToShow(DATA_READY_STATE.LOADING);
     const _st = topology.selectedTime || null;
     const param = createTopologyQueryParam(_st);
-    await onGetChainData([TopologyGroupApi.getAllGroups(), TopologyOrganizationApi.getAllOrganizations()], ['groups', 'organizations'], param);
+    await onGetChainData([TopologyGroupApi.getAllGroups(), TopologyOrganizationApi.getAllOrganizations()], ['groups', 'organizations'], userContext.idToken!, param);
   };
 
   const onReloadData = async (startTime: Date | null) => {
     topology.onSetIsDataReadyToShow(DATA_READY_STATE.LOADING);
     const param = createTopologyQueryParam(startTime);
-    await onGetChainData([TopologyGroupApi.getAllGroups(), TopologyOrganizationApi.getAllOrganizations()], ['groups', 'organizations'], param);
+    await onGetChainData([TopologyGroupApi.getAllGroups(), TopologyOrganizationApi.getAllOrganizations()], ['groups', 'organizations'], userContext.idToken!, param);
   };
 
   const onOpenNodePanel = (node: IDeviceNode | IWedgeNode, _type: TopologyMetricsPanelTypes) => {

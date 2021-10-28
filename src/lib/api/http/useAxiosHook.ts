@@ -1,13 +1,14 @@
 import React from 'react';
 import axios, { AxiosError, AxiosResponse } from 'axios';
+import { IdToken } from '@auth0/auth0-react';
 
 axios.defaults.baseURL = process.env.NODE_ENV === 'development' ? process.env.REACT_APP_API_ENDPOINT_DEVELOPMENT : process.env.REACT_APP_API_ENDPOINT_PRODUCTION;
 
-const getHeaders = (params?: Object, token?: string) => {
+const getHeaders = (token: IdToken, params?: Object) => {
   return {
     headers: {
       'Content-Type': 'application/json',
-      Authorization: token ? 'Bearer ' + token : '',
+      Authorization: `Bearer ${token.__raw}`,
       // 'Accept-Language': language,
     },
     params: params || null,
@@ -18,11 +19,11 @@ interface IApiRes<T> {
   response: T;
   error: AxiosError;
   loading: boolean;
-  onGet?: (url: string, param?: any, token?: string) => void;
-  onGetChainData?: (url: string[], keys: string[], param?: any, token?: string) => void;
-  onPost?: (url: string, _data: any, param?: any, token?: string) => void;
-  onPut?: (url: string, _data: any, param?: any, token?: string) => void;
-  onDelete?: (url: string, param?: any, token?: string) => void;
+  onGet?: (url: string, token: IdToken, param?: any) => void;
+  onGetChainData?: (url: string[], keys: string[], token: IdToken, param?: any) => void;
+  onPost?: (url: string, _data: any, token: IdToken, param?: any) => void;
+  onPut?: (url: string, _data: any, token: IdToken, param?: any) => void;
+  onDelete?: (url: string, token: IdToken, param?: any) => void;
 }
 
 export const useGet = <T = any>(): IApiRes<T> => {
@@ -30,18 +31,18 @@ export const useGet = <T = any>(): IApiRes<T> => {
   const [error, setError] = React.useState<AxiosError>(null);
   const [loading, setloading] = React.useState<boolean>(false);
 
-  const onGet = React.useCallback((url: string, param?: any, token?: string) => {
+  const onGet = React.useCallback((url: string, token: IdToken, param?: any) => {
     let isSubscribed = true;
     setloading(true);
     setError(null);
-    getDataAsync(isSubscribed, url, param, token);
+    getDataAsync(isSubscribed, url, token, param);
     return () => {
       isSubscribed = false;
     };
   }, []);
 
-  const getDataAsync = async (isSubscribed: boolean, url: string, param?: any, token?: string) => {
-    const _header = getHeaders(param, token);
+  const getDataAsync = async (isSubscribed: boolean, url: string, token: IdToken, param?: any) => {
+    const _header = getHeaders(token, param);
     await axios
       .get(url, _header)
       .then((res: AxiosResponse<T>) => {
@@ -70,17 +71,17 @@ export const usePost = <T = any, R = any>(): IApiRes<R> => {
   const [error, setError] = React.useState<AxiosError>(null);
   const [loading, setloading] = React.useState<boolean>(false);
 
-  const onPost = React.useCallback((url: string, _data: T, param?: any, token?: string) => {
+  const onPost = React.useCallback((url: string, _data: T, token: IdToken, param?: any) => {
     let isSubscribed = true;
     setloading(true);
-    postDataAsync(isSubscribed, url, _data, param, token);
+    postDataAsync(isSubscribed, url, _data, token, param);
     return () => {
       isSubscribed = false;
     };
   }, []);
 
-  const postDataAsync = async (isSubscribed: boolean, url: string, _data: T, param?: any, token?: string) => {
-    const _header = getHeaders(param, token);
+  const postDataAsync = async (isSubscribed: boolean, url: string, _data: T, token: IdToken, param?: any) => {
+    const _header = getHeaders(token, param);
     const data = JSON.stringify(_data);
     await axios
       .post(url, data, _header)
@@ -110,17 +111,17 @@ export const usePut = <T = any, R = any>(): IApiRes<R> => {
   const [error, setError] = React.useState<AxiosError>(null);
   const [loading, setloading] = React.useState<boolean>(false);
 
-  const onPut = React.useCallback((url: string, _data: T, param?: any, token?: string) => {
+  const onPut = React.useCallback((url: string, _data: T, token: IdToken, param?: any) => {
     let isSubscribed = true;
     setloading(true);
-    putDataAsync(isSubscribed, url, _data, param, token);
+    putDataAsync(isSubscribed, url, _data, token, param);
     return () => {
       isSubscribed = false;
     };
   }, []);
 
-  const putDataAsync = async (isSubscribed: boolean, url: string, _data: T, param?: any, token?: string) => {
-    const _header = getHeaders(param, token);
+  const putDataAsync = async (isSubscribed: boolean, url: string, _data: T, token: IdToken, param?: any) => {
+    const _header = getHeaders(token, param);
     const data = JSON.stringify(_data);
     await axios
       .put(url, data, _header)
@@ -150,17 +151,17 @@ export const useDelete = <T = any>(): IApiRes<T> => {
   const [error, setError] = React.useState<AxiosError>(null);
   const [loading, setloading] = React.useState<boolean>(false);
 
-  const onDelete = React.useCallback((url: string, param?: any, token?: string) => {
+  const onDelete = React.useCallback((url: string, token: IdToken, param?: any) => {
     let isSubscribed = true;
     setloading(true);
-    deleteDataAsync(isSubscribed, url, param, token);
+    deleteDataAsync(isSubscribed, url, token, param);
     return () => {
       isSubscribed = false;
     };
   }, []);
 
-  const deleteDataAsync = async (isSubscribed: boolean, url: string, param?: any, token?: string) => {
-    const _header = getHeaders(param, token);
+  const deleteDataAsync = async (isSubscribed: boolean, url: string, token: IdToken, param?: any) => {
+    const _header = getHeaders(token, param);
     await axios
       .delete(url, _header)
       .then((res: AxiosResponse) => {
@@ -189,18 +190,18 @@ export const useGetTopology = <T = any>(): IApiRes<T> => {
   const [error, setError] = React.useState<AxiosError>(null);
   const [loading, setloading] = React.useState<boolean>(false);
 
-  const onGetChainData = React.useCallback((url: string[], keys: string[], param?: any, token?: string) => {
+  const onGetChainData = React.useCallback((url: string[], keys: string[], token: IdToken, param?: any) => {
     let isSubscribed = true;
     setloading(true);
     setError(null);
-    getDataAsync(isSubscribed, url, keys, param, token);
+    getDataAsync(isSubscribed, url, keys, token, param);
     return () => {
       isSubscribed = false;
     };
   }, []);
 
-  const getDataAsync = async (isSubscribed: boolean, url: string[], keys: string[], param?: any, token?: string) => {
-    const _header = getHeaders(param, token);
+  const getDataAsync = async (isSubscribed: boolean, url: string[], keys: string[], token: IdToken, param?: any) => {
+    const _header = getHeaders(token, param);
     await axios
       .all([axios.get(url[0], _header), axios.get(url[1], _header)])
       .then((res: AxiosResponse<any>[]) => {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { IWedgeNode } from 'lib/models/topology';
 import { IResourceQueryParam, ControllerKeyTypes, RoutesResKeyEnum, RoutesResourceTypes, IRoutesResData, IRouteResDataItem } from 'lib/api/ApiModels/Metrics/apiModel';
 import { RoutesApi } from 'lib/api/ApiModels/Metrics/endpoints';
@@ -7,12 +7,14 @@ import { useGet } from 'lib/api/http/useAxiosHook';
 import RouteTableWrapper from './RouteTableWrapper';
 import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
 import { toTimestamp } from 'lib/api/ApiModels/Topology/endpoints';
+import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 interface IProps {
   dataItem: IWedgeNode;
 }
 
 const RoutesTab: React.FC<IProps> = (props: IProps) => {
   const { topology } = useTopologyDataContext();
+  const userContext = useContext<UserContextState>(UserContext);
   const { response, loading, error, onGet } = useGet<IRoutesResData>();
   const [data, setData] = React.useState<IRouteResDataItem[]>([]);
 
@@ -34,7 +36,7 @@ const RoutesTab: React.FC<IProps> = (props: IProps) => {
     if (!url || !params) {
       return;
     }
-    await onGet(url, params);
+    await onGet(url, userContext.idToken!, params);
   };
 
   return <RouteTableWrapper data={data} showLoader={loading} error={error ? error.message : null} />;

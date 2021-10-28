@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { LineChart } from 'app/containers/Pages/TopologyPage/TopologyMetrics/LineChart';
 import LoadingIndicator from 'app/components/Loading';
 import { GetMetricsResponse, MetricsData } from 'app/containers/Pages/TopologyPage/TopologyMetrics/SharedTypes';
@@ -9,6 +9,7 @@ import { ErrorMessage } from '../Basic/ErrorMessage/ErrorMessage';
 import { AbsLoaderWrapper } from '../Loading/styles';
 import { ChartContainerStyles, ChartTitle, ChartActionBlock, ChartActionLabel, Chart } from './styles';
 import { EmptyText } from '../Basic/NoDataStyles/NoDataStyles';
+import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 
 interface Props {
   title: string;
@@ -21,6 +22,7 @@ interface Props {
 }
 
 const ChartContainer: React.FC<Props> = (props: Props) => {
+  const userContext = useContext<UserContextState>(UserContext);
   const { response, loading, error, onGet } = useGet<GetMetricsResponse>();
   const [data, setData] = React.useState<MetricsData[] | null>([]);
 
@@ -53,7 +55,7 @@ const ChartContainer: React.FC<Props> = (props: Props) => {
       _param.startTime = params.startTime;
       _param.endTime = params.endTime;
     }
-    await onGet(MetricsApi.getMetricsById(props.id), _param);
+    await onGet(MetricsApi.getMetricsById(props.id), userContext.idToken!, _param);
   };
 
   return (

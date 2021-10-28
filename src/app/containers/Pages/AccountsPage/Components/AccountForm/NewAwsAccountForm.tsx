@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { IAWS_Account } from 'lib/api/ApiModels/Accounts/apiModel';
 import { ModalContent, ModalFooter, ModalOverflowContainer } from '../../styles/styles';
 import { StepItemFormRow } from './styles';
@@ -16,6 +16,7 @@ import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
 import { AccountsApi } from 'lib/api/ApiModels/Accounts/endpoints';
 import { IBaseEntity } from 'lib/models/general';
+import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 
 interface Props {
   isEditMode: boolean;
@@ -26,6 +27,7 @@ interface Props {
 const regions = ['region 1', 'region 2', 'region 3', 'region 4', 'region 5'];
 const NewAwsAccountForm: React.FC<Props> = (props: Props) => {
   const { accounts } = useAccountsDataContext();
+  const userContext = useContext<UserContextState>(UserContext);
   const { response: getResById, loading: getLoading, onGet } = useGet<IAWS_Account>();
   const { response: postRes, loading: postLoading, onPost } = usePost<IAWS_Account, IBaseEntity<string>>();
   const { response: postUpdateRes, loading: postUpdateLoading, onPut: onUpdate } = usePut<IAWS_Account, IBaseEntity<string>>();
@@ -107,15 +109,15 @@ const NewAwsAccountForm: React.FC<Props> = (props: Props) => {
   };
 
   const onUpdateGroup = async () => {
-    await onUpdate(AccountsApi.putUpdateAccount(dataItem.id), { controller: dataItem });
+    await onUpdate(AccountsApi.putUpdateAccount(dataItem.id), { controller: dataItem }, userContext.idToken!);
   };
 
   const onCreateGroup = async () => {
-    await onPost(AccountsApi.postCreateAccount(), { controller: dataItem });
+    await onPost(AccountsApi.postCreateAccount(), { controller: dataItem }, userContext.idToken!);
   };
 
   const onGetAccountById = async (id: string) => {
-    await onGet(AccountsApi.getAccountsById(id));
+    await onGet(AccountsApi.getAccountsById(id), userContext.idToken!);
   };
 
   if (!dataItem) return null;

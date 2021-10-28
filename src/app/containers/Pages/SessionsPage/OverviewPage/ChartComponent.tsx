@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { ChartWrapper } from '../../Shared/styles';
 import SankeyChart from 'app/components/Charts/SankeyChart';
 import { useGet } from 'lib/api/http/useAxiosHook';
@@ -6,10 +6,11 @@ import { ISankeyRes } from 'lib/api/ApiModels/Sessions/apiModel';
 import { SessionsApi } from 'lib/api/ApiModels/Sessions/endpoints';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
-import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
+import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 interface IProps {}
 
 const ChartComponent: React.FC<IProps> = (props: IProps) => {
+  const userContext = useContext<UserContextState>(UserContext);
   const { response, loading, error, onGet } = useGet<ISankeyRes>();
   const [data, setData] = React.useState<ISankeyRes>(null);
   React.useEffect(() => {
@@ -23,7 +24,7 @@ const ChartComponent: React.FC<IProps> = (props: IProps) => {
   }, [response]);
 
   const onTryToLoadData = async () => {
-    await onGet(SessionsApi.getSankeyData());
+    await onGet(SessionsApi.getSankeyData(), userContext.idToken!);
   };
 
   return (
@@ -34,11 +35,7 @@ const ChartComponent: React.FC<IProps> = (props: IProps) => {
             <LoadingIndicator margin="auto" />
           </AbsLoaderWrapper>
         )}
-        {error && !loading && (
-          <ErrorMessage margin="auto" fontSize={18}>
-            {error.message}
-          </ErrorMessage>
-        )}
+        {error && !loading && <>{error.message}</>}
         {data && data.sankey && <SankeyChart data={data.sankey} />}
       </ChartWrapper>
     </>
