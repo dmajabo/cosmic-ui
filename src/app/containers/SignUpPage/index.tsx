@@ -85,7 +85,7 @@ const dropdownStyle = {
   }),
 };
 
-const SignUpPage: React.FC = () => {
+const AddEdges: React.FC = () => {
   const [progress, setProgress] = useState<number>(50);
   const [connectLocation, setConnectLocation] = useState<string>('');
   const [isAppReadyToUse, setIsAppReadyToUse] = useState<boolean>(false);
@@ -573,4 +573,4 @@ const SignUpPage: React.FC = () => {
   );
 };
 
-export default SignUpPage;
+export default AddEdges;
