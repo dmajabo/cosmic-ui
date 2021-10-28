@@ -1,7 +1,6 @@
 import React from 'react';
 import { SignUpStyles } from '../SignUpStyles';
 import { StepData } from '..';
-import SkipIcon from '../icons/skip.svg';
 
 interface ConnectFormProps {
   readonly title: string;
@@ -41,13 +40,7 @@ export const ConnectSourceForm: React.FC<ConnectFormProps> = ({ title, img, subt
         </div>
       ))}
       <div className={classes.flexContainer}>
-        <div>
-          <div className={classes.skipSetupButton}>
-            SKIP SETUP
-            <img className={classes.whiteArrow} src={SkipIcon} alt="skip setup" />
-          </div>
-          <div className={classes.skipSetupText}>You can finish it in any time.</div>
-        </div>
+        <div></div>
         <>
           <button className={isFormFilled ? classes.connectSourceFormButton : classes.startButton} onClick={isUpdateForm ? onSourceFormUpdate : onSourceFormSubmit} disabled={!isFormFilled}>
             {isUpdateForm ? 'UPDATE' : 'CONNECT'}

@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import SkipIcon from '../icons/skip.svg';
+import React, { useState } from 'react';
 import ArrowIcon from '../icons/rightArrow.svg';
 import AwsIcon from '../icons/aws.svg';
 import MerakiIcon from '../icons/meraki.svg';
@@ -23,9 +22,6 @@ export const AddNewEdge: React.FC<AddNewEdgeProps> = ({ onNewEdgeSelected, onCan
   return (
     <div>
       <div className={classes.title}>Select New Edge</div>
-      <div className={classes.subTitle}>
-        In a professional context it often happens that private or corporate clients corder a publication to be made and presented with the actual content still not being ready.
-      </div>
       <div className={classes.edgeBoxContainer}>
         <div className={classes.newEdgePadding}>
           <div className={edgeLocation === PreDefinedEdges.Aws ? classes.newEdgeHighlightedBox : classes.newEdgeBox} onClick={() => onLocationSelect(PreDefinedEdges.Aws)}>
@@ -40,16 +36,11 @@ export const AddNewEdge: React.FC<AddNewEdgeProps> = ({ onNewEdgeSelected, onCan
       </div>
       <div className={classes.flexContainer}>
         <div>
-          <div className={classes.skipSetupButton}>
-            SKIP SETUP
-            <img className={classes.whiteArrow} src={SkipIcon} alt="skip setup" />
-          </div>
-          <div className={classes.skipSetupText}>You can finish it in any time.</div>
-        </div>
-        <div className={classes.endFlexContainer}>
           <div className={classes.skipSetupButton} onClick={onCancelNewEdge}>
             CANCEL
           </div>
+        </div>
+        <div className={classes.endFlexContainer}>
           <button className={edgeLocation ? classes.connectSourceFormButton : classes.startButton} onClick={onEdgeSelect} disabled={edgeLocation ? false : true}>
             <span className={classes.buttonText}>NEXT</span>
             <img className={classes.whiteArrow} src={ArrowIcon} alt="next arrow" />

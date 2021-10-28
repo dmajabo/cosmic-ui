@@ -176,7 +176,7 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ slaTestDataToUpdat
       <div className={classes.slaFormElementContainer}>
         <div className={classes.flexContainer}>
           <div>
-            <Typography className={classes.itemTitle}>{updateSlaTest ? 'Update SLA Test' : 'Create SLA Test'}</Typography>
+            <Typography className={classes.itemTitle}>{updateSlaTest ? 'Edit SLA Test' : 'Create SLA Test'}</Typography>
           </div>
           {popup ? (
             <div style={{ cursor: 'pointer' }} onClick={() => closeSlaTest()}>
@@ -210,7 +210,7 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ slaTestDataToUpdat
             disableElevation
           >
             <Typography className={classes.slaTestButtonText} noWrap>
-              {updateSlaTest ? 'UPDATE SLA TEST' : 'CREATE SLA TEST'}
+              {updateSlaTest ? 'EDIT SLA TEST' : 'CREATE SLA TEST'}
             </Typography>
           </Button>
         </div>
