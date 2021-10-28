@@ -7,13 +7,13 @@ interface Props {}
 
 const AboutComponent: React.FC<Props> = (props: Props) => {
   const [version, setVersion] = React.useState<string>('');
-  const [latestSuccessTime, setLatestSuccessTime] = React.useState<string>('');
+  const [latestSuccessTime, setLatestSuccessTime] = React.useState<any>('');
 
   React.useEffect(() => {
     const _v = process.env.REACT_APP_VERSION || null;
-    let _t = process.env.REACT_APP_DEPLOYED_AT || null;
+    let _t = process.env.REACT_APP_DEPLOYED_AT + '000' || null;
     if (_t && Number(_t)) {
-      _t = format(Number(process.env.REACT_APP_DEPLOYED_AT), `EEE',' LLL d',' yyyy HH:mm aa`);
+      _t = format(Number(_t), `EEE',' LLL d',' yyyy HH:mm aa`);
     }
     setVersion(_v);
     setLatestSuccessTime(_t);
