@@ -54,7 +54,7 @@ const AverageQoe: React.FC<AvgQoeProps> = ({ updateTest, deleteTest, packetLoss,
               handleUpdate(testId);
             }}
           >
-            <Typography>Update</Typography>
+            <Typography>Edit</Typography>
           </MenuItem>
         </Menu>
       </div>
