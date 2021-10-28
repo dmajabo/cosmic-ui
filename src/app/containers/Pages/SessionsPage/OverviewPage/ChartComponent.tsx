@@ -6,6 +6,7 @@ import { ISankeyRes } from 'lib/api/ApiModels/Sessions/apiModel';
 import { SessionsApi } from 'lib/api/ApiModels/Sessions/endpoints';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
+import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 interface IProps {}
 
 const ChartComponent: React.FC<IProps> = (props: IProps) => {
@@ -33,7 +34,11 @@ const ChartComponent: React.FC<IProps> = (props: IProps) => {
             <LoadingIndicator margin="auto" />
           </AbsLoaderWrapper>
         )}
-        {error && !loading && <>{error.message}</>}
+        {error && !loading && (
+          <ErrorMessage margin="auto" fontSize={18}>
+            {error.message}
+          </ErrorMessage>
+        )}
         {data && data.sankey && <SankeyChart data={data.sankey} />}
       </ChartWrapper>
     </>

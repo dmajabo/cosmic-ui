@@ -68,6 +68,7 @@ interface ChartProps {
   padding?: string;
 }
 export const ChartWrapper = styled.div<ChartProps>`
+  display: flex;
   position: relative;
   background: var(--_chartBg);
   border: 1px solid;
