@@ -1,6 +1,6 @@
 import React from 'react';
 import { AnalyticsStyles } from '../AnalyticsStyles';
-import { CustomizationTab, CustomizationTabProps } from './CustomizationTab';
+import { CustomizationTile, CustomizationTabProps } from './CustomizationTile';
 import DesignIcon from '../icons/metrics explorer/design.svg';
 import DimensionsIcon from '../icons/metrics explorer/dimensions.svg';
 import MetricsIcon from '../icons/metrics explorer/metrics.svg';
@@ -23,7 +23,7 @@ export const MetricsExplorer: React.FC = () => {
       countText: '0',
       operationImage: AddIcon,
       operationName: 'add dimensions',
-      tabContent: <div className={classes.tabContentText}>No dimensions added. To add dimensions click the “Add” button on top.</div>,
+      content: <div className={classes.tabContentText}>No dimensions added. To add dimensions click the “Add” button on top.</div>,
     },
     {
       img: MetricsIcon,
@@ -49,7 +49,15 @@ export const MetricsExplorer: React.FC = () => {
         <div className={classes.containerTitle}>Metrics Customization</div>
         <div className={classes.rightBoxContent}>
           {customizationtabOptions.map(item => (
-            <CustomizationTab img={item.img} title={item.title} countText={item.countText} operationImage={item.operationImage} operationName={item.operationName} tabContent={item.tabContent} />
+            <CustomizationTile
+              key={item.title}
+              img={item.img}
+              title={item.title}
+              countText={item.countText}
+              operationImage={item.operationImage}
+              operationName={item.operationName}
+              content={item.content}
+            />
           ))}
         </div>
       </div>

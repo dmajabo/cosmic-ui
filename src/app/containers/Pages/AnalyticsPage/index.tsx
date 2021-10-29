@@ -4,13 +4,11 @@ import { AnalyticsStyles } from './AnalyticsStyles';
 import { MetricsExplorer } from './components/MetricsExplorer';
 
 interface TabPanelProps {
-  children?: React.ReactNode;
   index: string;
   value: string;
 }
 
-function TabPanel(props: TabPanelProps) {
-  const { children, value, index, ...other } = props;
+const TabPanel: React.FC<TabPanelProps> = ({ children, value, index, ...other }) => {
   const classes = AnalyticsStyles();
 
   return (
@@ -18,9 +16,9 @@ function TabPanel(props: TabPanelProps) {
       {children}
     </div>
   );
-}
+};
 
-function a11yProps(index: any) {
+function a11yProps(index: string) {
   return {
     id: `simple-tab-${index}`,
     'aria-controls': `simple-tabpanel-${index}`,
@@ -28,70 +26,68 @@ function a11yProps(index: any) {
 }
 
 enum TabName {
-  insights = 'Insights',
-  sessions = 'Sessions',
-  reporting = 'Reporting',
-  inventory = 'Inventory',
-  metricsExplorer = 'Metrics Explorer',
+  Insights = 'Insights',
+  Sessions = 'Sessions',
+  Reporting = 'Reporting',
+  Inventory = 'Inventory',
+  MetricsExplorer = 'Metrics Explorer',
 }
 
 const AnalyticsPage: React.FC = () => {
   const classes = AnalyticsStyles();
-  const [tab, setTab] = useState<string>(TabName.metricsExplorer);
+  const [selectedTabName, setSelectedTabName] = useState<TabName>(TabName.MetricsExplorer);
 
-  const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
-    setTab(newValue);
-  };
+  const handleTabChange = (event: React.SyntheticEvent, newValue: TabName) => setSelectedTabName(newValue);
 
   return (
     <div className={classes.analyticsContainer}>
       <div className={classes.fixedTabBar}>
-        <Tabs value={tab} onChange={handleTabChange} indicatorColor="primary">
+        <Tabs value={selectedTabName} onChange={handleTabChange} indicatorColor="primary">
           <Tab
-            value={TabName.insights}
-            label={<span className={tab === TabName.insights ? classes.activeTabLabel : classes.tabLabel}>{TabName.insights}</span>}
+            value={TabName.Insights}
+            label={<span className={selectedTabName === TabName.Insights ? classes.activeTabLabel : classes.tabLabel}>{TabName.Insights}</span>}
             wrapped
-            {...a11yProps(TabName.insights)}
+            {...a11yProps(TabName.Insights)}
           />
           <Tab
-            value={TabName.sessions}
-            label={<span className={tab === TabName.sessions ? classes.activeTabLabel : classes.tabLabel}>{TabName.sessions}</span>}
+            value={TabName.Sessions}
+            label={<span className={selectedTabName === TabName.Sessions ? classes.activeTabLabel : classes.tabLabel}>{TabName.Sessions}</span>}
             wrapped
-            {...a11yProps(TabName.sessions)}
+            {...a11yProps(TabName.Sessions)}
           />
           <Tab
-            value={TabName.reporting}
-            label={<span className={tab === TabName.reporting ? classes.activeTabLabel : classes.tabLabel}>{TabName.reporting}</span>}
+            value={TabName.Reporting}
+            label={<span className={selectedTabName === TabName.Reporting ? classes.activeTabLabel : classes.tabLabel}>{TabName.Reporting}</span>}
             wrapped
-            {...a11yProps(TabName.reporting)}
+            {...a11yProps(TabName.Reporting)}
           />
           <Tab
-            value={TabName.inventory}
-            label={<span className={tab === TabName.inventory ? classes.activeTabLabel : classes.tabLabel}>{TabName.inventory}</span>}
+            value={TabName.Inventory}
+            label={<span className={selectedTabName === TabName.Inventory ? classes.activeTabLabel : classes.tabLabel}>{TabName.Inventory}</span>}
             wrapped
-            {...a11yProps(TabName.inventory)}
+            {...a11yProps(TabName.Inventory)}
           />
           <Tab
-            value={TabName.metricsExplorer}
-            label={<span className={tab === TabName.metricsExplorer ? classes.activeTabLabel : classes.tabLabel}>{TabName.metricsExplorer}</span>}
+            value={TabName.MetricsExplorer}
+            label={<span className={selectedTabName === TabName.MetricsExplorer ? classes.activeTabLabel : classes.tabLabel}>{TabName.MetricsExplorer}</span>}
             wrapped
-            {...a11yProps(TabName.metricsExplorer)}
+            {...a11yProps(TabName.MetricsExplorer)}
           />
         </Tabs>
       </div>
-      <TabPanel value={tab} index={TabName.insights}>
-        {TabName.insights}
+      <TabPanel value={selectedTabName} index={TabName.Insights}>
+        {TabName.Insights}
       </TabPanel>
-      <TabPanel value={tab} index={TabName.sessions}>
-        {TabName.sessions}
+      <TabPanel value={selectedTabName} index={TabName.Sessions}>
+        {TabName.Sessions}
       </TabPanel>
-      <TabPanel value={tab} index={TabName.reporting}>
-        {TabName.reporting}
+      <TabPanel value={selectedTabName} index={TabName.Reporting}>
+        {TabName.Reporting}
       </TabPanel>
-      <TabPanel value={tab} index={TabName.inventory}>
-        {TabName.inventory}
+      <TabPanel value={selectedTabName} index={TabName.Inventory}>
+        {TabName.Inventory}
       </TabPanel>
-      <TabPanel value={tab} index={TabName.metricsExplorer}>
+      <TabPanel value={selectedTabName} index={TabName.MetricsExplorer}>
         <MetricsExplorer />
       </TabPanel>
     </div>

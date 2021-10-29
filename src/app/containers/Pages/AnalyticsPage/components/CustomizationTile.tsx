@@ -9,20 +9,16 @@ export interface CustomizationTabProps {
   readonly countText?: string;
   readonly operationImage?: string;
   readonly operationName?: string;
-  readonly tabContent?: JSX.Element;
+  readonly content?: JSX.Element;
 }
 
-export const CustomizationTab: React.FC<CustomizationTabProps> = ({ img, title, countText, operationImage, operationName, tabContent }) => {
+export const CustomizationTile: React.FC<CustomizationTabProps> = ({ img, title, countText, operationImage, operationName, content }) => {
   const classes = AnalyticsStyles();
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
-  const handleOpen = () => {
-    setIsOpen(true);
-  };
+  const handleOpen = () => setIsOpen(true);
 
-  const handleClose = () => {
-    setIsOpen(false);
-  };
+  const handleClose = () => setIsOpen(false);
 
   return (
     <div className={classes.customizationTabContainer}>
@@ -47,7 +43,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ img, title, 
           )}
         </div>
       </div>
-      <div className={isOpen ? classes.tabContent : classes.hidden}>{tabContent}</div>
+      <div className={isOpen ? classes.tabContent : classes.hidden}>{content}</div>
     </div>
   );
 };
