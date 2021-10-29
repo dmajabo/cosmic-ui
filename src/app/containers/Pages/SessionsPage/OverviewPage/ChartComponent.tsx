@@ -9,6 +9,7 @@ import LoadingIndicator from 'app/components/Loading';
 import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 import { useSessionsDataContext } from 'lib/hooks/Sessions/useSessionsDataContext';
 import { SessionsSelectValuesTypes, SESSIONS_SELECT_VALUES } from 'lib/hooks/Sessions/model';
+import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 interface IProps {}
 
 const ChartComponent: React.FC<IProps> = (props: IProps) => {
@@ -41,7 +42,11 @@ const ChartComponent: React.FC<IProps> = (props: IProps) => {
             <LoadingIndicator margin="auto" />
           </AbsLoaderWrapper>
         )}
-        {error && !loading && <>{error.message}</>}
+        {error && !loading && (
+          <ErrorMessage margin="auto" fontSize={18}>
+            {error.message}
+          </ErrorMessage>
+        )}
         {data && data.sankey && <SankeyChart data={data.sankey} />}
       </ChartWrapper>
     </>
