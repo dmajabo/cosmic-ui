@@ -6,7 +6,7 @@ import { MetricsLineChart } from './MetricsLineChart';
 import InfoIcon from '../icons/info.svg';
 import LoadingIndicator from '../../../../components/Loading';
 import { Data } from './Table';
-import Heatmap from './Heatmap';
+import Heatmap, { LegendData } from './Heatmap';
 import { HeatMapData } from 'lib/api/http/SharedTypes';
 import { isEmpty } from 'lodash';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
@@ -32,6 +32,34 @@ export interface TestIdToName {
 const PACKET_LOSS = 'packetloss';
 
 const PACKET_LOSS_ANOMALY = 'packetloss_anomaly';
+
+const PACKET_LOSS_HEATMAP_LEGEND: LegendData[] = [
+  {
+    low: 0,
+    high: 10,
+    color: '#52984E',
+  },
+  {
+    low: 10,
+    high: 20,
+    color: '#FED0AB',
+  },
+  {
+    low: 20,
+    high: 40,
+    color: '#FFC568',
+  },
+  {
+    low: 40,
+    high: 50,
+    color: '#F69442',
+  },
+  {
+    low: 50,
+    high: Infinity,
+    color: '#DC4545',
+  },
+];
 
 export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange }) => {
   const classes = PerformanceDashboardStyles();
@@ -126,7 +154,7 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange 
       <div className={classes.lineChartContainer}>
         {!isEmpty(selectedRows) ? (
           heatMapPacketLoss.length === selectedRows.length ? (
-            <Heatmap data={heatMapPacketLoss} selectedRows={testIdToName} dataSuffix="%" />
+            <Heatmap data={heatMapPacketLoss} selectedRows={testIdToName} legendData={PACKET_LOSS_HEATMAP_LEGEND} dataSuffix="%" />
           ) : (
             <div className={classes.noChartContainer}>
               <LoadingIndicator />

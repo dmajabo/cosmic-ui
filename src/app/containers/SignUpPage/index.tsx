@@ -136,7 +136,6 @@ const AddEdges: React.FC = () => {
         img: AwsIcon,
         title: 'AWS',
         edgeName: PreDefinedEdges.Aws,
-        content: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
         onConnect: () => setConnectLocation(PreDefinedEdges.Aws),
         isConnected: policyControllers.find(edge => edge.name === PreDefinedEdges.Aws) ? true : false,
         onUpdate: () => {
@@ -149,7 +148,6 @@ const AddEdges: React.FC = () => {
         img: MerakiIcon,
         title: 'Cisco Meraki',
         edgeName: PreDefinedEdges.Meraki,
-        content: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
         onConnect: () => setConnectLocation(PreDefinedEdges.Meraki),
         isConnected: policyControllers.find(edge => edge.name === PreDefinedEdges.Meraki) ? true : false,
         onUpdate: () => {
@@ -165,7 +163,6 @@ const AddEdges: React.FC = () => {
         img: edge.vendor === PolicyVendor.Aws ? AwsIcon : MerakiIcon,
         title: edge.name,
         edgeName: edge.name,
-        content: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
         onConnect: () => setConnectLocation(edge.vendor === PolicyVendor.Aws ? PreDefinedEdges.Aws : PreDefinedEdges.Meraki),
         isConnected: policyControllers.find(item => item.name === edge.name) ? true : false,
         onUpdate: () => {
