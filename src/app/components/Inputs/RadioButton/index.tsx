@@ -1,32 +1,32 @@
 import React from 'react';
-import Radio, { RadioProps } from '@mui/material/Radio';
-import { BpCheckedIcon, BpIcon, Label } from './styles';
+import { Input, Label, RadioStyles, Wrapper } from './styles';
 
 interface Props {
-  label: string;
+  label?: string;
+  value: string;
+  checked: boolean;
+  name?: string;
   wrapstyles?: Object;
+  type?: 'radio' | 'checkbox';
+  width?: string;
+  height?: string;
+  onChange: (checked: boolean | null, value: string) => void;
 }
 
-const RadioButton: React.FC<Props & RadioProps> = props => {
+const RadioButton: React.FC<Props> = React.forwardRef(({ label, value, checked, name, wrapstyles, type, width, height, onChange }, ref: any) => {
+  const onSelect = () => {
+    if (type === 'radio' && checked) return;
+    const _v = !checked ? true : null;
+    onChange(_v, value);
+  };
+
   return (
-    <Label style={props.wrapstyles}>
-      <Radio
-        sx={{
-          padding: 0,
-          margin: 'auto 12px auto 0',
-          '&:hover': {
-            bgcolor: 'transparent',
-          },
-        }}
-        disableRipple
-        color="default"
-        checkedIcon={<BpCheckedIcon />}
-        icon={<BpIcon />}
-        {...props}
-      />
-      <span className="labelValue">{props.label}</span>
-    </Label>
+    <Wrapper style={wrapstyles}>
+      <RadioStyles width={width} height={height} labelAfter={!!label} checked={checked} onClick={onSelect} />
+      <Input ref={ref} type="radio" name={name} checked={checked} value={value} readOnly />
+      {label && <Label onClick={onSelect}>{label}</Label>}
+    </Wrapper>
   );
-};
+});
 
 export default React.memo(RadioButton);

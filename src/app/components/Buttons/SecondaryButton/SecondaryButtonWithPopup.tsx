@@ -12,6 +12,7 @@ interface IProps {
   withoutBorder?: boolean;
   children?: React.ReactNode;
   direction?: 'rtl' | 'ltr';
+  wrapStyles?: Object;
 }
 
 const SecondaryButtonWithPopup: React.FC<IProps> = (props: IProps) => {
@@ -25,7 +26,7 @@ const SecondaryButtonWithPopup: React.FC<IProps> = (props: IProps) => {
   };
   return (
     <ClickAwayListener onClickAway={onHidePopup}>
-      <SecondaryButtonWrapper>
+      <SecondaryButtonWrapper style={props.wrapStyles}>
         <SecondaryButtonStyles className={open ? 'active' : ''} withoutBorder={props.withoutBorder} style={props.styles} disabled={props.disabled} onClick={onShowPopup}>
           <Label margin={props.icon ? '0 12px 0 0' : '0'}>{props.label}</Label>
           {props.icon && <IconWrapper icon={props.icon} />}

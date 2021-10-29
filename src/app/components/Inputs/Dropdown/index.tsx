@@ -7,6 +7,7 @@ import { arrowBottomIcon } from 'app/components/SVGIcons/arrows';
 import { InputLabel } from '../styles/Label';
 import { ClickAwayListener } from '@material-ui/core';
 import DisplayValue from './DisplayValue';
+import { Required } from '../FormTextInput/styles';
 
 interface IProps {
   label?: JSX.Element | string;
@@ -21,6 +22,8 @@ interface IProps {
   wrapStyles?: Object;
   selectStyles?: Object;
   position?: 'above' | 'below';
+  className?: string;
+  required?: boolean;
 }
 
 const Dropdown: React.FC<IProps> = (props: IProps) => {
@@ -77,8 +80,12 @@ const Dropdown: React.FC<IProps> = (props: IProps) => {
 
   return (
     <ClickAwayListener onClickAway={onCloseDropdown}>
-      <DropdownWrapper open={showPopup} style={props.dropWrapStyles}>
-        {props.label && <InputLabel>{props.label}</InputLabel>}
+      <DropdownWrapper className={props.className} open={showPopup} style={props.dropWrapStyles}>
+        {props.label && (
+          <InputLabel>
+            {props.label} {props.required && <Required>*</Required>}
+          </InputLabel>
+        )}
         {props.labelBefore && <>{props.labelBefore}</>}
         <DropWrapper style={props.wrapStyles}>
           <SelectWrapper style={props.selectStyles} onClick={onToogleDropdown} className={showPopup ? 'active' : ''}>

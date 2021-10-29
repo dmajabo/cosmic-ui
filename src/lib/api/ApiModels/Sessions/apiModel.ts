@@ -46,7 +46,6 @@ export interface ISankeyData {
   time: Date | string;
   nodes: ISankeyNode[];
   links: ISankeyLink[];
-  order?: string[][];
 }
 export interface ISankeyRes {
   sankey: ISankeyData;

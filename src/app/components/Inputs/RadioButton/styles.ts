@@ -1,6 +1,6 @@
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
-export const Label = styled.label`
+export const Wrapper = styled.div`
   font-family: 'DMSans';
   font-style: normal;
   font-weight: 500;
@@ -12,51 +12,42 @@ export const Label = styled.label`
   min-height: 24px;
   align-items: center;
   flex-grow: 0;
-  span.labelValue {
-    color: var(--_disabledTextColor);
-    display: inline-block;
-    line-height: inherit;
-  }
-  .Mui-checked + span.labelValue {
+  position: relative;
+`;
+
+export const Input = styled.input`
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+  top: 0;
+  height: 0;
+  &:checked + span {
     color: var(--_primaryColor);
   }
-  input:hover:not(:disabled) ~ & {
-    opacity: 1;
-    background-color: var(--_primaryBg);
-    border-color: var(--_highlightColor);
-    box-shadow: 0px 4px 7px rgba(67, 127, 236, 0.15);
-  }
-  // '.Mui-focusVisible &': {
-  //   outline: '2px auto rgba(19,124,189,.6)',
-  //   outlineOffset: 2,
-  // },
-  // 'input:disabled ~ &': {
-  //   boxShadow: 'none',
-  //   background: theme.palette.mode === 'dark' ? 'rgba(57,75,89,.5)' : 'rgba(206,217,224,.5)',
-  // },
 `;
 
-const icon = css`
-  opacity: 0.4;
-  width: 15px;
-  height: 15px;
-  box-shadow: none;
+interface CircleProps {
+  width?: string;
+  height?: string;
+  labelAfter?: boolean;
+  checked: boolean;
+}
+export const RadioStyles = styled.span<CircleProps>`
+  display: inline-block;
+  width: ${props => props.width || '16px'};
+  height: ${props => props.height || '16px'};
+  margin: ${props => (props.labelAfter ? 'auto 8px auto 0' : 'auto 0')};
+  opacity: ${props => (props.checked ? 1 : 0.4)};
+  box-shadow: ${props => (props.checked ? '0px 4px 7px rgba(67, 127, 236, 0.15)' : 'none')};
   border: 3px solid;
-  border-color: var(--_disabledTextColor);
+  border-color: ${props => (props.checked ? 'var(--_highlightColor)' : 'var(--_disabledTextColor)')};
   border-radius: 50%;
-  background-color: var(--_disabledTextColor);
-  background-image: none;
-  margin: auto 8px auto 0;
+  background-color: ${props => (props.checked ? 'var(--_primaryBg)' : 'var(--_disabledTextColor)')};
 `;
 
-export const BpIcon = styled.span`
-  ${icon};
-`;
-
-export const BpCheckedIcon = styled.span`
-  ${icon};
-  opacity: 1;
-  background-color: var(--_primaryBg);
-  border-color: var(--_highlightColor);
-  box-shadow: 0px 4px 7px rgba(67, 127, 236, 0.15);
+export const Label = styled.span`
+  color: var(--_disabledTextColor);
+  display: inline-block;
+  line-height: inherit;
 `;

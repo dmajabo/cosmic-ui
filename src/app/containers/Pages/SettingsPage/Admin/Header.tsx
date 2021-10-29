@@ -1,6 +1,6 @@
 import React from 'react';
 import { columnsIcon } from 'app/components/SVGIcons/columnsIcon';
-import { GridColDef } from '@mui/x-data-grid';
+import { GridColDef, GridSelectionModel } from '@mui/x-data-grid';
 import SecondaryButtonWithPopup from 'app/components/Buttons/SecondaryButton/SecondaryButtonWithPopup';
 import PopupContainer from 'app/components/PopupContainer';
 import SimpleCheckbox from 'app/components/Inputs/Checkbox/SimpleCheckbox';
@@ -9,12 +9,15 @@ import PrimaryButton from 'app/components/Buttons/PrimaryButton';
 import Search from 'app/components/Inputs/Search';
 import { plusIcon } from 'app/components/SVGIcons/plusIcon';
 import { ActionRowStyles, ActionPart } from '../../Shared/styles';
+import { deleteIcon } from 'app/components/SVGIcons/delete';
 interface Props {
+  selectedItems: GridSelectionModel;
   searchValue: string | null;
   columns: GridColDef[];
   onChangeColumn: (col: GridColDef) => void;
   onSearchChange: (v: string | null) => void;
   onToogleEditForm: () => void;
+  onMassDelete: () => void;
 }
 
 const Header: React.FC<Props> = (props: Props) => {
@@ -34,7 +37,18 @@ const Header: React.FC<Props> = (props: Props) => {
           <Search searchQuery={props.searchValue} onChange={onSearhChange} styles={{ width: '100%' }} />
         </ActionPart>
         <ActionPart margin="0 0 0 auto">
-          <SecondaryButtonWithPopup label="Columns" icon={columnsIcon} direction="rtl">
+          {props.selectedItems && props.selectedItems.length ? (
+            <PrimaryButton
+              label="Delete"
+              icon={deleteIcon('var(--_pButtonColor)')}
+              onClick={props.onMassDelete}
+              bgColor="var(--_errorColor)"
+              borderColor="var(--_errorColor)"
+              hoverBg="var(--_errorColor)"
+              hoverBorder="var(--_errorColor)"
+            />
+          ) : null}
+          <SecondaryButtonWithPopup wrapStyles={{ margin: '0 0 0 20px' }} label="Columns" icon={columnsIcon} direction="rtl">
             <PopupContainer
               styles={{
                 overflow: 'hidden',

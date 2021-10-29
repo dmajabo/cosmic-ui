@@ -31,7 +31,7 @@ const AnomalyItem: React.FC<Props> = (props: Props) => {
       <SettingsButton id={`settingsAnomalyButton${props.index}`} width="24px" height="40px" hoverIconColor="var(--_hoverButtonBg)">
         <PopupContent>
           <PopupItem label="Edit" icon={editIcon} onClick={onEdit} />
-          <PopupItem color="var(--_errorColor)" label="Delete" icon={deleteIcon} onClick={onDelete} />
+          <PopupItem color="var(--_errorColor)" label="Delete" icon={deleteIcon()} onClick={onDelete} />
         </PopupContent>
       </SettingsButton>
     </DataItemWrapper>

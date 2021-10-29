@@ -3,8 +3,7 @@ import { AccountVendorTypes } from 'lib/api/ApiModels/Accounts/apiModel';
 import { ModalHeader } from '../../styles/styles';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { getAccountIcon, preparedString } from './helper';
-import IconButton from 'app/components/Buttons/IconButton';
-import { closeIcon } from 'app/components/SVGIcons/close';
+import { closeSmallIcon } from 'app/components/SVGIcons/close';
 import { Title } from './styles';
 interface Props {
   vendor: AccountVendorTypes;
@@ -27,7 +26,7 @@ const AccountFormHeader: React.FC<Props> = ({ vendor, isEditMode, onClose }) => 
     <ModalHeader>
       <IconWrapper width="48px" height="48px" styles={{ margin: 'auto 16px auto 0' }} icon={icon} />
       <Title>{ttile}</Title>
-      <IconButton styles={{ position: 'absolute', top: '-20px', right: '-20px', border: 'none', background: 'transparent', zIndex: 2 }} icon={closeIcon} onClick={onClose} />
+      <IconWrapper styles={{ position: 'absolute', top: '-10px', right: '-10px', border: 'none', background: 'transparent', zIndex: 2 }} icon={closeSmallIcon} onClick={onClose} />
     </ModalHeader>
   );
 };

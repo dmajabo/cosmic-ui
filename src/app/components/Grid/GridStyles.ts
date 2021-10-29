@@ -83,6 +83,12 @@ export const GridStyles = makeStyles(
             background: 'var(--_primaryBg)',
           },
         },
+        '& .MuiDataGrid-row.Mui-selected': {
+          background: 'var(--_primaryBg)',
+          '&:hover': {
+            background: 'var(--_primaryBg)',
+          },
+        },
         '& .MuiDataGrid-columnSeparator': {
           display: 'none',
         },

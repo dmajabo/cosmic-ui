@@ -55,7 +55,7 @@ const TopologyGroup: React.FC<IProps> = (props: IProps) => {
         <PopupContent>
           <PopupItem label="Edit" icon={editIcon} onClick={onEdit} />
           <PopupItem label="Duplicate" icon={dublicateIcon} onClick={onDublicate} />
-          <PopupItem color="var(--_errorColor)" label="Delete" icon={deleteIcon} onClick={onDelete} />
+          <PopupItem color="var(--_errorColor)" label="Delete" icon={deleteIcon()} onClick={onDelete} />
         </PopupContent>
       </SettingsButton>
     </GroupWrapper>

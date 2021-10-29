@@ -24,13 +24,12 @@ const TriggersStep: React.FC<Props> = (props: Props) => {
     setTriggers(_items);
   }, [props.triggers]);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const _value = event.target.value as TriggersTypes;
-    if (_value === selectedValue) return;
+  const handleChange = (checked: boolean, value: TriggersTypes) => {
+    if (value === selectedValue) return;
     if (props.selectedTrigger) {
       props.onSelectTrigger(null);
     }
-    setSelectedValue(_value);
+    setSelectedValue(value);
   };
 
   const onSelectTrigger = (_item: ISelectedListItem<string> | null) => {
@@ -51,7 +50,6 @@ const TriggersStep: React.FC<Props> = (props: Props) => {
           value={TriggersTypes.EXISTING_TRIGGER}
           label="Use Created Trigger"
           name="radio-buttons"
-          inputProps={{ 'aria-label': TriggersTypes.EXISTING_TRIGGER }}
           wrapstyles={{ margin: '0 auto 12px 0' }}
         />
         {selectedValue === TriggersTypes.EXISTING_TRIGGER && (
@@ -75,7 +73,6 @@ const TriggersStep: React.FC<Props> = (props: Props) => {
           value={TriggersTypes.NEW_TRIGGER}
           name="radio-buttons"
           label="Create New Trigger"
-          inputProps={{ 'aria-label': TriggersTypes.NEW_TRIGGER }}
           wrapstyles={{ margin: selectedValue === TriggersTypes.NEW_TRIGGER ? '0 auto 12px 0' : '0 auto 20px 0' }}
         />
         {selectedValue === TriggersTypes.NEW_TRIGGER && <TriggerForm />}
