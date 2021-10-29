@@ -7,15 +7,20 @@ import { SessionsApi } from 'lib/api/ApiModels/Sessions/endpoints';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
 import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
+import { useSessionsDataContext } from 'lib/hooks/Sessions/useSessionsDataContext';
+import { SessionsSelectValuesTypes, SESSIONS_SELECT_VALUES } from 'lib/hooks/Sessions/model';
 interface IProps {}
 
 const ChartComponent: React.FC<IProps> = (props: IProps) => {
   const userContext = useContext<UserContextState>(UserContext);
+  const { sessions } = useSessionsDataContext();
   const { response, loading, error, onGet } = useGet<ISankeyRes>();
   const [data, setData] = React.useState<ISankeyRes>(null);
   React.useEffect(() => {
-    onTryToLoadData();
-  }, []);
+    if (sessions.sessionsOverviewPeriod) {
+      onTryToLoadData(sessions.sessionsOverviewPeriod);
+    }
+  }, [sessions.sessionsOverviewPeriod]);
 
   React.useEffect(() => {
     if (response && response.sankey) {
@@ -23,8 +28,9 @@ const ChartComponent: React.FC<IProps> = (props: IProps) => {
     }
   }, [response]);
 
-  const onTryToLoadData = async () => {
-    await onGet(SessionsApi.getSankeyData(), userContext.idToken!);
+  const onTryToLoadData = async (timePeriod: SessionsSelectValuesTypes) => {
+    const _item = SESSIONS_SELECT_VALUES.find(it => it.id === timePeriod || it.value === timePeriod);
+    await onGet(SessionsApi.getSankeyData(_item.data || '-7d'), userContext.idToken!);
   };
 
   return (

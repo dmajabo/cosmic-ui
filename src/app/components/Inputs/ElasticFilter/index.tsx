@@ -193,6 +193,10 @@ const ElasticFilter: React.FC<Props> = (props: Props) => {
     props.onClearFilteredItem(index);
   };
 
+  const onClearAll = () => {
+    props.onClearFilter();
+  };
+
   const onSelectTag = (item: ISelectionGridCellValue<ISessionsGridField, ISessionsGridField>, index: number) => {
     setSearchedField(item.field);
     setShowPopup(false);
@@ -230,7 +234,7 @@ const ElasticFilter: React.FC<Props> = (props: Props) => {
           )}
         </PopupWrapper>
       </ClickAwayListener>
-      <Tags items={props.selectionFilterItems} onRemoveTag={onClearFilteredItem} onSelectTag={onSelectTag} onChangeOperator={onChangeOperator} />
+      <Tags items={props.selectionFilterItems} onClearAll={onClearAll} onRemoveTag={onClearFilteredItem} onSelectTag={onSelectTag} onChangeOperator={onChangeOperator} />
     </ElasticFilterWrapper>
   );
 };

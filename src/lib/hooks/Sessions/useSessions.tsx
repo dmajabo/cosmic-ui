@@ -14,6 +14,7 @@ export interface SessionsContextType {
   sessionsCurrentPage: number;
   sessionsPageSize: number;
   sessionsPeriod: SessionsSelectValuesTypes;
+  sessionsOverviewPeriod: SessionsSelectValuesTypes;
   sessionsStitch: boolean;
   sessionsFilter: (ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> | string)[];
   onChangePageSize: (_size: number, _page?: number) => void;
@@ -32,6 +33,7 @@ export function useSessionsContext(): SessionsContextType {
   const [sessionsPageSize, setSessionsPageSize] = React.useState<number>(SESSIONS_DEFAULT_PAGE_SIZE);
   const [sessionsCurrentPage, setSessionsCurrentPage] = React.useState<number>(1);
   const [sessionsPeriod, setSessionsPeriod] = React.useState<SessionsSelectValuesTypes>(SESSIONS_SELECT_VALUES[0].value);
+  const [sessionsOverviewPeriod, setSessionsOverviewPeriod] = React.useState<SessionsSelectValuesTypes>(null);
   const [sessionsStitch, setSessionsStitch] = React.useState<boolean>(false);
   const [sessionsFilter, setSessionsFilterValue] = React.useState<(ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> | string)[]>([]);
 
@@ -40,6 +42,7 @@ export function useSessionsContext(): SessionsContextType {
       SessionStoragePreferenceKeys.SESSIONS_FILTER,
       SessionStoragePreferenceKeys.SESSIONS_TIME_PERIOD,
       SessionStoragePreferenceKeys.SESSIONS_STITCH,
+      SessionStoragePreferenceKeys.SESSIONS_OVERVIEW_TIME_PERIOD,
     ]);
     if (_preference) {
       if (_preference[SessionStoragePreferenceKeys.SESSIONS_FILTER]) {
@@ -51,6 +54,12 @@ export function useSessionsContext(): SessionsContextType {
       if (_preference[SessionStoragePreferenceKeys.SESSIONS_STITCH]) {
         setSessionsStitch(_preference[SessionStoragePreferenceKeys.SESSIONS_STITCH]);
       }
+      if (_preference[SessionStoragePreferenceKeys.SESSIONS_OVERVIEW_TIME_PERIOD]) {
+        setSessionsOverviewPeriod(_preference[SessionStoragePreferenceKeys.SESSIONS_OVERVIEW_TIME_PERIOD]);
+      }
+    }
+    if (!_preference || !_preference[SessionStoragePreferenceKeys.SESSIONS_OVERVIEW_TIME_PERIOD]) {
+      setSessionsOverviewPeriod(SESSIONS_SELECT_VALUES[3].value);
     }
   }, []);
 
@@ -84,6 +93,10 @@ export function useSessionsContext(): SessionsContextType {
       updateSessionStoragePreference(_item.value, OKULIS_LOCAL_STORAGE_KEYS.OKULIS_PREFERENCE, SessionStoragePreferenceKeys.SESSIONS_TIME_PERIOD);
       setSessionsPeriod(_item.value);
     }
+    if (_page === SessionsTabTypes.Overview) {
+      updateSessionStoragePreference(_item.value, OKULIS_LOCAL_STORAGE_KEYS.OKULIS_PREFERENCE, SessionStoragePreferenceKeys.SESSIONS_OVERVIEW_TIME_PERIOD);
+      setSessionsOverviewPeriod(_item.value);
+    }
   };
 
   const onChangeSwitch = (_v: boolean, _page: SessionsTabTypes) => {
@@ -116,6 +129,7 @@ export function useSessionsContext(): SessionsContextType {
     sessionsData,
     sessionsCount,
     sessionsPeriod,
+    sessionsOverviewPeriod,
     sessionsStitch,
     sessionsCurrentPage,
     sessionsPageSize,

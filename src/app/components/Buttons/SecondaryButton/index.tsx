@@ -11,13 +11,15 @@ interface IProps {
   styles?: Object;
   withoutBorder?: boolean;
   active?: boolean;
+  iconWidth?: string;
+  iconHeight?: string;
 }
 
 const SecondaryButton: React.FC<IProps> = (props: IProps) => {
   return (
     <SecondaryButtonStyles className={props.active ? 'active' : ''} withoutBorder={props.withoutBorder} style={props.styles} disabled={props.disabled} onClick={props.onClick}>
       <Label margin={props.icon ? '0 12px 0 0' : '0'}>{props.label}</Label>
-      {props.icon && <IconWrapper icon={props.icon} />}
+      {props.icon && <IconWrapper width={props.iconWidth || '16px'} height={props.iconHeight || '16px'} icon={props.icon} />}
     </SecondaryButtonStyles>
   );
 };
