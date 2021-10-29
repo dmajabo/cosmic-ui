@@ -5,10 +5,13 @@ import { ISessionsGridField } from 'app/containers/Pages/SessionsPage/SessionPag
 import FieldValueTag from './FieldValueTag';
 import uuid from 'react-uuid';
 import OperatorTag from './OperatorTag';
+import { closeSmallIcon } from 'app/components/SVGIcons/close';
+import SecondaryButton from 'app/components/Buttons/SecondaryButton';
 
 interface Props {
   items: (ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> | string)[];
   onRemoveTag: (index: number) => void;
+  onClearAll: () => void;
   onSelectTag: (_item: ISelectionGridCellValue<ISessionsGridField, ISessionsGridField>, index: number) => void;
   onChangeOperator: (_item: string, index: number) => void;
 }
@@ -24,6 +27,10 @@ const Tags: React.FC<Props> = (props: Props) => {
 
   const onChangeOperator = (_item: string, index: number) => {
     props.onChangeOperator(_item, index);
+  };
+
+  const onClearAll = () => {
+    props.onClearAll();
   };
 
   if (!props.items || !props.items.length) return null;
@@ -43,6 +50,17 @@ const Tags: React.FC<Props> = (props: Props) => {
           />
         );
       })}
+      {props.items && props.items.length ? (
+        <SecondaryButton
+          iconWidth="10px"
+          iconHeight="10px"
+          styles={{ display: 'flex', alignItems: 'center', height: '30px', padding: '4px 12px' }}
+          withoutBorder
+          label="Clear all"
+          icon={closeSmallIcon}
+          onClick={onClearAll}
+        />
+      ) : null}
     </TagsWrapper>
   );
 };

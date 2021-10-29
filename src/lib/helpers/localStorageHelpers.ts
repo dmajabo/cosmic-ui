@@ -4,6 +4,7 @@ export enum SessionStoragePreferenceKeys {
   SESSIONS_FILTER = 'sessions_filter',
   SESSIONS_TIME_PERIOD = 'sessions_time_period',
   SESSIONS_STITCH = 'sessions_stitch',
+  SESSIONS_OVERVIEW_TIME_PERIOD = 'sessions_overview_time_period',
 }
 
 export const updateSessionStoragePreference = (_value: any, _key: OKULIS_LOCAL_STORAGE_KEYS, _subKey?: SessionStoragePreferenceKeys) => {

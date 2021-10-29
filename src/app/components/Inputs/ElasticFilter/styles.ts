@@ -134,15 +134,26 @@ export const TagItem = styled.span`
   display: inline-flex;
   align-items: center;
   margin: 0 10px 10px 0;
-  height: 24px;
+  height: 30px;
   flex-shrink: 0;
-  border-radius: 20px;
-  background: var(--_stepperEdgeColor);
   line-height: 24px;
-  padding: 2px 12px;
+  padding: 3px 12px;
   font-family: 'DMSans';
   font-style: normal;
-  font-size: 10px;
+  font-size: 14px;
+  position: relative;
+`;
+
+export const TagBg = styled.span`
+  border-radius: 6px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  background: var(--_pButtonBg);
+  opacity: 0.1;
 `;
 
 interface LabelProps {
@@ -153,11 +164,12 @@ interface LabelProps {
 }
 export const TagItemLabel = styled.span<LabelProps>`
   display: inline-block;
-  color: ${props => props.color || 'var(--_disabledTextColor)'};
-  font-size: ${props => props.fontSize || '10px'};
+  color: var(--_primaryColor);
+  font-size: ${props => props.fontSize || '14px'};
   line-height: ${props => props.lineHeight || '24px'};
   padding: ${props => props.padding || '0'};
   flex-shrink: 0;
+  transition: color 0.2s linear;
 `;
 
 export const TextWrapper = styled.span`
@@ -166,4 +178,10 @@ export const TextWrapper = styled.span`
   margin: auto 4px auto 0;
   height: 100%;
   cursor: pointer;
+  z-index: 1;
+  &:hover {
+    ${TagItemLabel} {
+      color: var(--_sHoverButtonBorder);
+    }
+  }
 `;

@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
 import { TableWrapperStyles } from './styles';
 import TableComponent from './TableComponent';
 import { ITableColumn } from './model';
 import { useGet } from 'lib/api/http/useAxiosHook';
-
+import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 interface Props {
   columns: ITableColumn[];
   url: string;
@@ -16,6 +16,7 @@ interface Props {
 }
 
 const TableWrapper: React.FC<Props> = (props: Props) => {
+  const userContext = useContext<UserContextState>(UserContext);
   const { response, loading, error, onGet } = useGet<any>();
   const [data, setData] = React.useState<any[]>([]);
 
@@ -34,7 +35,7 @@ const TableWrapper: React.FC<Props> = (props: Props) => {
     if (!url || !params) {
       return;
     }
-    await onGet(url, params);
+    await onGet(url, userContext.idToken!, params);
   };
 
   return (

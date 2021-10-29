@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { IWedgeNode } from 'lib/models/topology';
 import { IResourceQueryParam, ControllerKeyTypes, SecurityGroupsResourceTypes, IPolicyRes, IVmRule, PolicyResKeyEnum, PolicyTableKeyEnum } from 'lib/api/ApiModels/Metrics/apiModel';
 import { PolicyApi } from 'lib/api/ApiModels/Metrics/endpoints';
@@ -7,6 +7,7 @@ import { useGet } from 'lib/api/http/useAxiosHook';
 import { getQueryResourceParam } from 'lib/api/ApiModels/Metrics/queryRoutesHelper';
 import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
 import { toTimestamp } from 'lib/api/ApiModels/Topology/endpoints';
+import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 
 interface IProps {
   dataItem: IWedgeNode;
@@ -14,6 +15,7 @@ interface IProps {
 
 const PolicyTab: React.FC<IProps> = (props: IProps) => {
   const { topology } = useTopologyDataContext();
+  const userContext = useContext<UserContextState>(UserContext);
   const { response, loading, error, onGet } = useGet<IPolicyRes>();
   const [inData, setInData] = React.useState<IVmRule[]>([]);
   const [outData, setOutData] = React.useState<IVmRule[]>([]);
@@ -52,7 +54,7 @@ const PolicyTab: React.FC<IProps> = (props: IProps) => {
     if (!url || !params) {
       return;
     }
-    await onGet(url, params);
+    await onGet(url, userContext.idToken!, params);
   };
 
   return (

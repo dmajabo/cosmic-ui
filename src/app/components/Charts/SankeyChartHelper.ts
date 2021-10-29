@@ -4,12 +4,13 @@ import { ISankeyData, SankeyNodeType } from 'lib/api/ApiModels/Sessions/apiModel
 import { jsonClone } from 'lib/helpers/cloneHelper';
 
 export const createSankeyChart = (id: string, data: ISankeyData) => {
-  if (!data || !data.links || !data.nodes || !data.links.length || !data.nodes.length) return;
-  const _data = jsonClone(data);
   const container = d3.select(`#${id}`);
-  container.select(`#sankeyHeader`).attr('opacity', 1);
+  container.select(`#sankeyHeader`).attr('opacity', 0);
   container.select('#sankeyChartContainerLinks').selectAll('*').remove();
   container.select('#sankeyChartContainerNodes').selectAll('*').remove();
+  if (!data || !data.links || !data.nodes || !data.links.length || !data.nodes.length) return;
+  const _data = jsonClone(data);
+  container.select(`#sankeyHeader`).attr('opacity', 1);
   const size = container.node().getBoundingClientRect();
 
   const rootG = container.select('#sankeyChartContainerRoot');
@@ -78,9 +79,7 @@ const buildNode = (nodeContainer: any) => {
     })
     .attr('stroke', '#F3F6FC')
     .append('title')
-    .text(d => {
-      return d.name;
-    });
+    .text(d => d.name || `ID: ${d.node}\nType: ${d.type}`);
   textG
     .append('text')
     .attr('class', d => {
@@ -105,7 +104,7 @@ const buildNode = (nodeContainer: any) => {
       if (d.type === SankeyNodeType.SANKEY_APPLICATION) return -4;
       return 0;
     })
-    .text(d => d.name);
+    .text(d => d.name || d.node);
   nodeContainer.attr('transform', d => `translate(${d.x0}, ${d.y0})`);
   nodeContainer.on('mouseenter', (e, d) => onHighLightLink(e, d));
   nodeContainer.on('mouseleave', (e, d) => onUnHighLightLink(e, d));

@@ -1,8 +1,8 @@
 import React from 'react';
 import { ISelectionGridCellValue } from 'lib/models/general';
-import { TagItem, TagItemLabel, TextWrapper } from './styles';
+import { TagBg, TagItem, TagItemLabel, TextWrapper } from './styles';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
-import { closeIcon } from 'app/components/SVGIcons/close';
+import { closeSmallIcon } from 'app/components/SVGIcons/close';
 import { ISessionsGridField } from 'app/containers/Pages/SessionsPage/SessionPage/models';
 
 interface Props {
@@ -23,15 +23,12 @@ const FieldValueTag: React.FC<Props> = ({ item, index, onRemoveTag, onSelectTag 
 
   return (
     <TagItem>
+      <TagBg />
       <TextWrapper onClick={onSelect}>
-        <TagItemLabel fontSize="12px" lineHeight="23px" color="var(--_primaryColor)">
-          {item.field.label}:
-        </TagItemLabel>
-        <TagItemLabel padding="4px 0 2px 4px" lineHeight="16px">
-          {item.value.label}
-        </TagItemLabel>
+        <TagItemLabel color="var(--_primaryColor)">{item.field.label}:</TagItemLabel>
+        <TagItemLabel padding="0 0 0 4px">{item.value.label}</TagItemLabel>
       </TextWrapper>
-      <IconWrapper styles={{ margin: 'auto 0 auto 8px' }} width="10px" height="10px" icon={closeIcon} onClick={onRemove} />
+      <IconWrapper styles={{ margin: 'auto 0 auto 8px', zIndex: 1 }} width="10px" height="10px" icon={closeSmallIcon} onClick={onRemove} />
     </TagItem>
   );
 };

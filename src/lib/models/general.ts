@@ -50,6 +50,7 @@ export interface ISelectedListItem<T> {
   id: string | number | null;
   value: T;
   label: string;
+  data?: any;
 }
 
 export interface IPopupDisplay extends ICoord {

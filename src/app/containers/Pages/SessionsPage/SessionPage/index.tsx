@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { ActionPart, ActionRowStyles, ContentWrapper, TableWrapper } from '../../Shared/styles';
 import { useGet } from 'lib/api/http/useAxiosHook';
 import { IAllSessionsRes } from 'lib/api/ApiModels/Sessions/apiModel';
@@ -14,11 +14,13 @@ import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
 import ElasticFilter from 'app/components/Inputs/ElasticFilter';
 import { FilterOpperatorsList, ISessionsGridField, SessionGridColumnItems } from './models';
+import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 
 interface IProps {}
 
 const SessionPage: React.FC<IProps> = (props: IProps) => {
   const { sessions } = useSessionsDataContext();
+  const userContext = useContext<UserContextState>(UserContext);
   const { response, loading, error, onGet } = useGet<IAllSessionsRes>();
   React.useEffect(() => {
     return () => {
@@ -46,7 +48,7 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
     filterValue: (ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> | string)[],
   ) => {
     const _param = sessionsParamBuilder(pageSize, page, time, stitch, filterValue);
-    await onGet(SessionsApi.getAllSessions(), _param);
+    await onGet(SessionsApi.getAllSessions(), userContext.idToken!, _param);
   };
 
   const onChangePageSize = (_size: number, page?: number) => {

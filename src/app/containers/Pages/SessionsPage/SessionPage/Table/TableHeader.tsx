@@ -1,10 +1,11 @@
 import React from 'react';
 import { columnsIcon } from 'app/components/SVGIcons/columnsIcon';
-import { GridHeaderWrapper, GridLabelWrapper, GridLabel, GridCount, FilteredColumnItem, OverflowContainer, PopupTitle, FilteredColumnLabel } from './styles';
+import { GridHeaderWrapper, GridLabelWrapper, GridLabel, GridCount } from './styles';
 import { GridColDef } from '@mui/x-data-grid';
 import SecondaryButtonWithPopup from 'app/components/Buttons/SecondaryButton/SecondaryButtonWithPopup';
 import PopupContainer from 'app/components/PopupContainer';
 import SimpleCheckbox from 'app/components/Inputs/Checkbox/SimpleCheckbox';
+import { PopupTitle, OverflowContainer, FilteredColumnItem, FilteredColumnLabel } from 'app/components/PopupContainer/styles';
 interface Props {
   count: number;
   columns: GridColDef[];

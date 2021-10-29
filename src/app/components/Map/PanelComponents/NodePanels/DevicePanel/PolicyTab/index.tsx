@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { IDeviceNode } from 'lib/models/topology';
 import { IResourceQueryParam, ControllerKeyTypes, SecurityGroupsResourceTypes, IPolicyRes, IDeviceRule, PolicyResKeyEnum } from 'lib/api/ApiModels/Metrics/apiModel';
 import { PolicyApi } from 'lib/api/ApiModels/Metrics/endpoints';
@@ -7,6 +7,7 @@ import { useGet } from 'lib/api/http/useAxiosHook';
 import { getQueryResourceParam } from 'lib/api/ApiModels/Metrics/queryRoutesHelper';
 import { toTimestamp } from 'lib/api/ApiModels/Topology/endpoints';
 import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
+import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 
 interface IProps {
   dataItem: IDeviceNode;
@@ -14,6 +15,7 @@ interface IProps {
 
 const PolicyTab: React.FC<IProps> = (props: IProps) => {
   const { topology } = useTopologyDataContext();
+  const userContext = useContext<UserContextState>(UserContext);
   const { response, loading, error, onGet } = useGet<IPolicyRes>();
   const [data, setData] = React.useState<IDeviceRule[]>([]);
 
@@ -44,7 +46,7 @@ const PolicyTab: React.FC<IProps> = (props: IProps) => {
     if (!url || !params) {
       return;
     }
-    await onGet(url, params);
+    await onGet(url, userContext.idToken!, params);
   };
   // title={PolicyTableKeyEnum.Inbound}
   return (

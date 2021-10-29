@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { IMeraki_Account } from 'lib/api/ApiModels/Accounts/apiModel';
 import { ModalContent, ModalFooter, ModalOverflowContainer } from '../../styles/styles';
 import { StepItemFormRow } from './styles';
@@ -14,6 +14,7 @@ import LoadingIndicator from 'app/components/Loading';
 import { AccountsApi } from 'lib/api/ApiModels/Accounts/endpoints';
 import { useAccountsDataContext } from 'lib/hooks/Accounts/useAccountsDataContext';
 import { IBaseEntity } from 'lib/models/general';
+import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 interface Props {
   isEditMode: boolean;
   dataItem: IMeraki_Account;
@@ -22,6 +23,7 @@ interface Props {
 
 const NewCiscoMerakiAccountForm: React.FC<Props> = (props: Props) => {
   const { accounts } = useAccountsDataContext();
+  const userContext = useContext<UserContextState>(UserContext);
   const { response: getResById, loading: getLoading, onGet } = useGet<IMeraki_Account>();
   const { response: postRes, loading: postLoading, onPost } = usePost<IMeraki_Account, IBaseEntity<string>>();
   const { response: postUpdateRes, loading: postUpdateLoading, onPut: onUpdate } = usePut<IMeraki_Account, IBaseEntity<string>>();
@@ -93,15 +95,15 @@ const NewCiscoMerakiAccountForm: React.FC<Props> = (props: Props) => {
   };
 
   const onUpdateGroup = async () => {
-    await onUpdate(AccountsApi.putUpdateAccount(dataItem.id), { controller: dataItem });
+    await onUpdate(AccountsApi.putUpdateAccount(dataItem.id), { controller: dataItem }, userContext.idToken!);
   };
 
   const onCreateGroup = async () => {
-    await onPost(AccountsApi.postCreateAccount(), { controller: dataItem });
+    await onPost(AccountsApi.postCreateAccount(), { controller: dataItem }, userContext.idToken!);
   };
 
   const onGetAccountById = async (id: string) => {
-    await onGet(AccountsApi.getAccountsById(id));
+    await onGet(AccountsApi.getAccountsById(id), userContext.idToken!);
   };
 
   if (!dataItem) return null;

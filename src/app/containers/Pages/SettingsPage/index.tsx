@@ -1,8 +1,15 @@
 import React from 'react';
+import { SettingsProvider, useSettingsActions } from 'lib/hooks/Settings/useSettingsDataContenxt';
+import Page from './Page';
 interface IProps {}
 
 const SettingsPage: React.FC<IProps> = (props: IProps) => {
-  return <div>This page is currently unavailable</div>;
+  const settingsActions = useSettingsActions();
+  return (
+    <SettingsProvider actions={settingsActions}>
+      <Page />
+    </SettingsProvider>
+  );
 };
 
 export default React.memo(SettingsPage);

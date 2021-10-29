@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { PanelBarContent, PanelHeader, PanelTitle } from '../styles';
 import OverflowContainer from 'app/components/Basic/OverflowContainer/styles';
 import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
@@ -15,11 +15,13 @@ import { useGet, usePost, useDelete, usePut } from 'lib/api/http/useAxiosHook';
 import { jsonClone } from 'lib/helpers/cloneHelper';
 import { getMaxCopyValue } from './helpers';
 import SecondaryButton from 'app/components/Buttons/SecondaryButton';
+import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 
 interface IProps {}
 
 const GroupsComponent: React.FC<IProps> = (props: IProps) => {
   const { topology } = useTopologyDataContext();
+  const userContext = useContext<UserContextState>(UserContext);
   const [groups, setGroups] = React.useState([]);
   const [view, setView] = React.useState<TopologyGroupsView | null>(null);
   const [groupToEdit, setGroupToEdit] = React.useState<ITopologyGroup | null>(null);
@@ -92,12 +94,12 @@ const GroupsComponent: React.FC<IProps> = (props: IProps) => {
   };
 
   const onUpdateGroup = async (_data: ITopologyGroup) => {
-    await onUpdate(TopologyGroupApi.postUpdateGroup(_data.id), { group: _data });
+    await onUpdate(TopologyGroupApi.postUpdateGroup(_data.id), { group: _data }, userContext.idToken!);
     // await postUpdateGroupAsync(TopologyGroupApi.postUpdateGroup(_data.id), { groupPol: _data });
   };
 
   const onCreateGroup = async (_data: ITopologyGroup) => {
-    await onPost(TopologyGroupApi.postCreateGroup(), { group: _data });
+    await onPost(TopologyGroupApi.postCreateGroup(), { group: _data }, userContext.idToken!);
   };
 
   const getPanelBarTitle = (_view: TopologyGroupsView, _group: ITopologyGroup | null) => {
@@ -127,11 +129,11 @@ const GroupsComponent: React.FC<IProps> = (props: IProps) => {
   };
 
   const onTryDeleteGroup = async (_group: ITopologyGroup) => {
-    await onDelete(TopologyGroupApi.deleteGroup(_group.id));
+    await onDelete(TopologyGroupApi.deleteGroup(_group.id), userContext.idToken!);
   };
 
   const onGetGroup = async (id: string) => {
-    await onGet(TopologyGroupApi.getGroupById(id));
+    await onGet(TopologyGroupApi.getGroupById(id), userContext.idToken!);
   };
 
   if (!view) {
