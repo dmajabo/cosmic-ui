@@ -38,7 +38,7 @@ const Page: React.FC<IProps> = (props: IProps) => {
           ))}
         </Tabs>
       </TabsWrapperStyles>
-      <TabPanel value={settings.selectedTab.index} index={SETTINGS_TABS[0].index}>
+      <TabPanel styles={{ display: 'flex', flexDirection: 'column', flex: 1 }} value={settings.selectedTab.index} index={SETTINGS_TABS[0].index}>
         <AdminPage />
       </TabPanel>
       <TabPanel value={settings.selectedTab.index} index={SETTINGS_TABS[1].index}>

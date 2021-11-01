@@ -1,5 +1,5 @@
 import React from 'react';
-// import { useSettingsDataContext } from 'lib/hooks/Settings/useSettingsDataContenxt';
+import { useSettingsDataContext } from 'lib/hooks/Settings/useSettingsDataContenxt';
 import { DataGrid, GridCellParams, GridColDef, GridRenderCellParams, GridSelectionModel, GridValueFormatterParams } from '@mui/x-data-grid';
 import Header from './Header';
 import { GridStyles } from 'app/components/Grid/GridStyles';
@@ -15,11 +15,12 @@ import EditProfileFormComponent from './FormComponent/EditProfileFormComponent';
 import { GridCellWrapper, GridCellLabel } from 'app/components/Grid/styles';
 import { IModal } from 'lib/models/general';
 import SimpleCheckbox from 'app/components/Inputs/Checkbox/SimpleCheckbox';
+import Paging from 'app/components/Basic/Paging';
 interface IProps {}
 
 const AdminPage: React.FC<IProps> = (props: IProps) => {
-  // const { settings } = useSettingsDataContext();
-  const [data] = React.useState<any[]>([
+  const { settings } = useSettingsDataContext();
+  const [dataRows] = React.useState<any[]>([
     {
       id: '0',
       rowIndex: 0,
@@ -171,6 +172,13 @@ const AdminPage: React.FC<IProps> = (props: IProps) => {
     setSelectionModel(e);
   };
 
+  const onChangePage = (page: number) => {
+    settings.onChangeCurrentPage(page);
+  };
+  const onChangePageSize = (size: number, page?: number) => {
+    settings.onChangePageSize(size, page);
+  };
+
   return (
     <>
       <Header
@@ -189,11 +197,11 @@ const AdminPage: React.FC<IProps> = (props: IProps) => {
         hideFooter
         headerHeight={50}
         rowHeight={50}
-        rowCount={0}
+        rowCount={dataRows.length}
         disableColumnFilter
         autoHeight
         // error={props.isError}
-        rows={data}
+        rows={dataRows}
         columns={gridColumns}
         checkboxSelection
         disableSelectionOnClick
@@ -202,21 +210,21 @@ const AdminPage: React.FC<IProps> = (props: IProps) => {
         components={{
           Checkbox: ({ checked, onChange, indeterminate }) => <SimpleCheckbox isChecked={checked} toggleCheckboxChange={onChange} indeterminate={indeterminate} />,
         }}
-        // pageSize={dataRows ? dataRows.length : 0}
+        pageSize={dataRows ? dataRows.length : 0}
         // components={{
         //   ColumnUnsortedIcon: () => null,
         //   ColumnSortedAscendingIcon: () => <>{gridAscArrow}</>,
         //   ColumnSortedDescendingIcon: () => <>{gridDescArrow}</>,
         // }}
       />
-      {/* <Paging
-        count={props.logCount}
-        disabled={!dataRows.length || props.logCount === 0}
-        pageSize={props.pageSize}
-        currentPage={props.currentPage}
+      <Paging
+        count={dataRows.length}
+        disabled={!dataRows.length}
+        pageSize={settings.adminsPageSize}
+        currentPage={settings.adminCurrentPage}
         onChangePage={onChangePage}
         onChangePageSize={onChangePageSize}
-      /> */}
+      />
       <Drawer transitionDuration={300} anchor="right" open={showEditForm && showEditForm.show ? true : false} onClose={onCloseEditForm}>
         <EditFormComponent isEdit={showEditForm && showEditForm.dataItem} dataItem={showEditForm && showEditForm.dataItem} onClose={onCloseEditForm} />
       </Drawer>
