@@ -4,6 +4,7 @@ import HighchartsReact from 'highcharts-react-official';
 import { DateTime } from 'luxon';
 import { MetricKeyValue } from './PacketLoss';
 import { Data } from './Table';
+import { sortBy } from 'lodash';
 
 interface DataPoint {
   readonly name: string;
@@ -89,10 +90,10 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
 
   useEffect(() => {
     const tempChartData: ChartData[] = selectedRows.map(row => {
-      inputData[row.id].sort((a, b) => DateTime.fromFormat(a.time, OLD_TIME_FORMAT).valueOf() - DateTime.fromFormat(b.time, OLD_TIME_FORMAT).valueOf());
+      const sortedData = sortBy(inputData[row.id], 'time');
       return {
         name: `${row.name} &#9654 ${row.sourceDevice}`,
-        data: inputData[row.id].map(item => {
+        data: sortedData.map(item => {
           const val = DateTime.fromFormat(item.time, OLD_TIME_FORMAT).toUTC().toFormat(REQUIRED_FORMAT);
           return {
             name: val,
@@ -111,10 +112,10 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
       };
     });
     const anomalyData: ChartData[] = selectedRows.map(row => {
-      inputData[`${row.id}_anomaly`].sort((a, b) => DateTime.fromFormat(a.time, OLD_TIME_FORMAT).valueOf() - DateTime.fromFormat(b.time, OLD_TIME_FORMAT).valueOf());
+      const sortedData = sortBy(inputData[`${row.id}_anomaly`], 'time');
       return {
         name: `${row.name}_anomaly`,
-        data: inputData[`${row.id}_anomaly`].map(item => {
+        data: sortedData.map(item => {
           const val = DateTime.fromFormat(item.time, OLD_TIME_FORMAT).toUTC().toFormat(REQUIRED_FORMAT);
           return {
             name: val,
@@ -137,8 +138,8 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
         lineWidth: 0,
       };
     });
-    tempChartData.sort((a, b) => b.data.length - a.data.length);
-    const finalChartData = tempChartData.concat(anomalyData);
+    const sortedChartData = sortBy(tempChartData, 'data').reverse();
+    const finalChartData = sortedChartData.concat(anomalyData);
     setData(finalChartData);
 
     const dataLength: number[] = selectedRows.map(row => inputData[row.id].length);
