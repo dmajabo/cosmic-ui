@@ -1,17 +1,17 @@
 import React from 'react';
-import { ACCESS_SECTIONS, IACCESS_SECTIONS_PERMISION } from '../model';
+import { AdminFormProfileDataFields, IACCESS_SECTIONS_PERMISION } from '../model';
 import { TableCell, TableRow } from '@material-ui/core';
 import RadioButton from 'app/components/Inputs/RadioButton';
+import { CellContent } from './styles';
 import { ACCESS_SECTIONS_PERMISION_VALUE } from 'lib/api/ApiModels/Settings/apiModels';
 import { useFormContext } from 'react-hook-form';
-import { CellContent } from './styles';
 
 interface Props {
   dataItem: IACCESS_SECTIONS_PERMISION;
   selectedValue: ACCESS_SECTIONS_PERMISION_VALUE | null;
   rowStyles: any;
   cellStyles: any;
-  onChangeField: (v: ACCESS_SECTIONS_PERMISION_VALUE, field: ACCESS_SECTIONS) => void;
+  onChangeField: (v: ACCESS_SECTIONS_PERMISION_VALUE, field: AdminFormProfileDataFields) => void;
 }
 
 const PermisionTableRow: React.FC<Props> = React.forwardRef(({ dataItem, selectedValue, rowStyles, cellStyles, onChangeField }, ref) => {
@@ -34,7 +34,7 @@ const PermisionTableRow: React.FC<Props> = React.forwardRef(({ dataItem, selecte
           <RadioButton
             {...register(dataItem.section)}
             checked={selectedValue === ACCESS_SECTIONS_PERMISION_VALUE.READ_WRITE}
-            onChange={onChange}
+            onValueChange={onChange}
             value={ACCESS_SECTIONS_PERMISION_VALUE.READ_WRITE}
             name={dataItem.section}
             wrapstyles={{ margin: 'auto' }}
@@ -47,7 +47,7 @@ const PermisionTableRow: React.FC<Props> = React.forwardRef(({ dataItem, selecte
           <RadioButton
             {...register(dataItem.section)}
             checked={selectedValue === ACCESS_SECTIONS_PERMISION_VALUE.READ}
-            onChange={onChange}
+            onValueChange={onChange}
             value={ACCESS_SECTIONS_PERMISION_VALUE.READ}
             name={dataItem.section}
             wrapstyles={{ margin: 'auto' }}
@@ -60,7 +60,7 @@ const PermisionTableRow: React.FC<Props> = React.forwardRef(({ dataItem, selecte
           <RadioButton
             {...register(dataItem.section)}
             checked={selectedValue === ACCESS_SECTIONS_PERMISION_VALUE.NONE}
-            onChange={onChange}
+            onValueChange={onChange}
             value={ACCESS_SECTIONS_PERMISION_VALUE.NONE}
             name={dataItem.section}
             wrapstyles={{ margin: 'auto' }}

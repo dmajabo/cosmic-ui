@@ -217,10 +217,10 @@ const AdminPage: React.FC<IProps> = (props: IProps) => {
         onChangePage={onChangePage}
         onChangePageSize={onChangePageSize}
       /> */}
-      <Drawer transitionDuration={300} anchor="right" open={showEditForm && showEditForm.show} onClose={onCloseEditForm}>
+      <Drawer transitionDuration={300} anchor="right" open={showEditForm && showEditForm.show ? true : false} onClose={onCloseEditForm}>
         <EditFormComponent isEdit={showEditForm && showEditForm.dataItem} dataItem={showEditForm && showEditForm.dataItem} onClose={onCloseEditForm} />
       </Drawer>
-      <Drawer transitionDuration={300} anchor="right" open={showEditProfileForm && showEditProfileForm.show} onClose={onCloseProfileForm}>
+      <Drawer transitionDuration={300} anchor="right" open={showEditProfileForm && showEditProfileForm.show ? true : false} onClose={onCloseProfileForm}>
         <EditProfileFormComponent dataItem={showEditProfileForm && showEditProfileForm.dataItem} onClose={onCloseProfileForm} />
       </Drawer>
     </>

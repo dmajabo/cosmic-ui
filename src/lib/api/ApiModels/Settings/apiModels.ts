@@ -6,7 +6,9 @@ export enum ACCESS_SECTIONS_PERMISION_VALUE {
   NONE = 'NONE',
 }
 
-export interface IPermision {
+export interface IProfile {
+  name: string;
+  description: string;
   dashboard: ACCESS_SECTIONS_PERMISION_VALUE | null;
   topology: ACCESS_SECTIONS_PERMISION_VALUE | null;
   network: ACCESS_SECTIONS_PERMISION_VALUE | null;
@@ -15,12 +17,6 @@ export interface IPermision {
   automation: ACCESS_SECTIONS_PERMISION_VALUE | null;
   analytics: ACCESS_SECTIONS_PERMISION_VALUE | null;
   settings: ACCESS_SECTIONS_PERMISION_VALUE | null;
-}
-
-export interface IProfile {
-  name: string;
-  description: string;
-  permission: IPermision | null;
 }
 export interface IAdminsUser extends IBaseEntity<string> {
   id: string;

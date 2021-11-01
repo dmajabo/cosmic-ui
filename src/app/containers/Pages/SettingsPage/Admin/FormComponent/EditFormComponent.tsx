@@ -30,7 +30,7 @@ const EditFormComponent: React.FC<IProps> = (props: IProps) => {
       description: props.dataItem ? props.dataItem.description : '',
       profile: props.dataItem
         ? props.dataItem.profile
-        : { name: '', description: '', permission: { dashboard: null, topology: null, network: null, performance_dashboard: null, sessions: null, automation: null, analytics: null, settings: null } },
+        : { name: '', description: '', dashboard: null, topology: null, network: null, performance_dashboard: null, sessions: null, automation: null, analytics: null, settings: null },
       apiAccess: props.dataItem ? props.dataItem.apiAccess : '',
     },
   });
@@ -38,7 +38,7 @@ const EditFormComponent: React.FC<IProps> = (props: IProps) => {
   const [profile, setProfile] = React.useState<IProfile>(
     props.dataItem
       ? props.dataItem.profile
-      : { name: '', description: '', permission: { dashboard: null, topology: null, network: null, performance_dashboard: null, sessions: null, automation: null, analytics: null, settings: null } },
+      : { name: '', description: '', dashboard: null, topology: null, network: null, performance_dashboard: null, sessions: null, automation: null, analytics: null, settings: null },
   );
   const [apiAccess, setApiAccess] = React.useState<string>(props.dataItem ? props.dataItem.apiAccess : '');
 

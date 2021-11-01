@@ -3,7 +3,7 @@ import { Icon } from '../Buttons/IconWrapper/styles';
 
 export const CardWrapper = styled.div`
   display: flex;
-  width: calc(100% / 5 - 15px);
+  width: calc(100% / 3 - 15px); // calc(100% / 5 - 15px);
   min-width: 160px;
   height: 140px;
   border-radius: 6px;
