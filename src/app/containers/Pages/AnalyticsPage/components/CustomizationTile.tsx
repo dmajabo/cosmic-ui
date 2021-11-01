@@ -9,10 +9,11 @@ export interface CustomizationTabProps {
   readonly description?: string;
   readonly operationImage?: string;
   readonly operationName?: string;
+  readonly operationEventHandler?: () => void;
   readonly content?: JSX.Element;
 }
 
-export const CustomizationTile: React.FC<CustomizationTabProps> = ({ img, title, description, operationImage, operationName, content }) => {
+export const CustomizationTile: React.FC<CustomizationTabProps> = ({ img, title, description, operationImage, operationName, operationEventHandler, content }) => {
   const classes = AnalyticsStyles();
   const [isTileOpen, setIsTileOpen] = useState<boolean>(false);
 
@@ -29,7 +30,7 @@ export const CustomizationTile: React.FC<CustomizationTabProps> = ({ img, title,
           <span className={classes.countText}>{description}</span>
         </div>
         <div>
-          <span>
+          <span onClick={operationEventHandler}>
             <img className={classes.operationImage} src={operationImage} alt={operationName} />
           </span>
           {isTileOpen ? (
