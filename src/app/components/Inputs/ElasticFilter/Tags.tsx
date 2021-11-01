@@ -3,7 +3,6 @@ import { ISelectionGridCellValue } from 'lib/models/general';
 import { TagsWrapper } from './styles';
 import { ISessionsGridField } from 'app/containers/Pages/SessionsPage/SessionPage/models';
 import FieldValueTag from './FieldValueTag';
-import uuid from 'react-uuid';
 import OperatorTag from './OperatorTag';
 import { closeSmallIcon } from 'app/components/SVGIcons/close';
 import SecondaryButton from 'app/components/Buttons/SecondaryButton';
@@ -38,11 +37,11 @@ const Tags: React.FC<Props> = (props: Props) => {
     <TagsWrapper>
       {props.items.map((it, index) => {
         if (typeof it === 'string') {
-          return <OperatorTag item={it} index={index} onChangeOperator={onChangeOperator} />;
+          return <OperatorTag key={`tagFilterOperator${index}`} item={it} index={index} onChangeOperator={onChangeOperator} />;
         }
         return (
           <FieldValueTag
-            key={`tagFilterItem${uuid()}`}
+            key={`tagFilterItem${index}`}
             index={index}
             item={it as ISelectionGridCellValue<ISessionsGridField, ISessionsGridField>}
             onRemoveTag={onRemoveItem}

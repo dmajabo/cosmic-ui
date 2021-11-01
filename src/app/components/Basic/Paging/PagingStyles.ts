@@ -6,7 +6,7 @@ export const PagingStyles = makeStyles(
       root: {
         height: '100%',
         fontFamily: 'DMSans',
-        background: 'var(--_primaryBg)',
+        background: 'transparent',
         '& *': {
           fontFamily: 'DMSans !important',
         },
@@ -32,6 +32,9 @@ export const PagingStyles = makeStyles(
           lineHeight: '0',
           letterSpacing: '0.1px',
           color: 'var(--_disabledTextColor)',
+          '&.Mui-selected:hover': {
+            background: 'transparent',
+          },
           '&:hover': {
             background: 'transparent',
           },

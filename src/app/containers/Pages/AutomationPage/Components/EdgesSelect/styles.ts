@@ -51,6 +51,7 @@ export const DisplayValueStyles = styled.span`
   color: inherit;
   direction: rtl;
   text-align: left;
+  vertical-align: bottom;
   &.filled {
     color: var(--_primaryColor);
   }
