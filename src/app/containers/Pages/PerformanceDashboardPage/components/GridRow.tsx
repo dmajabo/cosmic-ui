@@ -13,11 +13,11 @@ interface GridRowProps {
   readonly dataSuffix: string;
 }
 
-const BLACK_COLOUR = 'black';
+const RED_COLOUR = '#DC4545';
 
 const getColor = (legendData: LegendData[], data: number) => {
   const selectedLegend = legendData.find(item => data >= item.low && data <= item.high);
-  return selectedLegend?.color || BLACK_COLOUR;
+  return selectedLegend?.color || RED_COLOUR;
 };
 
 export const GridRow: React.FC<GridRowProps> = ({ dataSuffix, selectedRows, device, tests, heatMapData, legendData }) => {

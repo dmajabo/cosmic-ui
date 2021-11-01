@@ -71,13 +71,7 @@ export const PerformanceDashboardStyles = makeStyles(
       averageQoeText: {
         paddingTop: 10,
       },
-      packetLossValueText: {
-        color: 'red',
-        paddingLeft: 5,
-        paddingRight: 10,
-      },
-      latencyValueText: {
-        color: 'green',
+      qoeValueText: {
         paddingLeft: 5,
         paddingRight: 10,
       },

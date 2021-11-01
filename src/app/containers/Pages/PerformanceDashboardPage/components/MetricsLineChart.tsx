@@ -89,6 +89,7 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
 
   useEffect(() => {
     const tempChartData: ChartData[] = selectedRows.map(row => {
+      inputData[row.id].sort((a, b) => DateTime.fromFormat(a.time, OLD_TIME_FORMAT).valueOf() - DateTime.fromFormat(b.time, OLD_TIME_FORMAT).valueOf());
       return {
         name: `${row.name} &#9654 ${row.sourceDevice}`,
         data: inputData[row.id].map(item => {
@@ -110,6 +111,7 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
       };
     });
     const anomalyData: ChartData[] = selectedRows.map(row => {
+      inputData[`${row.id}_anomaly`].sort((a, b) => DateTime.fromFormat(a.time, OLD_TIME_FORMAT).valueOf() - DateTime.fromFormat(b.time, OLD_TIME_FORMAT).valueOf());
       return {
         name: `${row.name}_anomaly`,
         data: inputData[`${row.id}_anomaly`].map(item => {
@@ -135,6 +137,7 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
         lineWidth: 0,
       };
     });
+    tempChartData.sort((a, b) => b.data.length - a.data.length);
     const finalChartData = tempChartData.concat(anomalyData);
     setData(finalChartData);
 
