@@ -16,10 +16,7 @@ interface AvgQoeProps {
 
 const RED_COLOUR = '#DC4545';
 
-const getColor = (legendData: LegendData[], data: number) => {
-  const selectedLegend = legendData.find(item => data >= item.low && data <= item.high);
-  return selectedLegend?.color || RED_COLOUR;
-};
+const getColor = (legendData: LegendData[], data: number) => legendData.find(item => data >= item.low && data <= item.high)?.color || RED_COLOUR;
 
 const AverageQoe: React.FC<AvgQoeProps> = ({ updateTest, deleteTest, packetLoss, latency, testId }) => {
   const classes = PerformanceDashboardStyles();
