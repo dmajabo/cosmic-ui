@@ -1,5 +1,5 @@
 import { IQuryFieldtype, ISessionsGridField } from 'app/containers/Pages/SessionsPage/SessionPage/models';
-import { StitchTypes, SESSIONS_DEFAULT_PAGE_SIZE, SessionsSelectValuesTypes } from 'lib/hooks/Sessions/model';
+import { StitchTypes, PAGING_DEFAULT_PAGE_SIZE, SessionsSelectValuesTypes } from 'lib/hooks/Sessions/model';
 import { ISelectionGridCellValue } from 'lib/models/general';
 
 export interface ISessionParam {
@@ -19,10 +19,10 @@ export const sessionsParamBuilder = (
 ): ISessionParam => {
   let param: ISessionParam = {};
   if (currentPage !== 1) {
-    const _size = size || SESSIONS_DEFAULT_PAGE_SIZE;
+    const _size = size || PAGING_DEFAULT_PAGE_SIZE;
     param.start_from = (currentPage - 1) * _size;
   }
-  if (size && size !== SESSIONS_DEFAULT_PAGE_SIZE) {
+  if (size && size !== PAGING_DEFAULT_PAGE_SIZE) {
     param.page_size = size;
   }
   if (time_range && time_range !== SessionsSelectValuesTypes.LAST_HOUR) {

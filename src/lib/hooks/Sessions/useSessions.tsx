@@ -1,6 +1,6 @@
 import React from 'react';
 import { ITab } from 'lib/models/tabs';
-import { SessionsSelectValuesTypes, SessionsTabTypes, SESSIONS_DEFAULT_PAGE_SIZE, SESSIONS_SELECT_VALUES, SESSIONS_TABS } from './model';
+import { SessionsSelectValuesTypes, SessionsTabTypes, PAGING_DEFAULT_PAGE_SIZE, SESSIONS_SELECT_VALUES, SESSIONS_TABS } from './model';
 import { ISelectedListItem, ISelectionGridCellValue } from 'lib/models/general';
 import { ISession } from 'lib/api/ApiModels/Sessions/apiModel';
 import { ISessionsGridField } from 'app/containers/Pages/SessionsPage/SessionPage/models';
@@ -30,7 +30,7 @@ export function useSessionsContext(): SessionsContextType {
   const [selectedTab, setSelectedTab] = React.useState<ITab<SessionsTabTypes>>(SESSIONS_TABS[0]);
   const [sessionsData, setSessionsData] = React.useState<ISession[]>([]);
   const [sessionsCount, setSessionsCount] = React.useState<number>(0);
-  const [sessionsPageSize, setSessionsPageSize] = React.useState<number>(SESSIONS_DEFAULT_PAGE_SIZE);
+  const [sessionsPageSize, setSessionsPageSize] = React.useState<number>(PAGING_DEFAULT_PAGE_SIZE);
   const [sessionsCurrentPage, setSessionsCurrentPage] = React.useState<number>(1);
   const [sessionsPeriod, setSessionsPeriod] = React.useState<SessionsSelectValuesTypes>(SESSIONS_SELECT_VALUES[0].value);
   const [sessionsOverviewPeriod, setSessionsOverviewPeriod] = React.useState<SessionsSelectValuesTypes>(null);

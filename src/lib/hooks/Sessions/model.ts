@@ -5,7 +5,7 @@ export enum StitchTypes {
   DEFAULT = 'DEFAULT',
   STITCHED_ONLY = 'STITCHED_ONLY',
 }
-export const SESSIONS_DEFAULT_PAGE_SIZE: number = 50;
+export const PAGING_DEFAULT_PAGE_SIZE: number = 50;
 
 export enum SessionsTabTypes {
   Overview = 'overview',
