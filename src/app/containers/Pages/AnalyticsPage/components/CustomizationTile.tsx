@@ -6,19 +6,19 @@ import UpArrow from '../icons/metrics explorer/upArrowTriangle.svg';
 export interface CustomizationTabProps {
   readonly img: string;
   readonly title: string;
-  readonly countText?: string;
+  readonly description?: string;
   readonly operationImage?: string;
   readonly operationName?: string;
   readonly content?: JSX.Element;
 }
 
-export const CustomizationTile: React.FC<CustomizationTabProps> = ({ img, title, countText, operationImage, operationName, content }) => {
+export const CustomizationTile: React.FC<CustomizationTabProps> = ({ img, title, description, operationImage, operationName, content }) => {
   const classes = AnalyticsStyles();
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isTileOpen, setIsTileOpen] = useState<boolean>(false);
 
-  const handleOpen = () => setIsOpen(true);
+  const handleOpen = () => setIsTileOpen(true);
 
-  const handleClose = () => setIsOpen(false);
+  const handleClose = () => setIsTileOpen(false);
 
   return (
     <div className={classes.customizationTabContainer}>
@@ -26,13 +26,13 @@ export const CustomizationTile: React.FC<CustomizationTabProps> = ({ img, title,
         <div>
           <img src={img} alt={title} />
           <span className={classes.tabTitle}>{title}</span>
-          <span className={classes.countText}>{countText}</span>
+          <span className={classes.countText}>{description}</span>
         </div>
         <div>
           <span>
             <img className={classes.operationImage} src={operationImage} alt={operationName} />
           </span>
-          {isOpen ? (
+          {isTileOpen ? (
             <span className={classes.arrow} onClick={handleClose}>
               <img src={UpArrow} alt="close" />
             </span>
@@ -43,7 +43,7 @@ export const CustomizationTile: React.FC<CustomizationTabProps> = ({ img, title,
           )}
         </div>
       </div>
-      <div className={isOpen ? classes.tabContent : classes.hidden}>{content}</div>
+      <div className={isTileOpen ? classes.tabContent : classes.hidden}>{content}</div>
     </div>
   );
 };

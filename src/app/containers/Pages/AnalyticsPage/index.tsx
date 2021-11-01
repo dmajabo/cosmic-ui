@@ -4,24 +4,24 @@ import { AnalyticsStyles } from './AnalyticsStyles';
 import { MetricsExplorer } from './components/MetricsExplorer';
 
 interface TabPanelProps {
-  index: string;
-  value: string;
+  readonly title: string;
+  readonly value: string;
 }
 
-const TabPanel: React.FC<TabPanelProps> = ({ children, value, index, ...other }) => {
+const TabPanel: React.FC<TabPanelProps> = ({ children, value, title, ...other }) => {
   const classes = AnalyticsStyles();
 
   return (
-    <div className={classes.tabContainer} role="tabpanel" hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
+    <div className={classes.tabContainer} role="tabpanel" hidden={value !== title} id={`simple-tabpanel-${title}`} aria-labelledby={`simple-tab-${title}`} {...other}>
       {children}
     </div>
   );
 };
 
-function a11yProps(index: string) {
+function a11yProps(title: string) {
   return {
-    id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
+    id: `simple-tab-${title}`,
+    'aria-controls': `simple-tabpanel-${title}`,
   };
 }
 
@@ -75,19 +75,19 @@ const AnalyticsPage: React.FC = () => {
           />
         </Tabs>
       </div>
-      <TabPanel value={selectedTabName} index={TabName.Insights}>
+      <TabPanel value={selectedTabName} title={TabName.Insights}>
         {TabName.Insights}
       </TabPanel>
-      <TabPanel value={selectedTabName} index={TabName.Sessions}>
+      <TabPanel value={selectedTabName} title={TabName.Sessions}>
         {TabName.Sessions}
       </TabPanel>
-      <TabPanel value={selectedTabName} index={TabName.Reporting}>
+      <TabPanel value={selectedTabName} title={TabName.Reporting}>
         {TabName.Reporting}
       </TabPanel>
-      <TabPanel value={selectedTabName} index={TabName.Inventory}>
+      <TabPanel value={selectedTabName} title={TabName.Inventory}>
         {TabName.Inventory}
       </TabPanel>
-      <TabPanel value={selectedTabName} index={TabName.MetricsExplorer}>
+      <TabPanel value={selectedTabName} title={TabName.MetricsExplorer}>
         <MetricsExplorer />
       </TabPanel>
     </div>

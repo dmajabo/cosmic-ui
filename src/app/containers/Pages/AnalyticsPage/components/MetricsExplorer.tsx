@@ -20,7 +20,7 @@ export const MetricsExplorer: React.FC = () => {
     {
       img: DimensionsIcon,
       title: 'Dimensions',
-      countText: '0',
+      description: '0',
       operationImage: AddIcon,
       operationName: 'add dimensions',
       content: <div className={classes.tabContentText}>No dimensions added. To add dimensions click the “Add” button on top.</div>,
@@ -36,7 +36,7 @@ export const MetricsExplorer: React.FC = () => {
     {
       img: DataSourceIcon,
       title: 'Data Source',
-      countText: '126 of 126',
+      description: '126 of 126',
       operationImage: EditIcon,
       operationName: 'edit data source',
     },
@@ -53,7 +53,7 @@ export const MetricsExplorer: React.FC = () => {
               key={item.title}
               img={item.img}
               title={item.title}
-              countText={item.countText}
+              description={item.description}
               operationImage={item.operationImage}
               operationName={item.operationName}
               content={item.content}
