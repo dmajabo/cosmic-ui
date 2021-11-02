@@ -1,14 +1,14 @@
 import { ACCESS_SECTIONS_PERMISION_VALUE } from 'lib/api/ApiModels/Settings/apiModels';
 
-export interface ISettingsGridField {
+export interface IAdminsGridField {
   resField: string;
   label: string;
 }
-export interface ISettingsGridColumns {
-  [key: string]: ISettingsGridField;
+export interface IAdminsGridColumns {
+  [key: string]: IAdminsGridField;
 }
 
-export const SettingsGridColumns: ISettingsGridColumns = {
+export const AdminsGridColumns: IAdminsGridColumns = {
   name: {
     resField: 'name',
     label: 'Name',
@@ -35,13 +35,13 @@ export const SettingsGridColumns: ISettingsGridColumns = {
   },
 };
 
-export const SettingsGridColumnItems: ISettingsGridField[] = [
-  SettingsGridColumns.name,
-  SettingsGridColumns.type,
-  SettingsGridColumns.profile,
-  SettingsGridColumns.apiAccess,
-  SettingsGridColumns.adoms,
-  SettingsGridColumns.ipvHost,
+export const SettingsGridColumnItems: IAdminsGridField[] = [
+  AdminsGridColumns.name,
+  AdminsGridColumns.type,
+  AdminsGridColumns.profile,
+  AdminsGridColumns.apiAccess,
+  AdminsGridColumns.adoms,
+  AdminsGridColumns.ipvHost,
 ];
 
 export enum AdminFormDataFields {

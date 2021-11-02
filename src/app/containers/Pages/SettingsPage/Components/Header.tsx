@@ -16,8 +16,9 @@ interface Props {
   columns: GridColDef[];
   onChangeColumn: (col: GridColDef) => void;
   onSearchChange: (v: string | null) => void;
-  onToogleEditForm: () => void;
+  onToogleEditForm?: () => void;
   onMassDelete: () => void;
+  hideEditButton?: boolean;
 }
 
 const Header: React.FC<Props> = (props: Props) => {
@@ -84,14 +85,16 @@ const Header: React.FC<Props> = (props: Props) => {
               </OverflowContainer>
             </PopupContainer>
           </SecondaryButtonWithPopup>
-          <PrimaryButton
-            label="Create new"
-            icon={plusIcon}
-            onClick={onToogleEditForm}
-            styles={{
-              margin: '0 0 0 20px',
-            }}
-          />
+          {!props.hideEditButton && (
+            <PrimaryButton
+              label="Create new"
+              icon={plusIcon}
+              onClick={onToogleEditForm}
+              styles={{
+                margin: '0 0 0 20px',
+              }}
+            />
+          )}
         </ActionPart>
       </ActionRowStyles>
     </>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { FormTitle, FormContent, FormFooter, FormStyles, Header, Wrapper } from './styles';
+import { Wrapper, Header, FormTitle, FormStyles, FormContent, FormFooter, CellContent } from '../../Components/FormStyles/FormStyles';
 import TextInputWithRegister from 'app/components/Inputs/TextInput/TextInputWithRegister';
 import { closeSmallIcon } from 'app/components/SVGIcons/close';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
@@ -10,7 +10,6 @@ import { AdminFormProfileDataFields, DEFAULT_ACCESS_PERMISION } from '../model';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
 import { TableStyles } from 'app/components/Basic/Table/TableStyles';
 import RadioButton from 'app/components/Inputs/RadioButton';
-import { CellContent } from './styles';
 import { ACCESS_SECTIONS_PERMISION_VALUE, IProfile } from 'lib/api/ApiModels/Settings/apiModels';
 import { jsonClone } from 'lib/helpers/cloneHelper';
 

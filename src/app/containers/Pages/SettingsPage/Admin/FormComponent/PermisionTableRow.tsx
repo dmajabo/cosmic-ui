@@ -1,8 +1,8 @@
 import React from 'react';
 import { AdminFormProfileDataFields, IACCESS_SECTIONS_PERMISION } from '../model';
+import { CellContent } from '../../Components/FormStyles/FormStyles';
 import { TableCell, TableRow } from '@material-ui/core';
 import RadioButton from 'app/components/Inputs/RadioButton';
-import { CellContent } from './styles';
 import { ACCESS_SECTIONS_PERMISION_VALUE } from 'lib/api/ApiModels/Settings/apiModels';
 import { useFormContext } from 'react-hook-form';
 

@@ -1,6 +1,5 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { FormTitle, FormContent, FormFooter, FormStyles, Header, Wrapper } from './styles';
 import TextInputWithRegister from 'app/components/Inputs/TextInput/TextInputWithRegister';
 import { closeSmallIcon } from 'app/components/SVGIcons/close';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
@@ -10,6 +9,7 @@ import PrimaryButton from 'app/components/Buttons/PrimaryButton';
 import { AdminFormDataFields, PROFILE_VALUES, ACCESS_VALUES } from '../model';
 import { IAdminsUser, IProfile } from 'lib/api/ApiModels/Settings/apiModels';
 import { jsonClone } from 'lib/helpers/cloneHelper';
+import { Wrapper, Header, FormTitle, FormStyles, FormContent, FormFooter } from '../../Components/FormStyles/FormStyles';
 
 interface IProps {
   dataItem?: IAdminsUser;

@@ -1,9 +1,8 @@
 import React from 'react';
 import { useSettingsDataContext } from 'lib/hooks/Settings/useSettingsDataContenxt';
 import { DataGrid, GridCellParams, GridColDef, GridRenderCellParams, GridSelectionModel, GridValueFormatterParams } from '@mui/x-data-grid';
-import Header from './Header';
 import { GridStyles } from 'app/components/Grid/GridStyles';
-import { ACCESS_VALUES_TYPE, SettingsGridColumns } from './model';
+import { ACCESS_VALUES_TYPE, AdminsGridColumns } from './model';
 import Drawer from '@mui/material/Drawer';
 import EditFormComponent from './FormComponent/EditFormComponent';
 import SettingsButton from 'app/components/Buttons/SettingsButton';
@@ -16,6 +15,8 @@ import { GridCellWrapper, GridCellLabel } from 'app/components/Grid/styles';
 import { IModal } from 'lib/models/general';
 import SimpleCheckbox from 'app/components/Inputs/Checkbox/SimpleCheckbox';
 import Paging from 'app/components/Basic/Paging';
+import { gridAscArrow, gridDescArrow } from 'app/components/SVGIcons/arrows';
+import Header from '../Components/Header';
 interface IProps {}
 
 const AdminPage: React.FC<IProps> = (props: IProps) => {
@@ -63,8 +64,8 @@ const AdminPage: React.FC<IProps> = (props: IProps) => {
       valueFormatter: (params: GridValueFormatterParams) => +params.value + 1,
     },
     {
-      field: SettingsGridColumns.name.resField,
-      headerName: SettingsGridColumns.name.label,
+      field: AdminsGridColumns.name.resField,
+      headerName: AdminsGridColumns.name.label,
       minWidth: 200,
       flex: 0.5,
       resizable: false,
@@ -76,10 +77,10 @@ const AdminPage: React.FC<IProps> = (props: IProps) => {
         </GridCellWrapper>
       ),
     },
-    { field: SettingsGridColumns.type.resField, headerName: SettingsGridColumns.type.label, minWidth: 200, flex: 0.5, resizable: false },
+    { field: AdminsGridColumns.type.resField, headerName: AdminsGridColumns.type.label, minWidth: 200, flex: 0.5, resizable: false },
     {
-      field: SettingsGridColumns.profile.resField,
-      headerName: SettingsGridColumns.profile.label,
+      field: AdminsGridColumns.profile.resField,
+      headerName: AdminsGridColumns.profile.label,
       minWidth: 200,
       flex: 0.5,
       resizable: false,
@@ -92,8 +93,8 @@ const AdminPage: React.FC<IProps> = (props: IProps) => {
       ),
     },
     {
-      field: SettingsGridColumns.apiAccess.resField,
-      headerName: SettingsGridColumns.apiAccess.label,
+      field: AdminsGridColumns.apiAccess.resField,
+      headerName: AdminsGridColumns.apiAccess.label,
       minWidth: 200,
       flex: 0.5,
       resizable: false,
@@ -103,8 +104,8 @@ const AdminPage: React.FC<IProps> = (props: IProps) => {
         return params.value;
       },
     },
-    { field: SettingsGridColumns.adoms.resField, headerName: SettingsGridColumns.adoms.label, minWidth: 200, flex: 0.5, resizable: false },
-    { field: SettingsGridColumns.ipvHost.resField, headerName: SettingsGridColumns.ipvHost.label, minWidth: 200, flex: 0.5, resizable: false },
+    { field: AdminsGridColumns.adoms.resField, headerName: AdminsGridColumns.adoms.label, minWidth: 200, flex: 0.5, resizable: false },
+    { field: AdminsGridColumns.ipvHost.resField, headerName: AdminsGridColumns.ipvHost.label, minWidth: 200, flex: 0.5, resizable: false },
     {
       field: '',
       headerName: '',
@@ -208,14 +209,12 @@ const AdminPage: React.FC<IProps> = (props: IProps) => {
         onSelectionModelChange={onSelectionModelChange}
         selectionModel={selectionModel}
         components={{
+          ColumnUnsortedIcon: () => null,
+          ColumnSortedAscendingIcon: () => <>{gridAscArrow}</>,
+          ColumnSortedDescendingIcon: () => <>{gridDescArrow}</>,
           Checkbox: ({ checked, onChange, indeterminate }) => <SimpleCheckbox isChecked={checked} toggleCheckboxChange={onChange} indeterminate={indeterminate} />,
         }}
         pageSize={dataRows ? dataRows.length : 0}
-        // components={{
-        //   ColumnUnsortedIcon: () => null,
-        //   ColumnSortedAscendingIcon: () => <>{gridAscArrow}</>,
-        //   ColumnSortedDescendingIcon: () => <>{gridDescArrow}</>,
-        // }}
       />
       <Paging
         count={dataRows.length}
