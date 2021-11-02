@@ -165,18 +165,7 @@ const DashboardPage: React.FC<IProps> = (props: IProps) => {
     setLayouts({ layouts });
   };
 
-  const [isDemo, setIsDemo] = useState<boolean>(false);
-  const [isDemoPopupVisible, setIsDemoPopupVisible] = useState<boolean>(false);
-
   const location = useLocation<DemoInterface>();
-
-  useEffect(() => {
-    const isDemoEnviornment = location.state?.isDemoEnviornment || false;
-    setIsDemo(isDemoEnviornment);
-    setIsDemoPopupVisible(isDemoEnviornment);
-  }, []);
-
-  const handleDemoPopupClose = () => setIsDemoPopupVisible(false);
 
   return (
     <div>
@@ -226,9 +215,6 @@ const DashboardPage: React.FC<IProps> = (props: IProps) => {
           );
         })}
       </ResponsiveGridLayout>
-      <Backdrop sx={{ background: 'rgb(243,246,252,0.9)' }} open={isDemoPopupVisible} onClick={handleDemoPopupClose}>
-        <AddSourcePopup />
-      </Backdrop>
     </div>
   );
 };

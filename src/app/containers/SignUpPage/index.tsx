@@ -189,6 +189,9 @@ const AddEdges: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    if (policyControllers.length > 0) {
+      setIsAppReadyToUse(true);
+    }
     edgesToConfigure.length >= 2 ? setIsLoading(false) : setIsLoading(true);
     setUpdatedEdgesToConfigure();
   }, [policyControllers]);
@@ -479,9 +482,6 @@ const AddEdges: React.FC = () => {
   const onTryDemo = () =>
     history.push({
       pathname: ROUTE.app + ROUTE.dashboard,
-      state: {
-        isDemoEnviornment: true,
-      },
     });
 
   return isEdgesConnected ? (
