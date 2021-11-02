@@ -33,24 +33,24 @@ const PACKET_LOSS = 'packetloss';
 
 const PACKET_LOSS_ANOMALY = 'packetloss_anomaly';
 
-const PACKET_LOSS_HEATMAP_LEGEND: LegendData[] = [
+export const PACKET_LOSS_HEATMAP_LEGEND: LegendData[] = [
   {
     low: 0,
     high: 10,
     color: '#52984E',
   },
   {
-    low: 10,
+    low: 11,
     high: 20,
     color: '#FED0AB',
   },
   {
-    low: 20,
+    low: 21,
     high: 40,
     color: '#FFC568',
   },
   {
-    low: 40,
+    low: 41,
     high: 50,
     color: '#F69442',
   },
