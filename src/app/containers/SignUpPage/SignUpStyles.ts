@@ -185,7 +185,6 @@ export const SignUpStyles = makeStyles(
         fontSize: 12,
         fontWeight: 700,
         borderRadius: 6,
-        cursor: 'pointer',
         border: 'none',
       },
       skipSetupButton: {
