@@ -1,13 +1,11 @@
-export interface ILoggingGridField {
-  resField: string;
-  label: string;
-}
+import { IGridColumnField } from 'lib/models/general';
+
 export interface ILoggingGridColumns {
-  time: ILoggingGridField;
-  edge: ILoggingGridField;
-  user: ILoggingGridField;
-  operation: ILoggingGridField;
-  changes: ILoggingGridField;
+  time: IGridColumnField;
+  edge: IGridColumnField;
+  user: IGridColumnField;
+  operation: IGridColumnField;
+  changes: IGridColumnField;
 }
 
 export const LoggingGridColumns: ILoggingGridColumns = {

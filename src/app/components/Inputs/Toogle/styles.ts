@@ -32,4 +32,7 @@ export const ToggleButtonWrapper = styled.button<IBProps>`
   overflow: hidden;
   text-overflow: ellipsis;
   cursor: pointer;
+  .inheritFill {
+    fill: currentColor;
+  }
 `;

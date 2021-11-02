@@ -1,11 +1,13 @@
 import { ACCESS_SECTIONS_PERMISION_VALUE } from 'lib/api/ApiModels/Settings/apiModels';
+import { IGridColumnField } from 'lib/models/general';
 
-export interface IAdminsGridField {
-  resField: string;
-  label: string;
-}
 export interface IAdminsGridColumns {
-  [key: string]: IAdminsGridField;
+  name: IGridColumnField;
+  type: IGridColumnField;
+  profile: IGridColumnField;
+  apiAccess: IGridColumnField;
+  adoms: IGridColumnField;
+  ipvHost: IGridColumnField;
 }
 
 export const AdminsGridColumns: IAdminsGridColumns = {
@@ -35,7 +37,7 @@ export const AdminsGridColumns: IAdminsGridColumns = {
   },
 };
 
-export const SettingsGridColumnItems: IAdminsGridField[] = [
+export const SettingsGridColumnItems: IGridColumnField[] = [
   AdminsGridColumns.name,
   AdminsGridColumns.type,
   AdminsGridColumns.profile,

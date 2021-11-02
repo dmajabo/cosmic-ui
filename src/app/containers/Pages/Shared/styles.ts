@@ -1,3 +1,4 @@
+import { ToggleButtonWrapper } from 'app/components/Inputs/Toogle/styles';
 import styled from 'styled-components';
 
 export const PageWrapperStyles = styled.div`
@@ -49,6 +50,14 @@ export const ActionPart = styled.div<IPageActionPart>`
   height: 100%;
   flex-shrink: 0;
   margin: ${props => props.margin || 0};
+  ${ToggleButtonWrapper} {
+    background: transparent;
+    &:hover,
+    &.toogleselected {
+      color: var(--_sHoverButtonColor);
+      background: var(--_appBg);
+    }
+  }
 `;
 
 export const CardWrapper = styled.div`

@@ -8,6 +8,7 @@ import { SETTINGS_TABS } from 'lib/hooks/Settings/model';
 import { useSettingsDataContext } from 'lib/hooks/Settings/useSettingsDataContenxt';
 import AdminPage from 'app/containers/Pages/SettingsPage/Admin';
 import Logging from '../Logging';
+import Inventory from '../Inventory';
 
 interface IProps {}
 
@@ -58,7 +59,7 @@ const Page: React.FC<IProps> = (props: IProps) => {
         value={settings.selectedTab.index}
         index={SETTINGS_TABS[2].index}
       >
-        {/* <SessionPage /> */}
+        <Inventory />
       </TabPanel>
     </PageWrapperStyles>
   );
