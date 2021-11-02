@@ -24,6 +24,11 @@ interface SelectOptions {
   readonly label: string;
 }
 
+enum TestOperation {
+  update = 'update',
+  create = 'create',
+}
+
 export const CreateSLATest: React.FC<CreateSLATestProps> = ({ slaTestDataToUpdate, updateSlaTest, awsOrganizations, merakiOrganizations, addSlaTest, closeSlaTest, popup }) => {
   const classes = PerformanceDashboardStyles();
 
@@ -140,14 +145,14 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ slaTestDataToUpdat
     setDescription('');
   };
 
-  const generateRequest = () => {
+  const generateRequest = (testOperation: TestOperation) => {
     const testData: SLATest = {
-      testId: '',
+      testId: testOperation === TestOperation.update ? slaTestDataToUpdate.testId : '',
       name: name,
       sourceOrgId: sourceOrg.value,
       sourceNwExtId: sourceNetwork.value,
       destination: destination.value,
-      interface: '',
+      interface: testOperation === TestOperation.update ? slaTestDataToUpdate.interface : '',
       description: description,
     };
     const submitData: CreateSLATestRequest = {
@@ -157,14 +162,14 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ slaTestDataToUpdat
   };
 
   const handleFormSubmit = () => {
-    const submitData = generateRequest();
+    const submitData = generateRequest(TestOperation.create);
     closeSlaTest();
     addSlaTest(submitData);
     clearFormFields();
   };
 
   const handleFormUpdate = () => {
-    const submitData = generateRequest();
+    const submitData = generateRequest(TestOperation.update);
     closeSlaTest();
     updateSlaTest(submitData);
     clearFormFields();
