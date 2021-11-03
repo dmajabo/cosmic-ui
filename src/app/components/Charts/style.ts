@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 export const ChartWrapContainer = styled.div`
+  display: flex;
   width: 100%;
   height: 100%;
   flex-shrink: 0;

@@ -8,11 +8,14 @@ export const createSankeyChart = (id: string, data: ISankeyData) => {
   container.select(`#sankeyHeader`).attr('opacity', 0);
   container.select('#sankeyChartContainerLinks').selectAll('*').remove();
   container.select('#sankeyChartContainerNodes').selectAll('*').remove();
-  if (!data || !data.links || !data.nodes || !data.links.length || !data.nodes.length) return;
-  const _data = jsonClone(data);
-  container.select(`#sankeyHeader`).attr('opacity', 1);
+  if (!data) return;
+  const _data: ISankeyData = jsonClone(data);
   const size = container.node().getBoundingClientRect();
+  drawSankey(container, size, _data);
+  container.select(`#sankeyHeader`).attr('opacity', 1);
+};
 
+const drawSankey = (container, size, data: ISankeyData) => {
   const rootG = container.select('#sankeyChartContainerRoot');
   const _sankey = sankey()
     .nodeId(d => d.node)
@@ -23,9 +26,9 @@ export const createSankeyChart = (id: string, data: ISankeyData) => {
     .nodePadding(10)
     .size([size.width - 60, size.height - 82])
     .iterations(32);
-  _sankey(_data);
-  createLinks(rootG, _data.links);
-  createNodes(rootG, _data.nodes);
+  _sankey(data);
+  createLinks(rootG, data.links);
+  createNodes(rootG, data.nodes);
 };
 
 const createLinks = (g: any, links: any[]) => {
