@@ -17,6 +17,7 @@ import { LoggingGridColumns } from './models';
 import { format } from 'date-fns';
 import DetailsButton from '../Components/DetailsButton';
 import Details from './Details';
+import { SettingsTabTypes } from 'lib/hooks/Settings/model';
 interface IProps {}
 
 // export const LoggingGridColumns: ILoggingGridColumns = {
@@ -173,10 +174,10 @@ const Logging: React.FC<IProps> = (props: IProps) => {
   };
 
   const onChangePage = (page: number) => {
-    settings.onChangeCurrentPage(page);
+    settings.onChangeCurrentPage(SettingsTabTypes.Logging, page);
   };
   const onChangePageSize = (size: number, page?: number) => {
-    settings.onChangePageSize(size, page);
+    settings.onChangePageSize(SettingsTabTypes.Logging, size, page);
   };
 
   return (
@@ -218,8 +219,8 @@ const Logging: React.FC<IProps> = (props: IProps) => {
       <Paging
         count={dataRows.length}
         disabled={!dataRows.length}
-        pageSize={settings.adminsPageSize}
-        currentPage={settings.adminCurrentPage}
+        pageSize={settings.loggingPageSize}
+        currentPage={settings.loggingCurrentPage}
         onChangePage={onChangePage}
         onChangePageSize={onChangePageSize}
       />

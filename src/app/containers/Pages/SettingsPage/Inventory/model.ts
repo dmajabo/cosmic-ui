@@ -45,7 +45,7 @@ export interface IInventoryCloudGridColumns {
 
 export const InventoryCloudGridColumns: IInventoryCloudGridColumns = {
   provider: {
-    resField: 'name',
+    resField: 'provider',
     label: 'Provider',
   },
   account: {
@@ -53,7 +53,7 @@ export const InventoryCloudGridColumns: IInventoryCloudGridColumns = {
     label: 'Account',
   },
   region: {
-    resField: 'network',
+    resField: 'region',
     label: 'Region',
   },
   status: {

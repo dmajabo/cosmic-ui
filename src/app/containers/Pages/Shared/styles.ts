@@ -52,7 +52,9 @@ export const ActionPart = styled.div<IPageActionPart>`
   margin: ${props => props.margin || 0};
   ${ToggleButtonWrapper} {
     background: transparent;
-    &:hover,
+    &:hover {
+      background: var(--_appBg);
+    }
     &.toogleselected {
       color: var(--_sHoverButtonColor);
       background: var(--_appBg);
