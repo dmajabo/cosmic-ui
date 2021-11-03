@@ -6,9 +6,10 @@ import DashboardPage from 'app/containers/Pages/DashboardPage';
 import TopologyPage from 'app/containers/Pages/TopologyPage';
 import PerformanceDashboardPage from 'app/containers/Pages/PerformanceDashboardPage';
 import SettingsPage from 'app/containers/Pages/SettingsPage';
-import SessionsPage from '../Pages/SessionsPage';
-import AutomationPage from '../Pages/AutomationPage';
-import AccountsPage from '../Pages/AccountsPage';
+import SessionsPage from 'app/containers/Pages/SessionsPage';
+import AutomationPage from 'app/containers/Pages/AutomationPage';
+import AccountsPage from 'app/containers/Pages/AccountsPage';
+import Edges from 'app/containers/Pages/Edges';
 
 export default function BaseRouting() {
   const match = useRouteMatch();
@@ -17,6 +18,7 @@ export default function BaseRouting() {
       <Switch>
         <Route exact path={`${match.path}${ROUTE.dashboard}`} component={DashboardPage} />
         <Route exact path={`${match.path}${ROUTE.topology}`} component={TopologyPage} />
+        <Route exact path={`${match.path}${ROUTE.edges}`} component={Edges} />
         <Route exact path={`${match.path}${ROUTE.policy}`} component={PolicyPage} />
         <Route exact path={`${match.path}${ROUTE.performanceDashboard}`} component={PerformanceDashboardPage} />
         <Route exact path={`${match.path}${ROUTE.sessions}`} component={SessionsPage} />
