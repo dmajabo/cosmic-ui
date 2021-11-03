@@ -138,7 +138,7 @@ export const AnalyticsStyles = makeStyles(
       popupContent: {
         marginTop: 60,
         overflow: 'auto',
-        height: '80%',
+        height: '85%',
       },
       popupTitle: {
         fontSize: 22,
@@ -164,13 +164,98 @@ export const AnalyticsStyles = makeStyles(
         marginTop: 20,
         padding: 20,
       },
-      subDimensionTitleContainer: {
-        marginBottom: 20,
-      },
       subDimensionTitle: {
         fontSize: 18,
         fontWeight: 700,
         marginLeft: 20,
+      },
+      subDimensionOptionsContainer: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        marginTop: 20,
+      },
+      subDimensionOptionBox: {
+        backgroundColor: 'white',
+        width: '49%',
+        borderRadius: 4,
+        paddingTop: 20,
+      },
+      sourcesubDimensionOptionTitle: {
+        fontSize: 16,
+        paddingLeft: 17,
+        fontWeight: 500,
+      },
+      sourceText: {
+        borderLeft: '3px solid #52984E',
+      },
+      destinationText: {
+        borderLeft: '3px solid #F69442',
+      },
+      subDimensionContentContainer: {
+        padding: '20px 0px 10px 20px',
+        display: 'flex',
+        justifyContent: 'space-between',
+      },
+      subDimensionIcon: {
+        width: 24,
+      },
+      subDimensionContent: {
+        width: '50%',
+      },
+      option: {
+        paddingBottom: 10,
+      },
+      popupFooterContainer: {
+        height: '7%',
+      },
+      verticalCenter: {
+        marginTop: 'auto',
+      },
+      selectedDimensionText: {
+        fontSize: 16,
+        fontWeight: 700,
+        marginRight: 15,
+      },
+      selectedDimensionCount: {
+        backgroundColor: '#437FEC',
+        fontSize: 12,
+        color: 'white',
+        padding: '2px 11px 2px 11px',
+        borderRadius: 10,
+      },
+      blueSaveButton: {
+        backgroundColor: '#437FEC',
+        height: 40,
+        borderRadius: 6,
+        padding: '7px 25px 10px 25px',
+      },
+      buttonText: {
+        fontSize: 12,
+        fontWeight: 700,
+      },
+      saveButton: {
+        color: 'white',
+        marginRight: 15,
+      },
+      grayBorderButton: {
+        border: '1px solid #CBD2DC',
+        height: 40,
+        borderRadius: 6,
+        padding: '7px 25px 10px 25px',
+        marginRight: 10,
+      },
+      whiteBorderBox: {
+        width: '120%',
+        marginLeft: '-10%',
+        backgroundColor: 'white',
+        borderTop: '1px solid #E7EDF9',
+        borderRight: '1px solid #E7EDF9',
+        borderBottom: '1px solid #E7EDF9',
+        padding: '5px 10px 5px 10px',
+        fontSize: 14,
+      },
+      removeDimension: {
+        width: 'auto',
       },
     }),
   {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { AnalyticsStyles } from '../AnalyticsStyles';
 import { CustomizationTile, CustomizationTabProps } from './CustomizationTile';
 import DesignIcon from '../icons/metrics explorer/design.svg';
@@ -8,16 +8,38 @@ import TimeIcon from '../icons/metrics explorer/time.svg';
 import DataSourceIcon from '../icons/metrics explorer/dataSource.svg';
 import AddIcon from '../icons/metrics explorer/add.svg';
 import EditIcon from '../icons/metrics explorer/edit.svg';
+import CloseIcon from '../icons/metrics explorer/close.svg';
+import NetworkIcon from '../icons/metrics explorer/dimensions-network.svg';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
-import { Dimensions } from './Dimensions';
+import { DimensionOptions, Dimensions } from './Dimensions';
+import { isEmpty, sortBy } from 'lodash';
+
+const DUMMY_DIMENSION_DATA: DimensionOptions[] = [
+  {
+    title: 'Network & Traffic Topology',
+    icon: NetworkIcon,
+    source: ['Interface', 'Connectivity Type', 'Network Boundary', 'Provider', 'Traffic Origination', 'Interface Capacity', 'VLAN', 'MAC Address'],
+    destination: ['Interface', 'Connectivity Type', 'Network Boundary', 'Provider', 'Traffic Origination', 'Interface Capacity', 'VLAN', 'MAC Address'],
+  },
+];
 
 export const MetricsExplorer: React.FC = () => {
   const classes = AnalyticsStyles();
 
+  const [addedDimensions, setAddedDimesions] = useState<string[]>([]);
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  const addDimensions = (dimensions: string[]) => {
+    const sortedDimensions = sortBy(dimensions).reverse();
+    setAddedDimesions(sortedDimensions);
+  };
+
+  const removeDimension = (dimension: string) => {
+    setAddedDimesions(addedDimensions.filter(item => item !== dimension));
+  };
 
   const customizationtabOptions: CustomizationTabProps[] = [
     {
@@ -27,11 +49,41 @@ export const MetricsExplorer: React.FC = () => {
     {
       img: DimensionsIcon,
       title: 'Dimensions',
-      description: '0',
-      operationImage: AddIcon,
+      description: `${addedDimensions.length}`,
+      operationImage: isEmpty(addedDimensions) ? AddIcon : EditIcon,
       operationEventHandler: handleOpen,
-      operationName: 'add dimensions',
-      content: <div className={classes.tabContentText}>No dimensions added. To add dimensions click the “Add” button on top.</div>,
+      operationName: isEmpty(addedDimensions) ? 'add dimensions' : 'edit dimensions',
+      content: isEmpty(addedDimensions) ? (
+        <div className={classes.tabContentText}>No dimensions added. To add dimensions click the “Add” button on top.</div>
+      ) : (
+        <div>
+          {addedDimensions.map(item => {
+            const dimensionArray = item.split('_');
+            return (
+              <div className={`${classes.whiteBorderBox} ${dimensionArray[1] === 'Source' ? classes.sourceText : classes.destinationText}`}>
+                <div className={classes.tabTitleContainer}>
+                  <div>
+                    <span>
+                      {`${dimensionArray[1]}: `}
+                      <b>{dimensionArray[2]}</b>
+                    </span>
+                  </div>
+                  <div>
+                    <div
+                      className={classes.removeDimension}
+                      onClick={() => {
+                        removeDimension(item);
+                      }}
+                    >
+                      <img src={CloseIcon} alt="close popup" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      ),
     },
     {
       img: MetricsIcon,
@@ -79,7 +131,7 @@ export const MetricsExplorer: React.FC = () => {
         aria-describedby="modal-modal-description"
       >
         <Box className={classes.popupContainer}>
-          <Dimensions closePopup={handleClose} />
+          <Dimensions addedDimensions={addedDimensions} addDimensions={addDimensions} dimensionData={DUMMY_DIMENSION_DATA} closePopup={handleClose} />
         </Box>
       </Modal>
     </div>
