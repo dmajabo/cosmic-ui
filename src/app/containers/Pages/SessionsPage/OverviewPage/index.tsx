@@ -44,7 +44,7 @@ const OverviewPage: React.FC<IProps> = (props: IProps) => {
   }, [sessions.sessionsOverviewPeriod]);
 
   React.useEffect(() => {
-    if (response && response.sankey) {
+    if (response) {
       // const _d: ISankeyRes = {
       //   sankey: {
       //     time: '',
@@ -82,10 +82,10 @@ const OverviewPage: React.FC<IProps> = (props: IProps) => {
       //       { source: 16, target: 17, value: 34 },
       //       { source: 18, target: 19, value: 34 },
       //     ],
-      //     netcount: 10,
-      //     tgwcount: 0,
-      //     appcount: 1,
       //   },
+      //   netcount: 10,
+      //   tgwcount: 0,
+      //   appcount: 1,
       // };
       setData({ ...response });
     }
