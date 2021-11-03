@@ -5,15 +5,13 @@ import { ChartWrapContainer } from './style';
 import { prepareSankeyData } from './sankeyDataHelper';
 import useResizeAware from 'react-resize-aware';
 import { applicationIcon, dedstionationIcon, networksIcon } from '../SVGIcons/sankeyIcons/sankeyIcons';
-import { ErrorMessage } from '../Basic/ErrorMessage/ErrorMessage';
-// import useDebounce from 'lib/hooks/useDebounce';
+
 interface Props {
   readonly data: ISankeyData;
 }
 
 const SankeyChart: React.FC<Props> = (props: Props) => {
   const [visibleData, setVisibleData] = React.useState<ISankeyData>(null);
-  const [message, setEmptyMessage] = React.useState<string>(null);
   const [resizeListener, sizes] = useResizeAware();
   // const debouncedChanges = useDebounce(sizes, 300);
 
@@ -25,11 +23,6 @@ const SankeyChart: React.FC<Props> = (props: Props) => {
 
   React.useEffect(() => {
     const _data: ISankeyData = prepareSankeyData(props.data);
-    if (!_data) {
-      setEmptyMessage('The data is empty');
-    } else {
-      setEmptyMessage(null);
-    }
     setVisibleData(_data);
   }, [props.data]);
 
@@ -46,44 +39,37 @@ const SankeyChart: React.FC<Props> = (props: Props) => {
   return (
     <ChartWrapContainer>
       {resizeListener}
-      {!message && (
-        <svg id="sankeyChartContainerSvg" width="100" height="100" fill="none" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
-          {visibleData && (
-            <g id="sankeyHeader" opacity="0">
-              <g transform="translate(30, 10)">
-                <rect rx="8" ry="8" width="140" height="32" fill="var(--_disabledButtonBg)" />
-                <g transform="translate(26, 8)">{dedstionationIcon}</g>
-                <text x="50" y="21" fontSize="14" fontWeight="700" fill="var(--_primaryColor)">
-                  Networks
-                </text>
-              </g>
-              <g transform={`translate(${sizes.width / 2 - 70}, 10)`}>
-                <rect rx="8" ry="8" width="140" height="32" fill="var(--_disabledButtonBg)" />
-                <g transform="translate(36, 8)">{networksIcon}</g>
-                <text x="60" y="21" fontSize="14" fontWeight="700" fill="var(--_primaryColor)">
-                  TGW
-                </text>
-              </g>
-              <g transform={`translate(${sizes.width - 170}, 10)`}>
-                <rect rx="8" ry="8" width="140" height="32" fill="var(--_disabledButtonBg)" />
-                <g transform="translate(16, 8)">{applicationIcon}</g>
-                <text x="40" y="21" fontSize="14" fontWeight="700" fill="var(--_primaryColor)">
-                  Applications
-                </text>
-              </g>
+      <svg id="sankeyChartContainerSvg" width="100" height="100" fill="none" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
+        {visibleData && (
+          <g id="sankeyHeader" opacity="0">
+            <g transform="translate(30, 10)">
+              <rect rx="8" ry="8" width="140" height="32" fill="var(--_disabledButtonBg)" />
+              <g transform="translate(26, 8)">{dedstionationIcon}</g>
+              <text x="50" y="21" fontSize="14" fontWeight="700" fill="var(--_primaryColor)">
+                Networks
+              </text>
             </g>
-          )}
-          <g id="sankeyChartContainerRoot" transform="translate(30, 52)">
-            <g id="sankeyChartContainerLinks" />
-            <g id="sankeyChartContainerNodes" />
+            <g transform={`translate(${sizes.width / 2 - 70}, 10)`}>
+              <rect rx="8" ry="8" width="140" height="32" fill="var(--_disabledButtonBg)" />
+              <g transform="translate(36, 8)">{networksIcon}</g>
+              <text x="60" y="21" fontSize="14" fontWeight="700" fill="var(--_primaryColor)">
+                TGW
+              </text>
+            </g>
+            <g transform={`translate(${sizes.width - 170}, 10)`}>
+              <rect rx="8" ry="8" width="140" height="32" fill="var(--_disabledButtonBg)" />
+              <g transform="translate(16, 8)">{applicationIcon}</g>
+              <text x="40" y="21" fontSize="14" fontWeight="700" fill="var(--_primaryColor)">
+                Applications
+              </text>
+            </g>
           </g>
-        </svg>
-      )}
-      {message && (
-        <ErrorMessage color="var(--_primaryColor)" fontSize={20} margin="auto">
-          {message}
-        </ErrorMessage>
-      )}
+        )}
+        <g id="sankeyChartContainerRoot" transform="translate(30, 52)">
+          <g id="sankeyChartContainerLinks" />
+          <g id="sankeyChartContainerNodes" />
+        </g>
+      </svg>
     </ChartWrapContainer>
   );
 };

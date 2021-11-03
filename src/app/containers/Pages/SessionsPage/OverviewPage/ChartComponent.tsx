@@ -12,6 +12,21 @@ interface IProps {
 }
 
 const ChartComponent: React.FC<IProps> = ({ loading, errorMessage, data }) => {
+  const [emptyMessage, setEmptyMessage] = React.useState<string>(null);
+
+  React.useEffect(() => {
+    if (loading && emptyMessage) {
+      setEmptyMessage(null);
+    }
+  }, [loading]);
+
+  React.useEffect(() => {
+    if (data && (!data.sankey || !data.sankey.nodes || !data.sankey.nodes.length || !data.sankey.links || !data.sankey.links.length)) {
+      setEmptyMessage('The data is empty');
+    } else {
+      setEmptyMessage(null);
+    }
+  }, [data]);
   return (
     <>
       <ChartWrapper height="660px" padding="0">
@@ -25,7 +40,12 @@ const ChartComponent: React.FC<IProps> = ({ loading, errorMessage, data }) => {
             {errorMessage}
           </ErrorMessage>
         )}
-        {data && data.sankey && <SankeyChart data={data.sankey} />}
+        {emptyMessage && (
+          <ErrorMessage color="var(--_primaryColor)" fontSize={20} margin="auto">
+            {emptyMessage}
+          </ErrorMessage>
+        )}
+        {!emptyMessage && data && data.sankey && <SankeyChart data={data.sankey} />}
       </ChartWrapper>
     </>
   );
