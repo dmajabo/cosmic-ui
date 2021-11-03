@@ -46,10 +46,10 @@ export interface ISankeyData {
   time: Date | string;
   nodes: ISankeyNode[];
   links: ISankeyLink[];
-  netcount: number;
-  tgwcount: number;
-  appcount: number;
 }
 export interface ISankeyRes {
   sankey: ISankeyData;
+  netcount: number;
+  tgwcount: number;
+  appcount: number;
 }

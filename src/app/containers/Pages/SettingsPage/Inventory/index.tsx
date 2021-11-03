@@ -11,6 +11,7 @@ import { GridCellWrapper } from 'app/components/Grid/styles';
 import { deleteIcon } from 'app/components/SVGIcons/delete';
 import InventoryDevices from './InventoryDevices';
 import InventoryCloud from './InventoryCloud';
+import { SettingsTabTypes } from 'lib/hooks/Settings/model';
 
 interface IProps {}
 
@@ -70,7 +71,7 @@ const Inventory: React.FC<IProps> = (props: IProps) => {
     {
       field: '',
       headerName: '',
-      width: 200,
+      width: 40,
       resizable: false,
       filterable: false,
       sortable: false,
@@ -140,7 +141,7 @@ const Inventory: React.FC<IProps> = (props: IProps) => {
     {
       field: '',
       headerName: '',
-      width: 200,
+      width: 40,
       resizable: false,
       filterable: false,
       sortable: false,
@@ -209,10 +210,10 @@ const Inventory: React.FC<IProps> = (props: IProps) => {
   };
 
   const onChangePage = (page: number) => {
-    settings.onChangeCurrentPage(page);
+    settings.onChangeCurrentPage(SettingsTabTypes.Inventory, page, selectedOption.id as InventoryOptions);
   };
   const onChangePageSize = (size: number, page?: number) => {
-    settings.onChangePageSize(size, page);
+    settings.onChangePageSize(SettingsTabTypes.Inventory, size, page, selectedOption.id as InventoryOptions);
   };
 
   const onToogleChange = (value: ISelectedListItem<InventoryOptions>) => {
@@ -236,8 +237,8 @@ const Inventory: React.FC<IProps> = (props: IProps) => {
       />
       {selectedOption.id === InventoryOptions.DEVICE && (
         <InventoryDevices
-          pageSize={settings.adminsPageSize}
-          currentPage={settings.adminCurrentPage}
+          pageSize={settings.inventoryDevicePageSize}
+          currentPage={settings.inventoryDeviceCurrentPage}
           columns={gridDeviceColumns}
           selectionModel={deviceSelectionModel}
           onChangePage={onChangePage}
@@ -247,8 +248,8 @@ const Inventory: React.FC<IProps> = (props: IProps) => {
       )}
       {selectedOption.id === InventoryOptions.CLOUD && (
         <InventoryCloud
-          pageSize={settings.adminsPageSize}
-          currentPage={settings.adminCurrentPage}
+          pageSize={settings.inventoryCloudPageSize}
+          currentPage={settings.inventoryCloudCurrentPage}
           columns={gridCloudColumns}
           selectionModel={cloudSelectionModel}
           onChangePage={onChangePage}

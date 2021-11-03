@@ -17,6 +17,7 @@ import SimpleCheckbox from 'app/components/Inputs/Checkbox/SimpleCheckbox';
 import Paging from 'app/components/Basic/Paging';
 import { gridAscArrow, gridDescArrow } from 'app/components/SVGIcons/arrows';
 import Header from '../Components/Header';
+import { SettingsTabTypes } from 'lib/hooks/Settings/model';
 interface IProps {}
 
 const AdminPage: React.FC<IProps> = (props: IProps) => {
@@ -174,10 +175,10 @@ const AdminPage: React.FC<IProps> = (props: IProps) => {
   };
 
   const onChangePage = (page: number) => {
-    settings.onChangeCurrentPage(page);
+    settings.onChangeCurrentPage(SettingsTabTypes.Admins, page);
   };
   const onChangePageSize = (size: number, page?: number) => {
-    settings.onChangePageSize(size, page);
+    settings.onChangePageSize(SettingsTabTypes.Admins, size, page);
   };
 
   return (
