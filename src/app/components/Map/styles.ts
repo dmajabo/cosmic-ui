@@ -37,17 +37,18 @@ export const ContainerWithMetrics = styled.div`
     height: 100%;
   }
   transition-property: height;
-  transition: 0.8s ease-in;
+  transition: 0.3s linear;
 `;
 
 export const MapContainer = styled.div`
   display: flex;
   position: relative;
-  width: 100%;
+  width: auto;
+  max-width: 100%;
   height: 100%;
-  flex-shrink: 1;
+  flex: 1 1 100%;
   transition-property: width;
-  transition: 0.5s ease-in-out;
+  transition: 0.3s linear;
   padding: 0;
 `;
 
