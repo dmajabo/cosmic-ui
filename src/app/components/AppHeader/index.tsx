@@ -7,7 +7,7 @@ import UserComponent from './UserComponent';
 import { BreadCrumbTypes, IPage } from 'lib/Routes/model';
 import { useBreadCrumbDataContext } from 'lib/hooks/Breadcrumb/useBreadcrumbDataContext';
 import BreadCrumb from 'app/components/BreadCrumb';
-import { AutomationBreadCrumbItemsType } from 'lib/hooks/Breadcrumb/models';
+import { AutomationBreadCrumbItemsType, EdgesBreadCrumbItemsType } from 'lib/hooks/Breadcrumb/models';
 import ModalComponent from 'app/components/Modal';
 import AboutComponent from './AboutComponent';
 interface Props {
@@ -22,8 +22,11 @@ const AppHeader: React.FC<Props> = (props: Props) => {
   };
   const onInfoClick = () => {};
   const onShowNotification = () => {};
-  const onBreadCrumbChange = (_to: string) => {
+  const onAutoMationBreadCrumbChange = (_to: string) => {
     breadcrumb.onGoToAutomation(_to);
+  };
+  const onEdgesBreadCrumbChange = (_to: string) => {
+    breadcrumb.onGoToEdges(_to);
   };
   return (
     <>
@@ -31,7 +34,10 @@ const AppHeader: React.FC<Props> = (props: Props) => {
         <Side margin="0 auto 0 0">
           <PageName>{props.currentPage ? props.currentPage.pageName : null}</PageName>
           {props.currentPage && props.currentPage.breadcrumb === BreadCrumbTypes.AUTOMATIONS && breadcrumb.automationsBreadCrumbItems && breadcrumb.automationsBreadCrumbItems.length ? (
-            <BreadCrumb startItem={AutomationBreadCrumbItemsType.ALL} onClick={onBreadCrumbChange} items={breadcrumb.automationsBreadCrumbItems} />
+            <BreadCrumb startItem={AutomationBreadCrumbItemsType.ALL} onClick={onAutoMationBreadCrumbChange} items={breadcrumb.automationsBreadCrumbItems} />
+          ) : null}
+          {props.currentPage && props.currentPage.breadcrumb === BreadCrumbTypes.EDGES && breadcrumb.edgesBreadCrumbItems && breadcrumb.edgesBreadCrumbItems.length ? (
+            <BreadCrumb startItem={EdgesBreadCrumbItemsType.EDGES} onClick={onEdgesBreadCrumbChange} items={breadcrumb.edgesBreadCrumbItems} />
           ) : null}
         </Side>
         <Side margin="0 0 0 auto">
