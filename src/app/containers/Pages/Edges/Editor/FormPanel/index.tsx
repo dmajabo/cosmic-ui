@@ -26,7 +26,9 @@ const FormPanel: React.FC<Props> = ({ dataItem, selectedStep, lastIndex, onChang
         </PanelTitle>
       </PanelHeader>
       <PanelContent>
-        {selectedStep.id === EdgesStepperTypes.GENERAL && <GeneralStep name={dataItem.name} onChange={(v: any, f: string) => onChangeField(v, f, EdgesStepperTypes.GENERAL)} />}
+        {selectedStep.id === EdgesStepperTypes.GENERAL && (
+          <GeneralStep connection={dataItem.connection} name={dataItem.name} onChange={(v: any, f: string) => onChangeField(v, f, EdgesStepperTypes.GENERAL)} />
+        )}
       </PanelContent>
       <PanelFotter>
         {selectedStep.index !== 0 && <SecondaryButton icon={prevArrow} styles={{ height: '100%' }} label="Back" onClick={onGoPrev} />}

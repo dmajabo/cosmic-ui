@@ -1,18 +1,30 @@
-import TextInput from 'app/components/Inputs/TextInput';
 import React from 'react';
-
+// import CustomSlider from 'app/components/Basic/CustomSlider';
+import TextInput from 'app/components/Inputs/TextInput';
+import { ConnectionValues } from '../model';
+// import { EdgePriceValues } from '../model';
+import CustomAutocomplete from 'app/components/Inputs/CustomAutocomplete';
 interface Props {
   name: string;
-  onChange: (value: string | null, field: string) => void;
+  // price: number;
+  connection: string[];
+  onChange: (value: any | null, field: string) => void;
 }
 
-const GeneralStep: React.FC<Props> = ({ name, onChange }) => {
+const GeneralStep: React.FC<Props> = ({ name, connection, onChange }) => {
   const onInputChange = (value: string | null) => {
     onChange(value, 'name');
   };
+
+  const onConnectionChange = (value: string[]) => {
+    onChange(value, 'connection');
+  };
+
   return (
     <>
-      <TextInput id="networkName" name="name" value={name} label="Network Name" onChange={onInputChange} required />
+      <TextInput styles={{ margin: '0 0 20px 0' }} id="networkName" name="name" value={name} label="Name" onChange={onInputChange} required />
+      {/* <CustomSlider wrapStyles={{ margin: '0 0 20px 0' }} label="Cost" min={100} max={500} step={50} value={price} values={EdgePriceValues} defaultValue={100} onChange={onSliderChange} /> */}
+      <CustomAutocomplete simpleTag styles={{ margin: '0 0 20px 0' }} label="Connection Types" id="connections" options={ConnectionValues} value={connection} onChange={onConnectionChange} />
     </>
   );
 };

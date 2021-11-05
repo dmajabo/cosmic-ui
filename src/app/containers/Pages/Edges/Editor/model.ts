@@ -1,5 +1,6 @@
 import { IStepperItem, StepperItemStateType } from 'app/components/Stepper/model';
 import { IEdgeModel } from '../model';
+import { Mark } from '@material-ui/core/Slider';
 
 export enum EdgesStepperTypes {
   GENERAL = 'general',
@@ -20,4 +21,16 @@ export const EdgesStepperItems: IStepperItem<EdgesStepperTypes>[] = [
 export const createNewEdge = (): IEdgeModel => ({
   id: '',
   name: '',
+  price: null,
+  connection: [],
 });
+
+export const EdgePriceValues: Mark[] = [
+  { value: 100, label: '100$' },
+  { value: 200, label: '200$' },
+  { value: 300, label: '300$' },
+  { value: 400, label: '400$' },
+  { value: 500, label: '500$' },
+];
+
+export const ConnectionValues: string[] = ['VPC', 'VPN', 'DLA'];
