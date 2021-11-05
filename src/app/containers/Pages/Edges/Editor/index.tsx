@@ -14,6 +14,7 @@ import FormPanel from './FormPanel';
 interface Props {
   dataItem: IEdgeModel;
   onClose: () => void;
+  onSave: () => void;
 }
 
 const Editor: React.FC<Props> = (props: Props) => {
@@ -48,6 +49,21 @@ const Editor: React.FC<Props> = (props: Props) => {
     setDataItem(_dataItem);
   };
 
+  const onChangeSitesField = (value: any, field: string) => {
+    const _dataItem = { ...dataItem };
+    _dataItem.sites[field] = value;
+    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.SITES, _dataItem.sites[field]);
+    setSteps(_items);
+    setDataItem(_dataItem);
+  };
+  const onChangeAppsField = (value: any, field: string) => {
+    const _dataItem = { ...dataItem };
+    _dataItem.sites[field] = value;
+    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.APPS, _dataItem.sites[field]);
+    setSteps(_items);
+    setDataItem(_dataItem);
+  };
+
   const onGoPrev = () => {
     if (selectedStep.index === 0) return;
     setSelectedStep(steps[selectedStep.index - 1]);
@@ -56,6 +72,10 @@ const Editor: React.FC<Props> = (props: Props) => {
   const onGoNext = () => {
     if (selectedStep.index + 1 === steps.length) return;
     setSelectedStep(steps[selectedStep.index + 1]);
+  };
+
+  const onSave = () => {
+    props.onSave();
   };
 
   if (loading) {
@@ -95,7 +115,17 @@ const Editor: React.FC<Props> = (props: Props) => {
         </MainColumnItem>
       </MainColumn>
       <PanelColumn width="50vw" maxWidth="600px" padding="0">
-        <FormPanel onGoPrev={onGoPrev} onGoNext={onGoNext} lastIndex={steps.length - 1} dataItem={dataItem} selectedStep={selectedStep} onChangeField={onChangeDataField} />
+        <FormPanel
+          onGoPrev={onGoPrev}
+          onGoNext={onGoNext}
+          onSave={onSave}
+          lastIndex={steps.length - 1}
+          dataItem={dataItem}
+          selectedStep={selectedStep}
+          onChangeSitesField={onChangeSitesField}
+          onChangeAppsField={onChangeAppsField}
+          onChangeField={onChangeDataField}
+        />
       </PanelColumn>
     </Wrapper>
   );

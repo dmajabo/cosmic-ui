@@ -1,5 +1,5 @@
 import { IStepperItem, StepperItemStateType } from 'app/components/Stepper/model';
-import { IEdgeModel } from '../model';
+import { IEdgeModel, IEdgePolicy } from '../model';
 import { Mark } from '@material-ui/core/Slider';
 
 export enum EdgesStepperTypes {
@@ -23,6 +23,21 @@ export const createNewEdge = (): IEdgeModel => ({
   name: '',
   price: null,
   connection: [],
+  sites: {
+    name: '',
+    type: '',
+  },
+  apps: {
+    name: '',
+    type: '',
+  },
+  policies: null,
+});
+
+export const createNewEdgePolicy = (): IEdgePolicy => ({
+  source: '',
+  destination: '',
+  action: '',
 });
 
 export const EdgePriceValues: Mark[] = [

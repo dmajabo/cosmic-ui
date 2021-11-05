@@ -9,13 +9,13 @@ export const AutoCompleteStyles = makeStyles(
         background: 'transparent',
         '& .MuiInputBase-root': {
           color: 'var(--_primaryColor)',
-          fontSize: '16px',
+          fontSize: '14px',
           fontFamily: 'inherit',
           fontWeight: 500,
           lineHeight: 'normal',
           letterSpacing: 'unset',
           borderRadius: '6px',
-          padding: '6px',
+          padding: '8px 8px 8px 16px',
           minHeight: '40px',
         },
         '& .MuiOutlinedInput-root .MuiAutocomplete-input': {

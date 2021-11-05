@@ -17,19 +17,19 @@ export const updateSteps = (steps: IStepperItem<EdgesStepperTypes>[], dataItem: 
       return;
     }
     if (step.id === EdgesStepperTypes.APPS) {
-      step.disabled = true;
+      step.disabled = false;
       // const _completed = checkIsStepCompleted(dataItem.actions);
       // step.state = !_completed ? StepperItemStateType.EMPTY : StepperItemStateType.COMPLETE;
       return;
     }
     if (step.id === EdgesStepperTypes.TRANSIT) {
-      step.disabled = true;
+      step.disabled = false;
       // const _completed = checkIsStepCompleted(dataItem.edges);
       // step.state = !_completed ? StepperItemStateType.EMPTY : StepperItemStateType.COMPLETE;
       return;
     }
     if (step.id === EdgesStepperTypes.POLICY) {
-      step.disabled = true;
+      step.disabled = false;
       // const _completed = !!dataItem;
       // step.state = !_completed ? StepperItemStateType.EMPTY : StepperItemStateType.COMPLETE;
     }

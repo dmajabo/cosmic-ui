@@ -1,5 +1,5 @@
 import React from 'react';
-import { useGet } from 'lib/api/http/useAxiosHook';
+import { useGet, usePost } from 'lib/api/http/useAxiosHook';
 import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 import LoadingIndicator from 'app/components/Loading';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
@@ -15,6 +15,7 @@ interface Props {}
 const MainPage: React.FC<Props> = (props: Props) => {
   const userContext = React.useContext<UserContextState>(UserContext);
   const { loading, error, response, onGet } = useGet();
+  const { loading: postLoading, error: postError, response: postResponce, onPost } = usePost();
   const { edges } = useEdgesDataContext();
   const [showEditorPage, setShowEditorPage] = React.useState(false);
   const [edgeDataItem, setEdgeDataItem] = React.useState<IEdgeModel>(null);
@@ -31,10 +32,23 @@ const MainPage: React.FC<Props> = (props: Props) => {
 
   React.useEffect(() => {
     // TO DO
+    if (postResponce) {
+      console.log(postResponce);
+    }
+  }, [postResponce]);
+
+  React.useEffect(() => {
+    // TO DO
     if (error) {
       edges.onSetData(null);
     }
   }, [error]);
+
+  React.useEffect(() => {
+    if (postError) {
+      console.log(postError);
+    }
+  }, [postError]);
 
   React.useEffect(() => {
     if (showEditorPage && !breadcrumb.edgesBreadCrumbItems.length) {
@@ -51,6 +65,10 @@ const MainPage: React.FC<Props> = (props: Props) => {
     await onGet('api/v1/test', userContext.idToken!);
   };
 
+  const onSaveEdge = async () => {
+    await onPost('api/v1/test', {}, userContext.idToken!);
+  };
+
   const onOpenEditor = (_item?: IEdgeModel) => {
     breadcrumb.onGoToEdges(EdgesBreadCrumbItemsType.CREATE);
     setEdgeDataItem(_item || null);
@@ -62,12 +80,12 @@ const MainPage: React.FC<Props> = (props: Props) => {
   };
 
   if (showEditorPage) {
-    return <Editor dataItem={edgeDataItem} onClose={onCloseEditor} />;
+    return <Editor dataItem={edgeDataItem} onClose={onCloseEditor} onSave={onSaveEdge} />;
   }
 
   return (
     <PageWrapperStyles>
-      {loading && (
+      {(loading || postLoading) && (
         <AbsLoaderWrapper width="100%" height="100%">
           <LoadingIndicator margin="auto" />
         </AbsLoaderWrapper>
