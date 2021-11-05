@@ -35,9 +35,9 @@ export const createNewEdge = (): IEdgeModel => ({
 });
 
 export const createNewEdgePolicy = (): IEdgePolicy => ({
-  source: '',
-  destination: '',
-  action: '',
+  source: null,
+  destination: null,
+  action: null,
 });
 
 export const EdgePriceValues: Mark[] = [

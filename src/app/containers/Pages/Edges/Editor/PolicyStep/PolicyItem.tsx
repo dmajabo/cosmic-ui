@@ -1,5 +1,5 @@
 import React from 'react';
-import { IEdgePolicy } from '../../model';
+import { IEdgePolicy, PolicySourcesValues, PolicyDestinationValues, PolicyActionsValues } from '../../model';
 import { PolicyActionRow, PolicyItemWrapper, PolicyName } from './styles';
 import MatSelect from 'app/components/Inputs/MatSelect';
 interface Props {
@@ -12,7 +12,6 @@ const PolicyItem: React.FC<Props> = ({ item, index, onUpdateItem }) => {
   const onSelectChange = (value: string, field: string) => {
     onUpdateItem(value, field, index);
   };
-
   return (
     <PolicyItemWrapper>
       <PolicyName>Policy {index + 1}</PolicyName>
@@ -21,7 +20,7 @@ const PolicyItem: React.FC<Props> = ({ item, index, onUpdateItem }) => {
           id={`${index}source`}
           label="Source"
           value={item.source}
-          options={[]}
+          options={PolicySourcesValues}
           styles={{ width: 'calc(50% - 5px)', margin: '0 5px 20px 0' }}
           required
           onChange={v => onSelectChange(v, 'source')}
@@ -30,7 +29,7 @@ const PolicyItem: React.FC<Props> = ({ item, index, onUpdateItem }) => {
           id={`${index}destination`}
           label="Destination"
           value={item.destination}
-          options={[]}
+          options={PolicyDestinationValues}
           styles={{ width: 'calc(50% - 5px)', margin: '0 0 20px 5px' }}
           required
           onChange={v => onSelectChange(v, 'destination')}
@@ -41,7 +40,7 @@ const PolicyItem: React.FC<Props> = ({ item, index, onUpdateItem }) => {
           id={`${index}action`}
           label="Action"
           value={item.action}
-          options={[]}
+          options={PolicyActionsValues}
           styles={{ width: 'calc(50% - 5px)', margin: '0 5px 20px 0' }}
           required
           onChange={v => onSelectChange(v, 'action')}

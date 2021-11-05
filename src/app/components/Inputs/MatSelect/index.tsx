@@ -8,12 +8,14 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { arrowBottomIcon } from 'app/components/SVGIcons/arrows';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { SelectStyles } from './SelectStyles';
+import { DisplayValue, ValueLabel } from './styles';
+import { ISelectedListItem } from 'lib/models/general';
 
 interface Props {
   id: string;
   label?: string;
-  value: any;
-  options: any[];
+  value: ISelectedListItem<any> | string | number;
+  options: ISelectedListItem<any>[] | string[] | number[];
   onChange: (e: any) => void;
   required?: boolean;
   disabled?: boolean;
@@ -22,7 +24,7 @@ interface Props {
 }
 
 const MatSelect: React.FC<Props> = ({ id, label, value, options, styles, required, disabled, readOnly, onChange }) => {
-  const [textValue, setTextValue] = React.useState<any>(value || '');
+  const [textValue, setTextValue] = React.useState<ISelectedListItem<any> | string | number>(value || null);
   const [open, setOpen] = React.useState(false);
   const [isTyping, setIsTyping] = React.useState(false);
   const debouncedSearchTerm = useDebounce(textValue, 500);
@@ -57,24 +59,35 @@ const MatSelect: React.FC<Props> = ({ id, label, value, options, styles, require
         open={open}
         onClose={handleClose}
         onOpen={handleOpen}
+        renderValue={(value: ISelectedListItem<any> | string | number) => {
+          if (typeof value === 'string' || typeof value === 'number') return value;
+          return (
+            <DisplayValue>
+              {value.icon && <IconWrapper icon={value.icon} />}
+              <ValueLabel>{value.label}</ValueLabel>
+            </DisplayValue>
+          );
+        }}
         IconComponent={() => (
           <IconWrapper
             classes={open ? 'icon open' : 'icon'}
             width="12px"
             height="12px"
-            styles={{ position: 'absolute', right: '8px', top: 'calc(50% - 8px)', pointerEvents: 'none' }}
+            styles={{ position: 'absolute', right: '8px', top: 'calc(50% - 6px)', pointerEvents: 'none' }}
             icon={arrowBottomIcon}
           />
         )}
         labelId={id}
         id={id + '_select'}
-        value={value}
+        value={textValue}
         onChange={handleChange}
-        MenuProps={{ classes: { paper: classes.menuRoot } }}
+        MenuProps={{ classes: { paper: classes.menuRoot, list: classes.menuList } }}
         classes={{ root: classes.root, select: classes.select }}
       >
         {options.map(option => (
-          <MenuItem value={option}>{option}</MenuItem>
+          <MenuItem classes={{ root: classes.menuListItem }} value={option}>
+            {option}
+          </MenuItem>
         ))}
       </Select>
     </TextInputWrapper>

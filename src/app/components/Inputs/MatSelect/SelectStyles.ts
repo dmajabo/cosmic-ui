@@ -42,6 +42,38 @@ export const SelectStyles = makeStyles(
         borderRadius: '6px',
         minHeight: '40px',
       },
+      menuList: {
+        maxHeight: '278px',
+        padding: '6px 0',
+        fontSize: '14px',
+        fontFamily: 'DMSans',
+      },
+      menuListItem: {
+        width: '100%',
+        overflow: 'hidden',
+        fontSize: 'inherit',
+        fontFamily: 'inherit',
+        boxSizing: 'border-box',
+        minHeight: '40px',
+        fontWeight: 500,
+        lineHeight: '18px',
+        padding: '10px 20px',
+        letterSpacing: 'unset',
+        color: 'var(--_primaryColor)',
+        background: 'transparent',
+        margin: '2px 0',
+        '&:hover': {
+          background: 'var(--_vmBg)',
+        },
+        '&.Mui-selected:hover': {
+          color: 'var(--_hoverButtonBg)',
+          background: 'var(--_vmBg)',
+        },
+        '&.Mui-selected': {
+          color: 'var(--_hoverButtonBg)',
+          background: 'var(--_vmBg)',
+        },
+      },
     }),
   {
     index: 1,

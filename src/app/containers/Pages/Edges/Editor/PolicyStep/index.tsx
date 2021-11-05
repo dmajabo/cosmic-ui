@@ -1,5 +1,4 @@
 import React from 'react';
-import TextInput from 'app/components/Inputs/TextInput';
 import { IEdgePolicy } from '../../model';
 import PolicyItem from './PolicyItem';
 import SecondaryButton from 'app/components/Buttons/SecondaryButton';
@@ -20,9 +19,9 @@ const PolicyStep: React.FC<Props> = ({ policies, onChange }) => {
     }
   }, [policies]);
 
-  const onInputChange = (value: string | null) => {
-    onChange(value, 'name');
-  };
+  // const onInputChange = (value: string | null) => {
+  //   onChange(value, 'name');
+  // };
 
   const onUpdateItem = (value: string | null, field: string, index) => {
     const _items: IEdgePolicy[] = items.slice();
