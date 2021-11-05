@@ -1,11 +1,11 @@
 import styled from 'styled-components';
 
-export const PanelHeader = styled.div`
+export const ColumnPanelHeader = styled.div`
   white-space: nowrap;
   width: 100%;
-  height: 94px;
-  padding: 40px 40px 0 40px;
-  margin-bottom: 20px;
+  height: 70px;
+  padding: 40px 0 0 0;
+  margin-bottom: 30px;
   flex-shrink: 0;
 `;
 
@@ -38,5 +38,5 @@ export const PanelFotter = styled.div`
   padding: 30px 40px 40px 40px;
   flex-shrink: 0;
   margin: auto;
-  justify-content: flex-end;
+  justify-content: space-between;
 `;

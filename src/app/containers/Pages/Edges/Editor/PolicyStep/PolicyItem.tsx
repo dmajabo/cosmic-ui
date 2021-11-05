@@ -41,7 +41,7 @@ const PolicyItem: React.FC<Props> = ({ item, index, onUpdateItem }) => {
           label="Action"
           value={item.action}
           options={PolicyActionsValues}
-          styles={{ width: 'calc(50% - 5px)', margin: '0 5px 20px 0' }}
+          styles={{ width: 'calc(50% - 5px)', margin: '0 5px 0px 0' }}
           required
           onChange={v => onSelectChange(v, 'action')}
         />

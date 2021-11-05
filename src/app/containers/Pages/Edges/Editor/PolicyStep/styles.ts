@@ -14,6 +14,7 @@ export const FormRow = styled.div<RowProps>`
   flex-shrink: 0;
   display: flex;
   justify-content: ${props => props.justifyContent || 'flex-start'};
+  margin-bottom: 20px;
 `;
 
 export const PolicyItemWrapper = styled.div`

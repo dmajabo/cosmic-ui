@@ -21,6 +21,7 @@ export const EdgesStepperItems: IStepperItem<EdgesStepperTypes>[] = [
 export const createNewEdge = (): IEdgeModel => ({
   id: '',
   name: '',
+  description: '',
   price: null,
   connection: [],
   sites: {

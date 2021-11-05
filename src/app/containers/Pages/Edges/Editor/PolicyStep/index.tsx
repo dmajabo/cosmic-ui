@@ -46,7 +46,7 @@ const PolicyStep: React.FC<Props> = ({ policies, onChange }) => {
         </PolicyItemsWrapper>
       ) : null}
       <FormRow justifyContent={items && items.length ? 'flex-end' : 'flex-start'}>
-        <SecondaryButton icon={plusIcon} label="ADD POLICY" onClick={onAddPolicy} />
+        <SecondaryButton icon={plusIcon} label="Create POLICY" onClick={onAddPolicy} />
       </FormRow>
     </>
   );

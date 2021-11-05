@@ -6,7 +6,7 @@ export const AutoCompleteStyles = makeStyles(
       root: {
         height: 'auto',
         fontFamily: 'DMSans',
-        background: 'transparent',
+        background: 'var(--_primaryBg)',
         '& .MuiInputBase-root': {
           color: 'var(--_primaryColor)',
           fontSize: '14px',
@@ -27,7 +27,7 @@ export const AutoCompleteStyles = makeStyles(
           borderColor: 'var(--_defaultInputBorder) !important',
         },
         '& .MuiAutocomplete-endAdornment': {
-          top: 'calc(50% - 12px)',
+          top: 'calc(50% - 10px)',
         },
         '& .MuiAutocomplete-endAdornment .MuiIconButton-root': {
           padding: '0px !important',

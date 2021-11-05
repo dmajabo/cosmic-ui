@@ -8,7 +8,6 @@ import { jsonClone } from 'lib/helpers/cloneHelper';
 import { updateStepById, updateSteps } from './helper';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
-import SecondaryButton from 'app/components/Buttons/SecondaryButton';
 import FormPanel from './FormPanel';
 
 interface Props {
@@ -64,14 +63,13 @@ const Editor: React.FC<Props> = (props: Props) => {
     setDataItem(_dataItem);
   };
 
-  const onGoPrev = () => {
-    if (selectedStep.index === 0) return;
-    setSelectedStep(steps[selectedStep.index - 1]);
-  };
-
-  const onGoNext = () => {
-    if (selectedStep.index + 1 === steps.length) return;
-    setSelectedStep(steps[selectedStep.index + 1]);
+  const onToogleAccordionItem = (id: EdgesStepperTypes) => {
+    if (selectedStep && id === selectedStep.id) {
+      setSelectedStep(null);
+      return;
+    }
+    const _item: IStepperItem<EdgesStepperTypes> = steps.find(it => it.id === id);
+    setSelectedStep(_item);
   };
 
   const onSave = () => {
@@ -92,7 +90,6 @@ const Editor: React.FC<Props> = (props: Props) => {
     <Wrapper>
       <PanelColumn width="50vw" maxWidth="260px">
         {steps && steps.length && <Stepper formatValue={valueNumberFormat} valueFormattedField="index" selectedStep={selectedStep && selectedStep.id} steps={steps} onSelectStep={onSelectStep} />}
-        <SecondaryButton styles={{ width: '100%', margin: 'auto 0 0 0' }} label="Cancel" onClick={onClose} />
       </PanelColumn>
       <MainColumn>
         <MainColumnItem>
@@ -116,15 +113,15 @@ const Editor: React.FC<Props> = (props: Props) => {
       </MainColumn>
       <PanelColumn width="50vw" maxWidth="600px" padding="0">
         <FormPanel
-          onGoPrev={onGoPrev}
-          onGoNext={onGoNext}
+          onClose={onClose}
           onSave={onSave}
-          lastIndex={steps.length - 1}
+          steps={steps}
           dataItem={dataItem}
           selectedStep={selectedStep}
           onChangeSitesField={onChangeSitesField}
           onChangeAppsField={onChangeAppsField}
           onChangeField={onChangeDataField}
+          onToogleAccordionItem={onToogleAccordionItem}
         />
       </PanelColumn>
     </Wrapper>

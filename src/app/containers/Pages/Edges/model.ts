@@ -27,6 +27,7 @@ export interface IEdgePolicy {
 export interface IEdgeModel {
   id?: string;
   name: string;
+  description: string;
   price?: number;
   connection: string[];
   sites: IEdgeGroup;
