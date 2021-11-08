@@ -14,6 +14,7 @@ export interface Data {
   readonly sourceNetwork: string;
   readonly sourceDevice: string;
   readonly destination: string;
+  readonly description: string;
   readonly averageQoe: JSX.Element;
 }
 

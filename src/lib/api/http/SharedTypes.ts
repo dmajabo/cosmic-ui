@@ -179,7 +179,7 @@ export interface FinalTableData {
 
 export interface Column {
   readonly Header: string;
-  readonly accessor: 'name' | 'sourceOrg' | 'sourceNetwork' | 'sourceDevice' | 'destination' | 'averageQoe';
+  readonly accessor: 'name' | 'sourceOrg' | 'sourceNetwork' | 'sourceDevice' | 'destination' | 'averageQoe' | 'description';
 }
 
 interface HeatMapMetric {

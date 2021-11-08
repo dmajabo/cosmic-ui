@@ -1,6 +1,6 @@
 import { Backdrop, Button, Tab, Tabs, Typography } from '@material-ui/core';
 import { Add as AddIcon } from '@material-ui/icons';
-import React, { useContext, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { PerformanceDashboardStyles } from '../PerformanceDashboardStyles';
 import ColumnsIcon from '../icons/columns.svg';
 import FilterIcon from '../icons/filter.svg';
@@ -15,6 +15,8 @@ import { Goodput } from './Goodput';
 import { MetricTabValue } from '../../DashboardPage/enum/MetricTabValue';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { createApiClient } from 'lib/api/http/apiClient';
+import { CheckboxData } from '../../AnalyticsPage/components/Dimensions';
+import { Checkbox, FormControlLabel, FormGroup, Popover } from '@mui/material';
 
 interface SLATestListProps {
   readonly finalTableData: FinalTableData[];
@@ -70,6 +72,10 @@ const columns: Column[] = [
     accessor: 'destination' as const,
   },
   {
+    Header: 'DESCRIPTION',
+    accessor: 'description' as const,
+  },
+  {
     Header: 'AVERAGE QOE',
     accessor: 'averageQoe' as const,
   },
@@ -92,6 +98,16 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
     description: '',
   });
   const [updateTestToggle, setUpdateTestToggle] = useState<boolean>(false);
+  const [columnCheckboxData, setColumnCheckboxData] = useState<CheckboxData>({});
+  const [selectedColumns, setSelectedColumns] = useState<Column[]>([]);
+  const [columnAnchorEl, setColumnAnchorEl] = useState<HTMLButtonElement | null>(null);
+
+  const handleColmunsClick = (event: React.MouseEvent<HTMLButtonElement>) => setColumnAnchorEl(event.currentTarget);
+
+  const handleColumnsClose = () => setColumnAnchorEl(null);
+
+  const columnsPopoverOpen = Boolean(columnAnchorEl);
+  const columnsPopoverId = columnsPopoverOpen ? 'columns-popover' : undefined;
 
   const userContext = useContext<UserContextState>(UserContext);
   const apiClient = createApiClient(userContext.idToken!);
@@ -121,6 +137,30 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
     handleUpdateTestToggle();
   };
 
+  useEffect(() => {
+    const initialCheckboxData: CheckboxData = {};
+    columns.forEach(item => {
+      if (item.accessor === 'description') {
+        initialCheckboxData[item.accessor] = false;
+      } else {
+        initialCheckboxData[item.accessor] = true;
+      }
+    });
+    setColumnCheckboxData(initialCheckboxData);
+  }, []);
+
+  useEffect(() => {
+    const newSelectedColumns = columns.filter(item => columnCheckboxData[item.accessor]);
+    setSelectedColumns(newSelectedColumns);
+  }, [columnCheckboxData]);
+
+  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setColumnCheckboxData({
+      ...columnCheckboxData,
+      [event.target.name]: event.target.checked,
+    });
+  };
+
   const data = useMemo(
     () =>
       finalTableData.map(item => {
@@ -131,6 +171,7 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
           sourceNetwork: item.sourceNetwork,
           sourceDevice: item.sourceDevice,
           destination: item.destination,
+          description: item.description,
           averageQoe: <AverageQoe updateTest={getTestDataToUpdate} deleteTest={deleteTest} packetLoss={item.averageQoe.packetLoss} latency={item.averageQoe.latency} testId={item.id} />,
         };
       }),
@@ -173,12 +214,33 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
               </Typography>
               <img src={FilterIcon} alt="columns" />
             </Button>
-            <Button className={classes.otherButton} variant="contained" disableElevation>
+            <Button aria-describedby={columnsPopoverId} className={classes.otherButton} variant="contained" onClick={handleColmunsClick} disableElevation>
               <Typography className={classes.otherButtonText} noWrap>
                 COLUMNS
               </Typography>
               <img src={ColumnsIcon} alt="columns" />
             </Button>
+            <Popover
+              id={columnsPopoverId}
+              open={columnsPopoverOpen}
+              onClose={handleColumnsClose}
+              anchorEl={columnAnchorEl}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+              }}
+            >
+              <FormGroup className={classes.popoverContainer}>
+                {columns.map(item => (
+                  <FormControlLabel
+                    key={item.accessor}
+                    className={classes.popoverItem}
+                    control={<Checkbox checked={columnCheckboxData[item.accessor]} onChange={handleCheckboxChange} name={item.accessor} />}
+                    label={<span className={classes.popoverText}>{item.Header}</span>}
+                  />
+                ))}
+              </FormGroup>
+            </Popover>
             <Button className={classes.slaTestButton} variant="contained" color="primary" disableElevation onClick={handleToggle}>
               <Typography className={classes.slaTestButtonText} noWrap>
                 CREATE SLA TEST
@@ -191,7 +253,7 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
           <Typography className={classes.subTitleText}>Select sources for wich you want to view data.</Typography>
         </div>
         <div className={classes.tableContainer}>
-          <Table onSelectedRowsUpdate={onSelectedRowsUpdate} columns={columns} data={data} />
+          <Table onSelectedRowsUpdate={onSelectedRowsUpdate} columns={selectedColumns} data={data} />
         </div>
       </div>
       <div className={classes.itemContainer}>
