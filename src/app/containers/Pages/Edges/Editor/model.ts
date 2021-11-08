@@ -24,6 +24,7 @@ export const createNewEdge = (): IEdgeModel => ({
   description: '',
   price: null,
   connection: [],
+  tags: '',
   sites: {
     name: '',
     type: '',

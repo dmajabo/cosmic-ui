@@ -40,3 +40,14 @@ export const PanelFotter = styled.div`
   margin: auto;
   justify-content: space-between;
 `;
+
+export const PanelContentLabel = styled.div`
+  font-family: 'DMSans';
+  font-style: normal;
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 21px;
+  color: var(--_primaryColor);
+  margin: 14px 0;
+  padding: 10px 0;
+`;

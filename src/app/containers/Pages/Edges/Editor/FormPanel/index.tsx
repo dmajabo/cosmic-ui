@@ -58,7 +58,13 @@ const FormPanel: React.FC<Props> = ({ dataItem, selectedStep, steps, onClose, on
             </PanelHeader>
           </AccordionSummary>
           <AccordionDetails className={AccordionStyles.deteilItemEdges}>
-            <GeneralStep description={dataItem.description} connection={dataItem.connection} name={dataItem.name} onChange={(v: any, f: string) => onChangeField(v, f, EdgesStepperTypes.GENERAL)} />
+            <GeneralStep
+              tags={dataItem.tags}
+              description={dataItem.description}
+              connection={dataItem.connection}
+              name={dataItem.name}
+              onChange={(v: any, f: string) => onChangeField(v, f, EdgesStepperTypes.GENERAL)}
+            />
           </AccordionDetails>
         </Accordion>
         <Accordion className={AccordionStyles.accContainer} expanded={selectedStep && selectedStep.id === EdgesStepperTypes.SITES} onChange={onAccordionChange(EdgesStepperTypes.SITES)}>

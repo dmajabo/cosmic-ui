@@ -15,8 +15,10 @@ export const AutoCompleteStyles = makeStyles(
           lineHeight: 'normal',
           letterSpacing: 'unset',
           borderRadius: '6px',
-          padding: '8px 8px 8px 16px',
-          minHeight: '40px',
+          paddingBottom: '10px !important',
+          paddingLeft: '20px !important',
+          paddingTop: '10px !important',
+          minHeight: '50px',
         },
         '& .MuiOutlinedInput-root .MuiAutocomplete-input': {
           height: '22px',

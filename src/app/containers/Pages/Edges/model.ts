@@ -30,6 +30,7 @@ export interface IEdgeModel {
   description: string;
   price?: number;
   connection: string[];
+  tags: string;
   sites: IEdgeGroup;
   apps: IEdgeGroup;
   policies: IEdgePolicy[] | null;
