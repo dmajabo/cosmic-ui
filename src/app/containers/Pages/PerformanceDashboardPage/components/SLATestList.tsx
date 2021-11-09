@@ -208,12 +208,12 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
             <Typography className={classes.itemTitle}>SLA Tests</Typography>
           </div>
           <div>
-            <Button className={classes.otherButton} variant="contained" disableElevation>
+            {/* <Button className={classes.otherButton} variant="contained" disableElevation>
               <Typography className={classes.otherButtonText} noWrap>
                 FILTER
               </Typography>
               <img src={FilterIcon} alt="columns" />
-            </Button>
+            </Button> */}
             <Button aria-describedby={columnsPopoverId} className={classes.otherButton} variant="contained" onClick={handleColmunsClick} disableElevation>
               <Typography className={classes.otherButtonText} noWrap>
                 COLUMNS
