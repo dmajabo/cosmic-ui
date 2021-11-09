@@ -9,6 +9,8 @@ export const TextInputWrapper = styled.div`
 `;
 interface Props {
   disabled?: boolean;
+  padding?: string;
+  height?: string;
 }
 
 const InputStyles = css`
@@ -26,11 +28,19 @@ const InputStyles = css`
   &::placeholder {
     color: var(--_disabledTextColor);
   }
+  &:read-only {
+    cursor: default;
+    color: var(--_disabledTextColor);
+  }
 `;
 export const Input = styled.input<Props>`
   ${InputStyles};
-  height: 40px;
-  padding: 8px 24px 8px 16px;
+  height: ${props => props.height || '40px'};
+  padding: ${props => props.padding || '8px 24px 8px 16px'};
+`;
+
+export const InputWrapper = styled.div`
+  position: relative;
 `;
 
 export const TextArea = styled.textarea<Props>`

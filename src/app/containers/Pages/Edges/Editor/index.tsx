@@ -1,5 +1,5 @@
 import React from 'react';
-import { IEdgeModel } from '../model';
+import { IEdgeGroup, IEdgeModel } from '../model';
 import { ColumnTitle, MainColumn, MainColumnItem, PanelColumn, Wrapper } from './styles';
 import { IStepperItem, valueNumberFormat } from 'app/components/Stepper/model';
 import Stepper from 'app/components/Stepper';
@@ -9,6 +9,8 @@ import { updateStepById, updateSteps } from './helper';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
 import FormPanel from './FormPanel';
+import SitesNode from './Components/MapComponnets/SitesNode';
+import AppsNode from './Components/MapComponnets/AppsNode';
 
 interface Props {
   dataItem: IEdgeModel;
@@ -48,17 +50,42 @@ const Editor: React.FC<Props> = (props: Props) => {
     setDataItem(_dataItem);
   };
 
-  const onChangeSitesField = (value: any, field: string) => {
-    const _dataItem = { ...dataItem };
-    _dataItem.sites[field] = value;
-    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.SITES, _dataItem.sites[field]);
+  const onChangeSitesField = (value: IEdgeGroup, index: number | null) => {
+    const _dataItem: IEdgeModel = jsonClone(dataItem);
+    if (!index && index !== 0) {
+      _dataItem.sites.push(value);
+    } else {
+      _dataItem.sites.splice(index, 1, value);
+    }
+    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.SITES, _dataItem.sites);
     setSteps(_items);
     setDataItem(_dataItem);
   };
-  const onChangeAppsField = (value: any, field: string) => {
-    const _dataItem = { ...dataItem };
-    _dataItem.sites[field] = value;
-    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.APPS, _dataItem.sites[field]);
+
+  const onDeleteSitesGroup = (index: number) => {
+    const _dataItem: IEdgeModel = jsonClone(dataItem);
+    _dataItem.sites.splice(index, 1);
+    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.SITES, _dataItem.sites);
+    setSteps(_items);
+    setDataItem(_dataItem);
+  };
+
+  const onChangeAppsField = (value: IEdgeGroup, index: number | null) => {
+    const _dataItem: IEdgeModel = jsonClone(dataItem);
+    if (!index && index !== 0) {
+      _dataItem.apps.push(value);
+    } else {
+      _dataItem.apps.splice(index, 1, value);
+    }
+    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.APPS, _dataItem.apps);
+    setSteps(_items);
+    setDataItem(_dataItem);
+  };
+
+  const onDeleteAppsGroup = (index: number) => {
+    const _dataItem: IEdgeModel = jsonClone(dataItem);
+    _dataItem.apps.splice(index, 1);
+    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.APPS, _dataItem.apps);
     setSteps(_items);
     setDataItem(_dataItem);
   };
@@ -96,6 +123,7 @@ const Editor: React.FC<Props> = (props: Props) => {
           <AbsLoaderWrapper opacity="1" width="100%" height="auto" top="unset" bottom="40px">
             <ColumnTitle>Sites</ColumnTitle>
           </AbsLoaderWrapper>
+          {dataItem.sites && dataItem.sites.length ? dataItem.sites.map((it, index) => <SitesNode key={`siteNodes${index}`} data={it} />) : null}
         </MainColumnItem>
         <MainColumnItem background="var(--_vmBg)">
           <AbsLoaderWrapper opacity="1" width="100%" height="auto" top="40px">
@@ -109,9 +137,10 @@ const Editor: React.FC<Props> = (props: Props) => {
           <AbsLoaderWrapper opacity="1" width="100%" height="auto" top="unset" bottom="40px">
             <ColumnTitle>Cloud</ColumnTitle>
           </AbsLoaderWrapper>
+          {dataItem.apps && dataItem.apps.length ? dataItem.apps.map((it, index) => <AppsNode key={`appsNodes${index}`} data={it} />) : null}
         </MainColumnItem>
       </MainColumn>
-      <PanelColumn width="50vw" maxWidth="600px" padding="0">
+      <PanelColumn width="50vw" maxWidth="680px" padding="0">
         <FormPanel
           onClose={onClose}
           onSave={onSave}
@@ -122,6 +151,8 @@ const Editor: React.FC<Props> = (props: Props) => {
           onChangeAppsField={onChangeAppsField}
           onChangeField={onChangeDataField}
           onToogleAccordionItem={onToogleAccordionItem}
+          onDeleteSitesGroup={onDeleteSitesGroup}
+          onDeleteAppsGroup={onDeleteAppsGroup}
         />
       </PanelColumn>
     </Wrapper>

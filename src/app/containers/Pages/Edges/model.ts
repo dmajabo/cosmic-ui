@@ -1,6 +1,12 @@
+export interface EditGroupItem {
+  group: IEdgeGroup;
+  index: number | null;
+}
+
 export interface IEdgeGroup {
   name: string;
-  type: string;
+  type: PolicySources;
+  items: any[];
 }
 
 export enum PolicySources {
@@ -31,7 +37,7 @@ export interface IEdgeModel {
   price?: number;
   connection: string[];
   tags: string;
-  sites: IEdgeGroup;
-  apps: IEdgeGroup;
+  sites: IEdgeGroup[];
+  apps: IEdgeGroup[];
   policies: IEdgePolicy[] | null;
 }
