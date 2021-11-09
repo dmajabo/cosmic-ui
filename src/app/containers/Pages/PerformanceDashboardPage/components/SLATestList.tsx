@@ -3,10 +3,9 @@ import { Add as AddIcon } from '@material-ui/icons';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { PerformanceDashboardStyles } from '../PerformanceDashboardStyles';
 import ColumnsIcon from '../icons/columns.svg';
-import FilterIcon from '../icons/filter.svg';
 import Table, { Data } from './Table';
 import { CreateSLATest } from './CreateSLATest';
-import { Organization, Column, FinalTableData, SLATest, UpdateSLATestRequest } from 'lib/api/http/SharedTypes';
+import { Organization, Column, FinalTableData, SLATest, UpdateSLATestRequest, ColumnAccessor } from 'lib/api/http/SharedTypes';
 import { PacketLoss } from './PacketLoss';
 import { Latency } from './Latency';
 import Select from 'react-select';
@@ -53,31 +52,31 @@ function a11yProps(index: any) {
 const columns: Column[] = [
   {
     Header: 'NAME',
-    accessor: 'name' as const,
+    accessor: ColumnAccessor.name,
   },
   {
     Header: 'SOURCE ORGANIZATION',
-    accessor: 'sourceOrg' as const,
+    accessor: ColumnAccessor.sourceOrg,
   },
   {
     Header: 'SOURCE NETWORK',
-    accessor: 'sourceNetwork' as const,
+    accessor: ColumnAccessor.sourceNetwork,
   },
   {
     Header: 'SOURCE DEVICE',
-    accessor: 'sourceDevice' as const,
+    accessor: ColumnAccessor.sourceDevice,
   },
   {
     Header: 'DESTINATION',
-    accessor: 'destination' as const,
+    accessor: ColumnAccessor.destination,
   },
   {
     Header: 'DESCRIPTION',
-    accessor: 'description' as const,
+    accessor: ColumnAccessor.description,
   },
   {
     Header: 'AVERAGE QOE',
-    accessor: 'averageQoe' as const,
+    accessor: ColumnAccessor.averageQoe,
   },
 ];
 
@@ -106,8 +105,8 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
 
   const handleColumnsClose = () => setColumnAnchorEl(null);
 
-  const columnsPopoverOpen = Boolean(columnAnchorEl);
-  const columnsPopoverId = columnsPopoverOpen ? 'columns-popover' : undefined;
+  const isColumnsPopoverOpen = Boolean(columnAnchorEl);
+  const columnsPopoverId = isColumnsPopoverOpen ? 'columns-popover' : undefined;
 
   const userContext = useContext<UserContextState>(UserContext);
   const apiClient = createApiClient(userContext.idToken!);
@@ -138,14 +137,10 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
   };
 
   useEffect(() => {
-    const initialCheckboxData: CheckboxData = {};
-    columns.forEach(item => {
-      if (item.accessor === 'description') {
-        initialCheckboxData[item.accessor] = false;
-      } else {
-        initialCheckboxData[item.accessor] = true;
-      }
-    });
+    const initialCheckboxData: CheckboxData = columns.reduce((accu, nextValue) => {
+      nextValue.accessor === ColumnAccessor.description ? (accu[nextValue.accessor] = false) : (accu[nextValue.accessor] = true);
+      return accu;
+    }, {});
     setColumnCheckboxData(initialCheckboxData);
   }, []);
 
@@ -208,12 +203,6 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
             <Typography className={classes.itemTitle}>SLA Tests</Typography>
           </div>
           <div>
-            {/* <Button className={classes.otherButton} variant="contained" disableElevation>
-              <Typography className={classes.otherButtonText} noWrap>
-                FILTER
-              </Typography>
-              <img src={FilterIcon} alt="columns" />
-            </Button> */}
             <Button aria-describedby={columnsPopoverId} className={classes.otherButton} variant="contained" onClick={handleColmunsClick} disableElevation>
               <Typography className={classes.otherButtonText} noWrap>
                 COLUMNS
@@ -222,7 +211,7 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
             </Button>
             <Popover
               id={columnsPopoverId}
-              open={columnsPopoverOpen}
+              open={isColumnsPopoverOpen}
               onClose={handleColumnsClose}
               anchorEl={columnAnchorEl}
               anchorOrigin={{
@@ -232,7 +221,7 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
             >
               <FormGroup className={classes.popoverContainer}>
                 {columns
-                  .filter(column => column.accessor !== 'name')
+                  .filter(column => column.accessor !== ColumnAccessor.name)
                   .map(item => (
                     <FormControlLabel
                       key={item.accessor}
