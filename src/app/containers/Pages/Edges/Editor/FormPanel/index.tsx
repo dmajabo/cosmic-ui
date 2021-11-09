@@ -31,106 +31,110 @@ interface Props {
   onSave: () => void;
 }
 
-const FormPanel: React.FC<Props> = ({
-  dataItem,
-  selectedStep,
-  steps,
-  onClose,
-  onChangeField,
-  onChangeSitesField,
-  onChangeAppsField,
-  onDeleteSitesGroup,
-  onDeleteAppsGroup,
-  onSave,
-  onToogleAccordionItem,
-}) => {
+const FormPanel: React.FC<Props> = (props: Props) => {
   const AccordionStyles = accordionStyles();
   const onAccordionChange = (panel: EdgesStepperTypes) => (event: React.SyntheticEvent, isExpanded: boolean) => {
-    onToogleAccordionItem(isExpanded ? panel : null);
+    props.onToogleAccordionItem(isExpanded ? panel : null);
   };
   return (
     <>
       <PanelContent>
         <ColumnPanelHeader>
-          <PanelTitle>{!dataItem.id ? 'Create Edge' : 'Update Edge'}</PanelTitle>
+          <PanelTitle>{!props.dataItem.id ? 'Create Edge' : 'Update Edge'}</PanelTitle>
         </ColumnPanelHeader>
-        <Accordion className={AccordionStyles.accContainer} expanded={selectedStep && selectedStep.id === EdgesStepperTypes.GENERAL} onChange={onAccordionChange(EdgesStepperTypes.GENERAL)}>
+        <Accordion
+          className={AccordionStyles.accContainer}
+          expanded={!!(props.selectedStep && props.selectedStep.id === EdgesStepperTypes.GENERAL)}
+          onChange={onAccordionChange(EdgesStepperTypes.GENERAL)}
+        >
           <AccordionSummary className={AccordionStyles.panelEdges} expandIcon={<ExpandedIcon />} aria-controls={`${EdgesStepperTypes.GENERAL}-content`} id={`${EdgesStepperTypes.GENERAL}-header`}>
             <PanelHeader
-              index={steps[0].index + 1}
+              index={props.steps[0].index + 1}
               label="General"
-              selected={selectedStep && selectedStep.id === EdgesStepperTypes.GENERAL}
-              state={steps[0].state !== StepperItemStateType.EMPTY ? steps[0].state : null}
+              selected={props.selectedStep && props.selectedStep.id === EdgesStepperTypes.GENERAL}
+              state={props.steps[0].state !== StepperItemStateType.EMPTY ? props.steps[0].state : null}
               stepNumberWidth="40px"
               stepNumberHeight="40px"
             />
           </AccordionSummary>
           <AccordionDetails className={AccordionStyles.deteilItemEdges}>
             <GeneralStep
-              tags={dataItem.tags}
-              description={dataItem.description}
-              connection={dataItem.connection}
-              name={dataItem.name}
-              onChange={(v: any, f: string) => onChangeField(v, f, EdgesStepperTypes.GENERAL)}
+              tags={props.dataItem.tags}
+              description={props.dataItem.description}
+              connection={props.dataItem.connection}
+              name={props.dataItem.name}
+              onChange={(v: any, f: string) => props.onChangeField(v, f, EdgesStepperTypes.GENERAL)}
             />
           </AccordionDetails>
         </Accordion>
-        <Accordion className={AccordionStyles.accContainer} expanded={selectedStep && selectedStep.id === EdgesStepperTypes.SITES} onChange={onAccordionChange(EdgesStepperTypes.SITES)}>
+        <Accordion
+          className={AccordionStyles.accContainer}
+          expanded={!!(props.selectedStep && props.selectedStep.id === EdgesStepperTypes.SITES)}
+          onChange={onAccordionChange(EdgesStepperTypes.SITES)}
+        >
           <AccordionSummary className={AccordionStyles.panelEdges} expandIcon={<ExpandedIcon />} aria-controls={`${EdgesStepperTypes.SITES}-content`} id={`${EdgesStepperTypes.SITES}-header`}>
             <PanelHeader
-              index={steps[1].index + 1}
+              index={props.steps[1].index + 1}
               label="Sites"
-              selected={selectedStep && selectedStep.id === EdgesStepperTypes.SITES}
-              state={steps[1].state !== StepperItemStateType.EMPTY ? steps[1].state : null}
+              selected={props.selectedStep && props.selectedStep.id === EdgesStepperTypes.SITES}
+              state={props.steps[1].state !== StepperItemStateType.EMPTY ? props.steps[1].state : null}
             />
           </AccordionSummary>
           <AccordionDetails className={AccordionStyles.deteilItemEdges}>
-            <SitesStep data={dataItem.sites} onChangeSites={onChangeSitesField} onDeleteGroup={onDeleteSitesGroup} />
+            <SitesStep data={props.dataItem.sites} onChangeSites={props.onChangeSitesField} onDeleteGroup={props.onDeleteSitesGroup} />
           </AccordionDetails>
         </Accordion>
-        <Accordion className={AccordionStyles.accContainer} expanded={selectedStep && selectedStep.id === EdgesStepperTypes.APPS} onChange={onAccordionChange(EdgesStepperTypes.APPS)}>
+        <Accordion className={AccordionStyles.accContainer} expanded={!!(props.selectedStep && props.selectedStep.id === EdgesStepperTypes.APPS)} onChange={onAccordionChange(EdgesStepperTypes.APPS)}>
           <AccordionSummary className={AccordionStyles.panelEdges} expandIcon={<ExpandedIcon />} aria-controls={`${EdgesStepperTypes.APPS}-content`} id={`${EdgesStepperTypes.APPS}-header`}>
             <PanelHeader
-              index={steps[2].index + 1}
+              index={props.steps[2].index + 1}
               label="Apps"
-              selected={selectedStep && selectedStep.id === EdgesStepperTypes.APPS}
-              state={steps[2].state !== StepperItemStateType.EMPTY ? steps[2].state : null}
+              selected={props.selectedStep && props.selectedStep.id === EdgesStepperTypes.APPS}
+              state={props.steps[2].state !== StepperItemStateType.EMPTY ? props.steps[2].state : null}
             />
           </AccordionSummary>
           <AccordionDetails className={AccordionStyles.deteilItemEdges}>
-            <AppsStep data={dataItem.apps} onChangeApps={onChangeAppsField} onDeleteGroup={onDeleteAppsGroup} />
+            <AppsStep data={props.dataItem.apps} onChangeApps={props.onChangeAppsField} onDeleteGroup={props.onDeleteAppsGroup} />
           </AccordionDetails>
         </Accordion>
-        <Accordion className={AccordionStyles.accContainer} expanded={selectedStep && selectedStep.id === EdgesStepperTypes.TRANSIT} onChange={onAccordionChange(EdgesStepperTypes.TRANSIT)}>
+        <Accordion
+          className={AccordionStyles.accContainer}
+          expanded={!!(props.selectedStep && props.selectedStep.id === EdgesStepperTypes.TRANSIT)}
+          onChange={onAccordionChange(EdgesStepperTypes.TRANSIT)}
+        >
           <AccordionSummary className={AccordionStyles.panelEdges} expandIcon={<ExpandedIcon />} aria-controls={`${EdgesStepperTypes.TRANSIT}-content`} id={`${EdgesStepperTypes.TRANSIT}-header`}>
             <PanelHeader
-              index={steps[3].index + 1}
+              index={props.steps[3].index + 1}
               label="Transit"
-              selected={selectedStep && selectedStep.id === EdgesStepperTypes.TRANSIT}
-              state={steps[3].state !== StepperItemStateType.EMPTY ? steps[3].state : null}
+              selected={props.selectedStep && props.selectedStep.id === EdgesStepperTypes.TRANSIT}
+              state={props.steps[3].state !== StepperItemStateType.EMPTY ? props.steps[3].state : null}
             />
           </AccordionSummary>
           <AccordionDetails className={AccordionStyles.deteilItemEdges}>
-            <TransitStep onChange={(v: any, f: string) => onChangeField(v, f, EdgesStepperTypes.TRANSIT)} />
+            <TransitStep firewall={props.dataItem.firewall} firewallRegion={props.dataItem.firewallRegion} onChange={(v: any, f: string) => props.onChangeField(v, f, EdgesStepperTypes.TRANSIT)} />
           </AccordionDetails>
         </Accordion>
-        <Accordion className={AccordionStyles.accContainer} expanded={selectedStep && selectedStep.id === EdgesStepperTypes.POLICY} onChange={onAccordionChange(EdgesStepperTypes.POLICY)}>
+        <Accordion
+          className={AccordionStyles.accContainer}
+          expanded={!!(props.selectedStep && props.selectedStep.id === EdgesStepperTypes.POLICY)}
+          onChange={onAccordionChange(EdgesStepperTypes.POLICY)}
+        >
           <AccordionSummary className={AccordionStyles.panelEdges} expandIcon={<ExpandedIcon />} aria-controls={`${EdgesStepperTypes.POLICY}-content`} id={`${EdgesStepperTypes.POLICY}-header`}>
             <PanelHeader
-              index={steps[4].index + 1}
+              index={props.steps[4].index + 1}
               label="Policy"
-              selected={selectedStep && selectedStep.id === EdgesStepperTypes.POLICY}
-              state={steps[4].state !== StepperItemStateType.EMPTY ? steps[4].state : null}
+              selected={props.selectedStep && props.selectedStep.id === EdgesStepperTypes.POLICY}
+              state={props.steps[4].state !== StepperItemStateType.EMPTY ? props.steps[4].state : null}
             />
           </AccordionSummary>
           <AccordionDetails className={AccordionStyles.deteilItemEdges}>
-            <PolicyStep policies={dataItem.policies} onChange={(v: any, f: string) => onChangeField(v, f, EdgesStepperTypes.POLICY)} />
+            <PolicyStep policies={props.dataItem.policies} onChange={(v: any, f: string) => props.onChangeField(v, f, EdgesStepperTypes.POLICY)} />
           </AccordionDetails>
         </Accordion>
       </PanelContent>
       <PanelFotter>
-        <SecondaryButton styles={{ height: '100%', margin: '0 10px 0 0' }} label="Cancel" onClick={onClose} />
-        <PrimaryButton styles={{ height: '100%', margin: '0 0 0 10px' }} label="CREATE EDGE" onClick={onSave} />
+        <SecondaryButton styles={{ height: '100%', margin: '0 10px 0 0' }} label="Cancel" onClick={props.onClose} />
+        <PrimaryButton styles={{ height: '100%', margin: '0 0 0 10px' }} label="CREATE EDGE" onClick={props.onSave} />
       </PanelFotter>
     </>
   );

@@ -15,7 +15,7 @@ interface Props {
   onDeleteGroup: (index: number) => void;
 }
 
-const AppsStep: React.FC<Props> = ({ data, onChangeApps, onDeleteGroup }) => {
+const AppsStep: React.FC<Props> = (props: Props) => {
   const [showCreator, setShowCreator] = React.useState<boolean>(false);
   const [editItem, setEditItem] = React.useState<EditGroupItem>(null);
   const onAddGroup = () => {
@@ -29,12 +29,12 @@ const AppsStep: React.FC<Props> = ({ data, onChangeApps, onDeleteGroup }) => {
   };
 
   const onDelete = (index: number) => {
-    onDeleteGroup(index);
+    props.onDeleteGroup(index);
   };
 
   const onSave = (item: IEdgeGroup, index: number | null) => {
     setShowCreator(false);
-    onChangeApps(item, index);
+    props.onChangeApps(item, index);
   };
 
   const onClose = () => {
@@ -43,12 +43,12 @@ const AppsStep: React.FC<Props> = ({ data, onChangeApps, onDeleteGroup }) => {
   return (
     <>
       <PanelContentLabel>App Groups</PanelContentLabel>
-      {data && data.length ? (
-        <FormTable data={data} onEditGroup={onEdit} onDeleteGroup={onDelete} />
+      {props.data && props.data.length ? (
+        <FormTable data={props.data} onEditGroup={onEdit} onDeleteGroup={onDelete} />
       ) : (
         <EmptyMessage>There is no app groups yet. To create group click the button bellow.</EmptyMessage>
       )}
-      <FormRow justifyContent={data && data.length ? 'flex-end' : 'flex-start'}>
+      <FormRow justifyContent={props.data && props.data.length ? 'flex-end' : 'flex-start'}>
         <SecondaryButton icon={plusIcon} label="Add group" onClick={onAddGroup} />
       </FormRow>
       {showCreator && (

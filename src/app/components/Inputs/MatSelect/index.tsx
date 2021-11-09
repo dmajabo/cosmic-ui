@@ -16,15 +16,16 @@ interface Props {
   label?: string;
   value: ISelectedListItem<any> | string | number;
   options: ISelectedListItem<any>[] | string[] | number[];
-  onChange: (e: any) => void;
+  onChange: (v: any) => void;
   required?: boolean;
   disabled?: boolean;
   readOnly?: boolean;
   styles?: Object;
+  selectClaassName?: string;
 }
 
-const MatSelect: React.FC<Props> = ({ id, label, value, options, styles, required, disabled, readOnly, onChange }) => {
-  const [textValue, setTextValue] = React.useState<ISelectedListItem<any> | string | number>(value || null);
+const MatSelect: React.FC<Props> = (props: Props) => {
+  const [textValue, setTextValue] = React.useState<ISelectedListItem<any> | string | number>(props.value || null);
   const [open, setOpen] = React.useState(false);
   const [isTyping, setIsTyping] = React.useState(false);
   const debouncedSearchTerm = useDebounce(textValue, 500);
@@ -32,7 +33,7 @@ const MatSelect: React.FC<Props> = ({ id, label, value, options, styles, require
   React.useEffect(() => {
     if ((debouncedSearchTerm || debouncedSearchTerm === '' || debouncedSearchTerm === null) && isTyping) {
       setIsTyping(false);
-      onChange(textValue);
+      props.onChange(textValue);
     }
   }, [debouncedSearchTerm]);
 
@@ -50,11 +51,13 @@ const MatSelect: React.FC<Props> = ({ id, label, value, options, styles, require
   };
 
   return (
-    <TextInputWrapper style={styles}>
-      <InputLabel htmlFor={id} disabled={disabled || readOnly}>
-        {label}
-        {required && <Required>*</Required>}
-      </InputLabel>
+    <TextInputWrapper style={props.styles}>
+      {props.label && (
+        <InputLabel htmlFor={props.id} disabled={props.disabled || props.readOnly}>
+          {props.label}
+          {props.required && <Required>*</Required>}
+        </InputLabel>
+      )}
       <Select
         open={open}
         onClose={handleClose}
@@ -63,7 +66,7 @@ const MatSelect: React.FC<Props> = ({ id, label, value, options, styles, require
           if (typeof value === 'string' || typeof value === 'number') return value;
           return (
             <DisplayValue>
-              {value.icon && <IconWrapper icon={value.icon} />}
+              {value.icon && <IconWrapper icon={value.icon} styles={{ margin: '0 12px 0 0' }} />}
               <ValueLabel>{value.label}</ValueLabel>
             </DisplayValue>
           );
@@ -77,18 +80,28 @@ const MatSelect: React.FC<Props> = ({ id, label, value, options, styles, require
             icon={arrowBottomIcon}
           />
         )}
-        labelId={id}
-        id={id + '_select'}
+        labelId={props.id}
+        id={props.id + '_select'}
         value={textValue}
         onChange={handleChange}
         MenuProps={{ classes: { paper: classes.menuRoot, list: classes.menuList } }}
         classes={{ root: classes.root, select: classes.select }}
+        className={props.selectClaassName}
       >
-        {options.map(option => (
-          <MenuItem classes={{ root: classes.menuListItem }} value={option}>
-            {option}
-          </MenuItem>
-        ))}
+        {props.options.map(option => {
+          if (typeof option === 'string' || typeof option === 'number') {
+            return (
+              <MenuItem classes={{ root: classes.menuListItem }} value={option}>
+                {option}
+              </MenuItem>
+            );
+          }
+          return (
+            <MenuItem classes={{ root: classes.menuListItem }} value={option}>
+              {option.label}
+            </MenuItem>
+          );
+        })}
       </Select>
     </TextInputWrapper>
   );

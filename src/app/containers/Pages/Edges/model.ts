@@ -21,9 +21,9 @@ export enum PolicyActions {
   ALLOW = 'allow',
   CUSTOM = 'custom',
 }
-export const PolicySourcesValues: PolicySources[] = [PolicySources.AWS, PolicySources.MERAKI];
-export const PolicyDestinationValues: PolicyDestinations[] = [PolicyDestinations.DEST_TRUE, PolicyDestinations.DEST_FAlSE];
-export const PolicyActionsValues: PolicyActions[] = [PolicyActions.ALLOW, PolicyActions.CUSTOM];
+export const PolicySourcesValues: string[] = [PolicySources.AWS, PolicySources.MERAKI];
+export const PolicyDestinationValues: string[] = [PolicyDestinations.DEST_TRUE, PolicyDestinations.DEST_FAlSE];
+export const PolicyActionsValues: string[] = [PolicyActions.ALLOW, PolicyActions.CUSTOM];
 export interface IEdgePolicy {
   source: PolicySources;
   destination: PolicyDestinations;
@@ -37,6 +37,8 @@ export interface IEdgeModel {
   price?: number;
   connection: string[];
   tags: string;
+  firewall: boolean;
+  firewallRegion: string;
   sites: IEdgeGroup[];
   apps: IEdgeGroup[];
   policies: IEdgePolicy[] | null;

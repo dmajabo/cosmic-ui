@@ -1,6 +1,8 @@
 import { IStepperItem, StepperItemStateType } from 'app/components/Stepper/model';
 import { IEdgeModel, IEdgePolicy } from '../model';
 import { Mark } from '@material-ui/core/Slider';
+import { ISelectedListItem } from 'lib/models/general';
+import { poloAltoIcon } from 'app/components/SVGIcons/edges/poloAlto';
 
 export enum EdgesStepperTypes {
   GENERAL = 'general',
@@ -25,6 +27,8 @@ export const createNewEdge = (): IEdgeModel => ({
   price: null,
   connection: [],
   tags: '',
+  firewall: false,
+  firewallRegion: '',
   sites: [],
   apps: [],
   policies: null,
@@ -45,3 +49,5 @@ export const EdgePriceValues: Mark[] = [
 ];
 
 export const ConnectionValues: string[] = ['VPC', 'VPN', 'DLA'];
+
+export const FirewallRegionsValues: ISelectedListItem<string>[] = [{ id: 'polo', value: 'polo', label: 'Polo Alto', icon: poloAltoIcon }];

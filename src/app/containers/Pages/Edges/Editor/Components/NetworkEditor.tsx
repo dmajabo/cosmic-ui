@@ -15,9 +15,9 @@ interface Props {
   onSave: (v: IEdgeGroup, index: number | null) => void;
 }
 
-const NetworkEditor: React.FC<Props> = ({ data, onSave }) => {
-  const [dataItemIndex] = React.useState<number | null>(data.index);
-  const [dataItem, setDataItem] = React.useState<IEdgeGroup>(data.group);
+const NetworkEditor: React.FC<Props> = (props: Props) => {
+  const [dataItemIndex] = React.useState<number | null>(props.data.index);
+  const [dataItem, setDataItem] = React.useState<IEdgeGroup>(props.data.group);
   const [columns] = React.useState<GridColDef[]>([
     {
       field: 'site',
@@ -108,7 +108,7 @@ const NetworkEditor: React.FC<Props> = ({ data, onSave }) => {
     { id: 11, site: 'Site Name', name: 'Office 9999', tag: 'Prod', location: 'East Region', devices: 'devices' },
   ]);
   const gridStyles = GridStyles();
-  const [selectionModel, setSelectionModel] = React.useState<GridSelectionModel>(data.group.items);
+  const [selectionModel, setSelectionModel] = React.useState<GridSelectionModel>(props.data.group.items);
   const onChangeName = (v: any) => {
     const _item: IEdgeGroup = { ...dataItem };
     _item.name = v;
@@ -123,7 +123,7 @@ const NetworkEditor: React.FC<Props> = ({ data, onSave }) => {
   };
 
   const onSaveChanges = () => {
-    onSave(dataItem, dataItemIndex);
+    props.onSave(dataItem, dataItemIndex);
   };
   return (
     <>

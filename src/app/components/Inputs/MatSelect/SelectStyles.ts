@@ -26,12 +26,21 @@ export const SelectStyles = makeStyles(
         '& .open .inheritFill': {
           fill: 'var(--_sHoverButtonColor)',
         },
+        '&.fullHeight': {
+          height: '100%',
+          '& .MuiSelect-select': {
+            height: '100%',
+          },
+        },
       },
       select: {
         height: '40px',
-        padding: '8px 32px 8px 8px',
+        padding: '8px 32px 8px 16px',
         minHeight: '40px',
         boxSizing: 'border-box',
+        '&:focus': {
+          background: 'transparent !important',
+        },
       },
       menuRoot: {
         fontFamily: 'DMSans',

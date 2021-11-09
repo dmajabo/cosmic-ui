@@ -10,14 +10,14 @@ interface Props {
   onChange: (value: any | null, field: string) => void;
 }
 
-const PolicyStep: React.FC<Props> = ({ policies, onChange }) => {
-  const [items, setItems] = React.useState<IEdgePolicy[] | null>(policies);
+const PolicyStep: React.FC<Props> = (props: Props) => {
+  const [items, setItems] = React.useState<IEdgePolicy[] | null>(props.policies);
 
   React.useEffect(() => {
-    if (policies !== items) {
-      setItems(policies);
+    if (props.policies !== items) {
+      setItems(props.policies);
     }
-  }, [policies]);
+  }, [props.policies]);
 
   // const onInputChange = (value: string | null) => {
   //   onChange(value, 'name');
