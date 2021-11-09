@@ -9,7 +9,7 @@ interface DimensionsProps {
   readonly closePopup: () => void;
   readonly dimensionData: DimensionOptions[];
   readonly addDimensions: (dimensions: string[]) => void;
-  readonly addedDimensions: string[];
+  readonly dimensions: string[];
 }
 
 export interface DimensionOptions {
@@ -23,7 +23,7 @@ export interface CheckboxData {
   [id: string]: boolean;
 }
 
-export const Dimensions: React.FC<DimensionsProps> = ({ closePopup, dimensionData, addDimensions, addedDimensions }) => {
+export const Dimensions: React.FC<DimensionsProps> = ({ closePopup, dimensionData, addDimensions, dimensions }) => {
   const classes = AnalyticsStyles();
 
   const [searchText, setSearchText] = useState<string>('');
@@ -31,9 +31,7 @@ export const Dimensions: React.FC<DimensionsProps> = ({ closePopup, dimensionDat
   const [checkboxData, setCheckboxData] = useState<CheckboxData>({});
   const [selectedDimensions, setSelectedDimensions] = useState<string[]>([]);
 
-  const handleSearchTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchText(event.target.value);
-  };
+  const handleSearchTextChange = (event: React.ChangeEvent<HTMLInputElement>) => setSearchText(event.target.value);
 
   const setInitialCheckboxData = () => {
     const tempCheckboxData: CheckboxData = {};
@@ -45,10 +43,10 @@ export const Dimensions: React.FC<DimensionsProps> = ({ closePopup, dimensionDat
         tempCheckboxData[`${item.title}_Destination_${value}`] = false;
       });
     });
-    addedDimensions.forEach(value => {
+    dimensions.forEach(value => {
       tempCheckboxData[value] = true;
     });
-    setSelectedDimensions(addedDimensions);
+    setSelectedDimensions(dimensions);
     setCheckboxData(tempCheckboxData);
   };
 
