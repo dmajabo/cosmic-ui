@@ -231,14 +231,16 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
               }}
             >
               <FormGroup className={classes.popoverContainer}>
-                {columns.map(item => (
-                  <FormControlLabel
-                    key={item.accessor}
-                    className={classes.popoverItem}
-                    control={<Checkbox checked={columnCheckboxData[item.accessor]} onChange={handleCheckboxChange} name={item.accessor} />}
-                    label={<span className={classes.popoverText}>{item.Header}</span>}
-                  />
-                ))}
+                {columns
+                  .filter(column => column.accessor !== 'name')
+                  .map(item => (
+                    <FormControlLabel
+                      key={item.accessor}
+                      className={classes.popoverItem}
+                      control={<Checkbox checked={columnCheckboxData[item.accessor]} onChange={handleCheckboxChange} name={item.accessor} />}
+                      label={<span className={classes.popoverText}>{item.Header}</span>}
+                    />
+                  ))}
               </FormGroup>
             </Popover>
             <Button className={classes.slaTestButton} variant="contained" color="primary" disableElevation onClick={handleToggle}>
