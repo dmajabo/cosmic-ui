@@ -12,6 +12,7 @@ import { useBreadCrumbDataContext } from 'lib/hooks/Breadcrumb/useBreadcrumbData
 import { EdgesBreadCrumbItemsType } from 'lib/hooks/Breadcrumb/models';
 import { AccountsApi } from 'lib/api/ApiModels/Accounts/endpoints';
 import { IAwsRegionsRes } from 'lib/api/ApiModels/Accounts/apiModel';
+import { EdgesApi } from 'lib/api/ApiModels/Edges/edpoints';
 interface Props {}
 
 const MainPage: React.FC<Props> = (props: Props) => {
@@ -72,7 +73,7 @@ const MainPage: React.FC<Props> = (props: Props) => {
   }, [breadcrumb.edgesBreadCrumbItems]);
 
   const onTryLoadEdges = async () => {
-    await onGet('api/v1/test', userContext.idToken!);
+    await onGet(EdgesApi.getEdges(), userContext.idToken!);
   };
 
   const onTryLoadRegions = async () => {
@@ -80,7 +81,7 @@ const MainPage: React.FC<Props> = (props: Props) => {
   };
 
   const onSaveEdge = async () => {
-    await onPost('api/v1/test', {}, userContext.idToken!);
+    await onPost(EdgesApi.postCreateEdge(), {}, userContext.idToken!);
   };
 
   const onOpenEditor = (_item?: IEdgeModel) => {

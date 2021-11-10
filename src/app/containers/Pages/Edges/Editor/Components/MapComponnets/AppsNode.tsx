@@ -1,11 +1,11 @@
 import React from 'react';
-import { IEdgeGroup } from '../../../model';
 import { GroupName, NodeHeader, NodeName, NodeWrapper, Office } from './styles';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { awsIcon } from 'app/components/SVGIcons/topologyIcons/aws';
+import { ISvgEdgeGroup } from '../../EdgesMap/helpers';
 
 interface Props {
-  data: IEdgeGroup;
+  data: ISvgEdgeGroup;
 }
 
 const AppsNode: React.FC<Props> = (props: Props) => {

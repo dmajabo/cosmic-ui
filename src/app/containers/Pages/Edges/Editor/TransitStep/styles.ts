@@ -36,14 +36,6 @@ export const MapBg = styled.div`
   opacity: 0.3;
 `;
 
-export const ButtonsGroup = styled.div`
-  position: absolute;
-  bottom: 20px;
-  right: 20px;
-  display: flex;
-  flex-direction: column;
-`;
-
 export const Marker = styled.div`
   display: flex;
   align-items: center;

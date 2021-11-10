@@ -2,7 +2,7 @@ import React from 'react';
 import { IAwsRegion } from 'lib/api/ApiModels/Accounts/apiModel';
 import MapGL, { Marker } from '@urbica/react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import { ButtonsGroup, MapBg, MapWrapper, SelectdLabel, SelectedTagRow } from './styles';
+import { MapBg, MapWrapper, SelectdLabel, SelectedTagRow } from './styles';
 import IconButton from 'app/components/Buttons/IconButton';
 import { zoomFullScreenIcon, zoomInIcon, zoomOutIcon } from 'app/components/SVGIcons/zoom';
 import MarkerNode from './MarkerNode';
@@ -10,6 +10,7 @@ import { jsonClone } from 'lib/helpers/cloneHelper';
 import Tag from 'app/components/Basic/Tag';
 import SecondaryButton from 'app/components/Buttons/SecondaryButton';
 import { closeSmallIcon } from 'app/components/SVGIcons/close';
+import { ButtonsGroup } from '../styles';
 
 const MAPBOX_ACCESS_TOKEN = 'pk.eyJ1IjoiYWpheS10cCIsImEiOiJja3NzamxqM3UweGVvMnZtZGJic3NpNDlmIn0.NGQB4WDQmRsC3B78JVCJQg';
 

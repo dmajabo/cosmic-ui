@@ -1,6 +1,6 @@
 import React from 'react';
 import { IEdgeGroup, IEdgeModel } from '../model';
-import { ColumnTitle, MainColumn, MainColumnItem, PanelColumn, Wrapper } from './styles';
+import { MainColumn, PanelColumn, Wrapper } from './styles';
 import { IStepperItem, valueNumberFormat } from 'app/components/Stepper/model';
 import Stepper from 'app/components/Stepper';
 import { createNewEdge, EdgesStepperItems, EdgesStepperTypes } from './model';
@@ -9,8 +9,7 @@ import { updateStepById, updateSteps } from './helper';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
 import FormPanel from './FormPanel';
-import SitesNode from './Components/MapComponnets/SitesNode';
-import AppsNode from './Components/MapComponnets/AppsNode';
+import EdgesMap from './EdgesMap';
 
 interface Props {
   dataItem: IEdgeModel;
@@ -119,7 +118,8 @@ const Editor: React.FC<Props> = (props: Props) => {
         {steps && steps.length && <Stepper formatValue={valueNumberFormat} valueFormattedField="index" selectedStep={selectedStep && selectedStep.id} steps={steps} onSelectStep={onSelectStep} />}
       </PanelColumn>
       <MainColumn>
-        <MainColumnItem>
+        <EdgesMap dataItem={dataItem} />
+        {/* <MainColumnItem>
           <AbsLoaderWrapper opacity="1" width="100%" height="auto" top="unset" bottom="40px">
             <ColumnTitle>Sites</ColumnTitle>
           </AbsLoaderWrapper>
@@ -138,7 +138,7 @@ const Editor: React.FC<Props> = (props: Props) => {
             <ColumnTitle>Cloud</ColumnTitle>
           </AbsLoaderWrapper>
           {dataItem.apps && dataItem.apps.length ? dataItem.apps.map((it, index) => <AppsNode key={`appsNodes${index}`} data={it} />) : null}
-        </MainColumnItem>
+        </MainColumnItem> */}
       </MainColumn>
       <PanelColumn width="50vw" maxWidth="680px" padding="0">
         <FormPanel
