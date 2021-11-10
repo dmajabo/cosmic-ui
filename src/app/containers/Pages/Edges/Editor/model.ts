@@ -29,6 +29,7 @@ export const createNewEdge = (): IEdgeModel => ({
   tags: '',
   firewall: false,
   firewallRegion: '',
+  selectedRegions: [],
   sites: [],
   apps: [],
   policies: null,

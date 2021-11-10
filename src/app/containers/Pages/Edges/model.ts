@@ -39,6 +39,7 @@ export interface IEdgeModel {
   tags: string;
   firewall: boolean;
   firewallRegion: string;
+  selectedRegions: string[];
   sites: IEdgeGroup[];
   apps: IEdgeGroup[];
   policies: IEdgePolicy[] | null;

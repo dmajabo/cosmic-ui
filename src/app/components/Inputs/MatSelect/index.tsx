@@ -25,7 +25,7 @@ interface Props {
 }
 
 const MatSelect: React.FC<Props> = (props: Props) => {
-  const [textValue, setTextValue] = React.useState<ISelectedListItem<any> | string | number>(props.value || null);
+  const [textValue, setTextValue] = React.useState<ISelectedListItem<any> | string | number>(props.value || '');
   const [open, setOpen] = React.useState(false);
   const [isTyping, setIsTyping] = React.useState(false);
   const debouncedSearchTerm = useDebounce(textValue, 500);
@@ -88,16 +88,16 @@ const MatSelect: React.FC<Props> = (props: Props) => {
         classes={{ root: classes.root, select: classes.select }}
         className={props.selectClaassName}
       >
-        {props.options.map(option => {
+        {props.options.map((option, index) => {
           if (typeof option === 'string' || typeof option === 'number') {
             return (
-              <MenuItem classes={{ root: classes.menuListItem }} value={option}>
+              <MenuItem key={`${props.id}${index}option`} classes={{ root: classes.menuListItem }} value={option}>
                 {option}
               </MenuItem>
             );
           }
           return (
-            <MenuItem classes={{ root: classes.menuListItem }} value={option}>
+            <MenuItem key={`${props.id}${index}option`} classes={{ root: classes.menuListItem }} value={option}>
               {option.label}
             </MenuItem>
           );

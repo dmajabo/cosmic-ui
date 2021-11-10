@@ -10,11 +10,14 @@ import { IEdgeModel } from '../model';
 import Editor from '../Editor';
 import { useBreadCrumbDataContext } from 'lib/hooks/Breadcrumb/useBreadcrumbDataContext';
 import { EdgesBreadCrumbItemsType } from 'lib/hooks/Breadcrumb/models';
+import { AccountsApi } from 'lib/api/ApiModels/Accounts/endpoints';
+import { IAwsRegionsRes } from 'lib/api/ApiModels/Accounts/apiModel';
 interface Props {}
 
 const MainPage: React.FC<Props> = (props: Props) => {
   const userContext = React.useContext<UserContextState>(UserContext);
   const { loading, error, response, onGet } = useGet();
+  const { response: resRegions, onGet: onGetRegions } = useGet<IAwsRegionsRes>();
   const { loading: postLoading, error: postError, response: postResponce, onPost } = usePost();
   const { edges } = useEdgesDataContext();
   const [showEditorPage, setShowEditorPage] = React.useState(false);
@@ -22,6 +25,7 @@ const MainPage: React.FC<Props> = (props: Props) => {
   const { breadcrumb } = useBreadCrumbDataContext();
   React.useEffect(() => {
     onTryLoadEdges();
+    onTryLoadRegions();
   }, []);
 
   React.useEffect(() => {
@@ -29,6 +33,12 @@ const MainPage: React.FC<Props> = (props: Props) => {
       edges.onSetData(response);
     }
   }, [response]);
+
+  React.useEffect(() => {
+    if (resRegions && resRegions.awsRegions) {
+      edges.onSetRegions(resRegions.awsRegions);
+    }
+  }, [resRegions]);
 
   React.useEffect(() => {
     // TO DO
@@ -63,6 +73,10 @@ const MainPage: React.FC<Props> = (props: Props) => {
 
   const onTryLoadEdges = async () => {
     await onGet('api/v1/test', userContext.idToken!);
+  };
+
+  const onTryLoadRegions = async () => {
+    await onGetRegions(AccountsApi.getAllAwsRegions(), userContext.idToken!);
   };
 
   const onSaveEdge = async () => {

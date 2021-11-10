@@ -111,7 +111,12 @@ const FormPanel: React.FC<Props> = (props: Props) => {
             />
           </AccordionSummary>
           <AccordionDetails className={AccordionStyles.deteilItemEdges}>
-            <TransitStep firewall={props.dataItem.firewall} firewallRegion={props.dataItem.firewallRegion} onChange={(v: any, f: string) => props.onChangeField(v, f, EdgesStepperTypes.TRANSIT)} />
+            <TransitStep
+              selectedRegions={props.dataItem.selectedRegions}
+              firewall={props.dataItem.firewall}
+              firewallRegion={props.dataItem.firewallRegion}
+              onChange={(v: any, f: string) => props.onChangeField(v, f, EdgesStepperTypes.TRANSIT)}
+            />
           </AccordionDetails>
         </Accordion>
         <Accordion

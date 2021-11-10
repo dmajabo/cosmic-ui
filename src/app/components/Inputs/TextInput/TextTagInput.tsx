@@ -1,10 +1,9 @@
 import React from 'react';
 import { KEYBOARD_KEYS } from 'lib/constants/general';
-import { Tag, TagBg, TagsInput, TagsWrapper, TagText, TextInputWrapper } from './styles';
+import { TagsInput, TagsWrapper, TextInputWrapper } from './styles';
 import { InputLabel } from '../styles/Label';
 import { Required } from '../FormTextInput/styles';
-import { closeSmallIcon } from 'app/components/SVGIcons/close';
-import IconWrapper from 'app/components/Buttons/IconWrapper';
+import Tag from 'app/components/Basic/Tag';
 
 interface IProps {
   id: string;
@@ -59,15 +58,7 @@ const TextTagInput: React.FC<IProps> = (props: IProps) => {
         {props.required && <Required>*</Required>}
       </InputLabel>
       <TagsWrapper>
-        {valueArr && valueArr.length
-          ? valueArr.map((it, index) => (
-              <Tag key={`${props.id}value${index}`}>
-                <TagBg />
-                <TagText>{it}</TagText>
-                <IconWrapper styles={{ zIndex: 2 }} width="12px" height="12px" icon={closeSmallIcon} onClick={() => onRemove(index)} />
-              </Tag>
-            ))
-          : null}
+        {valueArr && valueArr.length ? valueArr.map((it, index) => <Tag index={index} key={`${props.id}value${it}`} text={it} onRemove={onRemove} />) : null}
         <TagsInput
           required={props.required}
           id={props.id}
