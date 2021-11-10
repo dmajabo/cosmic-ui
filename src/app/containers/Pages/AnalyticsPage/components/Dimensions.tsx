@@ -4,19 +4,20 @@ import CloseIcon from '../icons/metrics explorer/close.svg';
 import SearchIcon from '../icons/metrics explorer/search.svg';
 import SaveIcon from '../icons/metrics explorer/save.svg';
 import { SubDimension } from './SubDimension';
+import { getDimensionCount } from './MetricsExplorer';
 
 interface DimensionsProps {
   readonly closePopup: () => void;
   readonly dimensionData: DimensionOptions[];
-  readonly addDimensions: (dimensions: string[]) => void;
-  readonly dimensions: string[];
+  readonly addDimensions: (dimensions: DimensionOptions[]) => void;
+  readonly dimensions: DimensionOptions[];
 }
 
 export interface DimensionOptions {
   readonly title: string;
-  readonly icon: string;
-  readonly source: string[];
-  readonly destination: string[];
+  readonly icon?: string;
+  source: string[];
+  destination: string[];
 }
 
 export interface CheckboxData {
@@ -29,7 +30,7 @@ export const Dimensions: React.FC<DimensionsProps> = ({ closePopup, dimensionDat
   const [searchText, setSearchText] = useState<string>('');
   const [dimensionOptions, setDimensionOptions] = useState<DimensionOptions[]>([]);
   const [checkboxData, setCheckboxData] = useState<CheckboxData>({});
-  const [selectedDimensions, setSelectedDimensions] = useState<string[]>([]);
+  const [selectedDimensions, setSelectedDimensions] = useState<DimensionOptions[]>([]);
 
   const handleSearchTextChange = (event: React.ChangeEvent<HTMLInputElement>) => setSearchText(event.target.value);
 
@@ -37,25 +38,45 @@ export const Dimensions: React.FC<DimensionsProps> = ({ closePopup, dimensionDat
     const tempCheckboxData: CheckboxData = {};
     dimensionData.forEach(item => {
       item.source.forEach(value => {
-        tempCheckboxData[`${item.title}_Source_${value}`] = false;
+        tempCheckboxData[`${item.title}_source_${value}`] = false;
       });
       item.destination.forEach(value => {
-        tempCheckboxData[`${item.title}_Destination_${value}`] = false;
+        tempCheckboxData[`${item.title}_destination_${value}`] = false;
       });
     });
-    dimensions.forEach(value => {
-      tempCheckboxData[value] = true;
+    dimensions.forEach(dimension => {
+      dimension.source.forEach(value => (tempCheckboxData[`${dimension.title}_source_${value}`] = true));
+      dimension.destination.forEach(value => (tempCheckboxData[`${dimension.title}_destination_${value}`] = true));
     });
     setSelectedDimensions(dimensions);
     setCheckboxData(tempCheckboxData);
   };
 
-  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>, dimensionName: string, dimensionType: string, dimensionItem: string) => {
     setCheckboxData({
       ...checkboxData,
       [event.target.name]: event.target.checked,
     });
-    event.target.checked ? setSelectedDimensions(selectedDimensions.concat(event.target.name)) : setSelectedDimensions(selectedDimensions.filter(item => item !== event.target.name));
+    const selectedDimension = selectedDimensions.find(dimension => dimension.title === dimensionName);
+    if (selectedDimension) {
+      const filteredDimensions = selectedDimensions.filter(dimension => dimension.title !== dimensionName);
+      if (dimensionType === 'source') {
+        selectedDimension.source = event.target.checked ? selectedDimension.source.concat(dimensionItem) : selectedDimension.source.filter(item => item !== dimensionItem);
+      } else {
+        selectedDimension.destination = event.target.checked ? selectedDimension.destination.concat(dimensionItem) : selectedDimension.destination.filter(item => item !== dimensionItem);
+      }
+      setSelectedDimensions(filteredDimensions.concat(selectedDimension));
+    } else {
+      const newSelectedDimension: DimensionOptions = {
+        title: dimensionName,
+        source: [],
+        destination: [],
+      };
+      dimensionType === 'source'
+        ? (newSelectedDimension.source = newSelectedDimension.source.concat(dimensionItem))
+        : (newSelectedDimension.destination = newSelectedDimension.destination.concat(dimensionItem));
+      setSelectedDimensions(selectedDimensions.concat(newSelectedDimension));
+    }
   };
 
   const handleSave = () => {
@@ -86,7 +107,7 @@ export const Dimensions: React.FC<DimensionsProps> = ({ closePopup, dimensionDat
       <div className={`${classes.tabTitleContainer} ${classes.popupFooterContainer}`}>
         <div className={classes.verticalCenter}>
           <span className={classes.selectedDimensionText}>Selected Dimensions:</span>
-          <span className={classes.selectedDimensionCount}>{selectedDimensions.length}</span>
+          <span className={classes.selectedDimensionCount}>{getDimensionCount(selectedDimensions)}</span>
         </div>
         <div className={classes.verticalCenter}>
           <span className={classes.grayBorderButton} onClick={closePopup}>
