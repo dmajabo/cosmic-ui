@@ -7,13 +7,13 @@ interface ListLinkProps {
   label?: JSX.Element | string;
   onClick: () => void;
 }
-const ListLink: React.FC<ListLinkProps> = props => {
+const ListLink: React.FC<ListLinkProps> = ({ isActive, icon, label, onClick }) => {
   return (
-    <StyledListLink className={props.isActive ? 'active' : ''} onClick={props.onClick}>
+    <StyledListLink className={isActive ? 'active' : ''} onClick={onClick}>
       <HighlightBg />
       <HighlightBorder />
-      <WrapIcon>{props.icon}</WrapIcon>
-      {props.label && <WrapText>{props.label}</WrapText>}
+      <WrapIcon>{icon}</WrapIcon>
+      {label && <WrapText>{label}</WrapText>}
     </StyledListLink>
   );
 };

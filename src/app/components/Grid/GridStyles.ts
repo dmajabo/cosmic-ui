@@ -9,6 +9,9 @@ export const GridStyles = makeStyles(
         minHeight: 200,
         position: 'relative',
         border: 'none',
+        '&.MuiDataGrid-root .MuiDataGrid-overlay': {
+          background: 'transparent',
+        },
         '& .MuiDataGrid-main': {
           fontFamily: 'DMSans',
           borderRadius: '6px 6px 0px 0px',
@@ -20,6 +23,9 @@ export const GridStyles = makeStyles(
           letterSpacing: '0.1em',
           textTransform: 'uppercase',
           color: 'var(--_disabledTextColor)',
+        },
+        '& .MuiDataGrid-columnHeaderWrapper': {
+          height: '100%',
         },
         '& .MuiDataGrid-columnsContainer': {
           background: 'var(--_appBg)',

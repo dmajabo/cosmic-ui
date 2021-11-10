@@ -51,3 +51,18 @@ export interface IAWS_Account extends IAccount {
 export interface IAccountsRes {
   controllers: (IMeraki_Account | IAWS_Account)[];
 }
+
+export interface IAwsRegion {
+  id: number | string;
+  name: string;
+  code: string;
+  city: string;
+  country: string;
+  lat: number;
+  long: number;
+}
+
+export interface IAwsRegionsRes {
+  awsRegions: IAwsRegion[];
+  totalCount: number;
+}

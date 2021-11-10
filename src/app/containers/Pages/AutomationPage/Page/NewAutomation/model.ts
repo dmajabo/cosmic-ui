@@ -34,10 +34,6 @@ export const AutomationStepperItems: IStepperItem<NewAutomationStepperTypes>[] =
   { id: NewAutomationStepperTypes.ACTIONS, index: 3, icon: null, label: 'Choose Actions', disabled: false, state: StepperItemStateType.EMPTY, showEdge: false },
 ];
 
-export const valueFormat = (_v: number): string => {
-  return `${_v + 1}`;
-};
-
 export enum ActionTypes {
   EMAIL = 'email',
   SLACK = 'slack',

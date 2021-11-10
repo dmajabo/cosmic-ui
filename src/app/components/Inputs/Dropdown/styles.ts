@@ -92,8 +92,12 @@ export const ListWrapper = styled.div<ListProps>`
 
 interface IDropdownItemProps {
   active?: boolean;
+  display?: string;
+  margin?: string;
 }
 export const DropdownItemWrapper = styled.div<IDropdownItemProps>`
+  display: ${props => props.display || 'block'};
+  align-items: center;
   width: 100%;
   height: 40px;
   padding: 8px 20px;
@@ -105,8 +109,29 @@ export const DropdownItemWrapper = styled.div<IDropdownItemProps>`
   font-size: 14px;
   color: ${props => (props.active ? 'var(--_hoverButtonBg)' : 'var(--_primaryColor)')};
   background: ${props => (props.active ? 'var(--_vmBg)' : 'var(--_primaryTextColor)')};
+  margin: ${props => props.margin || '0'};
   &:hover {
     color: var(--_hoverButtonBg);
     background: var(--_vmBg);
   }
+`;
+
+export const OptionStyles = styled.li`
+  min-height: unset !important;
+  display: initial !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  outline: 0 !important;
+`;
+
+export const DropdownItemLabel = styled.span`
+  display: inline-block;
+  margin: auto 0 auto 12px;
+  line-height: 23px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  cursor: pointer;
+  font-size: 14px;
+  color: inherit;
 `;
