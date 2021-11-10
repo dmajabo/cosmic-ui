@@ -8,7 +8,7 @@ import UpArrow from '../icons/metrics explorer/upArrowTriangle.svg';
 interface DimensionOptionsProps {
   readonly dimensionOptions: DimensionOptions[];
   readonly checkboxData: CheckboxData;
-  readonly handleCheckboxChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  readonly handleCheckboxChange: (event: React.ChangeEvent<HTMLInputElement>, dimensionName: string, dimensionType: string, dimensionItem: string) => void;
 }
 
 export const SubDimension: React.FC<DimensionOptionsProps> = ({ dimensionOptions, checkboxData, handleCheckboxChange }) => {
@@ -52,7 +52,13 @@ export const SubDimension: React.FC<DimensionOptionsProps> = ({ dimensionOptions
                     {option.source.slice(0, option.source.length / 2).map(item => (
                       <FormControlLabel
                         key={item}
-                        control={<Checkbox checked={checkboxData[`${option.title}_Source_${item}`]} onChange={handleCheckboxChange} name={`${option.title}_Source_${item}`} />}
+                        control={
+                          <Checkbox
+                            checked={checkboxData[`${option.title}_source_${item}`]}
+                            onChange={e => handleCheckboxChange(e, option.title, 'source', item)}
+                            name={`${option.title}_source_${item}`}
+                          />
+                        }
                         label={item}
                       />
                     ))}
@@ -63,7 +69,13 @@ export const SubDimension: React.FC<DimensionOptionsProps> = ({ dimensionOptions
                     {option.source.slice(-option.source.length / 2).map(item => (
                       <FormControlLabel
                         key={item}
-                        control={<Checkbox checked={checkboxData[`${option.title}_Source_${item}`]} onChange={handleCheckboxChange} name={`${option.title}_Source_${item}`} />}
+                        control={
+                          <Checkbox
+                            checked={checkboxData[`${option.title}_source_${item}`]}
+                            onChange={e => handleCheckboxChange(e, option.title, 'source', item)}
+                            name={`${option.title}_source_${item}`}
+                          />
+                        }
                         label={item}
                       />
                     ))}
@@ -79,7 +91,13 @@ export const SubDimension: React.FC<DimensionOptionsProps> = ({ dimensionOptions
                     {option.destination.slice(0, option.destination.length / 2).map(item => (
                       <FormControlLabel
                         key={item}
-                        control={<Checkbox checked={checkboxData[`${option.title}_Destination_${item}`]} onChange={handleCheckboxChange} name={`${option.title}_Destination_${item}`} />}
+                        control={
+                          <Checkbox
+                            checked={checkboxData[`${option.title}_destination_${item}`]}
+                            onChange={e => handleCheckboxChange(e, option.title, 'destination', item)}
+                            name={`${option.title}_destination_${item}`}
+                          />
+                        }
                         label={item}
                       />
                     ))}
@@ -90,7 +108,13 @@ export const SubDimension: React.FC<DimensionOptionsProps> = ({ dimensionOptions
                     {option.destination.slice(-option.destination.length / 2).map(item => (
                       <FormControlLabel
                         key={item}
-                        control={<Checkbox checked={checkboxData[`${option.title}_Destination_${item}`]} onChange={handleCheckboxChange} name={`${option.title}_Destination_${item}`} />}
+                        control={
+                          <Checkbox
+                            checked={checkboxData[`${option.title}_destination_${item}`]}
+                            onChange={e => handleCheckboxChange(e, option.title, 'destination', item)}
+                            name={`${option.title}_destination_${item}`}
+                          />
+                        }
                         label={item}
                       />
                     ))}

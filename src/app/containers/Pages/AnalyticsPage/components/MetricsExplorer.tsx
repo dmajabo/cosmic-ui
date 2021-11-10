@@ -13,7 +13,7 @@ import NetworkIcon from '../icons/metrics explorer/dimensions-network.svg';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import { DimensionOptions, Dimensions } from './Dimensions';
-import { isEmpty, sortBy } from 'lodash';
+import { isEmpty } from 'lodash';
 
 const DUMMY_DIMENSION_DATA: DimensionOptions[] = [
   {
@@ -24,20 +24,34 @@ const DUMMY_DIMENSION_DATA: DimensionOptions[] = [
   },
 ];
 
+export const getDimensionCount = (dimensions: DimensionOptions[]) => {
+  return dimensions.reduce((accu, nextValue) => {
+    const subDimensionCount = nextValue.source.length + nextValue.destination.length;
+    return accu + subDimensionCount;
+  }, 0);
+};
+
 export const MetricsExplorer: React.FC = () => {
   const classes = AnalyticsStyles();
 
-  const [dimensions, setDimesions] = useState<string[]>([]);
+  const [dimensions, setDimensions] = useState<DimensionOptions[]>([]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const handleModalOpen = () => setIsModalOpen(true);
   const handleModalClose = () => setIsModalOpen(false);
 
-  const addDimensions = (dimensions: string[]) => {
-    const sortedDimensions = sortBy(dimensions).reverse();
-    setDimesions(sortedDimensions);
+  const addDimensions = (dimensions: DimensionOptions[]) => {
+    setDimensions(dimensions);
   };
 
-  const removeDimension = (dimension: string) => setDimesions(dimensions.filter(item => item !== dimension));
+  const removeDimension = (selectedDimension: DimensionOptions, dimensionType: string, dimensionItem: string) => {
+    const filteredDimensions = dimensions.filter(dimension => dimension.title !== selectedDimension.title);
+    if (dimensionType === 'source') {
+      selectedDimension.source = selectedDimension.source.filter(item => item !== dimensionItem);
+    } else {
+      selectedDimension.destination = selectedDimension.destination.filter(item => item !== dimensionItem);
+    }
+    setDimensions(filteredDimensions.concat(selectedDimension));
+  };
 
   const customizationtabOptions: CustomizationTabProps[] = [
     {
@@ -47,7 +61,7 @@ export const MetricsExplorer: React.FC = () => {
     {
       img: DimensionsIcon,
       title: 'Dimensions',
-      description: `${dimensions.length}`,
+      description: `${getDimensionCount(dimensions)}`,
       operationImage: isEmpty(dimensions) ? AddIcon : EditIcon,
       showModal: handleModalOpen,
       operationName: isEmpty(dimensions) ? 'add dimensions' : 'edit dimensions',
@@ -55,26 +69,48 @@ export const MetricsExplorer: React.FC = () => {
         <div className={classes.tabContentText}>No dimensions added. To add dimensions click the “Add” button on top.</div>
       ) : (
         <div>
-          {dimensions.map(item => {
-            const dimensionArray = item.split('_');
-            return (
-              <div key={item} className={`${classes.whiteBorderBox} ${dimensionArray[1] === 'Source' ? classes.sourceText : classes.destinationText}`}>
-                <div className={classes.tabTitleContainer}>
-                  <div>
-                    <span>
-                      {`${dimensionArray[1]}: `}
-                      <b>{dimensionArray[2]}</b>
-                    </span>
-                  </div>
-                  <div>
-                    <div className={classes.removeDimension} onClick={() => removeDimension(item)}>
-                      <img src={CloseIcon} alt="close popup" />
+          {dimensions.map(dimension =>
+            dimension.source.map(item => {
+              return (
+                <div key={item} className={`${classes.whiteBorderBox} ${classes.sourceText}`}>
+                  <div className={classes.tabTitleContainer}>
+                    <div>
+                      <span>
+                        {`Source: `}
+                        <b>{item}</b>
+                      </span>
+                    </div>
+                    <div>
+                      <div className={classes.removeDimension} onClick={() => removeDimension(dimension, 'source', item)}>
+                        <img src={CloseIcon} alt="close popup" />
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            }),
+          )}
+          {dimensions.map(dimension =>
+            dimension.destination.map(item => {
+              return (
+                <div key={item} className={`${classes.whiteBorderBox} ${classes.destinationText}`}>
+                  <div className={classes.tabTitleContainer}>
+                    <div>
+                      <span>
+                        {`Destination: `}
+                        <b>{item}</b>
+                      </span>
+                    </div>
+                    <div>
+                      <div className={classes.removeDimension} onClick={() => removeDimension(dimension, 'destination', item)}>
+                        <img src={CloseIcon} alt="close popup" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            }),
+          )}
         </div>
       ),
     },
