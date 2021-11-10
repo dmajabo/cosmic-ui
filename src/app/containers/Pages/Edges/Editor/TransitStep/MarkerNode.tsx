@@ -7,17 +7,17 @@ import { IAwsRegion } from 'lib/api/ApiModels/Accounts/apiModel';
 
 interface Props {
   region: IAwsRegion;
-  selected: Object;
+  selectedList: IAwsRegion[];
   index: number;
   onClick: (e: IAwsRegion, index: number) => void;
 }
-const MarkerNode: React.FC<Props> = ({ region, onClick, index, selected }) => {
+const MarkerNode: React.FC<Props> = ({ region, onClick, index, selectedList }) => {
   const onSelectRegion = () => {
     onClick(region, index);
   };
   return (
     <Marker onClick={onSelectRegion}>
-      <SimpleCheckbox isChecked={!!(selected && selected[region.id])} />
+      <SimpleCheckbox isChecked={!!(selectedList && selectedList.length && selectedList.find(it => it.id === region.id))} />
       <IconWrapper icon={awsIcon(30)} styles={{ margin: 'auto 12px auto 16px' }} />
       <MarkerContent>
         <MarkerRegion>{region.city}</MarkerRegion>

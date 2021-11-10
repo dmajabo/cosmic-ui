@@ -8,6 +8,7 @@ import { poloAltoIcon } from 'app/components/SVGIcons/edges/poloAlto';
 import { Input, InputWrapper, TextInputWrapper } from 'app/components/Inputs/TextInput/styles';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import ModalComponent from 'app/components/Modal';
+import TransitionTable from './TransitionTable';
 
 interface Props {
   firewall: boolean;
@@ -60,6 +61,7 @@ const TransitStep: React.FC<Props> = (props: Props) => {
       </PanelRow>
       <PanelContentLabel>Map</PanelContentLabel>
       <Map regions={edges.regions} selectedRegions={props.selectedRegions} onSelectRegion={onSelectRegion} onOpenLargeWindow={onOpenModal} />
+      {props.selectedRegions && props.selectedRegions.length ? <TransitionTable regions={edges.regions} selectedRegions={props.selectedRegions} /> : null}
       {showLargeWindow && (
         <ModalComponent showHeader title="Map" showCloseButton modalStyles={{ maxWidth: '80vw', maxHeight: '90vh' }} useFadeAnimation id="mapModalWindow" open={showLargeWindow} onClose={onClose}>
           <Map

@@ -13,9 +13,6 @@ import { closeSmallIcon } from 'app/components/SVGIcons/close';
 
 const MAPBOX_ACCESS_TOKEN = 'pk.eyJ1IjoiYWpheS10cCIsImEiOiJja3NzamxqM3UweGVvMnZtZGJic3NpNDlmIn0.NGQB4WDQmRsC3B78JVCJQg';
 
-interface ISelectedObject {
-  [key: string]: IAwsRegion;
-}
 interface Props {
   regions: IAwsRegion[];
   selectedRegions: string[];
@@ -34,18 +31,18 @@ const Map: React.FC<Props> = (props: Props) => {
     zoom: props.zoom || props.zoom === 0 ? props.zoom : 2.5,
   });
 
-  const [selected, setSelected] = React.useState<ISelectedObject>(null);
+  const [selectedList, setSelectedList] = React.useState<IAwsRegion[]>([]);
 
   React.useEffect(() => {
     if (Array.isArray(props.selectedRegions)) {
-      const _obj: ISelectedObject = {};
-      props.regions.forEach(it => {
-        const present = props.selectedRegions.find(key => key === it.code);
+      const _arr: IAwsRegion[] = [];
+      props.selectedRegions.forEach(it => {
+        const present = props.regions.find(key => key.code === it);
         if (present) {
-          _obj[it.id] = it;
+          _arr.push(present);
         }
       });
-      setSelected(_obj);
+      setSelectedList(_arr);
     }
   }, [props.selectedRegions]);
 
@@ -54,37 +51,38 @@ const Map: React.FC<Props> = (props: Props) => {
   };
 
   const handlerMarkerClick = (r: IAwsRegion, index: number) => {
-    const _obj: ISelectedObject = selected !== null ? jsonClone(selected) : {};
+    const _arr: IAwsRegion[] = selectedList && selectedList.length ? jsonClone(selectedList) : [];
     let _items = [];
-    if (_obj[r.id]) {
-      delete _obj[r.id];
-      _items = props.selectedRegions.filter(it => it !== r.code);
-    } else {
-      _obj[r.id] = r;
+    const _index = _arr.findIndex(it => it.id === r.id);
+    if (_index === -1) {
       _items = [...props.selectedRegions, r.code];
+      _arr.push(r);
+    } else {
+      _items = props.selectedRegions.filter(it => it !== r.code);
+      _arr.splice(_index, 1);
     }
     if (!_items.length) {
-      setSelected(null);
+      setSelectedList([]);
     } else {
-      setSelected(_obj);
+      setSelectedList(_arr);
     }
     props.onSelectRegion(_items);
   };
 
   const handlerMarkerRemove = (r: IAwsRegion, index: number) => {
-    const _obj: ISelectedObject = selected !== null ? jsonClone(selected) : {};
+    const _arr: IAwsRegion[] = selectedList && selectedList.length ? jsonClone(selectedList) : [];
     const _items = props.selectedRegions.filter(it => it !== r.code);
-    delete _obj[r.id];
+    const _selectedList = _arr.filter(it => it.id !== r.id);
     if (!_items.length) {
-      setSelected(null);
+      setSelectedList([]);
     } else {
-      setSelected(_obj);
+      setSelectedList(_selectedList);
     }
     props.onSelectRegion(_items);
   };
 
   const onClearAll = () => {
-    setSelected(null);
+    setSelectedList([]);
     props.onSelectRegion([]);
   };
 
@@ -118,7 +116,7 @@ const Map: React.FC<Props> = (props: Props) => {
         >
           {props.regions.map((it, index) => (
             <Marker key={`regionMarker${index}`} longitude={it.long} latitude={it.lat} draggable={false}>
-              <MarkerNode index={index} region={it} onClick={handlerMarkerClick} selected={selected} />
+              <MarkerNode index={index} region={it} onClick={handlerMarkerClick} selectedList={selectedList} />
             </Marker>
           ))}
         </MapGL>
@@ -131,21 +129,22 @@ const Map: React.FC<Props> = (props: Props) => {
       {props.showFooterRow && (
         <SelectedTagRow>
           <SelectdLabel>Selected Transits:</SelectdLabel>
-          {selected &&
-            Object.keys(selected).map((key, index) => (
-              <Tag
-                styles={{ margin: '0 6px 0 0' }}
-                bgColor="var(--_tableBg)"
-                opacity="1"
-                textColor="var(--_primaryColor)"
-                subTextColor="var(--_disabledTextColor)"
-                index={index}
-                key={`selectedTag${index}`}
-                text={selected[key].name}
-                onRemove={(i, v) => handlerMarkerRemove(selected[key], index)}
-              />
-            ))}
-          {selected && (
+          {selectedList && selectedList.length
+            ? selectedList.map((it, index) => (
+                <Tag
+                  styles={{ margin: '0 6px 0 0' }}
+                  bgColor="var(--_tableBg)"
+                  opacity="1"
+                  textColor="var(--_primaryColor)"
+                  subTextColor="var(--_disabledTextColor)"
+                  index={index}
+                  key={`selectedTag${it.id}`}
+                  text={it.name}
+                  onRemove={(i, v) => handlerMarkerRemove(it, index)}
+                />
+              ))
+            : null}
+          {selectedList && selectedList.length ? (
             <SecondaryButton
               iconWidth="10px"
               iconHeight="10px"
@@ -155,7 +154,7 @@ const Map: React.FC<Props> = (props: Props) => {
               icon={closeSmallIcon}
               onClick={onClearAll}
             />
-          )}
+          ) : null}
         </SelectedTagRow>
       )}
     </>

@@ -27,7 +27,7 @@ export function useEdgesContext(): EdgesContextType {
       setRegions([]);
       return;
     }
-    setRegions(res.map((it, index) => ({ ...it, id: `region${index}` })));
+    setRegions(res.map((it, index) => ({ ...it, id: `region${it.lat}${it.long}` })));
   };
   return {
     dataReadyToShow,
