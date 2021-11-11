@@ -200,7 +200,10 @@ export const AnalyticsStyles = makeStyles(
         width: 24,
       },
       subDimensionContent: {
-        width: '50%',
+        width: '100%',
+      },
+      subDimensionItem: {
+        width: '49%',
       },
       option: {
         paddingBottom: 10,

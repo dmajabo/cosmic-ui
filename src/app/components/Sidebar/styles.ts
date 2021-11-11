@@ -27,7 +27,7 @@ export const WrapSidebar = styled.div<WrapSidebarProps>`
   position: fixed;
   transition: width ${sideBarTransition};
   width: ${props => (props.isOpen ? sideBarOpenWidth : sideBarCloseWidth)};
-  overflow: hidden;
+  overflow: auto;
   flex-shrink: 0;
   height: 100vh;
   z-index: 101;

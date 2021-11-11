@@ -48,38 +48,20 @@ export const SubDimension: React.FC<DimensionOptionsProps> = ({ dimensionOptions
               <div className={`${classes.sourcesubDimensionOptionTitle} ${classes.sourceText}`}>Source</div>
               <div className={classes.subDimensionContentContainer}>
                 <div className={classes.subDimensionContent}>
-                  <FormGroup>
-                    {option.source.slice(0, option.source.length / 2).map(item => (
-                      <FormControlLabel
-                        key={item}
-                        control={
-                          <Checkbox
-                            checked={checkboxData[`${option.title}_source_${item}`]}
-                            onChange={e => handleCheckboxChange(e, option.title, 'source', item)}
-                            name={`${option.title}_source_${item}`}
-                          />
-                        }
-                        label={item}
-                      />
-                    ))}
-                  </FormGroup>
-                </div>
-                <div className={classes.subDimensionContent}>
-                  <FormGroup>
-                    {option.source.slice(-option.source.length / 2).map(item => (
-                      <FormControlLabel
-                        key={item}
-                        control={
-                          <Checkbox
-                            checked={checkboxData[`${option.title}_source_${item}`]}
-                            onChange={e => handleCheckboxChange(e, option.title, 'source', item)}
-                            name={`${option.title}_source_${item}`}
-                          />
-                        }
-                        label={item}
-                      />
-                    ))}
-                  </FormGroup>
+                  {option.source.map(item => (
+                    <FormControlLabel
+                      key={item}
+                      className={classes.subDimensionItem}
+                      control={
+                        <Checkbox
+                          checked={checkboxData[`${option.title}_source_${item}`]}
+                          onChange={e => handleCheckboxChange(e, option.title, 'source', item)}
+                          name={`${option.title}_source_${item}`}
+                        />
+                      }
+                      label={item}
+                    />
+                  ))}
                 </div>
               </div>
             </div>
@@ -87,38 +69,20 @@ export const SubDimension: React.FC<DimensionOptionsProps> = ({ dimensionOptions
               <div className={`${classes.sourcesubDimensionOptionTitle} ${classes.destinationText}`}>Destination</div>
               <div className={classes.subDimensionContentContainer}>
                 <div className={classes.subDimensionContent}>
-                  <FormGroup>
-                    {option.destination.slice(0, option.destination.length / 2).map(item => (
-                      <FormControlLabel
-                        key={item}
-                        control={
-                          <Checkbox
-                            checked={checkboxData[`${option.title}_destination_${item}`]}
-                            onChange={e => handleCheckboxChange(e, option.title, 'destination', item)}
-                            name={`${option.title}_destination_${item}`}
-                          />
-                        }
-                        label={item}
-                      />
-                    ))}
-                  </FormGroup>
-                </div>
-                <div className={classes.subDimensionContent}>
-                  <FormGroup>
-                    {option.destination.slice(-option.destination.length / 2).map(item => (
-                      <FormControlLabel
-                        key={item}
-                        control={
-                          <Checkbox
-                            checked={checkboxData[`${option.title}_destination_${item}`]}
-                            onChange={e => handleCheckboxChange(e, option.title, 'destination', item)}
-                            name={`${option.title}_destination_${item}`}
-                          />
-                        }
-                        label={item}
-                      />
-                    ))}
-                  </FormGroup>
+                  {option.destination.map(item => (
+                    <FormControlLabel
+                      key={item}
+                      className={classes.subDimensionItem}
+                      control={
+                        <Checkbox
+                          checked={checkboxData[`${option.title}_destination_${item}`]}
+                          onChange={e => handleCheckboxChange(e, option.title, 'destination', item)}
+                          name={`${option.title}_destination_${item}`}
+                        />
+                      }
+                      label={item}
+                    />
+                  ))}
                 </div>
               </div>
             </div>
