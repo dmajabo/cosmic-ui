@@ -117,29 +117,7 @@ const Editor: React.FC<Props> = (props: Props) => {
       <PanelColumn width="50vw" maxWidth="260px">
         {steps && steps.length && <Stepper formatValue={valueNumberFormat} valueFormattedField="index" selectedStep={selectedStep && selectedStep.id} steps={steps} onSelectStep={onSelectStep} />}
       </PanelColumn>
-      <MainColumn>
-        <EdgesMap dataItem={dataItem} />
-        {/* <MainColumnItem>
-          <AbsLoaderWrapper opacity="1" width="100%" height="auto" top="unset" bottom="40px">
-            <ColumnTitle>Sites</ColumnTitle>
-          </AbsLoaderWrapper>
-          {dataItem.sites && dataItem.sites.length ? dataItem.sites.map((it, index) => <SitesNode key={`siteNodes${index}`} data={it} />) : null}
-        </MainColumnItem>
-        <MainColumnItem background="var(--_vmBg)">
-          <AbsLoaderWrapper opacity="1" width="100%" height="auto" top="40px">
-            <ColumnTitle primary>{dataItem && dataItem.name ? dataItem.name : 'Unknow'}</ColumnTitle>
-          </AbsLoaderWrapper>
-          <AbsLoaderWrapper opacity="1" width="100%" height="auto" top="unset" bottom="40px">
-            <ColumnTitle>Transit</ColumnTitle>
-          </AbsLoaderWrapper>
-        </MainColumnItem>
-        <MainColumnItem>
-          <AbsLoaderWrapper opacity="1" width="100%" height="auto" top="unset" bottom="40px">
-            <ColumnTitle>Cloud</ColumnTitle>
-          </AbsLoaderWrapper>
-          {dataItem.apps && dataItem.apps.length ? dataItem.apps.map((it, index) => <AppsNode key={`appsNodes${index}`} data={it} />) : null}
-        </MainColumnItem> */}
-      </MainColumn>
+      <MainColumn>{dataItem && <EdgesMap name={dataItem.name} sites={dataItem.sites} apps={dataItem.apps} selectedRegions={dataItem.selectedRegions} />}</MainColumn>
       <PanelColumn width="50vw" maxWidth="680px" padding="0">
         <FormPanel
           onClose={onClose}

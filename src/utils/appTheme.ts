@@ -57,6 +57,7 @@ const Themes = {
     // EDGES
     '--_sitesBg': '#0097A7',
     '--_appsBg': '#FF9900',
+    '--_mapFooterbg': '#E6ECF7',
     // GROUP
     '--_groupDevicesBg': '#E9EFF9',
     // Device
