@@ -195,12 +195,17 @@ export const AnalyticsStyles = makeStyles(
         padding: '20px 0px 10px 20px',
         display: 'flex',
         justifyContent: 'space-between',
+        flexDirection: 'column',
       },
       subDimensionIcon: {
         width: 24,
       },
       subDimensionContent: {
-        width: '50%',
+        display: 'grid',
+        gridTemplateColumns: 'repeat(2, 1fr)',
+      },
+      subDimensionItem: {
+        width: '49%',
       },
       option: {
         paddingBottom: 10,
@@ -256,6 +261,7 @@ export const AnalyticsStyles = makeStyles(
       },
       removeDimension: {
         width: 'auto',
+        cursor: 'pointer',
       },
     }),
   {

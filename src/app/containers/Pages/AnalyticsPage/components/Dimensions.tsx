@@ -5,6 +5,7 @@ import SearchIcon from '../icons/metrics explorer/search.svg';
 import SaveIcon from '../icons/metrics explorer/save.svg';
 import { SubDimension } from './SubDimension';
 import { getDimensionCount } from './MetricsExplorer';
+import produce from 'immer';
 
 interface DimensionsProps {
   readonly closePopup: () => void;
@@ -16,8 +17,8 @@ interface DimensionsProps {
 export interface DimensionOptions {
   readonly title: string;
   readonly icon?: string;
-  source: string[];
-  destination: string[];
+  readonly source: string[];
+  readonly destination: string[];
 }
 
 export interface CheckboxData {
@@ -52,6 +53,17 @@ export const Dimensions: React.FC<DimensionsProps> = ({ closePopup, dimensionDat
     setCheckboxData(tempCheckboxData);
   };
 
+  const updateSelectedDimensions = (dimensions: DimensionOptions[], dimensionName: string, dimensionType: string, dimensionItem: string, checked: boolean) => {
+    return produce(dimensions, draft => {
+      const selectedDimension = draft.find(dimension => dimension.title === dimensionName);
+      if (dimensionType === 'source') {
+        selectedDimension.source = checked ? selectedDimension.source.concat(dimensionItem) : selectedDimension.source.filter(item => item !== dimensionItem);
+      } else {
+        selectedDimension.destination = checked ? selectedDimension.destination.concat(dimensionItem) : selectedDimension.destination.filter(item => item !== dimensionItem);
+      }
+    });
+  };
+
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>, dimensionName: string, dimensionType: string, dimensionItem: string) => {
     setCheckboxData({
       ...checkboxData,
@@ -59,23 +71,19 @@ export const Dimensions: React.FC<DimensionsProps> = ({ closePopup, dimensionDat
     });
     const selectedDimension = selectedDimensions.find(dimension => dimension.title === dimensionName);
     if (selectedDimension) {
-      const filteredDimensions = selectedDimensions.filter(dimension => dimension.title !== dimensionName);
-      if (dimensionType === 'source') {
-        selectedDimension.source = event.target.checked ? selectedDimension.source.concat(dimensionItem) : selectedDimension.source.filter(item => item !== dimensionItem);
-      } else {
-        selectedDimension.destination = event.target.checked ? selectedDimension.destination.concat(dimensionItem) : selectedDimension.destination.filter(item => item !== dimensionItem);
-      }
-      setSelectedDimensions(filteredDimensions.concat(selectedDimension));
+      const newSelectedDimensions = updateSelectedDimensions(selectedDimensions, dimensionName, dimensionType, dimensionItem, event.target.checked);
+      setSelectedDimensions(newSelectedDimensions);
     } else {
-      const newSelectedDimension: DimensionOptions = {
-        title: dimensionName,
-        source: [],
-        destination: [],
-      };
-      dimensionType === 'source'
-        ? (newSelectedDimension.source = newSelectedDimension.source.concat(dimensionItem))
-        : (newSelectedDimension.destination = newSelectedDimension.destination.concat(dimensionItem));
-      setSelectedDimensions(selectedDimensions.concat(newSelectedDimension));
+      const newDimensions: DimensionOptions[] = [
+        ...selectedDimensions,
+        {
+          title: dimensionName,
+          source: [],
+          destination: [],
+        },
+      ];
+      const newSelectedDimensions = updateSelectedDimensions(newDimensions, dimensionName, dimensionType, dimensionItem, event.target.checked);
+      setSelectedDimensions(newSelectedDimensions);
     }
   };
 
