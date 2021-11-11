@@ -261,6 +261,7 @@ export const AnalyticsStyles = makeStyles(
       },
       removeDimension: {
         width: 'auto',
+        cursor: 'pointer',
       },
     }),
   {

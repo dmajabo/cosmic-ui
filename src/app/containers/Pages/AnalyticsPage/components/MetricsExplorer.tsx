@@ -22,6 +22,12 @@ const DUMMY_DIMENSION_DATA: DimensionOptions[] = [
     source: ['Interface', 'Connectivity Type', 'Network Boundary', 'Provider', 'Traffic Origination', 'Interface Capacity', 'VLAN', 'MAC Address'],
     destination: ['Interface', 'Connectivity Type', 'Network Boundary', 'Provider', 'Traffic Origination', 'Interface Capacity', 'VLAN', 'MAC Address'],
   },
+  {
+    title: 'Dimension 2',
+    icon: NetworkIcon,
+    source: ['Interface', 'Connectivity Type', 'Network Boundary', 'Provider', 'Traffic Origination', 'Interface Capacity', 'VLAN', 'MAC Address'],
+    destination: ['Interface', 'Connectivity Type', 'Network Boundary', 'Provider', 'Traffic Origination', 'Interface Capacity', 'VLAN', 'MAC Address'],
+  },
 ];
 
 export const getDimensionCount = (dimensions: DimensionOptions[]) => {
@@ -39,17 +45,18 @@ export const MetricsExplorer: React.FC = () => {
   const handleModalOpen = () => setIsModalOpen(true);
   const handleModalClose = () => setIsModalOpen(false);
 
-  const addDimensions = (dimensions: DimensionOptions[]) => {
-    setDimensions(dimensions);
-  };
+  const addDimensions = (dimensions: DimensionOptions[]) => setDimensions(dimensions);
 
   const removeDimension = (dimensionName: string, dimensionType: string, dimensionItem: string) => {
-    const selectedDimensionIndex = dimensions.findIndex(dimension => dimension.title === dimensionName);
-    if (selectedDimensionIndex !== -1) {
+    const selectedDimension = dimensions.find(dimension => dimension.title === dimensionName);
+    if (selectedDimension) {
       const newDimensions = produce(dimensions, draft => {
-        dimensionType === 'source'
-          ? (draft[selectedDimensionIndex].source = draft[selectedDimensionIndex].source.filter(item => item !== dimensionItem))
-          : (draft[selectedDimensionIndex].destination = draft[selectedDimensionIndex].destination.filter(item => item !== dimensionItem));
+        const selectedDimension = draft.find(dimension => dimension.title === dimensionName);
+        if (dimensionType === 'source') {
+          selectedDimension.source = selectedDimension.source.filter(item => item !== dimensionItem);
+        } else {
+          selectedDimension.destination = selectedDimension.destination.filter(item => item !== dimensionItem);
+        }
       });
       setDimensions(newDimensions);
     }

@@ -53,11 +53,14 @@ export const Dimensions: React.FC<DimensionsProps> = ({ closePopup, dimensionDat
     setCheckboxData(tempCheckboxData);
   };
 
-  const updateSelectedDimensions = (dimensions: DimensionOptions[], dimensionType: string, dimensionItem: string, checked: boolean, index: number) => {
+  const updateSelectedDimensions = (dimensions: DimensionOptions[], dimensionName: string, dimensionType: string, dimensionItem: string, checked: boolean) => {
     return produce(dimensions, draft => {
-      dimensionType === 'source'
-        ? (draft[index].source = checked ? draft[index].source.concat(dimensionItem) : draft[index].source.filter(item => item !== dimensionItem))
-        : (draft[index].destination = checked ? draft[index].destination.concat(dimensionItem) : draft[index].destination.filter(item => item !== dimensionItem));
+      const selectedDimension = draft.find(dimension => dimension.title === dimensionName);
+      if (dimensionType === 'source') {
+        selectedDimension.source = checked ? selectedDimension.source.concat(dimensionItem) : selectedDimension.source.filter(item => item !== dimensionItem);
+      } else {
+        selectedDimension.destination = checked ? selectedDimension.destination.concat(dimensionItem) : selectedDimension.destination.filter(item => item !== dimensionItem);
+      }
     });
   };
 
@@ -66,19 +69,22 @@ export const Dimensions: React.FC<DimensionsProps> = ({ closePopup, dimensionDat
       ...checkboxData,
       [event.target.name]: event.target.checked,
     });
-    const selectedDimensionIndex = selectedDimensions.findIndex(dimension => dimension.title === dimensionName);
-    const initialSelectedDimensions: DimensionOptions[] = [
-      {
-        title: dimensionName,
-        source: [],
-        destination: [],
-      },
-    ];
-    const newSelectedDimensions =
-      selectedDimensionIndex !== -1
-        ? updateSelectedDimensions(selectedDimensions, dimensionType, dimensionItem, event.target.checked, selectedDimensionIndex)
-        : updateSelectedDimensions(initialSelectedDimensions, dimensionType, dimensionItem, event.target.checked, 0);
-    setSelectedDimensions(newSelectedDimensions);
+    const selectedDimension = selectedDimensions.find(dimension => dimension.title === dimensionName);
+    if (selectedDimension) {
+      const newSelectedDimensions = updateSelectedDimensions(selectedDimensions, dimensionName, dimensionType, dimensionItem, event.target.checked);
+      setSelectedDimensions(newSelectedDimensions);
+    } else {
+      const newDimensions: DimensionOptions[] = [
+        ...selectedDimensions,
+        {
+          title: dimensionName,
+          source: [],
+          destination: [],
+        },
+      ];
+      const newSelectedDimensions = updateSelectedDimensions(newDimensions, dimensionName, dimensionType, dimensionItem, event.target.checked);
+      setSelectedDimensions(newSelectedDimensions);
+    }
   };
 
   const handleSave = () => {
