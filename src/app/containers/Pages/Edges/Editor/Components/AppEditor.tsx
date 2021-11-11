@@ -1,5 +1,5 @@
 import React from 'react';
-import { EditGroupItem, IEdgeGroup } from '../../model';
+import { EditGroupItem } from '../../model';
 import TextInput from 'app/components/Inputs/TextInput';
 import { Input, InputWrapper, TextInputWrapper } from 'app/components/Inputs/TextInput/styles';
 import { InputLabel } from 'app/components/Inputs/styles/Label';
@@ -9,6 +9,7 @@ import PrimaryButton from 'app/components/Buttons/PrimaryButton';
 import { DataGrid, GridColDef, GridSelectionModel } from '@mui/x-data-grid';
 import { GridStyles } from 'app/components/Grid/GridStyles';
 import { awsIcon } from 'app/components/SVGIcons/topologyIcons/aws';
+import { IEdgeGroup } from 'lib/api/ApiModels/Edges/apiModel';
 
 interface Props {
   data: EditGroupItem;

@@ -2,7 +2,6 @@ import React from 'react';
 import GeneralStep from '../GeneralStep';
 import { IStepperItem, StepperItemStateType } from 'app/components/Stepper/model';
 import { EdgesStepperTypes } from '../model';
-import { IEdgeGroup, IEdgeModel } from '../../model';
 import { PanelContent, PanelFotter, ColumnPanelHeader, PanelTitle } from './styles';
 import SitesStep from '../SitesStep';
 import AppsStep from '../AppsStep';
@@ -16,12 +15,14 @@ import ExpandedIcon from 'app/components/Basic/ExpandedIcon';
 import PanelHeader from 'app/containers/Pages/AutomationPage/Components/PanelHeader';
 import SecondaryButton from 'app/components/Buttons/SecondaryButton';
 import accordionStyles from 'app/containers/Pages/AutomationPage/styles/AccordionStyles';
+import { IEdgeModel, IEdgeGroup } from 'lib/api/ApiModels/Edges/apiModel';
 
 interface Props {
   dataItem: IEdgeModel;
   steps: IStepperItem<EdgesStepperTypes>[];
   selectedStep: IStepperItem<EdgesStepperTypes>;
   onChangeField: (value: any, field: string, step: EdgesStepperTypes) => void;
+  onChangeTransitionDataField: (value: any, field: string) => void;
   onChangeSitesField: (value: IEdgeGroup, index: number | null) => void;
   onChangeAppsField: (value: IEdgeGroup, index: number | null) => void;
   onDeleteSitesGroup: (index: number) => void;
@@ -112,10 +113,11 @@ const FormPanel: React.FC<Props> = (props: Props) => {
           </AccordionSummary>
           <AccordionDetails className={AccordionStyles.deteilItemEdges}>
             <TransitStep
-              selectedRegions={props.dataItem.selectedRegions}
+              regionCodes={props.dataItem.deployment.region_code}
+              selectedAccount={props.dataItem.deployment.controller_name}
               firewall={props.dataItem.firewall}
               firewallRegion={props.dataItem.firewallRegion}
-              onChange={(v: any, f: string) => props.onChangeField(v, f, EdgesStepperTypes.TRANSIT)}
+              onChange={props.onChangeTransitionDataField}
             />
           </AccordionDetails>
         </Accordion>

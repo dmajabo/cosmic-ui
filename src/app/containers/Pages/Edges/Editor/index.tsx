@@ -1,16 +1,15 @@
 import React from 'react';
-import { IEdgeGroup, IEdgeModel } from '../model';
-import { ColumnTitle, MainColumn, MainColumnItem, PanelColumn, Wrapper } from './styles';
+import { MainColumn, PanelColumn, Wrapper } from './styles';
 import { IStepperItem, valueNumberFormat } from 'app/components/Stepper/model';
 import Stepper from 'app/components/Stepper';
 import { createNewEdge, EdgesStepperItems, EdgesStepperTypes } from './model';
 import { jsonClone } from 'lib/helpers/cloneHelper';
-import { updateStepById, updateSteps } from './helper';
+import { updateStep, updateStepById, updateSteps } from './helper';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
 import FormPanel from './FormPanel';
-import SitesNode from './Components/MapComponnets/SitesNode';
-import AppsNode from './Components/MapComponnets/AppsNode';
+import EdgesMap from './EdgesMap';
+import { IEdgeModel, IEdgeGroup, DeploymentFields } from 'lib/api/ApiModels/Edges/apiModel';
 
 interface Props {
   dataItem: IEdgeModel;
@@ -46,6 +45,14 @@ const Editor: React.FC<Props> = (props: Props) => {
     const _dataItem = { ...dataItem };
     _dataItem[field] = value;
     const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, step, _dataItem[field]);
+    setSteps(_items);
+    setDataItem(_dataItem);
+  };
+
+  const onChangeTransitionDataField = (value: any, field: string) => {
+    const _dataItem = { ...dataItem };
+    _dataItem.deployment[field] = value;
+    const _items: IStepperItem<EdgesStepperTypes>[] = updateStep(steps, EdgesStepperTypes.TRANSIT, _dataItem.deployment, [DeploymentFields.CONTROLLER_NAME, DeploymentFields.REGION_CODE]);
     setSteps(_items);
     setDataItem(_dataItem);
   };
@@ -118,28 +125,7 @@ const Editor: React.FC<Props> = (props: Props) => {
       <PanelColumn width="50vw" maxWidth="260px">
         {steps && steps.length && <Stepper formatValue={valueNumberFormat} valueFormattedField="index" selectedStep={selectedStep && selectedStep.id} steps={steps} onSelectStep={onSelectStep} />}
       </PanelColumn>
-      <MainColumn>
-        <MainColumnItem>
-          <AbsLoaderWrapper opacity="1" width="100%" height="auto" top="unset" bottom="40px">
-            <ColumnTitle>Sites</ColumnTitle>
-          </AbsLoaderWrapper>
-          {dataItem.sites && dataItem.sites.length ? dataItem.sites.map((it, index) => <SitesNode key={`siteNodes${index}`} data={it} />) : null}
-        </MainColumnItem>
-        <MainColumnItem background="var(--_vmBg)">
-          <AbsLoaderWrapper opacity="1" width="100%" height="auto" top="40px">
-            <ColumnTitle primary>{dataItem && dataItem.name ? dataItem.name : 'Unknow'}</ColumnTitle>
-          </AbsLoaderWrapper>
-          <AbsLoaderWrapper opacity="1" width="100%" height="auto" top="unset" bottom="40px">
-            <ColumnTitle>Transit</ColumnTitle>
-          </AbsLoaderWrapper>
-        </MainColumnItem>
-        <MainColumnItem>
-          <AbsLoaderWrapper opacity="1" width="100%" height="auto" top="unset" bottom="40px">
-            <ColumnTitle>Cloud</ColumnTitle>
-          </AbsLoaderWrapper>
-          {dataItem.apps && dataItem.apps.length ? dataItem.apps.map((it, index) => <AppsNode key={`appsNodes${index}`} data={it} />) : null}
-        </MainColumnItem>
-      </MainColumn>
+      <MainColumn>{dataItem && <EdgesMap name={dataItem.name} sites={dataItem.sites} apps={dataItem.apps} selectedRegions={dataItem.deployment.region_code} />}</MainColumn>
       <PanelColumn width="50vw" maxWidth="680px" padding="0">
         <FormPanel
           onClose={onClose}
@@ -150,6 +136,7 @@ const Editor: React.FC<Props> = (props: Props) => {
           onChangeSitesField={onChangeSitesField}
           onChangeAppsField={onChangeAppsField}
           onChangeField={onChangeDataField}
+          onChangeTransitionDataField={onChangeTransitionDataField}
           onToogleAccordionItem={onToogleAccordionItem}
           onDeleteSitesGroup={onDeleteSitesGroup}
           onDeleteAppsGroup={onDeleteAppsGroup}

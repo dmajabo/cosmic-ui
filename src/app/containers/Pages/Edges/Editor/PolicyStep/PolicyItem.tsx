@@ -1,7 +1,8 @@
 import React from 'react';
-import { IEdgePolicy, PolicySourcesValues, PolicyDestinationValues, PolicyActionsValues } from '../../model';
+import { PolicySourcesValues, PolicyDestinationValues, PolicyActionsValues } from '../../model';
 import { PolicyActionRow, PolicyItemWrapper, PolicyName } from './styles';
 import MatSelect from 'app/components/Inputs/MatSelect';
+import { IEdgePolicy } from 'lib/api/ApiModels/Edges/apiModel';
 interface Props {
   index: number;
   item: IEdgePolicy;

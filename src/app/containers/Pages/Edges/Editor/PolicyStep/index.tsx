@@ -1,10 +1,10 @@
 import React from 'react';
-import { IEdgePolicy } from '../../model';
 import PolicyItem from './PolicyItem';
 import SecondaryButton from 'app/components/Buttons/SecondaryButton';
 import { FormRow, PolicyItemsWrapper } from './styles';
 import { plusIcon } from 'app/components/SVGIcons/plusIcon';
 import { createNewEdgePolicy } from '../model';
+import { IEdgePolicy } from 'lib/api/ApiModels/Edges/apiModel';
 interface Props {
   policies: IEdgePolicy[] | null;
   onChange: (value: any | null, field: string) => void;

@@ -8,11 +8,14 @@ import { poloAltoIcon } from 'app/components/SVGIcons/edges/poloAlto';
 import { Input, InputWrapper, TextInputWrapper } from 'app/components/Inputs/TextInput/styles';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import ModalComponent from 'app/components/Modal';
+import TransitionTable from './TransitionTable';
+import MatSelect from 'app/components/Inputs/MatSelect';
 
 interface Props {
   firewall: boolean;
   firewallRegion: string;
-  selectedRegions: string[];
+  regionCodes: string[];
+  selectedAccount: string;
   onChange: (value: any, field: string) => void;
 }
 
@@ -23,12 +26,12 @@ const TransitStep: React.FC<Props> = (props: Props) => {
     props.onChange(v, 'firewall');
   };
 
-  // const onFirewallRegionChange = (v: ISelectedListItem<string>) => {
-  //   props.onChange(v.value, 'firewallRegion');
-  // };
+  const onAccountChange = (v: string) => {
+    props.onChange(v, 'controller_name');
+  };
 
   const onSelectRegion = (r: string[]) => {
-    props.onChange(r, 'selectedRegions');
+    props.onChange(r, 'region_code');
   };
 
   const onOpenModal = () => {
@@ -49,17 +52,19 @@ const TransitStep: React.FC<Props> = (props: Props) => {
             <IconWrapper width="24px" height="24px" styles={{ position: 'absolute', top: 'calc(50% - 12px)', left: '20px', pointerEvents: 'none' }} icon={poloAltoIcon} />
           </InputWrapper>
         </TextInputWrapper>
-        {/* <MatSelect
-          id="firewallRegion"
-          value={props.firewallRegion}
-          options={FirewallRegionsValues}
-          onChange={onFirewallRegionChange}
-          styles={{ width: '244px', height: '50px', minHeight: '50px', margin: '0 0 0 20px' }}
-          selectClaassName="fullHeight"
-        /> */}
       </PanelRow>
+      <MatSelect
+        id="accounts"
+        label="Account"
+        value={props.selectedAccount}
+        options={edges.awsAccounts}
+        onChange={onAccountChange}
+        styles={{ height: '72px', minHeight: '72px', margin: '0 0 20px 0' }}
+        selectClaassName="withLabel"
+      />
       <PanelContentLabel>Map</PanelContentLabel>
-      <Map regions={edges.regions} selectedRegions={props.selectedRegions} onSelectRegion={onSelectRegion} onOpenLargeWindow={onOpenModal} />
+      <Map regions={edges.regions} selectedRegions={props.regionCodes} onSelectRegion={onSelectRegion} onOpenLargeWindow={onOpenModal} />
+      {props.regionCodes && props.regionCodes.length ? <TransitionTable regions={edges.regions} selectedRegions={props.regionCodes} /> : null}
       {showLargeWindow && (
         <ModalComponent showHeader title="Map" showCloseButton modalStyles={{ maxWidth: '80vw', maxHeight: '90vh' }} useFadeAnimation id="mapModalWindow" open={showLargeWindow} onClose={onClose}>
           <Map
@@ -68,7 +73,7 @@ const TransitStep: React.FC<Props> = (props: Props) => {
             mapWrapStyles={{ height: 'calc(100% - 60px)', margin: '0' }}
             hideLargeButton
             regions={edges.regions}
-            selectedRegions={props.selectedRegions}
+            selectedRegions={props.regionCodes}
             onSelectRegion={onSelectRegion}
           />
         </ModalComponent>
