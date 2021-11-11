@@ -51,7 +51,6 @@ export const SubDimension: React.FC<DimensionOptionsProps> = ({ dimensionOptions
                   {option.source.map(item => (
                     <FormControlLabel
                       key={item}
-                      className={classes.subDimensionItem}
                       control={
                         <Checkbox
                           checked={checkboxData[`${option.title}_source_${item}`]}
@@ -72,7 +71,6 @@ export const SubDimension: React.FC<DimensionOptionsProps> = ({ dimensionOptions
                   {option.destination.map(item => (
                     <FormControlLabel
                       key={item}
-                      className={classes.subDimensionItem}
                       control={
                         <Checkbox
                           checked={checkboxData[`${option.title}_destination_${item}`]}
