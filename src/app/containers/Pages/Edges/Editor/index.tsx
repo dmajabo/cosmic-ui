@@ -53,7 +53,6 @@ const Editor: React.FC<Props> = (props: Props) => {
     const _dataItem = { ...dataItem };
     _dataItem.deployment[field] = value;
     const _items: IStepperItem<EdgesStepperTypes>[] = updateStep(steps, EdgesStepperTypes.TRANSIT, _dataItem.deployment, [DeploymentFields.CONTROLLER_NAME, DeploymentFields.REGION_CODE]);
-    debugger;
     setSteps(_items);
     setDataItem(_dataItem);
   };
