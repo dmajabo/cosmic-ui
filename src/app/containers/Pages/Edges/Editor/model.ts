@@ -1,8 +1,8 @@
 import { IStepperItem, StepperItemStateType } from 'app/components/Stepper/model';
-import { IEdgeModel, IEdgePolicy } from '../model';
 import { Mark } from '@material-ui/core/Slider';
 import { ISelectedListItem } from 'lib/models/general';
 import { poloAltoIcon } from 'app/components/SVGIcons/edges/poloAlto';
+import { IEdgeModel, IEdgePolicy } from 'lib/api/ApiModels/Edges/apiModel';
 
 export enum EdgesStepperTypes {
   GENERAL = 'general',
@@ -24,12 +24,15 @@ export const createNewEdge = (): IEdgeModel => ({
   id: '',
   name: '',
   description: '',
+  deployment: {
+    controller_name: '',
+    region_code: [],
+  },
   price: null,
   connection: [],
   tags: '',
   firewall: false,
   firewallRegion: '',
-  selectedRegions: [],
   sites: [],
   apps: [],
   policies: null,

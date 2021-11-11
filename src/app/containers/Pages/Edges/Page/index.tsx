@@ -6,12 +6,12 @@ import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import { useEdgesDataContext } from 'lib/hooks/Edges/useEdgesDataContext';
 import Setuper from '../Setuper';
 import { PageWrapperStyles } from '../../Shared/styles';
-import { IEdgeModel } from '../model';
+import { IEdgeModel } from 'lib/api/ApiModels/Edges/apiModel';
 import Editor from '../Editor';
 import { useBreadCrumbDataContext } from 'lib/hooks/Breadcrumb/useBreadcrumbDataContext';
 import { EdgesBreadCrumbItemsType } from 'lib/hooks/Breadcrumb/models';
 import { AccountsApi } from 'lib/api/ApiModels/Accounts/endpoints';
-import { IAwsRegionsRes } from 'lib/api/ApiModels/Accounts/apiModel';
+import { IAccountsRes, IAwsRegionsRes } from 'lib/api/ApiModels/Accounts/apiModel';
 import { EdgesApi } from 'lib/api/ApiModels/Edges/edpoints';
 interface Props {}
 
@@ -19,6 +19,7 @@ const MainPage: React.FC<Props> = (props: Props) => {
   const userContext = React.useContext<UserContextState>(UserContext);
   const { loading, error, response, onGet } = useGet();
   const { response: resRegions, onGet: onGetRegions } = useGet<IAwsRegionsRes>();
+  const { response: resAccounts, onGet: onGetAccounts } = useGet<IAccountsRes>();
   const { loading: postLoading, error: postError, response: postResponce, onPost } = usePost();
   const { edges } = useEdgesDataContext();
   const [showEditorPage, setShowEditorPage] = React.useState(false);
@@ -27,6 +28,7 @@ const MainPage: React.FC<Props> = (props: Props) => {
   React.useEffect(() => {
     onTryLoadEdges();
     onTryLoadRegions();
+    onTryToAccounts();
   }, []);
 
   React.useEffect(() => {
@@ -40,6 +42,12 @@ const MainPage: React.FC<Props> = (props: Props) => {
       edges.onSetRegions(resRegions.awsRegions);
     }
   }, [resRegions]);
+
+  React.useEffect(() => {
+    if (resAccounts && resAccounts.controllers) {
+      edges.onSetAccounts(resAccounts.controllers);
+    }
+  }, [resAccounts]);
 
   React.useEffect(() => {
     // TO DO
@@ -78,6 +86,10 @@ const MainPage: React.FC<Props> = (props: Props) => {
 
   const onTryLoadRegions = async () => {
     await onGetRegions(AccountsApi.getAllAwsRegions(), userContext.idToken!);
+  };
+
+  const onTryToAccounts = async () => {
+    await onGetAccounts(AccountsApi.getAccounts(), userContext.idToken!);
   };
 
   const onSaveEdge = async () => {

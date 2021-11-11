@@ -1,8 +1,9 @@
-import { IEdgeGroup } from '../../model';
+import { IEdgeGroup } from 'lib/api/ApiModels/Edges/apiModel';
 
 export const EDGE_MAP_CONSTANTS = {
   svg: 'edgeMap',
   root: 'edgeMapRoot',
+  rootScaleContainer: 'edgeMapRootScale',
   sites: 'edgeMapSites',
   transit: 'edgeMapTransit',
   apps: 'edgeMapApps',

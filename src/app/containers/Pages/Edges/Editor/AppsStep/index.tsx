@@ -4,10 +4,11 @@ import FormTable from '../Components/FormTable';
 import SecondaryButton from 'app/components/Buttons/SecondaryButton';
 import { plusIcon } from 'app/components/SVGIcons/plusIcon';
 import { FormRow } from '../PolicyStep/styles';
-import { EditGroupItem, IEdgeGroup, PolicySources } from '../../model';
 import ModalComponent from 'app/components/Modal';
 import AppEditor from '../Components/AppEditor';
 import { EmptyMessage } from '../Components/styles';
+import { IEdgeGroup, PolicySources } from 'lib/api/ApiModels/Edges/apiModel';
+import { EditGroupItem } from '../../model';
 
 interface Props {
   data: IEdgeGroup[];

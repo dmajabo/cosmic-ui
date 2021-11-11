@@ -32,12 +32,23 @@ export const SelectStyles = makeStyles(
             height: '100%',
           },
         },
+        '&.withLabel': {
+          height: 'calc(100% - 22px)',
+          '& .MuiSelect-select': {
+            height: '100%',
+            lineHeight: '2.5em',
+          },
+        },
       },
       select: {
         height: '40px',
         padding: '8px 32px 8px 16px',
         minHeight: '40px',
         boxSizing: 'border-box',
+        color: 'var(--_primaryColor)',
+        fontSize: '14px',
+        fontFamily: 'DMSans',
+        fontWeight: 500,
         '&:focus': {
           background: 'transparent !important',
         },

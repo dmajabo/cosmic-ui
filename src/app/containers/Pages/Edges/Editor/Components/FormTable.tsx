@@ -2,7 +2,6 @@ import React from 'react';
 import { TableWrapperStyles } from 'app/components/Basic/Table/styles';
 import { TableStyles } from 'app/components/Basic/Table/TableStyles';
 import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
-import { IEdgeGroup, PolicySources } from '../../model';
 import { ciscoMerakiLogoIcon } from 'app/components/SVGIcons/topologyIcons/ciscoMerakiLogo';
 import { awsIcon } from 'app/components/SVGIcons/topologyIcons/aws';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
@@ -12,6 +11,7 @@ import { PopupContent } from 'app/components/Buttons/SettingsButton/PopupItemSty
 import PopupItem from 'app/components/Buttons/SettingsButton/PopupItem';
 import { editIcon } from 'app/components/SVGIcons/edit';
 import { deleteIcon } from 'app/components/SVGIcons/delete';
+import { IEdgeGroup, PolicySources } from 'lib/api/ApiModels/Edges/apiModel';
 interface Props {
   data: IEdgeGroup[];
   onEditGroup: (item: IEdgeGroup, index: number) => void;
