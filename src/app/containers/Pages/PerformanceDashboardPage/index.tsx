@@ -39,7 +39,7 @@ const PerformanceDashboardPage: React.FC = () => {
   const classes = PerformanceDashboardStyles();
 
   const userContext = useContext<UserContextState>(UserContext);
-  const apiClient = createApiClient(userContext.idToken!);
+  const apiClient = createApiClient(userContext.accessToken!);
   const [finalTableData, setFinalTableData] = useState<FinalTableData[]>([]);
   const [merakiOrganizations, setMerakiOrganizations] = useState<Organization[]>([]);
   const [awsOrganizations, setAwsOrganizations] = useState<Organization[]>([]);

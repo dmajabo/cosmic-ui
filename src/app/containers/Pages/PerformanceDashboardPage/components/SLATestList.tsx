@@ -117,7 +117,7 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
   const columnsPopoverId = isColumnsPopoverOpen ? COLUMNS_POPOVER : undefined;
 
   const userContext = useContext<UserContextState>(UserContext);
-  const apiClient = createApiClient(userContext.idToken!);
+  const apiClient = createApiClient(userContext.accessToken!);
 
   const handleTabChange = (event, newValue: string) => setTab(newValue);
 
