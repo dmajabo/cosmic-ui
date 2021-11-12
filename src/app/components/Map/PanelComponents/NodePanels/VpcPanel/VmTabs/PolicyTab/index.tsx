@@ -53,7 +53,7 @@ const PolicyTab: React.FC<IProps> = (props: IProps) => {
     if (!url || !params) {
       return;
     }
-    await onGet(url, userContext.idToken!, params);
+    await onGet(url, userContext.accessToken!, params);
   };
 
   return (

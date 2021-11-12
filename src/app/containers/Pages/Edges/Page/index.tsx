@@ -81,19 +81,19 @@ const MainPage: React.FC<Props> = (props: Props) => {
   }, [breadcrumb.edgesBreadCrumbItems]);
 
   const onTryLoadEdges = async () => {
-    await onGet(EdgesApi.getEdges(), userContext.idToken!);
+    await onGet(EdgesApi.getEdges(), userContext.accessToken!);
   };
 
   const onTryLoadRegions = async () => {
-    await onGetRegions(AccountsApi.getAllAwsRegions(), userContext.idToken!);
+    await onGetRegions(AccountsApi.getAllAwsRegions(), userContext.accessToken!);
   };
 
   const onTryToAccounts = async () => {
-    await onGetAccounts(AccountsApi.getAccounts(), userContext.idToken!);
+    await onGetAccounts(AccountsApi.getAccounts(), userContext.accessToken!);
   };
 
   const onSaveEdge = async () => {
-    await onPost(EdgesApi.postCreateEdge(), {}, userContext.idToken!);
+    await onPost(EdgesApi.postCreateEdge(), {}, userContext.accessToken!);
   };
 
   const onOpenEditor = (_item?: IEdgeModel) => {

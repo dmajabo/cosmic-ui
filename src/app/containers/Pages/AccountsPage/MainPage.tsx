@@ -71,11 +71,11 @@ const MainPage: React.FC<IProps> = (props: IProps) => {
   };
 
   const onTryToLoadData = async () => {
-    await onGet(AccountsApi.getAccounts(), userContext.idToken!);
+    await onGet(AccountsApi.getAccounts(), userContext.accessToken!);
   };
 
   const onTryLoadRegions = async () => {
-    await onGetRegions(AccountsApi.getAllAwsRegions(), userContext.idToken!);
+    await onGetRegions(AccountsApi.getAllAwsRegions(), userContext.accessToken!);
   };
 
   return (

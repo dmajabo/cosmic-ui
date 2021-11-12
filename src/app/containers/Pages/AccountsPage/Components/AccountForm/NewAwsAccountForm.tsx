@@ -124,15 +124,15 @@ const NewAwsAccountForm: React.FC<Props> = (props: Props) => {
   };
 
   const onUpdateGroup = async () => {
-    await onUpdate(AccountsApi.putUpdateAccount(dataItem.id), { controller: dataItem }, userContext.idToken!);
+    await onUpdate(AccountsApi.putUpdateAccount(dataItem.id), { controller: dataItem }, userContext.accessToken!);
   };
 
   const onCreateGroup = async () => {
-    await onPost(AccountsApi.postCreateAccount(), { controller: dataItem }, userContext.idToken!);
+    await onPost(AccountsApi.postCreateAccount(), { controller: dataItem }, userContext.accessToken!);
   };
 
   const onGetAccountById = async (id: string) => {
-    await onGet(AccountsApi.getAccountsById(id), userContext.idToken!);
+    await onGet(AccountsApi.getAccountsById(id), userContext.accessToken!);
   };
 
   if (!dataItem) return null;

@@ -93,7 +93,7 @@ const OverviewPage: React.FC<IProps> = (props: IProps) => {
 
   const onTryToLoadData = async (timePeriod: SessionsSelectValuesTypes) => {
     const _item = SESSIONS_SELECT_VALUES.find(it => it.id === timePeriod || it.value === timePeriod);
-    await onGet(SessionsApi.getSankeyData(_item.data || '-7d'), userContext.idToken!);
+    await onGet(SessionsApi.getSankeyData(_item.data || '-7d'), userContext.accessToken!);
   };
 
   const onChangePeriod = (_value: ISelectedListItem<SessionsSelectValuesTypes>) => {

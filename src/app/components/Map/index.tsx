@@ -86,13 +86,13 @@ const Map: React.FC<IProps> = (props: IProps) => {
     topology.onSetIsDataReadyToShow(DATA_READY_STATE.LOADING);
     const _st = topology.selectedTime || null;
     const param = createTopologyQueryParam(_st);
-    await onGetChainData([TopologyGroupApi.getAllGroups(), TopologyOrganizationApi.getAllOrganizations()], ['groups', 'organizations'], userContext.idToken!, param);
+    await onGetChainData([TopologyGroupApi.getAllGroups(), TopologyOrganizationApi.getAllOrganizations()], ['groups', 'organizations'], userContext.accessToken!, param);
   };
 
   const onReloadData = async (startTime: Date | null) => {
     topology.onSetIsDataReadyToShow(DATA_READY_STATE.LOADING);
     const param = createTopologyQueryParam(startTime);
-    await onGetChainData([TopologyGroupApi.getAllGroups(), TopologyOrganizationApi.getAllOrganizations()], ['groups', 'organizations'], userContext.idToken!, param);
+    await onGetChainData([TopologyGroupApi.getAllGroups(), TopologyOrganizationApi.getAllOrganizations()], ['groups', 'organizations'], userContext.accessToken!, param);
   };
 
   const onOpenNodePanel = (node: IDeviceNode | IWedgeNode, _type: TopologyMetricsPanelTypes) => {

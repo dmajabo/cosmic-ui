@@ -48,7 +48,7 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
     filterValue: (ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> | string)[],
   ) => {
     const _param = sessionsParamBuilder(pageSize, page, time, stitch, filterValue);
-    await onGet(SessionsApi.getAllSessions(), userContext.idToken!, _param);
+    await onGet(SessionsApi.getAllSessions(), userContext.accessToken!, _param);
   };
 
   const onChangePageSize = (_size: number, page?: number) => {

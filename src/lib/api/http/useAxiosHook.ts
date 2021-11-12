@@ -1,14 +1,13 @@
 import React from 'react';
 import axios, { AxiosError, AxiosResponse } from 'axios';
-import { IdToken } from '@auth0/auth0-react';
 
 axios.defaults.baseURL = process.env.NODE_ENV === 'development' ? process.env.REACT_APP_API_ENDPOINT_DEVELOPMENT : process.env.REACT_APP_API_ENDPOINT_PRODUCTION;
 
-const getHeaders = (token: IdToken, params?: Object) => {
+const getHeaders = (token: string, params?: Object) => {
   return {
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${token.__raw}`,
+      Authorization: `Bearer ${token}`,
       // 'Accept-Language': language,
     },
     params: params || null,
@@ -19,11 +18,11 @@ interface IApiRes<T> {
   response: T;
   error: AxiosError;
   loading: boolean;
-  onGet?: (url: string, token: IdToken, param?: any) => void;
-  onGetChainData?: (url: string[], keys: string[], token: IdToken, param?: any) => void;
-  onPost?: (url: string, _data: any, token: IdToken, param?: any) => void;
-  onPut?: (url: string, _data: any, token: IdToken, param?: any) => void;
-  onDelete?: (url: string, token: IdToken, param?: any) => void;
+  onGet?: (url: string, token: string, param?: any) => void;
+  onGetChainData?: (url: string[], keys: string[], token: string, param?: any) => void;
+  onPost?: (url: string, _data: any, token: string, param?: any) => void;
+  onPut?: (url: string, _data: any, token: string, param?: any) => void;
+  onDelete?: (url: string, token: string, param?: any) => void;
 }
 
 export const useGet = <T = any>(): IApiRes<T> => {
@@ -31,7 +30,7 @@ export const useGet = <T = any>(): IApiRes<T> => {
   const [error, setError] = React.useState<AxiosError>(null);
   const [loading, setloading] = React.useState<boolean>(false);
 
-  const onGet = React.useCallback((url: string, token: IdToken, param?: any) => {
+  const onGet = React.useCallback((url: string, token: string, param?: any) => {
     let isSubscribed = true;
     setloading(true);
     setError(null);
@@ -41,7 +40,7 @@ export const useGet = <T = any>(): IApiRes<T> => {
     };
   }, []);
 
-  const getDataAsync = async (isSubscribed: boolean, url: string, token: IdToken, param?: any) => {
+  const getDataAsync = async (isSubscribed: boolean, url: string, token: string, param?: any) => {
     const _header = getHeaders(token, param);
     await axios
       .get(url, _header)
@@ -71,7 +70,7 @@ export const usePost = <T = any, R = any>(): IApiRes<R> => {
   const [error, setError] = React.useState<AxiosError>(null);
   const [loading, setloading] = React.useState<boolean>(false);
 
-  const onPost = React.useCallback((url: string, _data: T, token: IdToken, param?: any) => {
+  const onPost = React.useCallback((url: string, _data: T, token: string, param?: any) => {
     let isSubscribed = true;
     setloading(true);
     postDataAsync(isSubscribed, url, _data, token, param);
@@ -80,7 +79,7 @@ export const usePost = <T = any, R = any>(): IApiRes<R> => {
     };
   }, []);
 
-  const postDataAsync = async (isSubscribed: boolean, url: string, _data: T, token: IdToken, param?: any) => {
+  const postDataAsync = async (isSubscribed: boolean, url: string, _data: T, token: string, param?: any) => {
     const _header = getHeaders(token, param);
     const data = JSON.stringify(_data);
     await axios
@@ -111,7 +110,7 @@ export const usePut = <T = any, R = any>(): IApiRes<R> => {
   const [error, setError] = React.useState<AxiosError>(null);
   const [loading, setloading] = React.useState<boolean>(false);
 
-  const onPut = React.useCallback((url: string, _data: T, token: IdToken, param?: any) => {
+  const onPut = React.useCallback((url: string, _data: T, token: string, param?: any) => {
     let isSubscribed = true;
     setloading(true);
     putDataAsync(isSubscribed, url, _data, token, param);
@@ -120,7 +119,7 @@ export const usePut = <T = any, R = any>(): IApiRes<R> => {
     };
   }, []);
 
-  const putDataAsync = async (isSubscribed: boolean, url: string, _data: T, token: IdToken, param?: any) => {
+  const putDataAsync = async (isSubscribed: boolean, url: string, _data: T, token: string, param?: any) => {
     const _header = getHeaders(token, param);
     const data = JSON.stringify(_data);
     await axios
@@ -151,7 +150,7 @@ export const useDelete = <T = any>(): IApiRes<T> => {
   const [error, setError] = React.useState<AxiosError>(null);
   const [loading, setloading] = React.useState<boolean>(false);
 
-  const onDelete = React.useCallback((url: string, token: IdToken, param?: any) => {
+  const onDelete = React.useCallback((url: string, token: string, param?: any) => {
     let isSubscribed = true;
     setloading(true);
     deleteDataAsync(isSubscribed, url, token, param);
@@ -160,7 +159,7 @@ export const useDelete = <T = any>(): IApiRes<T> => {
     };
   }, []);
 
-  const deleteDataAsync = async (isSubscribed: boolean, url: string, token: IdToken, param?: any) => {
+  const deleteDataAsync = async (isSubscribed: boolean, url: string, token: string, param?: any) => {
     const _header = getHeaders(token, param);
     await axios
       .delete(url, _header)
@@ -190,7 +189,7 @@ export const useGetTopology = <T = any>(): IApiRes<T> => {
   const [error, setError] = React.useState<AxiosError>(null);
   const [loading, setloading] = React.useState<boolean>(false);
 
-  const onGetChainData = React.useCallback((url: string[], keys: string[], token: IdToken, param?: any) => {
+  const onGetChainData = React.useCallback((url: string[], keys: string[], token: string, param?: any) => {
     let isSubscribed = true;
     setloading(true);
     setError(null);
@@ -200,7 +199,7 @@ export const useGetTopology = <T = any>(): IApiRes<T> => {
     };
   }, []);
 
-  const getDataAsync = async (isSubscribed: boolean, url: string[], keys: string[], token: IdToken, param?: any) => {
+  const getDataAsync = async (isSubscribed: boolean, url: string[], keys: string[], token: string, param?: any) => {
     const _header = getHeaders(token, param);
     await axios
       .all([axios.get(url[0], _header), axios.get(url[1], _header)])

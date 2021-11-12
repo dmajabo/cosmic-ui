@@ -35,7 +35,7 @@ const TableWrapper: React.FC<Props> = (props: Props) => {
     if (!url || !params) {
       return;
     }
-    await onGet(url, userContext.idToken!, params);
+    await onGet(url, userContext.accessToken!, params);
   };
 
   return (

@@ -94,12 +94,12 @@ const GroupsComponent: React.FC<IProps> = (props: IProps) => {
   };
 
   const onUpdateGroup = async (_data: ITopologyGroup) => {
-    await onUpdate(TopologyGroupApi.postUpdateGroup(_data.id), { group: _data }, userContext.idToken!);
+    await onUpdate(TopologyGroupApi.postUpdateGroup(_data.id), { group: _data }, userContext.accessToken!);
     // await postUpdateGroupAsync(TopologyGroupApi.postUpdateGroup(_data.id), { groupPol: _data });
   };
 
   const onCreateGroup = async (_data: ITopologyGroup) => {
-    await onPost(TopologyGroupApi.postCreateGroup(), { group: _data }, userContext.idToken!);
+    await onPost(TopologyGroupApi.postCreateGroup(), { group: _data }, userContext.accessToken!);
   };
 
   const getPanelBarTitle = (_view: TopologyGroupsView, _group: ITopologyGroup | null) => {
@@ -129,11 +129,11 @@ const GroupsComponent: React.FC<IProps> = (props: IProps) => {
   };
 
   const onTryDeleteGroup = async (_group: ITopologyGroup) => {
-    await onDelete(TopologyGroupApi.deleteGroup(_group.id), userContext.idToken!);
+    await onDelete(TopologyGroupApi.deleteGroup(_group.id), userContext.accessToken!);
   };
 
   const onGetGroup = async (id: string) => {
-    await onGet(TopologyGroupApi.getGroupById(id), userContext.idToken!);
+    await onGet(TopologyGroupApi.getGroupById(id), userContext.accessToken!);
   };
 
   if (!view) {

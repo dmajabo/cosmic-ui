@@ -36,7 +36,7 @@ const RoutesTab: React.FC<IProps> = (props: IProps) => {
     if (!url || !params) {
       return;
     }
-    await onGet(url, userContext.idToken!, params);
+    await onGet(url, userContext.accessToken!, params);
   };
 
   return <RouteTableWrapper data={data} showLoader={loading} error={error ? error.message : null} />;
