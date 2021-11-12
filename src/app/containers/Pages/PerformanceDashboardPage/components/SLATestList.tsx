@@ -80,6 +80,8 @@ const columns: Column[] = [
   },
 ];
 
+const COLUMNS_POPOVER = 'columns-popover';
+
 export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteSlaTest, awsOrganizations, merakiOrganizations, finalTableData, addSlaTest }) => {
   const classes = PerformanceDashboardStyles();
 
@@ -96,8 +98,14 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
     interface: '',
     description: '',
   });
+
+  const initialCheckboxData: CheckboxData = columns.reduce((accu, nextValue) => {
+    nextValue.accessor === ColumnAccessor.description ? (accu[nextValue.accessor] = false) : (accu[nextValue.accessor] = true);
+    return accu;
+  }, {});
+
   const [updateTestToggle, setUpdateTestToggle] = useState<boolean>(false);
-  const [columnCheckboxData, setColumnCheckboxData] = useState<CheckboxData>({});
+  const [columnCheckboxData, setColumnCheckboxData] = useState<CheckboxData>(initialCheckboxData);
   const [selectedColumns, setSelectedColumns] = useState<Column[]>([]);
   const [columnAnchorEl, setColumnAnchorEl] = useState<HTMLButtonElement | null>(null);
 
@@ -106,7 +114,7 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
   const handleColumnsClose = () => setColumnAnchorEl(null);
 
   const isColumnsPopoverOpen = Boolean(columnAnchorEl);
-  const columnsPopoverId = isColumnsPopoverOpen ? 'columns-popover' : undefined;
+  const columnsPopoverId = isColumnsPopoverOpen ? COLUMNS_POPOVER : undefined;
 
   const userContext = useContext<UserContextState>(UserContext);
   const apiClient = createApiClient(userContext.idToken!);
@@ -137,24 +145,15 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
   };
 
   useEffect(() => {
-    const initialCheckboxData: CheckboxData = columns.reduce((accu, nextValue) => {
-      nextValue.accessor === ColumnAccessor.description ? (accu[nextValue.accessor] = false) : (accu[nextValue.accessor] = true);
-      return accu;
-    }, {});
-    setColumnCheckboxData(initialCheckboxData);
-  }, []);
-
-  useEffect(() => {
     const newSelectedColumns = columns.filter(item => columnCheckboxData[item.accessor]);
     setSelectedColumns(newSelectedColumns);
   }, [columnCheckboxData]);
 
-  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) =>
     setColumnCheckboxData({
       ...columnCheckboxData,
       [event.target.name]: event.target.checked,
     });
-  };
 
   const data = useMemo(
     () =>
