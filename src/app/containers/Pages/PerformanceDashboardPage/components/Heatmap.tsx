@@ -62,7 +62,7 @@ const Heatmap: React.FC<HeatmapProps> = ({ data, legendData, selectedRows, dataS
         {legendData.map(item => (
           <div className={classes.legendGap} key={item.color}>
             <LegendBox color={item.color} />
-            <span className={classes.legendText}>{`${item.low}${dataSuffix}-${item.high}${dataSuffix}`}</span>
+            <span className={classes.legendText}>{item.high === Infinity ? `> ${item.low}${dataSuffix}` : `${item.low}${dataSuffix}-${item.high}${dataSuffix}`}</span>
           </div>
         ))}
       </div>

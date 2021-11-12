@@ -177,9 +177,19 @@ export interface FinalTableData {
   readonly averageQoe: AverageQoe;
 }
 
+export enum ColumnAccessor {
+  name = 'name',
+  sourceOrg = 'sourceOrg',
+  sourceNetwork = 'sourceNetwork',
+  sourceDevice = 'sourceDevice',
+  destination = 'destination',
+  averageQoe = 'averageQoe',
+  description = 'description',
+}
+
 export interface Column {
   readonly Header: string;
-  readonly accessor: 'name' | 'sourceOrg' | 'sourceNetwork' | 'sourceDevice' | 'destination' | 'averageQoe';
+  readonly accessor: ColumnAccessor;
 }
 
 interface HeatMapMetric {

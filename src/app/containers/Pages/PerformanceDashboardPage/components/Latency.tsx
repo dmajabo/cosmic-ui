@@ -20,29 +20,29 @@ interface LatencyProps {
 const LATENCY = 'latency';
 const LATENCY_ANOMALY = 'latency_anomaly';
 
-const LATENCY_HEATMAP_LEGEND: LegendData[] = [
+export const LATENCY_HEATMAP_LEGEND: LegendData[] = [
   {
-    low: 0,
+    low: 0.01,
     high: 30,
     color: '#52984E',
   },
   {
-    low: 30,
+    low: 30.01,
     high: 50,
     color: '#FED0AB',
   },
   {
-    low: 50,
+    low: 50.01,
     high: 80,
     color: '#FFC568',
   },
   {
-    low: 80,
+    low: 80.01,
     high: 120,
     color: '#F69442',
   },
   {
-    low: 120,
+    low: 120.01,
     high: Infinity,
     color: '#DC4545',
   },
