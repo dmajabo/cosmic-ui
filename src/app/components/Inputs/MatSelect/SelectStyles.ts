@@ -29,24 +29,30 @@ export const SelectStyles = makeStyles(
         '&.fullHeight': {
           height: '100%',
           '& .MuiSelect-select': {
-            height: '100%',
+            height: '100% !important',
+            boxSizing: 'border-box',
           },
         },
         '&.withLabel': {
           height: 'calc(100% - 22px)',
           '& .MuiSelect-select': {
-            height: '100%',
+            height: '100% !important',
+            boxSizing: 'border-box',
           },
+        },
+        '& .MuiSelect-select': {
+          fontWeight: 500,
         },
       },
       select: {
-        height: '40px',
-        padding: '8px 32px 8px 16px',
-        minHeight: '40px',
+        paddingTop: '8px !important',
+        paddingBottom: '8px !important',
+        paddingLeft: '16px !important',
+        minHeight: '40px ',
         boxSizing: 'border-box',
-        color: 'var(--_primaryColor)',
-        fontSize: '14px',
-        fontFamily: 'DMSans',
+        color: 'var(--_primaryColor) !important',
+        fontSize: '14px !important',
+        fontFamily: 'DMSans !important',
         fontWeight: 500,
         '&:focus': {
           background: 'transparent !important',

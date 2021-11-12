@@ -1,7 +1,7 @@
-import { AccountVendorTypes } from './apiModel';
+import { AccountVendorTypes, IAWS_Account, IMeraki_Account } from './apiModel';
 
 export const createNewCiscoMerakiAccount = () => {
-  return {
+  const _obj: IMeraki_Account = {
     id: '',
     vendor: AccountVendorTypes.CISCO_MERAKI,
     name: '',
@@ -14,10 +14,11 @@ export const createNewCiscoMerakiAccount = () => {
       },
     },
   };
+  return _obj;
 };
 
 export const createNewAwsAccount = () => {
-  return {
+  const _obj: IAWS_Account = {
     id: '',
     vendor: AccountVendorTypes.AMAZON_AWS,
     name: '',
@@ -30,7 +31,9 @@ export const createNewAwsAccount = () => {
       regions: [],
       flowlogPol: {
         enable: false,
+        logGroupName: '',
       },
     },
   };
+  return _obj;
 };

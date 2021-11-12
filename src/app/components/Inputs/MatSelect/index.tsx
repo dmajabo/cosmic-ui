@@ -63,7 +63,12 @@ const MatSelect: React.FC<Props> = (props: Props) => {
         onClose={handleClose}
         onOpen={handleOpen}
         renderValue={(value: ISelectedListItem<any> | string | number) => {
-          if (typeof value === 'string' || typeof value === 'number') return value;
+          if (typeof value === 'string' || typeof value === 'number')
+            return (
+              <DisplayValue>
+                <ValueLabel>{value}</ValueLabel>
+              </DisplayValue>
+            );
           return (
             <DisplayValue>
               {value.icon && <IconWrapper icon={value.icon} styles={{ margin: '0 12px 0 0' }} />}

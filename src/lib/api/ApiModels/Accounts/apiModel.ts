@@ -30,6 +30,7 @@ export interface IMerakiPolicy {
 
 export interface IAwsFlowLogPolicy {
   enable: boolean;
+  logGroupName: string;
 }
 
 export interface IAwsPolicy {

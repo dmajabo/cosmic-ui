@@ -2,10 +2,11 @@ import React from 'react';
 import { IMeraki_Account, IAWS_Account, AccountVendorTypes } from 'lib/api/ApiModels/Accounts/apiModel';
 import NewAwsAccountForm from './NewAwsAccountForm';
 import NewCiscoMerakiAccountForm from './NewCiscoMerakiAccountForm';
+import { ISelectedListItem } from 'lib/models/general';
 interface Props {
   isEditMode: boolean;
   dataItem: IMeraki_Account | IAWS_Account;
-  regions: string[];
+  regions: ISelectedListItem<string>[];
   onClose: () => void;
 }
 

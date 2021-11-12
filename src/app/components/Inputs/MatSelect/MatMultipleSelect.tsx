@@ -40,6 +40,7 @@ const MatMultipleSelect: React.FC<Props> = (props: Props) => {
   }, [debouncedSearchTerm]);
 
   const handleChange = (event: SelectChangeEvent<any>) => {
+    debugger;
     setTextValue(event.target.value);
     setIsTyping(true);
   };
@@ -110,7 +111,8 @@ const MatMultipleSelect: React.FC<Props> = (props: Props) => {
             );
           }
           return (
-            <MenuItem key={`${props.id}${index}option`} classes={{ root: classes.menuListItem }} value={option}>
+            <MenuItem key={`${props.id}${index}option`} classes={{ root: classes.menuListItem }} value={option.value}>
+              {props.optionCheckMark && <SimpleCheckbox wrapStyles={{ margin: 'auto 12px auto 0' }} readOnly isChecked={textValue.indexOf(option.value as never) > -1} />}
               {option.label}
             </MenuItem>
           );

@@ -19,6 +19,7 @@ export const getPreparedAccountsRes = (res: IAccountsRes) => {
       if (_item.awsPol && !_item.awsPol.flowlogPol) {
         _item.awsPol.flowlogPol = {
           enable: false,
+          logGroupName: '',
         };
         return _item;
       }

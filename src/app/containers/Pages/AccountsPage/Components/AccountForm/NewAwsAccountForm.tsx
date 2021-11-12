@@ -15,14 +15,14 @@ import { useGet, usePost, usePut } from 'lib/api/http/useAxiosHook';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
 import { AccountsApi } from 'lib/api/ApiModels/Accounts/endpoints';
-import { IBaseEntity } from 'lib/models/general';
+import { IBaseEntity, ISelectedListItem } from 'lib/models/general';
 import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 import MatMultipleSelect from 'app/components/Inputs/MatSelect/MatMultipleSelect';
 
 interface Props {
   isEditMode: boolean;
   dataItem: IAWS_Account;
-  regions: string[];
+  regions: ISelectedListItem<string>[];
   onClose: () => void;
 }
 
@@ -81,6 +81,17 @@ const NewAwsAccountForm: React.FC<Props> = (props: Props) => {
   const onEnabledPolicyChange = (checked: boolean) => {
     const _item: IAWS_Account = { ...dataItem };
     _item.awsPol.flowlogPol.enable = checked;
+    if (!checked) {
+      _item.awsPol.flowlogPol.logGroupName = '';
+    }
+    setIsValid(onValidate(_item));
+    setDataItem(_item);
+  };
+
+  const onFlowLogChange = (value: string | null, field: string) => {
+    const _item: IAWS_Account = { ...dataItem };
+    _item.awsPol.flowlogPol[field] = value;
+    setIsValid(onValidate(_item));
     setDataItem(_item);
   };
 
@@ -98,6 +109,9 @@ const NewAwsAccountForm: React.FC<Props> = (props: Props) => {
     if (!_item.awsPol.secret) return false;
     if (!_item.awsPol.username) return false;
     if (!_item.awsPol.regions.length) return false;
+    if (_item.awsPol.flowlogPol.enable) {
+      if (!_item.awsPol.flowlogPol.logGroupName) return false;
+    }
     return true;
   };
 
@@ -196,9 +210,22 @@ const NewAwsAccountForm: React.FC<Props> = (props: Props) => {
                 optionCheckMark
               />
             </StepItemFormRow>
-            <StepItemFormRow margin="0">
+            <StepItemFormRow>
               <CheckBox label="Enable Flowlog Collection" isChecked={dataItem.awsPol.flowlogPol.enable} toggleCheckboxChange={onEnabledPolicyChange} />
             </StepItemFormRow>
+            {dataItem.awsPol.flowlogPol.enable && (
+              <StepItemFormRow margin="0">
+                <TextInput
+                  id="flowGroupName"
+                  name="groupName"
+                  value={dataItem.awsPol.flowlogPol.logGroupName}
+                  label="Group Name"
+                  onChange={v => onFlowLogChange(v, 'logGroupName')}
+                  // styles?: Object;
+                  required
+                />
+              </StepItemFormRow>
+            )}
           </StepItem>
         </ModalOverflowContainer>
         {(postLoading || postUpdateLoading || getLoading) && (
