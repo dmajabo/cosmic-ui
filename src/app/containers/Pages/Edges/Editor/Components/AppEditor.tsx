@@ -10,6 +10,7 @@ import { DataGrid, GridColDef, GridSelectionModel } from '@mui/x-data-grid';
 import { GridStyles } from 'app/components/Grid/GridStyles';
 import { awsIcon } from 'app/components/SVGIcons/topologyIcons/aws';
 import { IEdgeGroup } from 'lib/api/ApiModels/Edges/apiModel';
+import SimpleCheckbox from 'app/components/Inputs/Checkbox/SimpleCheckbox';
 
 interface Props {
   data: EditGroupItem;
@@ -152,6 +153,9 @@ const AppEditor: React.FC<Props> = (props: Props) => {
             checkboxSelection
             onSelectionModelChange={onSelectItem}
             selectionModel={selectionModel}
+            components={{
+              Checkbox: React.forwardRef(({ checked, onChange, indeterminate }, ref) => <SimpleCheckbox ref={ref} isChecked={checked} toggleCheckboxChange={onChange} indeterminate={indeterminate} />),
+            }}
           />
         </GridWrapper>
       </ModalContent>
