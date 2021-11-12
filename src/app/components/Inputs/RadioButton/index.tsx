@@ -10,20 +10,21 @@ interface Props {
   type?: 'radio' | 'checkbox';
   width?: string;
   height?: string;
-  onChange: (checked: boolean | null, value: string) => void;
+  onValueChange: (checked: boolean | null, value: string) => void;
+  required?: boolean;
 }
 
-const RadioButton: React.FC<Props> = React.forwardRef(({ label, value, checked, name, wrapstyles, type, width, height, onChange }, ref: any) => {
+const RadioButton: React.FC<Props> = React.forwardRef(({ label, value, checked, name, wrapstyles, type, width, height, onValueChange, required }, ref: any) => {
   const onSelect = () => {
     if (type === 'radio' && checked) return;
     const _v = !checked ? true : null;
-    onChange(_v, value);
+    onValueChange(_v, value);
   };
 
   return (
     <Wrapper style={wrapstyles}>
       <RadioStyles width={width} height={height} labelAfter={!!label} checked={checked} onClick={onSelect} />
-      <Input ref={ref} type="radio" name={name} checked={checked} value={value} readOnly />
+      <Input ref={ref} type="radio" name={name} checked={checked} value={value} readOnly required={required} />
       {label && <Label onClick={onSelect}>{label}</Label>}
     </Wrapper>
   );

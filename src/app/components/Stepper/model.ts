@@ -15,3 +15,7 @@ export interface IStepperItem<T> extends IBaseEntity<T> {
   state: StepperItemStateType;
   showEdge: boolean;
 }
+
+export const valueNumberFormat = (_v: number): string => {
+  return `${_v + 1}`;
+};

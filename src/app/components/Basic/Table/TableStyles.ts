@@ -34,7 +34,7 @@ export const TableStyles = makeStyles(
         border: 'none',
         color: 'var(--_primaryColor)',
         borderBottom: '1px solid var(--_rowBorder)',
-        padding: '12px',
+        padding: '10px 12px',
         fontWeight: 500,
         fontSize: 14,
         lineHeight: '18px',

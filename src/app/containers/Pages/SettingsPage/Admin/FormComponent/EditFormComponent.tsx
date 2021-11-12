@@ -1,6 +1,5 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { FormTitle, FormContent, FormFooter, FormStyles, Header, Wrapper } from './styles';
 import TextInputWithRegister from 'app/components/Inputs/TextInput/TextInputWithRegister';
 import { closeSmallIcon } from 'app/components/SVGIcons/close';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
@@ -9,6 +8,8 @@ import SecondaryButton from 'app/components/Buttons/SecondaryButton';
 import PrimaryButton from 'app/components/Buttons/PrimaryButton';
 import { AdminFormDataFields, PROFILE_VALUES, ACCESS_VALUES } from '../model';
 import { IAdminsUser, IProfile } from 'lib/api/ApiModels/Settings/apiModels';
+import { jsonClone } from 'lib/helpers/cloneHelper';
+import { Wrapper, Header, FormTitle, FormStyles, FormContent, FormFooter } from '../../Components/FormStyles/FormStyles';
 
 interface IProps {
   dataItem?: IAdminsUser;
@@ -30,7 +31,7 @@ const EditFormComponent: React.FC<IProps> = (props: IProps) => {
       description: props.dataItem ? props.dataItem.description : '',
       profile: props.dataItem
         ? props.dataItem.profile
-        : { name: '', description: '', permission: { dashboard: null, topology: null, network: null, performance_dashboard: null, sessions: null, automation: null, analytics: null, settings: null } },
+        : { name: '', description: '', dashboard: null, topology: null, network: null, performance_dashboard: null, sessions: null, automation: null, analytics: null, settings: null },
       apiAccess: props.dataItem ? props.dataItem.apiAccess : '',
     },
   });
@@ -38,13 +39,15 @@ const EditFormComponent: React.FC<IProps> = (props: IProps) => {
   const [profile, setProfile] = React.useState<IProfile>(
     props.dataItem
       ? props.dataItem.profile
-      : { name: '', description: '', permission: { dashboard: null, topology: null, network: null, performance_dashboard: null, sessions: null, automation: null, analytics: null, settings: null } },
+      : { name: '', description: '', dashboard: null, topology: null, network: null, performance_dashboard: null, sessions: null, automation: null, analytics: null, settings: null },
   );
   const [apiAccess, setApiAccess] = React.useState<string>(props.dataItem ? props.dataItem.apiAccess : '');
 
   const hanleProfileChange = v => {
+    const _obj = jsonClone(profile);
+    _obj.name = v;
     setValue('profile.name', v as never);
-    setProfile(v);
+    setProfile(_obj);
     trigger();
   };
 
@@ -93,6 +96,7 @@ const EditFormComponent: React.FC<IProps> = (props: IProps) => {
           <Dropdown
             className="profile"
             dropWrapStyles={{ flexDirection: 'column', width: '100%', alignItems: 'flex-start', margin: '0 0 20px 0', maxWidth: '450px' }}
+            wrapStyles={{ width: '100%' }}
             label="Admin profile"
             selectedValue={profile.name}
             values={PROFILE_VALUES}
@@ -102,6 +106,7 @@ const EditFormComponent: React.FC<IProps> = (props: IProps) => {
           <Dropdown
             className="apiAccess"
             dropWrapStyles={{ flexDirection: 'column', width: '100%', alignItems: 'flex-start', maxWidth: '450px' }}
+            wrapStyles={{ width: '100%' }}
             label="JSON API Access"
             selectedValue={apiAccess}
             values={ACCESS_VALUES}

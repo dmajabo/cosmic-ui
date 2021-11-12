@@ -7,19 +7,21 @@ interface IProps {
   selectedValue: ISelectedListItem<any> | null;
   values: ISelectedListItem<any>[];
   onChange: (value: ISelectedListItem<any>) => void;
+  styles?: Object;
+  buttonStyles?: Object;
 }
-const Toogle: React.FC<IProps> = (props: IProps) => {
-  const onChange = (value: ISelectedListItem<any>) => {
-    if (value.id === props.selectedValue.id) {
+const Toogle: React.FC<IProps> = ({ selectedValue, values, onChange, styles, buttonStyles }) => {
+  const onToogleChange = (value: ISelectedListItem<any>) => {
+    if (value.id === selectedValue.id) {
       return;
     }
-    props.onChange(value);
+    onChange(value);
   };
 
   return (
-    <Wrapper>
-      {props.values.map((it, index) => (
-        <ToogleButton key={`tooglebutton${index}`} value={it} onClick={onChange} isSelected={props.selectedValue && it.id === props.selectedValue.id} />
+    <Wrapper style={styles}>
+      {values.map((it, index) => (
+        <ToogleButton styles={buttonStyles} key={`tooglebutton${index}`} value={it} onClick={onToogleChange} isSelected={selectedValue && it.id === selectedValue.id} />
       ))}
     </Wrapper>
   );

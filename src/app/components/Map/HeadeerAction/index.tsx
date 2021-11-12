@@ -33,7 +33,7 @@ const HeadeerAction: React.FC<IProps> = (props: IProps) => {
   return (
     <Wrapper>
       <Side margin="0 auto 0 0">
-        <Dropdown label="Edge metric" selectedValue={topology?.searchQuery || null} values={TOPOLOGY_SELECT_VALUES} onSelectValue={onSelect} />
+        <Dropdown label="Edge metric" selectedValue={topology?.selectedType || null} values={TOPOLOGY_SELECT_VALUES} onSelectValue={onSelect} />
       </Side>
       <Side margin="0 0 0 auto">
         <IconButton styles={{ margin: '0' }} icon={refreshIcon} title="Zoom in" onClick={props.onRefresh} />

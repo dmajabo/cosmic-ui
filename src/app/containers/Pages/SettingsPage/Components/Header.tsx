@@ -10,14 +10,22 @@ import Search from 'app/components/Inputs/Search';
 import { plusIcon } from 'app/components/SVGIcons/plusIcon';
 import { ActionRowStyles, ActionPart } from '../../Shared/styles';
 import { deleteIcon } from 'app/components/SVGIcons/delete';
+import { ISelectedListItem } from 'lib/models/general';
+import { InventoryOptions } from '../Inventory/model';
+import Toogle from 'app/components/Inputs/Toogle';
 interface Props {
   selectedItems: GridSelectionModel;
   searchValue: string | null;
   columns: GridColDef[];
+  selectedToogleOption?: ISelectedListItem<InventoryOptions>;
+  toggleOptions?: ISelectedListItem<InventoryOptions>[];
   onChangeColumn: (col: GridColDef) => void;
   onSearchChange: (v: string | null) => void;
-  onToogleEditForm: () => void;
+  onToogleEditForm?: () => void;
   onMassDelete: () => void;
+  onToogleChange?: (value: ISelectedListItem<InventoryOptions>) => void;
+  hideEditButton?: boolean;
+  showToogle?: boolean;
 }
 
 const Header: React.FC<Props> = (props: Props) => {
@@ -34,6 +42,15 @@ const Header: React.FC<Props> = (props: Props) => {
     <>
       <ActionRowStyles>
         <ActionPart margin="0 auto 0 0" minWidth="440px">
+          {props.showToogle && (
+            <Toogle
+              styles={{ height: '40px', margin: '0 30px 0 0', padding: '3px', background: 'var(--_primaryBg)' }}
+              buttonStyles={{ padding: '8px 24px' }}
+              selectedValue={props.selectedToogleOption}
+              values={props.toggleOptions}
+              onChange={props.onToogleChange}
+            />
+          )}
           <Search searchQuery={props.searchValue} onChange={onSearhChange} styles={{ width: '100%' }} />
         </ActionPart>
         <ActionPart margin="0 0 0 auto">
@@ -84,14 +101,16 @@ const Header: React.FC<Props> = (props: Props) => {
               </OverflowContainer>
             </PopupContainer>
           </SecondaryButtonWithPopup>
-          <PrimaryButton
-            label="Create new"
-            icon={plusIcon}
-            onClick={onToogleEditForm}
-            styles={{
-              margin: '0 0 0 20px',
-            }}
-          />
+          {!props.hideEditButton && (
+            <PrimaryButton
+              label="Create new"
+              icon={plusIcon}
+              onClick={onToogleEditForm}
+              styles={{
+                margin: '0 0 0 20px',
+              }}
+            />
+          )}
         </ActionPart>
       </ActionRowStyles>
     </>

@@ -50,6 +50,7 @@ export interface ISelectedListItem<T> {
   id: string | number | null;
   value: T;
   label: string;
+  icon?: any;
   data?: any;
 }
 
@@ -99,7 +100,16 @@ export interface IMappedObject {
   [key: string]: any;
 }
 
+export interface ISelectedObject<T> {
+  [key: string]: T;
+}
+
 export interface ISelectionGridCellValue<T, P> {
   field: T;
   value: P;
+}
+
+export interface IGridColumnField {
+  resField: string;
+  label: string;
 }

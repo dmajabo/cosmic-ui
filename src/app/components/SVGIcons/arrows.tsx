@@ -4,6 +4,12 @@ export const arrowBottomIcon = (
   </svg>
 );
 
+export const arrowRightIcon = (size?: number, fill?: string, className?: string) => (
+  <svg width={size || 12} height={size || 12} viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path className={className} d="M8 5.7002L0.500001 10.8963L0.500001 0.504043L8 5.7002Z" fill={fill || 'var(--_disabledTextColor)'} />
+  </svg>
+);
+
 export const arrowSignIn = (
   <svg width="17" height="11" viewBox="0 0 17 11" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path className="inheritFill" d="M12.3375 0.837891L11.5803 1.59516L14.95 4.96487H0V6.03581H14.95L11.5803 9.40549L12.3375 10.1628L17 5.5003L12.3375 0.837891Z" fill="white" />

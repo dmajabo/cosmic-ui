@@ -87,15 +87,18 @@ interface ILoadProps {
   height?: string;
   zIndex?: number;
   top?: string;
+  bottom?: string;
+  opacity?: string;
 }
 export const AbsLoaderWrapper = styled.div<ILoadProps>`
   display: flex;
   position: ${props => props.position || 'absolute'};
   top: ${props => props.top || 0};
+  bottom: ${props => props.bottom || 'unset'};
   left: 0;
   width: ${props => props.width || '100%'};
   height: ${props => props.height || '100%'};
   pointer-events: none;
   z-index: 100;
-  opacity: 0.5;
+  opacity: ${props => props.opacity || '0.5'};
 `;

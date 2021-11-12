@@ -1,8 +1,8 @@
 import React from 'react';
 import { ContentStyles, FooterWrapper, MainStyles, PanelStyles, StepsWrapper, TagsWrapper } from '../../styles/styles';
 import Stepper from 'app/components/Stepper';
-import { IStepperItem, StepperItemStateType } from 'app/components/Stepper/model';
-import { ActionTypes, AutomationStepperItems, createNewAutomation, IAutomation, NewAutomationStepperTypes, valueFormat } from './model';
+import { IStepperItem, StepperItemStateType, valueNumberFormat } from 'app/components/Stepper/model';
+import { ActionTypes, AutomationStepperItems, createNewAutomation, IAutomation, NewAutomationStepperTypes } from './model';
 import { jsonClone } from 'lib/helpers/cloneHelper';
 import EdgesStep from './Steps/EdgesStep';
 import ActionsStep from './Steps/ActionsStep';
@@ -243,7 +243,7 @@ const NewAutomation: React.FC<Props> = (props: Props) => {
           </AbsLoaderWrapper>
         )}
       </MainStyles>
-      <PanelStyles>{steps && <Stepper title="Setup" formatValue={valueFormat} valueFormattedField="index" selectedStep={selectedStep} steps={steps} onSelectStep={onSelectStep} />}</PanelStyles>
+      <PanelStyles>{steps && <Stepper title="Setup" formatValue={valueNumberFormat} valueFormattedField="index" selectedStep={selectedStep} steps={steps} onSelectStep={onSelectStep} />}</PanelStyles>
     </>
   );
 };

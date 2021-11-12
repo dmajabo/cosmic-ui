@@ -1,14 +1,16 @@
 import { ACCESS_SECTIONS_PERMISION_VALUE } from 'lib/api/ApiModels/Settings/apiModels';
+import { IGridColumnField } from 'lib/models/general';
 
-export interface ISettingsGridField {
-  resField: string;
-  label: string;
-}
-export interface ISettingsGridColumns {
-  [key: string]: ISettingsGridField;
+export interface IAdminsGridColumns {
+  name: IGridColumnField;
+  type: IGridColumnField;
+  profile: IGridColumnField;
+  apiAccess: IGridColumnField;
+  adoms: IGridColumnField;
+  ipvHost: IGridColumnField;
 }
 
-export const SettingsGridColumns: ISettingsGridColumns = {
+export const AdminsGridColumns: IAdminsGridColumns = {
   name: {
     resField: 'name',
     label: 'Name',
@@ -35,13 +37,13 @@ export const SettingsGridColumns: ISettingsGridColumns = {
   },
 };
 
-export const SettingsGridColumnItems: ISettingsGridField[] = [
-  SettingsGridColumns.name,
-  SettingsGridColumns.type,
-  SettingsGridColumns.profile,
-  SettingsGridColumns.apiAccess,
-  SettingsGridColumns.adoms,
-  SettingsGridColumns.ipvHost,
+export const SettingsGridColumnItems: IGridColumnField[] = [
+  AdminsGridColumns.name,
+  AdminsGridColumns.type,
+  AdminsGridColumns.profile,
+  AdminsGridColumns.apiAccess,
+  AdminsGridColumns.adoms,
+  AdminsGridColumns.ipvHost,
 ];
 
 export enum AdminFormDataFields {
@@ -54,7 +56,14 @@ export enum AdminFormDataFields {
 export enum AdminFormProfileDataFields {
   Name = 'name',
   Description = 'description',
-  Permision = 'permission',
+  DASHBOARD = 'dashboard',
+  TOPOLOGY = 'topology',
+  NETWORK = 'network',
+  PERFORMANCE_DASHBOARD = 'performance_dashboard',
+  SESSIONS = 'sessions',
+  AUTOMATION = 'automation',
+  ANALYTICS = 'analytics',
+  SETTINGS = 'settings',
 }
 
 export enum PROFILE_VALUES_TYPE {
@@ -70,69 +79,58 @@ export enum ACCESS_VALUES_TYPE {
 export const PROFILE_VALUES: string[] = [PROFILE_VALUES_TYPE.SUPER, PROFILE_VALUES_TYPE.DEMO];
 export const ACCESS_VALUES: string[] = [ACCESS_VALUES_TYPE.READ_WRITE, ACCESS_VALUES_TYPE.READ, ACCESS_VALUES_TYPE.WRITE];
 
-export enum ACCESS_SECTIONS {
-  DASHBOARD = 'dashboard',
-  TOPOLOGY = 'topology',
-  NETWORK = 'network',
-  PERFORMANCE_DASHBOARD = 'performance_dashboard',
-  SESSIONS = 'sessions',
-  AUTOMATION = 'automation',
-  ANALYTICS = 'analytics',
-  SETTINGS = 'settings',
-}
-
 export interface IACCESS_SECTIONS_PERMISION {
-  id: ACCESS_SECTIONS;
-  section: ACCESS_SECTIONS;
+  id: AdminFormProfileDataFields;
+  section: AdminFormProfileDataFields;
   label: string;
   value: ACCESS_SECTIONS_PERMISION_VALUE;
 }
 export const DEFAULT_ACCESS_PERMISION: IACCESS_SECTIONS_PERMISION[] = [
   {
-    id: ACCESS_SECTIONS.DASHBOARD,
-    section: ACCESS_SECTIONS.DASHBOARD,
+    id: AdminFormProfileDataFields.DASHBOARD,
+    section: AdminFormProfileDataFields.DASHBOARD,
     label: 'Dashboard',
     value: null,
   },
   {
-    id: ACCESS_SECTIONS.TOPOLOGY,
-    section: ACCESS_SECTIONS.TOPOLOGY,
+    id: AdminFormProfileDataFields.TOPOLOGY,
+    section: AdminFormProfileDataFields.TOPOLOGY,
     label: 'Topology',
     value: null,
   },
   {
-    id: ACCESS_SECTIONS.NETWORK,
-    section: ACCESS_SECTIONS.NETWORK,
+    id: AdminFormProfileDataFields.NETWORK,
+    section: AdminFormProfileDataFields.NETWORK,
     label: 'Network',
     value: null,
   },
   {
-    id: ACCESS_SECTIONS.PERFORMANCE_DASHBOARD,
-    section: ACCESS_SECTIONS.PERFORMANCE_DASHBOARD,
+    id: AdminFormProfileDataFields.PERFORMANCE_DASHBOARD,
+    section: AdminFormProfileDataFields.PERFORMANCE_DASHBOARD,
     label: 'Performance Dashboard',
     value: null,
   },
   {
-    id: ACCESS_SECTIONS.SESSIONS,
-    section: ACCESS_SECTIONS.SESSIONS,
+    id: AdminFormProfileDataFields.SESSIONS,
+    section: AdminFormProfileDataFields.SESSIONS,
     label: 'Sessions',
     value: null,
   },
   {
-    id: ACCESS_SECTIONS.AUTOMATION,
-    section: ACCESS_SECTIONS.AUTOMATION,
+    id: AdminFormProfileDataFields.AUTOMATION,
+    section: AdminFormProfileDataFields.AUTOMATION,
     label: 'Automation',
     value: null,
   },
   {
-    id: ACCESS_SECTIONS.ANALYTICS,
-    section: ACCESS_SECTIONS.ANALYTICS,
+    id: AdminFormProfileDataFields.ANALYTICS,
+    section: AdminFormProfileDataFields.ANALYTICS,
     label: 'Analytics',
     value: null,
   },
   {
-    id: ACCESS_SECTIONS.SETTINGS,
-    section: ACCESS_SECTIONS.SETTINGS,
+    id: AdminFormProfileDataFields.SETTINGS,
+    section: AdminFormProfileDataFields.SETTINGS,
     label: 'Settings',
     value: null,
   },

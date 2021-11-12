@@ -7,11 +7,13 @@ import { settingsIcon } from 'app/components/SVGIcons/pagesIcons/settings';
 import { analyticsIcon } from 'app/components/SVGIcons/pagesIcons/analytics';
 import { sessionsIcon } from 'app/components/SVGIcons/pagesIcons/sessions';
 import { accountsIcon } from 'app/components/SVGIcons/pagesIcons/accounts';
+import { edgesIcon } from 'app/components/SVGIcons/pagesIcons/edgesIcon';
 export const ROUTE = {
   base: '/',
   login: '/login',
   app: '/app',
   topology: '/topology',
+  edges: '/edges',
   dashboard: '/dashboard',
   policy: '/policy',
   performanceDashboard: '/performanceDashboard',
@@ -27,6 +29,7 @@ export const ROUTE = {
 export enum BreadCrumbTypes {
   AUTOMATIONS = 'automations',
   NETWORKS = 'networks',
+  EDGES = 'edges',
 }
 
 export interface IPage {
@@ -40,6 +43,7 @@ export interface IPage {
 export const APP_PAGES: IPage[] = [
   { id: 'dashboard', path: ROUTE.dashboard, pageName: 'Dashboard', icon: dashboardIcon, breadcrumb: null },
   { id: 'topology', path: ROUTE.topology, pageName: 'Topology', icon: topologyIcon, breadcrumb: null },
+  { id: 'edges', path: ROUTE.edges, pageName: 'Edges', icon: edgesIcon, breadcrumb: BreadCrumbTypes.EDGES },
   { id: 'performanceDashboard', path: ROUTE.performanceDashboard, pageName: 'Performance Dashboard', icon: performanceDashboard, breadcrumb: null },
   { id: 'sessions', path: ROUTE.sessions, pageName: 'Sessions', icon: sessionsIcon, breadcrumb: null },
   { id: 'policy', path: ROUTE.policy, pageName: 'Policy', icon: policyIcon, breadcrumb: null },

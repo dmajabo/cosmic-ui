@@ -33,7 +33,7 @@ export interface IAllSessionsRes {
 export interface ISankeyNode {
   node: number;
   name: string;
-  type: SankeyNodeType;
+  type: SankeyNodeType | string;
 }
 
 export interface ISankeyLink {
@@ -49,4 +49,7 @@ export interface ISankeyData {
 }
 export interface ISankeyRes {
   sankey: ISankeyData;
+  netcount: number;
+  tgwcount: number;
+  appcount: number;
 }

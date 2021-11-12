@@ -76,6 +76,7 @@ export function useTopologyContext(): TopologyContextType {
   const [selectedType, setSelectedType] = React.useState<string | null>(null);
   const linksRef = React.useRef(links);
   const nodesRef = React.useRef(nodes);
+  const groupsRef = React.useRef(originGroupsData);
   const onSetData = (res: ITopologyDataRes) => {
     if (!res) {
       setDataReadyToShow(DATA_READY_STATE.EMPTY);
@@ -113,14 +114,15 @@ export function useTopologyContext(): TopologyContextType {
     //   const element = onCreateVnet(1, _orgObj.organizations[1].id, i);
     //   _orgObj.organizations[1].vnets.push(element);
     // }
-    const _data: ITopologyPreparedMapData = prepareNodesData(_orgObj, _groupsObj.groups);
+    groupsRef.current = _groupsObj.groups;
+    const _data: ITopologyPreparedMapData = prepareNodesData(_orgObj, groupsRef.current);
     if (_data.links) {
       setLinks(_data.links);
       linksRef.current = _data.links;
     }
     if (_data.nodes) {
       setOriginData(_orgObj);
-      setOriginGroupsData(_groupsObj.groups);
+      setOriginGroupsData(groupsRef.current);
       setNodes(_data.nodes);
       nodesRef.current = _data.nodes;
     }
@@ -324,10 +326,10 @@ export function useTopologyContext(): TopologyContextType {
 
   const onCreateGroup = (_group: ITopologyGroup) => {
     const _nodes: (IWedgeNode | IVnetNode | IDeviceNode | INetworkGroupNode)[] = jsonClone(nodesRef.current);
-    const _groups: ITopologyGroup[] = jsonClone(originGroupsData);
+    const _groups: ITopologyGroup[] = jsonClone(groupsRef.current);
     _groups.push(_group);
     if (_group.type === TopologyGroupTypesAsNumber.BRANCH_NETWORKS || _group.type === TopologyGroupTypesAsString.BRANCH_NETWORKS) {
-      const _obg = createGroupNode(_group, null, 0);
+      const _obg = createGroupNode(_group, null, _nodes.length - 1);
       _nodes.push(_obg);
     } else {
       const vnets: IVnetNode[] = _nodes.filter(node => node.nodeType === TOPOLOGY_NODE_TYPES.VNET) as IVnetNode[];
@@ -348,19 +350,32 @@ export function useTopologyContext(): TopologyContextType {
     setOriginGroupsData(_groups);
     linksRef.current = _lData;
     nodesRef.current = _nodes;
+    groupsRef.current = _groups;
   };
 
   const onUpdateGroup = (_group: ITopologyGroup, gindex: number) => {
     const _nodes: (IWedgeNode | IVnetNode | IDeviceNode | INetworkGroupNode)[] = jsonClone(nodesRef.current);
-    const _groups: ITopologyGroup[] = jsonClone(originGroupsData);
+    const _groups: ITopologyGroup[] = jsonClone(groupsRef.current);
     _groups.splice(gindex, 1, _group);
     if (_group.type === TopologyGroupTypesAsNumber.BRANCH_NETWORKS || _group.type === TopologyGroupTypesAsString.BRANCH_NETWORKS) {
       const _index: number = _nodes.findIndex(it => it.id === _group.id);
-      const _obg = createGroupNode(_group, _nodes[_index].vendorType, _index);
-      _obg.x = _nodes[_index].x;
-      _obg.y = _nodes[_index].y;
-      _nodes.splice(_index, 1, _obg);
+      let _obj = null;
+      if (_index === -1) {
+        _obj = createGroupNode(_group, null, _nodes.length - 1);
+        _nodes.push(_obj);
+        const _networksGroups = _nodes.filter(it => it.nodeType === TOPOLOGY_NODE_TYPES.NETWORK_GROUP) as INetworkGroupNode[];
+        setUpGroupsCoord(_networksGroups);
+      } else {
+        _obj = createGroupNode(_group, _nodes[_index].vendorType, _index);
+        _obj.x = _nodes[_index].x;
+        _obj.y = _nodes[_index].y;
+        _nodes.splice(_index, 1, _obj);
+      }
     } else {
+      const _index: number = _nodes.findIndex(it => it.id === _group.id);
+      if (_index !== -1) {
+        _nodes.splice(_index, 1);
+      }
       const vnets: IVnetNode[] = _nodes.filter(node => node.nodeType === TOPOLOGY_NODE_TYPES.VNET) as IVnetNode[];
       const vnetNodes = vnets && vnets.length && vnets.filter(it => it.applicationGroups && it.applicationGroups.length && it.applicationGroups.find(gr => gr.id === _group.id));
       if (vnetNodes && vnetNodes.length) {
@@ -373,14 +388,16 @@ export function useTopologyContext(): TopologyContextType {
     setNodes(_nodes);
     setOriginGroupsData(_groups);
     nodesRef.current = _nodes;
+    groupsRef.current = _groups;
   };
 
   const onDeleteGroup = (_group: ITopologyGroup) => {
     let _nodes: (IWedgeNode | IVnetNode | IDeviceNode | INetworkGroupNode)[] = jsonClone(nodesRef.current);
-    const _groups: ITopologyGroup[] = originGroupsData.filter(it => it.id !== _group.id);
+    const _groups: ITopologyGroup[] = groupsRef.current.filter(it => it.id !== _group.id);
     const _nodeIndex: number = _nodes.findIndex(it => it.id === _group.id);
     if (_nodeIndex === -1) {
       setOriginGroupsData(_groups);
+      groupsRef.current = _groups;
       return;
     }
     // let _data: (IWedgeNode | IVnetNode | IDeviceNode | INetworkGroupNode)[] = _nodes.findIndex(it => it.id === _group.id);
@@ -397,6 +414,7 @@ export function useTopologyContext(): TopologyContextType {
       setOriginGroupsData(_groups);
       nodesRef.current = _nodes;
       linksRef.current = _links;
+      groupsRef.current = _groups;
       return;
     }
     const vnets: IVnetNode[] = _nodes.filter(node => node.nodeType === TOPOLOGY_NODE_TYPES.VNET) as IVnetNode[];
@@ -408,6 +426,7 @@ export function useTopologyContext(): TopologyContextType {
     }
     setNodes(_nodes);
     setOriginGroupsData(_groups);
+    groupsRef.current = _groups;
     nodesRef.current = _nodes;
   };
 

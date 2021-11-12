@@ -6,7 +6,7 @@ interface Props {
 export const BreadCrumbItemStyle = styled.span<Props>`
   font-family: 'DMSans';
   font-style: normal;
-  color: ${props => (props.highlight ? 500 : 'normal')};
+  font-weight: ${props => (props.highlight ? 500 : 'normal')};
   font-size: 14px;
   line-height: 26px;
   text-align: right;

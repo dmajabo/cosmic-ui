@@ -1,39 +1,32 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { ChartWrapper } from '../../Shared/styles';
 import SankeyChart from 'app/components/Charts/SankeyChart';
-import { useGet } from 'lib/api/http/useAxiosHook';
 import { ISankeyRes } from 'lib/api/ApiModels/Sessions/apiModel';
-import { SessionsApi } from 'lib/api/ApiModels/Sessions/endpoints';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
-import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
-import { useSessionsDataContext } from 'lib/hooks/Sessions/useSessionsDataContext';
-import { SessionsSelectValuesTypes, SESSIONS_SELECT_VALUES } from 'lib/hooks/Sessions/model';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
-interface IProps {}
+interface IProps {
+  data: ISankeyRes;
+  loading: boolean;
+  errorMessage: string;
+}
 
-const ChartComponent: React.FC<IProps> = (props: IProps) => {
-  const userContext = useContext<UserContextState>(UserContext);
-  const { sessions } = useSessionsDataContext();
-  const { response, loading, error, onGet } = useGet<ISankeyRes>();
-  const [data, setData] = React.useState<ISankeyRes>(null);
-  React.useEffect(() => {
-    if (sessions.sessionsOverviewPeriod) {
-      onTryToLoadData(sessions.sessionsOverviewPeriod);
-    }
-  }, [sessions.sessionsOverviewPeriod]);
+const ChartComponent: React.FC<IProps> = ({ loading, errorMessage, data }) => {
+  const [emptyMessage, setEmptyMessage] = React.useState<string>(null);
 
   React.useEffect(() => {
-    if (response && response.sankey) {
-      setData({ ...response });
+    if (loading && emptyMessage) {
+      setEmptyMessage(null);
     }
-  }, [response]);
+  }, [loading]);
 
-  const onTryToLoadData = async (timePeriod: SessionsSelectValuesTypes) => {
-    const _item = SESSIONS_SELECT_VALUES.find(it => it.id === timePeriod || it.value === timePeriod);
-    await onGet(SessionsApi.getSankeyData(_item.data || '-7d'), userContext.idToken!);
-  };
-
+  React.useEffect(() => {
+    if (data && (!data.sankey || !data.sankey.nodes || !data.sankey.nodes.length || !data.sankey.links || !data.sankey.links.length)) {
+      setEmptyMessage('The data is empty');
+    } else {
+      setEmptyMessage(null);
+    }
+  }, [data]);
   return (
     <>
       <ChartWrapper height="660px" padding="0">
@@ -42,12 +35,17 @@ const ChartComponent: React.FC<IProps> = (props: IProps) => {
             <LoadingIndicator margin="auto" />
           </AbsLoaderWrapper>
         )}
-        {error && !loading && (
+        {errorMessage && !loading && (
           <ErrorMessage margin="auto" fontSize={18}>
-            {error.message}
+            {errorMessage}
           </ErrorMessage>
         )}
-        {data && data.sankey && <SankeyChart data={data.sankey} />}
+        {emptyMessage && (
+          <ErrorMessage color="var(--_primaryColor)" fontSize={20} margin="auto">
+            {emptyMessage}
+          </ErrorMessage>
+        )}
+        {!emptyMessage && data && data.sankey && <SankeyChart data={data.sankey} />}
       </ChartWrapper>
     </>
   );

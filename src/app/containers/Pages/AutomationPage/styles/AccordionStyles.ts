@@ -15,7 +15,7 @@ const accordionStyles = makeStyles(
           zIndex: 1,
         },
         '& .MuiCollapse-root': {
-          padding: '0 20px 10px 20px !important',
+          padding: '0px !important',
         },
         '&:before': {
           display: 'none !important',
@@ -23,7 +23,19 @@ const accordionStyles = makeStyles(
       },
       panel: {
         padding: '20px !important',
-        minHeight: '90px !important',
+        minHeight: '80px !important',
+        width: '100%',
+        '& .MuiAccordionSummary-content': {
+          margin: '0 0 0 0 !important',
+          alignItems: 'center',
+        },
+        '& .Mui-expanded': {
+          margin: '0 0 0 0 !important',
+        },
+      },
+      panelEdges: {
+        padding: '20px 30px !important',
+        minHeight: '80px !important',
         width: '100%',
         '& .MuiAccordionSummary-content': {
           margin: '0 0 0 0 !important',
@@ -35,6 +47,10 @@ const accordionStyles = makeStyles(
       },
       deteilItem: {
         padding: '0 0 0 70px !important',
+      },
+      deteilItemEdges: {
+        borderTop: '1px solid var(--_borderColor) !important',
+        padding: '20px 30px 0 30px !important',
       },
     }),
   {

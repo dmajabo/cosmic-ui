@@ -46,7 +46,7 @@ const TriggersStep: React.FC<Props> = (props: Props) => {
       <TriggerRow>
         <RadioButton
           checked={selectedValue === TriggersTypes.EXISTING_TRIGGER}
-          onChange={handleChange}
+          onValueChange={handleChange}
           value={TriggersTypes.EXISTING_TRIGGER}
           label="Use Created Trigger"
           name="radio-buttons"
@@ -69,7 +69,7 @@ const TriggersStep: React.FC<Props> = (props: Props) => {
       <TriggerRow>
         <RadioButton
           checked={selectedValue === TriggersTypes.NEW_TRIGGER}
-          onChange={handleChange}
+          onValueChange={handleChange}
           value={TriggersTypes.NEW_TRIGGER}
           name="radio-buttons"
           label="Create New Trigger"

@@ -5,7 +5,7 @@ import { ChartWrapContainer } from './style';
 import { prepareSankeyData } from './sankeyDataHelper';
 import useResizeAware from 'react-resize-aware';
 import { applicationIcon, dedstionationIcon, networksIcon } from '../SVGIcons/sankeyIcons/sankeyIcons';
-// import useDebounce from 'lib/hooks/useDebounce';
+
 interface Props {
   readonly data: ISankeyData;
 }
