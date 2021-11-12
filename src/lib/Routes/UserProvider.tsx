@@ -4,7 +4,7 @@ import { createContext, useState } from 'react';
 export type UserContextState = {
   idToken?: IdToken;
   setIdToken: (idToken: IdToken) => void;
-  accessToken: string;
+  accessToken?: string;
   setAccessToken: (accessToken: string) => void;
 };
 
