@@ -36,7 +36,6 @@ export const SelectStyles = makeStyles(
           height: 'calc(100% - 22px)',
           '& .MuiSelect-select': {
             height: '100%',
-            lineHeight: '2.5em',
           },
         },
       },
@@ -57,10 +56,10 @@ export const SelectStyles = makeStyles(
         fontFamily: 'DMSans',
         background: 'var(--_primaryButtonBg)',
         padding: '0',
-        boxShadow: '0px 15px 50px rgba(132, 141, 163, 0.15)',
+        boxShadow: '0px 15px 50px rgba(132, 141, 163, 0.15) !important',
         margin: '2px 0 0 0',
-        borderRadius: '6px',
-        minHeight: '40px',
+        borderRadius: '6px !important',
+        minHeight: '40px !important',
       },
       menuList: {
         maxHeight: '278px',

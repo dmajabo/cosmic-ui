@@ -1,13 +1,16 @@
 import React from 'react';
-import { IAWS_Account, IMeraki_Account } from 'lib/api/ApiModels/Accounts/apiModel';
+import { IAwsRegion, IAWS_Account, IMeraki_Account } from 'lib/api/ApiModels/Accounts/apiModel';
 
 export interface AccountsContextType {
   data: (IMeraki_Account | IAWS_Account)[];
+  regions: string[];
   onSetData: (res: (IMeraki_Account | IAWS_Account)[]) => void;
   onAddAccount: (res: IMeraki_Account | IAWS_Account) => void;
+  onSetRegions: (res: IAwsRegion[]) => void;
 }
 export function useAccountsContext(): AccountsContextType {
   const [data, setData] = React.useState<(IMeraki_Account | IAWS_Account)[] | null>([]);
+  const [regions, setRegions] = React.useState<string[]>([]);
 
   const onSetData = (items: (IMeraki_Account | IAWS_Account)[]) => {
     if (!items) {
@@ -32,9 +35,19 @@ export function useAccountsContext(): AccountsContextType {
     setData(_items);
   };
 
+  const onSetRegions = (res: IAwsRegion[]) => {
+    if (!res || !res.length) {
+      setRegions([]);
+      return;
+    }
+    setRegions(res.map((it, index) => it.code));
+  };
+
   return {
     data,
+    regions,
     onSetData,
     onAddAccount,
+    onSetRegions,
   };
 }

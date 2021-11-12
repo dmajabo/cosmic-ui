@@ -9,7 +9,7 @@ import PrimaryButton from 'app/components/Buttons/PrimaryButton';
 import { jsonClone } from 'lib/helpers/cloneHelper';
 import AccountFormHeader from './AccountFormHeader';
 import CheckBox from 'app/components/Inputs/Checkbox/CheckBox';
-import MultipleDropdown from 'app/components/Inputs/MultipleDropdown';
+// import MultipleDropdown from 'app/components/Inputs/MultipleDropdown';
 import { useAccountsDataContext } from 'lib/hooks/Accounts/useAccountsDataContext';
 import { useGet, usePost, usePut } from 'lib/api/http/useAxiosHook';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
@@ -17,14 +17,15 @@ import LoadingIndicator from 'app/components/Loading';
 import { AccountsApi } from 'lib/api/ApiModels/Accounts/endpoints';
 import { IBaseEntity } from 'lib/models/general';
 import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
+import MatMultipleSelect from 'app/components/Inputs/MatSelect/MatMultipleSelect';
 
 interface Props {
   isEditMode: boolean;
   dataItem: IAWS_Account;
+  regions: string[];
   onClose: () => void;
 }
 
-const regions = ['region 1', 'region 2', 'region 3', 'region 4', 'region 5'];
 const NewAwsAccountForm: React.FC<Props> = (props: Props) => {
   const { accounts } = useAccountsDataContext();
   const userContext = useContext<UserContextState>(UserContext);
@@ -183,13 +184,16 @@ const NewAwsAccountForm: React.FC<Props> = (props: Props) => {
               />
             </StepItemFormRow>
             <StepItemFormRow>
-              <MultipleDropdown
-                onChange={onRegionsChange}
-                items={regions}
-                value={dataItem.awsPol.regions}
-                // styles?: Object;
+              <MatMultipleSelect
+                id="regions"
                 label="Regions"
+                value={dataItem.awsPol.regions}
+                options={props.regions}
+                onChange={onRegionsChange}
+                styles={{ height: '62px', minHeight: '62px', margin: '0 0 20px 0' }}
+                selectClaassName="withLabel"
                 required
+                optionCheckMark
               />
             </StepItemFormRow>
             <StepItemFormRow margin="0">

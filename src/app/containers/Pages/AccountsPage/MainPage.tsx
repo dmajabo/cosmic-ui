@@ -5,7 +5,7 @@ import ModalComponent from 'app/components/Modal';
 import AccountForm from './Components/AccountForm/AccountForm';
 import { useAccountsDataContext } from 'lib/hooks/Accounts/useAccountsDataContext';
 import { useGet } from 'lib/api/http/useAxiosHook';
-import { AccountVendorTypes, IAccountsRes, IAWS_Account, IMeraki_Account } from 'lib/api/ApiModels/Accounts/apiModel';
+import { AccountVendorTypes, IAccountsRes, IAwsRegionsRes, IAWS_Account, IMeraki_Account } from 'lib/api/ApiModels/Accounts/apiModel';
 import { AccountsApi } from 'lib/api/ApiModels/Accounts/endpoints';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
@@ -23,10 +23,12 @@ const MainPage: React.FC<IProps> = (props: IProps) => {
   const { accounts } = useAccountsDataContext();
   const userContext = useContext<UserContextState>(UserContext);
   const { response, loading, error, onGet } = useGet<IAccountsRes>();
+  const { response: resRegions, onGet: onGetRegions } = useGet<IAwsRegionsRes>();
   const [showModal, setShowModal] = React.useState<IModal<IMeraki_Account | IAWS_Account>>({ show: false, dataItem: null, isEditMode: false });
 
   React.useEffect(() => {
     onTryToLoadData();
+    onTryLoadRegions();
   }, []);
 
   React.useEffect(() => {
@@ -35,6 +37,12 @@ const MainPage: React.FC<IProps> = (props: IProps) => {
       accounts.onSetData(_data);
     }
   }, [response]);
+
+  React.useEffect(() => {
+    if (resRegions && resRegions.awsRegions) {
+      accounts.onSetRegions(resRegions.awsRegions);
+    }
+  }, [resRegions]);
 
   React.useEffect(() => {
     // TO DO TEMPORARY
@@ -66,6 +74,10 @@ const MainPage: React.FC<IProps> = (props: IProps) => {
     await onGet(AccountsApi.getAccounts(), userContext.idToken!);
   };
 
+  const onTryLoadRegions = async () => {
+    await onGetRegions(AccountsApi.getAllAwsRegions(), userContext.idToken!);
+  };
+
   return (
     <>
       <PageWrapperStyles>
@@ -88,7 +100,7 @@ const MainPage: React.FC<IProps> = (props: IProps) => {
         )}
       </PageWrapperStyles>
       <ModalComponent id="accountEditor" open={showModal && showModal.show} onClose={handleClose}>
-        {showModal.show && <AccountForm isEditMode={showModal.isEditMode} dataItem={showModal.dataItem} onClose={handleClose} />}
+        {showModal.show && <AccountForm regions={accounts.regions} isEditMode={showModal.isEditMode} dataItem={showModal.dataItem} onClose={handleClose} />}
       </ModalComponent>
     </>
   );
