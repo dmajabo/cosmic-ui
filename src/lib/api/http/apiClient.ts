@@ -1,5 +1,4 @@
 import axios, { AxiosRequestConfig } from 'axios';
-import { IdToken } from '@auth0/auth0-react';
 import {
   CreateSLATestRequest,
   CreateSLATestResponse,
@@ -58,11 +57,11 @@ const PATHS = Object.freeze({
   UPDATE_POLICY_CONTROLLER: (edgeId: string) => `/policy/api/v1/policy/controllers/${edgeId}`,
 });
 
-export const createApiClient = (token: IdToken): ApiClient => {
+export const createApiClient = (token: string): ApiClient => {
   const config: AxiosRequestConfig = {
     baseURL: BASE_URL,
     headers: {
-      Authorization: `Bearer ${token.__raw}`,
+      Authorization: `Bearer ${token}`,
     },
   };
 

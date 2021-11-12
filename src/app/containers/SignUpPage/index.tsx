@@ -117,7 +117,7 @@ const AddEdges: React.FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const userContext = useContext<UserContextState>(UserContext);
-  const apiClient = createApiClient(userContext.idToken!);
+  const apiClient = createApiClient(userContext.accessToken!);
 
   const isFormFilled = () => {
     const isAwsFormFilled = awsUsername && awsAccessKey && awsSecret && isAwsFlowLogEnabled && !isEmpty(awsRegions) ? true : false;

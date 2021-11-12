@@ -55,7 +55,7 @@ export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange }) => 
   const [heatMapLatency, setHeatMapLatency] = useState<HeatMapData[]>([]);
 
   const userContext = useContext<UserContextState>(UserContext);
-  const apiClient = createApiClient(userContext.idToken!);
+  const apiClient = createApiClient(userContext.accessToken!);
 
   const testIdToName: TestIdToName = selectedRows.reduce((accu, nextValue) => {
     accu[nextValue.id] = nextValue.name;
