@@ -25,7 +25,7 @@ export const Goodput: React.FC<GoodputProps> = ({ selectedRows, timeRange }) => 
 
   const userContext = useContext<UserContextState>(UserContext);
 
-  const apiClient = createApiClient(userContext.idToken!);
+  const apiClient = createApiClient(userContext.accessToken!);
 
   useEffect(() => {
     const getGoodputMetrics = async () => {

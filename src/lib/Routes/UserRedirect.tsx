@@ -11,7 +11,7 @@ export const UserRedirect: React.FC = () => {
   const [policyControllers, setPolicyControllers] = useState<PolicyController[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const userContext = useContext<UserContextState>(UserContext);
-  const apiClient = createApiClient(userContext.idToken!);
+  const apiClient = createApiClient(userContext.accessToken!);
 
   useEffect(() => {
     const getPolicyControllers = async () => {

@@ -73,7 +73,7 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange 
   }, {});
 
   const userContext = useContext<UserContextState>(UserContext);
-  const apiClient = createApiClient(userContext.idToken!);
+  const apiClient = createApiClient(userContext.accessToken!);
 
   useEffect(() => {
     const getPacketLossMetrics = async () => {

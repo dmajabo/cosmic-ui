@@ -6,14 +6,17 @@ import LoadingIndicator from 'app/components/Loading';
 import { UserRedirect } from './UserRedirect';
 
 export const RedirectContainer: React.FC = () => {
-  const { getIdTokenClaims } = useAuth0();
+  const { getIdTokenClaims, getAccessTokenSilently } = useAuth0();
   const userContext = useContext<UserContextState>(UserContext);
   useEffect(() => {
     getIdTokenClaims().then(idtoken => {
       userContext.setIdToken(idtoken);
     });
+    getAccessTokenSilently().then(accesstoken => {
+      userContext.setAccessToken(accesstoken);
+    });
   }, []);
-  return userContext.idToken ? (
+  return userContext.idToken && userContext.accessToken ? (
     <UserRedirect />
   ) : (
     <div style={{ marginTop: '50vh' }}>
