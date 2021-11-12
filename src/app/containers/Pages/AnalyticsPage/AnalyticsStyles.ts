@@ -113,6 +113,156 @@ export const AnalyticsStyles = makeStyles(
         textAlign: 'center',
         color: '#848DA3',
       },
+      popupContainer: {
+        position: 'absolute' as 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        padding: 30,
+        backgroundColor: 'white',
+        width: '70%',
+        height: '93%',
+        outline: 'none',
+        borderRadius: 6,
+      },
+      closePopup: {
+        marginTop: -10,
+        marginRight: 60,
+        float: 'right',
+        cursor: 'pointer',
+      },
+      popupTitleContainer: {
+        width: '100%',
+        position: 'fixed',
+      },
+      popupContent: {
+        marginTop: 60,
+        overflow: 'auto',
+        height: '85%',
+      },
+      popupTitle: {
+        fontSize: 22,
+        fontWeight: 700,
+      },
+      searchBar: {
+        marginLeft: 30,
+        height: 40,
+        borderRadius: 6,
+        width: '35%',
+        border: '1px solid #CBD2DC',
+        paddingLeft: 20,
+      },
+      searchIcon: {
+        backgroundColor: 'white',
+        marginLeft: -30,
+        pointerEvents: 'none',
+      },
+      subDimensionContainer: {
+        backgroundColor: '#F3F6FC',
+        borderRadius: 6,
+        width: '100%',
+        marginTop: 20,
+        padding: 20,
+      },
+      subDimensionTitle: {
+        fontSize: 18,
+        fontWeight: 700,
+        marginLeft: 20,
+      },
+      subDimensionOptionsContainer: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        marginTop: 20,
+      },
+      subDimensionOptionBox: {
+        backgroundColor: 'white',
+        width: '49%',
+        borderRadius: 4,
+        paddingTop: 20,
+      },
+      sourcesubDimensionOptionTitle: {
+        fontSize: 16,
+        paddingLeft: 17,
+        fontWeight: 500,
+      },
+      sourceText: {
+        borderLeft: '3px solid #52984E',
+      },
+      destinationText: {
+        borderLeft: '3px solid #F69442',
+      },
+      subDimensionContentContainer: {
+        padding: '20px 0px 10px 20px',
+        display: 'flex',
+        justifyContent: 'space-between',
+        flexDirection: 'column',
+      },
+      subDimensionIcon: {
+        width: 24,
+      },
+      subDimensionContent: {
+        display: 'grid',
+        gridTemplateColumns: 'repeat(2, 1fr)',
+      },
+      subDimensionItem: {
+        width: '49%',
+      },
+      option: {
+        paddingBottom: 10,
+      },
+      popupFooterContainer: {
+        height: '7%',
+      },
+      verticalCenter: {
+        marginTop: 'auto',
+      },
+      selectedDimensionText: {
+        fontSize: 16,
+        fontWeight: 700,
+        marginRight: 15,
+      },
+      selectedDimensionCount: {
+        backgroundColor: '#437FEC',
+        fontSize: 12,
+        color: 'white',
+        padding: '2px 11px 2px 11px',
+        borderRadius: 10,
+      },
+      blueSaveButton: {
+        backgroundColor: '#437FEC',
+        height: 40,
+        borderRadius: 6,
+        padding: '7px 25px 10px 25px',
+      },
+      buttonText: {
+        fontSize: 12,
+        fontWeight: 700,
+      },
+      saveButton: {
+        color: 'white',
+        marginRight: 15,
+      },
+      grayBorderButton: {
+        border: '1px solid #CBD2DC',
+        height: 40,
+        borderRadius: 6,
+        padding: '7px 25px 10px 25px',
+        marginRight: 10,
+      },
+      whiteBorderBox: {
+        width: '120%',
+        marginLeft: '-10%',
+        backgroundColor: 'white',
+        borderTop: '1px solid #E7EDF9',
+        borderRight: '1px solid #E7EDF9',
+        borderBottom: '1px solid #E7EDF9',
+        padding: '5px 10px 5px 10px',
+        fontSize: 14,
+      },
+      removeDimension: {
+        width: 'auto',
+        cursor: 'pointer',
+      },
     }),
   {
     index: 1,
