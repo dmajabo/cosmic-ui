@@ -9,7 +9,7 @@ import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
 import FormPanel from './FormPanel';
 import EdgesMap from './EdgesMap';
-import { IEdgeModel, IEdgeGroup, DeploymentFields } from 'lib/api/ApiModels/Edges/apiModel';
+import { IEdgeModel, IEdgeGroup, ValidationFields } from 'lib/api/ApiModels/Edges/apiModel';
 
 interface Props {
   dataItem: IEdgeModel;
@@ -49,10 +49,18 @@ const Editor: React.FC<Props> = (props: Props) => {
     setDataItem(_dataItem);
   };
 
+  const onChangeGeneralField = (value: any, field: string) => {
+    const _dataItem = { ...dataItem };
+    _dataItem[field] = value;
+    const _items: IStepperItem<EdgesStepperTypes>[] = updateStep(steps, EdgesStepperTypes.GENERAL, _dataItem, [ValidationFields.NAME, ValidationFields.CONNECTION, ValidationFields.TAGS]);
+    setSteps(_items);
+    setDataItem(_dataItem);
+  };
+
   const onChangeTransitionDataField = (value: any, field: string) => {
     const _dataItem = { ...dataItem };
     _dataItem.deployment[field] = value;
-    const _items: IStepperItem<EdgesStepperTypes>[] = updateStep(steps, EdgesStepperTypes.TRANSIT, _dataItem.deployment, [DeploymentFields.CONTROLLER_NAME, DeploymentFields.REGION_CODE]);
+    const _items: IStepperItem<EdgesStepperTypes>[] = updateStep(steps, EdgesStepperTypes.TRANSIT, _dataItem.deployment, [ValidationFields.CONTROLLER_NAME, ValidationFields.REGION_CODE]);
     setSteps(_items);
     setDataItem(_dataItem);
   };
@@ -136,6 +144,7 @@ const Editor: React.FC<Props> = (props: Props) => {
           onChangeSitesField={onChangeSitesField}
           onChangeAppsField={onChangeAppsField}
           onChangeField={onChangeDataField}
+          onChangeGeneralField={onChangeGeneralField}
           onChangeTransitionDataField={onChangeTransitionDataField}
           onToogleAccordionItem={onToogleAccordionItem}
           onDeleteSitesGroup={onDeleteSitesGroup}

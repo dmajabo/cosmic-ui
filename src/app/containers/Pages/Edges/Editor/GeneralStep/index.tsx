@@ -38,7 +38,7 @@ const GeneralStep: React.FC<Props> = ({ name, connection, description, tags, onC
       <TextInput area styles={{ margin: '0 0 20px 0' }} id="description" name="description" value={description} label="Description" onChange={onDescriptionChange} />
       {/* <CustomSlider wrapStyles={{ margin: '0 0 20px 0' }} label="Cost" min={100} max={500} step={50} value={price} values={EdgePriceValues} defaultValue={100} onChange={onSliderChange} /> */}
       <PanelContentLabel>Criteria</PanelContentLabel>
-      <CustomAutocomplete simpleTag styles={{ margin: '0 0 20px 0' }} label="Connection Types" id="connections" options={ConnectionValues} value={connection} onChange={onConnectionChange} />
+      <CustomAutocomplete required simpleTag styles={{ margin: '0 0 20px 0' }} label="Connection Types" id="connections" options={ConnectionValues} value={connection} onChange={onConnectionChange} />
       <TextTagInput id="tags" name="tags" value={tags} label="Tags" onChange={onTagsChange} styles={{ margin: '0 0 20px 0' }} required />
     </>
   );

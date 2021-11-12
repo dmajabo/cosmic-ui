@@ -1,5 +1,5 @@
 import { IStepperItem, StepperItemStateType } from 'app/components/Stepper/model';
-import { IEdgeModel } from 'lib/api/ApiModels/Edges/apiModel';
+import { IEdgeModel, ValidationFields } from 'lib/api/ApiModels/Edges/apiModel';
 import { EdgesStepperTypes } from './model';
 
 export const updateSteps = (steps: IStepperItem<EdgesStepperTypes>[], dataItem: IEdgeModel): IStepperItem<EdgesStepperTypes>[] => {
@@ -45,7 +45,7 @@ export const updateStepById = (steps: IStepperItem<EdgesStepperTypes>[], id: Edg
   return _items;
 };
 
-export const updateStep = (steps: IStepperItem<EdgesStepperTypes>[], id: EdgesStepperTypes, data: any, fields: string[]): IStepperItem<EdgesStepperTypes>[] => {
+export const updateStep = (steps: IStepperItem<EdgesStepperTypes>[], id: EdgesStepperTypes, data: any, fields: ValidationFields[]): IStepperItem<EdgesStepperTypes>[] => {
   const _items: IStepperItem<EdgesStepperTypes>[] = steps.slice();
   const _i = _items.findIndex(it => it.id === id);
   const _completed = checkIsAnyFieldEmpty(data, fields);
@@ -62,10 +62,21 @@ const checkIsStepCompleted = (data: any): boolean => {
   return true;
 };
 
-const checkIsAnyFieldEmpty = (data: Object, fields: string[]): boolean => {
+const checkIsAnyFieldEmpty = (data: Object, fields: ValidationFields[]): boolean => {
   let _completed = true;
   for (let i = 0; i < fields.length; i++) {
-    if (!data[fields[i]] || !data[fields[i]].length) {
+    if (data[fields[i]] === null || data[fields[i]] === undefined) {
+      _completed = false;
+      break;
+    }
+    if (typeof data[fields[i]] === 'string' && (!data[fields[i]] || !data[fields[i]].length)) {
+      _completed = false;
+      break;
+    }
+    if (typeof data[fields[i]] === 'boolean') {
+      continue;
+    }
+    if (Array.isArray(data[fields[i]]) && !data[fields[i]].length) {
       _completed = false;
       break;
     }

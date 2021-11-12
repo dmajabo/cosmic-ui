@@ -24,7 +24,12 @@ export interface IEdgeGroup {
   items: any[];
 }
 
-export enum DeploymentFields {
+export enum ValidationFields {
+  // GENERAL
+  NAME = 'name',
+  CONNECTION = 'connection',
+  TAGS = 'tags',
+  // DEPLOYMENT
   CONTROLLER_NAME = 'controller_name',
   REGION_CODE = 'region_code',
 }

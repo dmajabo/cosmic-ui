@@ -22,6 +22,7 @@ interface Props {
   steps: IStepperItem<EdgesStepperTypes>[];
   selectedStep: IStepperItem<EdgesStepperTypes>;
   onChangeField: (value: any, field: string, step: EdgesStepperTypes) => void;
+  onChangeGeneralField: (value: any, field: string) => void;
   onChangeTransitionDataField: (value: any, field: string) => void;
   onChangeSitesField: (value: IEdgeGroup, index: number | null) => void;
   onChangeAppsField: (value: IEdgeGroup, index: number | null) => void;
@@ -59,13 +60,7 @@ const FormPanel: React.FC<Props> = (props: Props) => {
             />
           </AccordionSummary>
           <AccordionDetails className={AccordionStyles.deteilItemEdges}>
-            <GeneralStep
-              tags={props.dataItem.tags}
-              description={props.dataItem.description}
-              connection={props.dataItem.connection}
-              name={props.dataItem.name}
-              onChange={(v: any, f: string) => props.onChangeField(v, f, EdgesStepperTypes.GENERAL)}
-            />
+            <GeneralStep tags={props.dataItem.tags} description={props.dataItem.description} connection={props.dataItem.connection} name={props.dataItem.name} onChange={props.onChangeGeneralField} />
           </AccordionDetails>
         </Accordion>
         <Accordion
