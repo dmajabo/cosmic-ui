@@ -256,6 +256,18 @@ export const PerformanceDashboardStyles = makeStyles(
         color: '#05143A',
         textAlign: 'center',
       },
+      popoverContainer: {
+        padding: '10px 0px 10px 25px',
+      },
+      popoverItem: {
+        border: '1px solid #e7edf9',
+        backgroundColor: '#fbfcfe',
+        paddingRight: 10,
+      },
+      popoverText: {
+        fontSize: 12,
+        fontWeight: 700,
+      },
     }),
   {
     index: 1,
