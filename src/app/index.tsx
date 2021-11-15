@@ -13,15 +13,10 @@ import { BrowserRouter, Router } from 'react-router-dom';
 import GlobalStyle from 'styles/global-styles';
 import { useTranslation } from 'react-i18next';
 import history from 'utils/history';
-import { setupAppTheme } from 'utils/appTheme';
 import AppRouting from './AppRouting';
 
 export function App() {
   const { i18n } = useTranslation();
-  React.useEffect(() => {
-    setupAppTheme();
-  }, []);
-
   return (
     <BrowserRouter>
       <Helmet titleTemplate="%s" defaultTitle="Okulis.io" htmlAttributes={{ lang: i18n.language }}>

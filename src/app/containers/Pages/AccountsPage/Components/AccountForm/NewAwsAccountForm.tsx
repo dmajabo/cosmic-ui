@@ -81,9 +81,6 @@ const NewAwsAccountForm: React.FC<Props> = (props: Props) => {
   const onEnabledPolicyChange = (checked: boolean) => {
     const _item: IAWS_Account = { ...dataItem };
     _item.awsPol.flowlogPol.enable = checked;
-    if (!checked) {
-      _item.awsPol.flowlogPol.logGroupName = '';
-    }
     setIsValid(onValidate(_item));
     setDataItem(_item);
   };

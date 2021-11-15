@@ -29,6 +29,7 @@ import reportWebVitals from 'reportWebVitals';
 // Initialize languages
 import './locales/i18n';
 import { ROUTE } from 'lib/Routes/model';
+import { GeneralProvider } from 'lib/hooks/General/useGeneralDataContext';
 
 const store = configureAppStore();
 const MOUNT_NODE = document.getElementById('root') as HTMLElement;
@@ -41,11 +42,13 @@ ReactDOM.render(
       redirectUri={window.location.origin + ROUTE.signUp}
       audience={process.env.REACT_APP_AUTH0_AUDIENCE}
     >
-      <HelmetProvider>
-        <React.StrictMode>
-          <App />
-        </React.StrictMode>
-      </HelmetProvider>
+      <GeneralProvider>
+        <HelmetProvider>
+          <React.StrictMode>
+            <App />
+          </React.StrictMode>
+        </HelmetProvider>
+      </GeneralProvider>
     </Auth0Provider>
   </Provider>,
   MOUNT_NODE,
