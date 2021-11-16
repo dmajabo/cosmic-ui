@@ -13,10 +13,12 @@ import { EdgesBreadCrumbItemsType } from 'lib/hooks/Breadcrumb/models';
 import { AccountsApi } from 'lib/api/ApiModels/Accounts/endpoints';
 import { IAccountsRes, IAwsRegionsRes } from 'lib/api/ApiModels/Accounts/apiModel';
 import { EdgesApi } from 'lib/api/ApiModels/Edges/edpoints';
+import EdgeList from '../EdgeList';
 interface Props {}
 
 const MainPage: React.FC<Props> = (props: Props) => {
   const userContext = React.useContext<UserContextState>(UserContext);
+  const { breadcrumb } = useBreadCrumbDataContext();
   const { loading, error, response, onGet } = useGet();
   const { response: resRegions, onGet: onGetRegions } = useGet<IAwsRegionsRes>();
   const { response: resAccounts, onGet: onGetAccounts } = useGet<IAccountsRes>();
@@ -24,7 +26,7 @@ const MainPage: React.FC<Props> = (props: Props) => {
   const { edges } = useEdgesDataContext();
   const [showEditorPage, setShowEditorPage] = React.useState(false);
   const [edgeDataItem, setEdgeDataItem] = React.useState<IEdgeModel>(null);
-  const { breadcrumb } = useBreadCrumbDataContext();
+
   React.useEffect(() => {
     onTryLoadEdges();
     onTryLoadRegions();
@@ -92,8 +94,10 @@ const MainPage: React.FC<Props> = (props: Props) => {
     await onGetAccounts(AccountsApi.getAccounts(), userContext.accessToken!);
   };
 
-  const onSaveEdge = async () => {
-    await onPost(EdgesApi.postCreateEdge(), {}, userContext.accessToken!);
+  const onSaveEdge = async (_data: IEdgeModel) => {
+    edges.onUpdateEdges(_data);
+    onCloseEditor();
+    // await onPost(EdgesApi.postCreateEdge(), _data, userContext.accessToken!);
   };
 
   const onOpenEditor = (_item?: IEdgeModel) => {
@@ -106,20 +110,36 @@ const MainPage: React.FC<Props> = (props: Props) => {
     setEdgeDataItem(null);
   };
 
+  const onDeleteEdge = (_item: IEdgeModel) => {
+    console.log(_item);
+  };
+
+  if (loading) {
+    return (
+      <AbsLoaderWrapper width="100%" height="100%">
+        <LoadingIndicator margin="auto" />
+      </AbsLoaderWrapper>
+    );
+  }
+
   if (showEditorPage) {
     return <Editor dataItem={edgeDataItem} onClose={onCloseEditor} onSave={onSaveEdge} />;
   }
+  if (edges.dataReadyToShow) {
+    return (
+      <PageWrapperStyles>
+        {!edges.data || !edges.data.length ? <Setuper onGoToEditor={onOpenEditor} /> : null}
+        {edges.data && edges.data.length && <EdgeList data={edges.data} onCreate={onOpenEditor} onEdit={onOpenEditor} onDelete={onDeleteEdge} />}
+        {postLoading && (
+          <AbsLoaderWrapper width="100%" height="100%">
+            <LoadingIndicator margin="auto" />
+          </AbsLoaderWrapper>
+        )}
+      </PageWrapperStyles>
+    );
+  }
 
-  return (
-    <PageWrapperStyles>
-      {(loading || postLoading) && (
-        <AbsLoaderWrapper width="100%" height="100%">
-          <LoadingIndicator margin="auto" />
-        </AbsLoaderWrapper>
-      )}
-      {edges.dataReadyToShow && <Setuper onGoToEditor={onOpenEditor} />}
-    </PageWrapperStyles>
-  );
+  return null;
 };
 
 export default React.memo(MainPage);

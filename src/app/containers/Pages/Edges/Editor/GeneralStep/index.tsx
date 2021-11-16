@@ -10,7 +10,7 @@ interface Props {
   name: string;
   description: string;
   // price: number;
-  tags: string;
+  tags: string[];
   connection: string[];
   onChange: (value: any | null, field: string) => void;
 }
@@ -28,7 +28,7 @@ const GeneralStep: React.FC<Props> = ({ name, connection, description, tags, onC
     onChange(value, 'connection');
   };
 
-  const onTagsChange = (value: string) => {
+  const onTagsChange = (value: string[]) => {
     onChange(value, 'tags');
   };
 

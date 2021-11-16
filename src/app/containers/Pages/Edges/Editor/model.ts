@@ -30,7 +30,7 @@ export const createNewEdge = (): IEdgeModel => ({
   },
   price: null,
   connection: [],
-  tags: '',
+  tags: [],
   firewall: false,
   firewallRegion: '',
   sites: [],

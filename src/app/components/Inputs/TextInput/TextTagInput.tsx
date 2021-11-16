@@ -8,9 +8,9 @@ import Tag from 'app/components/Basic/Tag';
 interface IProps {
   id: string;
   name: string;
-  value: string | null;
+  value: string | string[] | null;
   label: JSX.Element | string;
-  onChange: (value: string | null) => void;
+  onChange: (value: string[] | null) => void;
   disabled?: boolean;
   readOnly?: boolean;
   styles?: Object;
@@ -24,8 +24,14 @@ const TextTagInput: React.FC<IProps> = (props: IProps) => {
 
   React.useEffect(() => {
     if (props.value && props.value.length) {
-      const _arr = props.value.split(', ');
-      setValueArr(_arr);
+      if (Array.isArray(props.value)) {
+        setValueArr(props.value);
+      } else if (typeof props.value === 'string') {
+        const _arr = props.value.split(', ');
+        setValueArr(_arr);
+      }
+    } else {
+      setValueArr([]);
     }
   }, [props.value]);
 
@@ -40,7 +46,7 @@ const TextTagInput: React.FC<IProps> = (props: IProps) => {
       _arr.push(inputValue);
       setValueArr(_arr);
       setInputValue('');
-      props.onChange(_arr.join(', '));
+      props.onChange(_arr);
     }
   };
 
@@ -48,7 +54,7 @@ const TextTagInput: React.FC<IProps> = (props: IProps) => {
     const _arr: string[] = valueArr.slice();
     _arr.splice(index, 1);
     setValueArr(_arr);
-    props.onChange(_arr.join(', '));
+    props.onChange(_arr);
   };
 
   return (

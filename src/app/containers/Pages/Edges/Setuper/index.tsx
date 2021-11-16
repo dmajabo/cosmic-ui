@@ -7,9 +7,9 @@ interface Props {
   onGoToEditor: () => void;
 }
 
-const Setuper: React.FC<Props> = ({ onGoToEditor }) => {
+const Setuper: React.FC<Props> = (props: Props) => {
   const onGoTo = () => {
-    onGoToEditor();
+    props.onGoToEditor();
   };
   return (
     <StteperWrapper>

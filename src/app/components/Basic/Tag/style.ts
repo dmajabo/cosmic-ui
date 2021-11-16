@@ -17,6 +17,7 @@ export const TagStyles = styled.span`
   border: none;
   padding: 9px 12px;
   margin: 3px 6px 3px 0;
+  flex-shrink: 0;
 `;
 
 export const TagBg = styled.span<Props>`
@@ -43,4 +44,7 @@ export const TagText = styled.span<Props>`
   margin-right: ${props => (props.isSubText ? '4px' : '12px')};
   color: ${props => props.color || 'var(--_successColor)'};
   z-index: 2;
+  &.textSimple {
+    margin-right: 0;
+  }
 `;

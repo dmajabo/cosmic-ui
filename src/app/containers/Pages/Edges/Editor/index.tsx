@@ -14,7 +14,7 @@ import { IEdgeModel, IEdgeGroup, ValidationFields } from 'lib/api/ApiModels/Edge
 interface Props {
   dataItem: IEdgeModel;
   onClose: () => void;
-  onSave: () => void;
+  onSave: (_data: IEdgeModel) => void;
 }
 
 const Editor: React.FC<Props> = (props: Props) => {
@@ -115,7 +115,7 @@ const Editor: React.FC<Props> = (props: Props) => {
   };
 
   const onSave = () => {
-    props.onSave();
+    props.onSave(dataItem);
   };
 
   if (loading) {
@@ -133,7 +133,9 @@ const Editor: React.FC<Props> = (props: Props) => {
       <PanelColumn width="50vw" maxWidth="260px">
         {steps && steps.length && <Stepper formatValue={valueNumberFormat} valueFormattedField="index" selectedStep={selectedStep && selectedStep.id} steps={steps} onSelectStep={onSelectStep} />}
       </PanelColumn>
-      <MainColumn>{dataItem && <EdgesMap name={dataItem.name} sites={dataItem.sites} apps={dataItem.apps} selectedRegions={dataItem.deployment.region_code} />}</MainColumn>
+      <MainColumn>
+        {dataItem && <EdgesMap name={dataItem.name} sites={dataItem.sites} apps={dataItem.apps} selectedRegions={dataItem && dataItem.deployment && dataItem.deployment.region_code} />}
+      </MainColumn>
       <PanelColumn width="50vw" maxWidth="680px" padding="0">
         <FormPanel
           onClose={onClose}

@@ -47,7 +47,7 @@ export interface IEdgeModel {
 
   price?: number;
   connection: string[];
-  tags: string;
+  tags: string[];
   firewall: boolean;
   firewallRegion: string;
   sites: IEdgeGroup[];
