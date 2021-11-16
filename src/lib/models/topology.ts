@@ -1,14 +1,8 @@
+import { IOrganization, ITopologyGroup, VendorTypes } from 'lib/api/ApiModels/Topology/endpoints';
 import { IVpcSize } from 'lib/helpers/tree';
 import { IBaseEntity, ICollapsed, ICoord, ISelectedListItem, IVisible } from './general';
 export const DEFAULT_GROUP_ID = 'default_group_id';
 export const DEFAULT_RACK_RADIUS = 150;
-export interface ITopologyGroupsData {
-  groups: ITopologyGroup[];
-}
-export interface ITopologyMapData {
-  count: number;
-  organizations: IOrganization[];
-}
 
 export interface ITopologyPreparedMapData {
   links: ILink[];
@@ -24,11 +18,6 @@ export enum TopologyMetricsPanelTypes {
   VPC = 'Vpc',
   Device = ' device',
   Wedge = 'wedge',
-}
-
-export enum VendorTypes {
-  MERAKI = 'MERAKI',
-  AWS = 'AWS',
 }
 
 export interface IPanelBar<T> {
@@ -213,26 +202,6 @@ export interface IApplication_Group extends ITopologyGroup {
   expanded: boolean;
   disabled: boolean;
   items: IVm[];
-}
-
-export interface IOrganization extends IBaseEntity<string>, ICoord {
-  name: string;
-  description: string;
-  extId: string;
-  extType: string;
-  extUrl: string;
-  vendorType: VendorTypes;
-  vnets: IVnet[];
-  wedges: IWedge[];
-  oedges: any[];
-  devices: IDevice[];
-}
-
-export interface ITopologyGroup {
-  id?: string;
-  name: string | null;
-  type: TopologyGroupTypesAsString | TopologyGroupTypesAsNumber | null;
-  expr: string | null;
 }
 
 export interface INetworkGroupNode extends ITopologyGroup, IVisible, ICoord, ICollapsed {

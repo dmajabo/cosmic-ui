@@ -1,6 +1,6 @@
 import React from 'react';
 import TextInput from 'app/components/Inputs/TextInput';
-import { ITopologyGroup, TopologyGroupTypesAsNumber } from 'lib/models/topology';
+import { TopologyGroupTypesAsNumber } from 'lib/models/topology';
 import { jsonClone } from 'lib/helpers/cloneHelper';
 import { ButtonsGroup, GroupWrapper } from './styles';
 import Dropdown from 'app/components/Inputs/Dropdown';
@@ -12,6 +12,7 @@ import PrimaryButton from 'app/components/Buttons/PrimaryButton';
 import SecondaryButton from 'app/components/Buttons/SecondaryButton';
 import { addIcon } from 'app/components/SVGIcons/addIcon';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
+import { ITopologyGroup, SelectorEvalType } from 'lib/api/ApiModels/Topology/endpoints';
 interface IProps {
   group?: ITopologyGroup;
   onCancel: () => void;
@@ -25,6 +26,8 @@ const EditGroupView: React.FC<IProps> = (props: IProps) => {
     name: props.group ? props.group.name : '',
     type: props.group ? props.group.type : null,
     expr: props.group ? props.group.expr : '',
+    evalType: props.group ? props.group.evalType : SelectorEvalType.EXPR,
+    extIds: [],
   });
   const [isGroupValid, setIsGroupValid] = React.useState<boolean>(onValidateGroup(props.group));
   const [possibleKeys, setPossibleKeys] = React.useState<ISelectedListItem<any>[] | null>(props.group ? getPossibleKeys(props.group.type) : null);

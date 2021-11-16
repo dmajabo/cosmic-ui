@@ -1,5 +1,5 @@
 import React from 'react';
-import { IVPC_PanelDataNode, ITopologyGroup, IVm, IVnetNode } from 'lib/models/topology';
+import { IVPC_PanelDataNode, IVm, IVnetNode } from 'lib/models/topology';
 import { IPosition, NODES_CONSTANTS } from 'app/components/Map/model';
 import VmsContainer from './VmsContainer';
 import { useDrag } from 'app/components/Map/hooks/useDrag';
@@ -11,6 +11,7 @@ import VNetHeder from './VNetHeder';
 import { ContainerWrapper, MoreButton } from './styles';
 import ApplicationGroupContainer from './ApplicationGroupContainer';
 import TransitionContainer from '../../TransitionContainer';
+import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
 interface IProps {
   dataItem: IVnetNode;
   onClickVpc: (_data: IVPC_PanelDataNode) => void;

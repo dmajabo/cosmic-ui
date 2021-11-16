@@ -1,6 +1,6 @@
 import React from 'react';
 import TopologyGroup from '../TopologyGroup';
-import { ITopologyGroup } from 'lib/models/topology';
+import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
 
 interface IProps {
   groups: ITopologyGroup[];

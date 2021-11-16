@@ -1,5 +1,6 @@
+import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
 import { ISelectedListItem } from 'lib/models/general';
-import { ITopologyGroup, TopologyGroupTypesAsNumber, TopologyGroupTypesAsString } from 'lib/models/topology';
+import { TopologyGroupTypesAsNumber, TopologyGroupTypesAsString } from 'lib/models/topology';
 import { ApplicationsPossibleKeys, BranchNetworksPossibleKeys } from './model';
 
 export const getPossibleKeys = (type: TopologyGroupTypesAsNumber | TopologyGroupTypesAsString): ISelectedListItem<any>[] => {

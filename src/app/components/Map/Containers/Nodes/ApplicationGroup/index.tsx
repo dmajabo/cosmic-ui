@@ -1,9 +1,9 @@
 import React from 'react';
-import { ITopologyGroup } from 'lib/models/topology';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { NODES_CONSTANTS } from 'app/components/Map/model';
 import { Label, WrapStyles } from './style';
 import { applicationGroupIcon } from 'app/components/SVGIcons/topologyIcons/applicationGroup';
+import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
 
 interface IProps {
   dataItem: ITopologyGroup;

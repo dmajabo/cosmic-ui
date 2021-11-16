@@ -8,10 +8,6 @@ import {
 } from 'lib/helpers/tree';
 import {
   ILink,
-  IOrganization,
-  ITopologyMapData,
-  ITopologyGroup,
-  ITopologyGroupsData,
   TopologyGroupTypesAsNumber,
   TopologyGroupTypesAsString,
   INetworkGroupNode,
@@ -26,7 +22,7 @@ import {
 import { DATA_READY_STATE, ISelectedListItem, ITimeTypes, TIME_PERIOD } from 'lib/models/general';
 import { jsonClone } from 'lib/helpers/cloneHelper';
 import { EntityTypes, IEntity } from 'lib/models/entites';
-import { ITopologyDataRes } from 'lib/api/ApiModels/Topology/endpoints';
+import { ITopologyDataRes, ITopologyGroup, ITopologyGroupsData, ITopologyMapData } from 'lib/api/ApiModels/Topology/endpoints';
 import { IPosition, NODES_CONSTANTS } from 'app/components/Map/model';
 import { ITimeMinMaxRange } from 'app/components/Inputs/TimeSlider/helpers';
 import { onUpdateLinkPos, onUpdateTargetLink, reCreateDeviceLinks } from 'lib/helpers/links';
@@ -53,7 +49,6 @@ export interface TopologyContextType {
   onDeleteGroup: (_group: ITopologyGroup) => void;
   onFilterQueryChange: (value: string | null) => void;
   onSetSelectedType: (_value: string | number | null) => void;
-  onUpdateOrganization: (_item: IOrganization, _pos: IPosition) => void;
   onUpdateDeviceCoord: (_item: IDeviceNode, _pos: IPosition) => void;
   onUpdateWedgeCoord: (_item: IWedgeNode, _pos: IPosition) => void;
   onUpdateVnetNode: (_item: IVnetNode, _pos: IPosition) => void;
@@ -239,18 +234,6 @@ export function useTopologyContext(): TopologyContextType {
 
   const onSetSelectedType = (_value: string | null) => {
     setSelectedType(_value);
-  };
-
-  const onUpdateOrganization = (_item: IOrganization, _position: IPosition) => {
-    const _data: ITopologyMapData = jsonClone(originData);
-    const _index: number = _data.organizations.findIndex(it => it.id === _item.id);
-    _data.organizations[_index].x = _position.x;
-    _data.organizations[_index].y = _position.y;
-    const _sourceObj = NODES_CONSTANTS.Organization;
-    const _lData = onUpdateTargetLink(linksRef.current, _item.id, _position, _sourceObj.width / 2, _sourceObj.height / 2);
-    setLinks(_lData);
-    setOriginData(_data);
-    linksRef.current = _lData;
   };
 
   const onUpdateDeviceCoord = (_item: IDeviceNode, _position: IPosition) => {
@@ -471,7 +454,6 @@ export function useTopologyContext(): TopologyContextType {
     onSetData,
     onFilterQueryChange,
     onSetSelectedType,
-    onUpdateOrganization,
     onUpdateDeviceCoord,
     onUpdateWedgeCoord,
     onUpdateVnetNode,

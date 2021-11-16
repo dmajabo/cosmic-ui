@@ -2,29 +2,26 @@ import { hierarchy, tree, pack, packEnclose } from 'd3-hierarchy';
 import {
   IDeviceNode,
   ILink,
-  ITopologyGroup,
   INetworkGroupNode,
-  ITopologyMapData,
   ITopologyPreparedMapData,
   IVnetNode,
   IWedgeNode,
   TopologyGroupTypesAsNumber,
   TopologyGroupTypesAsString,
   IDevice,
-  IOrganization,
   IWedge,
   TOPOLOGY_NODE_TYPES,
   IVnet,
   IVm,
   DEFAULT_GROUP_ID,
   DEFAULT_RACK_RADIUS,
-  VendorTypes,
 } from 'lib/models/topology';
 import { generateLinks } from './links';
 import * as d3 from 'd3';
 import { NODES_CONSTANTS } from 'app/components/Map/model';
 import { STANDART_DISPLAY_RESOLUTION } from 'lib/models/general';
 import uuid from 'react-uuid';
+import { IOrganization, ITopologyGroup, VendorTypes, ITopologyMapData, SelectorEvalType } from 'lib/api/ApiModels/Topology/endpoints';
 // import { jsonClone } from './cloneHelper';
 
 const createDeviceNode = (org: IOrganization, orgIndex: number, node: IDevice, index: number): IDeviceNode => {
@@ -127,6 +124,8 @@ export const prepareNodesData = (_data: ITopologyMapData, _groups: ITopologyGrou
         name: 'Default',
         type: TopologyGroupTypesAsString.BRANCH_NETWORKS,
         expr: null,
+        evalType: SelectorEvalType.EXPR,
+        extIds: [],
       },
       null,
       groupStartIndex,
@@ -186,8 +185,7 @@ export const setUpGroupsCoord = (_groupsData: INetworkGroupNode[]) => {
   _nodes.push({ id: `1` } as INetworkGroupNode);
   const simulation = d3
     .forceSimulation(_nodes)
-    // .alpha(0.5)
-    .force('center', d3.forceCenter(STANDART_DISPLAY_RESOLUTION.width / 2, (STANDART_DISPLAY_RESOLUTION.height - 100) / 2))
+    .force('center', d3.forceCenter(STANDART_DISPLAY_RESOLUTION.width / 2, STANDART_DISPLAY_RESOLUTION.height / 2))
     .force(
       'collision',
       d3
@@ -202,7 +200,7 @@ export const setUpGroupsCoord = (_groupsData: INetworkGroupNode[]) => {
         .iterations(10),
     )
     .force('x', d3.forceX().strength(0.75))
-    .force('y', d3.forceY().strength(0.25))
+    .force('y', d3.forceY().strength(0.5))
     .stop();
 
   while (simulation.alpha() > simulation.alphaMin()) {
@@ -215,7 +213,7 @@ export const setUpGroupsCoord = (_groupsData: INetworkGroupNode[]) => {
   }
   _groupsData.forEach((it, i) => {
     it.x = _nodes[i].x - offsetX;
-    it.y = _nodes[i].y;
+    it.y = _nodes[i].y - NODES_CONSTANTS.NETWORK_GROUP.r;
     if (it && it.devices && it.devices.length && !it.collapsed) {
       it.x = it.x + it.r + NODES_CONSTANTS.NETWORK_GROUP.r;
     }
