@@ -155,6 +155,7 @@ export const AnalyticsStyles = makeStyles(
       searchIcon: {
         backgroundColor: 'white',
         marginLeft: -30,
+        marginRight: 30,
         pointerEvents: 'none',
       },
       subDimensionContainer: {

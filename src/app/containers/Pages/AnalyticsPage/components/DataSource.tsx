@@ -6,6 +6,7 @@ import SaveIcon from '../icons/metrics explorer/save.svg';
 import { DataSourceOption } from './DataSourceOption';
 import { CheckboxData } from './Dimensions';
 import produce from 'immer';
+import { Checkbox, FormControlLabel } from '@mui/material';
 
 interface DataSourceProps {
   readonly closePopup: () => void;
@@ -26,7 +27,9 @@ export const DataSource: React.FC<DataSourceProps> = ({ closePopup, dataSourcesD
   const [searchText, setSearchText] = useState<string>('');
   const [dataSourceOptions, setDataSourceOptions] = useState<DataSourceOptions[]>([]);
   const [selectedDataSources, setSelectedDataSources] = useState<DataSourceOptions[]>([]);
-  const [checkboxData, setCheckboxData] = useState<CheckboxData>({});
+  const [checkboxData, setCheckboxData] = useState<CheckboxData>({
+    all_items: false,
+  });
 
   const handleSearchTextChange = (event: React.ChangeEvent<HTMLInputElement>) => setSearchText(event.target.value);
 
@@ -41,10 +44,12 @@ export const DataSource: React.FC<DataSourceProps> = ({ closePopup, dataSourcesD
       item.options.forEach(value => {
         tempCheckboxData[`${item.title}_${value}`] = false;
       });
+      tempCheckboxData[`${item.title}_all`] = false;
     });
     dataSources.forEach(dimension => {
       dimension.options.forEach(value => (tempCheckboxData[`${dimension.title}_${value}`] = true));
     });
+    tempCheckboxData['all_items'] = false;
     setSelectedDataSources(dataSources);
     setCheckboxData(tempCheckboxData);
   };
@@ -84,6 +89,36 @@ export const DataSource: React.FC<DataSourceProps> = ({ closePopup, dataSourcesD
     }
   };
 
+  const selectAllDataSourceOption = (event: React.ChangeEvent<HTMLInputElement>, dataSource: DataSourceOptions) => {
+    const tempCheckboxData: CheckboxData = {};
+    dataSource.options.forEach(option => {
+      tempCheckboxData[`${dataSource.title}_${option}`] = event.target.checked;
+    });
+    setCheckboxData({
+      ...checkboxData,
+      [event.target.name]: event.target.checked,
+      ...tempCheckboxData,
+    });
+    const filteredDataSources = selectedDataSources.filter(item => item.title !== dataSource.title);
+    event.target.checked ? setSelectedDataSources(filteredDataSources.concat(dataSource)) : setSelectedDataSources(filteredDataSources);
+  };
+
+  const selectAllDataSources = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const tempCheckboxData: CheckboxData = {};
+    dataSourcesData.forEach(item => {
+      item.options.forEach(value => {
+        tempCheckboxData[`${item.title}_${value}`] = event.target.checked;
+      });
+      tempCheckboxData[`${item.title}_all`] = event.target.checked;
+    });
+    setCheckboxData({
+      ...checkboxData,
+      [event.target.name]: event.target.checked,
+      ...tempCheckboxData,
+    });
+    event.target.checked ? setSelectedDataSources(dataSourcesData) : setSelectedDataSources([]);
+  };
+
   useEffect(() => {
     setDataSourceOptions(dataSourcesData);
     setInitialCheckboxData();
@@ -100,10 +135,17 @@ export const DataSource: React.FC<DataSourceProps> = ({ closePopup, dataSourcesD
         <span className={classes.searchIcon}>
           <img src={SearchIcon} alt="search" />
         </span>
+        <FormControlLabel key="all_items" control={<Checkbox checked={checkboxData['all_items']} onChange={e => selectAllDataSources(e)} name="all_items" />} label="Use All Data Sources" />
       </div>
       <div className={classes.popupContent}>
         {dataSourceOptions.map(dataSource => (
-          <DataSourceOption key={dataSource.title} dataSourceOption={dataSource} checkboxData={checkboxData} handleCheckboxChange={handleCheckboxChange} />
+          <DataSourceOption
+            key={dataSource.title}
+            dataSourceOption={dataSource}
+            checkboxData={checkboxData}
+            handleCheckboxChange={handleCheckboxChange}
+            selectAllDataSourceOption={selectAllDataSourceOption}
+          />
         ))}
       </div>
       <div className={`${classes.tabTitleContainer} ${classes.popupFooterContainer}`}>

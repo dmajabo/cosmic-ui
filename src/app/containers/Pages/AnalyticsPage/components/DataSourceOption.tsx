@@ -11,9 +11,10 @@ interface DataSourceOptionProps {
   readonly dataSourceOption: DataSourceOptions;
   readonly checkboxData: CheckboxData;
   readonly handleCheckboxChange: (event: React.ChangeEvent<HTMLInputElement>, dataSourceName: string, dataSourceItem: string) => void;
+  readonly selectAllDataSourceOption: (event: React.ChangeEvent<HTMLInputElement>, dataSource: DataSourceOptions) => void;
 }
 
-export const DataSourceOption: React.FC<DataSourceOptionProps> = ({ dataSourceOption, checkboxData, handleCheckboxChange }) => {
+export const DataSourceOption: React.FC<DataSourceOptionProps> = ({ dataSourceOption, checkboxData, handleCheckboxChange, selectAllDataSourceOption }) => {
   const classes = AnalyticsStyles();
 
   const [isTileOpen, setIsTileOpen] = useState<boolean>(true);
@@ -26,6 +27,7 @@ export const DataSourceOption: React.FC<DataSourceOptionProps> = ({ dataSourceOp
       <div className={classes.subDimensionContainer}>
         <div className={classes.tabTitleContainer}>
           <div>
+            <Checkbox checked={checkboxData[`${dataSourceOption.title}_all`]} onChange={e => selectAllDataSourceOption(e, dataSourceOption)} name={`${dataSourceOption.title}_all`} />
             <span>
               <img className={classes.subDimensionIcon} src={dataSourceOption.icon} alt={dataSourceOption.title} />
             </span>
