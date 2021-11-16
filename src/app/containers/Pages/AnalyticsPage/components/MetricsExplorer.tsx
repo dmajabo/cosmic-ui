@@ -10,10 +10,13 @@ import AddIcon from '../icons/metrics explorer/add.svg';
 import EditIcon from '../icons/metrics explorer/edit.svg';
 import CloseIcon from '../icons/metrics explorer/close.svg';
 import NetworkIcon from '../icons/metrics explorer/dimensions-network.svg';
+import AwsIcon from '../icons/metrics explorer/dimensions-aws.svg';
+import MerakiIcon from '../icons/metrics explorer/dimensions-meraki.svg';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
-import { DimensionOptions, Dimensions } from './Dimensions';
 import produce from 'immer';
+import { DimensionOptions, Dimensions } from './Dimensions';
+import { DataSource, DataSourceOptions } from './DataSource';
 
 const DUMMY_DIMENSION_DATA: DimensionOptions[] = [
   {
@@ -30,6 +33,24 @@ const DUMMY_DIMENSION_DATA: DimensionOptions[] = [
   },
 ];
 
+const DUMMY_DATA_SOURCE_OPTIONS: DataSourceOptions[] = [
+  {
+    title: 'Amazon Web Service',
+    icon: AwsIcon,
+    options: ['AWS US East (Northern Virginia) Region', 'AWS US West (Northern California) Region'],
+  },
+  {
+    title: 'Cisco Meraki Device Metrics',
+    icon: MerakiIcon,
+    options: ['Office 1', 'Office 2', 'Office 3', 'Office 4', 'Office 5', 'Office 6', 'Office 7', 'Office 8', 'Office 9', 'Office 10', 'Office 11', 'Office 12'],
+  },
+];
+
+enum ModalName {
+  dimensions = 'Dimensions',
+  dataSource = 'Data Source',
+}
+
 export const getDimensionCount = (dimensions: DimensionOptions[]) => {
   return dimensions.reduce((accu, nextValue) => {
     const subDimensionCount = nextValue.source.length + nextValue.destination.length;
@@ -37,15 +58,30 @@ export const getDimensionCount = (dimensions: DimensionOptions[]) => {
   }, 0);
 };
 
+export const getDataSourceCount = (dataSources: DataSourceOptions[]) => {
+  return dataSources.reduce((acc, nextValue) => acc + nextValue.options.length, 0);
+};
+
 export const MetricsExplorer: React.FC = () => {
   const classes = AnalyticsStyles();
 
   const [dimensions, setDimensions] = useState<DimensionOptions[]>([]);
+  const [dataSources, setDataSources] = useState<DataSourceOptions[]>([]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const handleModalOpen = () => setIsModalOpen(true);
+  const [modalName, setModalName] = useState<ModalName>(ModalName.dimensions);
+  const handleDimensionModalOpen = () => {
+    setModalName(ModalName.dimensions);
+    setIsModalOpen(true);
+  };
+  const handleDataSourceModalOpen = () => {
+    setModalName(ModalName.dataSource);
+    setIsModalOpen(true);
+  };
   const handleModalClose = () => setIsModalOpen(false);
 
   const addDimensions = (dimensions: DimensionOptions[]) => setDimensions(dimensions);
+
+  const addDataSources = (dataSources: DataSourceOptions[]) => setDataSources(dataSources);
 
   const removeDimension = (dimensionName: string, dimensionType: string, dimensionItem: string) => {
     const selectedDimension = dimensions.find(dimension => dimension.title === dimensionName);
@@ -62,6 +98,11 @@ export const MetricsExplorer: React.FC = () => {
     }
   };
 
+  const removeDataSource = (dataSourceName: string) => {
+    const newDataSources = dataSources.filter(dataSource => dataSource.title !== dataSourceName);
+    setDataSources(newDataSources);
+  };
+
   const customizationtabOptions: CustomizationTabProps[] = [
     {
       img: DesignIcon,
@@ -72,7 +113,7 @@ export const MetricsExplorer: React.FC = () => {
       title: 'Dimensions',
       description: `${getDimensionCount(dimensions)}`,
       operationImage: getDimensionCount(dimensions) > 0 ? EditIcon : AddIcon,
-      showModal: handleModalOpen,
+      showModal: handleDimensionModalOpen,
       operationName: getDimensionCount(dimensions) > 0 ? 'edit dimensions' : 'add dimensions',
       content:
         getDimensionCount(dimensions) === 0 ? (
@@ -135,9 +176,35 @@ export const MetricsExplorer: React.FC = () => {
     {
       img: DataSourceIcon,
       title: 'Data Source',
-      description: '126 of 126',
-      operationImage: EditIcon,
-      operationName: 'edit data source',
+      description: `${getDataSourceCount(dataSources)} of ${getDataSourceCount(DUMMY_DATA_SOURCE_OPTIONS)}`,
+      operationImage: getDataSourceCount(dataSources) > 0 ? EditIcon : AddIcon,
+      showModal: handleDataSourceModalOpen,
+      operationName: getDataSourceCount(dataSources) > 0 ? 'edit data sources' : 'add data sources',
+      content:
+        getDataSourceCount(dataSources) === 0 ? (
+          <div className={classes.tabContentText}>No data sources added. To add data sources click the “Add” button on top.</div>
+        ) : (
+          <div>
+            {dataSources.map(dataSource => (
+              <div key={dataSource.title} className={`${classes.whiteBorderBox}`}>
+                <div className={classes.tabTitleContainer}>
+                  <div>
+                    <span>
+                      <img className={classes.dataSourceDropdownImg} src={dataSource.icon} alt={dataSource.title} />
+                      {dataSource.title}
+                    </span>
+                    <span className={classes.countText}>{dataSource.options.length}</span>
+                  </div>
+                  <div>
+                    <div className={classes.removeDimension} onClick={() => removeDataSource(dataSource.title)}>
+                      <img src={CloseIcon} alt="close popup" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ),
     },
   ];
 
@@ -170,7 +237,11 @@ export const MetricsExplorer: React.FC = () => {
         aria-describedby="modal-modal-description"
       >
         <Box className={classes.popupContainer}>
-          <Dimensions dimensions={dimensions} addDimensions={addDimensions} dimensionData={DUMMY_DIMENSION_DATA} closePopup={handleModalClose} />
+          {modalName === ModalName.dimensions ? (
+            <Dimensions dimensions={dimensions} addDimensions={addDimensions} dimensionData={DUMMY_DIMENSION_DATA} closePopup={handleModalClose} />
+          ) : (
+            <DataSource dataSources={dataSources} addDataSources={addDataSources} dataSourcesData={DUMMY_DATA_SOURCE_OPTIONS} closePopup={handleModalClose} />
+          )}
         </Box>
       </Modal>
     </div>

@@ -263,6 +263,29 @@ export const AnalyticsStyles = makeStyles(
         width: 'auto',
         cursor: 'pointer',
       },
+      dataSourceDropdownImg: {
+        width: 20,
+        marginRight: 10,
+      },
+      dataSourceOptionBox: {
+        backgroundColor: 'white',
+        width: '100%',
+        borderRadius: 4,
+      },
+      dataSourceContentContainer: {
+        padding: 20,
+        display: 'flex',
+        justifyContent: 'space-between',
+        flexDirection: 'column',
+      },
+      dataSourceOptionContent: {
+        display: 'grid',
+        gridTemplateColumns: 'repeat(4, 1fr)',
+      },
+      dataSourceSingleColumnOptionContent: {
+        display: 'grid',
+        gridAutoFlow: 'row',
+      },
     }),
   {
     index: 1,
