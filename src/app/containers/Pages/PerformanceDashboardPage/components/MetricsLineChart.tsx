@@ -24,7 +24,6 @@ interface LineChartProps {
 }
 
 const OLD_TIME_FORMAT: string = 'yyyy-MM-dd HH:mm:ss ZZZ z';
-const REQUIRED_FORMAT: string = 'yy/MM/dd HH:mm';
 
 const COLORS = [
   '#004D40',
@@ -137,9 +136,6 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
     });
     const finalChartData = sortBy(tempChartData, 'data').reverse().concat(anomalyData);
     setData(finalChartData);
-
-    const dataLength: number[] = selectedRows.map(row => inputData[row.id].length);
-    const maxDataLengthIndex = dataLength.reduce((iMax, x, i, arr) => (x > arr[iMax] ? i : iMax), 0);
   }, [inputData]);
 
   const lineChartOptions = {
