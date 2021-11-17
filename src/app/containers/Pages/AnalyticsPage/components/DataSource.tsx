@@ -49,9 +49,8 @@ export const DataSource: React.FC<DataSourceProps> = ({ closePopup, dataSourcesD
     dataSources.forEach(dimension => {
       dimension.options.forEach(value => (tempCheckboxData[`${dimension.title}_${value}`] = true));
     });
-    tempCheckboxData['all_items'] = false;
     setSelectedDataSources(dataSources);
-    setCheckboxData(tempCheckboxData);
+    setCheckboxData({ ...checkboxData, ...tempCheckboxData });
   };
 
   const getDataSourceCount = (selectedDataSources: DataSourceOptions[]) => selectedDataSources.reduce((acc, nextValue) => acc + nextValue.options.length, 0);
