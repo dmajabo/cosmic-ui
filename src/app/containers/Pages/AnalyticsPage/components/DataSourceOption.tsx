@@ -14,6 +14,8 @@ interface DataSourceOptionProps {
   readonly selectAllDataSourceOption: (event: React.ChangeEvent<HTMLInputElement>, dataSource: DataSourceOptions) => void;
 }
 
+const NUMBER_OF_COLUMNS = 4;
+
 export const DataSourceOption: React.FC<DataSourceOptionProps> = ({ dataSourceOption, checkboxData, handleCheckboxChange, selectAllDataSourceOption }) => {
   const classes = AnalyticsStyles();
 
@@ -48,7 +50,7 @@ export const DataSourceOption: React.FC<DataSourceOptionProps> = ({ dataSourceOp
         <div className={isTileOpen ? classes.subDimensionOptionsContainer : classes.hidden}>
           <div className={classes.dataSourceOptionBox}>
             <div className={classes.dataSourceContentContainer}>
-              <div className={dataSourceOption.options.length < 4 ? classes.dataSourceSingleColumnOptionContent : classes.dataSourceOptionContent}>
+              <div className={dataSourceOption.options.length < NUMBER_OF_COLUMNS ? classes.dataSourceSingleColumnOptionContent : classes.dataSourceOptionContent}>
                 {dataSourceOption.options.map(item => (
                   <FormControlLabel
                     key={item}

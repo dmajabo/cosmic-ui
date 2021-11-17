@@ -18,6 +18,7 @@ import produce from 'immer';
 import { DimensionOptions, Dimensions } from './Dimensions';
 import { DataSource, DataSourceOptions } from './DataSource';
 
+//TODO: Remove this once API is integrated
 const DUMMY_DIMENSION_DATA: DimensionOptions[] = [
   {
     title: 'Network & Traffic Topology',
@@ -47,8 +48,8 @@ const DUMMY_DATA_SOURCE_OPTIONS: DataSourceOptions[] = [
 ];
 
 enum ModalName {
-  dimensions = 'Dimensions',
-  dataSource = 'Data Source',
+  Dimensions = 'Dimensions',
+  DataSource = 'Data Source',
 }
 
 export const getDimensionCount = (dimensions: DimensionOptions[]) => {
@@ -68,13 +69,13 @@ export const MetricsExplorer: React.FC = () => {
   const [dimensions, setDimensions] = useState<DimensionOptions[]>([]);
   const [dataSources, setDataSources] = useState<DataSourceOptions[]>([]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [modalName, setModalName] = useState<ModalName>(ModalName.dimensions);
+  const [modalName, setModalName] = useState<ModalName>(ModalName.Dimensions);
   const handleDimensionModalOpen = () => {
-    setModalName(ModalName.dimensions);
+    setModalName(ModalName.Dimensions);
     setIsModalOpen(true);
   };
   const handleDataSourceModalOpen = () => {
-    setModalName(ModalName.dataSource);
+    setModalName(ModalName.DataSource);
     setIsModalOpen(true);
   };
   const handleModalClose = () => setIsModalOpen(false);
@@ -237,7 +238,7 @@ export const MetricsExplorer: React.FC = () => {
         aria-describedby="modal-modal-description"
       >
         <Box className={classes.popupContainer}>
-          {modalName === ModalName.dimensions ? (
+          {modalName === ModalName.Dimensions ? (
             <Dimensions dimensions={dimensions} addDimensions={addDimensions} dimensionData={DUMMY_DIMENSION_DATA} closePopup={handleModalClose} />
           ) : (
             <DataSource dataSources={dataSources} addDataSources={addDataSources} dataSourcesData={DUMMY_DATA_SOURCE_OPTIONS} closePopup={handleModalClose} />

@@ -54,22 +54,20 @@ export const DataSource: React.FC<DataSourceProps> = ({ closePopup, dataSourcesD
     setCheckboxData(tempCheckboxData);
   };
 
-  const getDataSourceCount = (selectedDataSources: DataSourceOptions[]) => {
-    return selectedDataSources.reduce((acc, nextValue) => acc + nextValue.options.length, 0);
-  };
+  const getDataSourceCount = (selectedDataSources: DataSourceOptions[]) => selectedDataSources.reduce((acc, nextValue) => acc + nextValue.options.length, 0);
 
-  const updateSelectedDataSources = (dataSources: DataSourceOptions[], dataSourceName: string, dataSourceItem: string, checked: boolean) => {
-    return produce(dataSources, draft => {
+  const updateSelectedDataSources = (dataSources: DataSourceOptions[], dataSourceName: string, dataSourceItem: string, checked: boolean) =>
+    produce(dataSources, draft => {
       const selectedDimension = draft.find(dataSource => dataSource.title === dataSourceName);
       selectedDimension.options = checked ? selectedDimension.options.concat(dataSourceItem) : selectedDimension.options.filter(item => item !== dataSourceItem);
     });
-  };
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>, dataSourceName: string, dataSourceItem: string) => {
     setCheckboxData({
       ...checkboxData,
       [event.target.name]: event.target.checked,
     });
+
     const selectedDataSource = selectedDataSources.find(dataSource => dataSource.title === dataSourceName);
     if (selectedDataSource) {
       const newSelectedDataSources = updateSelectedDataSources(selectedDataSources, dataSourceName, dataSourceItem, event.target.checked);
