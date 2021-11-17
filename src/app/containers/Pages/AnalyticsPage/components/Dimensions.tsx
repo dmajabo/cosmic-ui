@@ -110,7 +110,9 @@ export const Dimensions: React.FC<DimensionsProps> = ({ closePopup, dimensionDat
         </span>
       </div>
       <div className={classes.popupContent}>
-        <SubDimension dimensionOptions={dimensionOptions} checkboxData={checkboxData} handleCheckboxChange={handleCheckboxChange} />
+        {dimensionOptions.map(option => (
+          <SubDimension key={option.title} dimensionOption={option} checkboxData={checkboxData} handleCheckboxChange={handleCheckboxChange} />
+        ))}
       </div>
       <div className={`${classes.tabTitleContainer} ${classes.popupFooterContainer}`}>
         <div className={classes.verticalCenter}>
