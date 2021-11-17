@@ -11,6 +11,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { isEmpty } from 'lodash';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { createApiClient } from 'lib/api/http/apiClient';
+import { AbsLoaderWrapper } from 'app/components/Loading/styles';
+import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -53,6 +55,8 @@ const PerformanceDashboardPage: React.FC = () => {
         const awsOrganizations = responseData.organizations.filter(organization => organization.vendorType === 'AWS');
         setMerakiOrganizations(merakiOrganizations);
         setAwsOrganizations(awsOrganizations);
+      } else {
+        setIsLoading(false);
       }
     };
     getOrganizations();
@@ -136,17 +140,25 @@ const PerformanceDashboardPage: React.FC = () => {
           <div className={classes.pageCenter}>
             <LoadingIndicator />
           </div>
-        ) : !isEmpty(finalTableData) ? (
-          <SLATestList
-            updateSlaTest={updateSlaTest}
-            deleteSlaTest={deleteSlaTest}
-            awsOrganizations={awsOrganizations}
-            merakiOrganizations={merakiOrganizations}
-            finalTableData={finalTableData}
-            addSlaTest={addSlaTest}
-          />
+        ) : !isEmpty(merakiOrganizations) && !isEmpty(awsOrganizations) ? (
+          !isEmpty(finalTableData) ? (
+            <SLATestList
+              updateSlaTest={updateSlaTest}
+              deleteSlaTest={deleteSlaTest}
+              awsOrganizations={awsOrganizations}
+              merakiOrganizations={merakiOrganizations}
+              finalTableData={finalTableData}
+              addSlaTest={addSlaTest}
+            />
+          ) : (
+            <CreateSLATest awsOrganizations={awsOrganizations} merakiOrganizations={merakiOrganizations} addSlaTest={addSlaTest} />
+          )
         ) : (
-          <CreateSLATest awsOrganizations={awsOrganizations} merakiOrganizations={merakiOrganizations} addSlaTest={addSlaTest} />
+          <AbsLoaderWrapper width="100%" height="100%">
+            <ErrorMessage fontSize={28} margin="auto">
+              Something went wrong. Please refresh page
+            </ErrorMessage>
+          </AbsLoaderWrapper>
         )}
         <ToastContainer />
       </TabPanel>

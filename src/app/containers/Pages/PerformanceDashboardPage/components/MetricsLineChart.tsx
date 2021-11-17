@@ -146,6 +146,9 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
   }, [inputData]);
 
   const lineChartOptions = {
+    chart: {
+      zoomType: 'x',
+    },
     time: {
       useUTC: false,
     },
