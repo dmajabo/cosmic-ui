@@ -7,7 +7,7 @@ import { Data } from './Table';
 import sortBy from 'lodash/sortBy';
 
 interface DataPoint {
-  readonly name: string;
+  readonly x: number;
   readonly y: number;
 }
 
@@ -86,16 +86,15 @@ const ANOMALY_POINT_COLOR = 'red';
 
 export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataValueSuffix, inputData }) => {
   const [data, setData] = useState<ChartData[]>([]);
-  const [tickInterval, setTickInterval] = useState<number>(0);
 
   useEffect(() => {
     const tempChartData: ChartData[] = selectedRows.map(row => {
       return {
         name: `${row.name} &#9654 ${row.sourceDevice}`,
         data: sortBy(inputData[row.id], 'time').map(item => {
-          const val = DateTime.fromFormat(item.time, OLD_TIME_FORMAT).toUTC().toFormat(REQUIRED_FORMAT);
+          const val = DateTime.fromFormat(item.time, OLD_TIME_FORMAT).toUTC();
           return {
-            name: val,
+            x: val.toMillis(),
             y: dataValueSuffix === 'mbps' ? Number(item.value) / 1000 : Number(Number.parseFloat(item.value).toFixed(2)),
             marker: {
               enabled: false,
@@ -114,9 +113,9 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
       return {
         name: `${row.name}_anomaly`,
         data: sortBy(inputData[`${row.id}_anomaly`], 'time').map(item => {
-          const val = DateTime.fromFormat(item.time, OLD_TIME_FORMAT).toUTC().toFormat(REQUIRED_FORMAT);
+          const val = DateTime.fromFormat(item.time, OLD_TIME_FORMAT).toUTC();
           return {
-            name: val,
+            x: val.toMillis(),
             y: dataValueSuffix === 'mbps' ? Number(item.value) / 1000 : Number(Number.parseFloat(item.value).toFixed(2)),
             marker: {
               enabled: true,
@@ -141,8 +140,6 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
 
     const dataLength: number[] = selectedRows.map(row => inputData[row.id].length);
     const maxDataLengthIndex = dataLength.reduce((iMax, x, i, arr) => (x > arr[iMax] ? i : iMax), 0);
-
-    setTickInterval(Math.floor(inputData[selectedRows[maxDataLengthIndex].id].length / 10));
   }, [inputData]);
 
   const lineChartOptions = {
@@ -154,8 +151,8 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
     },
     title: false,
     xAxis: {
-      type: 'category',
-      tickInterval: tickInterval,
+      type: 'datetime',
+      tickInterval: 1000 * 60 * 60 * 24,
     },
     tooltip: {
       valueSuffix: dataValueSuffix ? ` ${dataValueSuffix}` : '',
