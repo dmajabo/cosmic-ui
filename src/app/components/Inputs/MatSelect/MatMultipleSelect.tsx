@@ -1,14 +1,13 @@
 import React from 'react';
 import { Required } from '../FormTextInput/styles';
 import { InputLabel } from '../styles/Label';
-import { TextInputWrapper } from '../TextInput/styles';
 import MenuItem from '@material-ui/core/MenuItem';
 import useDebounce from 'lib/hooks/useDebounce';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { arrowBottomIcon } from 'app/components/SVGIcons/arrows';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { SelectStyles } from './SelectStyles';
-import { DisplayValue, ValueLabel } from './styles';
+import { TextInputWrapper, DisplayValue, ValueLabel } from './styles';
 import { ISelectedListItem } from 'lib/models/general';
 import SimpleCheckbox from '../Checkbox/SimpleCheckbox';
 
@@ -40,7 +39,6 @@ const MatMultipleSelect: React.FC<Props> = (props: Props) => {
   }, [debouncedSearchTerm]);
 
   const handleChange = (event: SelectChangeEvent<any>) => {
-    debugger;
     setTextValue(event.target.value);
     setIsTyping(true);
   };
