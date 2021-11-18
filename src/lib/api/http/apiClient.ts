@@ -36,6 +36,7 @@ interface ApiClient {
   readonly deletePolicyController: (name: string) => Promise<DeletePolicyControllerResponse>;
   readonly getControllerList: () => Promise<GetControllerListResponse>;
   readonly updatePolicyController: (edgeId: string, request: PostPolicyControllerRequest) => Promise<PostPolicyControllerResponse>;
+  readonly getHeatmapGoodput: (sourceNw: string, destination: string, startTime: string, testId: string) => Promise<HeatMapResponse>;
 }
 
 const PATHS = Object.freeze({
@@ -55,6 +56,7 @@ const PATHS = Object.freeze({
   DELETE_POLICY_CONTROLLER: (name: string) => `/policy/api/v1/policy/controllers/${name}`,
   GET_CONTROLLER_LIST: '/policy/api/v1/policy/controllers',
   UPDATE_POLICY_CONTROLLER: (edgeId: string) => `/policy/api/v1/policy/controllers/${edgeId}`,
+  GOODPUT_LATENCY: (sourceNw: string, destination: string) => `/telemetry/api/v1/metrics/source_nw/${sourceNw}/device/destination/${destination}/avggoodput`,
 });
 
 export const createApiClient = (token: string): ApiClient => {
@@ -296,6 +298,28 @@ export const createApiClient = (token: string): ApiClient => {
     return response.data;
   }
 
+  async function getHeatmapGoodput(sourceNw: string, destination: string, startTime: string, testId: string): Promise<HeatMapResponse> {
+    try {
+      const response = await axios.get<HeatMapResponse>(PATHS.GOODPUT_LATENCY(sourceNw, destination), {
+        ...config,
+        params: {
+          startTime: startTime,
+        },
+      });
+      return {
+        avgMetric: response.data.avgMetric,
+        testId: testId,
+      };
+    } catch (error) {
+      return {
+        testId: testId,
+        avgMetric: {
+          resourceMetric: [],
+        },
+      };
+    }
+  }
+
   return {
     getOrganizations,
     getSLATests,
@@ -313,5 +337,6 @@ export const createApiClient = (token: string): ApiClient => {
     deletePolicyController,
     getControllerList,
     updatePolicyController,
+    getHeatmapGoodput,
   };
 };

@@ -25,6 +25,7 @@ export interface LegendData {
 }
 
 const LATENCY_SUFFIX = 'ms';
+const GOODPUT_SUFFIX = 'mbps';
 
 const Heatmap: React.FC<HeatmapProps> = ({ data, legendData, selectedRows, dataSuffix }) => {
   const [tests, setTests] = useState<string[]>([]);
@@ -42,7 +43,12 @@ const Heatmap: React.FC<HeatmapProps> = ({ data, legendData, selectedRows, dataS
     data.forEach(test => {
       test.metrics.forEach(device => {
         devices.push(device.resourceId);
-        heatMapData[`${test.testId}_${device.resourceId}`] = dataSuffix === LATENCY_SUFFIX ? Number(device.keyedmap[0].ts[0].value).toFixed(2) : device.keyedmap[0].ts[0].value;
+        heatMapData[`${test.testId}_${device.resourceId}`] =
+          dataSuffix === LATENCY_SUFFIX
+            ? Number(device.keyedmap[0].ts[0].value).toFixed(2)
+            : dataSuffix === GOODPUT_SUFFIX
+            ? (Number(device.keyedmap[0].ts[0].value) / 1000).toString()
+            : device.keyedmap[0].ts[0].value;
         values.push(Number(Number(device.keyedmap[0].ts[0].value).toFixed(2)));
       });
     });
