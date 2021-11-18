@@ -22,6 +22,7 @@ interface IProps {
   disabled?: boolean;
   readOnly?: boolean;
   styles?: Object;
+  areaStyles?: Object;
   className?: string;
 }
 
@@ -171,6 +172,7 @@ const ExpresionComponent: React.FC<IProps> = (props: IProps) => {
           onKeyUp={setCaretPosition}
           onFocus={onFocus}
           onBlur={onBlur}
+          style={props.areaStyles}
         ></ExpresionArea>
         {values && (
           <ClickAwayListener onClickAway={onHideValues}>

@@ -55,3 +55,8 @@ export const EdgePriceValues: Mark[] = [
 export const ConnectionValues: string[] = ['VPC', 'VPN', 'DLA'];
 
 export const FirewallRegionsValues: ISelectedListItem<string>[] = [{ id: 'polo', value: 'polo', label: 'Polo Alto', icon: poloAltoIcon }];
+
+export enum GroupSelectFieldTypes {
+  EXT_IDS = 'extIds',
+  EXPR = 'expr',
+}

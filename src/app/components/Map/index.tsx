@@ -16,7 +16,7 @@ import VpcPanel from './PanelComponents/NodePanels/VpcPanel';
 import FooterAction from './FooterAction';
 import Graph from './Graph';
 import WedgePanel from './PanelComponents/NodePanels/WedgePanel';
-import { useGetTopology } from 'lib/api/http/useAxiosHook';
+import { useGetChainData } from 'lib/api/http/useAxiosHook';
 import { ErrorMessage } from '../Basic/ErrorMessage/ErrorMessage';
 import DevicePanel from './PanelComponents/NodePanels/DevicePanel';
 import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
@@ -26,7 +26,7 @@ interface IProps {}
 const Map: React.FC<IProps> = (props: IProps) => {
   const { topology } = useTopologyDataContext();
   const userContext = useContext<UserContextState>(UserContext);
-  const { response, loading, error, onGetChainData } = useGetTopology<ITopologyDataRes>();
+  const { response, loading, error, onGetChainData } = useGetChainData<ITopologyDataRes>();
   const [showPanelBar, setShowPanelBar] = React.useState<IPanelBar<TopologyPanelTypes>>({ show: false, type: null });
   const [showMetricksBar, setShowMetricks] = React.useState<IPanelBar<TopologyMetricsPanelTypes>>({ show: false, type: null });
   const [showFooter, setShowFooter] = React.useState<boolean>(true);

@@ -5,14 +5,15 @@ import SecondaryButton from 'app/components/Buttons/SecondaryButton';
 import { plusIcon } from 'app/components/SVGIcons/plusIcon';
 import { FormRow } from '../PolicyStep/styles';
 import { EditGroupItem } from '../../model';
-import { PolicySources, IEdgeGroup } from 'lib/api/ApiModels/Edges/apiModel';
 import ModalComponent from 'app/components/Modal';
-import NetworkEditor from '../Components/NetworkEditor';
 import { EmptyMessage } from '../Components/styles';
+import { ITopologyGroup, SelectorEvalType } from 'lib/api/ApiModels/Topology/endpoints';
+import { TopologyGroupTypesAsString } from 'lib/models/topology';
+import NetworkEditor from './NetworkEditor';
 
 interface Props {
-  data: IEdgeGroup[];
-  onChangeSites: (v: IEdgeGroup, index: number | null) => void;
+  data: ITopologyGroup[];
+  onChangeSites: (v: ITopologyGroup, index: number | null) => void;
   onDeleteGroup: (index: number) => void;
 }
 
@@ -20,11 +21,11 @@ const SitesStep: React.FC<Props> = (props: Props) => {
   const [showCreator, setShowCreator] = React.useState<boolean>(false);
   const [editItem, setEditItem] = React.useState<EditGroupItem>(null);
   const onAddGroup = () => {
-    setEditItem({ group: { name: '', type: PolicySources.MERAKI, items: [] }, index: null });
+    setEditItem({ group: { name: '', type: TopologyGroupTypesAsString.BRANCH_NETWORKS, evalType: SelectorEvalType.EXPR, extIds: [], expr: '' }, index: null });
     setShowCreator(true);
   };
 
-  const onEdit = (dataItem: IEdgeGroup, index: number) => {
+  const onEdit = (dataItem: ITopologyGroup, index: number) => {
     setEditItem({ group: dataItem, index: index });
     setShowCreator(true);
   };
@@ -33,9 +34,10 @@ const SitesStep: React.FC<Props> = (props: Props) => {
     props.onDeleteGroup(index);
   };
 
-  const onSave = (item: IEdgeGroup, index: number | null) => {
+  const onSave = (item: ITopologyGroup, index: number | null) => {
     setShowCreator(false);
-    props.onChangeSites(item, index);
+    console.log(item, index);
+    // props.onChangeSites(item, index);
   };
 
   const onClose = () => {
@@ -57,13 +59,13 @@ const SitesStep: React.FC<Props> = (props: Props) => {
           showHeader
           title="Create Network"
           showCloseButton
-          modalStyles={{ maxWidth: '580px', maxHeight: '80vh', padding: '40px' }}
+          modalStyles={{ maxWidth: '800px', maxHeight: '90vh', padding: '40px' }}
           useFadeAnimation
           id="sitesModalWindow"
           open={showCreator}
           onClose={onClose}
         >
-          <NetworkEditor data={editItem} onSave={onSave} />
+          <NetworkEditor data={editItem} onAddGroup={onSave} />
         </ModalComponent>
       )}
     </>

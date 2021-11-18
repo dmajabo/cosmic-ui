@@ -1,4 +1,4 @@
-import { IEdgeGroup } from 'lib/api/ApiModels/Edges/apiModel';
+import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
 
 export const EDGE_MAP_CONSTANTS = {
   svg: 'edgeMap',
@@ -18,7 +18,7 @@ export enum EdgeNodeType {
   TRANSIT = 'transit',
 }
 
-export interface ISvgEdgeGroup extends IEdgeGroup {
+export interface ISvgEdgeGroup extends ITopologyGroup {
   x: number;
   y: number;
   id: string;
@@ -60,7 +60,7 @@ export interface INodesObject {
   nodes: ISvgEdgeGroup[];
   scale: number;
 }
-export const buildNodes = (data: IEdgeGroup[], idPrefix: string): INodesObject => {
+export const buildNodes = (data: ITopologyGroup[], idPrefix: string): INodesObject => {
   const svgSize = document.getElementById(EDGE_MAP_CONSTANTS.svg).getBoundingClientRect();
   let offsetY = svgSize.height / 2;
   let totalHeight = 0;
@@ -99,9 +99,9 @@ export const buildtransitNodes = (data: string[]): ISvgTransitNode[] => {
   return _arr;
 };
 
-const getItemHeight = (group: IEdgeGroup): number => {
+const getItemHeight = (group: ITopologyGroup): number => {
   const _h = EdgeNodeStyles.header + EdgeNodeStyles.headerPadding;
   const _n = EdgeNodeStyles.nameHeight + EdgeNodeStyles.namePadding;
-  const _c = group.items.length * EdgeNodeStyles.siteHeight + (group.items.length - 1) * EdgeNodeStyles.sitepadding;
+  const _c = 0; // group.items.length * EdgeNodeStyles.siteHeight + (group.items.length - 1) * EdgeNodeStyles.sitepadding;
   return _h + _n + _c + EdgeNodeStyles.nodePaddingBottom;
 };

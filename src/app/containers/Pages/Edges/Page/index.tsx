@@ -22,7 +22,7 @@ const MainPage: React.FC<Props> = (props: Props) => {
   const { loading, error, response, onGet } = useGet();
   const { response: resRegions, onGet: onGetRegions } = useGet<IAwsRegionsRes>();
   const { response: resAccounts, onGet: onGetAccounts } = useGet<IAccountsRes>();
-  const { loading: postLoading, error: postError, response: postResponce, onPost } = usePost();
+  const { loading: postLoading, error: postError, response: postResponce } = usePost();
   const { edges } = useEdgesDataContext();
   const [showEditorPage, setShowEditorPage] = React.useState(false);
   const [edgeDataItem, setEdgeDataItem] = React.useState<IEdgeModel>(null);

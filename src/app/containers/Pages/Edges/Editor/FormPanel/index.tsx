@@ -15,7 +15,8 @@ import ExpandedIcon from 'app/components/Basic/ExpandedIcon';
 import PanelHeader from 'app/containers/Pages/AutomationPage/Components/PanelHeader';
 import SecondaryButton from 'app/components/Buttons/SecondaryButton';
 import accordionStyles from 'app/containers/Pages/AutomationPage/styles/AccordionStyles';
-import { IEdgeModel, IEdgeGroup } from 'lib/api/ApiModels/Edges/apiModel';
+import { IEdgeModel } from 'lib/api/ApiModels/Edges/apiModel';
+import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
 
 interface Props {
   dataItem: IEdgeModel;
@@ -24,8 +25,8 @@ interface Props {
   onChangeField: (value: any, field: string, step: EdgesStepperTypes) => void;
   onChangeGeneralField: (value: any, field: string) => void;
   onChangeTransitionDataField: (value: any, field: string) => void;
-  onChangeSitesField: (value: IEdgeGroup, index: number | null) => void;
-  onChangeAppsField: (value: IEdgeGroup, index: number | null) => void;
+  onChangeSitesField: (value: ITopologyGroup, index: number | null) => void;
+  onChangeAppsField: (value: ITopologyGroup, index: number | null) => void;
   onDeleteSitesGroup: (index: number) => void;
   onDeleteAppsGroup: (index: number) => void;
   onToogleAccordionItem: (id: EdgesStepperTypes) => void;

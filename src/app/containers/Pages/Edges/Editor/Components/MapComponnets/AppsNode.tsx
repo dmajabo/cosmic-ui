@@ -16,9 +16,9 @@ const AppsNode: React.FC<Props> = (props: Props) => {
         <NodeName>AWS-Account</NodeName>
       </NodeHeader>
       <GroupName>{props.data.name}</GroupName>
-      {props.data.items.map((it, index) => (
+      {/* {props.data.items.map((it, index) => (
         <Office key={`office${index}`}>{it}</Office>
-      ))}
+      ))} */}
     </NodeWrapper>
   );
 };

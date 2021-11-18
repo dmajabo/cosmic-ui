@@ -1,3 +1,6 @@
+import { IDevice, IVm } from 'lib/models/topology';
+import { ITopologyGroup, VendorTypes } from '../Topology/endpoints';
+
 export enum PolicyDestinations {
   DEST_TRUE = 'dest_true',
   DEST_FAlSE = 'dest_false',
@@ -7,21 +10,10 @@ export enum PolicyActions {
   CUSTOM = 'custom',
 }
 
-export enum PolicySources {
-  AWS = 'aws',
-  MERAKI = 'meraki',
-}
-
 export interface IEdgePolicy {
-  source: PolicySources;
+  source: VendorTypes;
   destination: PolicyDestinations;
   action: PolicyActions;
-}
-
-export interface IEdgeGroup {
-  name: string;
-  type: PolicySources;
-  items: any[];
 }
 
 export enum ValidationFields {
@@ -50,7 +42,21 @@ export interface IEdgeModel {
   tags: string[];
   firewall: boolean;
   firewallRegion: string;
-  sites: IEdgeGroup[];
-  apps: IEdgeGroup[];
+  sites: ITopologyGroup[];
+  apps: ITopologyGroup[];
   policies: IEdgePolicy[] | null;
+}
+
+export interface ISitesRes {
+  devices: IDevice[];
+  totalCount: 0;
+  pageSize: 2;
+  pageNum: 0;
+}
+
+export interface IAppsRes {
+  apps: IVm[];
+  totalCount: 0;
+  pageSize: 2;
+  pageNum: 0;
 }
