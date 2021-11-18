@@ -96,7 +96,6 @@ const MatMultipleSelect: React.FC<Props> = (props: Props) => {
         value={textValue}
         onChange={handleChange}
         MenuProps={{ classes: { paper: classes.menuRoot, list: classes.menuList } }}
-        classes={{ root: classes.root, select: classes.select }}
         className={props.selectClaassName}
       >
         {props.options.map((option, index) => {
