@@ -4,11 +4,11 @@ import { entitiesIcon } from 'app/components/SVGIcons/entities';
 import { editIcon } from 'app/components/SVGIcons/edit';
 import { TopologyPanelTypes, ITopologySelectTypes, TOPOLOGY_SELECT_VALUES } from 'lib/models/topology';
 import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
-import Dropdown from 'app/components/Inputs/Dropdown';
 import { ISelectedListItem } from 'lib/models/general';
 import IconButton from 'app/components/Buttons/IconButton';
 import { refreshIcon } from 'app/components/SVGIcons/refresh';
 import SecondaryButton from 'app/components/Buttons/SecondaryButton';
+import MatSelect from 'app/components/Inputs/MatSelect';
 
 interface IProps {
   onRefresh: () => void;
@@ -33,7 +33,15 @@ const HeadeerAction: React.FC<IProps> = (props: IProps) => {
   return (
     <Wrapper>
       <Side margin="0 auto 0 0">
-        <Dropdown label="Edge metric" selectedValue={topology?.selectedType || null} values={TOPOLOGY_SELECT_VALUES} onSelectValue={onSelect} />
+        <MatSelect
+          styles={{ display: 'flex', alignItems: 'center', minWidth: '260px', maxWidth: '400px', height: '40px', minHeight: '40px' }}
+          labelStyles={{ flexShrink: 0, margin: '0 8px 0 0', textTransform: 'none' }}
+          id="edge_metric"
+          labelBefore="Edge metric"
+          value={topology && topology.selectedType ? topology.selectedType : TOPOLOGY_SELECT_VALUES[0]}
+          options={TOPOLOGY_SELECT_VALUES}
+          onChange={onSelect}
+        />
       </Side>
       <Side margin="0 0 0 auto">
         <IconButton styles={{ margin: '0' }} icon={refreshIcon} title="Zoom in" onClick={props.onRefresh} />

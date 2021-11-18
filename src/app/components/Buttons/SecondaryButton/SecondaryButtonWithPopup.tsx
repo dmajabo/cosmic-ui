@@ -5,7 +5,7 @@ import { SecondaryButtonWrapper, SecondaryButtonStyles } from './styles';
 import { ClickAwayListener } from '@material-ui/core';
 
 interface IProps {
-  label: JSX.Element | string;
+  label?: JSX.Element | string;
   icon?: JSX.Element;
   disabled?: boolean;
   styles?: Object;
@@ -28,7 +28,7 @@ const SecondaryButtonWithPopup: React.FC<IProps> = (props: IProps) => {
     <ClickAwayListener onClickAway={onHidePopup}>
       <SecondaryButtonWrapper style={props.wrapStyles}>
         <SecondaryButtonStyles className={open ? 'active' : ''} withoutBorder={props.withoutBorder} style={props.styles} disabled={props.disabled} onClick={onShowPopup}>
-          <Label margin={props.icon ? '0 12px 0 0' : '0'}>{props.label}</Label>
+          {props.label && <Label margin={props.icon ? '0 12px 0 0' : '0'}>{props.label}</Label>}
           {props.icon && <IconWrapper icon={props.icon} />}
         </SecondaryButtonStyles>
         {open && <>{props.children}</>}

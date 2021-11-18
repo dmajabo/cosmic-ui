@@ -16,6 +16,10 @@ export const PagingStyles = makeStyles(
         '& .MuiPagination-ul li': {
           height: '40px',
         },
+        '& .MuiPaginationItem-ellipsis': {
+          width: '32px',
+          margin: 0,
+        },
         '& .MuiButtonBase-root': {
           fontWeight: 500,
           fontSize: '16px',
@@ -24,6 +28,9 @@ export const PagingStyles = makeStyles(
           color: 'var(--_disabledTextColor)',
           '&:hover:not(.Mui-disabled)': {
             color: 'var(--_primaryColor)',
+          },
+          '& .MuiTouchRipple-root': {
+            display: 'none',
           },
         },
         '& .MuiPaginationItem-root': {

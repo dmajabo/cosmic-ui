@@ -10,8 +10,17 @@ interface Props {
   disabled: boolean;
   pageSize: number;
   currentPage: number;
+  pageSizeValues?: number[];
   onChangePage: (_page: number) => void;
   onChangePageSize: (_size: number, _page?: number) => void;
+  hideLabelAfter?: boolean;
+  boundaryCount?: number;
+  siblingCount?: number;
+  showFirstButton?: boolean;
+  showLastButton?: boolean;
+  pagingWrapStyles?: Object;
+  selectWrapStyles?: Object;
+  hideRange?: boolean;
 }
 
 const Paging: React.FC<Props> = (props: Props) => {
@@ -34,33 +43,33 @@ const Paging: React.FC<Props> = (props: Props) => {
   };
 
   return (
-    <PagingWrapper>
+    <PagingWrapper style={props.pagingWrapStyles}>
       <Pagination
         className={classes.root}
         onChange={onChangePage}
         disabled={!props.count}
         count={Math.ceil(props.count / props.pageSize)}
-        boundaryCount={1}
+        boundaryCount={props.boundaryCount || props.boundaryCount === 0 ? props.boundaryCount : 1}
         page={props.currentPage}
         defaultPage={1}
-        siblingCount={1}
-        showFirstButton
-        showLastButton
+        siblingCount={props.siblingCount || props.siblingCount === 0 ? props.siblingCount : 1}
+        showFirstButton={props.showFirstButton !== undefined ? props.showFirstButton : true}
+        showLastButton={props.showLastButton !== undefined ? props.showLastButton : true}
       />
-      <SelectWrapper>
+      <SelectWrapper style={props.selectWrapStyles}>
         <Dropdown
           wrapStyles={{ width: '100px', flexShrink: 0 }}
           selectStyles={{ borderColor: 'var(--_primaryButtonBorder)' }}
           labelBefore={<SelectLabel margin="auto 12px auto 0">View</SelectLabel>}
-          labelAfter={<SelectLabel margin="auto 0 auto 12px">items per page</SelectLabel>}
+          labelAfter={!props.hideLabelAfter ? <SelectLabel margin="auto 0 auto 12px">items per page</SelectLabel> : null}
           disabled={props.disabled}
           selectedValue={props.pageSize}
-          values={[20, 50, 100]}
+          values={props.pageSizeValues || [20, 50, 100]}
           onSelectValue={onPageSizeChange}
           position="above"
         />
       </SelectWrapper>
-      <DisplayRange count={props.count} currentPage={props.currentPage} pageSize={props.pageSize} />
+      {!props.hideRange && <DisplayRange count={props.count} currentPage={props.currentPage} pageSize={props.pageSize} />}
     </PagingWrapper>
   );
 };

@@ -1,14 +1,13 @@
 import React from 'react';
 import { Required } from '../FormTextInput/styles';
 import { InputLabel } from '../styles/Label';
-import { TextInputWrapper } from '../TextInput/styles';
 import MenuItem from '@material-ui/core/MenuItem';
 import useDebounce from 'lib/hooks/useDebounce';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { arrowBottomIcon } from 'app/components/SVGIcons/arrows';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { SelectStyles } from './SelectStyles';
-import { DisplayValue, ValueLabel } from './styles';
+import { TextInputWrapper, DisplayValue, ValueLabel } from './styles';
 import { ISelectedListItem } from 'lib/models/general';
 
 interface Props {
@@ -21,7 +20,9 @@ interface Props {
   disabled?: boolean;
   readOnly?: boolean;
   styles?: Object;
+  labelStyles?: Object;
   selectClaassName?: string;
+  labelBefore?: string;
 }
 
 const MatSelect: React.FC<Props> = (props: Props) => {
@@ -53,8 +54,14 @@ const MatSelect: React.FC<Props> = (props: Props) => {
   return (
     <TextInputWrapper style={props.styles}>
       {props.label && (
-        <InputLabel htmlFor={props.id} disabled={props.disabled || props.readOnly}>
+        <InputLabel style={props.labelStyles} htmlFor={props.id} disabled={props.disabled || props.readOnly}>
           {props.label}
+          {props.required && <Required>*</Required>}
+        </InputLabel>
+      )}
+      {props.labelBefore && (
+        <InputLabel style={props.labelStyles} htmlFor={props.id} disabled={props.disabled || props.readOnly}>
+          {props.labelBefore}
           {props.required && <Required>*</Required>}
         </InputLabel>
       )}
@@ -90,7 +97,6 @@ const MatSelect: React.FC<Props> = (props: Props) => {
         value={textValue}
         onChange={handleChange}
         MenuProps={{ classes: { paper: classes.menuRoot, list: classes.menuList } }}
-        classes={{ root: classes.root, select: classes.select }}
         className={props.selectClaassName}
       >
         {props.options.map((option, index) => {

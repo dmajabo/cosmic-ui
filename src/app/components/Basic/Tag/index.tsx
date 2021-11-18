@@ -23,7 +23,9 @@ const Tag: React.FC<Props> = ({ text, subText, index, hideClearButton, styles, b
   return (
     <TagStyles style={styles}>
       <TagBg bgColor={bgColor} opacity={opacity} />
-      <TagText color={textColor}>{text}</TagText>
+      <TagText className={hideClearButton ? 'textSimple' : ''} color={textColor}>
+        {text}
+      </TagText>
       {subText && (
         <TagText isSubText color={subTextColor}>
           {subText}

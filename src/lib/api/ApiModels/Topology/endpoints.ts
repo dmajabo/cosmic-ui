@@ -1,4 +1,46 @@
-import { ITopologyGroupsData, ITopologyMapData } from 'lib/models/topology';
+import { IBaseEntity } from 'lib/models/general';
+import { IDevice, IVnet, IWedge, TopologyGroupTypesAsNumber, TopologyGroupTypesAsString } from 'lib/models/topology';
+
+export enum SelectorEvalType {
+  EXPR = 'EXPR',
+  SPECIFIC = 'SPECIFIC',
+}
+
+export enum VendorTypes {
+  MERAKI = 'MERAKI',
+  AWS = 'AWS',
+}
+
+export interface ITopologyGroup {
+  id?: string;
+  name: string | null;
+  type: TopologyGroupTypesAsString | TopologyGroupTypesAsNumber | null;
+  evalType: SelectorEvalType;
+  extIds: string[];
+  expr: string | null;
+}
+
+export interface ITopologyGroupsData {
+  groups: ITopologyGroup[];
+}
+
+export interface IOrganization extends IBaseEntity<string> {
+  name: string;
+  description: string;
+  extId: string;
+  extType: string;
+  extUrl: string;
+  vendorType: VendorTypes;
+  vnets: IVnet[];
+  wedges: IWedge[];
+  oedges: any[];
+  devices: IDevice[];
+}
+
+export interface ITopologyMapData {
+  count: number;
+  organizations: IOrganization[];
+}
 
 export interface ITopologyDataRes {
   groups: ITopologyGroupsData;

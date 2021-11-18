@@ -9,12 +9,13 @@ import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
 import FormPanel from './FormPanel';
 import EdgesMap from './EdgesMap';
-import { IEdgeModel, IEdgeGroup, ValidationFields } from 'lib/api/ApiModels/Edges/apiModel';
+import { IEdgeModel, ValidationFields } from 'lib/api/ApiModels/Edges/apiModel';
+import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
 
 interface Props {
   dataItem: IEdgeModel;
   onClose: () => void;
-  onSave: () => void;
+  onSave: (_data: IEdgeModel) => void;
 }
 
 const Editor: React.FC<Props> = (props: Props) => {
@@ -65,7 +66,7 @@ const Editor: React.FC<Props> = (props: Props) => {
     setDataItem(_dataItem);
   };
 
-  const onChangeSitesField = (value: IEdgeGroup, index: number | null) => {
+  const onChangeSitesField = (value: ITopologyGroup, index: number | null) => {
     const _dataItem: IEdgeModel = jsonClone(dataItem);
     if (!index && index !== 0) {
       _dataItem.sites.push(value);
@@ -85,7 +86,7 @@ const Editor: React.FC<Props> = (props: Props) => {
     setDataItem(_dataItem);
   };
 
-  const onChangeAppsField = (value: IEdgeGroup, index: number | null) => {
+  const onChangeAppsField = (value: ITopologyGroup, index: number | null) => {
     const _dataItem: IEdgeModel = jsonClone(dataItem);
     if (!index && index !== 0) {
       _dataItem.apps.push(value);
@@ -115,7 +116,7 @@ const Editor: React.FC<Props> = (props: Props) => {
   };
 
   const onSave = () => {
-    props.onSave();
+    props.onSave(dataItem);
   };
 
   if (loading) {
@@ -133,7 +134,9 @@ const Editor: React.FC<Props> = (props: Props) => {
       <PanelColumn width="50vw" maxWidth="260px">
         {steps && steps.length && <Stepper formatValue={valueNumberFormat} valueFormattedField="index" selectedStep={selectedStep && selectedStep.id} steps={steps} onSelectStep={onSelectStep} />}
       </PanelColumn>
-      <MainColumn>{dataItem && <EdgesMap name={dataItem.name} sites={dataItem.sites} apps={dataItem.apps} selectedRegions={dataItem.deployment.region_code} />}</MainColumn>
+      <MainColumn>
+        {dataItem && <EdgesMap name={dataItem.name} sites={dataItem.sites} apps={dataItem.apps} selectedRegions={dataItem && dataItem.deployment && dataItem.deployment.region_code} />}
+      </MainColumn>
       <PanelColumn width="50vw" maxWidth="680px" padding="0">
         <FormPanel
           onClose={onClose}

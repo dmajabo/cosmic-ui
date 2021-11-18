@@ -4,15 +4,23 @@ import React from 'react';
 import { ToggleButtonWrapper } from './styles';
 
 interface IProps {
-  value: ISelectedListItem<string>;
+  value: ISelectedListItem<string> | string;
   isSelected: boolean;
-  onClick: (value: ISelectedListItem<string>) => void;
+  onClick: (value: ISelectedListItem<string> | string) => void;
   styles?: Object;
 }
 const ToogleButton: React.FC<IProps> = ({ value, isSelected, styles, onClick }) => {
   const handlerClick = () => {
     onClick(value);
   };
+
+  if (typeof value === 'string') {
+    return (
+      <ToggleButtonWrapper className={isSelected ? 'toogleselected' : ''} style={styles} isSelected={isSelected} onClick={handlerClick}>
+        {value}
+      </ToggleButtonWrapper>
+    );
+  }
   return (
     <ToggleButtonWrapper className={isSelected ? 'toogleselected' : ''} style={styles} isSelected={isSelected} onClick={handlerClick}>
       {value.icon && <IconWrapper styles={{ height: '14px', width: '16px', margin: '0 10px 0 0' }} icon={value.icon} />}

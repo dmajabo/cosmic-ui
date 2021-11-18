@@ -1,6 +1,5 @@
 import { ROUTE } from 'lib/Routes/model';
 import { Switch, Route, Redirect, useRouteMatch } from 'react-router-dom';
-import PolicyPage from 'app/containers/Pages/PolicyPage';
 import AnalyticsPage from 'app/containers/Pages/AnalyticsPage';
 import DashboardPage from 'app/containers/Pages/DashboardPage';
 import TopologyPage from 'app/containers/Pages/TopologyPage';
@@ -19,7 +18,6 @@ export default function BaseRouting() {
         <Route exact path={`${match.path}${ROUTE.dashboard}`} component={DashboardPage} />
         <Route exact path={`${match.path}${ROUTE.topology}`} component={TopologyPage} />
         <Route exact path={`${match.path}${ROUTE.edges}`} component={Edges} />
-        <Route exact path={`${match.path}${ROUTE.policy}`} component={PolicyPage} />
         <Route exact path={`${match.path}${ROUTE.performanceDashboard}`} component={PerformanceDashboardPage} />
         <Route exact path={`${match.path}${ROUTE.sessions}`} component={SessionsPage} />
         <Route exact path={`${match.path}${ROUTE.analytics}`} component={AnalyticsPage} />

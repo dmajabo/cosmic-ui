@@ -5,6 +5,26 @@ export const ModalFooter = styled.div`
   height: 60px;
 `;
 
+interface ModalRowProps {
+  margin?: string;
+  align?: 'center' | 'flex-start' | 'flex-end';
+}
+export const ModalRow = styled.div<ModalRowProps>`
+  margin: ${props => props.margin || '10px 0 20px 0'};
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: ${props => props.align || 'flex-start'};
+`;
+
+export const ModalLabel = styled.div`
+  font-family: 'DMSans';
+  font-style: normal;
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 21px;
+  color: var(--_primaryColor);
+`;
+
 export const ModalContent = styled.div`
   display: flex;
   flex-direction: column;

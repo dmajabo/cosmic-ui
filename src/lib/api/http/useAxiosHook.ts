@@ -184,7 +184,7 @@ export const useDelete = <T = any>(): IApiRes<T> => {
   return { response, error, loading, onDelete };
 };
 
-export const useGetTopology = <T = any>(): IApiRes<T> => {
+export const useGetChainData = <T = any>(): IApiRes<T> => {
   const [response, setResponse] = React.useState<T>(null);
   const [error, setError] = React.useState<AxiosError>(null);
   const [loading, setloading] = React.useState<boolean>(false);

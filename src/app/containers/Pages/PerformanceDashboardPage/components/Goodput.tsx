@@ -78,12 +78,10 @@ export const Goodput: React.FC<GoodputProps> = ({ selectedRows, timeRange }) => 
     const getHeatMapGoodput = async () => {
       const promises = selectedRows.map(row => apiClient.getHeatmapGoodput(row.sourceNetwork, row.destination, timeRange, row.id));
       Promise.all(promises).then(values => {
-        const heatMapGoodput: HeatMapData[] = values.map(item => {
-          return {
-            testId: item.testId,
-            metrics: item.avgMetric.resourceMetric,
-          };
-        });
+        const heatMapGoodput: HeatMapData[] = values.map(item => ({
+          testId: item.testId,
+          metrics: item.avgMetric.resourceMetric,
+        }));
         setHeatMapGoodput(heatMapGoodput);
       });
     };

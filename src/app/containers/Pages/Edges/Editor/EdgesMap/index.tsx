@@ -6,12 +6,12 @@ import { zoomCenterIcon, zoomInIcon, zoomOutIcon } from 'app/components/SVGIcons
 import { buildNodes, buildtransitNodes, EdgeNodeType, EDGE_MAP_CONSTANTS, INodesObject, ISvgTransitNode } from './helpers';
 import EdgeNode from './EdgeNode';
 import { useEdgeZoom } from './useEdgeZoom';
-import { IEdgeGroup } from 'lib/api/ApiModels/Edges/apiModel';
+import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
 
 interface Props {
   name: string;
-  sites: IEdgeGroup[];
-  apps: IEdgeGroup[];
+  sites: ITopologyGroup[];
+  apps: ITopologyGroup[];
   selectedRegions: string[];
 }
 

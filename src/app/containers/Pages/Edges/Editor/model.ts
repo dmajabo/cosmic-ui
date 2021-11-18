@@ -27,12 +27,12 @@ export const createNewEdge = (): IEdgeModel => ({
   deployment: {
     controller_name: '',
     region_code: [],
+    firewall: false,
+    firewallRegion: '',
   },
   price: null,
   connection: [],
-  tags: '',
-  firewall: false,
-  firewallRegion: '',
+  tags: [],
   sites: [],
   apps: [],
   policies: null,
@@ -55,3 +55,8 @@ export const EdgePriceValues: Mark[] = [
 export const ConnectionValues: string[] = ['VPC', 'VPN', 'DLA'];
 
 export const FirewallRegionsValues: ISelectedListItem<string>[] = [{ id: 'polo', value: 'polo', label: 'Polo Alto', icon: poloAltoIcon }];
+
+export enum GroupSelectFieldTypes {
+  EXT_IDS = 'extIds',
+  EXPR = 'expr',
+}

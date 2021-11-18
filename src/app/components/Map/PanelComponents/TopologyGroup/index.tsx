@@ -1,7 +1,7 @@
 import React from 'react';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { ciscoMerakiLogoIcon } from 'app/components/SVGIcons/topologyIcons/ciscoMerakiLogo';
-import { ITopologyGroup, TopologyGroupTypesAsNumber, TopologyGroupTypesAsString } from 'lib/models/topology';
+import { TopologyGroupTypesAsNumber, TopologyGroupTypesAsString } from 'lib/models/topology';
 import { Content, GroupField, GroupWrapper } from './styles';
 import { editIcon } from 'app/components/SVGIcons/edit';
 import { dublicateIcon } from 'app/components/SVGIcons/dublicate';
@@ -10,6 +10,7 @@ import { applicationIcon } from 'app/components/SVGIcons/topologyIcons/applicati
 import { PopupContent } from 'app/components/Buttons/SettingsButton/PopupItemStyles';
 import PopupItem from 'app/components/Buttons/SettingsButton/PopupItem';
 import SettingsButton from 'app/components/Buttons/SettingsButton';
+import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
 
 interface IProps {
   group: ITopologyGroup;

@@ -7,17 +7,25 @@ import { ClickAwayListener } from '@material-ui/core';
 import { useAuth0 } from '@auth0/auth0-react';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { UserRole as UserRoleData } from 'lib/api/ApiModels/Account/account';
+import Toogle from '../Inputs/Toogle';
+import { useGeneralDataContext } from 'lib/hooks/General/useGeneralDataContext';
+import { Themes } from 'utils/appTheme';
 interface Props {
   onOpenAbout: (value: boolean) => void;
 }
 
 export const UserComponent: React.FC<Props> = (props: Props) => {
   const [showPopup, setShowPopup] = React.useState<boolean>(false);
+  const { general } = useGeneralDataContext();
   const { logout } = useAuth0();
   const userContext = useContext<UserContextState>(UserContext);
 
   const onLogOut = () => {
     logout({ returnTo: window.location.origin });
+  };
+
+  const onSetTheme = (value: Themes) => {
+    general.onChangeTheme(value);
   };
 
   const onShowPopup = () => {
@@ -49,6 +57,7 @@ export const UserComponent: React.FC<Props> = (props: Props) => {
         <ClickAwayListener onClickAway={onClosePopup}>
           <span>
             <PopupContainer styles={{ position: 'absolute', top: 'calc(100% + 20px)', left: '0', padding: '6px 0' }}>
+              <Toogle simple selectedValue={general.theme} values={[Themes.DARK, Themes.LIGHT]} onChange={onSetTheme} />
               <PopupLinkItem onClick={onOpenAbout}>About</PopupLinkItem>
               <PopupLinkItem onClick={onLogOut}>Logout</PopupLinkItem>
             </PopupContainer>
