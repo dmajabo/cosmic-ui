@@ -6,20 +6,26 @@ import { getAccountIcon } from '../AccountForm/helper';
 import { successCheckMarkIcon } from 'app/components/SVGIcons/statusIcons';
 import { editIcon } from 'app/components/SVGIcons/edit';
 import SecondaryButton from 'app/components/Buttons/SecondaryButton';
+import { deleteIcon } from 'app/components/SVGIcons/delete';
 
 interface Props {
   dataItem: IMeraki_Account | IAWS_Account;
   onEdit: (item: IMeraki_Account | IAWS_Account) => void;
+  onDelete: (id: string) => void;
 }
 const AccountItem: React.FC<Props> = (props: Props) => {
   const onEdit = () => {
     props.onEdit(props.dataItem);
+  };
+  const onDelete = () => {
+    props.onDelete(props.dataItem.id);
   };
   return (
     <AccountItemWrapper>
       <AccountItemHeader>
         <IconWrapper styles={{ margin: '0 16px 0 0' }} width="48px" height="48px" icon={getAccountIcon(props.dataItem.vendor)} />
         <AccountItemTitle>{props.dataItem.name}</AccountItemTitle>
+        <IconWrapper classes="visibleOnHover" onClick={onDelete} styles={{ position: 'absolute', top: '-5px', right: '0' }} width="20px" height="20px" icon={deleteIcon()} />
       </AccountItemHeader>
       <AccountItemDescription>{props.dataItem.description}</AccountItemDescription>
       <AccountItemFooter>

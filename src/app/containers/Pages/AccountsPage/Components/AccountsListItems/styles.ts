@@ -12,6 +12,12 @@ export const AccountItemWrapper = styled.div`
   background: var(--_primaryBg);
   padding: 20px;
   border-radius: 6px;
+  & .visibleOnHover {
+    display: none;
+  }
+  &:hover .visibleOnHover {
+    display: inline-block;
+  }
   &:nth-child(4n) {
     margin-right: 0;
   }
@@ -23,6 +29,7 @@ export const AccountItemHeader = styled.div`
   flex-shrink: 0;
   margin-bottom: 8px;
   height: 48px;
+  position: relative;
 `;
 
 export const AccountItemTitle = styled.span`

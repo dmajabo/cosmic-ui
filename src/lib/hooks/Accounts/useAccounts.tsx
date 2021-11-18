@@ -7,6 +7,7 @@ export interface AccountsContextType {
   regions: ISelectedListItem<string>[];
   onSetData: (res: (IMeraki_Account | IAWS_Account)[]) => void;
   onAddAccount: (res: IMeraki_Account | IAWS_Account) => void;
+  onDeleteAccount: (id: string) => void;
   onSetRegions: (res: IAwsRegion[]) => void;
 }
 export function useAccountsContext(): AccountsContextType {
@@ -36,6 +37,11 @@ export function useAccountsContext(): AccountsContextType {
     setData(_items);
   };
 
+  const onDeleteAccount = (id: string) => {
+    const _items: (IMeraki_Account | IAWS_Account)[] = data.filter(it => it.id !== id);
+    setData(_items);
+  };
+
   const onSetRegions = (res: IAwsRegion[]) => {
     if (!res || !res.length) {
       setRegions([]);
@@ -49,6 +55,7 @@ export function useAccountsContext(): AccountsContextType {
     regions,
     onSetData,
     onAddAccount,
+    onDeleteAccount,
     onSetRegions,
   };
 }

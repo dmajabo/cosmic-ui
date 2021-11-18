@@ -89,6 +89,7 @@ interface ILoadProps {
   top?: string;
   bottom?: string;
   opacity?: string;
+  pointerEvents?: string;
 }
 export const AbsLoaderWrapper = styled.div<ILoadProps>`
   display: flex;
@@ -98,7 +99,7 @@ export const AbsLoaderWrapper = styled.div<ILoadProps>`
   left: 0;
   width: ${props => props.width || '100%'};
   height: ${props => props.height || '100%'};
-  pointer-events: none;
+  pointer-events: ${props => props.pointerEvents || 'none'};
   z-index: 100;
   opacity: ${props => props.opacity || '0.5'};
 `;

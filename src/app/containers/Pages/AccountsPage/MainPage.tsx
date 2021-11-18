@@ -4,7 +4,7 @@ import { IModal } from 'lib/models/general';
 import ModalComponent from 'app/components/Modal';
 import AccountForm from './Components/AccountForm/AccountForm';
 import { useAccountsDataContext } from 'lib/hooks/Accounts/useAccountsDataContext';
-import { useGet } from 'lib/api/http/useAxiosHook';
+import { useDelete, useGet } from 'lib/api/http/useAxiosHook';
 import { AccountVendorTypes, IAccountsRes, IAwsRegionsRes, IAWS_Account, IMeraki_Account } from 'lib/api/ApiModels/Accounts/apiModel';
 import { AccountsApi } from 'lib/api/ApiModels/Accounts/endpoints';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
@@ -24,8 +24,9 @@ const MainPage: React.FC<IProps> = (props: IProps) => {
   const userContext = useContext<UserContextState>(UserContext);
   const { response, loading, error, onGet } = useGet<IAccountsRes>();
   const { response: resRegions, onGet: onGetRegions } = useGet<IAwsRegionsRes>();
+  const { response: resDelete, loading: deleteLoading, onDelete } = useDelete<any>();
   const [showModal, setShowModal] = React.useState<IModal<IMeraki_Account | IAWS_Account>>({ show: false, dataItem: null, isEditMode: false });
-
+  const [tempDeleteId, setTempDeleteId] = React.useState<string>(null);
   React.useEffect(() => {
     onTryToLoadData();
     onTryLoadRegions();
@@ -37,6 +38,13 @@ const MainPage: React.FC<IProps> = (props: IProps) => {
       accounts.onSetData(_data);
     }
   }, [response]);
+
+  React.useEffect(() => {
+    if (resDelete && tempDeleteId) {
+      setTempDeleteId(null);
+      accounts.onDeleteAccount(tempDeleteId);
+    }
+  }, [resDelete]);
 
   React.useEffect(() => {
     if (resRegions && resRegions.awsRegions) {
@@ -66,6 +74,11 @@ const MainPage: React.FC<IProps> = (props: IProps) => {
     setShowModal({ show: true, dataItem: item, isEditMode: true });
   };
 
+  const onDeleteAccount = (id: string) => {
+    setTempDeleteId(id);
+    onTryDelete(id);
+  };
+
   const handleClose = () => {
     setShowModal({ show: false, dataItem: null, isEditMode: false });
   };
@@ -78,13 +91,17 @@ const MainPage: React.FC<IProps> = (props: IProps) => {
     await onGetRegions(AccountsApi.getAllAwsRegions(), userContext.accessToken!);
   };
 
+  const onTryDelete = async (id: string) => {
+    await onDelete(AccountsApi.deleteAccounts(id), userContext.accessToken!);
+  };
+
   return (
     <>
       <PageWrapperStyles>
         {!loading && !error && accounts.data && accounts.data.length ? <PageHeaderRow onCreateAccount={onCreateAccount} /> : null}
         {!loading && !error && accounts.data && (
           <ContentWrapper>
-            {accounts.data.length ? <AccountsListItems onEditAccount={onEditAccount} /> : null}
+            {accounts.data.length ? <AccountsListItems onEditAccount={onEditAccount} onDeleteAccount={onDeleteAccount} /> : null}
             {!accounts.data.length ? <AccountsEmptyPage onConnect={onCreateAccount} /> : null}
           </ContentWrapper>
         )}
@@ -93,8 +110,8 @@ const MainPage: React.FC<IProps> = (props: IProps) => {
             {error.message}
           </ErrorMessage>
         )}
-        {loading && (
-          <AbsLoaderWrapper width="100%" height="100%">
+        {(loading || deleteLoading) && (
+          <AbsLoaderWrapper width="100%" height="100%" pointerEvents="all">
             <LoadingIndicator margin="auto" />
           </AbsLoaderWrapper>
         )}
