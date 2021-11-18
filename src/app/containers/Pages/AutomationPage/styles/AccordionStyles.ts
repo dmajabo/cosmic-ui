@@ -40,6 +40,12 @@ const accordionStyles = makeStyles(
         '& .MuiAccordionSummary-content': {
           margin: '0 0 0 0 !important',
           alignItems: 'center',
+          flexDirection: 'column',
+        },
+        '& .MuiAccordionSummary-expandIconWrapper': {
+          position: 'absolute',
+          top: '32px',
+          right: '16px',
         },
         '& .Mui-expanded': {
           margin: '0 0 0 0 !important',

@@ -25,7 +25,7 @@ export const StepStaus = styled.div`
   font-size: 12px;
   line-height: 23px;
   padding-left: 12px;
-  margin: 0 30px 0 auto;
+  margin: auto 30px auto auto;
   color: var(--_successColor);
   flex-shrink: 0;
   text-transform: capitalize;

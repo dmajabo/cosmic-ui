@@ -29,6 +29,8 @@ export enum ValidationFields {
 export interface IDeployment {
   controller_name: string;
   region_code: string[];
+  firewall: boolean;
+  firewallRegion: string;
 }
 
 export interface IEdgeModel {
@@ -40,8 +42,6 @@ export interface IEdgeModel {
   price?: number;
   connection: string[];
   tags: string[];
-  firewall: boolean;
-  firewallRegion: string;
   sites: ITopologyGroup[];
   apps: ITopologyGroup[];
   policies: IEdgePolicy[] | null;

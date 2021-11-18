@@ -2,16 +2,19 @@ import React from 'react';
 import { TableWrapperStyles } from 'app/components/Basic/Table/styles';
 import { TableStyles } from 'app/components/Basic/Table/TableStyles';
 import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
-import { ciscoMerakiLogoIcon } from 'app/components/SVGIcons/topologyIcons/ciscoMerakiLogo';
-import { awsIcon } from 'app/components/SVGIcons/topologyIcons/aws';
-import IconWrapper from 'app/components/Buttons/IconWrapper';
+// import { ciscoMerakiLogoIcon } from 'app/components/SVGIcons/topologyIcons/ciscoMerakiLogo';
+// import { awsIcon } from 'app/components/SVGIcons/topologyIcons/aws';
+// import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { CellContent } from './styles';
 import SettingsButton from 'app/components/Buttons/SettingsButton';
 import { PopupContent } from 'app/components/Buttons/SettingsButton/PopupItemStyles';
 import PopupItem from 'app/components/Buttons/SettingsButton/PopupItem';
 import { editIcon } from 'app/components/SVGIcons/edit';
 import { deleteIcon } from 'app/components/SVGIcons/delete';
-import { ITopologyGroup, VendorTypes } from 'lib/api/ApiModels/Topology/endpoints';
+import {
+  ITopologyGroup,
+  // VendorTypes,
+} from 'lib/api/ApiModels/Topology/endpoints';
 
 interface Props {
   data: ITopologyGroup[];
@@ -30,25 +33,25 @@ const FormTable: React.FC<Props> = ({ data, onEditGroup, onDeleteGroup }) => {
     onDeleteGroup(index);
   };
 
-  const getTypeIcon = (type: VendorTypes) => {
-    if (type === VendorTypes.MERAKI) {
-      return (
-        <CellContent>
-          <IconWrapper width="24px" height="24px" styles={{ margin: '0 12px 0 0' }} icon={ciscoMerakiLogoIcon(24)} />
-          Cisco Meraki
-        </CellContent>
-      );
-    }
-    if (type === VendorTypes.AWS) {
-      return (
-        <CellContent>
-          <IconWrapper width="24px" height="24px" styles={{ margin: '0 12px 0 0' }} icon={awsIcon(24)} />
-          AWS
-        </CellContent>
-      );
-    }
-    return <CellContent>{type}</CellContent>;
-  };
+  // const getTypeIcon = (type: VendorTypes) => {
+  //   if (type === VendorTypes.MERAKI) {
+  //     return (
+  //       <CellContent>
+  //         <IconWrapper width="24px" height="24px" styles={{ margin: '0 12px 0 0' }} icon={ciscoMerakiLogoIcon(24)} />
+  //         Cisco Meraki
+  //       </CellContent>
+  //     );
+  //   }
+  //   if (type === VendorTypes.AWS) {
+  //     return (
+  //       <CellContent>
+  //         <IconWrapper width="24px" height="24px" styles={{ margin: '0 12px 0 0' }} icon={awsIcon(24)} />
+  //         AWS
+  //       </CellContent>
+  //     );
+  //   }
+  //   return <CellContent>{type}</CellContent>;
+  // };
   return (
     <TableWrapperStyles>
       <TableContainer className={classes.container}>

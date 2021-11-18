@@ -1,5 +1,63 @@
 import styled from 'styled-components';
 
+export const AccordionHeaderPanel = styled.div`
+  display: flex;
+  width: 100%;
+  flex-shrink: 0;
+`;
+
+export const PreviewWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  flex-shrink: 0;
+`;
+
+interface RowProps {
+  margin?: string;
+}
+export const PreviewRow = styled.div<RowProps>`
+  display: flex;
+  margin: ${props => props.margin || '0'};
+  width: 100%;
+  flex-shrink: 0;
+  font-family: 'DMSans';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 18px;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+`;
+
+interface PreviewTextProps {
+  color?: string;
+  margin?: string;
+}
+export const PreviewText = styled.span<PreviewTextProps>`
+  display: inline-block;
+  margin: ${props => props.margin || '0'};
+  color: ${props => props.color || 'var(--_primaryColor)'};
+  max-width: 100%;
+  &.label {
+    flex-shrink: 0;
+    max-width: 50%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+`;
+
+export const PreviewTag = styled.span`
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  margin: 3px 6px 3px 0;
+  border-radius: 30px;
+  padding: 5px 20px;
+  background: var(--_tableBg);
+`;
+
 export const ColumnPanelHeader = styled.div`
   white-space: nowrap;
   width: 100%;

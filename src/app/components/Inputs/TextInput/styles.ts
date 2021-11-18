@@ -53,7 +53,7 @@ export const TextArea = styled.textarea<Props>`
 export const TagsWrapper = styled.div`
   width: 100%;
   height: auto;
-  min-height: 50px;
+  min-height: 40px;
   background: var(--_primaryButtonBg);
   border-radius: 6px;
   outline: 0;
@@ -67,14 +67,16 @@ export const TagsWrapper = styled.div`
 export const TagsInput = styled.input`
   ${InputStyles}
   height: 30px;
+  line-height: 16px;
   width: auto;
-  min-width: 100;
+  min-width: 100px;
   max-width: 100%;
-  padding: 0;
+  padding: 3px 8px;
   background: transparent;
   outline: 0;
   border: none;
   margin: 3px 6px 3px 0;
+  border-radius: 4px;
 `;
 
 export const Tag = styled.span`

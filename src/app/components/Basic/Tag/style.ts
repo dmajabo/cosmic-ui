@@ -15,9 +15,10 @@ export const TagStyles = styled.span`
   border-radius: 6px;
   outline: 0;
   border: none;
-  padding: 9px 12px;
+  padding: 8px 12px;
   margin: 3px 6px 3px 0;
   flex-shrink: 0;
+  align-items: center;
 `;
 
 export const TagBg = styled.span<Props>`
