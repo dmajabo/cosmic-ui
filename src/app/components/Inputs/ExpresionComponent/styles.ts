@@ -6,7 +6,7 @@ export const ExpresionArea = styled.textarea`
   width: 100%;
   border: 1px solid;
   padding: 12px 20px;
-  border-color: var(--_disabledButtonColor);
+  border-color: var(--_defaultInputBorder);
   border-radius: 6px;
   min-height: 200px;
   font-weight: 500;
@@ -40,7 +40,6 @@ export const ExpresionWrapper = styled.div`
     }
     ${ExpresionArea} {
       color: var(--_primaryColor);
-      border-color: var(--_primaryColor);
     }
   }
   &.error {

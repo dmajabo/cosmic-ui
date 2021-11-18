@@ -28,11 +28,17 @@ export interface IPanelBar<T> {
 
 export enum ITopologySelectTypes {
   TRAFIC = 'trafic',
+  PACKET_LOSS = 'packet_loss',
+  LATENCY = 'latency',
+  JITTER = 'jitter',
 }
 
 export const TOPOLOGY_SELECT_VALUES: ISelectedListItem<ITopologySelectTypes>[] = [
   { id: null, value: null, label: 'None' },
   { id: ITopologySelectTypes.TRAFIC, value: ITopologySelectTypes.TRAFIC, label: 'Trafic' },
+  { id: ITopologySelectTypes.PACKET_LOSS, value: ITopologySelectTypes.PACKET_LOSS, label: 'Packet loss' },
+  { id: ITopologySelectTypes.LATENCY, value: ITopologySelectTypes.LATENCY, label: 'Latency' },
+  { id: ITopologySelectTypes.JITTER, value: ITopologySelectTypes.JITTER, label: 'Jitter' },
 ];
 
 export enum ILinkStatus {

@@ -30,7 +30,7 @@ const MainPage: React.FC<Props> = (props: Props) => {
   React.useEffect(() => {
     onTryLoadEdges();
     onTryLoadRegions();
-    onTryToAccounts();
+    onTryLoadAccounts();
   }, []);
 
   React.useEffect(() => {
@@ -90,7 +90,7 @@ const MainPage: React.FC<Props> = (props: Props) => {
     await onGetRegions(AccountsApi.getAllAwsRegions(), userContext.accessToken!);
   };
 
-  const onTryToAccounts = async () => {
+  const onTryLoadAccounts = async () => {
     await onGetAccounts(AccountsApi.getAccounts(), userContext.accessToken!);
   };
 

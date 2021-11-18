@@ -5,6 +5,7 @@ export const DisplayValue = styled.div`
   align-items: center;
   height: 100%;
   width: 100%;
+  vertical-align: middle;
 `;
 export const ValueLabel = styled.span`
   max-width: 100%;

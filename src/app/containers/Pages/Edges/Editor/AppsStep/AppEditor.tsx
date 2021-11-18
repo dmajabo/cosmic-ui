@@ -30,7 +30,7 @@ const AppEditor: React.FC<Props> = (props: Props) => {
   const userContext = React.useContext<UserContextState>(UserContext);
   const [dataItemIndex] = React.useState<number | null>(props.data.index);
   const [dataItem, setDataItem] = React.useState<ITopologyGroup>(props.data.group);
-  const [radioGroupValue, setRadioGroupValue] = React.useState<GroupSelectFieldTypes>(GroupSelectFieldTypes.EXT_IDS);
+  const [radioGroupValue, setRadioGroupValue] = React.useState<GroupSelectFieldTypes>(GroupSelectFieldTypes.EXPR);
   const { response: loadGroupRes, loading, onGet: onLoadGroup } = useGet<ITopologyGroup>();
   const { response: postRes, loading: postLoading, onPost } = usePost<ITopologyGroup, IBaseEntity<string>>();
   const { response: postUpdateRes, loading: postUpdateLoading, onPut: onUpdate } = usePut<ITopologyGroup, ITopologyGroup>();
@@ -66,7 +66,6 @@ const AppEditor: React.FC<Props> = (props: Props) => {
 
   React.useEffect(() => {
     if (loadGroupRes) {
-      console.log(loadGroupRes, dataItemIndex);
       props.onAddGroup(loadGroupRes, dataItemIndex);
     }
   }, [loadGroupRes]);
@@ -183,21 +182,14 @@ const AppEditor: React.FC<Props> = (props: Props) => {
         <TextInput id="networkName" name="name" value={dataItem.name} label="Name" onChange={onChangeName} styles={{ margin: '0 0 20px 0' }} required inputStyles={{ height: '50px' }} />
         <ModalRow>
           <RadioButton
-            checked={radioGroupValue === GroupSelectFieldTypes.EXT_IDS}
-            onValueChange={handleChange}
-            value={GroupSelectFieldTypes.EXT_IDS}
-            label="Use List With Apps"
-            name="radio-buttons"
-            wrapstyles={{ margin: '0 30px 0 0' }}
-          />
-          <RadioButton
             checked={radioGroupValue === GroupSelectFieldTypes.EXPR}
             onValueChange={handleChange}
             value={GroupSelectFieldTypes.EXPR}
             name="radio-buttons"
             label="Use Expression"
-            // wrapstyles={{ margin: selectedValue === TriggersTypes.NEW_TRIGGER ? '0 auto 12px 0' : '0 auto 20px 0' }}
+            wrapstyles={{ margin: '0 30px 0 0' }}
           />
+          <RadioButton checked={radioGroupValue === GroupSelectFieldTypes.EXT_IDS} onValueChange={handleChange} value={GroupSelectFieldTypes.EXT_IDS} label="Use List With Apps" name="radio-buttons" />
         </ModalRow>
         {radioGroupValue === GroupSelectFieldTypes.EXPR && <ExpresionWrapper error={exprError} value={dataItem.expr} type={dataItem.type} onChangeField={onChangeExpresion} />}
 

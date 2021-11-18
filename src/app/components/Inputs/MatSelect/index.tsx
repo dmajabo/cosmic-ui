@@ -21,7 +21,9 @@ interface Props {
   disabled?: boolean;
   readOnly?: boolean;
   styles?: Object;
+  labelStyles?: Object;
   selectClaassName?: string;
+  labelBefore?: string;
 }
 
 const MatSelect: React.FC<Props> = (props: Props) => {
@@ -53,8 +55,14 @@ const MatSelect: React.FC<Props> = (props: Props) => {
   return (
     <TextInputWrapper style={props.styles}>
       {props.label && (
-        <InputLabel htmlFor={props.id} disabled={props.disabled || props.readOnly}>
+        <InputLabel style={props.labelStyles} htmlFor={props.id} disabled={props.disabled || props.readOnly}>
           {props.label}
+          {props.required && <Required>*</Required>}
+        </InputLabel>
+      )}
+      {props.labelBefore && (
+        <InputLabel style={props.labelStyles} htmlFor={props.id} disabled={props.disabled || props.readOnly}>
+          {props.labelBefore}
           {props.required && <Required>*</Required>}
         </InputLabel>
       )}

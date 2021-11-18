@@ -11,10 +11,10 @@ export const SelectStyles = makeStyles(
         width: '100%',
         color: 'var(--_primaryColor)',
         background: 'var(--_primaryBg)',
+        border: '1px solid var(--_defaultInputBorder) !important',
+        boxSizing: 'border-box',
         '& .MuiOutlinedInput-notchedOutline': {
-          borderRadius: '6px',
-          borderWidth: '1px !important',
-          borderColor: 'var(--_defaultInputBorder) !important',
+          display: 'none !important',
         },
         '& .icon svg': {
           transform: 'rotate(0deg)',
@@ -48,12 +48,13 @@ export const SelectStyles = makeStyles(
         paddingTop: '8px !important',
         paddingBottom: '8px !important',
         paddingLeft: '16px !important',
-        minHeight: '40px ',
+        minHeight: '38px !important',
         boxSizing: 'border-box',
         color: 'var(--_primaryColor) !important',
         fontSize: '14px !important',
         fontFamily: 'DMSans !important',
         fontWeight: 500,
+        lineHeight: '20px',
         '&:focus': {
           background: 'transparent !important',
         },
