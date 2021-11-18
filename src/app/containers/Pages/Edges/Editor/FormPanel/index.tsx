@@ -24,13 +24,14 @@ interface Props {
   dataItem: IEdgeModel;
   steps: IStepperItem<EdgesStepperTypes>[];
   selectedStep: IStepperItem<EdgesStepperTypes>;
+  saveDisabled: boolean;
   onChangeField: (value: any, field: string, step: EdgesStepperTypes) => void;
   onChangeGeneralField: (value: any, field: string) => void;
   onChangeTransitionDataField: (value: any, field: string) => void;
-  onChangeSitesField: (value: ITopologyGroup, index: number | null) => void;
-  onChangeAppsField: (value: ITopologyGroup, index: number | null) => void;
-  onDeleteSitesGroup: (index: number) => void;
-  onDeleteAppsGroup: (index: number) => void;
+  onChangeSitesField: (value: ITopologyGroup) => void;
+  onChangeAppsField: (value: ITopologyGroup) => void;
+  onDeleteSitesGroup: (id: string) => void;
+  onDeleteAppsGroup: (id: string) => void;
   onToogleAccordionItem: (id: EdgesStepperTypes) => void;
   onClose: () => void;
   onSave: () => void;
@@ -91,7 +92,7 @@ const FormPanel: React.FC<Props> = (props: Props) => {
             </AccordionHeaderPanel>
           </AccordionSummary>
           <AccordionDetails className={AccordionStyles.deteilItemEdges}>
-            <SitesStep data={props.dataItem.sites} onChangeSites={props.onChangeSitesField} onDeleteGroup={props.onDeleteSitesGroup} />
+            <SitesStep data={props.dataItem.associatedDeviceGroup} onChangeSites={props.onChangeSitesField} onDeleteGroup={props.onDeleteSitesGroup} />
           </AccordionDetails>
         </Accordion>
         <Accordion className={AccordionStyles.accContainer} expanded={!!(props.selectedStep && props.selectedStep.id === EdgesStepperTypes.APPS)} onChange={onAccordionChange(EdgesStepperTypes.APPS)}>
@@ -108,7 +109,7 @@ const FormPanel: React.FC<Props> = (props: Props) => {
             </AccordionHeaderPanel>
           </AccordionSummary>
           <AccordionDetails className={AccordionStyles.deteilItemEdges}>
-            <AppsStep data={props.dataItem.apps} onChangeApps={props.onChangeAppsField} onDeleteGroup={props.onDeleteAppsGroup} />
+            <AppsStep data={props.dataItem.associatedAppGroup} onChangeApps={props.onChangeAppsField} onDeleteGroup={props.onDeleteAppsGroup} />
           </AccordionDetails>
         </Accordion>
         <Accordion
@@ -172,7 +173,7 @@ const FormPanel: React.FC<Props> = (props: Props) => {
       </PanelContent>
       <PanelFotter>
         <SecondaryButton styles={{ height: '100%', margin: '0 10px 0 0' }} label="Cancel" onClick={props.onClose} />
-        <PrimaryButton styles={{ height: '100%', margin: '0 0 0 10px' }} label="CREATE EDGE" onClick={props.onSave} />
+        <PrimaryButton disabled={props.saveDisabled} styles={{ height: '100%', margin: '0 0 0 10px' }} label="CREATE EDGE" onClick={props.onSave} />
       </PanelFotter>
     </>
   );

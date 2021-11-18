@@ -8,7 +8,6 @@ import PrimaryButton from 'app/components/Buttons/PrimaryButton';
 import { awsIcon } from 'app/components/SVGIcons/topologyIcons/aws';
 import { ITopologyGroup, SelectorEvalType, TopologyGroupApi } from 'lib/api/ApiModels/Topology/endpoints';
 import RadioButton from 'app/components/Inputs/RadioButton';
-import { GroupSelectFieldTypes } from '../model';
 import ExpresionWrapper from '../Components/ExpresionWrapper';
 import { ModalContent, ModalFooter, ModalRow } from '../Components/styles';
 import { useGet, usePost, usePut } from 'lib/api/http/useAxiosHook';
@@ -30,7 +29,7 @@ const AppEditor: React.FC<Props> = (props: Props) => {
   const userContext = React.useContext<UserContextState>(UserContext);
   const [dataItemIndex] = React.useState<number | null>(props.data.index);
   const [dataItem, setDataItem] = React.useState<ITopologyGroup>(props.data.group);
-  const [radioGroupValue, setRadioGroupValue] = React.useState<GroupSelectFieldTypes>(GroupSelectFieldTypes.EXPR);
+  const [radioGroupValue, setRadioGroupValue] = React.useState<SelectorEvalType>(props.data.group.evalType || SelectorEvalType.SPECIFIC);
   const { response: loadGroupRes, loading, onGet: onLoadGroup } = useGet<ITopologyGroup>();
   const { response: postRes, loading: postLoading, onPost } = usePost<ITopologyGroup, IBaseEntity<string>>();
   const { response: postUpdateRes, loading: postUpdateLoading, onPut: onUpdate } = usePut<ITopologyGroup, ITopologyGroup>();
@@ -91,7 +90,7 @@ const AppEditor: React.FC<Props> = (props: Props) => {
     setDataItem(_item);
   };
 
-  const handleChange = (checked: boolean, value: GroupSelectFieldTypes) => {
+  const handleChange = (checked: boolean, value: SelectorEvalType) => {
     if (value === radioGroupValue) return;
     setRadioGroupValue(value);
   };
@@ -182,18 +181,18 @@ const AppEditor: React.FC<Props> = (props: Props) => {
         <TextInput id="networkName" name="name" value={dataItem.name} label="Name" onChange={onChangeName} styles={{ margin: '0 0 20px 0' }} required inputStyles={{ height: '50px' }} />
         <ModalRow>
           <RadioButton
-            checked={radioGroupValue === GroupSelectFieldTypes.EXPR}
-            onValueChange={handleChange}
-            value={GroupSelectFieldTypes.EXPR}
-            name="radio-buttons"
-            label="Use Expression"
             wrapstyles={{ margin: '0 30px 0 0' }}
+            checked={radioGroupValue === SelectorEvalType.SPECIFIC}
+            onValueChange={handleChange}
+            value={SelectorEvalType.SPECIFIC}
+            label="Use Specific Apps"
+            name="radio-buttons"
           />
-          <RadioButton checked={radioGroupValue === GroupSelectFieldTypes.EXT_IDS} onValueChange={handleChange} value={GroupSelectFieldTypes.EXT_IDS} label="Use List With Apps" name="radio-buttons" />
+          <RadioButton checked={radioGroupValue === SelectorEvalType.EXPR} onValueChange={handleChange} value={SelectorEvalType.EXPR} name="radio-buttons" label="Use Expression" />
         </ModalRow>
-        {radioGroupValue === GroupSelectFieldTypes.EXPR && <ExpresionWrapper error={exprError} value={dataItem.expr} type={dataItem.type} onChangeField={onChangeExpresion} />}
+        {radioGroupValue === SelectorEvalType.EXPR && <ExpresionWrapper error={exprError} value={dataItem.expr} type={dataItem.type} onChangeField={onChangeExpresion} />}
 
-        {radioGroupValue === GroupSelectFieldTypes.EXT_IDS && (
+        {radioGroupValue === SelectorEvalType.SPECIFIC && (
           <AppsGridWrapper
             pageSize={pageSize}
             currentPage={currentPage}

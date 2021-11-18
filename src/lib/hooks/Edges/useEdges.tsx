@@ -2,17 +2,22 @@ import React from 'react';
 import { AccountVendorTypes, IAwsRegion, IAWS_Account, IMeraki_Account } from 'lib/api/ApiModels/Accounts/apiModel';
 import { jsonClone } from 'lib/helpers/cloneHelper';
 import { IEdgeModel } from 'lib/api/ApiModels/Edges/apiModel';
+import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
 
 export interface EdgesContextType {
   dataReadyToShow: boolean;
   data: any;
   searchQuery: string;
+  groups: ITopologyGroup[];
   regions: IAwsRegion[];
   awsAccounts: string[];
   onSetData: (res: IEdgeModel[]) => void;
+  onUpdateGroups: (res: ITopologyGroup) => void;
+  onDeleteGroup: (id: string) => void;
   onSearchChange: (v: string | null) => void;
   onUpdateEdges: (res: IEdgeModel) => void;
   onDeleteEdge: (id: string) => void;
+  onSetGroups: (res: ITopologyGroup[]) => void;
   onSetRegions: (res: IAwsRegion[]) => void;
   onSetAccounts: (res: (IMeraki_Account | IAWS_Account)[]) => void;
 }
@@ -20,6 +25,7 @@ export function useEdgesContext(): EdgesContextType {
   const [dataReadyToShow, setDataReadyToShow] = React.useState<boolean>(false);
   const [data, setData] = React.useState<IEdgeModel[]>(null);
   const [searchQuery, setSearchQuery] = React.useState<string>('');
+  const [groups, setGroups] = React.useState<ITopologyGroup[]>([]);
   const [regions, setRegions] = React.useState<IAwsRegion[]>([]);
   const [awsAccounts, setAwsAccounts] = React.useState<string[]>([]);
 
@@ -31,6 +37,30 @@ export function useEdgesContext(): EdgesContextType {
     }
     setData(res);
     setDataReadyToShow(true);
+  };
+
+  const onSetGroups = (res: ITopologyGroup[]) => {
+    if (!res || !res.length) {
+      setGroups([]);
+      return;
+    }
+    setGroups(res);
+  };
+
+  const onUpdateGroups = (res: ITopologyGroup) => {
+    const _groups: ITopologyGroup[] = groups && groups.length ? jsonClone(groups) : [];
+    const _index = _groups.findIndex(it => it.id === res.id);
+    if (_index !== -1) {
+      _groups.splice(_index, 1, res);
+    } else {
+      _groups.push(res);
+    }
+    setGroups(_groups);
+  };
+
+  const onDeleteGroup = (id: string) => {
+    const _groups: ITopologyGroup[] = groups.filter(it => it.id !== id);
+    setGroups(_groups);
   };
 
   const onSearchChange = (v: string | null) => {
@@ -73,10 +103,14 @@ export function useEdgesContext(): EdgesContextType {
   return {
     dataReadyToShow,
     data,
+    groups,
     searchQuery,
     regions,
     awsAccounts,
     onSetData,
+    onSetGroups,
+    onUpdateGroups,
+    onDeleteGroup,
     onSearchChange,
     onSetRegions,
     onSetAccounts,

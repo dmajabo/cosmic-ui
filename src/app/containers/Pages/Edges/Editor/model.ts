@@ -33,8 +33,8 @@ export const createNewEdge = (): IEdgeModel => ({
   price: null,
   connection: [],
   tags: [],
-  sites: [],
-  apps: [],
+  associatedDeviceGroup: [],
+  associatedAppGroup: [],
   policies: null,
 });
 
@@ -55,8 +55,3 @@ export const EdgePriceValues: Mark[] = [
 export const ConnectionValues: string[] = ['VPC', 'VPN', 'DLA'];
 
 export const FirewallRegionsValues: ISelectedListItem<string>[] = [{ id: 'polo', value: 'polo', label: 'Polo Alto', icon: poloAltoIcon }];
-
-export enum GroupSelectFieldTypes {
-  EXT_IDS = 'extIds',
-  EXPR = 'expr',
-}

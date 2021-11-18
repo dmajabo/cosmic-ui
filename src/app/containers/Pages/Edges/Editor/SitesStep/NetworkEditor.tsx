@@ -8,7 +8,6 @@ import { ciscoMerakiLogoIcon } from 'app/components/SVGIcons/topologyIcons/cisco
 import PrimaryButton from 'app/components/Buttons/PrimaryButton';
 import { ITopologyGroup, SelectorEvalType, TopologyGroupApi } from 'lib/api/ApiModels/Topology/endpoints';
 import RadioButton from 'app/components/Inputs/RadioButton';
-import { GroupSelectFieldTypes } from '../model';
 import ExpresionWrapper from '../Components/ExpresionWrapper';
 import { ModalContent, ModalFooter, ModalRow } from '../Components/styles';
 import { useGet, usePost, usePut } from 'lib/api/http/useAxiosHook';
@@ -19,7 +18,7 @@ import { IDevice } from 'lib/models/topology';
 import SitesGridWrapper from '../Components/SitesGridWrapper';
 import LoadingIndicator from 'app/components/Loading';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
-import { IBaseEntity } from 'lib/models/general';
+import { IBaseEntity, IObject } from 'lib/models/general';
 
 interface Props {
   data: EditGroupItem;
@@ -30,16 +29,18 @@ const NetworkEditor: React.FC<Props> = (props: Props) => {
   const userContext = React.useContext<UserContextState>(UserContext);
   const [dataItemIndex] = React.useState<number | null>(props.data.index);
   const [dataItem, setDataItem] = React.useState<ITopologyGroup>(props.data.group);
-  const [radioGroupValue, setRadioGroupValue] = React.useState<GroupSelectFieldTypes>(GroupSelectFieldTypes.EXPR);
+  const [radioGroupValue, setRadioGroupValue] = React.useState<SelectorEvalType>(props.data.group.evalType);
   const { response: loadGroupRes, loading, onGet: onLoadGroup } = useGet<ITopologyGroup>();
-  const { response: postRes, loading: postLoading, onPost } = usePost<ITopologyGroup, IBaseEntity<string>>();
-  const { response: postUpdateRes, loading: postUpdateLoading, onPut: onUpdate } = usePut<ITopologyGroup, ITopologyGroup>();
+  const { response: postRes, error: postError, loading: postLoading, onPost } = usePost<ITopologyGroup, IBaseEntity<string>>();
+  const { response: postUpdateRes, error: putError, loading: postUpdateLoading, onPut: onUpdate } = usePut<ITopologyGroup, ITopologyGroup>();
   const { loading: loadingDev, error: errorDev, response: responseDev, onGet: onLoadDevices } = useGet<ISitesRes>();
   const [exprError, setExprError] = React.useState<string | null>(null);
   const [devices, setDevices] = React.useState<IDevice[]>([]);
   const [totalCount, setTotalCount] = React.useState<number>(0);
   const [currentPage, setCurrentPage] = React.useState<number>(1);
   const [pageSize, setPageSize] = React.useState<number>(10);
+  const [resError, setResError] = React.useState<IObject<string>>({});
+
   React.useEffect(() => {
     onTryLoadDevices(pageSize, currentPage);
   }, []);
@@ -58,6 +59,24 @@ const NetworkEditor: React.FC<Props> = (props: Props) => {
   }, [postRes]);
 
   React.useEffect(() => {
+    if (postError) {
+      if (postError.code && postError.code.toString() === '2') {
+        const _obj: IObject<string> = resError ? { ...resError } : {};
+        setResError({ ..._obj, name: postError.message });
+      }
+    }
+  }, [postError]);
+
+  React.useEffect(() => {
+    if (putError) {
+      if (putError.code && putError.code.toString() === '2') {
+        const _obj: IObject<string> = resError ? { ...resError } : {};
+        setResError({ ..._obj, name: putError.message });
+      }
+    }
+  }, [putError]);
+
+  React.useEffect(() => {
     if (postUpdateRes && postUpdateRes.id) {
       onGetGroup(postUpdateRes.id);
     }
@@ -65,7 +84,6 @@ const NetworkEditor: React.FC<Props> = (props: Props) => {
 
   React.useEffect(() => {
     if (loadGroupRes) {
-      console.log(loadGroupRes, dataItemIndex);
       props.onAddGroup(loadGroupRes, dataItemIndex);
     }
   }, [loadGroupRes]);
@@ -74,9 +92,14 @@ const NetworkEditor: React.FC<Props> = (props: Props) => {
     const _item: ITopologyGroup = { ...dataItem };
     _item.name = v;
     setDataItem(_item);
+    if (resError && resError['name']) {
+      const _err = { ...resError };
+      delete _err.name;
+      setResError(_err);
+    }
   };
 
-  const handleChange = (checked: boolean, value: GroupSelectFieldTypes) => {
+  const handleChange = (checked: boolean, value: SelectorEvalType) => {
     if (value === radioGroupValue) return;
     setRadioGroupValue(value);
   };
@@ -178,21 +201,31 @@ const NetworkEditor: React.FC<Props> = (props: Props) => {
             <IconWrapper width="24px" height="24px" styles={{ position: 'absolute', top: 'calc(50% - 12px)', left: '20px', pointerEvents: 'none' }} icon={ciscoMerakiLogoIcon(24)} />
           </InputWrapper>
         </TextInputWrapper>
-        <TextInput id="networkName" name="name" value={dataItem.name} label="Name" onChange={onChangeName} styles={{ margin: '0 0 20px 0' }} required inputStyles={{ height: '50px' }} />
+        <TextInput
+          error={resError && resError['name'] ? resError['name'] : null}
+          id="networkName"
+          name="name"
+          value={dataItem.name}
+          label="Name"
+          onChange={onChangeName}
+          styles={{ margin: '0 0 20px 0' }}
+          required
+          inputStyles={{ height: '50px' }}
+        />
         <ModalRow>
           <RadioButton
-            checked={radioGroupValue === GroupSelectFieldTypes.EXPR}
-            onValueChange={handleChange}
-            value={GroupSelectFieldTypes.EXPR}
-            name="radio-buttons"
-            label="Use Expression"
             wrapstyles={{ margin: '0 30px 0 0' }}
+            checked={radioGroupValue === SelectorEvalType.SPECIFIC}
+            onValueChange={handleChange}
+            value={SelectorEvalType.SPECIFIC}
+            label="Use Specific Sites"
+            name="radio-buttons"
           />
-          <RadioButton checked={radioGroupValue === GroupSelectFieldTypes.EXT_IDS} onValueChange={handleChange} value={GroupSelectFieldTypes.EXT_IDS} label="Use List With Apps" name="radio-buttons" />
+          <RadioButton checked={radioGroupValue === SelectorEvalType.EXPR} onValueChange={handleChange} value={SelectorEvalType.EXPR} name="radio-buttons" label="Use Expression" />
         </ModalRow>
-        {radioGroupValue === GroupSelectFieldTypes.EXPR && <ExpresionWrapper error={exprError} value={dataItem.expr} type={dataItem.type} onChangeField={onChangeExpresion} />}
+        {radioGroupValue === SelectorEvalType.EXPR && <ExpresionWrapper error={exprError} value={dataItem.expr} type={dataItem.type} onChangeField={onChangeExpresion} />}
 
-        {radioGroupValue === GroupSelectFieldTypes.EXT_IDS && (
+        {radioGroupValue === SelectorEvalType.SPECIFIC && (
           <SitesGridWrapper
             pageSize={pageSize}
             currentPage={currentPage}

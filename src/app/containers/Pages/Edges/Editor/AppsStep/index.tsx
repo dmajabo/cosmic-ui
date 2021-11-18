@@ -10,18 +10,35 @@ import { EmptyMessage } from '../Components/styles';
 import { EditGroupItem } from '../../model';
 import { ITopologyGroup, SelectorEvalType } from 'lib/api/ApiModels/Topology/endpoints';
 import { TopologyGroupTypesAsString } from 'lib/models/topology';
+import { useEdgesDataContext } from 'lib/hooks/Edges/useEdgesDataContext';
 
 interface Props {
-  data: ITopologyGroup[];
+  data: string[];
   onChangeApps: (v: ITopologyGroup, index: number | null) => void;
-  onDeleteGroup: (index: number) => void;
+  onDeleteGroup: (id: string) => void;
 }
 
 const AppsStep: React.FC<Props> = (props: Props) => {
+  const { edges } = useEdgesDataContext();
   const [showCreator, setShowCreator] = React.useState<boolean>(false);
   const [editItem, setEditItem] = React.useState<EditGroupItem>(null);
+  const [groups, setGroups] = React.useState<ITopologyGroup[]>([]);
+
+  React.useEffect(() => {
+    if (!edges || !edges.groups || !edges.groups.length) return;
+    if (!props.data || !props.data.length) return;
+    const _arr: ITopologyGroup[] = [];
+    props.data.forEach(it => {
+      const _gr: ITopologyGroup = edges.groups.find(el => el.id === it);
+      if (_gr) {
+        _arr.push(_gr);
+      }
+    });
+    setGroups(_arr);
+  }, [props.data]);
+
   const onAddGroup = () => {
-    setEditItem({ group: { name: '', type: TopologyGroupTypesAsString.APPLICATION, evalType: SelectorEvalType.EXPR, extIds: [], expr: '' }, index: null });
+    setEditItem({ group: { name: '', type: TopologyGroupTypesAsString.APPLICATION, evalType: SelectorEvalType.SPECIFIC, extIds: [], expr: '' }, index: null });
     setShowCreator(true);
   };
 
@@ -30,14 +47,13 @@ const AppsStep: React.FC<Props> = (props: Props) => {
     setShowCreator(true);
   };
 
-  const onDelete = (index: number) => {
-    props.onDeleteGroup(index);
+  const onDelete = (id: string) => {
+    props.onDeleteGroup(id);
   };
 
   const onSave = (item: ITopologyGroup, index: number | null) => {
     setShowCreator(false);
-    console.log(item, index);
-    // props.onChangeApps(item, index);
+    props.onChangeApps(item, index);
   };
 
   const onClose = () => {
@@ -47,7 +63,7 @@ const AppsStep: React.FC<Props> = (props: Props) => {
     <>
       <PanelContentLabel>App Groups</PanelContentLabel>
       {props.data && props.data.length ? (
-        <FormTable data={props.data} onEditGroup={onEdit} onDeleteGroup={onDelete} />
+        <FormTable data={groups} onEditGroup={onEdit} onDeleteGroup={onDelete} />
       ) : (
         <EmptyMessage>There is no app groups yet. To create group click the button bellow.</EmptyMessage>
       )}

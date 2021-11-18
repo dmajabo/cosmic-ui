@@ -1,6 +1,6 @@
 import React from 'react';
 import { MainColumn, PanelColumn, Wrapper } from './styles';
-import { IStepperItem, valueNumberFormat } from 'app/components/Stepper/model';
+import { IStepperItem, StepperItemStateType, valueNumberFormat } from 'app/components/Stepper/model';
 import Stepper from 'app/components/Stepper';
 import { createNewEdge, EdgesStepperItems, EdgesStepperTypes } from './model';
 import { jsonClone } from 'lib/helpers/cloneHelper';
@@ -11,6 +11,7 @@ import FormPanel from './FormPanel';
 import EdgesMap from './EdgesMap';
 import { IEdgeModel, ValidationFields } from 'lib/api/ApiModels/Edges/apiModel';
 import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
+import { useEdgesDataContext } from 'lib/hooks/Edges/useEdgesDataContext';
 
 interface Props {
   dataItem: IEdgeModel;
@@ -19,10 +20,12 @@ interface Props {
 }
 
 const Editor: React.FC<Props> = (props: Props) => {
+  const { edges } = useEdgesDataContext();
   const [dataItem, setDataItem] = React.useState<IEdgeModel>(null);
   const [loading, setLoading] = React.useState<boolean>(true);
   const [steps, setSteps] = React.useState<IStepperItem<EdgesStepperTypes>[]>([]);
   const [selectedStep, setSelectedStep] = React.useState<IStepperItem<EdgesStepperTypes>>(null);
+  const [saveDisabled, setSavedisabled] = React.useState<boolean>(true);
 
   React.useEffect(() => {
     const _item = props.dataItem || createNewEdge();
@@ -33,6 +36,15 @@ const Editor: React.FC<Props> = (props: Props) => {
     setDataItem(_item);
     setLoading(false);
   }, []);
+
+  React.useEffect(() => {
+    const _isSomeStepEmpty = steps.some(it => it.state === StepperItemStateType.EMPTY);
+    if (_isSomeStepEmpty) {
+      setSavedisabled(true);
+    } else {
+      setSavedisabled(false);
+    }
+  }, [steps]);
 
   const onSelectStep = (step: IStepperItem<EdgesStepperTypes>) => {
     setSelectedStep(step);
@@ -66,42 +78,41 @@ const Editor: React.FC<Props> = (props: Props) => {
     setDataItem(_dataItem);
   };
 
-  const onChangeSitesField = (value: ITopologyGroup, index: number | null) => {
+  const onChangeSitesField = (value: ITopologyGroup) => {
     const _dataItem: IEdgeModel = jsonClone(dataItem);
-    if (!index && index !== 0) {
-      _dataItem.sites.push(value);
-    } else {
-      _dataItem.sites.splice(index, 1, value);
-    }
-    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.SITES, _dataItem.sites);
+    const _arrSet = new Set(_dataItem.associatedDeviceGroup);
+    _arrSet.add(value.id);
+    _dataItem.associatedDeviceGroup = Array.from(_arrSet);
+    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.SITES, _dataItem.associatedDeviceGroup);
+    edges.onUpdateGroups(value);
     setSteps(_items);
     setDataItem(_dataItem);
   };
 
-  const onDeleteSitesGroup = (index: number) => {
+  const onDeleteSitesGroup = (id: string) => {
     const _dataItem: IEdgeModel = jsonClone(dataItem);
-    _dataItem.sites.splice(index, 1);
-    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.SITES, _dataItem.sites);
+    _dataItem.associatedDeviceGroup = dataItem.associatedDeviceGroup.filter(it => it !== id);
+    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.SITES, _dataItem.associatedDeviceGroup);
+    edges.onDeleteGroup(id);
     setSteps(_items);
     setDataItem(_dataItem);
   };
 
-  const onChangeAppsField = (value: ITopologyGroup, index: number | null) => {
+  const onChangeAppsField = (value: ITopologyGroup) => {
     const _dataItem: IEdgeModel = jsonClone(dataItem);
-    if (!index && index !== 0) {
-      _dataItem.apps.push(value);
-    } else {
-      _dataItem.apps.splice(index, 1, value);
-    }
-    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.APPS, _dataItem.apps);
+    const _arrSet = new Set(_dataItem.associatedAppGroup);
+    _arrSet.add(value.id);
+    _dataItem.associatedAppGroup = Array.from(_arrSet);
+    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.APPS, _dataItem.associatedAppGroup);
+    edges.onUpdateGroups(value);
     setSteps(_items);
     setDataItem(_dataItem);
   };
 
-  const onDeleteAppsGroup = (index: number) => {
+  const onDeleteAppsGroup = (id: string) => {
     const _dataItem: IEdgeModel = jsonClone(dataItem);
-    _dataItem.apps.splice(index, 1);
-    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.APPS, _dataItem.apps);
+    _dataItem.associatedAppGroup = dataItem.associatedAppGroup.filter(it => it !== id);
+    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.APPS, _dataItem.associatedAppGroup);
     setSteps(_items);
     setDataItem(_dataItem);
   };
@@ -135,7 +146,14 @@ const Editor: React.FC<Props> = (props: Props) => {
         {steps && steps.length && <Stepper formatValue={valueNumberFormat} valueFormattedField="index" selectedStep={selectedStep && selectedStep.id} steps={steps} onSelectStep={onSelectStep} />}
       </PanelColumn>
       <MainColumn>
-        {dataItem && <EdgesMap name={dataItem.name} sites={dataItem.sites} apps={dataItem.apps} selectedRegions={dataItem && dataItem.deployment && dataItem.deployment.region_code} />}
+        {dataItem && (
+          <EdgesMap
+            name={dataItem.name}
+            sites={dataItem.associatedDeviceGroup}
+            apps={dataItem.associatedAppGroup}
+            selectedRegions={dataItem && dataItem.deployment && dataItem.deployment.region_code}
+          />
+        )}
       </MainColumn>
       <PanelColumn width="50vw" maxWidth="680px" padding="0">
         <FormPanel
@@ -144,6 +162,7 @@ const Editor: React.FC<Props> = (props: Props) => {
           steps={steps}
           dataItem={dataItem}
           selectedStep={selectedStep}
+          saveDisabled={saveDisabled}
           onChangeSitesField={onChangeSitesField}
           onChangeAppsField={onChangeAppsField}
           onChangeField={onChangeDataField}

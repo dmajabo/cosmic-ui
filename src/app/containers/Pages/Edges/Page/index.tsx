@@ -6,7 +6,7 @@ import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import { useEdgesDataContext } from 'lib/hooks/Edges/useEdgesDataContext';
 import Setuper from '../Setuper';
 import { PageWrapperStyles } from '../../Shared/styles';
-import { IEdgeModel } from 'lib/api/ApiModels/Edges/apiModel';
+import { IEdgeModel, IEdgesRes } from 'lib/api/ApiModels/Edges/apiModel';
 import Editor from '../Editor';
 import { useBreadCrumbDataContext } from 'lib/hooks/Breadcrumb/useBreadcrumbDataContext';
 import { EdgesBreadCrumbItemsType } from 'lib/hooks/Breadcrumb/models';
@@ -14,12 +14,14 @@ import { AccountsApi } from 'lib/api/ApiModels/Accounts/endpoints';
 import { IAccountsRes, IAwsRegionsRes } from 'lib/api/ApiModels/Accounts/apiModel';
 import { EdgesApi } from 'lib/api/ApiModels/Edges/edpoints';
 import EdgeList from '../EdgeList';
+import { ITopologyGroupsData, TopologyGroupApi } from 'lib/api/ApiModels/Topology/endpoints';
 interface Props {}
 
 const MainPage: React.FC<Props> = (props: Props) => {
   const userContext = React.useContext<UserContextState>(UserContext);
   const { breadcrumb } = useBreadCrumbDataContext();
-  const { loading, error, response, onGet } = useGet();
+  const { loading, error, response, onGet } = useGet<IEdgesRes>();
+  const { response: resGroupds, onGet: onGetGroups } = useGet<ITopologyGroupsData>();
   const { response: resRegions, onGet: onGetRegions } = useGet<IAwsRegionsRes>();
   const { response: resAccounts, onGet: onGetAccounts } = useGet<IAccountsRes>();
   const { loading: postLoading, error: postError, response: postResponce } = usePost();
@@ -29,15 +31,22 @@ const MainPage: React.FC<Props> = (props: Props) => {
 
   React.useEffect(() => {
     onTryLoadEdges();
+    onTryLoadGroups();
     onTryLoadRegions();
     onTryLoadAccounts();
   }, []);
 
   React.useEffect(() => {
-    if (response) {
-      edges.onSetData(response);
+    if (response && response.edgeps) {
+      edges.onSetData(response.edgeps);
     }
   }, [response]);
+
+  React.useEffect(() => {
+    if (resGroupds && resGroupds.groups) {
+      edges.onSetGroups(resGroupds.groups);
+    }
+  }, [resGroupds]);
 
   React.useEffect(() => {
     if (resRegions && resRegions.awsRegions) {
@@ -92,6 +101,10 @@ const MainPage: React.FC<Props> = (props: Props) => {
 
   const onTryLoadAccounts = async () => {
     await onGetAccounts(AccountsApi.getAccounts(), userContext.accessToken!);
+  };
+
+  const onTryLoadGroups = async () => {
+    await onGetGroups(TopologyGroupApi.getAllGroups(), userContext.accessToken!);
   };
 
   const onSaveEdge = async (_data: IEdgeModel) => {

@@ -1,3 +1,5 @@
+import { IBaseTotalCount } from 'lib/models/general';
+
 export enum AccountVendorTypes {
   AMAZON_AWS = 'AMAZON_AWS',
   CISCO_MERAKI = 'CISCO_MERAKI',
@@ -63,7 +65,6 @@ export interface IAwsRegion {
   long: number;
 }
 
-export interface IAwsRegionsRes {
+export interface IAwsRegionsRes extends IBaseTotalCount {
   awsRegions: IAwsRegion[];
-  totalCount: number;
 }

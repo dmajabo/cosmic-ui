@@ -102,6 +102,6 @@ export const buildtransitNodes = (data: string[]): ISvgTransitNode[] => {
 const getItemHeight = (group: ITopologyGroup): number => {
   const _h = EdgeNodeStyles.header + EdgeNodeStyles.headerPadding;
   const _n = EdgeNodeStyles.nameHeight + EdgeNodeStyles.namePadding;
-  const _c = 0; // group.items.length * EdgeNodeStyles.siteHeight + (group.items.length - 1) * EdgeNodeStyles.sitepadding;
+  const _c = group.extIds.length * EdgeNodeStyles.siteHeight + (group.extIds.length - 1) * EdgeNodeStyles.sitepadding;
   return _h + _n + _c + EdgeNodeStyles.nodePaddingBottom;
 };

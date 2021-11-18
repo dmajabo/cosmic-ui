@@ -19,7 +19,7 @@ import {
 interface Props {
   data: ITopologyGroup[];
   onEditGroup: (item: ITopologyGroup, index: number) => void;
-  onDeleteGroup: (index: number) => void;
+  onDeleteGroup: (id: string) => void;
 }
 
 const FormTable: React.FC<Props> = ({ data, onEditGroup, onDeleteGroup }) => {
@@ -29,8 +29,8 @@ const FormTable: React.FC<Props> = ({ data, onEditGroup, onDeleteGroup }) => {
     onEditGroup(dataItem, index);
   };
 
-  const onDelete = (index: number) => {
-    onDeleteGroup(index);
+  const onDelete = (id: string) => {
+    onDeleteGroup(id);
   };
 
   // const getTypeIcon = (type: VendorTypes) => {
@@ -79,10 +79,14 @@ const FormTable: React.FC<Props> = ({ data, onEditGroup, onDeleteGroup }) => {
                     <TableCell className={classes.tableCell}>{row.items.map(it => it).join(', ')}</TableCell> */}
                     <TableCell className={classes.tableCell}>
                       <CellContent>
-                        <SettingsButton buttonStyles={{ position: 'static', width: '20px', height: '100%', margin: 'auto' }} id={`tableRow${rowIndex}`} hoverIconColor="var(--_sHoverButtonColor)">
+                        <SettingsButton
+                          buttonStyles={{ position: 'static', width: '20px', height: '100%', margin: 'auto' }}
+                          id={`tableRow${row.id}${rowIndex}`}
+                          hoverIconColor="var(--_sHoverButtonColor)"
+                        >
                           <PopupContent>
                             <PopupItem label="Edit" icon={editIcon} onClick={() => onEdit(row, rowIndex)} />
-                            <PopupItem color="var(--_errorColor)" label="Delete" icon={deleteIcon()} onClick={() => onDelete(rowIndex)} />
+                            <PopupItem color="var(--_errorColor)" label="Delete" icon={deleteIcon()} onClick={() => onDelete(row.id)} />
                           </PopupContent>
                         </SettingsButton>
                       </CellContent>

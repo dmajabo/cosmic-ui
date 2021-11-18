@@ -90,7 +90,7 @@ export const usePost = <T = any, R = any>(): IApiRes<R> => {
       })
       .catch(err => {
         if (!isSubscribed) return;
-        if (err.response && err.response.data && err.response.data.message) {
+        if (err.response && err.response.data) {
           setError(err.response.data);
           return;
         }
@@ -130,7 +130,7 @@ export const usePut = <T = any, R = any>(): IApiRes<R> => {
       })
       .catch(err => {
         if (!isSubscribed) return;
-        if (err.response && err.response.data && err.response.data.message) {
+        if (err.response && err.response.data) {
           setError(err.response.data);
           return;
         }

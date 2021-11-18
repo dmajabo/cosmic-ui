@@ -7,7 +7,8 @@ export const updateSteps = (steps: IStepperItem<EdgesStepperTypes>[], dataItem: 
   _items.forEach((step, index) => {
     step.disabled = index !== 0 && _items[index - 1].disabled;
     if (step.id === EdgesStepperTypes.GENERAL) {
-      step.state = !dataItem.name ? StepperItemStateType.EMPTY : StepperItemStateType.COMPLETE;
+      const _completed = checkIsAnyFieldEmpty(dataItem, [ValidationFields.NAME, ValidationFields.CONNECTION, ValidationFields.TAGS]);
+      step.state = !_completed ? StepperItemStateType.EMPTY : StepperItemStateType.COMPLETE;
       return;
     }
     if (step.id === EdgesStepperTypes.SITES) {
@@ -23,9 +24,8 @@ export const updateSteps = (steps: IStepperItem<EdgesStepperTypes>[], dataItem: 
       return;
     }
     if (step.id === EdgesStepperTypes.TRANSIT) {
-      step.disabled = false;
-      // const _completed = checkIsStepCompleted(dataItem.edges);
-      // step.state = !_completed ? StepperItemStateType.EMPTY : StepperItemStateType.COMPLETE;
+      const _completed = checkIsAnyFieldEmpty(dataItem.deployment, [ValidationFields.CONTROLLER_NAME, ValidationFields.REGION_CODE]);
+      step.state = !_completed ? StepperItemStateType.EMPTY : StepperItemStateType.COMPLETE;
       return;
     }
     if (step.id === EdgesStepperTypes.POLICY) {

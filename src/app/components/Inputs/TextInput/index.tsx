@@ -4,6 +4,7 @@ import useDebounce from 'lib/hooks/useDebounce';
 import { Input, TextArea, TextInputWrapper } from './styles';
 import { InputLabel } from '../styles/Label';
 import { Required } from '../FormTextInput/styles';
+import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 
 interface IProps {
   id: string;
@@ -18,6 +19,7 @@ interface IProps {
   required?: boolean;
   area?: boolean;
   inputStyles?: Object;
+  error?: string;
 }
 
 const TextInput: React.FC<IProps> = (props: IProps) => {
@@ -74,6 +76,11 @@ const TextInput: React.FC<IProps> = (props: IProps) => {
           disabled={props.disabled}
           placeholder={props.placeholder}
         />
+      )}
+      {props.error && (
+        <ErrorMessage textAlign="left" margin="6px 0 0 0">
+          {props.error}
+        </ErrorMessage>
       )}
     </TextInputWrapper>
   );

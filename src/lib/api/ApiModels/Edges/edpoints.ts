@@ -1,5 +1,5 @@
 export const EdgesApi = {
-  getEdges: () => 'topo/api/v1/topology/cloud/edges', // IEdge
+  getEdges: () => 'topo/api/v1/topology/cloud/edges', // IEdgesRes
   delteEdge: (id: string) => 'topology/api/v1/topology/cloud/edges/' + id,
   postCreateEdge: () => 'topology/api/v1/topology/cloud/edges',
   getSites: () => 'topo/api/v1/topology/onprem/devices',

@@ -7,15 +7,17 @@ import { buildNodes, buildtransitNodes, EdgeNodeType, EDGE_MAP_CONSTANTS, INodes
 import EdgeNode from './EdgeNode';
 import { useEdgeZoom } from './useEdgeZoom';
 import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
+import { useEdgesDataContext } from 'lib/hooks/Edges/useEdgesDataContext';
 
 interface Props {
   name: string;
-  sites: ITopologyGroup[];
-  apps: ITopologyGroup[];
+  sites: string[];
+  apps: string[];
   selectedRegions: string[];
 }
 
 const EdgesMap: React.FC<Props> = (props: Props) => {
+  const { edges } = useEdgesDataContext();
   const [sites, setSites] = React.useState<INodesObject>(null);
   const [apps, setApps] = React.useState<INodesObject>(null);
   const [transits, setTransits] = React.useState<ISvgTransitNode[]>(null);
@@ -38,12 +40,28 @@ const EdgesMap: React.FC<Props> = (props: Props) => {
   }, [props.selectedRegions]);
 
   React.useEffect(() => {
-    const _sitesObj: INodesObject = buildNodes(props.sites, EDGE_MAP_CONSTANTS.sitesNodePrefix);
+    if (!edges || !edges.groups || !edges.groups.length || !props.sites || !props.sites.length) return;
+    const _arr: ITopologyGroup[] = [];
+    props.sites.forEach(it => {
+      const _gr = edges.groups.find(el => el.id === it);
+      if (_gr) {
+        _arr.push(_gr);
+      }
+    });
+    const _sitesObj: INodesObject = buildNodes(_arr, EDGE_MAP_CONSTANTS.sitesNodePrefix);
     setSites(_sitesObj);
   }, [props.sites]);
 
   React.useEffect(() => {
-    const _appsObj: INodesObject = buildNodes(props.apps, EDGE_MAP_CONSTANTS.appsNodePrefix);
+    if (!edges || !edges.groups || !edges.groups.length || !props.apps || !props.apps.length) return;
+    const _arr: ITopologyGroup[] = [];
+    props.apps.forEach(it => {
+      const _gr = edges.groups.find(el => el.id === it);
+      if (_gr) {
+        _arr.push(_gr);
+      }
+    });
+    const _appsObj: INodesObject = buildNodes(_arr, EDGE_MAP_CONSTANTS.appsNodePrefix);
     setApps(_appsObj);
   }, [props.apps]);
 

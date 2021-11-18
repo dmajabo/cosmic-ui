@@ -1,5 +1,6 @@
+import { IBaseTotalCount } from 'lib/models/general';
 import { IDevice, IVm } from 'lib/models/topology';
-import { ITopologyGroup, VendorTypes } from '../Topology/endpoints';
+import { VendorTypes } from '../Topology/endpoints';
 
 export enum PolicyDestinations {
   DEST_TRUE = 'dest_true',
@@ -42,21 +43,23 @@ export interface IEdgeModel {
   price?: number;
   connection: string[];
   tags: string[];
-  sites: ITopologyGroup[];
-  apps: ITopologyGroup[];
+  associatedDeviceGroup: string[];
+  associatedAppGroup: string[];
   policies: IEdgePolicy[] | null;
 }
 
-export interface ISitesRes {
+export interface ISitesRes extends IBaseTotalCount {
   devices: IDevice[];
-  totalCount: 0;
-  pageSize: 2;
-  pageNum: 0;
+  pageSize: number;
+  pageNum: number;
 }
 
-export interface IAppsRes {
+export interface IAppsRes extends IBaseTotalCount {
   apps: IVm[];
-  totalCount: 0;
-  pageSize: 2;
-  pageNum: 0;
+  pageSize: number;
+  pageNum: number;
+}
+
+export interface IEdgesRes extends IBaseTotalCount {
+  edgeps: IEdgeModel[];
 }
