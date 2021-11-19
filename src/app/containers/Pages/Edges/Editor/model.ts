@@ -3,6 +3,7 @@ import { Mark } from '@material-ui/core/Slider';
 import { ISelectedListItem } from 'lib/models/general';
 import { poloAltoIcon } from 'app/components/SVGIcons/edges/poloAlto';
 import { IEdgeModel, IEdgePolicy } from 'lib/api/ApiModels/Edges/apiModel';
+import { TopologyGroupTypesAsString } from 'lib/models/topology';
 
 export enum EdgesStepperTypes {
   GENERAL = 'general',
@@ -33,8 +34,8 @@ export const createNewEdge = (): IEdgeModel => ({
   price: null,
   connection: [],
   tags: [],
-  associatedDeviceGroup: [],
-  associatedAppGroup: [],
+  site_group_ids: [],
+  app_group_ids: [],
   policies: null,
 });
 
@@ -55,3 +56,10 @@ export const EdgePriceValues: Mark[] = [
 export const ConnectionValues: string[] = ['VPC', 'VPN', 'DLA'];
 
 export const FirewallRegionsValues: ISelectedListItem<string>[] = [{ id: 'polo', value: 'polo', label: 'Polo Alto', icon: poloAltoIcon }];
+
+export interface IDeleteDataModel {
+  id: string;
+  type: TopologyGroupTypesAsString;
+  name: string;
+  message: string;
+}

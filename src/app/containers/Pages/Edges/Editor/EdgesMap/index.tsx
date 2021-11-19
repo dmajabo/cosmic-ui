@@ -40,7 +40,7 @@ const EdgesMap: React.FC<Props> = (props: Props) => {
   }, [props.selectedRegions]);
 
   React.useEffect(() => {
-    if (!edges || !edges.groups || !edges.groups.length || !props.sites || !props.sites.length) return;
+    if (!edges || !edges.groups || !edges.groups.length || !props.sites) return;
     const _arr: ITopologyGroup[] = [];
     props.sites.forEach(it => {
       const _gr = edges.groups.find(el => el.id === it);
@@ -53,7 +53,7 @@ const EdgesMap: React.FC<Props> = (props: Props) => {
   }, [props.sites]);
 
   React.useEffect(() => {
-    if (!edges || !edges.groups || !edges.groups.length || !props.apps || !props.apps.length) return;
+    if (!edges || !edges.groups || !edges.groups.length || !props.apps) return;
     const _arr: ITopologyGroup[] = [];
     props.apps.forEach(it => {
       const _gr = edges.groups.find(el => el.id === it);

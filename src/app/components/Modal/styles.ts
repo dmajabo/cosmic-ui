@@ -36,3 +36,26 @@ export const ModalTitle = styled.div`
   font-weight: 700;
   font-size: 24px;
 `;
+
+export const DeleteWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  position: relative;
+`;
+
+export const IconStyles = styled.div`
+  margin: 0 auto 30px auto;
+  width: 140px;
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--_tableBg);
+  flex-shrink: 0;
+  border-radius: 50%;
+  svg {
+    margin: auto;
+  }
+`;

@@ -43,7 +43,7 @@ const EdgeItem: React.FC<Props> = ({ dataItem, onEdit, onDelete }) => {
               Sites:
             </ItemLabel>
             <ItemValue fontSize="16px" lineHeight="21px" color="var(--_primaryColor)" fontWeight="500">
-              {dataItem.associatedDeviceGroup.length}
+              {dataItem.site_group_ids.length}
             </ItemValue>
           </ValueItem>
           <ValueItem margin="auto 6px">
@@ -61,7 +61,7 @@ const EdgeItem: React.FC<Props> = ({ dataItem, onEdit, onDelete }) => {
               Apps:
             </ItemLabel>
             <ItemValue fontSize="16px" lineHeight="21px" color="var(--_primaryColor)" fontWeight="500">
-              {dataItem.associatedAppGroup.length}
+              {dataItem.app_group_ids.length}
             </ItemValue>
           </ValueItem>
         </DataItemsRow>

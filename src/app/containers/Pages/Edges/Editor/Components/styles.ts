@@ -3,6 +3,7 @@ import styled from 'styled-components';
 export const ModalFooter = styled.div`
   margin: auto 0 0 0;
   height: 60px;
+  flex-shrink: 0;
 `;
 
 interface ModalRowProps {
@@ -57,4 +58,36 @@ export const EmptyMessage = styled.div`
   margin-bottom: 20px;
   color: var(--_disabledTextColor);
   opacity: 0.8;
+`;
+
+export const DeleteWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  position: relative;
+`;
+
+export const DialogHeader = styled.div`
+  position: relative;
+  width: 100%;
+  flex-shrink: 0;
+`;
+
+interface TextProps {
+  color?: string;
+  margin?: string;
+  fontSize?: string;
+  fontWeight?: string;
+  lineHeight?: string;
+}
+export const DialogText = styled.div<TextProps>`
+  font-family: 'DMSans';
+  font-style: normal;
+  font-weight: ${props => props.fontWeight || 'bold'};
+  font-size: ${props => props.fontSize || '22px'};
+  line-height: ${props => props.lineHeight || '29px'};
+  text-align: center;
+  color: ${props => props.color || 'var(--_primaryColor)'};
+  margin: ${props => props.margin || '0'};
 `;

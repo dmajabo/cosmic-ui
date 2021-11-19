@@ -15,7 +15,7 @@ import { useEdgesDataContext } from 'lib/hooks/Edges/useEdgesDataContext';
 interface Props {
   data: string[];
   onChangeSites: (v: ITopologyGroup, index: number | null) => void;
-  onDeleteGroup: (id: string) => void;
+  onDeleteGroup: (gr: ITopologyGroup) => void;
 }
 
 const SitesStep: React.FC<Props> = (props: Props) => {
@@ -47,8 +47,8 @@ const SitesStep: React.FC<Props> = (props: Props) => {
     setShowCreator(true);
   };
 
-  const onDelete = (id: string) => {
-    props.onDeleteGroup(id);
+  const onDelete = (gr: ITopologyGroup) => {
+    props.onDeleteGroup(gr);
   };
 
   const onSave = (item: ITopologyGroup, index: number | null) => {

@@ -43,8 +43,8 @@ export interface IEdgeModel {
   price?: number;
   connection: string[];
   tags: string[];
-  associatedDeviceGroup: string[];
-  associatedAppGroup: string[];
+  site_group_ids: string[];
+  app_group_ids: string[];
   policies: IEdgePolicy[] | null;
 }
 
