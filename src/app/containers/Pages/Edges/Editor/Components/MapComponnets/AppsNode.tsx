@@ -16,9 +16,7 @@ const AppsNode: React.FC<Props> = (props: Props) => {
         <NodeName>AWS-Account</NodeName>
       </NodeHeader>
       <GroupName>{props.data.name}</GroupName>
-      {/* {props.data.items.map((it, index) => (
-        <Office key={`office${index}`}>{it}</Office>
-      ))} */}
+      {props.data.extIds && props.data.extIds.length ? props.data.extIds.map(it => <Office key={`office${it}`}>{it}</Office>) : null}
     </NodeWrapper>
   );
 };
