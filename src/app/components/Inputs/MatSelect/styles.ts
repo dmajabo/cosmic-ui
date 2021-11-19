@@ -38,6 +38,14 @@ export const TextInputWrapper = styled.div`
         height: 100% !important;
       }
     }
+    &.Mui-disabled {
+      opacity: 0.5;
+      border-color: var(--_disabledTextColor) !important;
+      cursor: not-allowed;
+      * {
+        cursor: not-allowed;
+      }
+    }
   }
   & .MuiOutlinedInput-notchedOutline {
     display: none !important;

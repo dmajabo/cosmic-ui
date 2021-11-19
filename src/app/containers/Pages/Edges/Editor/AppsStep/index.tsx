@@ -71,7 +71,16 @@ const AppsStep: React.FC<Props> = (props: Props) => {
         <SecondaryButton icon={plusIcon} label="Add group" onClick={onAddGroup} />
       </FormRow>
       {showCreator && (
-        <ModalComponent showHeader title="Create App" showCloseButton modalStyles={{ maxWidth: '580px', maxHeight: '80vh' }} useFadeAnimation id="appsModalWindow" open={showCreator} onClose={onClose}>
+        <ModalComponent
+          showHeader
+          title="Create App"
+          showCloseButton
+          modalStyles={{ maxWidth: '800px', maxHeight: '90vh', padding: '40px' }}
+          useFadeAnimation
+          id="appsModalWindow"
+          open={showCreator}
+          onClose={onClose}
+        >
           <AppEditor data={editItem} onAddGroup={onSave} />
         </ModalComponent>
       )}
