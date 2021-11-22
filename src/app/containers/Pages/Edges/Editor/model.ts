@@ -2,7 +2,7 @@ import { IStepperItem, StepperItemStateType } from 'app/components/Stepper/model
 import { Mark } from '@material-ui/core/Slider';
 import { ISelectedListItem } from 'lib/models/general';
 import { poloAltoIcon } from 'app/components/SVGIcons/edges/poloAlto';
-import { IEdgeModel, IEdgePolicy } from 'lib/api/ApiModels/Edges/apiModel';
+import { IEdgeP, IEdgePolicy, NwServicesVendor } from 'lib/api/ApiModels/Edges/apiModel';
 import { TopologyGroupTypesAsString } from 'lib/models/topology';
 
 export enum EdgesStepperTypes {
@@ -21,18 +21,22 @@ export const EdgesStepperItems: IStepperItem<EdgesStepperTypes>[] = [
   { id: EdgesStepperTypes.POLICY, index: 4, icon: null, label: 'Policy', disabled: false, state: StepperItemStateType.EMPTY, showEdge: false },
 ];
 
-export const createNewEdge = (): IEdgeModel => ({
+export const createNewEdge = (): IEdgeP => ({
   id: '',
   name: '',
   description: '',
   deployment: {
     controller_name: '',
     region_code: [],
-    firewall: false,
-    firewallRegion: '',
   },
-  price: null,
-  connection: [],
+  network_services: {
+    service_type: null,
+    service_vendor: NwServicesVendor.PALO_ALTO_NW,
+  },
+  connections: {
+    enable_networklink: false,
+    enable_vpnlink: false,
+  },
   tags: [],
   site_group_ids: [],
   app_group_ids: [],
@@ -53,9 +57,9 @@ export const EdgePriceValues: Mark[] = [
   { value: 500, label: '500$' },
 ];
 
-export const ConnectionValues: string[] = ['VPC', 'VPN', 'DLA'];
+export const ConnectionValues: string[] = ['VPC', 'VPN'];
 
-export const FirewallRegionsValues: ISelectedListItem<string>[] = [{ id: 'polo', value: 'polo', label: 'Polo Alto', icon: poloAltoIcon }];
+export const FirewallRegionsValues: ISelectedListItem<string>[] = [{ id: 'polo', value: 'polo', label: 'Palo Alto', icon: poloAltoIcon }];
 
 export interface IDeleteDataModel {
   id: string;

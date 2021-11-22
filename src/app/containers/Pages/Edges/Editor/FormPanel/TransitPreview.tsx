@@ -4,16 +4,17 @@ import { useEdgesDataContext } from 'lib/hooks/Edges/useEdgesDataContext';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { logoIcon } from 'app/components/SVGIcons/pagesIcons/logo';
 import { poloAltoIcon } from 'app/components/SVGIcons/edges/poloAlto';
+import { NwServicesVendor, NwServiceT } from 'lib/api/ApiModels/Edges/apiModel';
 
 interface IMapRegion {
   code: string;
   city: string;
 }
 interface Props {
-  firewall: boolean;
-  firewallRegion: string;
   regionCodes: string[];
   selectedAccount: string;
+  service_type: NwServiceT;
+  service_vendor: NwServicesVendor;
 }
 
 const TransitPreview: React.FC<Props> = (props: Props) => {
@@ -40,18 +41,20 @@ const TransitPreview: React.FC<Props> = (props: Props) => {
     }
   }, [props.regionCodes]);
 
-  if (!props.firewall && (!props.regionCodes || !props.regionCodes.length) && !props.selectedAccount) return null;
+  if ((!props.regionCodes || !props.regionCodes.length) && !props.selectedAccount) return null;
   return (
     <PreviewWrapper>
-      {props.firewall && (
+      {props.service_type === NwServiceT.FIREWALL && (
         <PreviewRow margin="20px 0 0 0">
           <PreviewText className="label" margin="0 16px 0 0">
             Add Firewall in each edge region:
           </PreviewText>
           <IconWrapper width="20px" height="18px" icon={poloAltoIcon} />
-          <PreviewText className="label" margin="0 0 0 12px">
-            {props.firewallRegion || 'Polo Alto'}
-          </PreviewText>
+          {props.service_vendor === NwServicesVendor.PALO_ALTO_NW && (
+            <PreviewText className="label" margin="0 0 0 12px">
+              Palo Alto
+            </PreviewText>
+          )}
         </PreviewRow>
       )}
       {props.selectedAccount && (

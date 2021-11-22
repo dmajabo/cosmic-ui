@@ -20,31 +20,54 @@ export interface IEdgePolicy {
 export enum ValidationFields {
   // GENERAL
   NAME = 'name',
-  CONNECTION = 'connection',
+  CONNECTION = 'connections',
   TAGS = 'tags',
   // DEPLOYMENT
   CONTROLLER_NAME = 'controller_name',
   REGION_CODE = 'region_code',
 }
 
-export interface IDeployment {
+export interface IDeploymentP {
+  id?: string;
   controller_name: string;
   region_code: string[];
-  firewall: boolean;
-  firewallRegion: string;
 }
 
-export interface IEdgeModel {
+export enum ConnectionPKeysMap {
+  enable_networklink = 'vpc',
+  enable_vpnlink = 'vpn',
+}
+
+export const getNewConnectionP = (): IConnectionP => ({ enable_networklink: false, enable_vpnlink: false });
+export interface IConnectionP {
+  enable_networklink: boolean;
+  enable_vpnlink: boolean;
+}
+
+export enum NwServiceT {
+  FIREWALL = 0,
+}
+export enum NwServicesVendor {
+  PALO_ALTO_NW = 0,
+}
+
+/* Policy for Services associated with the Edge */
+export interface INwServicesP {
+  service_type: NwServiceT;
+  service_vendor: NwServicesVendor;
+}
+
+export interface IEdgeP {
   id?: string;
   name: string;
   description: string;
-  deployment: IDeployment;
-
-  price?: number;
-  connection: string[];
+  connections: IConnectionP;
   tags: string[];
   site_group_ids: string[];
   app_group_ids: string[];
+  deployment: IDeploymentP;
+  network_services: INwServicesP;
+
   policies: IEdgePolicy[] | null;
 }
 
@@ -61,5 +84,5 @@ export interface IAppsRes extends IBaseTotalCount {
 }
 
 export interface IEdgesRes extends IBaseTotalCount {
-  edgeps: IEdgeModel[];
+  edgeps: IEdgeP[];
 }

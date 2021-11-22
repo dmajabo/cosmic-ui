@@ -1,12 +1,12 @@
 import React from 'react';
-import { useGet, usePost } from 'lib/api/http/useAxiosHook';
+import { useGet } from 'lib/api/http/useAxiosHook';
 import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 import LoadingIndicator from 'app/components/Loading';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import { useEdgesDataContext } from 'lib/hooks/Edges/useEdgesDataContext';
 import Setuper from '../Setuper';
 import { PageWrapperStyles } from '../../Shared/styles';
-import { IEdgeModel, IEdgesRes } from 'lib/api/ApiModels/Edges/apiModel';
+import { IEdgeP, IEdgesRes } from 'lib/api/ApiModels/Edges/apiModel';
 import Editor from '../Editor';
 import { useBreadCrumbDataContext } from 'lib/hooks/Breadcrumb/useBreadcrumbDataContext';
 import { EdgesBreadCrumbItemsType } from 'lib/hooks/Breadcrumb/models';
@@ -24,10 +24,9 @@ const MainPage: React.FC<Props> = (props: Props) => {
   const { response: resGroupds, onGet: onGetGroups } = useGet<ITopologyGroupsData>();
   const { response: resRegions, onGet: onGetRegions } = useGet<IAwsRegionsRes>();
   const { response: resAccounts, onGet: onGetAccounts } = useGet<IAccountsRes>();
-  const { loading: postLoading, error: postError, response: postResponce } = usePost();
   const { edges } = useEdgesDataContext();
   const [showEditorPage, setShowEditorPage] = React.useState(false);
-  const [edgeDataItem, setEdgeDataItem] = React.useState<IEdgeModel>(null);
+  const [edgeDataItem, setEdgeDataItem] = React.useState<IEdgeP>(null);
 
   React.useEffect(() => {
     onTryLoadEdges();
@@ -62,23 +61,10 @@ const MainPage: React.FC<Props> = (props: Props) => {
 
   React.useEffect(() => {
     // TO DO
-    if (postResponce) {
-      console.log(postResponce);
-    }
-  }, [postResponce]);
-
-  React.useEffect(() => {
-    // TO DO
     if (error) {
       edges.onSetData(null);
     }
   }, [error]);
-
-  React.useEffect(() => {
-    if (postError) {
-      console.log(postError);
-    }
-  }, [postError]);
 
   React.useEffect(() => {
     if (showEditorPage && !breadcrumb.edgesBreadCrumbItems.length) {
@@ -107,13 +93,7 @@ const MainPage: React.FC<Props> = (props: Props) => {
     await onGetGroups(TopologyGroupApi.getAllGroups(), userContext.accessToken!);
   };
 
-  const onSaveEdge = async (_data: IEdgeModel) => {
-    edges.onUpdateEdges(_data);
-    onCloseEditor();
-    // await onPost(EdgesApi.postCreateEdge(), _data, userContext.accessToken!);
-  };
-
-  const onOpenEditor = (_item?: IEdgeModel) => {
+  const onOpenEditor = (_item?: IEdgeP) => {
     breadcrumb.onGoToEdges(EdgesBreadCrumbItemsType.CREATE);
     setEdgeDataItem(_item || null);
   };
@@ -123,7 +103,7 @@ const MainPage: React.FC<Props> = (props: Props) => {
     setEdgeDataItem(null);
   };
 
-  const onDeleteEdge = (_item: IEdgeModel) => {
+  const onDeleteEdge = (_item: IEdgeP) => {
     console.log(_item);
   };
 
@@ -136,18 +116,13 @@ const MainPage: React.FC<Props> = (props: Props) => {
   }
 
   if (showEditorPage) {
-    return <Editor dataItem={edgeDataItem} onClose={onCloseEditor} onSave={onSaveEdge} />;
+    return <Editor dataItem={edgeDataItem} onClose={onCloseEditor} />;
   }
   if (edges.dataReadyToShow) {
     return (
       <PageWrapperStyles>
         {!edges.data || !edges.data.length ? <Setuper onGoToEditor={onOpenEditor} /> : null}
         {edges.data && edges.data.length && <EdgeList data={edges.data} onCreate={onOpenEditor} onEdit={onOpenEditor} onDelete={onDeleteEdge} />}
-        {postLoading && (
-          <AbsLoaderWrapper width="100%" height="100%">
-            <LoadingIndicator margin="auto" />
-          </AbsLoaderWrapper>
-        )}
       </PageWrapperStyles>
     );
   }

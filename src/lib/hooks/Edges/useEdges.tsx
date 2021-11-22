@@ -1,7 +1,7 @@
 import React from 'react';
 import { AccountVendorTypes, IAwsRegion, IAWS_Account, IMeraki_Account } from 'lib/api/ApiModels/Accounts/apiModel';
 import { jsonClone } from 'lib/helpers/cloneHelper';
-import { IEdgeModel } from 'lib/api/ApiModels/Edges/apiModel';
+import { IEdgeP } from 'lib/api/ApiModels/Edges/apiModel';
 import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
 
 export interface EdgesContextType {
@@ -11,11 +11,11 @@ export interface EdgesContextType {
   groups: ITopologyGroup[];
   regions: IAwsRegion[];
   awsAccounts: string[];
-  onSetData: (res: IEdgeModel[]) => void;
+  onSetData: (res: IEdgeP[]) => void;
   onUpdateGroups: (res: ITopologyGroup) => void;
   onDeleteGroup: (id: string) => void;
   onSearchChange: (v: string | null) => void;
-  onUpdateEdges: (res: IEdgeModel) => void;
+  onUpdateEdges: (res: IEdgeP) => void;
   onDeleteEdge: (id: string) => void;
   onSetGroups: (res: ITopologyGroup[]) => void;
   onSetRegions: (res: IAwsRegion[]) => void;
@@ -23,13 +23,13 @@ export interface EdgesContextType {
 }
 export function useEdgesContext(): EdgesContextType {
   const [dataReadyToShow, setDataReadyToShow] = React.useState<boolean>(false);
-  const [data, setData] = React.useState<IEdgeModel[]>(null);
+  const [data, setData] = React.useState<IEdgeP[]>(null);
   const [searchQuery, setSearchQuery] = React.useState<string>('');
   const [groups, setGroups] = React.useState<ITopologyGroup[]>([]);
   const [regions, setRegions] = React.useState<IAwsRegion[]>([]);
   const [awsAccounts, setAwsAccounts] = React.useState<string[]>([]);
 
-  const onSetData = (res: IEdgeModel[]) => {
+  const onSetData = (res: IEdgeP[]) => {
     if (!res) {
       setData(null);
       setDataReadyToShow(true);
@@ -67,8 +67,8 @@ export function useEdgesContext(): EdgesContextType {
     setSearchQuery(v);
   };
 
-  const onUpdateEdges = (res: IEdgeModel) => {
-    const _arr: IEdgeModel[] = data !== null ? jsonClone(data) : [];
+  const onUpdateEdges = (res: IEdgeP) => {
+    const _arr: IEdgeP[] = data !== null ? jsonClone(data) : [];
     const _i = _arr.findIndex(it => it.id === res.id);
     if (_i === -1) {
       _arr.push(res);
@@ -79,7 +79,7 @@ export function useEdgesContext(): EdgesContextType {
   };
 
   const onDeleteEdge = (id: string) => {
-    let _arr: IEdgeModel[] = data !== null ? jsonClone(data) : [];
+    let _arr: IEdgeP[] = data !== null ? jsonClone(data) : [];
     _arr = data.filter(it => it.id !== id);
     setData(_arr);
   };

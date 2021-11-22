@@ -1,5 +1,5 @@
 import React from 'react';
-import { IEdgeModel } from 'lib/api/ApiModels/Edges/apiModel';
+import { IEdgeP } from 'lib/api/ApiModels/Edges/apiModel';
 import { DataItemsRow, EdgeContent, EdgeFooter, EdgeListItemWrapper, EdgeNameWrapper, ValueItem, ItemLabel, ItemValue, StatusCircle } from './styles';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { appsIcon, deployedSuccessIcon, sitesIcon, trafficIcon, transitIcon } from 'app/components/SVGIcons/edges/edgeIcons';
@@ -11,9 +11,9 @@ import { editIcon } from 'app/components/SVGIcons/edit';
 import { deleteIcon } from 'app/components/SVGIcons/delete';
 
 interface Props {
-  dataItem: IEdgeModel;
-  onEdit: (_item: IEdgeModel) => void;
-  onDelete: (_item: IEdgeModel) => void;
+  dataItem: IEdgeP;
+  onEdit: (_item: IEdgeP) => void;
+  onDelete: (_item: IEdgeP) => void;
 }
 
 const EdgeItem: React.FC<Props> = ({ dataItem, onEdit, onDelete }) => {

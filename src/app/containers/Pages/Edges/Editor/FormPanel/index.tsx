@@ -15,19 +15,20 @@ import ExpandedIcon from 'app/components/Basic/ExpandedIcon';
 import PanelHeader from 'app/containers/Pages/AutomationPage/Components/PanelHeader';
 import SecondaryButton from 'app/components/Buttons/SecondaryButton';
 import accordionStyles from 'app/containers/Pages/AutomationPage/styles/AccordionStyles';
-import { IEdgeModel } from 'lib/api/ApiModels/Edges/apiModel';
+import { IEdgeP } from 'lib/api/ApiModels/Edges/apiModel';
 import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
 import GeneralPreview from './GeneralPreview';
 import TransitPreview from './TransitPreview';
 
 interface Props {
-  dataItem: IEdgeModel;
+  dataItem: IEdgeP;
   steps: IStepperItem<EdgesStepperTypes>[];
   selectedStep: IStepperItem<EdgesStepperTypes>;
   saveDisabled: boolean;
   onChangeField: (value: any, field: string, step: EdgesStepperTypes) => void;
   onChangeGeneralField: (value: any, field: string) => void;
   onChangeTransitionDataField: (value: any, field: string) => void;
+  onChangeTransitionNetworkField: (value: any, field: string) => void;
   onChangeSitesField: (value: ITopologyGroup) => void;
   onChangeAppsField: (value: ITopologyGroup) => void;
   onDeleteSitesGroup: (gr: ITopologyGroup) => void;
@@ -66,12 +67,18 @@ const FormPanel: React.FC<Props> = (props: Props) => {
             </AccordionHeaderPanel>
             {(!props.selectedStep || (props.selectedStep && props.selectedStep.id !== EdgesStepperTypes.GENERAL)) && (
               <AccordionHeaderPanel>
-                <GeneralPreview name={props.dataItem.name} connection={props.dataItem.connection} tags={props.dataItem.tags} />
+                <GeneralPreview name={props.dataItem.name} connections={props.dataItem.connections} tags={props.dataItem.tags} />
               </AccordionHeaderPanel>
             )}
           </AccordionSummary>
           <AccordionDetails className={AccordionStyles.deteilItemEdges}>
-            <GeneralStep tags={props.dataItem.tags} description={props.dataItem.description} connection={props.dataItem.connection} name={props.dataItem.name} onChange={props.onChangeGeneralField} />
+            <GeneralStep
+              tags={props.dataItem.tags}
+              description={props.dataItem.description}
+              connections={props.dataItem.connections}
+              name={props.dataItem.name}
+              onChange={props.onChangeGeneralField}
+            />
           </AccordionDetails>
         </Accordion>
         <Accordion
@@ -133,8 +140,8 @@ const FormPanel: React.FC<Props> = (props: Props) => {
                 <TransitPreview
                   regionCodes={props.dataItem.deployment.region_code}
                   selectedAccount={props.dataItem.deployment.controller_name}
-                  firewall={props.dataItem.deployment.firewall}
-                  firewallRegion={props.dataItem.deployment.firewallRegion}
+                  service_type={props.dataItem.network_services.service_type}
+                  service_vendor={props.dataItem.network_services.service_vendor}
                 />
               </AccordionHeaderPanel>
             )}
@@ -143,9 +150,10 @@ const FormPanel: React.FC<Props> = (props: Props) => {
             <TransitStep
               regionCodes={props.dataItem.deployment.region_code}
               selectedAccount={props.dataItem.deployment.controller_name}
-              firewall={props.dataItem.deployment.firewall}
-              firewallRegion={props.dataItem.deployment.firewallRegion}
+              service_type={props.dataItem.network_services.service_type}
+              service_vendor={props.dataItem.network_services.service_vendor}
               onChange={props.onChangeTransitionDataField}
+              onChangeNetwork={props.onChangeTransitionNetworkField}
             />
           </AccordionDetails>
         </Accordion>

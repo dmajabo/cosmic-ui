@@ -10,20 +10,23 @@ import IconWrapper from 'app/components/Buttons/IconWrapper';
 import ModalComponent from 'app/components/Modal';
 import TransitionTable from './TransitionTable';
 import MatSelect from 'app/components/Inputs/MatSelect';
+import { NwServiceT, NwServicesVendor } from 'lib/api/ApiModels/Edges/apiModel';
 
 interface Props {
-  firewall: boolean;
-  firewallRegion: string;
+  service_type: NwServiceT;
+  service_vendor: NwServicesVendor;
   regionCodes: string[];
   selectedAccount: string;
   onChange: (value: any, field: string) => void;
+  onChangeNetwork: (value: any, field: string) => void;
 }
 
 const TransitStep: React.FC<Props> = (props: Props) => {
   const { edges } = useEdgesDataContext();
   const [showLargeWindow, setShowLargeWindow] = React.useState<boolean>(false);
   const onFirewallChange = (v: boolean) => {
-    props.onChange(v, 'firewall');
+    const _v = v ? NwServiceT.FIREWALL : null;
+    props.onChangeNetwork(_v, 'service_type');
   };
 
   const onAccountChange = (v: string) => {
@@ -45,10 +48,10 @@ const TransitStep: React.FC<Props> = (props: Props) => {
   return (
     <>
       <PanelRow>
-        <CheckBox label="Add Firewall in each edge region" isChecked={props.firewall} toggleCheckboxChange={onFirewallChange} />
+        <CheckBox label="Add Firewall in each edge region" isChecked={props.service_type === NwServiceT.FIREWALL} toggleCheckboxChange={onFirewallChange} />
         <TextInputWrapper style={{ width: '244px', height: '50px', minHeight: '50px', margin: '0 0 0 20px' }}>
           <InputWrapper>
-            <Input id="poloAlto" name="poloAlto" type="text" value="Polo Alto" onChange={() => {}} readOnly height="50px" padding="8px 24px 8px 56px" />
+            <Input id="poloAlto" name="poloAlto" type="text" value="Palo Alto" onChange={() => {}} readOnly height="50px" padding="8px 24px 8px 56px" />
             <IconWrapper width="24px" height="24px" styles={{ position: 'absolute', top: 'calc(50% - 12px)', left: '20px', pointerEvents: 'none' }} icon={poloAltoIcon} />
           </InputWrapper>
         </TextInputWrapper>

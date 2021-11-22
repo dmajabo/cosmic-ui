@@ -1,8 +1,8 @@
 import { IStepperItem, StepperItemStateType } from 'app/components/Stepper/model';
-import { IEdgeModel, ValidationFields } from 'lib/api/ApiModels/Edges/apiModel';
+import { IEdgeP, ValidationFields } from 'lib/api/ApiModels/Edges/apiModel';
 import { EdgesStepperTypes } from './model';
 
-export const updateSteps = (steps: IStepperItem<EdgesStepperTypes>[], dataItem: IEdgeModel): IStepperItem<EdgesStepperTypes>[] => {
+export const updateSteps = (steps: IStepperItem<EdgesStepperTypes>[], dataItem: IEdgeP): IStepperItem<EdgesStepperTypes>[] => {
   const _items: IStepperItem<EdgesStepperTypes>[] = steps.slice();
   _items.forEach((step, index) => {
     step.disabled = index !== 0 && _items[index - 1].disabled;
