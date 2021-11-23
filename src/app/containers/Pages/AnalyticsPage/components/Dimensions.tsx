@@ -6,6 +6,7 @@ import SaveIcon from '../icons/metrics explorer/save.svg';
 import { SubDimension } from './SubDimension';
 import { getDimensionCount } from './MetricsExplorer';
 import produce from 'immer';
+import { ColumnAccessor } from 'lib/api/http/SharedTypes';
 
 interface DimensionsProps {
   readonly closePopup: () => void;
@@ -14,11 +15,16 @@ interface DimensionsProps {
   readonly dimensions: DimensionOptions[];
 }
 
+export interface OptionData {
+  readonly label: string;
+  readonly value: ColumnAccessor;
+}
+
 export interface DimensionOptions {
   readonly title: string;
   readonly icon?: string;
-  readonly source: string[];
-  readonly destination: string[];
+  readonly source: OptionData[];
+  readonly destination: OptionData[];
 }
 
 export interface CheckboxData {
@@ -39,32 +45,32 @@ export const Dimensions: React.FC<DimensionsProps> = ({ closePopup, dimensionDat
     const tempCheckboxData: CheckboxData = {};
     dimensionData.forEach(item => {
       item.source.forEach(value => {
-        tempCheckboxData[`${item.title}_source_${value}`] = false;
+        tempCheckboxData[`${item.title}_source_${value.value}`] = false;
       });
       item.destination.forEach(value => {
-        tempCheckboxData[`${item.title}_destination_${value}`] = false;
+        tempCheckboxData[`${item.title}_destination_${value.value}`] = false;
       });
     });
     dimensions.forEach(dimension => {
-      dimension.source.forEach(value => (tempCheckboxData[`${dimension.title}_source_${value}`] = true));
-      dimension.destination.forEach(value => (tempCheckboxData[`${dimension.title}_destination_${value}`] = true));
+      dimension.source.forEach(value => (tempCheckboxData[`${dimension.title}_source_${value.value}`] = true));
+      dimension.destination.forEach(value => (tempCheckboxData[`${dimension.title}_destination_${value.value}`] = true));
     });
     setSelectedDimensions(dimensions);
     setCheckboxData(tempCheckboxData);
   };
 
-  const updateSelectedDimensions = (dimensions: DimensionOptions[], dimensionName: string, dimensionType: string, dimensionItem: string, checked: boolean) => {
+  const updateSelectedDimensions = (dimensions: DimensionOptions[], dimensionName: string, dimensionType: string, dimensionItem: OptionData, checked: boolean) => {
     return produce(dimensions, draft => {
       const selectedDimension = draft.find(dimension => dimension.title === dimensionName);
       if (dimensionType === 'source') {
-        selectedDimension.source = checked ? selectedDimension.source.concat(dimensionItem) : selectedDimension.source.filter(item => item !== dimensionItem);
+        selectedDimension.source = checked ? selectedDimension.source.concat(dimensionItem) : selectedDimension.source.filter(item => item.value !== dimensionItem.value);
       } else {
         selectedDimension.destination = checked ? selectedDimension.destination.concat(dimensionItem) : selectedDimension.destination.filter(item => item !== dimensionItem);
       }
     });
   };
 
-  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>, dimensionName: string, dimensionType: string, dimensionItem: string) => {
+  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>, dimensionName: string, dimensionType: string, dimensionItem: OptionData) => {
     setCheckboxData({
       ...checkboxData,
       [event.target.name]: event.target.checked,

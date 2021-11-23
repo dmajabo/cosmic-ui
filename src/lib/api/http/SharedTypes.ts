@@ -185,10 +185,32 @@ export enum ColumnAccessor {
   destination = 'destination',
   averageQoe = 'averageQoe',
   description = 'description',
+  legendLine = 'legendLine',
+  average = 'average',
+  ninetyFifthPercentile = 'ninetyFifthPercentile',
+  max = 'max',
+  lastDatapoint = 'lastDatapoint',
+  //TODO: change below enum params when api is integrated
+  interfaceSource = 'interfaceSource',
+  interfaceDestination = 'interfaceDestination',
+  connectivityTypeSource = 'connectivityTypeSource',
+  connectivityTypeDestination = 'connectivityTypeDestination',
+  networkBoundarySource = 'networkBoundarySource',
+  networkBoundaryDestination = 'networkBoundaryDestination',
+  providerSource = 'providerSource',
+  providerDestination = 'providerDestination',
+  trafficOriginationSource = 'trafficOriginationSource',
+  trafficOriginationDestination = 'trafficOriginationDestination',
+  interfaceCapacitySource = 'interfaceCapacitySource',
+  interfaceCapacityDestination = 'interfaceCapacityDestination',
+  vlanSource = 'vlanSource',
+  vlanDestination = 'vlanDestination',
+  macAddressSource = 'macAddressSource',
+  macAddressDestination = 'macAddressDestination',
 }
 
 export interface Column {
-  readonly Header: string;
+  readonly Header: JSX.Element | string;
   readonly accessor: ColumnAccessor;
 }
 
@@ -268,4 +290,29 @@ export interface DeletePolicyControllerResponse {
 
 export interface GetAwsRegionsResponse {
   readonly awsRegions: AwsRegion[];
+}
+
+export interface MetricsExplorerTableData {
+  readonly legendLine?: JSX.Element;
+  readonly average: number;
+  readonly ninetyFifthPercentile: number;
+  readonly max: number;
+  readonly lastDatapoint: number;
+  //TODO: change below interface params when api is integrated
+  readonly interfaceSource?: string | JSX.Element;
+  readonly interfaceDestination?: string | JSX.Element;
+  readonly connectivityTypeSource?: string | JSX.Element;
+  readonly connectivityTypeDestination?: string | JSX.Element;
+  readonly networkBoundarySource?: string | JSX.Element;
+  readonly networkBoundaryDestination?: string | JSX.Element;
+  readonly providerSource?: string | JSX.Element;
+  readonly providerDestination?: string | JSX.Element;
+  readonly trafficOriginationSource?: string | JSX.Element;
+  readonly trafficOriginationDestination?: string | JSX.Element;
+  readonly interfaceCapacitySource?: string | JSX.Element;
+  readonly interfaceCapacityDestination?: string | JSX.Element;
+  readonly vlanSource?: string | JSX.Element;
+  readonly vlanDestination?: string | JSX.Element;
+  readonly macAddressSource?: string | JSX.Element;
+  readonly macAddressDestination?: string | JSX.Element;
 }

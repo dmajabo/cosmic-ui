@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CheckboxData, DimensionOptions } from './Dimensions';
+import { CheckboxData, DimensionOptions, OptionData } from './Dimensions';
 import { Checkbox, FormControlLabel } from '@mui/material';
 import { AnalyticsStyles } from '../AnalyticsStyles';
 import DownArrow from '../icons/metrics explorer/downArrowTriangle.svg';
@@ -8,7 +8,7 @@ import UpArrow from '../icons/metrics explorer/upArrowTriangle.svg';
 interface DimensionOptionsProps {
   readonly dimensionOption: DimensionOptions;
   readonly checkboxData: CheckboxData;
-  readonly handleCheckboxChange: (event: React.ChangeEvent<HTMLInputElement>, dimensionName: string, dimensionType: string, dimensionItem: string) => void;
+  readonly handleCheckboxChange: (event: React.ChangeEvent<HTMLInputElement>, dimensionName: string, dimensionType: string, dimensionItem: OptionData) => void;
 }
 
 export const SubDimension: React.FC<DimensionOptionsProps> = ({ dimensionOption, checkboxData, handleCheckboxChange }) => {
@@ -49,15 +49,15 @@ export const SubDimension: React.FC<DimensionOptionsProps> = ({ dimensionOption,
               <div className={classes.subDimensionContent}>
                 {dimensionOption.source.map(item => (
                   <FormControlLabel
-                    key={item}
+                    key={item.value}
                     control={
                       <Checkbox
-                        checked={checkboxData[`${dimensionOption.title}_source_${item}`]}
+                        checked={checkboxData[`${dimensionOption.title}_source_${item.value}`]}
                         onChange={e => handleCheckboxChange(e, dimensionOption.title, 'source', item)}
-                        name={`${dimensionOption.title}_source_${item}`}
+                        name={`${dimensionOption.title}_source_${item.value}`}
                       />
                     }
-                    label={item}
+                    label={item.label}
                   />
                 ))}
               </div>
@@ -69,15 +69,15 @@ export const SubDimension: React.FC<DimensionOptionsProps> = ({ dimensionOption,
               <div className={classes.subDimensionContent}>
                 {dimensionOption.destination.map(item => (
                   <FormControlLabel
-                    key={item}
+                    key={item.value}
                     control={
                       <Checkbox
-                        checked={checkboxData[`${dimensionOption.title}_destination_${item}`]}
+                        checked={checkboxData[`${dimensionOption.title}_destination_${item.value}`]}
                         onChange={e => handleCheckboxChange(e, dimensionOption.title, 'destination', item)}
-                        name={`${dimensionOption.title}_destination_${item}`}
+                        name={`${dimensionOption.title}_destination_${item.value}`}
                       />
                     }
-                    label={item}
+                    label={item.label}
                   />
                 ))}
               </div>
