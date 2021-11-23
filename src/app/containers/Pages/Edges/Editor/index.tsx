@@ -4,7 +4,7 @@ import { IStepperItem, StepperItemStateType, valueNumberFormat } from 'app/compo
 import Stepper from 'app/components/Stepper';
 import { createNewEdge, EdgesStepperItems, EdgesStepperTypes, IDeleteDataModel } from './model';
 import { jsonClone } from 'lib/helpers/cloneHelper';
-import { onReplaceFields, updateStep, updateStepById, updateSteps } from './helper';
+import { updateStep, updateStepById, updateSteps } from './helper';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
 import FormPanel from './FormPanel';
@@ -252,9 +252,9 @@ const Editor: React.FC<Props> = (props: Props) => {
   };
 
   const onSave = async () => {
-    // to do should remove onReplaceField method
-    const _obj: IEdgeP = onReplaceFields(dataItem);
+    const _obj: IEdgeP = { ...dataItem };
     if (!_obj.id) {
+      delete _obj.id;
       delete _obj.policies;
     }
     await onPost(EdgesApi.postCreateEdge(), { edge_p: _obj }, userContext.accessToken!);
