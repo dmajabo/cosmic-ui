@@ -37,35 +37,39 @@ const EdgeItem: React.FC<Props> = ({ dataItem, onEdit, onDelete }) => {
           {dataItem.tags && dataItem.tags.length ? dataItem.tags.map((it, index) => <Tag hideClearButton index={index} key={`${dataItem.id}value${index}`} text={it} />) : null}
         </DataItemsRow>
         <DataItemsRow padding="12px 0 0 0" margin="auto 0 0 0">
-          <ValueItem margin="auto 6px auto 0">
-            <IconWrapper width="30px" height="30px" icon={sitesIcon} styles={{ margin: '0 6px 0 0' }} />
-            <ItemLabel fontSize="16px" lineHeight="21px" color="var(--_disabledTextColor)" margin="0 4px 0 0">
-              Sites:
-            </ItemLabel>
-            <ItemValue fontSize="16px" lineHeight="21px" color="var(--_primaryColor)" fontWeight="500">
-              {dataItem.siteGroupIds.length}
-            </ItemValue>
-          </ValueItem>
-          <ValueItem margin="auto 6px">
-            <IconWrapper width="30px" height="30px" icon={transitIcon} styles={{ margin: '0 6px 0 0' }} />
-            <ItemLabel fontSize="16px" lineHeight="21px" color="var(--_disabledTextColor)" margin="0 4px 0 0">
-              Transits:
-            </ItemLabel>
-            {dataItem.deployment && dataItem.deployment.length ? (
+          {dataItem.siteGroupIds && dataItem.siteGroupIds.length ? (
+            <ValueItem margin="auto 6px auto 0">
+              <IconWrapper width="30px" height="30px" icon={sitesIcon} styles={{ margin: '0 6px 0 0' }} />
+              <ItemLabel fontSize="16px" lineHeight="21px" color="var(--_disabledTextColor)" margin="0 4px 0 0">
+                Sites:
+              </ItemLabel>
+              <ItemValue fontSize="16px" lineHeight="21px" color="var(--_primaryColor)" fontWeight="500">
+                {dataItem.siteGroupIds.length}
+              </ItemValue>
+            </ValueItem>
+          ) : null}
+          {dataItem.deployment && dataItem.deployment.length ? (
+            <ValueItem margin="auto 6px">
+              <IconWrapper width="30px" height="30px" icon={transitIcon} styles={{ margin: '0 6px 0 0' }} />
+              <ItemLabel fontSize="16px" lineHeight="21px" color="var(--_disabledTextColor)" margin="0 4px 0 0">
+                Transits:
+              </ItemLabel>
               <ItemValue fontSize="16px" lineHeight="21px" color="var(--_primaryColor)" fontWeight="500">
                 {dataItem.deployment[0].regionCode.length}
               </ItemValue>
-            ) : null}
-          </ValueItem>
-          <ValueItem margin="auto 0 auto 6px">
-            <IconWrapper width="30px" height="30px" icon={appsIcon} styles={{ margin: '0 6px 0 0' }} />
-            <ItemLabel fontSize="16px" lineHeight="21px" color="var(--_disabledTextColor)" margin="0 4px 0 0">
-              Apps:
-            </ItemLabel>
-            <ItemValue fontSize="16px" lineHeight="21px" color="var(--_primaryColor)" fontWeight="500">
-              {dataItem.appGroupIds.length}
-            </ItemValue>
-          </ValueItem>
+            </ValueItem>
+          ) : null}
+          {dataItem.appGroupIds && dataItem.appGroupIds.length ? (
+            <ValueItem margin="auto 0 auto 6px">
+              <IconWrapper width="30px" height="30px" icon={appsIcon} styles={{ margin: '0 6px 0 0' }} />
+              <ItemLabel fontSize="16px" lineHeight="21px" color="var(--_disabledTextColor)" margin="0 4px 0 0">
+                Apps:
+              </ItemLabel>
+              <ItemValue fontSize="16px" lineHeight="21px" color="var(--_primaryColor)" fontWeight="500">
+                {dataItem.appGroupIds.length}
+              </ItemValue>
+            </ValueItem>
+          ) : null}
         </DataItemsRow>
       </EdgeContent>
       <EdgeFooter>
