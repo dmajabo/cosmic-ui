@@ -23,38 +23,38 @@ export enum ValidationFields {
   CONNECTION = 'connections',
   TAGS = 'tags',
   // DEPLOYMENT
-  CONTROLLER_NAME = 'controller_name',
-  REGION_CODE = 'region_code',
+  CONTROLLER_NAME = 'controllerName',
+  REGION_CODE = 'regionCode',
 }
 
 export interface IDeploymentP {
   id?: string;
-  controller_name: string;
-  region_code: string[];
+  controllerName: string;
+  regionCode: string[];
 }
 
 export enum ConnectionPKeysMap {
-  enable_networklink = 'vpc',
-  enable_vpnlink = 'vpn',
+  enableNetworklink = 'vpc',
+  enableVpnlink = 'vpn',
 }
 
-export const getNewConnectionP = (): IConnectionP => ({ enable_networklink: false, enable_vpnlink: false });
+export const getNewConnectionP = (): IConnectionP => ({ enableNetworklink: false, enableVpnlink: false });
 export interface IConnectionP {
-  enable_networklink: boolean;
-  enable_vpnlink: boolean;
+  enableNetworklink: boolean;
+  enableVpnlink: boolean;
 }
 
 export enum NwServiceT {
-  FIREWALL = 0,
+  FIREWALL = 'FIREWALL',
 }
 export enum NwServicesVendor {
-  PALO_ALTO_NW = 0,
+  PALO_ALTO_NW = 'PALO_ALTO_NW',
 }
 
 /* Policy for Services associated with the Edge */
 export interface INwServicesP {
-  service_type: NwServiceT;
-  service_vendor: NwServicesVendor;
+  serviceType: NwServiceT;
+  serviceVendor: NwServicesVendor;
 }
 
 export interface IEdgeP {
@@ -63,10 +63,10 @@ export interface IEdgeP {
   description: string;
   connections: IConnectionP;
   tags: string[];
-  site_group_ids: string[];
-  app_group_ids: string[];
-  deployment: IDeploymentP;
-  network_services: INwServicesP;
+  siteGroupIds: string[];
+  appGroupIds: string[];
+  deployment: IDeploymentP[];
+  networkServices: INwServicesP[];
 
   policies: IEdgePolicy[] | null;
 }

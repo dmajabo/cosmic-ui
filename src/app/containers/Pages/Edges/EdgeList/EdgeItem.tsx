@@ -43,7 +43,7 @@ const EdgeItem: React.FC<Props> = ({ dataItem, onEdit, onDelete }) => {
               Sites:
             </ItemLabel>
             <ItemValue fontSize="16px" lineHeight="21px" color="var(--_primaryColor)" fontWeight="500">
-              {dataItem.site_group_ids.length}
+              {dataItem.siteGroupIds.length}
             </ItemValue>
           </ValueItem>
           <ValueItem margin="auto 6px">
@@ -51,9 +51,11 @@ const EdgeItem: React.FC<Props> = ({ dataItem, onEdit, onDelete }) => {
             <ItemLabel fontSize="16px" lineHeight="21px" color="var(--_disabledTextColor)" margin="0 4px 0 0">
               Transits:
             </ItemLabel>
-            <ItemValue fontSize="16px" lineHeight="21px" color="var(--_primaryColor)" fontWeight="500">
-              {dataItem.deployment.region_code.length}
-            </ItemValue>
+            {dataItem.deployment && dataItem.deployment.length ? (
+              <ItemValue fontSize="16px" lineHeight="21px" color="var(--_primaryColor)" fontWeight="500">
+                {dataItem.deployment[0].regionCode.length}
+              </ItemValue>
+            ) : null}
           </ValueItem>
           <ValueItem margin="auto 0 auto 6px">
             <IconWrapper width="30px" height="30px" icon={appsIcon} styles={{ margin: '0 6px 0 0' }} />
@@ -61,7 +63,7 @@ const EdgeItem: React.FC<Props> = ({ dataItem, onEdit, onDelete }) => {
               Apps:
             </ItemLabel>
             <ItemValue fontSize="16px" lineHeight="21px" color="var(--_primaryColor)" fontWeight="500">
-              {dataItem.app_group_ids.length}
+              {dataItem.appGroupIds.length}
             </ItemValue>
           </ValueItem>
         </DataItemsRow>

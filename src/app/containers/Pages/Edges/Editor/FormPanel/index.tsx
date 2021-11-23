@@ -30,6 +30,7 @@ interface Props {
   onChangeTransitionDataField: (value: any, field: string) => void;
   onChangeTransitionNetworkField: (value: any, field: string) => void;
   onChangeSitesField: (value: ITopologyGroup) => void;
+  onAddExistingSites: (ids: string[]) => void;
   onChangeAppsField: (value: ITopologyGroup) => void;
   onDeleteSitesGroup: (gr: ITopologyGroup) => void;
   onDeleteAppsGroup: (gr: ITopologyGroup) => void;
@@ -99,7 +100,7 @@ const FormPanel: React.FC<Props> = (props: Props) => {
             </AccordionHeaderPanel>
           </AccordionSummary>
           <AccordionDetails className={AccordionStyles.deteilItemEdges}>
-            <SitesStep data={props.dataItem.site_group_ids} onChangeSites={props.onChangeSitesField} onDeleteGroup={props.onDeleteSitesGroup} />
+            <SitesStep data={props.dataItem.siteGroupIds} onAddExistingSites={props.onAddExistingSites} onChangeSites={props.onChangeSitesField} onDeleteGroup={props.onDeleteSitesGroup} />
           </AccordionDetails>
         </Accordion>
         <Accordion className={AccordionStyles.accContainer} expanded={!!(props.selectedStep && props.selectedStep.id === EdgesStepperTypes.APPS)} onChange={onAccordionChange(EdgesStepperTypes.APPS)}>
@@ -116,7 +117,7 @@ const FormPanel: React.FC<Props> = (props: Props) => {
             </AccordionHeaderPanel>
           </AccordionSummary>
           <AccordionDetails className={AccordionStyles.deteilItemEdges}>
-            <AppsStep data={props.dataItem.app_group_ids} onChangeApps={props.onChangeAppsField} onDeleteGroup={props.onDeleteAppsGroup} />
+            <AppsStep data={props.dataItem.appGroupIds} onChangeApps={props.onChangeAppsField} onDeleteGroup={props.onDeleteAppsGroup} />
           </AccordionDetails>
         </Accordion>
         <Accordion
@@ -138,20 +139,20 @@ const FormPanel: React.FC<Props> = (props: Props) => {
             {(!props.selectedStep || (props.selectedStep && props.selectedStep.id !== EdgesStepperTypes.TRANSIT)) && (
               <AccordionHeaderPanel>
                 <TransitPreview
-                  regionCodes={props.dataItem.deployment.region_code}
-                  selectedAccount={props.dataItem.deployment.controller_name}
-                  service_type={props.dataItem.network_services.service_type}
-                  service_vendor={props.dataItem.network_services.service_vendor}
+                  regionCodes={props.dataItem.deployment[0].regionCode}
+                  selectedAccount={props.dataItem.deployment[0].controllerName}
+                  serviceType={props.dataItem.networkServices[0].serviceType}
+                  serviceVendor={props.dataItem.networkServices[0].serviceVendor}
                 />
               </AccordionHeaderPanel>
             )}
           </AccordionSummary>
           <AccordionDetails className={AccordionStyles.deteilItemEdges}>
             <TransitStep
-              regionCodes={props.dataItem.deployment.region_code}
-              selectedAccount={props.dataItem.deployment.controller_name}
-              service_type={props.dataItem.network_services.service_type}
-              service_vendor={props.dataItem.network_services.service_vendor}
+              regionCodes={props.dataItem.deployment[0].regionCode}
+              selectedAccount={props.dataItem.deployment[0].controllerName}
+              serviceType={props.dataItem.networkServices[0].serviceType}
+              serviceVendor={props.dataItem.networkServices[0].serviceVendor}
               onChange={props.onChangeTransitionDataField}
               onChangeNetwork={props.onChangeTransitionNetworkField}
             />

@@ -13,8 +13,8 @@ interface IMapRegion {
 interface Props {
   regionCodes: string[];
   selectedAccount: string;
-  service_type: NwServiceT;
-  service_vendor: NwServicesVendor;
+  serviceType: NwServiceT;
+  serviceVendor: NwServicesVendor;
 }
 
 const TransitPreview: React.FC<Props> = (props: Props) => {
@@ -44,13 +44,13 @@ const TransitPreview: React.FC<Props> = (props: Props) => {
   if ((!props.regionCodes || !props.regionCodes.length) && !props.selectedAccount) return null;
   return (
     <PreviewWrapper>
-      {props.service_type === NwServiceT.FIREWALL && (
+      {props.serviceType === NwServiceT.FIREWALL && (
         <PreviewRow margin="20px 0 0 0">
           <PreviewText className="label" margin="0 16px 0 0">
             Add Firewall in each edge region:
           </PreviewText>
           <IconWrapper width="20px" height="18px" icon={poloAltoIcon} />
-          {props.service_vendor === NwServicesVendor.PALO_ALTO_NW && (
+          {props.serviceVendor === NwServicesVendor.PALO_ALTO_NW && (
             <PreviewText className="label" margin="0 0 0 12px">
               Palo Alto
             </PreviewText>

@@ -4,7 +4,7 @@ import { IStepperItem, StepperItemStateType, valueNumberFormat } from 'app/compo
 import Stepper from 'app/components/Stepper';
 import { createNewEdge, EdgesStepperItems, EdgesStepperTypes, IDeleteDataModel } from './model';
 import { jsonClone } from 'lib/helpers/cloneHelper';
-import { updateStep, updateStepById, updateSteps } from './helper';
+import { onReplaceFields, updateStep, updateStepById, updateSteps } from './helper';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
 import FormPanel from './FormPanel';
@@ -12,10 +12,10 @@ import EdgesMap from './EdgesMap';
 import { IEdgeP, ValidationFields } from 'lib/api/ApiModels/Edges/apiModel';
 import { ITopologyGroup, TopologyGroupApi } from 'lib/api/ApiModels/Topology/endpoints';
 import { useEdgesDataContext } from 'lib/hooks/Edges/useEdgesDataContext';
-import { IModal } from 'lib/models/general';
+import { IBaseEntity, IModal } from 'lib/models/general';
 import ModalComponent from 'app/components/Modal';
 import { TopologyGroupTypesAsString } from 'lib/models/topology';
-import { useDelete, usePost } from 'lib/api/http/useAxiosHook';
+import { useDelete, useGet, usePost } from 'lib/api/http/useAxiosHook';
 import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -29,7 +29,8 @@ interface Props {
 const Editor: React.FC<Props> = (props: Props) => {
   const userContext = React.useContext<UserContextState>(UserContext);
   const { edges } = useEdgesDataContext();
-  const { loading: postLoading, error: postError, response: postResponce, onPost } = usePost<IEdgeP, IEdgeP>();
+  const { loading: postLoading, error: postError, response: postResponce, onPost } = usePost<IEdgeP, IBaseEntity<string>>();
+  const { loading: getLoading, error: getError, response: resEdge, onGet } = useGet<IEdgeP>();
   const { loading: deleteLoading, error: deleteError, response: resDelete, onDelete: onDeleteGroup } = useDelete<any>();
   const [dataItem, setDataItem] = React.useState<IEdgeP>(null);
   const [loading, setLoading] = React.useState<boolean>(true);
@@ -58,13 +59,26 @@ const Editor: React.FC<Props> = (props: Props) => {
   }, [steps]);
 
   React.useEffect(() => {
-    // TO DO
-    if (postResponce) {
+    if (postResponce && postResponce.id) {
       console.log(postResponce);
-      props.onClose();
-      // edges.onUpdateEdges(_data);
+      onTryLoadEdge(postResponce.id);
+      return;
+    } else if (postResponce && !postResponce.id) {
+      toast.error('Something went wrong. Please try Again!');
     }
   }, [postResponce]);
+
+  React.useEffect(() => {
+    if (resEdge) {
+      edges.onUpdateEdges(resEdge);
+    }
+  }, [resEdge]);
+
+  React.useEffect(() => {
+    if (getError) {
+      toast.error('Something went wrong. Please try Again!');
+    }
+  }, [getError]);
 
   React.useEffect(() => {
     if (postError) {
@@ -76,13 +90,13 @@ const Editor: React.FC<Props> = (props: Props) => {
     if (resDelete && deleteModalData && deleteModalData.dataItem) {
       const _dataItem: IEdgeP = jsonClone(dataItem);
       if (deleteModalData.dataItem.type === TopologyGroupTypesAsString.BRANCH_NETWORKS) {
-        _dataItem.site_group_ids = dataItem.site_group_ids.filter(it => it !== deleteModalData.dataItem.id);
-        const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.SITES, _dataItem.site_group_ids);
+        _dataItem.siteGroupIds = dataItem.siteGroupIds.filter(it => it !== deleteModalData.dataItem.id);
+        const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.SITES, _dataItem.siteGroupIds);
         setSteps(_items);
       }
       if (deleteModalData.dataItem.type === TopologyGroupTypesAsString.APPLICATION) {
-        _dataItem.app_group_ids = dataItem.app_group_ids.filter(it => it !== deleteModalData.dataItem.id);
-        const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.APPS, _dataItem.app_group_ids);
+        _dataItem.appGroupIds = dataItem.appGroupIds.filter(it => it !== deleteModalData.dataItem.id);
+        const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.APPS, _dataItem.appGroupIds);
         setSteps(_items);
       }
       toast.success(`Group '${deleteModalData.dataItem.name}' was deleted successfully!`);
@@ -124,37 +138,45 @@ const Editor: React.FC<Props> = (props: Props) => {
 
   const onChangeTransitionDataField = (value: any, field: string) => {
     const _dataItem = { ...dataItem };
-    _dataItem.deployment[field] = value;
-    const _items: IStepperItem<EdgesStepperTypes>[] = updateStep(steps, EdgesStepperTypes.TRANSIT, _dataItem.deployment, [ValidationFields.CONTROLLER_NAME, ValidationFields.REGION_CODE]);
+    _dataItem.deployment[0][field] = value;
+    const _items: IStepperItem<EdgesStepperTypes>[] = updateStep(steps, EdgesStepperTypes.TRANSIT, _dataItem.deployment[0], [ValidationFields.CONTROLLER_NAME, ValidationFields.REGION_CODE]);
     setSteps(_items);
     setDataItem(_dataItem);
   };
 
   const onChangeTransitionNetworkField = (value: any, field: string) => {
     const _dataItem = { ...dataItem };
-    _dataItem.network_services[field] = value;
-    const _items: IStepperItem<EdgesStepperTypes>[] = updateStep(steps, EdgesStepperTypes.TRANSIT, _dataItem.network_services, [ValidationFields.CONTROLLER_NAME, ValidationFields.REGION_CODE]);
+    _dataItem.networkServices[0][field] = value;
+    const _items: IStepperItem<EdgesStepperTypes>[] = updateStep(steps, EdgesStepperTypes.TRANSIT, _dataItem.networkServices[0], [ValidationFields.CONTROLLER_NAME, ValidationFields.REGION_CODE]);
     setSteps(_items);
     setDataItem(_dataItem);
   };
 
   const onChangeSitesField = (value: ITopologyGroup) => {
     const _dataItem: IEdgeP = jsonClone(dataItem);
-    const _arrSet = new Set(_dataItem.site_group_ids);
+    const _arrSet = new Set(_dataItem.siteGroupIds);
     _arrSet.add(value.id);
-    _dataItem.site_group_ids = Array.from(_arrSet);
-    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.SITES, _dataItem.site_group_ids);
+    _dataItem.siteGroupIds = Array.from(_arrSet);
+    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.SITES, _dataItem.siteGroupIds);
     edges.onUpdateGroups(value);
+    setSteps(_items);
+    setDataItem(_dataItem);
+  };
+
+  const onSetSitesGroups = (ids: string[]) => {
+    const _dataItem: IEdgeP = jsonClone(dataItem);
+    _dataItem.siteGroupIds = ids;
+    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.SITES, _dataItem.siteGroupIds);
     setSteps(_items);
     setDataItem(_dataItem);
   };
 
   const onChangeAppsField = (value: ITopologyGroup) => {
     const _dataItem: IEdgeP = jsonClone(dataItem);
-    const _arrSet = new Set(_dataItem.app_group_ids);
+    const _arrSet = new Set(_dataItem.appGroupIds);
     _arrSet.add(value.id);
-    _dataItem.app_group_ids = Array.from(_arrSet);
-    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.APPS, _dataItem.app_group_ids);
+    _dataItem.appGroupIds = Array.from(_arrSet);
+    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.APPS, _dataItem.appGroupIds);
     edges.onUpdateGroups(value);
     setSteps(_items);
     setDataItem(_dataItem);
@@ -191,13 +213,13 @@ const Editor: React.FC<Props> = (props: Props) => {
     }
     const _dataItem: IEdgeP = jsonClone(dataItem);
     if (deleteModalData.dataItem.type === TopologyGroupTypesAsString.BRANCH_NETWORKS) {
-      _dataItem.site_group_ids = dataItem.site_group_ids.filter(it => it !== deleteModalData.dataItem.id);
-      const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.SITES, _dataItem.site_group_ids);
+      _dataItem.siteGroupIds = dataItem.siteGroupIds.filter(it => it !== deleteModalData.dataItem.id);
+      const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.SITES, _dataItem.siteGroupIds);
       setSteps(_items);
     }
     if (deleteModalData.dataItem.type === TopologyGroupTypesAsString.APPLICATION) {
-      _dataItem.app_group_ids = dataItem.app_group_ids.filter(it => it !== deleteModalData.dataItem.id);
-      const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.APPS, _dataItem.app_group_ids);
+      _dataItem.appGroupIds = dataItem.appGroupIds.filter(it => it !== deleteModalData.dataItem.id);
+      const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.APPS, _dataItem.appGroupIds);
       setSteps(_items);
     }
     setDataItem(_dataItem);
@@ -222,11 +244,16 @@ const Editor: React.FC<Props> = (props: Props) => {
   };
 
   const onSave = async () => {
-    const _obj: IEdgeP = { ...dataItem };
+    // to do should remove onReplaceField method
+    const _obj: IEdgeP = onReplaceFields(dataItem);
     if (!_obj.id) {
-      delete _obj.id;
+      delete _obj.policies;
     }
-    await onPost(EdgesApi.postCreateEdge(), _obj, userContext.accessToken!);
+    await onPost(EdgesApi.postCreateEdge(), { edge_p: _obj }, userContext.accessToken!);
+  };
+
+  const onTryLoadEdge = async (id: string) => {
+    await onGet(EdgesApi.getEdgeById(id), userContext.accessToken!);
   };
 
   if (loading) {
@@ -247,7 +274,7 @@ const Editor: React.FC<Props> = (props: Props) => {
         </PanelColumn>
         <MainColumn>
           {dataItem && (
-            <EdgesMap name={dataItem.name} sites={dataItem.site_group_ids} apps={dataItem.app_group_ids} selectedRegions={dataItem && dataItem.deployment && dataItem.deployment.region_code} />
+            <EdgesMap name={dataItem.name} sites={dataItem.siteGroupIds} apps={dataItem.appGroupIds} selectedRegions={dataItem && dataItem.deployment && dataItem.deployment[0].regionCode} />
           )}
         </MainColumn>
         <PanelColumn width="50vw" maxWidth="680px" padding="0">
@@ -259,6 +286,7 @@ const Editor: React.FC<Props> = (props: Props) => {
             selectedStep={selectedStep}
             saveDisabled={saveDisabled}
             onChangeSitesField={onChangeSitesField}
+            onAddExistingSites={onSetSitesGroups}
             onChangeAppsField={onChangeAppsField}
             onChangeField={onChangeDataField}
             onChangeGeneralField={onChangeGeneralField}
@@ -269,7 +297,7 @@ const Editor: React.FC<Props> = (props: Props) => {
             onDeleteAppsGroup={onDeleteAppsGroup}
           />
         </PanelColumn>
-        {postLoading && (
+        {(postLoading || getLoading) && (
           <AbsLoaderWrapper width="100%" height="100%">
             <LoadingIndicator margin="auto" />
           </AbsLoaderWrapper>

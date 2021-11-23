@@ -25,21 +25,25 @@ export const createNewEdge = (): IEdgeP => ({
   id: '',
   name: '',
   description: '',
-  deployment: {
-    controller_name: '',
-    region_code: [],
-  },
-  network_services: {
-    service_type: null,
-    service_vendor: NwServicesVendor.PALO_ALTO_NW,
-  },
+  deployment: [
+    {
+      controllerName: '',
+      regionCode: [],
+    },
+  ],
+  networkServices: [
+    {
+      serviceType: null,
+      serviceVendor: NwServicesVendor.PALO_ALTO_NW,
+    },
+  ],
   connections: {
-    enable_networklink: false,
-    enable_vpnlink: false,
+    enableNetworklink: false,
+    enableVpnlink: false,
   },
   tags: [],
-  site_group_ids: [],
-  app_group_ids: [],
+  siteGroupIds: [],
+  appGroupIds: [],
   policies: null,
 });
 

@@ -25,7 +25,7 @@ interface Props {
 }
 
 const Paging: React.FC<Props> = (props: Props) => {
-  const [show, setShow] = React.useState<boolean>(false);
+  const [show, setShow] = React.useState<boolean>(true);
   const [resizeListener, sizes] = useResizeAware();
   const classes = PagingStyles();
 

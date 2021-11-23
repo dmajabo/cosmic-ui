@@ -152,7 +152,7 @@ const SitesGridWrapper: React.FC<Props> = (props: Props) => {
       });
     }
     setSelectionModel(_ids);
-  }, [props.selectedIds]);
+  }, [props.data, props.selectedIds]);
 
   const onChangeColumn = (col: GridColDef) => {
     const _items: GridColDef[] = columns.slice();

@@ -9,7 +9,7 @@ interface Props {
 }
 
 const GeneralPreview: React.FC<Props> = ({ name, connections, tags }) => {
-  if (!name && (!tags || !tags.length) && (!connections || (!connections.enable_networklink && !connections.enable_vpnlink))) return null;
+  if (!name && (!tags || !tags.length) && (!connections || (!connections.enableNetworklink && !connections.enableVpnlink))) return null;
   return (
     <PreviewWrapper>
       {name && (
@@ -20,13 +20,13 @@ const GeneralPreview: React.FC<Props> = ({ name, connections, tags }) => {
           <PreviewText color="var(--_disabledTextColor)">{name}</PreviewText>
         </PreviewRow>
       )}
-      {connections && (connections.enable_networklink || connections.enable_vpnlink) ? (
+      {connections && (connections.enableNetworklink || connections.enableVpnlink) ? (
         <PreviewRow margin="8px 0 0 0">
           <PreviewText className="label" margin="0 4px 0 0">
             Connection Types:
           </PreviewText>
-          {connections.enable_networklink && <PreviewText color="var(--_disabledTextColor)">VPC</PreviewText>}
-          {connections.enable_vpnlink && <PreviewText color="var(--_disabledTextColor)">VPN</PreviewText>}
+          {connections.enableNetworklink && <PreviewText color="var(--_disabledTextColor)">VPC</PreviewText>}
+          {connections.enableVpnlink && <PreviewText color="var(--_disabledTextColor)">VPN</PreviewText>}
         </PreviewRow>
       ) : null}
       {tags && tags.length ? (

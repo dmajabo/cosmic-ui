@@ -10,6 +10,7 @@ export const GridCellWrapper = styled.div`
 
 interface ICellProps {
   color?: string;
+  cursor?: 'pointer' | 'default';
 }
 export const GridCellLabel = styled.span<ICellProps>`
   color: ${props => props.color || 'var(--_primaryColor)'};
@@ -21,5 +22,5 @@ export const GridCellLabel = styled.span<ICellProps>`
   font-size: 16px;
   line-height: 21px;
   margin: auto 0;
-  cursor: pointer;
+  cursor: ${props => props.cursor || 'pointer'};
 `;

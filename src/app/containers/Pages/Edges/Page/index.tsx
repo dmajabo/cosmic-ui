@@ -1,5 +1,5 @@
 import React from 'react';
-import { useGet } from 'lib/api/http/useAxiosHook';
+import { useDelete, useGet } from 'lib/api/http/useAxiosHook';
 import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 import LoadingIndicator from 'app/components/Loading';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
@@ -24,10 +24,11 @@ const MainPage: React.FC<Props> = (props: Props) => {
   const { response: resGroupds, onGet: onGetGroups } = useGet<ITopologyGroupsData>();
   const { response: resRegions, onGet: onGetRegions } = useGet<IAwsRegionsRes>();
   const { response: resAccounts, onGet: onGetAccounts } = useGet<IAccountsRes>();
+  const { response: resDelete, onDelete: onDeleteEedge } = useDelete<any>();
   const { edges } = useEdgesDataContext();
   const [showEditorPage, setShowEditorPage] = React.useState(false);
   const [edgeDataItem, setEdgeDataItem] = React.useState<IEdgeP>(null);
-
+  const [tempItem, setTempItem] = React.useState<IEdgeP>(null);
   React.useEffect(() => {
     onTryLoadEdges();
     onTryLoadGroups();
@@ -58,6 +59,13 @@ const MainPage: React.FC<Props> = (props: Props) => {
       edges.onSetAccounts(resAccounts.controllers);
     }
   }, [resAccounts]);
+
+  React.useEffect(() => {
+    if (resDelete && tempItem) {
+      setTempItem(null);
+      edges.onDeleteEdge(tempItem.id);
+    }
+  }, [resDelete]);
 
   React.useEffect(() => {
     // TO DO
@@ -104,7 +112,12 @@ const MainPage: React.FC<Props> = (props: Props) => {
   };
 
   const onDeleteEdge = (_item: IEdgeP) => {
-    console.log(_item);
+    onTryDeleteEdge(_item);
+  };
+
+  const onTryDeleteEdge = async (_item: IEdgeP) => {
+    setTempItem(_item);
+    await onDeleteEedge(EdgesApi.deleteEdge(_item.id), userContext.accessToken!);
   };
 
   if (loading) {

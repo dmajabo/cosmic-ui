@@ -13,8 +13,8 @@ import MatSelect from 'app/components/Inputs/MatSelect';
 import { NwServiceT, NwServicesVendor } from 'lib/api/ApiModels/Edges/apiModel';
 
 interface Props {
-  service_type: NwServiceT;
-  service_vendor: NwServicesVendor;
+  serviceType: NwServiceT;
+  serviceVendor: NwServicesVendor;
   regionCodes: string[];
   selectedAccount: string;
   onChange: (value: any, field: string) => void;
@@ -26,15 +26,15 @@ const TransitStep: React.FC<Props> = (props: Props) => {
   const [showLargeWindow, setShowLargeWindow] = React.useState<boolean>(false);
   const onFirewallChange = (v: boolean) => {
     const _v = v ? NwServiceT.FIREWALL : null;
-    props.onChangeNetwork(_v, 'service_type');
+    props.onChangeNetwork(_v, 'serviceType');
   };
 
   const onAccountChange = (v: string) => {
-    props.onChange(v, 'controller_name');
+    props.onChange(v, 'controllerName');
   };
 
   const onSelectRegion = (r: string[]) => {
-    props.onChange(r, 'region_code');
+    props.onChange(r, 'regionCode');
   };
 
   const onOpenModal = () => {
@@ -48,7 +48,7 @@ const TransitStep: React.FC<Props> = (props: Props) => {
   return (
     <>
       <PanelRow>
-        <CheckBox label="Add Firewall in each edge region" isChecked={props.service_type === NwServiceT.FIREWALL} toggleCheckboxChange={onFirewallChange} />
+        <CheckBox label="Add Firewall in each edge region" isChecked={props.serviceType === NwServiceT.FIREWALL} toggleCheckboxChange={onFirewallChange} />
         <TextInputWrapper style={{ width: '244px', height: '50px', minHeight: '50px', margin: '0 0 0 20px' }}>
           <InputWrapper>
             <Input id="poloAlto" name="poloAlto" type="text" value="Palo Alto" onChange={() => {}} readOnly height="50px" padding="8px 24px 8px 56px" />
