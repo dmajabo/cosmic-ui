@@ -4,65 +4,66 @@ import { useEdgesDataContext } from 'lib/hooks/Edges/useEdgesDataContext';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { logoIcon } from 'app/components/SVGIcons/pagesIcons/logo';
 import { poloAltoIcon } from 'app/components/SVGIcons/edges/poloAlto';
-import { NwServicesVendor, NwServiceT } from 'lib/api/ApiModels/Edges/apiModel';
+import { IDeploymentP, INwServicesP, NwServicesVendor, NwServiceT } from 'lib/api/ApiModels/Edges/apiModel';
 
 interface IMapRegion {
   code: string;
   city: string;
 }
 interface Props {
-  regionCodes: string[];
-  selectedAccount: string;
-  serviceType: NwServiceT;
-  serviceVendor: NwServicesVendor;
+  deployment: IDeploymentP[];
+  networkServices: INwServicesP[];
 }
 
 const TransitPreview: React.FC<Props> = (props: Props) => {
   const { edges } = useEdgesDataContext();
   const [selectedRegions, setSelectedRegions] = React.useState<IMapRegion[]>([]);
   React.useEffect(() => {
-    if (!props.regionCodes || !props.regionCodes.length) {
+    if (!props.deployment || !props.deployment.length) {
       setSelectedRegions([]);
       return;
     }
-    if (props.regionCodes && props.regionCodes.length) {
-      const _arr: IMapRegion[] = [];
-      if (edges.regions && edges.regions.length) {
-        props.regionCodes.forEach(it => {
-          const _item = edges.regions.find(reg => reg.code === it);
-          if (_item) {
-            _arr.push({ code: it, city: _item.city });
-          } else {
-            _arr.push({ code: it, city: null });
-          }
-        });
-      }
-      setSelectedRegions(_arr);
+    // to do
+    if (!props.deployment[0].regionCode || !props.deployment[0].regionCode.length) {
+      setSelectedRegions([]);
+      return;
     }
-  }, [props.regionCodes]);
+    const _arr: IMapRegion[] = [];
+    if (edges.regions && edges.regions.length) {
+      props.deployment[0].regionCode.forEach(it => {
+        const _item = edges.regions.find(reg => reg.code === it);
+        if (_item) {
+          _arr.push({ code: it, city: _item.city });
+        } else {
+          _arr.push({ code: it, city: null });
+        }
+      });
+    }
+    setSelectedRegions(_arr);
+  }, [props.deployment]);
 
-  if ((!props.regionCodes || !props.regionCodes.length) && !props.selectedAccount) return null;
+  if ((!props.deployment || !props.deployment.length) && (!props.networkServices || !props.networkServices.length)) return null;
   return (
     <PreviewWrapper>
-      {props.serviceType === NwServiceT.FIREWALL && (
+      {props.networkServices[0].serviceType === NwServiceT.FIREWALL && (
         <PreviewRow margin="20px 0 0 0">
           <PreviewText className="label" margin="0 16px 0 0">
             Add Firewall in each edge region:
           </PreviewText>
           <IconWrapper width="20px" height="18px" icon={poloAltoIcon} />
-          {props.serviceVendor === NwServicesVendor.PALO_ALTO_NW && (
+          {props.networkServices[0].serviceVendor === NwServicesVendor.PALO_ALTO_NW && (
             <PreviewText className="label" margin="0 0 0 12px">
               Palo Alto
             </PreviewText>
           )}
         </PreviewRow>
       )}
-      {props.selectedAccount && (
+      {props.deployment[0].controllerName && (
         <PreviewRow margin="8px 0 0 0">
           <PreviewText className="label" margin="0 4px 0 0">
             Account:
           </PreviewText>
-          <PreviewText color="var(--_disabledTextColor)">{props.selectedAccount}</PreviewText>
+          <PreviewText color="var(--_disabledTextColor)">{props.deployment[0].controllerName}</PreviewText>
         </PreviewRow>
       )}
       {selectedRegions && selectedRegions.length ? (

@@ -139,21 +139,16 @@ const FormPanel: React.FC<Props> = (props: Props) => {
             </AccordionHeaderPanel>
             {(!props.selectedStep || (props.selectedStep && props.selectedStep.id !== EdgesStepperTypes.TRANSIT)) && (
               <AccordionHeaderPanel>
-                <TransitPreview
-                  regionCodes={props.dataItem.deployment[0].regionCode}
-                  selectedAccount={props.dataItem.deployment[0].controllerName}
-                  serviceType={props.dataItem.networkServices[0].serviceType}
-                  serviceVendor={props.dataItem.networkServices[0].serviceVendor}
-                />
+                <TransitPreview deployment={props.dataItem.deployment} networkServices={props.dataItem.networkServices} />
               </AccordionHeaderPanel>
             )}
           </AccordionSummary>
           <AccordionDetails className={AccordionStyles.deteilItemEdges}>
             <TransitStep
-              regionCodes={props.dataItem.deployment[0].regionCode}
-              selectedAccount={props.dataItem.deployment[0].controllerName}
-              serviceType={props.dataItem.networkServices[0].serviceType}
-              serviceVendor={props.dataItem.networkServices[0].serviceVendor}
+              regionCodes={props.dataItem.deployment && props.dataItem.deployment.length ? props.dataItem.deployment[0].regionCode : []}
+              selectedAccount={props.dataItem.deployment && props.dataItem.deployment.length ? props.dataItem.deployment[0].controllerName : null}
+              serviceType={props.dataItem.networkServices && props.dataItem.networkServices.length ? props.dataItem.networkServices[0].serviceType : null}
+              serviceVendor={props.dataItem.networkServices && props.dataItem.networkServices.length ? props.dataItem.networkServices[0].serviceVendor : null}
               onChange={props.onChangeTransitionDataField}
               onChangeNetwork={props.onChangeTransitionNetworkField}
             />

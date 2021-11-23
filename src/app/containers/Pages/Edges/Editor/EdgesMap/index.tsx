@@ -35,8 +35,10 @@ const EdgesMap: React.FC<Props> = (props: Props) => {
   }, []);
 
   React.useEffect(() => {
-    const _transits: ISvgTransitNode[] = buildtransitNodes(props.selectedRegions);
-    setTransits(_transits);
+    if (props.selectedRegions) {
+      const _transits: ISvgTransitNode[] = buildtransitNodes(props.selectedRegions);
+      setTransits(_transits);
+    }
   }, [props.selectedRegions]);
 
   React.useEffect(() => {

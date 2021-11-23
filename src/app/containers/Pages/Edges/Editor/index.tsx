@@ -282,7 +282,12 @@ const Editor: React.FC<Props> = (props: Props) => {
         </PanelColumn>
         <MainColumn>
           {dataItem && (
-            <EdgesMap name={dataItem.name} sites={dataItem.siteGroupIds} apps={dataItem.appGroupIds} selectedRegions={dataItem && dataItem.deployment && dataItem.deployment[0].regionCode} />
+            <EdgesMap
+              name={dataItem.name}
+              sites={dataItem.siteGroupIds}
+              apps={dataItem.appGroupIds}
+              selectedRegions={dataItem && dataItem.deployment && dataItem.deployment.length ? dataItem.deployment[0].regionCode : null}
+            />
           )}
         </MainColumn>
         <PanelColumn width="50vw" maxWidth="680px" padding="0">
