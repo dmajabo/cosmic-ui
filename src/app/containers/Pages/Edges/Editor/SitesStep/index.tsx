@@ -68,7 +68,6 @@ const SitesStep: React.FC<Props> = (props: Props) => {
 
   const onSave = (item: ITopologyGroup, index: number | null) => {
     setShowExistingGroups(true);
-    setShowCreator(false);
     props.onChangeSites(item, index);
   };
 

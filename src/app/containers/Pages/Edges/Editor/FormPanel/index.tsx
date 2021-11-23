@@ -31,6 +31,7 @@ interface Props {
   onChangeTransitionNetworkField: (value: any, field: string) => void;
   onChangeSitesField: (value: ITopologyGroup) => void;
   onAddExistingSites: (ids: string[]) => void;
+  onAddExistingApps: (ids: string[]) => void;
   onChangeAppsField: (value: ITopologyGroup) => void;
   onDeleteSitesGroup: (gr: ITopologyGroup) => void;
   onDeleteAppsGroup: (gr: ITopologyGroup) => void;
@@ -117,7 +118,7 @@ const FormPanel: React.FC<Props> = (props: Props) => {
             </AccordionHeaderPanel>
           </AccordionSummary>
           <AccordionDetails className={AccordionStyles.deteilItemEdges}>
-            <AppsStep data={props.dataItem.appGroupIds} onChangeApps={props.onChangeAppsField} onDeleteGroup={props.onDeleteAppsGroup} />
+            <AppsStep data={props.dataItem.appGroupIds} onAddExistingSites={props.onAddExistingApps} onChangeApps={props.onChangeAppsField} onDeleteGroup={props.onDeleteAppsGroup} />
           </AccordionDetails>
         </Accordion>
         <Accordion

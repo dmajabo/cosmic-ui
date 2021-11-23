@@ -11,9 +11,11 @@ import { EditGroupItem } from '../../model';
 import { ITopologyGroup, SelectorEvalType } from 'lib/api/ApiModels/Topology/endpoints';
 import { TopologyGroupTypesAsString } from 'lib/models/topology';
 import { useEdgesDataContext } from 'lib/hooks/Edges/useEdgesDataContext';
+import ExistingGroups from '../Components/ExistingGroups';
 
 interface Props {
   data: string[];
+  onAddExistingSites: (ids: string[]) => void;
   onChangeApps: (v: ITopologyGroup, index: number | null) => void;
   onDeleteGroup: (gr: ITopologyGroup) => void;
 }
@@ -23,6 +25,7 @@ const AppsStep: React.FC<Props> = (props: Props) => {
   const [showCreator, setShowCreator] = React.useState<boolean>(false);
   const [editItem, setEditItem] = React.useState<EditGroupItem>(null);
   const [groups, setGroups] = React.useState<ITopologyGroup[]>([]);
+  const [showExistingGroups, setShowExistingGroups] = React.useState<boolean>(true);
 
   React.useEffect(() => {
     if (!edges || !edges.groups || !edges.groups.length) return;
@@ -37,13 +40,25 @@ const AppsStep: React.FC<Props> = (props: Props) => {
     setGroups(_arr);
   }, [props.data]);
 
+  const onCreateNewGroup = () => {
+    setShowExistingGroups(false);
+  };
+
   const onAddGroup = () => {
     setEditItem({ group: { name: '', type: TopologyGroupTypesAsString.APPLICATION, evalType: SelectorEvalType.SPECIFIC, extIds: [], expr: '' }, index: null });
+    setShowExistingGroups(true);
     setShowCreator(true);
+  };
+
+  const onAddExistingGroups = (ids: string[]) => {
+    setShowExistingGroups(true);
+    setShowCreator(false);
+    props.onAddExistingSites(ids);
   };
 
   const onEdit = (dataItem: ITopologyGroup, index: number) => {
     setEditItem({ group: dataItem, index: index });
+    setShowExistingGroups(false);
     setShowCreator(true);
   };
 
@@ -52,11 +67,12 @@ const AppsStep: React.FC<Props> = (props: Props) => {
   };
 
   const onSave = (item: ITopologyGroup, index: number | null) => {
-    setShowCreator(false);
+    setShowExistingGroups(true);
     props.onChangeApps(item, index);
   };
 
   const onClose = () => {
+    setShowExistingGroups(true);
     setShowCreator(false);
   };
   return (
@@ -81,7 +97,18 @@ const AppsStep: React.FC<Props> = (props: Props) => {
           open={showCreator}
           onClose={onClose}
         >
-          <AppEditor data={editItem} onAddGroup={onSave} />
+          {showExistingGroups && (
+            <ExistingGroups
+              selectedItems={props.data}
+              groups={edges.groups}
+              filterGroupsType={TopologyGroupTypesAsString.APPLICATION}
+              onAddExistingGroup={onAddExistingGroups}
+              onCreateNew={onCreateNewGroup}
+              onEditGroup={onEdit}
+              onDeleteGroup={onDelete}
+            />
+          )}
+          {!showExistingGroups && <AppEditor data={editItem} onAddGroup={onSave} />}
         </ModalComponent>
       )}
     </>

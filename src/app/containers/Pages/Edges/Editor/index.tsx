@@ -171,6 +171,14 @@ const Editor: React.FC<Props> = (props: Props) => {
     setDataItem(_dataItem);
   };
 
+  const onAddExistingApps = (ids: string[]) => {
+    const _dataItem: IEdgeP = jsonClone(dataItem);
+    _dataItem.appGroupIds = ids;
+    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.APPS, _dataItem.appGroupIds);
+    setSteps(_items);
+    setDataItem(_dataItem);
+  };
+
   const onChangeAppsField = (value: ITopologyGroup) => {
     const _dataItem: IEdgeP = jsonClone(dataItem);
     const _arrSet = new Set(_dataItem.appGroupIds);
@@ -287,6 +295,7 @@ const Editor: React.FC<Props> = (props: Props) => {
             saveDisabled={saveDisabled}
             onChangeSitesField={onChangeSitesField}
             onAddExistingSites={onSetSitesGroups}
+            onAddExistingApps={onAddExistingApps}
             onChangeAppsField={onChangeAppsField}
             onChangeField={onChangeDataField}
             onChangeGeneralField={onChangeGeneralField}

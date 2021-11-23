@@ -117,6 +117,11 @@ const ExistingGroups: React.FC<Props> = (props: Props) => {
       ),
     },
   ]);
+
+  React.useEffect(() => {
+    setSelectionModel(props.selectedItems);
+  }, [props.selectedItems]);
+
   React.useEffect(() => {
     if (!props.groups || !props.groups.length) {
       onTryLoadGroups();
