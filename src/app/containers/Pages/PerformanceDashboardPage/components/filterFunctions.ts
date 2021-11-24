@@ -24,9 +24,7 @@ export const GetDevicesString = (organization: Organization, sourceNetworkExtId:
     const orgDevices = organization.devices;
 
     if (!isEmpty(orgDevices)) {
-      const filteredDevices = orgDevices.filter(device => device.networkId === sourceNetworkExtId);
-      const deviceExtIdList = filteredDevices.map(device => device.extId);
-      return deviceExtIdList.join(',');
+      return orgDevices.filter(device => device.networkId === sourceNetworkExtId).map(device => device.extId).join(',');
     } else {
       return '';
     }
