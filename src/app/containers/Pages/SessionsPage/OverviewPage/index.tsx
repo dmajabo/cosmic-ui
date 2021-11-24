@@ -108,9 +108,9 @@ const OverviewPage: React.FC<IProps> = (props: IProps) => {
         </ActionPart>
       </ActionRowStyles>
       <CardWrapper>
-        <SessionCard styles={{ margin: '0 20px 0 0' }} label="Total Sources" value={data ? data.netcount : null} icon={sourcesIcon} valueColor="var(--_successColor)" />
-        <SessionCard styles={{ margin: '0 20px 0 0' }} label="TGW" value={data ? data.tgwcount : null} icon={tgwIcon} valueColor="var(--_hoverButtonBg)" />
-        <SessionCard styles={{ margin: '0 20px 0 0' }} label="Destinations" value={data ? data.appcount : null} icon={destinationIcon} valueColor="var(--_warningColor)" />
+        <SessionCard styles={{ margin: '0' }} label="Total Sources" value={data ? data.netcount : null} icon={sourcesIcon} valueColor="var(--_successColor)" />
+        <SessionCard styles={{ margin: '0 30px' }} label="TGW" value={data ? data.tgwcount : null} icon={tgwIcon} valueColor="var(--_hoverButtonBg)" />
+        <SessionCard styles={{ margin: '0' }} label="Destinations" value={data ? data.appcount : null} icon={destinationIcon} valueColor="var(--_warningColor)" />
         {/* <SessionCard styles={{ margin: '0 20px 0 0' }} label="Session Drops" value="5" icon={dropsIcon} valueColor="var(--_errorColor)" />
         <SessionCard label="Security Group Hits" value="6" icon={securityHitsIcon} valueColor="var(--_warningColor)" /> */}
       </CardWrapper>

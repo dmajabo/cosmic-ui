@@ -50,7 +50,7 @@ const TransitPreview: React.FC<Props> = (props: Props) => {
           <PreviewText className="label" margin="0 16px 0 0">
             Add Firewall in each edge region:
           </PreviewText>
-          <IconWrapper width="20px" height="18px" icon={poloAltoIcon} />
+          <IconWrapper width="20px" height="18px" icon={poloAltoIcon()} />
           {props.networkServices[0].serviceVendor === NwServicesVendor.PALO_ALTO_NW && (
             <PreviewText className="label" margin="0 0 0 12px">
               Palo Alto

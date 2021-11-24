@@ -16,6 +16,13 @@ export interface ISessionGridColumns {
 }
 
 export const SessionGridColumns: ISessionGridColumns = {
+  collapseColumn: {
+    resField: 'id',
+    searchField: '',
+    queryType: null,
+    label: '',
+    isStaticField: true,
+  },
   timestamp: {
     resField: 'timestamp',
     searchField: '@timestamp',

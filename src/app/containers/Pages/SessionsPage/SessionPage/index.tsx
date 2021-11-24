@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { ActionPart, ActionRowStyles, ContentWrapper, TableWrapper } from '../../Shared/styles';
+import { ActionPart, ActionRowStyles, ContentWrapper, PageContentWrapper, TableWrapper } from '../../Shared/styles';
 import { useGet } from 'lib/api/http/useAxiosHook';
 import { IAllSessionsRes } from 'lib/api/ApiModels/Sessions/apiModel';
 import { SessionsApi } from 'lib/api/ApiModels/Sessions/endpoints';
@@ -15,6 +15,7 @@ import LoadingIndicator from 'app/components/Loading';
 import ElasticFilter from 'app/components/Inputs/ElasticFilter';
 import { FilterOpperatorsList, ISessionsGridField, SessionGridColumnItems } from './models';
 import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
+import AggregateTable from './AggregateTable';
 
 interface IProps {}
 
@@ -107,8 +108,8 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
   };
 
   return (
-    <>
-      <ActionRowStyles>
+    <PageContentWrapper>
+      <ActionRowStyles margin="0 0 40px 0">
         <ActionPart margin="0 auto 0 0">
           <SessionsSwitch checked={sessions.sessionsStitch} onChange={onSwitchChange} />
         </ActionPart>
@@ -127,15 +128,28 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
       />
       <ContentWrapper>
         <TableWrapper>
-          <Table
-            currentPage={sessions.sessionsCurrentPage}
-            onChangeCurrentPage={onChangeCurrentPage}
-            logCount={sessions.sessionsCount}
-            isError={error}
-            data={sessions.sessionsData}
-            pageSize={sessions.sessionsPageSize}
-            onChangePageSize={onChangePageSize}
-          />
+          {!sessions.sessionsStitch && (
+            <Table
+              currentPage={sessions.sessionsCurrentPage}
+              onChangeCurrentPage={onChangeCurrentPage}
+              logCount={sessions.sessionsCount}
+              isError={error}
+              data={sessions.sessionsData}
+              pageSize={sessions.sessionsPageSize}
+              onChangePageSize={onChangePageSize}
+            />
+          )}
+          {sessions.sessionsStitch && (
+            <AggregateTable
+              // currentPage={sessions.sessionsCurrentPage}
+              // onChangeCurrentPage={onChangeCurrentPage}
+              // logCount={sessions.sessionsCount}
+              // isError={error}
+              data={sessions.sessionsData}
+              // pageSize={sessions.sessionsPageSize}
+              // onChangePageSize={onChangePageSize}
+            />
+          )}
           {loading && (
             <AbsLoaderWrapper width="100%" height="calc(100% - 50px)" top="50px">
               <LoadingIndicator margin="auto" />
@@ -143,7 +157,7 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
           )}
         </TableWrapper>
       </ContentWrapper>
-    </>
+    </PageContentWrapper>
   );
 };
 

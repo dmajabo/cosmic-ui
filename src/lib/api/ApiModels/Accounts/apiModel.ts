@@ -3,6 +3,7 @@ import { IBaseTotalCount } from 'lib/models/general';
 export enum AccountVendorTypes {
   AMAZON_AWS = 'AMAZON_AWS',
   CISCO_MERAKI = 'CISCO_MERAKI',
+  PALO_ALTO = 'PALO_ALTO',
 }
 
 export enum AccountStatus {

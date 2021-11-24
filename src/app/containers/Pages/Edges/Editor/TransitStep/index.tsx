@@ -52,7 +52,7 @@ const TransitStep: React.FC<Props> = (props: Props) => {
         <TextInputWrapper style={{ width: '244px', height: '50px', minHeight: '50px', margin: '0 0 0 20px' }}>
           <InputWrapper>
             <Input id="poloAlto" name="poloAlto" type="text" value="Palo Alto" onChange={() => {}} readOnly height="50px" padding="8px 24px 8px 56px" />
-            <IconWrapper width="24px" height="24px" styles={{ position: 'absolute', top: 'calc(50% - 12px)', left: '20px', pointerEvents: 'none' }} icon={poloAltoIcon} />
+            <IconWrapper width="24px" height="24px" styles={{ position: 'absolute', top: 'calc(50% - 12px)', left: '20px', pointerEvents: 'none' }} icon={poloAltoIcon()} />
           </InputWrapper>
         </TextInputWrapper>
       </PanelRow>

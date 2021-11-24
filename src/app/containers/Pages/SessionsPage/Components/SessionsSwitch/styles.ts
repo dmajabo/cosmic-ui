@@ -5,8 +5,8 @@ export const Wrapper = styled.div`
   align-items: center;
   flex-shrink: 0;
   width: 260px;
-  height: 100%;
-  background: var(--_primaryBg);
+  height: 50px;
+  background: var(--_tableBg);
   border-radius: 6px;
   padding: 10px 20px;
 `;

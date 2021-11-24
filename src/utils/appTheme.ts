@@ -93,6 +93,7 @@ export const APP_THEME: ITheme = {
     // TABLES
     '--_tableBg': '#F3F6FC',
     '--_rowBg': '#FFFFFF',
+    '--_expandedRowBg': '#F7F8FB',
     '--_rowBorder': '#E7EDF9',
     // SWITCH
     '--_offBg': '#DEE3EE',

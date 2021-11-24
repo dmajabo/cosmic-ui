@@ -14,7 +14,7 @@ export const TabsWrapperStyles = styled.div`
   width: 100%;
   height: 48px;
   flex-shrink: 0;
-  margin-bottom: 20px;
+  margin-bottom: 32px;
   border: none;
   border-bottom: 1px solid;
   border-bottom-color: rgba(132, 141, 163, 0.1);
@@ -22,6 +22,7 @@ export const TabsWrapperStyles = styled.div`
 
 interface IActionRowProps {
   height?: string;
+  margin?: string;
 }
 
 export const ActionRowStyles = styled.div<IActionRowProps>`
@@ -29,7 +30,7 @@ export const ActionRowStyles = styled.div<IActionRowProps>`
   width: 100%;
   height: ${props => props.height || '50px'};
   flex-shrink: 0;
-  margin-bottom: 20px;
+  margin: ${props => props.margin || '0 0 20px 0'};
   z-index: 11;
 `;
 
@@ -70,8 +71,6 @@ export const CardWrapper = styled.div`
 
 export const ContentWrapper = styled.div`
   background: var(--_primaryBg);
-  border-radius: 6px;
-  padding: 30px;
 `;
 
 interface ChartProps {
@@ -105,4 +104,13 @@ export const TableWrapper = styled.div`
   position: relative;
   width: 100%;
   min-height: 400px;
+`;
+
+export const PageContentWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  border-radius: 6px;
+  padding: 40px;
+  background: var(--_primaryBg);
 `;
