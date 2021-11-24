@@ -479,6 +479,8 @@ export const MetricsTable: React.FC<MetricsTableProps> = ({ dimensions, tableDat
     setSelectedColumns(newSelectedColumns);
   }, [columnCheckboxData]);
 
+  useEffect(() => setColumnCheckboxData(initialCheckboxData), [dimensions]);
+
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) =>
     setColumnCheckboxData({
       ...columnCheckboxData,
