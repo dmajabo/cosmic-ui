@@ -1,8 +1,9 @@
 import { IStepperItem, StepperItemStateType } from 'app/components/Stepper/model';
-import { IEdgeModel, ValidationFields } from 'lib/api/ApiModels/Edges/apiModel';
+import { IEdgeP, ValidationFields } from 'lib/api/ApiModels/Edges/apiModel';
+import { jsonClone } from 'lib/helpers/cloneHelper';
 import { EdgesStepperTypes } from './model';
 
-export const updateSteps = (steps: IStepperItem<EdgesStepperTypes>[], dataItem: IEdgeModel): IStepperItem<EdgesStepperTypes>[] => {
+export const updateSteps = (steps: IStepperItem<EdgesStepperTypes>[], dataItem: IEdgeP): IStepperItem<EdgesStepperTypes>[] => {
   const _items: IStepperItem<EdgesStepperTypes>[] = steps.slice();
   _items.forEach((step, index) => {
     step.disabled = index !== 0 && _items[index - 1].disabled;
@@ -24,7 +25,7 @@ export const updateSteps = (steps: IStepperItem<EdgesStepperTypes>[], dataItem: 
       return;
     }
     if (step.id === EdgesStepperTypes.TRANSIT) {
-      const _completed = checkIsAnyFieldEmpty(dataItem.deployment, [ValidationFields.CONTROLLER_NAME, ValidationFields.REGION_CODE]);
+      const _completed = dataItem.deployment && dataItem.deployment.length ? checkIsAnyFieldEmpty(dataItem.deployment[0], [ValidationFields.CONTROLLER_NAME, ValidationFields.REGION_CODE]) : false;
       step.state = !_completed ? StepperItemStateType.EMPTY : StepperItemStateType.COMPLETE;
       return;
     }
@@ -82,4 +83,31 @@ const checkIsAnyFieldEmpty = (data: Object, fields: ValidationFields[]): boolean
     }
   }
   return _completed;
+};
+
+export const onReplaceFields = (item: IEdgeP): any => {
+  const _obj: any = jsonClone(item);
+  _obj.app_group_ids = _obj.appGroupIds;
+  _obj.site_group_ids = _obj.siteGroupIds;
+  delete _obj.appGroupIds;
+  delete _obj.siteGroupIds;
+  _obj.network_services = [..._obj.networkServices];
+  delete _obj.networkServices;
+  _obj.network_services.forEach(it => {
+    it.service_type = it.serviceType;
+    it.service_vendor = it.serviceVendor;
+    delete it.serviceType;
+    delete it.serviceVendor;
+  });
+  _obj.deployment.forEach(it => {
+    it.controller_name = it.controllerName;
+    it.region_code = it.regionCode;
+    delete it.controllerName;
+    delete it.regionCode;
+  });
+  _obj.connections.enable_networklink = _obj.connections.enableNetworklink;
+  _obj.connections.enable_vpnlink = _obj.connections.enableVpnlink;
+  delete _obj.connections.enableNetworklink;
+  delete _obj.connections.enableVpnlink;
+  return _obj;
 };

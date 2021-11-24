@@ -64,7 +64,7 @@ const TextTagInput: React.FC<IProps> = (props: IProps) => {
         {props.required && <Required>*</Required>}
       </InputLabel>
       <TagsWrapper>
-        {valueArr && valueArr.length ? valueArr.map((it, index) => <Tag index={index} key={`${props.id}value${it}`} text={it} onRemove={onRemove} />) : null}
+        {valueArr && valueArr.length ? valueArr.map((it, index) => <Tag index={index} key={`${props.id}value${it}${index}`} text={it} onRemove={onRemove} />) : null}
         <TagsInput
           required={props.required}
           id={props.id}

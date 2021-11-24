@@ -11,7 +11,7 @@ import RadioButton from 'app/components/Inputs/RadioButton';
 import ExpresionWrapper from '../Components/ExpresionWrapper';
 import { ModalContent, ModalFooter, ModalRow } from '../Components/styles';
 import { useGet, usePost, usePut } from 'lib/api/http/useAxiosHook';
-import { IBaseEntity } from 'lib/models/general';
+import { IBaseEntity, IObject } from 'lib/models/general';
 import AppsGridWrapper from '../Components/AppsGridWrapper';
 import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 import { buildPagingParam, EdgesApi } from 'lib/api/ApiModels/Edges/edpoints';
@@ -31,14 +31,15 @@ const AppEditor: React.FC<Props> = (props: Props) => {
   const [dataItem, setDataItem] = React.useState<ITopologyGroup>(props.data.group);
   const [radioGroupValue, setRadioGroupValue] = React.useState<SelectorEvalType>(props.data.group.evalType || SelectorEvalType.SPECIFIC);
   const { response: loadGroupRes, loading, onGet: onLoadGroup } = useGet<ITopologyGroup>();
-  const { response: postRes, loading: postLoading, onPost } = usePost<ITopologyGroup, IBaseEntity<string>>();
-  const { response: postUpdateRes, loading: postUpdateLoading, onPut: onUpdate } = usePut<ITopologyGroup, ITopologyGroup>();
+  const { response: postRes, error: postError, loading: postLoading, onPost } = usePost<ITopologyGroup, IBaseEntity<string>>();
+  const { response: postUpdateRes, error: putError, loading: postUpdateLoading, onPut: onUpdate } = usePut<ITopologyGroup, ITopologyGroup>();
   const { loading: loadingDev, error: errorDev, response: responseApps, onGet: onLoadApps } = useGet<IAppsRes>();
   const [exprError, setExprError] = React.useState<string | null>(null);
   const [devices, setDevices] = React.useState<IVm[]>([]);
   const [totalCount, setTotalCount] = React.useState<number>(0);
   const [currentPage, setCurrentPage] = React.useState<number>(1);
   const [pageSize, setPageSize] = React.useState<number>(10);
+  const [resError, setResError] = React.useState<IObject<string>>({});
 
   React.useEffect(() => {
     onTryLoadApps(pageSize, currentPage);
@@ -69,10 +70,33 @@ const AppEditor: React.FC<Props> = (props: Props) => {
     }
   }, [loadGroupRes]);
 
+  React.useEffect(() => {
+    if (postError) {
+      if (postError.code && postError.code.toString() === '2') {
+        const _obj: IObject<string> = resError ? { ...resError } : {};
+        setResError({ ..._obj, name: postError.message });
+      }
+    }
+  }, [postError]);
+
+  React.useEffect(() => {
+    if (putError) {
+      if (putError.code && putError.code.toString() === '2') {
+        const _obj: IObject<string> = resError ? { ...resError } : {};
+        setResError({ ..._obj, name: putError.message });
+      }
+    }
+  }, [putError]);
+
   const onChangeName = (v: any) => {
     const _item: ITopologyGroup = { ...dataItem };
     _item.name = v;
     setDataItem(_item);
+    if (resError && resError['name']) {
+      const _err = { ...resError };
+      delete _err.name;
+      setResError(_err);
+    }
   };
 
   const onSelectRowChange = (item: IVm) => {
@@ -178,7 +202,17 @@ const AppEditor: React.FC<Props> = (props: Props) => {
             <IconWrapper width="24px" height="24px" styles={{ position: 'absolute', top: 'calc(50% - 12px)', left: '20px', pointerEvents: 'none' }} icon={awsIcon(24)} />
           </InputWrapper>
         </TextInputWrapper>
-        <TextInput id="networkName" name="name" value={dataItem.name} label="Name" onChange={onChangeName} styles={{ margin: '0 0 20px 0' }} required inputStyles={{ height: '50px' }} />
+        <TextInput
+          error={resError && resError['name'] ? resError['name'] : null}
+          id="networkName"
+          name="name"
+          value={dataItem.name}
+          label="Name"
+          onChange={onChangeName}
+          styles={{ margin: '0 0 20px 0' }}
+          required
+          inputStyles={{ height: '50px' }}
+        />
         <ModalRow>
           <RadioButton
             wrapstyles={{ margin: '0 30px 0 0' }}
@@ -217,7 +251,7 @@ const AppEditor: React.FC<Props> = (props: Props) => {
         <PrimaryButton
           styles={{ width: '100%', height: '100%' }}
           disabled={!dataItem.name || (!dataItem.extIds.length && !dataItem.expr) || !!(!dataItem.extIds.length && dataItem.expr && exprError)}
-          label="Add group"
+          label={!dataItem.id ? 'Add group' : 'Update Group'}
           onClick={onSaveChanges}
         />
       </ModalFooter>

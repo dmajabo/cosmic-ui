@@ -4,6 +4,7 @@ import { PagingWrapper, SelectLabel, SelectWrapper } from './styles';
 import DisplayRange from './DisplayRange';
 import Dropdown from 'app/components/Inputs/Dropdown';
 import { PagingStyles } from './PagingStyles';
+import useResizeAware from 'react-resize-aware';
 
 interface Props {
   count: number;
@@ -20,11 +21,24 @@ interface Props {
   showLastButton?: boolean;
   pagingWrapStyles?: Object;
   selectWrapStyles?: Object;
-  hideRange?: boolean;
+  hideRange?: number;
 }
 
 const Paging: React.FC<Props> = (props: Props) => {
+  const [show, setShow] = React.useState<boolean>(true);
+  const [resizeListener, sizes] = useResizeAware();
   const classes = PagingStyles();
+
+  React.useLayoutEffect(() => {
+    if (props.hideRange && sizes && sizes.width) {
+      if (sizes.width < props.hideRange) {
+        setShow(false);
+      } else {
+        setShow(true);
+      }
+    }
+  }, [sizes]);
+
   const onChangePage = (_e: any, page: number) => {
     if (props.disabled || !page || page === props.currentPage) return;
     props.onChangePage(page);
@@ -44,6 +58,7 @@ const Paging: React.FC<Props> = (props: Props) => {
 
   return (
     <PagingWrapper style={props.pagingWrapStyles}>
+      {resizeListener}
       <Pagination
         className={classes.root}
         onChange={onChangePage}
@@ -56,7 +71,7 @@ const Paging: React.FC<Props> = (props: Props) => {
         showFirstButton={props.showFirstButton !== undefined ? props.showFirstButton : true}
         showLastButton={props.showLastButton !== undefined ? props.showLastButton : true}
       />
-      <SelectWrapper style={props.selectWrapStyles}>
+      <SelectWrapper style={{ ...props.selectWrapStyles, margin: show ? '0 auto' : '0 0 0 auto' }}>
         <Dropdown
           wrapStyles={{ width: '100px', flexShrink: 0 }}
           selectStyles={{ borderColor: 'var(--_primaryButtonBorder)' }}
@@ -69,7 +84,7 @@ const Paging: React.FC<Props> = (props: Props) => {
           position="above"
         />
       </SelectWrapper>
-      {!props.hideRange && <DisplayRange count={props.count} currentPage={props.currentPage} pageSize={props.pageSize} />}
+      {show && <DisplayRange count={props.count} currentPage={props.currentPage} pageSize={props.pageSize} />}
     </PagingWrapper>
   );
 };

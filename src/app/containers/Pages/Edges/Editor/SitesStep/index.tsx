@@ -11,11 +11,13 @@ import { ITopologyGroup, SelectorEvalType } from 'lib/api/ApiModels/Topology/end
 import { TopologyGroupTypesAsString } from 'lib/models/topology';
 import NetworkEditor from './NetworkEditor';
 import { useEdgesDataContext } from 'lib/hooks/Edges/useEdgesDataContext';
+import ExistingGroups from '../Components/ExistingGroups';
 
 interface Props {
   data: string[];
+  onAddExistingSites: (ids: string[]) => void;
   onChangeSites: (v: ITopologyGroup, index: number | null) => void;
-  onDeleteGroup: (id: string) => void;
+  onDeleteGroup: (gr: ITopologyGroup) => void;
 }
 
 const SitesStep: React.FC<Props> = (props: Props) => {
@@ -23,6 +25,7 @@ const SitesStep: React.FC<Props> = (props: Props) => {
   const [showCreator, setShowCreator] = React.useState<boolean>(false);
   const [editItem, setEditItem] = React.useState<EditGroupItem>(null);
   const [groups, setGroups] = React.useState<ITopologyGroup[]>([]);
+  const [showExistingGroups, setShowExistingGroups] = React.useState<boolean>(true);
 
   React.useEffect(() => {
     if (!edges || !edges.groups || !edges.groups.length) return;
@@ -37,26 +40,39 @@ const SitesStep: React.FC<Props> = (props: Props) => {
     setGroups(_arr);
   }, [props.data]);
 
+  const onCreateNewGroup = () => {
+    setShowExistingGroups(false);
+  };
+
   const onAddGroup = () => {
     setEditItem({ group: { name: '', type: TopologyGroupTypesAsString.BRANCH_NETWORKS, evalType: SelectorEvalType.SPECIFIC, extIds: [], expr: '' }, index: null });
+    setShowExistingGroups(true);
     setShowCreator(true);
+  };
+
+  const onAddExistingGroups = (ids: string[]) => {
+    setShowExistingGroups(true);
+    setShowCreator(false);
+    props.onAddExistingSites(ids);
   };
 
   const onEdit = (dataItem: ITopologyGroup, index: number) => {
     setEditItem({ group: dataItem, index: index });
+    setShowExistingGroups(false);
     setShowCreator(true);
   };
 
-  const onDelete = (id: string) => {
-    props.onDeleteGroup(id);
+  const onDelete = (gr: ITopologyGroup) => {
+    props.onDeleteGroup(gr);
   };
 
   const onSave = (item: ITopologyGroup, index: number | null) => {
-    setShowCreator(false);
+    setShowExistingGroups(true);
     props.onChangeSites(item, index);
   };
 
   const onClose = () => {
+    setShowExistingGroups(true);
     setShowCreator(false);
   };
   return (
@@ -73,7 +89,7 @@ const SitesStep: React.FC<Props> = (props: Props) => {
       {showCreator && (
         <ModalComponent
           showHeader
-          title="Create Network"
+          title={showExistingGroups ? 'Add Group' : 'Create Network'}
           showCloseButton
           modalStyles={{ maxWidth: '800px', maxHeight: '90vh', padding: '40px' }}
           useFadeAnimation
@@ -81,7 +97,18 @@ const SitesStep: React.FC<Props> = (props: Props) => {
           open={showCreator}
           onClose={onClose}
         >
-          <NetworkEditor data={editItem} onAddGroup={onSave} />
+          {showExistingGroups && (
+            <ExistingGroups
+              selectedItems={props.data}
+              groups={edges.groups}
+              filterGroupsType={TopologyGroupTypesAsString.BRANCH_NETWORKS}
+              onAddExistingGroup={onAddExistingGroups}
+              onCreateNew={onCreateNewGroup}
+              onEditGroup={onEdit}
+              onDeleteGroup={onDelete}
+            />
+          )}
+          {!showExistingGroups && <NetworkEditor data={editItem} onAddGroup={onSave} />}
         </ModalComponent>
       )}
     </>

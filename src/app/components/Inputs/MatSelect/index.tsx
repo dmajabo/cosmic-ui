@@ -98,6 +98,7 @@ const MatSelect: React.FC<Props> = (props: Props) => {
         onChange={handleChange}
         MenuProps={{ classes: { paper: classes.menuRoot, list: classes.menuList } }}
         className={props.selectClaassName}
+        disabled={props.disabled || props.readOnly}
       >
         {props.options.map((option, index) => {
           if (typeof option === 'string' || typeof option === 'number') {
