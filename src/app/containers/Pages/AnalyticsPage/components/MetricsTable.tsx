@@ -334,8 +334,28 @@ const COLUMNS_POPOVER = 'columns-popover';
 export const MetricsTable: React.FC<MetricsTableProps> = ({ dimensions, tableData }) => {
   const classes = AnalyticsStyles();
   const [searchText, setSearchText] = useState<string>('');
+  const [filteredTableData, setFilteredTableData] = useState<MetricsExplorerTableData[]>(tableData);
 
-  const handleSearchTextChange = (event: React.ChangeEvent<HTMLInputElement>) => setSearchText(event.target.value);
+  const escapeRegExp = (value: string) => value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+
+  const requestSearch = (searchValue: string) => {
+    setSearchText(searchValue);
+    const searchRegex = new RegExp(escapeRegExp(searchValue), 'i');
+    const filteredRows = filteredTableData.filter((row: any) => {
+      return Object.keys(row).some((field: any) => {
+        return searchRegex.test(row[field].toString());
+      });
+    });
+    setFilteredTableData(filteredRows);
+  };
+
+  useEffect(() => {
+    if (!searchText) {
+      setFilteredTableData(tableData);
+    }
+  }, [searchText, tableData]);
+
+  const handleSearchTextChange = (event: React.ChangeEvent<HTMLInputElement>) => requestSearch(event.target.value);
 
   const allUniqueDimensions = uniqWith(
     dimensions.reduce((acc, nextValue) => acc.concat(nextValue.source, nextValue.destination), []),
@@ -354,7 +374,7 @@ export const MetricsTable: React.FC<MetricsTableProps> = ({ dimensions, tableDat
     ...dataColumns,
   ];
 
-  const finalTableData = tableData.map((item, index) => ({
+  const finalTableData = filteredTableData.map((item, index) => ({
     average: item.average,
     ninetyFifthPercentile: item.ninetyFifthPercentile,
     max: item.max,
