@@ -27,7 +27,7 @@ export const SelectWrapper = styled.div`
   outline: 0;
   padding: 8px 24px 8px 16px;
   border: 1px solid;
-  border-color: var(--_primaryButtonBorder);
+  border-color: var(--_primaryButtonBg);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -45,7 +45,7 @@ export const SelectWrapper = styled.div`
 export const DropWrapper = styled.div`
   position: relative;
   width: 180px;
-  height: 50px;
+  height: 40px;
 `;
 
 export const DisplayValueStyles = styled.div`

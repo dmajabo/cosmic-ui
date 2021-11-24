@@ -114,7 +114,13 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
           <SessionsSwitch checked={sessions.sessionsStitch} onChange={onSwitchChange} />
         </ActionPart>
         <ActionPart margin="0 0 0 auto">
-          <Dropdown label="Show" selectedValue={sessions.sessionsPeriod} values={SESSIONS_SELECT_VALUES} onSelectValue={onChangePeriod} />
+          <Dropdown
+            wrapStyles={{ height: '50px', border: '1px solid var(--_primaryButtonBorder)', borderRadius: '6px' }}
+            label="Show"
+            selectedValue={sessions.sessionsPeriod}
+            values={SESSIONS_SELECT_VALUES}
+            onSelectValue={onChangePeriod}
+          />
         </ActionPart>
       </ActionRowStyles>
       <ElasticFilter
