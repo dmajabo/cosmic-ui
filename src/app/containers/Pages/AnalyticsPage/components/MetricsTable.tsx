@@ -1,15 +1,16 @@
-import { Button, Typography } from '@material-ui/core';
+import { Button, FormControlLabel, Typography } from '@material-ui/core';
 import { Column, ColumnAccessor, MetricsExplorerTableData } from 'lib/api/http/SharedTypes';
 import { isEqual, uniqWith } from 'lodash';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AnalyticsStyles } from '../AnalyticsStyles';
 import ColumnsIcon from '../icons/metrics explorer/columns.svg';
 import SearchIcon from '../icons/metrics explorer/search.svg';
 import SortIcon from '../icons/metrics explorer/sort.svg';
-import { DimensionOptions } from './Dimensions';
+import { CheckboxData, DimensionOptions } from './Dimensions';
 import { LegendLine } from './LegendLine';
 import { Table } from './Table';
 import styled from 'styled-components';
+import { Checkbox, FormGroup, Popover } from '@mui/material';
 
 interface MetricsTableProps {
   readonly dimensions: DimensionOptions[];
@@ -328,6 +329,8 @@ const dataColumns: Column[] = [
   },
 ];
 
+const COLUMNS_POPOVER = 'columns-popover';
+
 export const MetricsTable: React.FC<MetricsTableProps> = ({ dimensions, tableData }) => {
   const classes = AnalyticsStyles();
   const [searchText, setSearchText] = useState<string>('');
@@ -352,10 +355,10 @@ export const MetricsTable: React.FC<MetricsTableProps> = ({ dimensions, tableDat
   ];
 
   const finalTableData = tableData.map((item, index) => ({
-    average: 10,
-    ninetyFifthPercentile: 10,
-    max: 10,
-    lastDatapoint: 10,
+    average: item.average,
+    ninetyFifthPercentile: item.ninetyFifthPercentile,
+    max: item.max,
+    lastDatapoint: item.lastDatapoint,
     interfaceSource: (
       <div>
         <div className={classes.metricsTableDimensionName}>{item.interfaceSource}</div>
@@ -455,6 +458,33 @@ export const MetricsTable: React.FC<MetricsTableProps> = ({ dimensions, tableDat
     legendLine: <LegendLine colour={COLOURS[index]} />,
   }));
 
+  const initialCheckboxData: CheckboxData = finalTableColumns.reduce((accu, nextValue) => {
+    accu[nextValue.accessor] = true;
+    return accu;
+  }, {});
+
+  const [columnCheckboxData, setColumnCheckboxData] = useState<CheckboxData>(initialCheckboxData);
+  const [selectedColumns, setSelectedColumns] = useState<Column[]>([]);
+  const [columnAnchorEl, setColumnAnchorEl] = useState<HTMLButtonElement | null>(null);
+
+  const handleColmunsClick = (event: React.MouseEvent<HTMLButtonElement>) => setColumnAnchorEl(event.currentTarget);
+
+  const handleColumnsClose = () => setColumnAnchorEl(null);
+
+  const isColumnsPopoverOpen = Boolean(columnAnchorEl);
+  const columnsPopoverId = isColumnsPopoverOpen ? COLUMNS_POPOVER : undefined;
+
+  useEffect(() => {
+    const newSelectedColumns = finalTableColumns.filter(item => columnCheckboxData[item.accessor]);
+    setSelectedColumns(newSelectedColumns);
+  }, [columnCheckboxData]);
+
+  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) =>
+    setColumnCheckboxData({
+      ...columnCheckboxData,
+      [event.target.name]: event.target.checked,
+    });
+
   return (
     <div className={classes.metricsTableContainer}>
       <div className={classes.tabTitleContainer}>
@@ -465,15 +495,38 @@ export const MetricsTable: React.FC<MetricsTableProps> = ({ dimensions, tableDat
           </span>
         </div>
         <div>
-          <Button className={classes.otherButton} variant="contained" disableElevation>
+          <Button aria-describedby={columnsPopoverId} className={classes.otherButton} variant="contained" onClick={handleColmunsClick} disableElevation>
             <Typography className={classes.otherButtonText} noWrap>
               COLUMNS
             </Typography>
             <img src={ColumnsIcon} alt="columns" />
           </Button>
+          <Popover
+            id={columnsPopoverId}
+            open={isColumnsPopoverOpen}
+            onClose={handleColumnsClose}
+            anchorEl={columnAnchorEl}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'left',
+            }}
+          >
+            <FormGroup className={classes.popoverContainer}>
+              {finalTableColumns
+                .filter(column => column.accessor !== ColumnAccessor.legendLine)
+                .map(item => (
+                  <FormControlLabel
+                    key={item.accessor}
+                    className={classes.popoverItem}
+                    control={<Checkbox checked={columnCheckboxData[item.accessor]} onChange={handleCheckboxChange} name={item.accessor} />}
+                    label={<span className={classes.popoverText}>{item.Header}</span>}
+                  />
+                ))}
+            </FormGroup>
+          </Popover>
         </div>
       </div>
-      <Table columns={finalTableColumns} data={finalTableData} />
+      <Table columns={selectedColumns} data={finalTableData} />
     </div>
   );
 };

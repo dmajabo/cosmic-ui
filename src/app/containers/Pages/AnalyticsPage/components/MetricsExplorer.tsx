@@ -108,6 +108,28 @@ const DUMMY_METRICS_TABLE_DATA: MetricsExplorerTableData[] = [
     macAddressSource: 'mac add source',
     macAddressDestination: 'mac add dest',
   },
+  {
+    average: 5,
+    ninetyFifthPercentile: 20,
+    max: 30,
+    lastDatapoint: 15,
+    interfaceSource: 'interface source',
+    interfaceDestination: 'interface dest',
+    connectivityTypeSource: 'conn type source',
+    connectivityTypeDestination: 'conn type dest',
+    networkBoundarySource: 'net boundary source',
+    networkBoundaryDestination: 'net boundary dest',
+    providerSource: 'provider source',
+    providerDestination: 'provider dest',
+    trafficOriginationSource: 'traffic ori source',
+    trafficOriginationDestination: 'traffic ori dest',
+    interfaceCapacitySource: 'int cap source',
+    interfaceCapacityDestination: 'int cap dest',
+    vlanSource: 'vlan source',
+    vlanDestination: 'vlan dest',
+    macAddressSource: 'mac add source',
+    macAddressDestination: 'mac add dest',
+  },
 ];
 
 const Dummy_selected_dimensions: DimensionOptions[] = [

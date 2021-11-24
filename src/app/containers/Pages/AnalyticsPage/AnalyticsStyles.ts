@@ -365,6 +365,18 @@ export const AnalyticsStyles = makeStyles(
         fontSize: 14,
         color: '#848DA3',
       },
+      popoverContainer: {
+        padding: '10px 0px 10px 25px',
+      },
+      popoverItem: {
+        border: '1px solid #e7edf9',
+        backgroundColor: '#fbfcfe',
+        paddingRight: 10,
+      },
+      popoverText: {
+        fontSize: 12,
+        fontWeight: 700,
+      },
     }),
   {
     index: 1,
