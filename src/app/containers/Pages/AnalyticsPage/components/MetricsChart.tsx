@@ -12,18 +12,19 @@ interface MetricsChartProps {
   readonly tableData: MetricsExplorerTableData[];
 }
 
+const DEFAULT_CONTAINER_TITLE = 'Metrics';
+
 export const MetricsChart: React.FC<MetricsChartProps> = ({ dimensions, tableData }) => {
   const classes = AnalyticsStyles();
 
   const getChartContainerTitle = (dimensions: DimensionOptions[]) => {
     if (getDimensionCount(dimensions) === 0) {
-      return 'Metrics';
-    } else {
-      const allSources: string[] = dimensions.reduce((acc, nextValue) => acc.concat(nextValue.source.map(item => `${item.label} Source`)), []);
-      const allDestinations: string[] = dimensions.reduce((acc, nextValue) => acc.concat(nextValue.destination.map(item => `${item.label} Destination`)), []);
-      const allDimensions = allSources.concat(allDestinations);
-      return allDimensions.join(',');
+      return DEFAULT_CONTAINER_TITLE;
     }
+    const allSources: string[] = dimensions.reduce((acc, nextValue) => acc.concat(nextValue.source.map(item => `${item.label} Source`)), []);
+    const allDestinations: string[] = dimensions.reduce((acc, nextValue) => acc.concat(nextValue.destination.map(item => `${item.label} Destination`)), []);
+    const allDimensions = allSources.concat(allDestinations);
+    return allDimensions.join(',');
   };
 
   return (

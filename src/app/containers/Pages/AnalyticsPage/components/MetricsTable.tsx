@@ -330,13 +330,15 @@ const dataColumns: Column[] = [
 ];
 
 const COLUMNS_POPOVER = 'columns-popover';
+const REGEX = /[-[\]{}()*+?.,\\^$|#\s]/g;
 
 export const MetricsTable: React.FC<MetricsTableProps> = ({ dimensions, tableData }) => {
   const classes = AnalyticsStyles();
   const [searchText, setSearchText] = useState<string>('');
   const [filteredTableData, setFilteredTableData] = useState<MetricsExplorerTableData[]>(tableData);
 
-  const escapeRegExp = (value: string) => value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+  //adds \ before every special character of string to use in regular expression
+  const escapeRegExp = (value: string) => value.replace(REGEX, '\\$&');
 
   const requestSearch = (searchValue: string) => {
     setSearchText(searchValue);
@@ -374,7 +376,7 @@ export const MetricsTable: React.FC<MetricsTableProps> = ({ dimensions, tableDat
     ...dataColumns,
   ];
 
-  const finalTableData = filteredTableData.map((item, index) => ({
+  const tableDataInput = filteredTableData.map((item, index) => ({
     average: item.average,
     ninetyFifthPercentile: item.ninetyFifthPercentile,
     max: item.max,
@@ -548,7 +550,7 @@ export const MetricsTable: React.FC<MetricsTableProps> = ({ dimensions, tableDat
           </Popover>
         </div>
       </div>
-      <Table columns={selectedColumns} data={finalTableData} />
+      <Table columns={selectedColumns} data={tableDataInput} />
     </div>
   );
 };
