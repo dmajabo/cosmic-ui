@@ -61,13 +61,12 @@ export interface IEdgeP {
   id?: string;
   name: string;
   description: string;
-  connections: IConnectionP;
+  connectionPolicy: IConnectionP;
   tags: string[];
   siteGroupIds: string[];
   appGroupIds: string[];
-  deployment: IDeploymentP[];
-  networkServices: INwServicesP[];
-
+  deploymentPolicy: IDeploymentP[];
+  nwServicesPolicy: INwServicesP[];
   policies: IEdgePolicy[] | null;
 }
 

@@ -12,7 +12,7 @@ interface Props {
   description: string;
   // price: number;
   tags: string[];
-  connections: IConnectionP;
+  connectionPolicy: IConnectionP;
   onChange: (value: any | null, field: string) => void;
 }
 
@@ -20,16 +20,16 @@ const GeneralStep: React.FC<Props> = (props: Props) => {
   const [connectionsValueString, setConnectionValueString] = React.useState<string[]>([]);
 
   React.useEffect(() => {
-    if (props.connections) {
+    if (props.connectionPolicy) {
       const _str: string[] = [];
       Object.keys(ConnectionPKeysMap).forEach(key => {
-        if (props.connections[key]) {
+        if (props.connectionPolicy[key]) {
           _str.push(ConnectionPKeysMap[key]);
         }
       });
       setConnectionValueString(_str);
     }
-  }, [props.connections]);
+  }, [props.connectionPolicy]);
 
   const onInputChange = (value: string | null) => {
     props.onChange(value, 'name');

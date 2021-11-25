@@ -69,7 +69,7 @@ const FormPanel: React.FC<Props> = (props: Props) => {
             </AccordionHeaderPanel>
             {(!props.selectedStep || (props.selectedStep && props.selectedStep.id !== EdgesStepperTypes.GENERAL)) && (
               <AccordionHeaderPanel>
-                <GeneralPreview name={props.dataItem.name} connections={props.dataItem.connections} tags={props.dataItem.tags} />
+                <GeneralPreview name={props.dataItem.name} connectionPolicy={props.dataItem.connectionPolicy} tags={props.dataItem.tags} />
               </AccordionHeaderPanel>
             )}
           </AccordionSummary>
@@ -77,7 +77,7 @@ const FormPanel: React.FC<Props> = (props: Props) => {
             <GeneralStep
               tags={props.dataItem.tags}
               description={props.dataItem.description}
-              connections={props.dataItem.connections}
+              connectionPolicy={props.dataItem.connectionPolicy}
               name={props.dataItem.name}
               onChange={props.onChangeGeneralField}
             />
@@ -139,16 +139,16 @@ const FormPanel: React.FC<Props> = (props: Props) => {
             </AccordionHeaderPanel>
             {(!props.selectedStep || (props.selectedStep && props.selectedStep.id !== EdgesStepperTypes.TRANSIT)) && (
               <AccordionHeaderPanel>
-                <TransitPreview deployment={props.dataItem.deployment} networkServices={props.dataItem.networkServices} />
+                <TransitPreview deploymentPolicy={props.dataItem.deploymentPolicy} nwServicesPolicy={props.dataItem.nwServicesPolicy} />
               </AccordionHeaderPanel>
             )}
           </AccordionSummary>
           <AccordionDetails className={AccordionStyles.deteilItemEdges}>
             <TransitStep
-              regionCodes={props.dataItem.deployment && props.dataItem.deployment.length ? props.dataItem.deployment[0].regionCode : []}
-              selectedAccount={props.dataItem.deployment && props.dataItem.deployment.length ? props.dataItem.deployment[0].controllerName : null}
-              serviceType={props.dataItem.networkServices && props.dataItem.networkServices.length ? props.dataItem.networkServices[0].serviceType : null}
-              serviceVendor={props.dataItem.networkServices && props.dataItem.networkServices.length ? props.dataItem.networkServices[0].serviceVendor : null}
+              regionCodes={props.dataItem.deploymentPolicy && props.dataItem.deploymentPolicy.length ? props.dataItem.deploymentPolicy[0].regionCode : []}
+              selectedAccount={props.dataItem.deploymentPolicy && props.dataItem.deploymentPolicy.length ? props.dataItem.deploymentPolicy[0].controllerName : null}
+              serviceType={props.dataItem.nwServicesPolicy && props.dataItem.nwServicesPolicy.length ? props.dataItem.nwServicesPolicy[0].serviceType : null}
+              serviceVendor={props.dataItem.nwServicesPolicy && props.dataItem.nwServicesPolicy.length ? props.dataItem.nwServicesPolicy[0].serviceVendor : null}
               onChange={props.onChangeTransitionDataField}
               onChangeNetwork={props.onChangeTransitionNetworkField}
             />

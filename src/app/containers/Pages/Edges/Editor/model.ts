@@ -25,19 +25,19 @@ export const createNewEdge = (): IEdgeP => ({
   id: '',
   name: '',
   description: '',
-  deployment: [
+  deploymentPolicy: [
     {
       controllerName: '',
       regionCode: [],
     },
   ],
-  networkServices: [
+  nwServicesPolicy: [
     {
       serviceType: null,
       serviceVendor: NwServicesVendor.PALO_ALTO_NW,
     },
   ],
-  connections: {
+  connectionPolicy: {
     enableNetworklink: false,
     enableVpnlink: false,
   },

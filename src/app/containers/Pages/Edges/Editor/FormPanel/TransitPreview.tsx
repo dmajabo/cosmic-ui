@@ -11,26 +11,26 @@ interface IMapRegion {
   city: string;
 }
 interface Props {
-  deployment: IDeploymentP[];
-  networkServices: INwServicesP[];
+  deploymentPolicy: IDeploymentP[];
+  nwServicesPolicy: INwServicesP[];
 }
 
 const TransitPreview: React.FC<Props> = (props: Props) => {
   const { edges } = useEdgesDataContext();
   const [selectedRegions, setSelectedRegions] = React.useState<IMapRegion[]>([]);
   React.useEffect(() => {
-    if (!props.deployment || !props.deployment.length) {
+    if (!props.deploymentPolicy || !props.deploymentPolicy.length) {
       setSelectedRegions([]);
       return;
     }
     // to do
-    if (!props.deployment[0].regionCode || !props.deployment[0].regionCode.length) {
+    if (!props.deploymentPolicy[0].regionCode || !props.deploymentPolicy[0].regionCode.length) {
       setSelectedRegions([]);
       return;
     }
     const _arr: IMapRegion[] = [];
     if (edges.regions && edges.regions.length) {
-      props.deployment[0].regionCode.forEach(it => {
+      props.deploymentPolicy[0].regionCode.forEach(it => {
         const _item = edges.regions.find(reg => reg.code === it);
         if (_item) {
           _arr.push({ code: it, city: _item.city });
@@ -40,30 +40,30 @@ const TransitPreview: React.FC<Props> = (props: Props) => {
       });
     }
     setSelectedRegions(_arr);
-  }, [props.deployment]);
+  }, [props.deploymentPolicy]);
 
-  if ((!props.deployment || !props.deployment.length) && (!props.networkServices || !props.networkServices.length)) return null;
+  if ((!props.deploymentPolicy || !props.deploymentPolicy.length) && (!props.nwServicesPolicy || !props.nwServicesPolicy.length)) return null;
   return (
     <PreviewWrapper>
-      {props.networkServices[0].serviceType === NwServiceT.FIREWALL && (
+      {props.nwServicesPolicy[0].serviceType === NwServiceT.FIREWALL && (
         <PreviewRow margin="20px 0 0 0">
           <PreviewText className="label" margin="0 16px 0 0">
             Add Firewall in each edge region:
           </PreviewText>
           <IconWrapper width="20px" height="18px" icon={poloAltoIcon()} />
-          {props.networkServices[0].serviceVendor === NwServicesVendor.PALO_ALTO_NW && (
+          {props.nwServicesPolicy[0].serviceVendor === NwServicesVendor.PALO_ALTO_NW && (
             <PreviewText className="label" margin="0 0 0 12px">
               Palo Alto
             </PreviewText>
           )}
         </PreviewRow>
       )}
-      {props.deployment[0].controllerName && (
+      {props.deploymentPolicy[0].controllerName && (
         <PreviewRow margin="8px 0 0 0">
           <PreviewText className="label" margin="0 4px 0 0">
             Account:
           </PreviewText>
-          <PreviewText color="var(--_disabledTextColor)">{props.deployment[0].controllerName}</PreviewText>
+          <PreviewText color="var(--_disabledTextColor)">{props.deploymentPolicy[0].controllerName}</PreviewText>
         </PreviewRow>
       )}
       {selectedRegions && selectedRegions.length ? (

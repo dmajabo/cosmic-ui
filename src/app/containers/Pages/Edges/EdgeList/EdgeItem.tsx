@@ -48,14 +48,14 @@ const EdgeItem: React.FC<Props> = ({ dataItem, onEdit, onDelete }) => {
               </ItemValue>
             </ValueItem>
           ) : null}
-          {dataItem.deployment && dataItem.deployment.length ? (
+          {dataItem.deploymentPolicy && dataItem.deploymentPolicy.length ? (
             <ValueItem margin="auto 6px">
               <IconWrapper width="30px" height="30px" icon={transitIcon} styles={{ margin: '0 6px 0 0' }} />
               <ItemLabel fontSize="16px" lineHeight="21px" color="var(--_disabledTextColor)" margin="0 4px 0 0">
                 Transits:
               </ItemLabel>
               <ItemValue fontSize="16px" lineHeight="21px" color="var(--_primaryColor)" fontWeight="500">
-                {dataItem.deployment[0].regionCode.length}
+                {dataItem.deploymentPolicy[0].regionCode.length}
               </ItemValue>
             </ValueItem>
           ) : null}

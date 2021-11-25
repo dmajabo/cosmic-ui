@@ -138,16 +138,16 @@ const Editor: React.FC<Props> = (props: Props) => {
 
   const onChangeTransitionDataField = (value: any, field: string) => {
     const _dataItem = { ...dataItem };
-    _dataItem.deployment[0][field] = value;
-    const _items: IStepperItem<EdgesStepperTypes>[] = updateStep(steps, EdgesStepperTypes.TRANSIT, _dataItem.deployment[0], [ValidationFields.CONTROLLER_NAME, ValidationFields.REGION_CODE]);
+    _dataItem.deploymentPolicy[0][field] = value;
+    const _items: IStepperItem<EdgesStepperTypes>[] = updateStep(steps, EdgesStepperTypes.TRANSIT, _dataItem.deploymentPolicy[0], [ValidationFields.CONTROLLER_NAME, ValidationFields.REGION_CODE]);
     setSteps(_items);
     setDataItem(_dataItem);
   };
 
   const onChangeTransitionNetworkField = (value: any, field: string) => {
     const _dataItem = { ...dataItem };
-    _dataItem.networkServices[0][field] = value;
-    const _items: IStepperItem<EdgesStepperTypes>[] = updateStep(steps, EdgesStepperTypes.TRANSIT, _dataItem.networkServices[0], [ValidationFields.CONTROLLER_NAME, ValidationFields.REGION_CODE]);
+    _dataItem.nwServicesPolicy[0][field] = value;
+    const _items: IStepperItem<EdgesStepperTypes>[] = updateStep(steps, EdgesStepperTypes.TRANSIT, _dataItem.nwServicesPolicy[0], [ValidationFields.CONTROLLER_NAME, ValidationFields.REGION_CODE]);
     setSteps(_items);
     setDataItem(_dataItem);
   };
@@ -286,7 +286,7 @@ const Editor: React.FC<Props> = (props: Props) => {
               name={dataItem.name}
               sites={dataItem.siteGroupIds}
               apps={dataItem.appGroupIds}
-              selectedRegions={dataItem && dataItem.deployment && dataItem.deployment.length ? dataItem.deployment[0].regionCode : null}
+              selectedRegions={dataItem && dataItem.deploymentPolicy && dataItem.deploymentPolicy.length ? dataItem.deploymentPolicy[0].regionCode : null}
             />
           )}
         </MainColumn>
