@@ -368,14 +368,31 @@ export const MetricsTable: React.FC<MetricsTableProps> = ({ dimensions, tableDat
 
   const filteredDimensionColumns = dimensionColumns.filter(column => uniqueDimensionValues.includes(column.accessor));
 
-  const finalTableColumns = [
+  const [finalTableColumns, setFinalTableColumns] = useState<Column[]>([
     {
       Header: '',
       accessor: ColumnAccessor.legendLine,
     },
     ...filteredDimensionColumns,
     ...dataColumns,
-  ];
+  ]);
+
+  useEffect(() => {
+    const newColumns = [
+      {
+        Header: '',
+        accessor: ColumnAccessor.legendLine,
+      },
+      ...filteredDimensionColumns,
+      ...dataColumns,
+    ];
+    setFinalTableColumns(newColumns.map((item, index) => ({ Header: item.Header, accessor: item.accessor, order: index + 1 })));
+  }, [dimensions]);
+
+  const initialCheckboxData: CheckboxData = finalTableColumns.reduce((accu, nextValue) => {
+    accu[nextValue.accessor] = true;
+    return accu;
+  }, {});
 
   const tableDataInput = filteredTableData.map((item, index) => ({
     average: item.average,
@@ -481,11 +498,6 @@ export const MetricsTable: React.FC<MetricsTableProps> = ({ dimensions, tableDat
     legendLine: <LegendLine colour={COLOURS[index]} />,
   }));
 
-  const initialCheckboxData: CheckboxData = finalTableColumns.reduce((accu, nextValue) => {
-    accu[nextValue.accessor] = true;
-    return accu;
-  }, {});
-
   const [columnCheckboxData, setColumnCheckboxData] = useState<CheckboxData>(initialCheckboxData);
   const [selectedColumns, setSelectedColumns] = useState<Column[]>([]);
   const [columnAnchorEl, setColumnAnchorEl] = useState<HTMLButtonElement | null>(null);
@@ -498,7 +510,7 @@ export const MetricsTable: React.FC<MetricsTableProps> = ({ dimensions, tableDat
   const columnsPopoverId = isColumnsPopoverOpen ? COLUMNS_POPOVER : undefined;
 
   useEffect(() => {
-    const newSelectedColumns = finalTableColumns.filter(item => columnCheckboxData[item.accessor]).map((item, index) => ({ Header: item.Header, accessor: item.accessor, order: index + 1 }));
+    const newSelectedColumns = finalTableColumns.filter(item => columnCheckboxData[item.accessor]);
     setSelectedColumns(newSelectedColumns);
   }, [columnCheckboxData]);
 
@@ -515,20 +527,23 @@ export const MetricsTable: React.FC<MetricsTableProps> = ({ dimensions, tableDat
   const handleDrag = event => setDragId(event.currentTarget.id);
 
   const handleDrop = event => {
-    const dragItem = selectedColumns.find(column => column.accessor === dragId);
-    const dropItem = selectedColumns.find(column => column.accessor === event.currentTarget.id);
+    const dragItem = finalTableColumns.find(column => column.accessor === dragId);
+    const dropItem = finalTableColumns.find(column => column.accessor === event.currentTarget.id);
 
     const dragItemOrder = dragItem.order;
     const dropItemOrder = dropItem.order;
 
-    const newColumnOrder = produce(selectedColumns, draft => {
+    const newColumnOrder = produce(finalTableColumns, draft => {
       const dragItemFound = draft.find(item => item.accessor === dragId);
       dragItemFound.order = dropItemOrder;
 
       const dropItemFound = draft.find(item => item.accessor === event.currentTarget.id);
       dropItemFound.order = dragItemOrder;
     });
-    setSelectedColumns(sortBy(newColumnOrder, 'order'));
+    setFinalTableColumns(sortBy(newColumnOrder, 'order'));
+    const selectedColumnAccessors = selectedColumns.map(item => item.accessor);
+    const newSelectedColumns = newColumnOrder.filter(item => selectedColumnAccessors.includes(item.accessor));
+    setSelectedColumns(sortBy(newSelectedColumns, 'order'));
   };
 
   return (
@@ -558,7 +573,7 @@ export const MetricsTable: React.FC<MetricsTableProps> = ({ dimensions, tableDat
             }}
           >
             <FormGroup className={classes.popoverContainer}>
-              {selectedColumns
+              {finalTableColumns
                 .filter(column => column.accessor !== ColumnAccessor.legendLine)
                 .map(item => (
                   <FormControlLabel
