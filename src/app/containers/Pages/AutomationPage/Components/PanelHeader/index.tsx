@@ -16,7 +16,7 @@ export const PanelHeader: React.FC<Props> = (props: Props) => {
   return (
     <>
       <StepNumber
-        styles={{ width: props.stepNumberWidth || '50px', height: props.stepNumberHeight || '50px', lineHeight: props.stepNumberHeight || '50px', margin: '0 20px 0 0' }}
+        styles={{ width: props.stepNumberWidth || '50px', height: props.stepNumberHeight || '50px', lineHeight: props.stepNumberHeight || '50px', margin: '0 30px 0 0' }}
         value={props.index}
         selected={props.selected}
         state={props.state}
