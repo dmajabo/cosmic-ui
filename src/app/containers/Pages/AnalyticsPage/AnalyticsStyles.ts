@@ -1,4 +1,5 @@
 import { Theme, createStyles, makeStyles } from '@material-ui/core';
+import DragIcon from './icons/metrics explorer/drag.svg';
 
 export const AnalyticsStyles = makeStyles(
   (theme: Theme) =>
@@ -376,6 +377,15 @@ export const AnalyticsStyles = makeStyles(
       popoverText: {
         fontSize: 12,
         fontWeight: 700,
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: 250,
+      },
+      dragIcon: {
+        background: `url(${DragIcon})`,
+        width: 15,
+        height: 15,
       },
     }),
   {
