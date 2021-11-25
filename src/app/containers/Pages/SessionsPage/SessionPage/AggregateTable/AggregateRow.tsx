@@ -4,14 +4,14 @@ import TableRow from '@mui/material/TableRow';
 import Collapse from '@mui/material/Collapse';
 import { IAggregateRow } from './models';
 import VendorTable from './VendorTable';
-import { ISessionsGridField } from '../models';
+import { ISessionsGridFieldColumn } from '../models';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { arrowBottomIcon } from 'app/components/SVGIcons/arrows';
 import { VendorTdWrapper } from './styles';
 
 interface Props {
   row: IAggregateRow;
-  columns: ISessionsGridField[];
+  columns: ISessionsGridFieldColumn[];
 }
 const AggregateRow: React.FC<Props> = (props: Props) => {
   const [open, setOpen] = React.useState(false);
@@ -19,13 +19,14 @@ const AggregateRow: React.FC<Props> = (props: Props) => {
     <React.Fragment>
       <TableRow className={`bodyRow ${open ? 'expandedRow' : ''}`}>
         {props.columns.map(it => {
+          if (it.hide) return null;
           if (it.resField === 'id') {
             return (
               <TableCell key={`tdRow${it.resField}${props.row.id}`}>
                 <IconWrapper
                   width="12px"
                   height="12px"
-                  styles={{ transform: open ? 'rotate(-180deg)' : 'rotate(0)', transition: 'transform 0.3s linear' }}
+                  styles={{ verticalAlign: 'middle', transform: open ? 'rotate(-180deg)' : 'rotate(0)', transition: 'transform 0.3s linear' }}
                   icon={arrowBottomIcon}
                   onClick={() => setOpen(!open)}
                 />
@@ -48,7 +49,7 @@ const AggregateRow: React.FC<Props> = (props: Props) => {
         })}
       </TableRow>
       <TableRow className={`nestedRow ${!open ? 'rowCollapsed' : ''}`}>
-        <TableCell className="nestedTd" style={open ? null : { paddingBottom: 0, paddingTop: 0, border: 'none' }} colSpan={props.columns.length}>
+        <TableCell className="nestedTd" style={open ? null : { paddingBottom: 0, paddingTop: 0, border: 'none' }} colSpan={props.columns.filter(it => !it.hide).length}>
           <Collapse in={open} timeout="auto" easing="linear" unmountOnExit>
             {Object.keys(props.row.data).map((key, index) => (
               <VendorTable key={`${props.row.id}${key}`} isLast={index === Object.keys(props.row.data).length - 1} label={key} data={props.row.data[key]} />

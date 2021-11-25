@@ -12,6 +12,11 @@ export interface ISessionsGridField {
   isStaticField?: boolean;
   isCustomField?: boolean;
 }
+
+export interface ISessionsGridFieldColumn extends ISessionsGridField {
+  hide: boolean;
+}
+
 export interface ISessionGridColumns {
   [key: string]: ISessionsGridField;
 }

@@ -28,5 +28,8 @@ export const VendorTdWrapper = styled.span`
   display: inline-flex;
   flex-shrink: 0;
   align-items: center;
-  margin-right: 12px;
+  margin-right: 16px;
+  &:last-child {
+    margin-right: 0px;
+  }
 `;

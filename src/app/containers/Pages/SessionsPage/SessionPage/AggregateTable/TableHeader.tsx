@@ -1,21 +1,21 @@
 import React from 'react';
-// import { columnsIcon } from 'app/components/SVGIcons/columnsIcon';
+import { columnsIcon } from 'app/components/SVGIcons/columnsIcon';
 import { GridHeaderWrapper, GridLabelWrapper, GridLabel, GridCount } from '../Table/styles';
-// import { GridColDef } from '@mui/x-data-grid';
-// import SecondaryButtonWithPopup from 'app/components/Buttons/SecondaryButton/SecondaryButtonWithPopup';
-// import PopupContainer from 'app/components/PopupContainer';
-// import SimpleCheckbox from 'app/components/Inputs/Checkbox/SimpleCheckbox';
-// import { PopupTitle, OverflowContainer, FilteredColumnItem, FilteredColumnLabel } from 'app/components/PopupContainer/styles';
+import SecondaryButtonWithPopup from 'app/components/Buttons/SecondaryButton/SecondaryButtonWithPopup';
+import PopupContainer from 'app/components/PopupContainer';
+import SimpleCheckbox from 'app/components/Inputs/Checkbox/SimpleCheckbox';
+import { PopupTitle, OverflowContainer, FilteredColumnItem, FilteredColumnLabel } from 'app/components/PopupContainer/styles';
+import { ISessionsGridFieldColumn } from '../models';
 interface Props {
   count: number;
-  // columns: GridColDef[];
-  // onChangeColumn: (col: GridColDef) => void;
+  columns: ISessionsGridFieldColumn[];
+  onChangeColumn: (col: ISessionsGridFieldColumn) => void;
 }
 
 const TableHeader: React.FC<Props> = (props: Props) => {
-  // const onColumnChange = (col: GridColDef) => {
-  //   props.onChangeColumn(col);
-  // };
+  const onColumnChange = (col: ISessionsGridFieldColumn) => {
+    props.onChangeColumn(col);
+  };
   return (
     <>
       <GridHeaderWrapper>
@@ -23,7 +23,7 @@ const TableHeader: React.FC<Props> = (props: Props) => {
           <GridLabel>Logs</GridLabel>
           {!props.count ? null : <GridCount>{props.count}</GridCount>}
         </GridLabelWrapper>
-        {/* <SecondaryButtonWithPopup label="Columns" icon={columnsIcon} direction="rtl">
+        <SecondaryButtonWithPopup label="Columns" icon={columnsIcon} direction="rtl">
           <PopupContainer
             styles={{
               overflow: 'hidden',
@@ -48,17 +48,17 @@ const TableHeader: React.FC<Props> = (props: Props) => {
             <PopupTitle>Columns</PopupTitle>
             <OverflowContainer>
               {props.columns.map(col => {
-                if (col.field === 'rowIndex') return null;
+                if (col.resField === 'id') return null;
                 return (
-                  <FilteredColumnItem key={`filteredColumnMEnuItem${col.field}`} onClick={() => onColumnChange(col)}>
+                  <FilteredColumnItem key={`filteredColumnMEnuItem${col.resField}`} onClick={() => onColumnChange(col)}>
                     <SimpleCheckbox wrapStyles={{ marginRight: '12px' }} isChecked={!col.hide} />
-                    <FilteredColumnLabel>{col.headerName}</FilteredColumnLabel>
+                    <FilteredColumnLabel>{col.label}</FilteredColumnLabel>
                   </FilteredColumnItem>
                 );
               })}
             </OverflowContainer>
           </PopupContainer>
-        </SecondaryButtonWithPopup> */}
+        </SecondaryButtonWithPopup>
       </GridHeaderWrapper>
     </>
   );
