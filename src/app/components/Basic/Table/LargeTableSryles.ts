@@ -1,12 +1,14 @@
 import styled from 'styled-components';
-interface TableProps {}
+interface TableProps {
+  minHeight?: string;
+}
 
 export const TableContainer = styled.div<TableProps>`
   width: 100%;
   overflow-x: auto;
   box-sizing: border-box;
   background: transparent;
-  min-height: 88px;
+  min-height: ${props => props.minHeight || '88px'};
   position: relative;
   border-radius: 6px;
   border: 1px solid transparent;

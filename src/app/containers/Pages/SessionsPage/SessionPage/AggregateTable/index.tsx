@@ -24,10 +24,10 @@ const AggregateTable: React.FC<Props> = (props: Props) => {
     SessionGridColumns.sourcePort,
     SessionGridColumns.destIp,
     SessionGridColumns.destPort,
+    SessionGridColumns.vendorsColumn,
   ]);
   React.useEffect(() => {
     const _data: IAggregateRow[] = buildAggregatedData(props.data);
-    console.log(_data);
     setData(_data);
   }, [props.data]);
 
@@ -47,7 +47,7 @@ const AggregateTable: React.FC<Props> = (props: Props) => {
   return (
     <>
       <TableHeader count={data.length} />
-      <TableContainer>
+      <TableContainer minHeight="200px">
         <Table aria-label="collapsible table" className="largeTable">
           <TableHead>
             <TableRow>

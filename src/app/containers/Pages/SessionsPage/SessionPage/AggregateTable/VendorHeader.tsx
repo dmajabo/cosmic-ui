@@ -3,11 +3,8 @@ import { VendorHeaderStyles, VendorLabel } from './styles';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { AccountVendorTypes } from 'lib/api/ApiModels/Accounts/apiModel';
 import { getNestedTableHeader } from './helper';
+import { IState } from './models';
 
-interface IState {
-  icon: any;
-  label: string;
-}
 interface Props {
   label: AccountVendorTypes;
 }

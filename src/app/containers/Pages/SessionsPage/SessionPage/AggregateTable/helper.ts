@@ -22,12 +22,17 @@ export const buildAggregatedData = (data: ISession[]): IAggregateRow[] => {
 };
 
 const buildRow = (item: ISession): IAggregateRow => {
-  const _row: IAggregateRow = { ...item, data: {} };
+  const _v = getNestedTableHeader(item.deviceVendor);
+  const _row: IAggregateRow = { ...item, data: {}, vendors: [_v] };
   _row.data[item.deviceVendor] = [item];
   return _row;
 };
 
 const updateRow = (row: IAggregateRow, item: ISession) => {
+  const _v = getNestedTableHeader(item.deviceVendor);
+  if (!row.vendors.find(it => it.label === _v.label)) {
+    row.vendors.push(_v);
+  }
   if (row.data[item.deviceVendor]) {
     row.data[item.deviceVendor].push(item);
     return;

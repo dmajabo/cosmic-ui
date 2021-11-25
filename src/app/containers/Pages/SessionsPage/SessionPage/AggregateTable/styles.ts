@@ -22,3 +22,11 @@ export const VendorLabel = styled.span`
   line-height: 21px;
   color: var(--_primaryColor);
 `;
+
+export const VendorTdWrapper = styled.span`
+  font-family: 'DMSans';
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  margin-right: 12px;
+`;

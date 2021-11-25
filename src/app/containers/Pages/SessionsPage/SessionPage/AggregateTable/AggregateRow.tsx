@@ -7,6 +7,7 @@ import VendorTable from './VendorTable';
 import { ISessionsGridField } from '../models';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { arrowBottomIcon } from 'app/components/SVGIcons/arrows';
+import { VendorTdWrapper } from './styles';
 
 interface Props {
   row: IAggregateRow;
@@ -20,7 +21,7 @@ const AggregateRow: React.FC<Props> = (props: Props) => {
         {props.columns.map(it => {
           if (it.resField === 'id') {
             return (
-              <TableCell key={`tdRow${it.resField}`}>
+              <TableCell key={`tdRow${it.resField}${props.row.id}`}>
                 <IconWrapper
                   width="12px"
                   height="12px"
@@ -28,6 +29,18 @@ const AggregateRow: React.FC<Props> = (props: Props) => {
                   icon={arrowBottomIcon}
                   onClick={() => setOpen(!open)}
                 />
+              </TableCell>
+            );
+          }
+          if (it.resField === 'vendors') {
+            return (
+              <TableCell key={`tdRow${it.resField}`}>
+                {props.row[it.resField].map((v, i) => (
+                  <VendorTdWrapper key={`tdRow${it.resField}vendor${props.row.id}${i}`}>
+                    {v.icon && <IconWrapper width="20px" height="20px" styles={{ margin: '0 8px 0 0' }} icon={v.icon} />}
+                    <span>{v.label}</span>
+                  </VendorTdWrapper>
+                ))}
               </TableCell>
             );
           }

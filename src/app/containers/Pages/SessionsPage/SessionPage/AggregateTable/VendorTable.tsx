@@ -37,18 +37,18 @@ const VendorTable: React.FC<Props> = (props: Props) => {
     { field: SessionGridColumns.natDestPort.resField, headerName: SessionGridColumns.natDestPort.label, minWidth: 200, flex: 0.5, hide: true, resizable: false },
     { field: SessionGridColumns.deviceName.resField, headerName: SessionGridColumns.deviceName.label, minWidth: 200, flex: 0.5, resizable: false },
     { field: SessionGridColumns.deviceExtId.resField, headerName: SessionGridColumns.deviceExtId.label, minWidth: 240, flex: 0.5, resizable: false },
-    {
-      field: SessionGridColumns.deviceVendor.resField,
-      headerName: SessionGridColumns.deviceVendor.label,
-      minWidth: 200,
-      flex: 0.5,
-      resizable: false,
-      valueFormatter: (params: GridValueFormatterParams) => {
-        if (params.value === AccountVendorTypes.AMAZON_AWS) return 'AMAZON AWS';
-        if (params.value === AccountVendorTypes.CISCO_MERAKI) return 'CISCO MERAKI';
-        return params.value;
-      },
-    },
+    // {
+    //   field: SessionGridColumns.deviceVendor.resField,
+    //   headerName: SessionGridColumns.deviceVendor.label,
+    //   minWidth: 200,
+    //   flex: 0.5,
+    //   resizable: false,
+    //   valueFormatter: (params: GridValueFormatterParams) => {
+    //     if (params.value === AccountVendorTypes.AMAZON_AWS) return 'AMAZON AWS';
+    //     if (params.value === AccountVendorTypes.CISCO_MERAKI) return 'CISCO MERAKI';
+    //     return params.value;
+    //   },
+    // },
   ]);
   return (
     <VendorTableWrapper margin={props.isLast ? '0' : '0 0 50px 0'}>
