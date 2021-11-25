@@ -19,6 +19,7 @@ import { IEdgeP } from 'lib/api/ApiModels/Edges/apiModel';
 import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
 import GeneralPreview from './GeneralPreview';
 import TransitPreview from './TransitPreview';
+import GroupPreview from './GroupPreview';
 
 interface Props {
   dataItem: IEdgeP;
@@ -99,6 +100,11 @@ const FormPanel: React.FC<Props> = (props: Props) => {
                 state={props.steps[1].state !== StepperItemStateType.EMPTY ? props.steps[1].state : null}
               />
             </AccordionHeaderPanel>
+            {(!props.selectedStep || (props.selectedStep && props.selectedStep.id !== EdgesStepperTypes.SITES)) && (
+              <AccordionHeaderPanel>
+                <GroupPreview ids={props.dataItem.siteGroupIds} />
+              </AccordionHeaderPanel>
+            )}
           </AccordionSummary>
           <AccordionDetails className={AccordionStyles.deteilItemEdges}>
             <SitesStep data={props.dataItem.siteGroupIds} onAddExistingSites={props.onAddExistingSites} onChangeSites={props.onChangeSitesField} onDeleteGroup={props.onDeleteSitesGroup} />
@@ -116,6 +122,11 @@ const FormPanel: React.FC<Props> = (props: Props) => {
                 state={props.steps[2].state !== StepperItemStateType.EMPTY ? props.steps[2].state : null}
               />
             </AccordionHeaderPanel>
+            {(!props.selectedStep || (props.selectedStep && props.selectedStep.id !== EdgesStepperTypes.APPS)) && (
+              <AccordionHeaderPanel>
+                <GroupPreview ids={props.dataItem.appGroupIds} />
+              </AccordionHeaderPanel>
+            )}
           </AccordionSummary>
           <AccordionDetails className={AccordionStyles.deteilItemEdges}>
             <AppsStep data={props.dataItem.appGroupIds} onAddExistingSites={props.onAddExistingApps} onChangeApps={props.onChangeAppsField} onDeleteGroup={props.onDeleteAppsGroup} />

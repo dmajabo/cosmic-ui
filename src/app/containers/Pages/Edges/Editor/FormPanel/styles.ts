@@ -15,6 +15,7 @@ export const PreviewWrapper = styled.div`
 
 interface RowProps {
   margin?: string;
+  wrap?: 'wrap' | 'nowrap';
 }
 export const PreviewRow = styled.div<RowProps>`
   display: flex;
@@ -26,7 +27,7 @@ export const PreviewRow = styled.div<RowProps>`
   font-weight: 500;
   font-size: 14px;
   line-height: 18px;
-  flex-wrap: nowrap;
+  flex-wrap: ${props => props.wrap || 'nowrap'};
   align-items: flex-start;
 `;
 
@@ -48,14 +49,31 @@ export const PreviewText = styled.span<PreviewTextProps>`
   }
 `;
 
-export const PreviewTag = styled.span`
+export const PreviewTagCount = styled.span`
+  display: inline-block;
+  flex-shrink: 0;
+  background: var(--_selectedStepperBgColor);
+  border-radius: 20px;
+  padding: 2px 11px;
+  color: var(--_primaryTextColor);
+  font-family: 'DMSans';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 16px;
+`;
+
+interface PreviewTagProps {
+  bg?: string;
+}
+export const PreviewTag = styled.span<PreviewTagProps>`
   display: inline-flex;
   align-items: center;
   flex-shrink: 0;
   margin: 3px 6px 3px 0;
   border-radius: 30px;
   padding: 5px 20px;
-  background: var(--_tableBg);
+  background: ${props => props.bg || 'var(--_tableBg)'};
 `;
 
 export const ColumnPanelHeader = styled.div`

@@ -67,7 +67,7 @@ const TransitPreview: React.FC<Props> = (props: Props) => {
         </PreviewRow>
       )}
       {selectedRegions && selectedRegions.length ? (
-        <PreviewRow margin="8px 0 0 0">
+        <PreviewRow margin="8px 0 0 0" wrap="wrap">
           {selectedRegions.map(it => (
             <PreviewTag key={`previewTag${it.code}`}>
               <IconWrapper styles={{ margin: 'auto 12px auto 0', verticalAlign: 'top' }} width="20px" height="20px" icon={logoIcon()} />
