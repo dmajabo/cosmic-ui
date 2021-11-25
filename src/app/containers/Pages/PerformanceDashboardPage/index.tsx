@@ -86,6 +86,8 @@ const PerformanceDashboardPage: React.FC = () => {
         });
         setFinalTableData(testData);
         setIsLoading(false);
+      } else {
+        setIsLoading(false);
       }
     }
   };
