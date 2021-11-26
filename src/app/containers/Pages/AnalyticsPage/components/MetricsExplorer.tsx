@@ -17,20 +17,58 @@ import Box from '@mui/material/Box';
 import produce from 'immer';
 import { DimensionOptions, Dimensions } from './Dimensions';
 import { DataSource, DataSourceOptions } from './DataSource';
+import { MetricsChart } from './MetricsChart';
+import { ColumnAccessor, MetricsExplorerTableData } from 'lib/api/http/SharedTypes';
 
 //TODO: Remove this once API is integrated
 const DUMMY_DIMENSION_DATA: DimensionOptions[] = [
   {
     title: 'Network & Traffic Topology',
     icon: NetworkIcon,
-    source: ['Interface', 'Connectivity Type', 'Network Boundary', 'Provider', 'Traffic Origination', 'Interface Capacity', 'VLAN', 'MAC Address'],
-    destination: ['Interface', 'Connectivity Type', 'Network Boundary', 'Provider', 'Traffic Origination', 'Interface Capacity', 'VLAN', 'MAC Address'],
+    source: [
+      { label: 'Interface', value: ColumnAccessor.interfaceSource },
+      { label: 'Connectivity Type', value: ColumnAccessor.connectivityTypeSource },
+      { label: 'Network Boundary', value: ColumnAccessor.networkBoundarySource },
+      { label: 'Provider', value: ColumnAccessor.providerSource },
+      { label: 'Traffic Origination', value: ColumnAccessor.trafficOriginationSource },
+      { label: 'Interface Capacity', value: ColumnAccessor.interfaceCapacitySource },
+      { label: 'VLAN', value: ColumnAccessor.vlanSource },
+      { label: 'MAC Address', value: ColumnAccessor.macAddressSource },
+    ],
+    destination: [
+      { label: 'Interface', value: ColumnAccessor.interfaceDestination },
+      { label: 'Connectivity Type', value: ColumnAccessor.connectivityTypeDestination },
+      { label: 'Network Boundary', value: ColumnAccessor.networkBoundaryDestination },
+      { label: 'Provider', value: ColumnAccessor.providerDestination },
+      { label: 'Traffic Origination', value: ColumnAccessor.trafficOriginationDestination },
+      { label: 'Interface Capacity', value: ColumnAccessor.interfaceCapacityDestination },
+      { label: 'VLAN', value: ColumnAccessor.vlanDestination },
+      { label: 'MAC Address', value: ColumnAccessor.macAddressDestination },
+    ],
   },
   {
     title: 'Dimension 2',
     icon: NetworkIcon,
-    source: ['Interface', 'Connectivity Type', 'Network Boundary', 'Provider', 'Traffic Origination', 'Interface Capacity', 'VLAN', 'MAC Address'],
-    destination: ['Interface', 'Connectivity Type', 'Network Boundary', 'Provider', 'Traffic Origination', 'Interface Capacity', 'VLAN', 'MAC Address'],
+    source: [
+      { label: 'Interface', value: ColumnAccessor.interfaceSource },
+      { label: 'Connectivity Type', value: ColumnAccessor.connectivityTypeSource },
+      { label: 'Network Boundary', value: ColumnAccessor.networkBoundarySource },
+      { label: 'Provider', value: ColumnAccessor.providerSource },
+      { label: 'Traffic Origination', value: ColumnAccessor.trafficOriginationSource },
+      { label: 'Interface Capacity', value: ColumnAccessor.interfaceCapacitySource },
+      { label: 'VLAN', value: ColumnAccessor.vlanSource },
+      { label: 'MAC Address', value: ColumnAccessor.macAddressSource },
+    ],
+    destination: [
+      { label: 'Interface', value: ColumnAccessor.interfaceDestination },
+      { label: 'Connectivity Type', value: ColumnAccessor.connectivityTypeDestination },
+      { label: 'Network Boundary', value: ColumnAccessor.networkBoundaryDestination },
+      { label: 'Provider', value: ColumnAccessor.providerDestination },
+      { label: 'Traffic Origination', value: ColumnAccessor.trafficOriginationDestination },
+      { label: 'Interface Capacity', value: ColumnAccessor.interfaceCapacityDestination },
+      { label: 'VLAN', value: ColumnAccessor.vlanDestination },
+      { label: 'MAC Address', value: ColumnAccessor.macAddressDestination },
+    ],
   },
 ];
 
@@ -44,6 +82,69 @@ const DUMMY_DATA_SOURCE_OPTIONS: DataSourceOptions[] = [
     title: 'Cisco Meraki Device Metrics',
     icon: MerakiIcon,
     options: ['Office 1', 'Office 2', 'Office 3', 'Office 4', 'Office 5', 'Office 6', 'Office 7', 'Office 8', 'Office 9', 'Office 10', 'Office 11', 'Office 12'],
+  },
+];
+
+const DUMMY_METRICS_TABLE_DATA: MetricsExplorerTableData[] = [
+  {
+    average: 10,
+    ninetyFifthPercentile: 10,
+    max: 10,
+    lastDatapoint: 10,
+    interfaceSource: 'interface source',
+    interfaceDestination: 'interface dest',
+    connectivityTypeSource: 'conn type source',
+    connectivityTypeDestination: 'conn type dest',
+    networkBoundarySource: 'net boundary source',
+    networkBoundaryDestination: 'net boundary dest',
+    providerSource: 'provider source',
+    providerDestination: 'provider dest',
+    trafficOriginationSource: 'traffic ori source',
+    trafficOriginationDestination: 'traffic ori dest',
+    interfaceCapacitySource: 'int cap source',
+    interfaceCapacityDestination: 'int cap dest',
+    vlanSource: 'vlan source',
+    vlanDestination: 'vlan dest',
+    macAddressSource: 'mac add source',
+    macAddressDestination: 'mac add dest',
+  },
+  {
+    average: 5,
+    ninetyFifthPercentile: 20,
+    max: 30,
+    lastDatapoint: 15,
+    interfaceSource: 'abc',
+    interfaceDestination: 'interface dest 2',
+    connectivityTypeSource: 'conn type source 2',
+    connectivityTypeDestination: 'conn type dest 2',
+    networkBoundarySource: 'net boundary source 2',
+    networkBoundaryDestination: 'net boundary dest 2',
+    providerSource: 'provider source 2',
+    providerDestination: 'provider dest 2',
+    trafficOriginationSource: 'traffic ori source 2',
+    trafficOriginationDestination: 'traffic ori dest 2',
+    interfaceCapacitySource: 'int cap source 2',
+    interfaceCapacityDestination: 'int cap dest 2',
+    vlanSource: 'vlan source 2',
+    vlanDestination: 'vlan dest 2',
+    macAddressSource: 'mac add source 2',
+    macAddressDestination: 'mac add dest 2',
+  },
+];
+
+const Dummy_selected_dimensions: DimensionOptions[] = [
+  {
+    title: 'Network & Traffic Topology',
+    icon: NetworkIcon,
+    source: [
+      { label: 'Interface', value: ColumnAccessor.interfaceSource },
+      { label: 'Connectivity Type', value: ColumnAccessor.connectivityTypeSource },
+      { label: 'MAC Address', value: ColumnAccessor.macAddressSource },
+    ],
+    destination: [
+      { label: 'Network Boundary', value: ColumnAccessor.networkBoundaryDestination },
+      { label: 'Traffic Origination', value: ColumnAccessor.trafficOriginationDestination },
+    ],
   },
 ];
 
@@ -66,7 +167,7 @@ export const getDataSourceCount = (dataSources: DataSourceOptions[]) => {
 export const MetricsExplorer: React.FC = () => {
   const classes = AnalyticsStyles();
 
-  const [dimensions, setDimensions] = useState<DimensionOptions[]>([]);
+  const [dimensions, setDimensions] = useState<DimensionOptions[]>(Dummy_selected_dimensions);
   const [dataSources, setDataSources] = useState<DataSourceOptions[]>([]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalName, setModalName] = useState<ModalName>(ModalName.Dimensions);
@@ -90,9 +191,9 @@ export const MetricsExplorer: React.FC = () => {
       const newDimensions = produce(dimensions, draft => {
         const selectedDimension = draft.find(dimension => dimension.title === dimensionName);
         if (dimensionType === 'source') {
-          selectedDimension.source = selectedDimension.source.filter(item => item !== dimensionItem);
+          selectedDimension.source = selectedDimension.source.filter(item => item.value !== dimensionItem);
         } else {
-          selectedDimension.destination = selectedDimension.destination.filter(item => item !== dimensionItem);
+          selectedDimension.destination = selectedDimension.destination.filter(item => item.value !== dimensionItem);
         }
       });
       setDimensions(newDimensions);
@@ -124,16 +225,16 @@ export const MetricsExplorer: React.FC = () => {
             {dimensions.map(dimension =>
               dimension.source.map(item => {
                 return (
-                  <div key={item} className={`${classes.whiteBorderBox} ${classes.sourceText}`}>
+                  <div key={item.value} className={`${classes.whiteBorderBox} ${classes.sourceText}`}>
                     <div className={classes.tabTitleContainer}>
                       <div>
                         <span>
                           {`Source: `}
-                          <b>{item}</b>
+                          <b>{item.label}</b>
                         </span>
                       </div>
                       <div>
-                        <div className={classes.removeDimension} onClick={() => removeDimension(dimension.title, 'source', item)}>
+                        <div className={classes.removeDimension} onClick={() => removeDimension(dimension.title, 'source', item.value)}>
                           <img src={CloseIcon} alt="close popup" />
                         </div>
                       </div>
@@ -145,16 +246,16 @@ export const MetricsExplorer: React.FC = () => {
             {dimensions.map(dimension =>
               dimension.destination.map(item => {
                 return (
-                  <div key={item} className={`${classes.whiteBorderBox} ${classes.destinationText}`}>
+                  <div key={item.value} className={`${classes.whiteBorderBox} ${classes.destinationText}`}>
                     <div className={classes.tabTitleContainer}>
                       <div>
                         <span>
                           {`Destination: `}
-                          <b>{item}</b>
+                          <b>{item.label}</b>
                         </span>
                       </div>
                       <div>
-                        <div className={classes.removeDimension} onClick={() => removeDimension(dimension.title, 'destination', item)}>
+                        <div className={classes.removeDimension} onClick={() => removeDimension(dimension.title, 'destination', item.value)}>
                           <img src={CloseIcon} alt="close popup" />
                         </div>
                       </div>
@@ -211,9 +312,11 @@ export const MetricsExplorer: React.FC = () => {
 
   return (
     <div className={classes.metricsExplorerContainer}>
-      <div className={classes.leftBox}></div>
+      <div className={classes.leftBox}>
+        <MetricsChart dimensions={dimensions} tableData={DUMMY_METRICS_TABLE_DATA} />
+      </div>
       <div className={classes.rightBox}>
-        <div className={classes.containerTitle}>Metrics Customization</div>
+        <div className={classes.rightContainerTitle}>Metrics Customization</div>
         <div className={classes.rightBoxContent}>
           {customizationtabOptions.map(item => (
             <CustomizationTile
