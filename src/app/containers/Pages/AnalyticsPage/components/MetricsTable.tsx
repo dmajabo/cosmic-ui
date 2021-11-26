@@ -335,8 +335,35 @@ const REGEX = /[-[\]{}()*+?.,\\^$|#\s]/g;
 
 export const MetricsTable: React.FC<MetricsTableProps> = ({ dimensions, tableData }) => {
   const classes = AnalyticsStyles();
+
+  const allUniqueDimensions = uniqWith(
+    dimensions.reduce((acc, nextValue) => acc.concat(nextValue.source, nextValue.destination), []),
+    isEqual,
+  );
+  const uniqueDimensionValues = allUniqueDimensions.map(item => item.value);
+
+  const filteredDimensionColumns = dimensionColumns.filter(column => uniqueDimensionValues.includes(column.accessor));
+
+  const initialCheckboxData = (tableColumns: Column[]) =>
+    tableColumns.reduce((accu, nextValue) => {
+      accu[nextValue.accessor] = true;
+      return accu;
+    }, {});
+
   const [searchText, setSearchText] = useState<string>('');
   const [filteredTableData, setFilteredTableData] = useState<MetricsExplorerTableData[]>(tableData);
+  const [finalTableColumns, setFinalTableColumns] = useState<Column[]>([
+    {
+      Header: '',
+      accessor: ColumnAccessor.legendLine,
+    },
+    ...filteredDimensionColumns,
+    ...dataColumns,
+  ]);
+  const [columnCheckboxData, setColumnCheckboxData] = useState<CheckboxData>(initialCheckboxData(finalTableColumns));
+  const [selectedColumns, setSelectedColumns] = useState<Column[]>([]);
+  const [columnAnchorEl, setColumnAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const [dragId, setDragId] = useState<ColumnAccessor>();
 
   //adds \ before every special character of string to use in regular expression
   const escapeRegExp = (value: string) => value.replace(REGEX, '\\$&');
@@ -352,47 +379,7 @@ export const MetricsTable: React.FC<MetricsTableProps> = ({ dimensions, tableDat
     setFilteredTableData(filteredRows);
   };
 
-  useEffect(() => {
-    if (!searchText) {
-      setFilteredTableData(tableData);
-    }
-  }, [searchText, tableData]);
-
   const handleSearchTextChange = (event: React.ChangeEvent<HTMLInputElement>) => requestSearch(event.target.value);
-
-  const allUniqueDimensions = uniqWith(
-    dimensions.reduce((acc, nextValue) => acc.concat(nextValue.source, nextValue.destination), []),
-    isEqual,
-  );
-  const uniqueDimensionValues = allUniqueDimensions.map(item => item.value);
-
-  const filteredDimensionColumns = dimensionColumns.filter(column => uniqueDimensionValues.includes(column.accessor));
-
-  const [finalTableColumns, setFinalTableColumns] = useState<Column[]>([
-    {
-      Header: '',
-      accessor: ColumnAccessor.legendLine,
-    },
-    ...filteredDimensionColumns,
-    ...dataColumns,
-  ]);
-
-  useEffect(() => {
-    const newColumns = [
-      {
-        Header: '',
-        accessor: ColumnAccessor.legendLine,
-      },
-      ...filteredDimensionColumns,
-      ...dataColumns,
-    ];
-    setFinalTableColumns(newColumns.map((item, index) => ({ Header: item.Header, accessor: item.accessor, order: index + 1 })));
-  }, [dimensions]);
-
-  const initialCheckboxData: CheckboxData = finalTableColumns.reduce((accu, nextValue) => {
-    accu[nextValue.accessor] = true;
-    return accu;
-  }, {});
 
   const tableDataInput = filteredTableData.map((item, index) => ({
     average: item.average,
@@ -498,10 +485,6 @@ export const MetricsTable: React.FC<MetricsTableProps> = ({ dimensions, tableDat
     legendLine: <LegendLine colour={COLOURS[index]} />,
   }));
 
-  const [columnCheckboxData, setColumnCheckboxData] = useState<CheckboxData>(initialCheckboxData);
-  const [selectedColumns, setSelectedColumns] = useState<Column[]>([]);
-  const [columnAnchorEl, setColumnAnchorEl] = useState<HTMLButtonElement | null>(null);
-
   const handleColmunsClick = (event: React.MouseEvent<HTMLButtonElement>) => setColumnAnchorEl(event.currentTarget);
 
   const handleColumnsClose = () => setColumnAnchorEl(null);
@@ -509,20 +492,11 @@ export const MetricsTable: React.FC<MetricsTableProps> = ({ dimensions, tableDat
   const isColumnsPopoverOpen = Boolean(columnAnchorEl);
   const columnsPopoverId = isColumnsPopoverOpen ? COLUMNS_POPOVER : undefined;
 
-  useEffect(() => {
-    const newSelectedColumns = finalTableColumns.filter(item => columnCheckboxData[item.accessor]);
-    setSelectedColumns(newSelectedColumns);
-  }, [columnCheckboxData]);
-
-  useEffect(() => setColumnCheckboxData(initialCheckboxData), [dimensions]);
-
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) =>
     setColumnCheckboxData({
       ...columnCheckboxData,
       [event.target.name]: event.target.checked,
     });
-
-  const [dragId, setDragId] = useState<ColumnAccessor>();
 
   const handleDrag = event => setDragId(event.currentTarget.id);
 
@@ -540,11 +514,38 @@ export const MetricsTable: React.FC<MetricsTableProps> = ({ dimensions, tableDat
       const dropItemFound = draft.find(item => item.accessor === event.currentTarget.id);
       dropItemFound.order = dragItemOrder;
     });
+
     setFinalTableColumns(sortBy(newColumnOrder, 'order'));
+
     const selectedColumnAccessors = selectedColumns.map(item => item.accessor);
     const newSelectedColumns = newColumnOrder.filter(item => selectedColumnAccessors.includes(item.accessor));
     setSelectedColumns(sortBy(newSelectedColumns, 'order'));
   };
+
+  useEffect(() => {
+    if (!searchText) {
+      setFilteredTableData(tableData);
+    }
+  }, [searchText, tableData]);
+
+  useEffect(() => {
+    const newColumns = [
+      {
+        Header: '',
+        accessor: ColumnAccessor.legendLine,
+      },
+      ...filteredDimensionColumns,
+      ...dataColumns,
+    ];
+    setFinalTableColumns(newColumns.map((item, index) => ({ Header: item.Header, accessor: item.accessor, order: index + 1 })));
+  }, [dimensions]);
+
+  useEffect(() => setColumnCheckboxData(initialCheckboxData(finalTableColumns)), [finalTableColumns]);
+
+  useEffect(() => {
+    const newSelectedColumns = finalTableColumns.filter(item => columnCheckboxData[item.accessor]);
+    setSelectedColumns(newSelectedColumns);
+  }, [columnCheckboxData]);
 
   return (
     <div className={classes.metricsTableContainer}>
