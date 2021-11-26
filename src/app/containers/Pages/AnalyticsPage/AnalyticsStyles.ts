@@ -1,4 +1,5 @@
 import { Theme, createStyles, makeStyles } from '@material-ui/core';
+import DragIcon from './icons/metrics explorer/drag.svg';
 
 export const AnalyticsStyles = makeStyles(
   (theme: Theme) =>
@@ -37,7 +38,14 @@ export const AnalyticsStyles = makeStyles(
         height: '100%',
         width: '100vw',
       },
-      leftBox: {},
+      leftBox: {
+        backgroundColor: 'white',
+        padding: 20,
+        width: 'calc(100% - 600px)',
+        borderRadius: 6,
+        height: '78vh',
+        overflow: 'auto',
+      },
       rightBox: {
         backgroundColor: 'white',
         marginTop: -90,
@@ -48,7 +56,7 @@ export const AnalyticsStyles = makeStyles(
         padding: 30,
         overflow: 'scroll',
       },
-      containerTitle: {
+      rightContainerTitle: {
         fontSize: 22,
         fontWeight: 700,
         color: '#05143A',
@@ -286,6 +294,98 @@ export const AnalyticsStyles = makeStyles(
       dataSourceSingleColumnOptionContent: {
         display: 'grid',
         gridAutoFlow: 'row',
+      },
+      leftContainerTitle: {
+        fontSize: 22,
+        fontWeight: 700,
+        color: '#05143A',
+      },
+      metricsChartTitleContainer: {
+        display: 'flex',
+        justifyContent: 'space-between',
+      },
+      otherButton: {
+        backgroundColor: 'white',
+        border: '1px solid #CBD2DC',
+        marginRight: 20,
+        height: 40,
+      },
+      otherButtonText: {
+        fontSize: 12,
+        fontWeight: 700,
+        paddingRight: 10,
+      },
+      overflowXHide: {
+        maxWidth: '85%',
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+      },
+      metricsChartSubtitle: {
+        color: '#848DA3',
+        fontSize: 14,
+        paddingBottom: 10,
+      },
+      fixedPosition: {
+        position: 'fixed',
+        width: 'calc(100% - 630px)',
+        backgroundColor: 'white',
+        marginTop: -20,
+        paddingTop: 20,
+      },
+      metricsChartContents: {
+        marginTop: 80,
+      },
+      noChartText: {
+        color: '#848DA3',
+        fontSize: 14,
+        fontWeight: 400,
+      },
+      noChartContainer: {
+        textAlign: 'center',
+        border: '1px solid #CBD2DC',
+        backgroundColor: '#FBFCFE',
+        borderRadius: 6,
+        padding: '22vh 0vw 22vh 0vw',
+      },
+      metricsTableContainer: {
+        marginTop: 30,
+      },
+      metricsTableSearchBar: {
+        borderRadius: 6,
+        border: '1px solid #CBD2DC',
+        paddingLeft: 20,
+        height: 40,
+        width: '25vw',
+        marginBottom: 40,
+      },
+      metricsTableDimensionName: {
+        color: '#437FEC',
+      },
+      metricsTableDimensionSubtitle: {
+        fontSize: 14,
+        color: '#848DA3',
+      },
+      popoverContainer: {
+        padding: '10px 0px 10px 25px',
+      },
+      popoverItem: {
+        border: '1px solid #e7edf9',
+        backgroundColor: '#fbfcfe',
+        paddingRight: 10,
+      },
+      popoverText: {
+        fontSize: 12,
+        fontWeight: 700,
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: 250,
+      },
+      dragIcon: {
+        background: `url(${DragIcon})`,
+        width: 15,
+        height: 15,
       },
     }),
   {

@@ -68,7 +68,7 @@ const PerformanceDashboardPage: React.FC = () => {
       if (Array.isArray(responseData.slaTests) && !isEmpty(responseData.slaTests)) {
         const testData: FinalTableData[] = responseData.slaTests.map(test => {
           const selectedOrganization = GetSelectedOrganization(merakiOrganizations, test.sourceOrgId);
-          const allDevices: string = GetDevicesString(selectedOrganization);
+          const allDevices: string = GetDevicesString(selectedOrganization, test.sourceNwExtId);
           return {
             id: test.testId,
             name: test.name,

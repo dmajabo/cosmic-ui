@@ -19,20 +19,12 @@ export const GetSelectedOrganization = (organizations: Organization[], orgId: st
       };
 };
 
-export const GetDevicesString = (organization: Organization) => {
+export const GetDevicesString = (organization: Organization, sourceNetworkExtId: string) => {
   if (typeof organization !== 'undefined') {
     const orgDevices = organization.devices;
 
     if (!isEmpty(orgDevices)) {
-      const deviceExtIdList = orgDevices.map(device => {
-        return device.extId;
-      });
-
-      const allDevices = deviceExtIdList.reduce((acc, newValue) => {
-        return acc + ',' + newValue;
-      });
-
-      return allDevices;
+      return orgDevices.filter(device => device.networkId === sourceNetworkExtId).map(device => device.extId).join(',');
     } else {
       return '';
     }
