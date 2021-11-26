@@ -53,3 +53,22 @@ export interface ISankeyRes {
   tgwcount: number;
   appcount: number;
 }
+
+export interface ISankeyDetailItem {
+  activetime: string;
+  application: string;
+  flows: string;
+  numclients: string;
+  port: string;
+  protocol: string;
+  recv: string;
+  sent: string;
+  time: Date | string;
+}
+export interface ISankeyAppDetail {
+  appdetail: ISankeyDetailItem[];
+}
+
+export interface ISankeyDetailRes {
+  sankeydetail: ISankeyAppDetail;
+}

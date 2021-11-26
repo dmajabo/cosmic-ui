@@ -8,6 +8,7 @@ import { applicationIcon, dedstionationIcon, networksIcon } from '../SVGIcons/sa
 
 interface Props {
   readonly data: ISankeyData;
+  readonly onLinkClick: (netName: string, destName: string) => void;
 }
 
 const SankeyChart: React.FC<Props> = (props: Props) => {
@@ -33,7 +34,11 @@ const SankeyChart: React.FC<Props> = (props: Props) => {
   }, [visibleData, sizes]);
 
   const updateChart = () => {
-    createSankeyChart('sankeyChartContainerSvg', visibleData);
+    createSankeyChart('sankeyChartContainerSvg', visibleData, linkClickCallBack);
+  };
+
+  const linkClickCallBack = (e: any, d: any) => {
+    props.onLinkClick(d.source.name, d.target.name);
   };
 
   return (

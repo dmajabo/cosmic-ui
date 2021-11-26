@@ -9,6 +9,8 @@ export const CardWrapper = styled.div`
   border-radius: 6px;
   background: var(--_primaryBg);
   padding: 20px;
+  border: 1px solid;
+  border-color: var(--_primaryButtonBorder);
 `;
 
 export const IconWrapStyles = styled.div`

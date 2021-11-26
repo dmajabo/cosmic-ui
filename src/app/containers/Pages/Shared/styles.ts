@@ -66,7 +66,7 @@ export const ActionPart = styled.div<IPageActionPart>`
 export const CardWrapper = styled.div`
   display: flex;
   flex-shrink: 0;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 `;
 
 export const ContentWrapper = styled.div`

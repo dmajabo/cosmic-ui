@@ -12,7 +12,8 @@ const DisplayRange: React.FC<Props> = (props: Props) => {
 
   React.useEffect(() => {
     const total = props.count > 9999 ? `${props.count}+` : props.count;
-    const from = Math.max(1, (props.currentPage - 1) * props.pageSize);
+    const _minF = !props.count || props.count < 1 ? 0 : 1;
+    const from = Math.max(_minF, (props.currentPage - 1) * props.pageSize);
     const to = Math.min(props.count, Math.max(1, props.currentPage) * props.pageSize);
     const _str = `${from} - ${to} out of ${total} items`;
     setValueString(_str);

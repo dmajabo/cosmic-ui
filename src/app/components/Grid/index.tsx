@@ -6,10 +6,11 @@ interface Props {
   columns: GridColDef[];
   checkboxSelection?: boolean;
   components?: GridSlotsComponent;
+  loading?: boolean;
 }
 
 const Grid: React.FC<Props> = (props: Props) => {
-  return <DataGrid checkboxSelection={props.checkboxSelection} disableSelectionOnClick autoHeight rows={props.rows} columns={props.columns} components={props.components} />;
+  return <DataGrid loading={props.loading} checkboxSelection={props.checkboxSelection} disableSelectionOnClick autoHeight rows={props.rows} columns={props.columns} components={props.components} />;
 };
 
 export default React.memo(Grid);
