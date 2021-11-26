@@ -19,6 +19,9 @@ import { DimensionOptions, Dimensions } from './Dimensions';
 import { DataSource, DataSourceOptions } from './DataSource';
 import { MetricsChart } from './MetricsChart';
 import { ColumnAccessor, MetricsExplorerTableData } from 'lib/api/http/SharedTypes';
+import { Tab, Tabs } from '@material-ui/core';
+import { LookbackTimeTab } from './LookbackTimeTab';
+import { CustomTimeTab } from './CustomTimeTab';
 
 //TODO: Remove this once API is integrated
 const DUMMY_DIMENSION_DATA: DimensionOptions[] = [
@@ -153,6 +156,22 @@ enum ModalName {
   DataSource = 'Data Source',
 }
 
+enum TimeMetricTabValue {
+  lookback = 'lookback',
+  custom = 'custom',
+}
+
+interface TabPanelProps {
+  readonly children?: React.ReactNode;
+  readonly index: string;
+  readonly value: string;
+}
+
+export interface SelectOptions {
+  readonly value: string;
+  readonly label: string;
+}
+
 export const getDimensionCount = (dimensions: DimensionOptions[]) => {
   return dimensions.reduce((accu, nextValue) => {
     const subDimensionCount = nextValue.source.length + nextValue.destination.length;
@@ -164,6 +183,23 @@ export const getDataSourceCount = (dataSources: DataSourceOptions[]) => {
   return dataSources.reduce((acc, nextValue) => acc + nextValue.options.length, 0);
 };
 
+function TabPanel(props: TabPanelProps) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div role="tabpanel" hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
+      {children}
+    </div>
+  );
+}
+
+function a11yProps(index: any) {
+  return {
+    id: `simple-tab-${index}`,
+    'aria-controls': `simple-tabpanel-${index}`,
+  };
+}
+
 export const MetricsExplorer: React.FC = () => {
   const classes = AnalyticsStyles();
 
@@ -171,6 +207,18 @@ export const MetricsExplorer: React.FC = () => {
   const [dataSources, setDataSources] = useState<DataSourceOptions[]>([]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalName, setModalName] = useState<ModalName>(ModalName.Dimensions);
+  const [timeTab, setTimeTab] = useState<TimeMetricTabValue>(TimeMetricTabValue.lookback);
+  const [selectedLookback, setSelectedLookback] = useState<SelectOptions>({
+    label: 'Last 5 minutes',
+    value: '-5m',
+  });
+  const [selectedCustomFromDate, setSelectedCustomFromDate] = useState<string>('');
+  const [selectedCustomToDate, setSelectedCustomToDate] = useState<string>('');
+  const [selectedShow, setSelectedShow] = useState<SelectOptions>({
+    label: 'Day',
+    value: '-1d',
+  });
+
   const handleDimensionModalOpen = () => {
     setModalName(ModalName.Dimensions);
     setIsModalOpen(true);
@@ -204,6 +252,16 @@ export const MetricsExplorer: React.FC = () => {
     const newDataSources = dataSources.filter(dataSource => dataSource.title !== dataSourceName);
     setDataSources(newDataSources);
   };
+
+  const handleTimeTabChange = (event, newValue: TimeMetricTabValue) => setTimeTab(newValue);
+
+  const handleLookbackChange = (value: SelectOptions) => setSelectedLookback(value);
+
+  const handleCustomFromDateChange = (value: string) => setSelectedCustomFromDate(value);
+
+  const handleCustomToDateChange = (value: string) => setSelectedCustomToDate(value);
+
+  const handleShowChange = (value: SelectOptions) => setSelectedShow(value);
 
   const customizationtabOptions: CustomizationTabProps[] = [
     {
@@ -274,6 +332,39 @@ export const MetricsExplorer: React.FC = () => {
     {
       img: TimeIcon,
       title: 'Time',
+      content: (
+        <>
+          <Tabs classes={{ root: classes.timeTabContainer, indicator: classes.indicator }} value={timeTab} onChange={handleTimeTabChange} indicatorColor="primary">
+            <Tab
+              classes={{ selected: classes.selectedTab }}
+              value={TimeMetricTabValue.lookback}
+              label={<span className={classes.tableHeaderText}>LOOKBACK</span>}
+              wrapped
+              {...a11yProps(TimeMetricTabValue.lookback)}
+            />
+            <Tab
+              classes={{ selected: classes.selectedTab }}
+              value={TimeMetricTabValue.custom}
+              label={<span className={classes.tableHeaderText}>CUSTOM</span>}
+              wrapped
+              {...a11yProps(TimeMetricTabValue.custom)}
+            />
+          </Tabs>
+          <TabPanel value={timeTab} index={TimeMetricTabValue.lookback}>
+            <LookbackTimeTab lookback={selectedLookback} handleLookbackChange={handleLookbackChange} />
+          </TabPanel>
+          <TabPanel value={timeTab} index={TimeMetricTabValue.custom}>
+            <CustomTimeTab
+              customFromDate={selectedCustomFromDate}
+              customToDate={selectedCustomToDate}
+              handleCustomFromDateChange={handleCustomFromDateChange}
+              handleCustomToDateChange={handleCustomToDateChange}
+              show={selectedShow}
+              handleShowChange={handleShowChange}
+            />
+          </TabPanel>
+        </>
+      ),
     },
     {
       img: DataSourceIcon,
