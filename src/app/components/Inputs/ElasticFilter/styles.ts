@@ -7,8 +7,8 @@ export const ElasticFilterWrapper = styled.div`
   min-height: 60px;
   font-family: 'DMSans';
   font-style: normal;
-  padding: 36px 30px 30px 30px;
-  margin-bottom: 20px;
+  padding: 0;
+  margin-bottom: 40px;
   background: var(--_primaryBg);
 `;
 
@@ -23,7 +23,7 @@ export const ElasticLabel = styled.div`
 
 export const PopupWrapper = styled.div`
   width: 100%;
-  height: 40px;
+  height: 50px;
   position: relative;
   z-index: 3;
 `;

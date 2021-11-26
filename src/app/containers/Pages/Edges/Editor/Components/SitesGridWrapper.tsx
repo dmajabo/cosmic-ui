@@ -143,7 +143,7 @@ const SitesGridWrapper: React.FC<Props> = (props: Props) => {
 
   React.useEffect(() => {
     const _ids = [];
-    if (props.selectedIds && props.selectedIds.length) {
+    if (props.data && props.data.length && props.selectedIds && props.selectedIds.length) {
       props.selectedIds.forEach(it => {
         const _el = props.data.find(item => item.extId === it);
         if (_el) {
@@ -152,7 +152,7 @@ const SitesGridWrapper: React.FC<Props> = (props: Props) => {
       });
     }
     setSelectionModel(_ids);
-  }, [props.selectedIds]);
+  }, [props.data, props.selectedIds]);
 
   const onChangeColumn = (col: GridColDef) => {
     const _items: GridColDef[] = columns.slice();
@@ -264,7 +264,7 @@ const SitesGridWrapper: React.FC<Props> = (props: Props) => {
         showLastButton={false}
         pagingWrapStyles={{ height: '52px', paddingTop: '12px' }}
         selectWrapStyles={{ maxWidth: '150px' }}
-        hideRange
+        hideRange={680}
       />
     </>
   );

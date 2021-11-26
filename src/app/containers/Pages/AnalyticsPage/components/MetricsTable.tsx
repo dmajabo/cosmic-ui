@@ -1,6 +1,6 @@
 import { Button, FormControlLabel, Typography } from '@material-ui/core';
 import { Column, ColumnAccessor, MetricsExplorerTableData } from 'lib/api/http/SharedTypes';
-import { isEqual, uniqWith } from 'lodash';
+import { isEqual, sortBy, uniqWith } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { AnalyticsStyles } from '../AnalyticsStyles';
 import ColumnsIcon from '../icons/metrics explorer/columns.svg';
@@ -11,6 +11,7 @@ import { LegendLine } from './LegendLine';
 import { Table } from './Table';
 import styled from 'styled-components';
 import { Checkbox, FormGroup, Popover } from '@mui/material';
+import produce from 'immer';
 
 interface MetricsTableProps {
   readonly dimensions: DimensionOptions[];
@@ -91,23 +92,89 @@ const dimensionColumns: Column[] = [
     Header: (
       <>
         <div>
-          <b>INTERFACE</b>
-        </div>
-        <div>(Destination)</div>
-      </>
-    ),
-    accessor: ColumnAccessor.interfaceDestination,
-  },
-  {
-    Header: (
-      <>
-        <div>
           <b>CONNECTIVITY TYPE</b>
         </div>
         <div>(Source)</div>
       </>
     ),
     accessor: ColumnAccessor.connectivityTypeSource,
+  },
+  {
+    Header: (
+      <>
+        <div>
+          <b>NETWORK BOUNDARY</b>
+        </div>
+        <div>(Source)</div>
+      </>
+    ),
+    accessor: ColumnAccessor.networkBoundarySource,
+  },
+  {
+    Header: (
+      <>
+        <div>
+          <b>PROVIDER</b>
+        </div>
+        <div>(Source)</div>
+      </>
+    ),
+    accessor: ColumnAccessor.providerSource,
+  },
+  {
+    Header: (
+      <>
+        <div>
+          <b>TRAFFIC ORIGINATION</b>
+        </div>
+        <div>(Source)</div>
+      </>
+    ),
+    accessor: ColumnAccessor.trafficOriginationSource,
+  },
+  {
+    Header: (
+      <>
+        <div>
+          <b>INTERFACE CAPACITY</b>
+        </div>
+        <div>(Source)</div>
+      </>
+    ),
+    accessor: ColumnAccessor.interfaceCapacitySource,
+  },
+  {
+    Header: (
+      <>
+        <div>
+          <b>VLAN</b>
+        </div>
+        <div>(Source)</div>
+      </>
+    ),
+    accessor: ColumnAccessor.vlanSource,
+  },
+  {
+    Header: (
+      <>
+        <div>
+          <b>MAC ADDRESS</b>
+        </div>
+        <div>(Source)</div>
+      </>
+    ),
+    accessor: ColumnAccessor.macAddressSource,
+  },
+  {
+    Header: (
+      <>
+        <div>
+          <b>INTERFACE</b>
+        </div>
+        <div>(Destination)</div>
+      </>
+    ),
+    accessor: ColumnAccessor.interfaceDestination,
   },
   {
     Header: (
@@ -126,32 +193,10 @@ const dimensionColumns: Column[] = [
         <div>
           <b>NETWORK BOUNDARY</b>
         </div>
-        <div>(Source)</div>
-      </>
-    ),
-    accessor: ColumnAccessor.networkBoundarySource,
-  },
-  {
-    Header: (
-      <>
-        <div>
-          <b>NETWORK BOUNDARY</b>
-        </div>
         <div>(Destination)</div>
       </>
     ),
     accessor: ColumnAccessor.networkBoundaryDestination,
-  },
-  {
-    Header: (
-      <>
-        <div>
-          <b>PROVIDER</b>
-        </div>
-        <div>(Source)</div>
-      </>
-    ),
-    accessor: ColumnAccessor.providerSource,
   },
   {
     Header: (
@@ -170,32 +215,10 @@ const dimensionColumns: Column[] = [
         <div>
           <b>TRAFFIC ORIGINATION</b>
         </div>
-        <div>(Source)</div>
-      </>
-    ),
-    accessor: ColumnAccessor.trafficOriginationSource,
-  },
-  {
-    Header: (
-      <>
-        <div>
-          <b>TRAFFIC ORIGINATION</b>
-        </div>
         <div>(Destination)</div>
       </>
     ),
     accessor: ColumnAccessor.trafficOriginationDestination,
-  },
-  {
-    Header: (
-      <>
-        <div>
-          <b>INTERFACE CAPACITY</b>
-        </div>
-        <div>(Source)</div>
-      </>
-    ),
-    accessor: ColumnAccessor.interfaceCapacitySource,
   },
   {
     Header: (
@@ -214,32 +237,10 @@ const dimensionColumns: Column[] = [
         <div>
           <b>VLAN</b>
         </div>
-        <div>(Source)</div>
-      </>
-    ),
-    accessor: ColumnAccessor.vlanSource,
-  },
-  {
-    Header: (
-      <>
-        <div>
-          <b>VLAN</b>
-        </div>
         <div>(Destination)</div>
       </>
     ),
     accessor: ColumnAccessor.vlanDestination,
-  },
-  {
-    Header: (
-      <>
-        <div>
-          <b>MAC ADDRESS</b>
-        </div>
-        <div>(Source)</div>
-      </>
-    ),
-    accessor: ColumnAccessor.macAddressSource,
   },
   {
     Header: (
@@ -330,13 +331,42 @@ const dataColumns: Column[] = [
 ];
 
 const COLUMNS_POPOVER = 'columns-popover';
+const REGEX = /[-[\]{}()*+?.,\\^$|#\s]/g;
 
 export const MetricsTable: React.FC<MetricsTableProps> = ({ dimensions, tableData }) => {
   const classes = AnalyticsStyles();
+
+  const allUniqueDimensions = uniqWith(
+    dimensions.reduce((acc, nextValue) => acc.concat(nextValue.source, nextValue.destination), []),
+    isEqual,
+  );
+  const uniqueDimensionValues = allUniqueDimensions.map(item => item.value);
+
+  const filteredDimensionColumns = dimensionColumns.filter(column => uniqueDimensionValues.includes(column.accessor));
+
+  const initialCheckboxData = (tableColumns: Column[]) =>
+    tableColumns.reduce((accu, nextValue) => {
+      accu[nextValue.accessor] = true;
+      return accu;
+    }, {});
+
   const [searchText, setSearchText] = useState<string>('');
   const [filteredTableData, setFilteredTableData] = useState<MetricsExplorerTableData[]>(tableData);
+  const [finalTableColumns, setFinalTableColumns] = useState<Column[]>([
+    {
+      Header: '',
+      accessor: ColumnAccessor.legendLine,
+    },
+    ...filteredDimensionColumns,
+    ...dataColumns,
+  ]);
+  const [columnCheckboxData, setColumnCheckboxData] = useState<CheckboxData>(initialCheckboxData(finalTableColumns));
+  const [selectedColumns, setSelectedColumns] = useState<Column[]>([]);
+  const [columnAnchorEl, setColumnAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const [dragId, setDragId] = useState<ColumnAccessor>();
 
-  const escapeRegExp = (value: string) => value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+  //adds \ before every special character of string to use in regular expression
+  const escapeRegExp = (value: string) => value.replace(REGEX, '\\$&');
 
   const requestSearch = (searchValue: string) => {
     setSearchText(searchValue);
@@ -349,32 +379,9 @@ export const MetricsTable: React.FC<MetricsTableProps> = ({ dimensions, tableDat
     setFilteredTableData(filteredRows);
   };
 
-  useEffect(() => {
-    if (!searchText) {
-      setFilteredTableData(tableData);
-    }
-  }, [searchText, tableData]);
-
   const handleSearchTextChange = (event: React.ChangeEvent<HTMLInputElement>) => requestSearch(event.target.value);
 
-  const allUniqueDimensions = uniqWith(
-    dimensions.reduce((acc, nextValue) => acc.concat(nextValue.source, nextValue.destination), []),
-    isEqual,
-  );
-  const uniqueDimensionValues = allUniqueDimensions.map(item => item.value);
-
-  const filteredDimensionColumns = dimensionColumns.filter(column => uniqueDimensionValues.includes(column.accessor));
-
-  const finalTableColumns = [
-    {
-      Header: '',
-      accessor: ColumnAccessor.legendLine,
-    },
-    ...filteredDimensionColumns,
-    ...dataColumns,
-  ];
-
-  const finalTableData = filteredTableData.map((item, index) => ({
+  const tableDataInput = filteredTableData.map((item, index) => ({
     average: item.average,
     ninetyFifthPercentile: item.ninetyFifthPercentile,
     max: item.max,
@@ -478,15 +485,6 @@ export const MetricsTable: React.FC<MetricsTableProps> = ({ dimensions, tableDat
     legendLine: <LegendLine colour={COLOURS[index]} />,
   }));
 
-  const initialCheckboxData: CheckboxData = finalTableColumns.reduce((accu, nextValue) => {
-    accu[nextValue.accessor] = true;
-    return accu;
-  }, {});
-
-  const [columnCheckboxData, setColumnCheckboxData] = useState<CheckboxData>(initialCheckboxData);
-  const [selectedColumns, setSelectedColumns] = useState<Column[]>([]);
-  const [columnAnchorEl, setColumnAnchorEl] = useState<HTMLButtonElement | null>(null);
-
   const handleColmunsClick = (event: React.MouseEvent<HTMLButtonElement>) => setColumnAnchorEl(event.currentTarget);
 
   const handleColumnsClose = () => setColumnAnchorEl(null);
@@ -494,18 +492,60 @@ export const MetricsTable: React.FC<MetricsTableProps> = ({ dimensions, tableDat
   const isColumnsPopoverOpen = Boolean(columnAnchorEl);
   const columnsPopoverId = isColumnsPopoverOpen ? COLUMNS_POPOVER : undefined;
 
-  useEffect(() => {
-    const newSelectedColumns = finalTableColumns.filter(item => columnCheckboxData[item.accessor]);
-    setSelectedColumns(newSelectedColumns);
-  }, [columnCheckboxData]);
-
-  useEffect(() => setColumnCheckboxData(initialCheckboxData), [dimensions]);
-
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) =>
     setColumnCheckboxData({
       ...columnCheckboxData,
       [event.target.name]: event.target.checked,
     });
+
+  const handleDrag = event => setDragId(event.currentTarget.id);
+
+  const handleDrop = event => {
+    const dragItem = finalTableColumns.find(column => column.accessor === dragId);
+    const dropItem = finalTableColumns.find(column => column.accessor === event.currentTarget.id);
+
+    const dragItemOrder = dragItem.order;
+    const dropItemOrder = dropItem.order;
+
+    const newColumnOrder = produce(finalTableColumns, draft => {
+      const dragItemFound = draft.find(item => item.accessor === dragId);
+      dragItemFound.order = dropItemOrder;
+
+      const dropItemFound = draft.find(item => item.accessor === event.currentTarget.id);
+      dropItemFound.order = dragItemOrder;
+    });
+
+    setFinalTableColumns(sortBy(newColumnOrder, 'order'));
+
+    const selectedColumnAccessors = selectedColumns.map(item => item.accessor);
+    const newSelectedColumns = newColumnOrder.filter(item => selectedColumnAccessors.includes(item.accessor));
+    setSelectedColumns(sortBy(newSelectedColumns, 'order'));
+  };
+
+  useEffect(() => {
+    if (!searchText) {
+      setFilteredTableData(tableData);
+    }
+  }, [searchText, tableData]);
+
+  useEffect(() => {
+    const newColumns = [
+      {
+        Header: '',
+        accessor: ColumnAccessor.legendLine,
+      },
+      ...filteredDimensionColumns,
+      ...dataColumns,
+    ];
+    setFinalTableColumns(newColumns.map((item, index) => ({ Header: item.Header, accessor: item.accessor, order: index + 1 })));
+  }, [dimensions]);
+
+  useEffect(() => setColumnCheckboxData(initialCheckboxData(finalTableColumns)), [finalTableColumns]);
+
+  useEffect(() => {
+    const newSelectedColumns = finalTableColumns.filter(item => columnCheckboxData[item.accessor]);
+    setSelectedColumns(newSelectedColumns);
+  }, [columnCheckboxData]);
 
   return (
     <div className={classes.metricsTableContainer}>
@@ -541,14 +581,19 @@ export const MetricsTable: React.FC<MetricsTableProps> = ({ dimensions, tableDat
                     key={item.accessor}
                     className={classes.popoverItem}
                     control={<Checkbox checked={columnCheckboxData[item.accessor]} onChange={handleCheckboxChange} name={item.accessor} />}
-                    label={<span className={classes.popoverText}>{item.Header}</span>}
+                    label={
+                      <div className={classes.popoverText} draggable={true} id={item.accessor} onDragOver={e => e.preventDefault()} onDragStart={handleDrag} onDrop={handleDrop}>
+                        <FlexStart>{item.Header}</FlexStart>
+                        <div className={classes.dragIcon} />
+                      </div>
+                    }
                   />
                 ))}
             </FormGroup>
           </Popover>
         </div>
       </div>
-      <Table columns={selectedColumns} data={finalTableData} />
+      <Table columns={selectedColumns} data={tableDataInput} />
     </div>
   );
 };

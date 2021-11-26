@@ -250,7 +250,7 @@ const NetworkEditor: React.FC<Props> = (props: Props) => {
         <PrimaryButton
           styles={{ width: '100%', height: '100%' }}
           disabled={!dataItem.name || (!dataItem.extIds.length && !dataItem.expr) || !!(!dataItem.extIds.length && dataItem.expr && exprError)}
-          label="Add group"
+          label={!dataItem.id ? 'Add group' : 'Update Group'}
           onClick={onSaveChanges}
         />
       </ModalFooter>

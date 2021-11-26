@@ -56,6 +56,69 @@ export const GridStyles = makeStyles(
           padding: 0,
         },
       },
+      nestedGrid: {
+        width: '100%',
+        background: 'transparent',
+        minHeight: 0,
+        position: 'relative',
+        border: 'none',
+        '& .MuiDataGrid-main': {
+          paddingBottom: '20px',
+        },
+        '&.MuiDataGrid-root .MuiDataGrid-overlay': {
+          background: 'transparent',
+        },
+        '& .MuiDataGrid-columnHeaderTitle': {
+          fontWeight: 700,
+          fontSize: '12px',
+          lineHeight: '16px',
+          letterSpacing: '0.1em',
+          textTransform: 'uppercase',
+          color: 'var(--_disabledTextColor)',
+        },
+        '& .MuiDataGrid-columnHeaderWrapper': {
+          height: '100%',
+        },
+        '& .MuiDataGrid-columnsContainer': {
+          background: 'transparent !important',
+          height: 40,
+          border: 'none',
+        },
+        '& .MuiDataGrid-columnHeader': {
+          outline: 'none !important',
+          padding: '0 20px !important',
+        },
+        '& .MuiDataGrid-row': {
+          height: 50,
+          background: 'var(--_primaryBg)',
+          border: '1px solid var(--_rowBorder)',
+          boxSizing: 'border-box',
+          '&:hover': {
+            background: 'var(--_primaryBg)',
+          },
+          '&.Mui-selected': {
+            background: 'var(--_primaryBg)',
+          },
+          '&.Mui-selected:hover': {
+            background: 'var(--_primaryBg)',
+          },
+        },
+        '& .MuiDataGrid-columnSeparator': {
+          display: 'none',
+        },
+        '& .MuiDataGrid-cell': {
+          outline: 'none !important',
+          fontWeight: 'normal',
+          fontSize: '16px',
+          lineHeight: '21px',
+          padding: '0 20px',
+          color: 'var(--_primaryColor)',
+          border: 'none',
+        },
+        '& .MuiDataGrid-columnHeaderTitleContainer': {
+          padding: 0,
+        },
+      },
       borderedRow: {
         width: '100%',
         background: 'transparent',

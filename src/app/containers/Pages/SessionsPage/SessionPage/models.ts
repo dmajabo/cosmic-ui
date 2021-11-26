@@ -10,18 +10,41 @@ export interface ISessionsGridField {
   queryType?: IQuryFieldtype;
   label: string;
   isStaticField?: boolean;
+  isCustomField?: boolean;
 }
+
+export interface ISessionsGridFieldColumn extends ISessionsGridField {
+  hide: boolean;
+}
+
 export interface ISessionGridColumns {
   [key: string]: ISessionsGridField;
 }
 
 export const SessionGridColumns: ISessionGridColumns = {
+  collapseColumn: {
+    resField: 'id',
+    searchField: '',
+    queryType: null,
+    label: '',
+    isStaticField: true,
+    isCustomField: true,
+  },
+  vendorsColumn: {
+    resField: 'vendors',
+    searchField: '',
+    queryType: null,
+    label: 'Vendor',
+    isStaticField: true,
+    isCustomField: true,
+  },
   timestamp: {
     resField: 'timestamp',
     searchField: '@timestamp',
     queryType: IQuryFieldtype.STRING,
     label: 'Time',
     isStaticField: true,
+    isCustomField: false,
   },
   sessionId: {
     resField: 'sessionId',
@@ -29,6 +52,7 @@ export const SessionGridColumns: ISessionGridColumns = {
     queryType: IQuryFieldtype.STRING,
     label: 'Session ID',
     isStaticField: true,
+    isCustomField: false,
   },
   flowId: {
     resField: 'flowId',
@@ -36,6 +60,7 @@ export const SessionGridColumns: ISessionGridColumns = {
     queryType: IQuryFieldtype.STRING,
     label: 'Flow ID',
     isStaticField: true,
+    isCustomField: false,
   },
   sourceIp: {
     resField: 'sourceIp',
@@ -43,6 +68,7 @@ export const SessionGridColumns: ISessionGridColumns = {
     queryType: IQuryFieldtype.STRING,
     label: 'Source IP',
     isStaticField: true,
+    isCustomField: false,
   },
   sourcePort: {
     resField: 'sourcePort',
@@ -50,6 +76,7 @@ export const SessionGridColumns: ISessionGridColumns = {
     queryType: IQuryFieldtype.NUMBER,
     label: 'Source Port',
     isStaticField: true,
+    isCustomField: false,
   },
   destIp: {
     resField: 'destIp',
@@ -57,6 +84,7 @@ export const SessionGridColumns: ISessionGridColumns = {
     queryType: IQuryFieldtype.STRING,
     label: 'Destination IP',
     isStaticField: true,
+    isCustomField: false,
   },
   destPort: {
     resField: 'destPort',
@@ -64,6 +92,7 @@ export const SessionGridColumns: ISessionGridColumns = {
     queryType: IQuryFieldtype.NUMBER,
     label: 'Destination Port',
     isStaticField: true,
+    isCustomField: false,
   },
   natSourceIp: {
     resField: 'natSourceIp',
@@ -71,6 +100,7 @@ export const SessionGridColumns: ISessionGridColumns = {
     queryType: IQuryFieldtype.STRING,
     label: 'Nat Source IP',
     isStaticField: true,
+    isCustomField: false,
   },
   natSourcePort: {
     resField: 'natSourcePort',
@@ -78,6 +108,7 @@ export const SessionGridColumns: ISessionGridColumns = {
     queryType: IQuryFieldtype.NUMBER,
     label: 'Nat Source Port',
     isStaticField: true,
+    isCustomField: false,
   },
   natDestIp: {
     resField: 'natDestIp',
@@ -85,6 +116,7 @@ export const SessionGridColumns: ISessionGridColumns = {
     queryType: IQuryFieldtype.STRING,
     label: 'Nat Destination IP',
     isStaticField: true,
+    isCustomField: false,
   },
   natDestPort: {
     resField: 'natDestPort',
@@ -92,6 +124,7 @@ export const SessionGridColumns: ISessionGridColumns = {
     queryType: IQuryFieldtype.NUMBER,
     label: 'Nat Destination Port',
     isStaticField: true,
+    isCustomField: false,
   },
   deviceName: {
     resField: 'deviceName',
@@ -99,6 +132,7 @@ export const SessionGridColumns: ISessionGridColumns = {
     queryType: IQuryFieldtype.STRING,
     label: 'Device Name',
     isStaticField: true,
+    isCustomField: false,
   },
   deviceExtId: {
     resField: 'deviceExtId',
@@ -106,6 +140,7 @@ export const SessionGridColumns: ISessionGridColumns = {
     queryType: IQuryFieldtype.STRING,
     label: 'Device ID',
     isStaticField: true,
+    isCustomField: false,
   },
   deviceVendor: {
     resField: 'deviceVendor',
@@ -113,6 +148,7 @@ export const SessionGridColumns: ISessionGridColumns = {
     queryType: IQuryFieldtype.STRING,
     label: 'Vendor',
     isStaticField: true,
+    isCustomField: false,
   },
 };
 

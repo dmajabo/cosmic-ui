@@ -19,7 +19,7 @@ import {
 interface Props {
   data: ITopologyGroup[];
   onEditGroup: (item: ITopologyGroup, index: number) => void;
-  onDeleteGroup: (id: string) => void;
+  onDeleteGroup: (gr: ITopologyGroup) => void;
 }
 
 const FormTable: React.FC<Props> = ({ data, onEditGroup, onDeleteGroup }) => {
@@ -29,8 +29,8 @@ const FormTable: React.FC<Props> = ({ data, onEditGroup, onDeleteGroup }) => {
     onEditGroup(dataItem, index);
   };
 
-  const onDelete = (id: string) => {
-    onDeleteGroup(id);
+  const onDelete = (gr: ITopologyGroup) => {
+    onDeleteGroup(gr);
   };
 
   // const getTypeIcon = (type: VendorTypes) => {
@@ -86,7 +86,7 @@ const FormTable: React.FC<Props> = ({ data, onEditGroup, onDeleteGroup }) => {
                         >
                           <PopupContent>
                             <PopupItem label="Edit" icon={editIcon} onClick={() => onEdit(row, rowIndex)} />
-                            <PopupItem color="var(--_errorColor)" label="Delete" icon={deleteIcon()} onClick={() => onDelete(row.id)} />
+                            <PopupItem color="var(--_errorColor)" label="Delete" icon={deleteIcon()} onClick={() => onDelete(row)} />
                           </PopupContent>
                         </SettingsButton>
                       </CellContent>

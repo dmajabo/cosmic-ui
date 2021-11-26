@@ -14,6 +14,10 @@ export const DisplayRangeStyles = styled.span`
   white-space: nowrap;
   flex-shrink: 0;
   margin: auto 0 auto 12px;
+  font-size: 14px;
+  font-family: 'DMSans';
+  font-weight: normal;
+  font-style: normal;
 `;
 
 export const SelectWrapper = styled.div`

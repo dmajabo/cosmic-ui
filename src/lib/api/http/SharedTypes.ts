@@ -212,6 +212,7 @@ export enum ColumnAccessor {
 export interface Column {
   readonly Header: JSX.Element | string;
   readonly accessor: ColumnAccessor;
+  readonly order?: number;
 }
 
 interface HeatMapMetric {

@@ -79,7 +79,7 @@ const AppsGridWrapper: React.FC<Props> = (props: Props) => {
 
   React.useEffect(() => {
     const _ids = [];
-    if (props.selectedIds && props.selectedIds.length) {
+    if (props.data && props.data.length && props.selectedIds && props.selectedIds.length) {
       props.selectedIds.forEach(it => {
         const _el = props.data.find(item => item.extId === it);
         if (_el) {
@@ -88,7 +88,7 @@ const AppsGridWrapper: React.FC<Props> = (props: Props) => {
       });
     }
     setSelectionModel(_ids);
-  }, [props.selectedIds]);
+  }, [props.selectedIds, props.data]);
 
   const onChangeColumn = (col: GridColDef) => {
     const _items: GridColDef[] = columns.slice();
@@ -117,7 +117,7 @@ const AppsGridWrapper: React.FC<Props> = (props: Props) => {
   return (
     <>
       <ModalRow margin="0 0 10px 0" align="center">
-        <ModalLabel>Sites</ModalLabel>
+        <ModalLabel>Apps</ModalLabel>
         <SecondaryButtonWithPopup styles={{ padding: '0', width: '40px' }} wrapStyles={{ margin: '0 0 0 auto' }} icon={filterIcon} direction="rtl">
           <PopupContainer
             styles={{
@@ -200,7 +200,7 @@ const AppsGridWrapper: React.FC<Props> = (props: Props) => {
         showLastButton={false}
         pagingWrapStyles={{ height: '52px', paddingTop: '12px' }}
         selectWrapStyles={{ maxWidth: '150px' }}
-        hideRange
+        hideRange={680}
       />
     </>
   );

@@ -84,36 +84,6 @@ const Table: React.FC<Props> = (props: Props) => {
     setColumns(_items);
   };
 
-  // const onRowGetSelection = e => {
-  // if (!window.getSelection() || !e || !e.row) return;
-  // const text = window.getSelection().toString();
-  // if (!text) return;
-  // const arr = text.split('\n');
-  // const values: ISelectionGridCellValue<ISessionsGridField, ISessionsGridField>[] = [];
-  // arr.forEach(textValue => {
-  //   const _field = Object.keys(SessionGridColumns).find(field => {
-  //     if (!e.row[field]) return null;
-  //     const _value = e.row[field].toString();
-  //     if (_value.includes(textValue)) return field;
-  //     if (field === 'timestamp') {
-  //       const valueFormatted = new Date(e.row[field] as string);
-  //       const _dataStr = format(valueFormatted, `EEE',' LLL d',' yyyy HH:mm aa`);
-  //       if (_dataStr.includes(textValue)) return field;
-  //     }
-  //     return null;
-  //   });
-  //   if (!_field) return;
-  //   if (_field === 'timestamp') {
-  //     const valueFormatted = new Date(e.row[_field] as string);
-  //     const _dataStr = format(valueFormatted, `EEE',' LLL d',' yyyy HH:mm aa`);
-  //     values.push({ field: _field, value: _dataStr });
-  //     return;
-  //   }
-  //   values.push({ field: _field, value: textValue });
-  // });
-  // props.onSetSelection(values);
-  // };
-
   return (
     <>
       <TableHeader columns={columns} count={props.logCount} onChangeColumn={onChangeColumn} />
@@ -124,7 +94,6 @@ const Table: React.FC<Props> = (props: Props) => {
         headerHeight={50}
         rowHeight={50}
         rowCount={props.logCount}
-        // onRowClick={onRowGetSelection}
         disableColumnFilter
         autoHeight
         error={props.isError}

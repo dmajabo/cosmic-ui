@@ -43,3 +43,9 @@ export const ButtonsGroup = styled.div`
   display: flex;
   flex-direction: column;
 `;
+
+export const ModelRow = styled.div`
+  display: flex;
+  flex-shrink: 0;
+  padding: 20px 0 0 0;
+`;

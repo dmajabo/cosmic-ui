@@ -15,23 +15,27 @@ import ExpandedIcon from 'app/components/Basic/ExpandedIcon';
 import PanelHeader from 'app/containers/Pages/AutomationPage/Components/PanelHeader';
 import SecondaryButton from 'app/components/Buttons/SecondaryButton';
 import accordionStyles from 'app/containers/Pages/AutomationPage/styles/AccordionStyles';
-import { IEdgeModel } from 'lib/api/ApiModels/Edges/apiModel';
+import { IEdgeP } from 'lib/api/ApiModels/Edges/apiModel';
 import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
 import GeneralPreview from './GeneralPreview';
 import TransitPreview from './TransitPreview';
+import GroupPreview from './GroupPreview';
 
 interface Props {
-  dataItem: IEdgeModel;
+  dataItem: IEdgeP;
   steps: IStepperItem<EdgesStepperTypes>[];
   selectedStep: IStepperItem<EdgesStepperTypes>;
   saveDisabled: boolean;
   onChangeField: (value: any, field: string, step: EdgesStepperTypes) => void;
   onChangeGeneralField: (value: any, field: string) => void;
   onChangeTransitionDataField: (value: any, field: string) => void;
+  onChangeTransitionNetworkField: (value: any, field: string) => void;
   onChangeSitesField: (value: ITopologyGroup) => void;
+  onAddExistingSites: (ids: string[]) => void;
+  onAddExistingApps: (ids: string[]) => void;
   onChangeAppsField: (value: ITopologyGroup) => void;
-  onDeleteSitesGroup: (id: string) => void;
-  onDeleteAppsGroup: (id: string) => void;
+  onDeleteSitesGroup: (gr: ITopologyGroup) => void;
+  onDeleteAppsGroup: (gr: ITopologyGroup) => void;
   onToogleAccordionItem: (id: EdgesStepperTypes) => void;
   onClose: () => void;
   onSave: () => void;
@@ -66,12 +70,18 @@ const FormPanel: React.FC<Props> = (props: Props) => {
             </AccordionHeaderPanel>
             {(!props.selectedStep || (props.selectedStep && props.selectedStep.id !== EdgesStepperTypes.GENERAL)) && (
               <AccordionHeaderPanel>
-                <GeneralPreview name={props.dataItem.name} connection={props.dataItem.connection} tags={props.dataItem.tags} />
+                <GeneralPreview name={props.dataItem.name} connectionPolicy={props.dataItem.connectionPolicy} tags={props.dataItem.tags} />
               </AccordionHeaderPanel>
             )}
           </AccordionSummary>
           <AccordionDetails className={AccordionStyles.deteilItemEdges}>
-            <GeneralStep tags={props.dataItem.tags} description={props.dataItem.description} connection={props.dataItem.connection} name={props.dataItem.name} onChange={props.onChangeGeneralField} />
+            <GeneralStep
+              tags={props.dataItem.tags}
+              description={props.dataItem.description}
+              connectionPolicy={props.dataItem.connectionPolicy}
+              name={props.dataItem.name}
+              onChange={props.onChangeGeneralField}
+            />
           </AccordionDetails>
         </Accordion>
         <Accordion
@@ -90,9 +100,14 @@ const FormPanel: React.FC<Props> = (props: Props) => {
                 state={props.steps[1].state !== StepperItemStateType.EMPTY ? props.steps[1].state : null}
               />
             </AccordionHeaderPanel>
+            {(!props.selectedStep || (props.selectedStep && props.selectedStep.id !== EdgesStepperTypes.SITES)) && (
+              <AccordionHeaderPanel>
+                <GroupPreview ids={props.dataItem.siteGroupIds} />
+              </AccordionHeaderPanel>
+            )}
           </AccordionSummary>
           <AccordionDetails className={AccordionStyles.deteilItemEdges}>
-            <SitesStep data={props.dataItem.associatedDeviceGroup} onChangeSites={props.onChangeSitesField} onDeleteGroup={props.onDeleteSitesGroup} />
+            <SitesStep data={props.dataItem.siteGroupIds} onAddExistingSites={props.onAddExistingSites} onChangeSites={props.onChangeSitesField} onDeleteGroup={props.onDeleteSitesGroup} />
           </AccordionDetails>
         </Accordion>
         <Accordion className={AccordionStyles.accContainer} expanded={!!(props.selectedStep && props.selectedStep.id === EdgesStepperTypes.APPS)} onChange={onAccordionChange(EdgesStepperTypes.APPS)}>
@@ -107,9 +122,14 @@ const FormPanel: React.FC<Props> = (props: Props) => {
                 state={props.steps[2].state !== StepperItemStateType.EMPTY ? props.steps[2].state : null}
               />
             </AccordionHeaderPanel>
+            {(!props.selectedStep || (props.selectedStep && props.selectedStep.id !== EdgesStepperTypes.APPS)) && (
+              <AccordionHeaderPanel>
+                <GroupPreview ids={props.dataItem.appGroupIds} />
+              </AccordionHeaderPanel>
+            )}
           </AccordionSummary>
           <AccordionDetails className={AccordionStyles.deteilItemEdges}>
-            <AppsStep data={props.dataItem.associatedAppGroup} onChangeApps={props.onChangeAppsField} onDeleteGroup={props.onDeleteAppsGroup} />
+            <AppsStep data={props.dataItem.appGroupIds} onAddExistingSites={props.onAddExistingApps} onChangeApps={props.onChangeAppsField} onDeleteGroup={props.onDeleteAppsGroup} />
           </AccordionDetails>
         </Accordion>
         <Accordion
@@ -130,22 +150,18 @@ const FormPanel: React.FC<Props> = (props: Props) => {
             </AccordionHeaderPanel>
             {(!props.selectedStep || (props.selectedStep && props.selectedStep.id !== EdgesStepperTypes.TRANSIT)) && (
               <AccordionHeaderPanel>
-                <TransitPreview
-                  regionCodes={props.dataItem.deployment.region_code}
-                  selectedAccount={props.dataItem.deployment.controller_name}
-                  firewall={props.dataItem.deployment.firewall}
-                  firewallRegion={props.dataItem.deployment.firewallRegion}
-                />
+                <TransitPreview deploymentPolicy={props.dataItem.deploymentPolicy} nwServicesPolicy={props.dataItem.nwServicesPolicy} />
               </AccordionHeaderPanel>
             )}
           </AccordionSummary>
           <AccordionDetails className={AccordionStyles.deteilItemEdges}>
             <TransitStep
-              regionCodes={props.dataItem.deployment.region_code}
-              selectedAccount={props.dataItem.deployment.controller_name}
-              firewall={props.dataItem.deployment.firewall}
-              firewallRegion={props.dataItem.deployment.firewallRegion}
+              regionCodes={props.dataItem.deploymentPolicy && props.dataItem.deploymentPolicy.length ? props.dataItem.deploymentPolicy[0].regionCode : []}
+              selectedAccount={props.dataItem.deploymentPolicy && props.dataItem.deploymentPolicy.length ? props.dataItem.deploymentPolicy[0].controllerName : null}
+              serviceType={props.dataItem.nwServicesPolicy && props.dataItem.nwServicesPolicy.length ? props.dataItem.nwServicesPolicy[0].serviceType : null}
+              serviceVendor={props.dataItem.nwServicesPolicy && props.dataItem.nwServicesPolicy.length ? props.dataItem.nwServicesPolicy[0].serviceVendor : null}
               onChange={props.onChangeTransitionDataField}
+              onChangeNetwork={props.onChangeTransitionNetworkField}
             />
           </AccordionDetails>
         </Accordion>
