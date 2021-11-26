@@ -27,6 +27,7 @@ const OverviewPage: React.FC<IProps> = (props: IProps) => {
   const [detailData, setDetailData] = React.useState<ISankeyAppDetail>(null);
   React.useEffect(() => {
     if (sessions.sessionsOverviewPeriod) {
+      setDetailData(null);
       onTryToLoadData(sessions.sessionsOverviewPeriod);
     }
   }, [sessions.sessionsOverviewPeriod]);

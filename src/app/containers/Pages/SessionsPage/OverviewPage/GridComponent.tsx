@@ -46,6 +46,9 @@ const GridComponent: React.FC<IProps> = (props: IProps) => {
       } else {
         setDataRows([]);
       }
+    } else {
+      setDataRows([]);
+      setPage(0);
     }
   }, [props.data]);
 
