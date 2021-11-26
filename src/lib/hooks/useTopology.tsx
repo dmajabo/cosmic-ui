@@ -377,20 +377,20 @@ export function useTopologyContext(): TopologyContextType {
   const onDeleteGroup = (_group: ITopologyGroup) => {
     let _nodes: (IWedgeNode | IVnetNode | IDeviceNode | INetworkGroupNode)[] = jsonClone(nodesRef.current);
     const _groups: ITopologyGroup[] = groupsRef.current.filter(it => it.id !== _group.id);
-    const _nodeIndex: number = _nodes.findIndex(it => it.id === _group.id);
-    if (_nodeIndex === -1) {
-      setOriginGroupsData(_groups);
-      groupsRef.current = _groups;
-      return;
-    }
     // let _data: (IWedgeNode | IVnetNode | IDeviceNode | INetworkGroupNode)[] = _nodes.findIndex(it => it.id === _group.id);
     if (_group.type === TopologyGroupTypesAsNumber.BRANCH_NETWORKS || _group.type === TopologyGroupTypesAsString.BRANCH_NETWORKS) {
+      const _nodeIndex: number = _nodes.findIndex(it => it.id === _group.id);
+      if (_nodeIndex === -1) {
+        setOriginGroupsData(_groups);
+        groupsRef.current = _groups;
+        return;
+      }
       const _gr: INetworkGroupNode = _nodes[_nodeIndex] as INetworkGroupNode;
       const _devices = _gr.devices && _gr.devices.length ? _gr.devices.map(dev => ({ ...dev, x: dev.x + _gr.x, y: dev.y + _gr.y, scaleFactor: 1 })) : [];
       _nodes.splice(_nodeIndex, 1);
       _nodes = _nodes.concat(_devices);
       const dataL: ILink[] = jsonClone(linksRef.current);
-      const _links: ILink[] = dataL.filter(it => it.targetId !== _gr.id && it.sourceId !== _gr.id);
+      const _links: ILink[] = dataL.filter(it => it.targetId !== _gr.uiId && it.sourceId !== _gr.uiId);
       reCreateDeviceLinks(_nodes, _devices, _links);
       setNodes(_nodes);
       setLinks(_links);
@@ -402,6 +402,7 @@ export function useTopologyContext(): TopologyContextType {
     }
     const vnets: IVnetNode[] = _nodes.filter(node => node.nodeType === TOPOLOGY_NODE_TYPES.VNET) as IVnetNode[];
     const vnetNodes = vnets && vnets.length && vnets.filter(it => it.applicationGroups && it.applicationGroups.length && it.applicationGroups.find(gr => gr.id === _group.id));
+
     if (vnetNodes && vnetNodes.length) {
       vnetNodes.forEach(vnet => {
         vnet.applicationGroups = vnet.applicationGroups.filter(it => it.id !== _group.id);
