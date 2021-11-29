@@ -137,7 +137,7 @@ const MainPage: React.FC<Props> = (props: Props) => {
     return (
       <PageWrapperStyles>
         {!edges.data || !edges.data.length ? (
-          <EmptyPage icon={imgBg} buttonLabel="Create Edge" onClick={onOpenEditor}>
+          <EmptyPage icon={imgBg} buttonLabel="Create Edge" onClick={() => onOpenEditor()}>
             <StepperText highLight margin="0 auto 20px auto">
               There is no created edges yet
             </StepperText>
