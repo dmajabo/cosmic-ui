@@ -445,6 +445,17 @@ export const AnalyticsStyles = makeStyles(
         paddingBottom: 5,
         marginLeft: 10,
       },
+      flexStart: {
+        display: 'flex',
+        justifyContent: 'start',
+      },
+      chartImage: {
+        marginRight: 20,
+      },
+      chartTypeText: {
+        fontSize: 14,
+        fontWeight: 500,
+      },
     }),
   {
     index: 1,

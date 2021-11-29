@@ -23,6 +23,8 @@ import { Tab, Tabs } from '@material-ui/core';
 import { LookbackTimeTab } from './LookbackTimeTab';
 import { CustomTimeTab } from './CustomTimeTab';
 import { DataUnitDropdown } from './DataUnitDropdown';
+import { TableTypeDropdown } from './TableTypeDropdown';
+import LineChartIcon from '../icons/metrics explorer/chartType/lineChart.svg';
 
 //TODO: Remove this once API is integrated
 const DUMMY_DIMENSION_DATA: DimensionOptions[] = [
@@ -173,6 +175,11 @@ export interface SelectOptions {
   readonly label: string;
 }
 
+export interface SelectChartTypeOptions {
+  readonly value: string;
+  readonly label: JSX.Element;
+}
+
 export const getDimensionCount = (dimensions: DimensionOptions[]) => {
   return dimensions.reduce((accu, nextValue) => {
     const subDimensionCount = nextValue.source.length + nextValue.destination.length;
@@ -225,6 +232,18 @@ export const MetricsExplorer: React.FC = () => {
     value: 'bits/s',
   });
 
+  const [chartType, setChartType] = useState<SelectChartTypeOptions>({
+    label: (
+      <div className={classes.flexStart}>
+        <div>
+          <img className={classes.chartImage} src={LineChartIcon} alt="lineChart" />
+        </div>
+        <div className={classes.chartTypeText}>Line Chart</div>
+      </div>
+    ),
+    value: 'lineChart',
+  });
+
   const handleDimensionModalOpen = () => {
     setModalName(ModalName.Dimensions);
     setIsModalOpen(true);
@@ -271,10 +290,13 @@ export const MetricsExplorer: React.FC = () => {
 
   const handleDataUnitChange = (value: SelectOptions) => setDataUnit(value);
 
+  const handleChartTypeChange = (value: SelectChartTypeOptions) => setChartType(value);
+
   const customizationtabOptions: CustomizationTabProps[] = [
     {
       img: DesignIcon,
       title: 'Design',
+      content: <TableTypeDropdown chartType={chartType} handleChartTypeChange={handleChartTypeChange} />,
     },
     {
       img: DimensionsIcon,
