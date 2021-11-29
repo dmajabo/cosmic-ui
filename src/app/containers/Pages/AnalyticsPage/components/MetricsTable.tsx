@@ -16,6 +16,7 @@ import produce from 'immer';
 interface MetricsTableProps {
   readonly dimensions: DimensionOptions[];
   readonly tableData: MetricsExplorerTableData[];
+  readonly dataUnit: string;
 }
 
 const COLOURS = [
@@ -263,7 +264,7 @@ const FlexStart = styled.div`
   }
 `;
 
-const dataColumns: Column[] = [
+const dataColumns = (dataUnit: string): Column[] => [
   {
     Header: (
       <FlexStart>
@@ -271,7 +272,7 @@ const dataColumns: Column[] = [
           <div>
             <b>AVERAGE</b>
           </div>
-          <div>(Mbit/s)</div>
+          <div>{`(${dataUnit})`}</div>
         </div>
         <div>
           <img className="image" src={SortIcon} alt="sort by name" />
@@ -287,7 +288,7 @@ const dataColumns: Column[] = [
           <div>
             <b>95TH PERCENTILE</b>
           </div>
-          <div>(Mbit/s)</div>
+          <div>{`(${dataUnit})`}</div>
         </div>
         <div>
           <img className="image" src={SortIcon} alt="sort by name" />
@@ -303,7 +304,7 @@ const dataColumns: Column[] = [
           <div>
             <b>MAX</b>
           </div>
-          <div>(Mbit/s)</div>
+          <div>{`(${dataUnit})`}</div>
         </div>
         <div>
           <img className="image" src={SortIcon} alt="sort by name" />
@@ -319,7 +320,7 @@ const dataColumns: Column[] = [
           <div>
             <b>LAST DATAPOINT</b>
           </div>
-          <div>(Mbit/s)</div>
+          <div>{`(${dataUnit})`}</div>
         </div>
         <div>
           <img className="image" src={SortIcon} alt="sort by name" />
@@ -332,8 +333,15 @@ const dataColumns: Column[] = [
 
 const COLUMNS_POPOVER = 'columns-popover';
 const REGEX = /[-[\]{}()*+?.,\\^$|#\s]/g;
+const TEN_THOUSAND = 10000;
+const MILLION = 1000000;
 
-export const MetricsTable: React.FC<MetricsTableProps> = ({ dimensions, tableData }) => {
+const getTableDataUnitPrefix = (tableData: MetricsExplorerTableData[]) => {
+  const maxAverage = Math.max(...tableData.map(item => item.average));
+  return maxAverage >= TEN_THOUSAND ? (maxAverage >= MILLION ? 'M' : 'K') : '';
+};
+
+export const MetricsTable: React.FC<MetricsTableProps> = ({ dimensions, tableData, dataUnit }) => {
   const classes = AnalyticsStyles();
 
   const allUniqueDimensions = uniqWith(
@@ -350,6 +358,8 @@ export const MetricsTable: React.FC<MetricsTableProps> = ({ dimensions, tableDat
       return accu;
     }, {});
 
+  const tableDataUnit = getTableDataUnitPrefix(tableData) + dataUnit;
+
   const [searchText, setSearchText] = useState<string>('');
   const [filteredTableData, setFilteredTableData] = useState<MetricsExplorerTableData[]>(tableData);
   const [finalTableColumns, setFinalTableColumns] = useState<Column[]>([
@@ -358,7 +368,7 @@ export const MetricsTable: React.FC<MetricsTableProps> = ({ dimensions, tableDat
       accessor: ColumnAccessor.legendLine,
     },
     ...filteredDimensionColumns,
-    ...dataColumns,
+    ...dataColumns(tableDataUnit),
   ]);
   const [columnCheckboxData, setColumnCheckboxData] = useState<CheckboxData>(initialCheckboxData(finalTableColumns));
   const [selectedColumns, setSelectedColumns] = useState<Column[]>([]);
@@ -379,13 +389,23 @@ export const MetricsTable: React.FC<MetricsTableProps> = ({ dimensions, tableDat
     setFilteredTableData(filteredRows);
   };
 
+  const getDataUnitAppliedValue = (data: number) => {
+    if (tableDataUnit === 'K' + dataUnit) {
+      return data / TEN_THOUSAND;
+    }
+    if (tableDataUnit === 'M' + dataUnit) {
+      return data / MILLION;
+    }
+    return data;
+  };
+
   const handleSearchTextChange = (event: React.ChangeEvent<HTMLInputElement>) => requestSearch(event.target.value);
 
   const tableDataInput = filteredTableData.map((item, index) => ({
-    average: item.average,
-    ninetyFifthPercentile: item.ninetyFifthPercentile,
-    max: item.max,
-    lastDatapoint: item.lastDatapoint,
+    average: getDataUnitAppliedValue(item.average),
+    ninetyFifthPercentile: getDataUnitAppliedValue(item.ninetyFifthPercentile),
+    max: getDataUnitAppliedValue(item.max),
+    lastDatapoint: getDataUnitAppliedValue(item.lastDatapoint),
     interfaceSource: (
       <div>
         <div className={classes.metricsTableDimensionName}>{item.interfaceSource}</div>
@@ -535,10 +555,10 @@ export const MetricsTable: React.FC<MetricsTableProps> = ({ dimensions, tableDat
         accessor: ColumnAccessor.legendLine,
       },
       ...filteredDimensionColumns,
-      ...dataColumns,
+      ...dataColumns(tableDataUnit),
     ];
     setFinalTableColumns(newColumns.map((item, index) => ({ Header: item.Header, accessor: item.accessor, order: index + 1 })));
-  }, [dimensions]);
+  }, [dimensions, tableDataUnit]);
 
   useEffect(() => setColumnCheckboxData(initialCheckboxData(finalTableColumns)), [finalTableColumns]);
 

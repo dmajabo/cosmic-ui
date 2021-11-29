@@ -22,6 +22,7 @@ import { ColumnAccessor, MetricsExplorerTableData } from 'lib/api/http/SharedTyp
 import { Tab, Tabs } from '@material-ui/core';
 import { LookbackTimeTab } from './LookbackTimeTab';
 import { CustomTimeTab } from './CustomTimeTab';
+import { DataUnitDropdown } from './DataUnitDropdown';
 
 //TODO: Remove this once API is integrated
 const DUMMY_DIMENSION_DATA: DimensionOptions[] = [
@@ -90,10 +91,10 @@ const DUMMY_DATA_SOURCE_OPTIONS: DataSourceOptions[] = [
 
 const DUMMY_METRICS_TABLE_DATA: MetricsExplorerTableData[] = [
   {
-    average: 10,
-    ninetyFifthPercentile: 10,
-    max: 10,
-    lastDatapoint: 10,
+    average: 10000,
+    ninetyFifthPercentile: 1000,
+    max: 1000,
+    lastDatapoint: 10000,
     interfaceSource: 'interface source',
     interfaceDestination: 'interface dest',
     connectivityTypeSource: 'conn type source',
@@ -112,10 +113,10 @@ const DUMMY_METRICS_TABLE_DATA: MetricsExplorerTableData[] = [
     macAddressDestination: 'mac add dest',
   },
   {
-    average: 5,
-    ninetyFifthPercentile: 20,
-    max: 30,
-    lastDatapoint: 15,
+    average: 5000,
+    ninetyFifthPercentile: 200,
+    max: 300,
+    lastDatapoint: 15000,
     interfaceSource: 'abc',
     interfaceDestination: 'interface dest 2',
     connectivityTypeSource: 'conn type source 2',
@@ -219,6 +220,11 @@ export const MetricsExplorer: React.FC = () => {
     value: '-1d',
   });
 
+  const [dataUnit, setDataUnit] = useState<SelectOptions>({
+    label: 'bits/s',
+    value: 'bits/s',
+  });
+
   const handleDimensionModalOpen = () => {
     setModalName(ModalName.Dimensions);
     setIsModalOpen(true);
@@ -262,6 +268,8 @@ export const MetricsExplorer: React.FC = () => {
   const handleCustomToDateChange = (value: string) => setSelectedCustomToDate(value);
 
   const handleShowChange = (value: SelectOptions) => setSelectedShow(value);
+
+  const handleDataUnitChange = (value: SelectOptions) => setDataUnit(value);
 
   const customizationtabOptions: CustomizationTabProps[] = [
     {
@@ -328,6 +336,7 @@ export const MetricsExplorer: React.FC = () => {
     {
       img: MetricsIcon,
       title: 'Metrics',
+      content: <DataUnitDropdown dataUnit={dataUnit} handleDataUnitChange={handleDataUnitChange} />,
     },
     {
       img: TimeIcon,
@@ -404,7 +413,7 @@ export const MetricsExplorer: React.FC = () => {
   return (
     <div className={classes.metricsExplorerContainer}>
       <div className={classes.leftBox}>
-        <MetricsChart dimensions={dimensions} tableData={DUMMY_METRICS_TABLE_DATA} />
+        <MetricsChart dimensions={dimensions} tableData={DUMMY_METRICS_TABLE_DATA} dataUnit={dataUnit.label} />
       </div>
       <div className={classes.rightBox}>
         <div className={classes.rightContainerTitle}>Metrics Customization</div>
