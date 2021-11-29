@@ -404,7 +404,7 @@ export const MetricsExplorer: React.FC = () => {
   return (
     <div className={classes.metricsExplorerContainer}>
       <div className={classes.leftBox}>
-        <MetricsChart dimensions={dimensions} tableData={DUMMY_METRICS_TABLE_DATA} />
+        <MetricsChart dimensions={dimensions} tableData={DUMMY_METRICS_TABLE_DATA} lookback={selectedLookback.label} />
       </div>
       <div className={classes.rightBox}>
         <div className={classes.rightContainerTitle}>Metrics Customization</div>
