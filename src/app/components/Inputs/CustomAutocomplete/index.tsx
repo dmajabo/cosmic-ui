@@ -8,9 +8,9 @@ import TagItem from './TagItem';
 import { AutoCompleteStyles } from './AutoCompleteStyles';
 import { arrowBottomIcon } from 'app/components/SVGIcons/arrows';
 import { closeSmallIcon } from 'app/components/SVGIcons/close';
-import { TextInputWrapper } from '../TextInput/styles';
 import { InputLabel } from '../styles/Label';
 import { Required } from '../FormTextInput/styles';
+import { AutoCompleteWrapper } from './styles';
 interface Props {
   id: string;
   options: string[];
@@ -47,14 +47,13 @@ const CustomAutocomplete: React.FC<Props> = ({ id, options, value, onChange, sty
   };
 
   return (
-    <TextInputWrapper style={styles}>
+    <AutoCompleteWrapper style={styles}>
       <InputLabel disabled={disabled || readOnly}>
         {label}
         {required && <Required>*</Required>}
       </InputLabel>
       <Autocomplete
         multiple
-        className={classes.root}
         classes={{ paper: classes.paper, listbox: classes.listbox }}
         id={id}
         options={options}
@@ -82,7 +81,7 @@ const CustomAutocomplete: React.FC<Props> = ({ id, options, value, onChange, sty
         }}
         renderInput={params => <TextField {...params} />}
       />
-    </TextInputWrapper>
+    </AutoCompleteWrapper>
   );
 };
 

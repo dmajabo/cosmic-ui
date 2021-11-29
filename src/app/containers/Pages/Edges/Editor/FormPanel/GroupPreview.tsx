@@ -13,12 +13,14 @@ const GroupPreview: React.FC<Props> = (props: Props) => {
   React.useEffect(() => {
     if (!edges.groups || !edges.groups.length) return;
     const _arr: ITopologyGroup[] = [];
-    props.ids.forEach(it => {
-      const _gr = edges.groups.find(el => el.id === it);
-      if (_gr) {
-        _arr.push(_gr);
-      }
-    });
+    if (props.ids && props.ids.length) {
+      props.ids.forEach(it => {
+        const _gr = edges.groups.find(el => el.id === it);
+        if (_gr) {
+          _arr.push(_gr);
+        }
+      });
+    }
     setSitesGroups(_arr);
   }, [props.ids, edges.groups]);
 

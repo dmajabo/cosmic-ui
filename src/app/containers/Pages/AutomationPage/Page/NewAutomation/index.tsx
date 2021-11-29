@@ -21,6 +21,7 @@ import accordionStyles from '../../styles/AccordionStyles';
 import PanelHeader from '../../Components/PanelHeader';
 import ExpandedIcon from 'app/components/Basic/ExpandedIcon';
 import HeaderTag from '../../Components/Tag/HeaderTag';
+import H2Label from 'app/components/Basic/Labels/H2';
 
 interface Props {
   dataItem?: IAutomation;
@@ -136,6 +137,7 @@ const NewAutomation: React.FC<Props> = (props: Props) => {
         {steps && (
           <ContentStyles>
             <StepsWrapper>
+              <H2Label margin="0 0 20px 0">New Automation</H2Label>
               <Accordion className={AccordionStyles.accContainer} expanded={expanded === NewAutomationStepperTypes.GENERAL} onChange={onAccordionChange(NewAutomationStepperTypes.GENERAL)}>
                 <AccordionSummary
                   className={AccordionStyles.automationPanel}

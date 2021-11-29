@@ -2,13 +2,11 @@ import React from 'react';
 import { Tab, Tabs } from '@material-ui/core';
 import { TabsStyles } from 'app/components/Tabs/TabsStyles';
 import { TabComponentProps } from 'app/components/Tabs/TabComponentProps';
-import { ActionPart, ActionRowStyles, PageWrapperStyles, TabsWrapperStyles } from '../../Shared/styles';
+import { PageWrapperStyles, TabsWrapperStyles } from '../../Shared/styles';
 import TabPanel from 'app/components/Tabs/TabPanel';
 import { AUTOMATIONS_TABS } from 'lib/hooks/Automation/models';
 import { useAutomationDataContext } from 'lib/hooks/Automation/useAutomationDataContext';
-import Search from 'app/components/Inputs/Search';
-import PrimaryButton from 'app/components/Buttons/PrimaryButton';
-import { addIcon } from 'app/components/SVGIcons/addIcon';
+
 import { useBreadCrumbDataContext } from 'lib/hooks/Breadcrumb/useBreadcrumbDataContext';
 import { AutomationBreadCrumbItemsType } from 'lib/hooks/Breadcrumb/models';
 import EditorPage from './EditorPage';
@@ -54,11 +52,11 @@ const MainPage: React.FC<IProps> = (props: IProps) => {
     automation.onChangeSelectedTab(newValue);
   };
 
-  const handleSearchChange = (_value: string | null) => {
-    automation.onChangeSearchQuery(_value);
+  const onCreateNewAutomation = () => {
+    breadcrumb.onGoToAutomation(AutomationBreadCrumbItemsType.NEW);
   };
 
-  const onCreateNewAutomation = () => {
+  const onCreateNewTrigger = () => {
     breadcrumb.onGoToAutomation(AutomationBreadCrumbItemsType.NEW);
   };
 
@@ -86,19 +84,11 @@ const MainPage: React.FC<IProps> = (props: IProps) => {
           ))}
         </Tabs>
       </TabsWrapperStyles>
-      <ActionRowStyles height="40px">
-        <ActionPart width="50%" maxWidth="440px" minWidth="200px" margin="0 auto 0 0">
-          <Search styles={{ width: '100%' }} searchQuery={automation.searchQuery} onChange={handleSearchChange} />
-        </ActionPart>
-        <ActionPart width="50%" margin="0 0 0 auto" justifyContent="flex-end">
-          <PrimaryButton label="Create new" icon={addIcon} onClick={onCreateNewAutomation} />
-        </ActionPart>
-      </ActionRowStyles>
       <TabPanel value={automation.selectedTab.index} index={AUTOMATIONS_TABS[0].index}>
-        <AutomationTable />
+        <AutomationTable onCreateNew={onCreateNewAutomation} />
       </TabPanel>
       <TabPanel value={automation.selectedTab.index} index={AUTOMATIONS_TABS[1].index}>
-        <TriggersTable />
+        <TriggersTable onCreateNew={onCreateNewTrigger} />
       </TabPanel>
     </PageWrapperStyles>
   );
