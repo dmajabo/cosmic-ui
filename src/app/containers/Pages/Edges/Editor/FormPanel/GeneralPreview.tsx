@@ -20,15 +20,20 @@ const GeneralPreview: React.FC<Props> = ({ name, connectionPolicy, tags }) => {
           <PreviewText color="var(--_disabledTextColor)">{name}</PreviewText>
         </PreviewRow>
       )}
-      {connectionPolicy && (connectionPolicy.enableNetworklink || connectionPolicy.enableVpnlink) ? (
+      {connectionPolicy && (connectionPolicy.enableNetworklink || connectionPolicy.enableVpnlink) && (
         <PreviewRow margin="8px 0 0 0">
           <PreviewText className="label" margin="0 4px 0 0">
             Connection Types:
           </PreviewText>
           {connectionPolicy.enableNetworklink && <PreviewText color="var(--_disabledTextColor)">VPC</PreviewText>}
+          {connectionPolicy.enableNetworklink && connectionPolicy.enableVpnlink && (
+            <PreviewText margin="0 4px 0 0" color="var(--_disabledTextColor)">
+              ,
+            </PreviewText>
+          )}
           {connectionPolicy.enableVpnlink && <PreviewText color="var(--_disabledTextColor)">VPN</PreviewText>}
         </PreviewRow>
-      ) : null}
+      )}
       {tags && tags.length ? (
         <PreviewRow margin="8px 0 0 0">
           <PreviewText className="label" margin="0 4px 0 0">

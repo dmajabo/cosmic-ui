@@ -47,7 +47,7 @@ const GeneralStep: React.FC<Props> = (props: Props) => {
         _values[key] = true;
       }
     });
-    props.onChange(_values, 'connections');
+    props.onChange(_values, 'connectionPolicy');
   };
 
   const onTagsChange = (value: string[]) => {
@@ -65,7 +65,7 @@ const GeneralStep: React.FC<Props> = (props: Props) => {
         simpleTag
         styles={{ margin: '0 0 20px 0' }}
         label="Connection Types"
-        id="connections"
+        id="connectionPolicy"
         options={ConnectionValues}
         value={connectionsValueString}
         onChange={onConnectionChange}

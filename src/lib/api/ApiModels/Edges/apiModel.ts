@@ -20,7 +20,7 @@ export interface IEdgePolicy {
 export enum ValidationFields {
   // GENERAL
   NAME = 'name',
-  CONNECTION = 'connections',
+  CONNECTION = 'connectionPolicy',
   TAGS = 'tags',
   // DEPLOYMENT
   CONTROLLER_NAME = 'controllerName',
