@@ -1,14 +1,14 @@
 import React from 'react';
 import { AnalyticsStyles } from '../AnalyticsStyles';
 import Select from 'react-select';
-import { SelectOptions } from './MetricsExplorer';
+import { SelectOption } from './MetricsExplorer';
 
 interface DataUnitDropdownProps {
-  readonly dataUnit: SelectOptions;
-  readonly handleDataUnitChange: (value: SelectOptions) => void;
+  readonly dataUnit: SelectOption;
+  readonly handleDataUnitChange: (value: SelectOption) => void;
 }
 
-const dataUnitOptions: SelectOptions[] = [
+const dataUnitOptions: SelectOption[] = [
   {
     label: 'bits/s',
     value: 'bits/s',

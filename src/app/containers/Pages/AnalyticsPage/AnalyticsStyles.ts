@@ -388,7 +388,8 @@ export const AnalyticsStyles = makeStyles(
         height: 15,
       },
       timeTabContainer: {
-        marginLeft: -30,
+        position: 'relative',
+        right: 30,
         width: '121%',
         backgroundColor: '#F3F6FC',
         padding: 3,
@@ -406,12 +407,15 @@ export const AnalyticsStyles = makeStyles(
         color: '#848DA3',
       },
       lookbackContainer: {
-        marginLeft: -20,
+        position: 'relative',
+        right: 20,
         marginTop: 10,
       },
       customContainer: {
-        marginLeft: -40,
+        position: 'relative',
+        right: 40,
         marginTop: 10,
+        width: '130%',
       },
       lookbackSelect: {
         margin: 10,
@@ -424,10 +428,13 @@ export const AnalyticsStyles = makeStyles(
         border: '1px solid #CBD2DC',
         borderRadius: 6,
       },
+      labelContainer: {
+        display: 'inline-block',
+        width: 50,
+      },
       dateTimeLabelText: {
         color: '#848DA3',
         fontSize: 14,
-        paddingRight: 10,
       },
       blockContainer: {
         display: 'block',
