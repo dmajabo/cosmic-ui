@@ -15,7 +15,7 @@ import { useEdgesDataContext } from 'lib/hooks/Edges/useEdgesDataContext';
 import { IBaseEntity, IModal } from 'lib/models/general';
 import ModalComponent from 'app/components/Modal';
 import { TopologyGroupTypesAsString } from 'lib/models/topology';
-import { useDelete, useGet, usePost } from 'lib/api/http/useAxiosHook';
+import { useDelete, useGet, usePost, usePut } from 'lib/api/http/useAxiosHook';
 import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -30,6 +30,7 @@ const Editor: React.FC<Props> = (props: Props) => {
   const userContext = React.useContext<UserContextState>(UserContext);
   const { edges } = useEdgesDataContext();
   const { loading: postLoading, error: postError, response: postResponce, onPost } = usePost<IEdgeP, IBaseEntity<string>>();
+  const { loading: putLoading, error: putError, response: putResponce, onPut } = usePut<IEdgeP, IBaseEntity<string>>();
   const { loading: getLoading, error: getError, response: resEdge, onGet } = useGet<IEdgeP>();
   const { loading: deleteLoading, error: deleteError, response: resDelete, onDelete: onDeleteGroup } = useDelete<any>();
   const [dataItem, setDataItem] = React.useState<IEdgeP>(null);
@@ -69,6 +70,16 @@ const Editor: React.FC<Props> = (props: Props) => {
   }, [postResponce]);
 
   React.useEffect(() => {
+    if (putResponce && putResponce.id) {
+      console.log(putResponce);
+      onTryLoadEdge(putResponce.id);
+      return;
+    } else if (putResponce && !putResponce.id) {
+      toast.error('Something went wrong. Please try Again!');
+    }
+  }, [putResponce]);
+
+  React.useEffect(() => {
     if (resEdge) {
       edges.onUpdateEdges(resEdge);
     }
@@ -81,10 +92,10 @@ const Editor: React.FC<Props> = (props: Props) => {
   }, [getError]);
 
   React.useEffect(() => {
-    if (postError) {
+    if (postError || putError) {
       toast.error('Something went wrong. Please try Again!');
     }
-  }, [postError]);
+  }, [postError, putError]);
 
   React.useEffect(() => {
     if (resDelete && deleteModalData && deleteModalData.dataItem) {
@@ -256,8 +267,10 @@ const Editor: React.FC<Props> = (props: Props) => {
     if (!_obj.id) {
       delete _obj.id;
       delete _obj.policies;
+      await onPost(EdgesApi.postCreateEdge(), { edge_p: _obj }, userContext.accessToken!);
+      return;
     }
-    await onPost(EdgesApi.postCreateEdge(), { edge_p: _obj }, userContext.accessToken!);
+    await onPut(EdgesApi.putUpdateEdge(_obj.id), { edge_p: _obj }, userContext.accessToken!);
   };
 
   const onTryLoadEdge = async (id: string) => {
@@ -311,7 +324,7 @@ const Editor: React.FC<Props> = (props: Props) => {
             onDeleteAppsGroup={onDeleteAppsGroup}
           />
         </PanelColumn>
-        {(postLoading || getLoading) && (
+        {(postLoading || getLoading || putLoading) && (
           <AbsLoaderWrapper width="100%" height="100%">
             <LoadingIndicator margin="auto" />
           </AbsLoaderWrapper>
