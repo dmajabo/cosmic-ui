@@ -5,15 +5,26 @@ import Sidebar from 'app/components/Sidebar';
 import { useLocation, useRouteMatch } from 'react-router-dom';
 import { APP_PAGES, IPage } from 'lib/Routes/model';
 import history from 'utils/history';
+import { getSessionStoragePreference, updateSessionStoragePreference } from 'lib/helpers/localStorageHelpers';
+import { OKULIS_LOCAL_STORAGE_KEYS } from 'lib/api/http/utils';
 interface LayoutWithHeaderFooterSidebarProps {}
 
 const LayoutWithHeaderFooterSidebar: React.FC<LayoutWithHeaderFooterSidebarProps> = props => {
   const [currentPage, setCurrentPage] = React.useState<IPage>(null);
+  const [isOpenSidebar, setIsOpenSidebar] = React.useState(false);
+  const [isReadyToShow, setIsReadyToShow] = React.useState(false);
   const match: any = useRouteMatch();
   const location = useLocation();
   React.useEffect(() => {
     const _page: IPage = getCurrentPage();
     setCurrentPage(_page);
+    let _isSideBarOpen = getSessionStoragePreference(OKULIS_LOCAL_STORAGE_KEYS.OKULIS_SIDE_BAR);
+    if (_isSideBarOpen === null || _isSideBarOpen === undefined) {
+      setIsOpenSidebar(false);
+    } else {
+      setIsOpenSidebar(_isSideBarOpen);
+    }
+    setIsReadyToShow(true);
   }, []);
 
   const getCurrentPage = (): IPage => {
@@ -22,19 +33,20 @@ const LayoutWithHeaderFooterSidebar: React.FC<LayoutWithHeaderFooterSidebarProps
     return _page;
   };
 
-  const [isOpenSidebar, setIsOpenSidebar] = React.useState(false);
-
   const onToogleSideBar = () => {
-    setIsOpenSidebar(!isOpenSidebar);
+    const _show = !isOpenSidebar;
+    updateSessionStoragePreference(_show, OKULIS_LOCAL_STORAGE_KEYS.OKULIS_SIDE_BAR);
+    setIsOpenSidebar(_show);
   };
 
   const onGoTo = (page: IPage) => {
-    setIsOpenSidebar(false);
+    // setIsOpenSidebar(false);
     if (currentPage && page.id === currentPage.id) return;
     setCurrentPage(page);
     history.push(match.url + page.path);
   };
 
+  if (!isReadyToShow) return null;
   return (
     <WrapperLayout>
       <Header currentPage={currentPage} isOpenSidebar={isOpenSidebar} />
@@ -44,4 +56,4 @@ const LayoutWithHeaderFooterSidebar: React.FC<LayoutWithHeaderFooterSidebarProps
   );
 };
 
-export default LayoutWithHeaderFooterSidebar;
+export default React.memo(LayoutWithHeaderFooterSidebar);
