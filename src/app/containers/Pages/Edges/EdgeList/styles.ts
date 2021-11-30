@@ -13,12 +13,13 @@ export const EdgeListItemWrapper = styled.div`
   flex-direction: column;
   flex-shrink: 0;
   width: calc(100% / 3 - 60px / 3);
-  height: 305px;
+  min-height: 305px;
   background: var(--_primaryBg);
   border-radius: 6px;
   margin: 0 30px 30px 0;
   position: relative;
   font-family: 'DMSans';
+  align-self: normal;
   &:nth-child(3n) {
     margin-right: 0;
   }
@@ -42,8 +43,10 @@ export const EdgeContent = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: calc(100% - 80px);
+  height: auto;
   padding: 30px;
+  margin-bottom: auto;
+  flex-grow: 1;
   overflow: hidden;
 `;
 
@@ -68,10 +71,10 @@ export const DataItemsRow = styled.div<RowProps>`
 
 export const EdgeFooter = styled.div`
   display: flex;
+  flex-wrap: wrap;
   flex-shrink: 0;
-  margin-top: auto;
   padding: 30px;
-  height: 80px;
+  min-height: 80px;
   border-top: 1px solid var(--_rowBorder);
   justify-content: space-between;
 `;

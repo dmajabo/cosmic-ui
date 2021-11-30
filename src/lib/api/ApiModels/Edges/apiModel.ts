@@ -34,7 +34,9 @@ export interface IDeploymentP {
 }
 
 export enum ConnectionPKeysMap {
+  enableNetworkLink = 'vpc',
   enableNetworklink = 'vpc',
+  enableVpnLink = 'vpn',
   enableVpnlink = 'vpn',
 }
 

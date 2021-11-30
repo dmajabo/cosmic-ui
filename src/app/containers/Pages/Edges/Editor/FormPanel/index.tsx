@@ -189,7 +189,12 @@ const FormPanel: React.FC<Props> = (props: Props) => {
       </PanelContent>
       <PanelFotter>
         <SecondaryButton styles={{ height: '100%', margin: '0 10px 0 0' }} label="Cancel" onClick={props.onClose} />
-        <PrimaryButton disabled={props.saveDisabled} styles={{ height: '100%', margin: '0 0 0 10px' }} label="CREATE EDGE" onClick={props.onSave} />
+        <PrimaryButton
+          disabled={props.saveDisabled}
+          styles={{ height: '100%', margin: '0 0 0 10px' }}
+          label={props.dataItem && props.dataItem.id ? 'UPDATE EDGE' : 'CREATE EDGE'}
+          onClick={props.onSave}
+        />
       </PanelFotter>
     </>
   );

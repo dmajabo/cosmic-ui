@@ -1,3 +1,4 @@
+import { DEFAULT_TRANSITION } from 'lib/constants/general';
 import styled from 'styled-components';
 
 export const sideBarCloseWidth = '90px';
@@ -70,7 +71,7 @@ export const HighlightBg = styled.div`
   left: 0;
   opacity: 0;
   background: transparent;
-  transition: opacity 0.3s linear;
+  transition: opacity ${DEFAULT_TRANSITION};
 `;
 
 export const HighlightBorder = styled.div`
@@ -83,7 +84,7 @@ export const HighlightBorder = styled.div`
   top: 0;
   left: 0;
   opacity: 0;
-  transition: opacity 0.3s linear;
+  transition: opacity ${DEFAULT_TRANSITION};
 `;
 
 export const StyledListLink = styled.div`
@@ -100,11 +101,11 @@ export const StyledListLink = styled.div`
   text-decoration: none;
   border: none;
   background: transparent;
-  transition: background 0.3s linear;
+  transition: background ${DEFAULT_TRANSITION};
   color: var(--_secondaryTextColor);
   svg {
     opacity: 0.3;
-    transition: opacity 0.3s linear;
+    transition: opacity ${DEFAULT_TRANSITION};
   }
   &:hover,
   &.active {

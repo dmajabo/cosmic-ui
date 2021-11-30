@@ -4,7 +4,6 @@ import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 import LoadingIndicator from 'app/components/Loading';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import { useEdgesDataContext } from 'lib/hooks/Edges/useEdgesDataContext';
-import { PageWrapperStyles } from '../../Shared/styles';
 import { IEdgeP, IEdgesRes } from 'lib/api/ApiModels/Edges/apiModel';
 import Editor from '../Editor';
 import { useBreadCrumbDataContext } from 'lib/hooks/Breadcrumb/useBreadcrumbDataContext';
@@ -135,7 +134,7 @@ const MainPage: React.FC<Props> = (props: Props) => {
   }
   if (edges.dataReadyToShow) {
     return (
-      <PageWrapperStyles>
+      <>
         {!edges.data || !edges.data.length ? (
           <EmptyPage icon={imgBg} buttonLabel="Create Edge" onClick={() => onOpenEditor()}>
             <StepperText highLight margin="0 auto 20px auto">
@@ -145,7 +144,7 @@ const MainPage: React.FC<Props> = (props: Props) => {
           </EmptyPage>
         ) : null}
         {edges.data && edges.data.length ? <EdgeList data={edges.data} onCreate={onOpenEditor} onEdit={onOpenEditor} onDelete={onDeleteEdge} /> : null}
-      </PageWrapperStyles>
+      </>
     );
   }
 

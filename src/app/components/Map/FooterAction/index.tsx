@@ -68,7 +68,7 @@ const FooterAction: React.FC<IProps> = (props: IProps) => {
   };
 
   return (
-    <PanelWrapperStyles show={props.show} type={IPanelBarLayoutTypes.HORIZONTAL}>
+    <PanelWrapperStyles show={props.show} type={IPanelBarLayoutTypes.HORIZONTAL} maxWidth="100%" height="80px">
       <Wrapper>
         {/* <div style={{ position: 'absolute', top: '-91px', left: '20px', fontSize: '12px' }}>
           <div>Selected calendar day: {selectedTime ? format(selectedTime, 'dd MMM yyyy h:mm aa') : 'current day. In Query - params will be empty'}</div>

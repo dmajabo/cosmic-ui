@@ -4,7 +4,7 @@ export const APP_GENERAL_CONST = {
 };
 
 export const DEBOUNCE_TIME = 300;
-
+export const DEFAULT_TRANSITION = '0.3s linear';
 export interface IKEYBOARD_KEY {
   key: string;
   keyCode: number;
