@@ -1,14 +1,14 @@
 import React from 'react';
 import { AnalyticsStyles } from '../AnalyticsStyles';
 import Select from 'react-select';
-import { SelectOptions } from './MetricsExplorer';
+import { SelectOption } from './MetricsExplorer';
 
 interface LookbackTimeTabProps {
-  readonly lookback: SelectOptions;
-  readonly handleLookbackChange: (value: SelectOptions) => void;
+  readonly timeRange: SelectOption;
+  readonly handleTimeRangeChange: (value: SelectOption) => void;
 }
 
-const lookbackOptions: SelectOptions[] = [
+const lookbackOptions: SelectOption[] = [
   {
     label: 'Last 5 minutes',
     value: '-5m',
@@ -51,12 +51,12 @@ const lookbackOptions: SelectOptions[] = [
   },
 ];
 
-export const LookbackTimeTab: React.FC<LookbackTimeTabProps> = ({ lookback, handleLookbackChange }) => {
+export const LookbackTimeTab: React.FC<LookbackTimeTabProps> = ({ timeRange, handleTimeRangeChange }) => {
   const classes = AnalyticsStyles();
   return (
     <div className={classes.lookbackContainer}>
       <div className={classes.tableHeaderText}>SHOW</div>
-      <Select className={classes.lookbackSelect} label="lookup select" value={lookback} options={lookbackOptions} onChange={e => handleLookbackChange(e)} />
+      <Select className={classes.lookbackSelect} label="lookup select" value={timeRange} options={lookbackOptions} onChange={e => handleTimeRangeChange(e)} />
     </div>
   );
 };
