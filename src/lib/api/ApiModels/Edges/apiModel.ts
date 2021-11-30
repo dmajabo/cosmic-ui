@@ -34,16 +34,14 @@ export interface IDeploymentP {
 }
 
 export enum ConnectionPKeysMap {
-  enableNetworkLink = 'vpc',
-  enableNetworklink = 'vpc',
-  enableVpnLink = 'vpn',
-  enableVpnlink = 'vpn',
+  enableNetworkLink = 'VPC',
+  enableVpnLink = 'VPN',
 }
 
-export const getNewConnectionP = (): IConnectionP => ({ enableNetworklink: false, enableVpnlink: false });
+export const getNewConnectionP = (): IConnectionP => ({ enableNetworkLink: false, enableVpnLink: false });
 export interface IConnectionP {
-  enableNetworklink: boolean;
-  enableVpnlink: boolean;
+  enableNetworkLink: boolean;
+  enableVpnLink: boolean;
 }
 
 export enum NwServiceT {

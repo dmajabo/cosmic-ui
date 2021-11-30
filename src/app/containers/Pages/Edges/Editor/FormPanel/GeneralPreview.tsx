@@ -9,7 +9,7 @@ interface Props {
 }
 
 const GeneralPreview: React.FC<Props> = ({ name, connectionPolicy, tags }) => {
-  if (!name && (!tags || !tags.length) && (!connectionPolicy || (!connectionPolicy.enableNetworklink && !connectionPolicy.enableVpnlink))) return null;
+  if (!name && (!tags || !tags.length) && (!connectionPolicy || (!connectionPolicy.enableNetworkLink && !connectionPolicy.enableVpnLink))) return null;
   return (
     <PreviewWrapper>
       {name && (
@@ -20,18 +20,18 @@ const GeneralPreview: React.FC<Props> = ({ name, connectionPolicy, tags }) => {
           <PreviewText color="var(--_disabledTextColor)">{name}</PreviewText>
         </PreviewRow>
       )}
-      {connectionPolicy && (connectionPolicy.enableNetworklink || connectionPolicy.enableVpnlink) && (
+      {connectionPolicy && (connectionPolicy.enableNetworkLink || connectionPolicy.enableVpnLink) && (
         <PreviewRow margin="8px 0 0 0">
           <PreviewText className="label" margin="0 4px 0 0">
             Connection Types:
           </PreviewText>
-          {connectionPolicy.enableNetworklink && <PreviewText color="var(--_disabledTextColor)">VPC</PreviewText>}
-          {connectionPolicy.enableNetworklink && connectionPolicy.enableVpnlink && (
+          {connectionPolicy.enableNetworkLink && <PreviewText color="var(--_disabledTextColor)">VPC</PreviewText>}
+          {connectionPolicy.enableNetworkLink && connectionPolicy.enableVpnLink && (
             <PreviewText margin="0 4px 0 0" color="var(--_disabledTextColor)">
               ,
             </PreviewText>
           )}
-          {connectionPolicy.enableVpnlink && <PreviewText color="var(--_disabledTextColor)">VPN</PreviewText>}
+          {connectionPolicy.enableVpnLink && <PreviewText color="var(--_disabledTextColor)">VPN</PreviewText>}
         </PreviewRow>
       )}
       {tags && tags.length ? (

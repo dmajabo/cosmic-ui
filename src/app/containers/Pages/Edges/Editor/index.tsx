@@ -21,6 +21,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import DeleteGroupComponent from './Components/DeleteGroupComponent';
 import { EdgesApi } from 'lib/api/ApiModels/Edges/edpoints';
+import DeployGroupComponent from './Components/DeployGroupComponent';
 interface Props {
   dataItem: IEdgeP;
   onClose: () => void;
@@ -39,6 +40,7 @@ const Editor: React.FC<Props> = (props: Props) => {
   const [selectedStep, setSelectedStep] = React.useState<IStepperItem<EdgesStepperTypes>>(null);
   const [saveDisabled, setSavedisabled] = React.useState<boolean>(true);
   const [deleteModalData, setDeleteModalData] = React.useState<IModal<IDeleteDataModel>>({ show: false, dataItem: null });
+  const [deployModal, setDeployModal] = React.useState<IModal<string>>({ show: false, dataItem: null });
   React.useEffect(() => {
     const _item = props.dataItem || createNewEdge();
     const _steps: IStepperItem<EdgesStepperTypes>[] = jsonClone(EdgesStepperItems);
@@ -61,7 +63,7 @@ const Editor: React.FC<Props> = (props: Props) => {
 
   React.useEffect(() => {
     if (postResponce && postResponce.id) {
-      console.log(postResponce);
+      setDeployModal({ show: true, dataItem: postResponce.id });
       onTryLoadEdge(postResponce.id);
       return;
     } else if (postResponce && !postResponce.id) {
@@ -71,7 +73,7 @@ const Editor: React.FC<Props> = (props: Props) => {
 
   React.useEffect(() => {
     if (putResponce && putResponce.id) {
-      console.log(putResponce);
+      setDeployModal({ show: true, dataItem: putResponce.id });
       onTryLoadEdge(putResponce.id);
       return;
     } else if (putResponce && !putResponce.id) {
@@ -249,6 +251,10 @@ const Editor: React.FC<Props> = (props: Props) => {
     setDeleteModalData({ show: false, dataItem: null });
   };
 
+  const onCloseDeployModal = () => {
+    setDeployModal({ show: false, dataItem: null });
+  };
+
   const onToogleAccordionItem = (id: EdgesStepperTypes) => {
     if (selectedStep && id === selectedStep.id) {
       setSelectedStep(null);
@@ -339,6 +345,17 @@ const Editor: React.FC<Props> = (props: Props) => {
           onClose={onCloseDeleteModal}
         >
           <DeleteGroupComponent data={deleteModalData.dataItem} loading={deleteLoading} onDelete={onDeleteAccept} onClose={onCloseDeleteModal} />
+        </ModalComponent>
+      )}
+      {deployModal && deployModal.show && (
+        <ModalComponent
+          modalStyles={{ maxWidth: '540px', maxHeight: '400px', padding: '40px' }}
+          useFadeAnimation
+          id="deployModalWindow"
+          open={deployModal && deployModal.show}
+          onClose={onCloseDeployModal}
+        >
+          <DeployGroupComponent dataItemId={deployModal.dataItem} onClose={onCloseDeployModal} />
         </ModalComponent>
       )}
       <ToastContainer />

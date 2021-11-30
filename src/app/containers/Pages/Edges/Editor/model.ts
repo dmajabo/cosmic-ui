@@ -2,7 +2,7 @@ import { IStepperItem, StepperItemStateType } from 'app/components/Stepper/model
 import { Mark } from '@material-ui/core/Slider';
 import { ISelectedListItem } from 'lib/models/general';
 import { poloAltoIcon } from 'app/components/SVGIcons/edges/poloAlto';
-import { IEdgeP, IEdgePolicy, NwServicesVendor } from 'lib/api/ApiModels/Edges/apiModel';
+import { ConnectionPKeysMap, IEdgeP, IEdgePolicy, NwServicesVendor } from 'lib/api/ApiModels/Edges/apiModel';
 import { TopologyGroupTypesAsString } from 'lib/models/topology';
 
 export enum EdgesStepperTypes {
@@ -38,8 +38,8 @@ export const createNewEdge = (): IEdgeP => ({
     },
   ],
   connectionPolicy: {
-    enableNetworklink: false,
-    enableVpnlink: false,
+    enableNetworkLink: false,
+    enableVpnLink: false,
   },
   tags: [],
   siteGroupIds: [],
@@ -61,7 +61,7 @@ export const EdgePriceValues: Mark[] = [
   { value: 500, label: '500$' },
 ];
 
-export const ConnectionValues: string[] = ['VPC', 'VPN'];
+export const ConnectionValues: string[] = [ConnectionPKeysMap.enableNetworkLink, ConnectionPKeysMap.enableVpnLink];
 
 export const FirewallRegionsValues: ISelectedListItem<string>[] = [{ id: 'polo', value: 'polo', label: 'Palo Alto', icon: poloAltoIcon }];
 
