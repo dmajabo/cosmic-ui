@@ -13,8 +13,8 @@ import { ISelectedListItem } from 'lib/models/general';
 interface Props {
   id: string;
   label?: string;
-  value: ISelectedListItem<any> | string | number;
-  options: ISelectedListItem<any>[] | string[] | number[];
+  value: ISelectedListItem<any> | string | number | any;
+  options: ISelectedListItem<any>[] | string[] | number[] | any[];
   onChange: (v: any) => void;
   required?: boolean;
   disabled?: boolean;
@@ -23,6 +23,8 @@ interface Props {
   labelStyles?: Object;
   selectClaassName?: string;
   labelBefore?: string;
+  renderValue?: (v: any) => React.ReactNode;
+  renderOption?: (v: any) => React.ReactNode;
 }
 
 const MatSelect: React.FC<Props> = (props: Props) => {
@@ -69,7 +71,10 @@ const MatSelect: React.FC<Props> = (props: Props) => {
         open={open}
         onClose={handleClose}
         onOpen={handleOpen}
-        renderValue={(value: ISelectedListItem<any> | string | number) => {
+        renderValue={(value: ISelectedListItem<any> | string | number | any) => {
+          if (props.renderValue) {
+            return <DisplayValue>{props.renderValue(value)}</DisplayValue>;
+          }
           if (typeof value === 'string' || typeof value === 'number')
             return (
               <DisplayValue>
@@ -101,6 +106,13 @@ const MatSelect: React.FC<Props> = (props: Props) => {
         disabled={props.disabled || props.readOnly}
       >
         {props.options.map((option, index) => {
+          if (props.renderOption) {
+            return (
+              <MenuItem key={`${props.id}${index}option`} classes={{ root: classes.menuListItem }} value={option}>
+                {props.renderOption(option)}
+              </MenuItem>
+            );
+          }
           if (typeof option === 'string' || typeof option === 'number') {
             return (
               <MenuItem key={`${props.id}${index}option`} classes={{ root: classes.menuListItem }} value={option}>

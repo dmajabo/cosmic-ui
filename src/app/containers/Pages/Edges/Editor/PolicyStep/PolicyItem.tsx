@@ -1,19 +1,22 @@
 import React from 'react';
 import { PolicyActionRow, PolicyItemWrapper, PolicyName } from './styles';
 import MatSelect from 'app/components/Inputs/MatSelect';
-import { IEdgePolicy, PolicyActions } from 'lib/api/ApiModels/Edges/apiModel';
+import { IEdgePolicy } from 'lib/api/ApiModels/Edges/apiModel';
 import TextInput from 'app/components/Inputs/TextInput';
+import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
+import { ValueLabel } from 'app/components/Inputs/MatSelect/styles';
+
 interface Props {
   index: number;
   item: IEdgePolicy;
+  sources: ITopologyGroup[];
+  destinations: ITopologyGroup[];
   onUpdateItem: (value: any | null, field: string, index: number) => void;
 }
 
 const PolicyItem: React.FC<Props> = (props: Props) => {
-  const [sources, setSources] = React.useState<string[]>([]);
-  const [destinations, setdestinations] = React.useState<string[]>([]);
-  const onSelectChange = (value: string, field: string) => {
-    props.onUpdateItem(value, field, props.index);
+  const onSelectChange = (value: ITopologyGroup, field: string) => {
+    props.onUpdateItem(value.id, field, props.index);
   };
   return (
     <PolicyItemWrapper>
@@ -23,28 +26,32 @@ const PolicyItem: React.FC<Props> = (props: Props) => {
           id={`${props.index}source`}
           label="Source"
           value={props.item.source}
-          options={sources}
+          options={props.sources}
           styles={{ width: 'calc(50% - 5px)', margin: '0 5px 20px 0' }}
           required
-          disabled={!sources || !sources.length}
+          disabled={!props.sources || !props.sources.length}
           onChange={v => onSelectChange(v, 'source')}
+          renderValue={(v: ITopologyGroup) => <ValueLabel>{v.name}</ValueLabel>}
+          renderOption={(v: ITopologyGroup) => <>{v.name}</>}
         />
         <MatSelect
           id={`${props.index}destination`}
           label="Destination"
           value={props.item.destination}
-          options={destinations}
+          options={props.destinations}
           styles={{ width: 'calc(50% - 5px)', margin: '0 0 20px 5px' }}
           required
-          disabled={!destinations || !destinations.length}
+          disabled={!props.destinations || !props.destinations.length}
           onChange={v => onSelectChange(v, 'destination')}
+          renderValue={(v: ITopologyGroup) => <ValueLabel>{v.name}</ValueLabel>}
+          renderOption={(v: ITopologyGroup) => <>{v.name}</>}
         />
       </PolicyActionRow>
       <PolicyActionRow>
         <TextInput
           id={`${props.index}action`}
           name="action"
-          value={PolicyActions.ALLOW}
+          value={props.item.action}
           label="Action"
           onChange={v => {}}
           readOnlyField

@@ -2,7 +2,7 @@ import { IStepperItem, StepperItemStateType } from 'app/components/Stepper/model
 import { Mark } from '@material-ui/core/Slider';
 import { ISelectedListItem } from 'lib/models/general';
 import { poloAltoIcon } from 'app/components/SVGIcons/edges/poloAlto';
-import { ConnectionPKeysMap, IEdgeP, IEdgePolicy, NwServicesVendor } from 'lib/api/ApiModels/Edges/apiModel';
+import { ConnectionPKeysMap, IEdgeP, IEdgePolicy, NwServicesVendor, PolicyActions } from 'lib/api/ApiModels/Edges/apiModel';
 import { TopologyGroupTypesAsString } from 'lib/models/topology';
 
 export enum EdgesStepperTypes {
@@ -50,7 +50,7 @@ export const createNewEdge = (): IEdgeP => ({
 export const createNewEdgePolicy = (): IEdgePolicy => ({
   source: null,
   destination: null,
-  action: null,
+  action: PolicyActions.ALLOW,
 });
 
 export const EdgePriceValues: Mark[] = [

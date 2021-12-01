@@ -9,7 +9,7 @@ import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
 import FormPanel from './FormPanel';
 import EdgesMap from './EdgesMap';
-import { IEdgeP, ValidationFields } from 'lib/api/ApiModels/Edges/apiModel';
+import { IEdgeP, IEdgePolicy, ValidationFields } from 'lib/api/ApiModels/Edges/apiModel';
 import { ITopologyGroup, TopologyGroupApi } from 'lib/api/ApiModels/Topology/endpoints';
 import { useEdgesDataContext } from 'lib/hooks/Edges/useEdgesDataContext';
 import { IBaseEntity, IModal } from 'lib/models/general';
@@ -163,6 +163,15 @@ const Editor: React.FC<Props> = (props: Props) => {
     const _dataItem = { ...dataItem };
     _dataItem.nwServicesPolicy[0][field] = value;
     const _items: IStepperItem<EdgesStepperTypes>[] = updateStep(steps, EdgesStepperTypes.TRANSIT, _dataItem.nwServicesPolicy[0], [ValidationFields.CONTROLLER_NAME, ValidationFields.REGION_CODE]);
+    setSteps(_items);
+    setDataItem(_dataItem);
+    setHasChanges(true);
+  };
+
+  const onChangePolicyField = (items: IEdgePolicy[]) => {
+    const _dataItem = { ...dataItem };
+    _dataItem.policies = items;
+    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.POLICY, _dataItem.policies);
     setSteps(_items);
     setDataItem(_dataItem);
     setHasChanges(true);
@@ -332,6 +341,7 @@ const Editor: React.FC<Props> = (props: Props) => {
             onToogleAccordionItem={onToogleAccordionItem}
             onDeleteSitesGroup={onDeleteSitesGroup}
             onDeleteAppsGroup={onDeleteAppsGroup}
+            onChangePolicyField={onChangePolicyField}
           />
         </PanelColumn>
         {(postLoading || getLoading || putLoading) && (
