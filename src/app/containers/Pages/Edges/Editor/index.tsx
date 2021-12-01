@@ -38,6 +38,7 @@ const Editor: React.FC<Props> = (props: Props) => {
   const [steps, setSteps] = React.useState<IStepperItem<EdgesStepperTypes>[]>([]);
   const [selectedStep, setSelectedStep] = React.useState<IStepperItem<EdgesStepperTypes>>(null);
   const [saveDisabled, setSavedisabled] = React.useState<boolean>(true);
+  const [hasChanges, setHasChanges] = React.useState<boolean>(false);
   const [deleteModalData, setDeleteModalData] = React.useState<IModal<IDeleteDataModel>>({ show: false, dataItem: null });
   React.useEffect(() => {
     const _item = props.dataItem || createNewEdge();
@@ -111,6 +112,7 @@ const Editor: React.FC<Props> = (props: Props) => {
       }
       toast.success(`Group '${deleteModalData.dataItem.name}' was deleted successfully!`);
       setDataItem(_dataItem);
+      setHasChanges(true);
       setDeleteModalData({ show: false, dataItem: null });
       edges.onDeleteGroup(deleteModalData.dataItem.id);
     }
@@ -136,6 +138,7 @@ const Editor: React.FC<Props> = (props: Props) => {
     const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, step, _dataItem[field]);
     setSteps(_items);
     setDataItem(_dataItem);
+    setHasChanges(true);
   };
 
   const onChangeGeneralField = (value: any, field: string) => {
@@ -144,6 +147,7 @@ const Editor: React.FC<Props> = (props: Props) => {
     const _items: IStepperItem<EdgesStepperTypes>[] = updateStep(steps, EdgesStepperTypes.GENERAL, _dataItem, [ValidationFields.NAME, ValidationFields.CONNECTION, ValidationFields.TAGS]);
     setSteps(_items);
     setDataItem(_dataItem);
+    setHasChanges(true);
   };
 
   const onChangeTransitionDataField = (value: any, field: string) => {
@@ -152,6 +156,7 @@ const Editor: React.FC<Props> = (props: Props) => {
     const _items: IStepperItem<EdgesStepperTypes>[] = updateStep(steps, EdgesStepperTypes.TRANSIT, _dataItem.deploymentPolicy[0], [ValidationFields.CONTROLLER_NAME, ValidationFields.REGION_CODE]);
     setSteps(_items);
     setDataItem(_dataItem);
+    setHasChanges(true);
   };
 
   const onChangeTransitionNetworkField = (value: any, field: string) => {
@@ -160,6 +165,7 @@ const Editor: React.FC<Props> = (props: Props) => {
     const _items: IStepperItem<EdgesStepperTypes>[] = updateStep(steps, EdgesStepperTypes.TRANSIT, _dataItem.nwServicesPolicy[0], [ValidationFields.CONTROLLER_NAME, ValidationFields.REGION_CODE]);
     setSteps(_items);
     setDataItem(_dataItem);
+    setHasChanges(true);
   };
 
   const onChangeSitesField = (value: ITopologyGroup) => {
@@ -171,6 +177,7 @@ const Editor: React.FC<Props> = (props: Props) => {
     edges.onUpdateGroups(value);
     setSteps(_items);
     setDataItem(_dataItem);
+    setHasChanges(true);
   };
 
   const onSetSitesGroups = (ids: string[]) => {
@@ -179,6 +186,7 @@ const Editor: React.FC<Props> = (props: Props) => {
     const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.SITES, _dataItem.siteGroupIds);
     setSteps(_items);
     setDataItem(_dataItem);
+    setHasChanges(true);
   };
 
   const onAddExistingApps = (ids: string[]) => {
@@ -187,6 +195,7 @@ const Editor: React.FC<Props> = (props: Props) => {
     const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.APPS, _dataItem.appGroupIds);
     setSteps(_items);
     setDataItem(_dataItem);
+    setHasChanges(true);
   };
 
   const onChangeAppsField = (value: ITopologyGroup) => {
@@ -198,6 +207,7 @@ const Editor: React.FC<Props> = (props: Props) => {
     edges.onUpdateGroups(value);
     setSteps(_items);
     setDataItem(_dataItem);
+    setHasChanges(true);
   };
 
   const onDeleteSitesGroup = (gr: ITopologyGroup) => {
@@ -241,6 +251,7 @@ const Editor: React.FC<Props> = (props: Props) => {
       setSteps(_items);
     }
     setDataItem(_dataItem);
+    setHasChanges(true);
     setDeleteModalData({ show: false, dataItem: null });
   };
 
@@ -309,7 +320,7 @@ const Editor: React.FC<Props> = (props: Props) => {
             steps={steps}
             dataItem={dataItem}
             selectedStep={selectedStep}
-            saveDisabled={saveDisabled}
+            saveDisabled={saveDisabled || !hasChanges}
             onChangeSitesField={onChangeSitesField}
             onAddExistingSites={onSetSitesGroups}
             onAddExistingApps={onAddExistingApps}

@@ -103,7 +103,8 @@ const MainPage: React.FC<Props> = (props: Props) => {
   };
 
   const onOpenEditor = (_item?: IEdgeP) => {
-    breadcrumb.onGoToEdges(EdgesBreadCrumbItemsType.CREATE);
+    const _bredCrumbState = _item && _item.id ? EdgesBreadCrumbItemsType.EDIT : EdgesBreadCrumbItemsType.CREATE;
+    breadcrumb.onGoToEdges(_bredCrumbState);
     setEdgeDataItem(_item || null);
   };
 
