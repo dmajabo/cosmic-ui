@@ -42,7 +42,7 @@ export const PageName = styled.div`
 export const UserWrapper = styled.div`
   display: inline-flex;
   width: auto;
-  min-width: 100px;
+  min-width: 160px;
   max-width: 400px;
   margin-left: 20px;
   flex-shrink: 0;

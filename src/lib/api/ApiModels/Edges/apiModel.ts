@@ -1,19 +1,14 @@
 import { IBaseTotalCount } from 'lib/models/general';
 import { IDevice, IVm } from 'lib/models/topology';
-import { VendorTypes } from '../Topology/endpoints';
 
-export enum PolicyDestinations {
-  DEST_TRUE = 'dest_true',
-  DEST_FAlSE = 'dest_false',
-}
 export enum PolicyActions {
-  ALLOW = 'allow',
-  CUSTOM = 'custom',
+  ALLOW = 'Allow',
+  CUSTOM = 'Custom',
 }
 
 export interface IEdgePolicy {
-  source: VendorTypes;
-  destination: PolicyDestinations;
+  source: string;
+  destination: string;
   action: PolicyActions;
 }
 

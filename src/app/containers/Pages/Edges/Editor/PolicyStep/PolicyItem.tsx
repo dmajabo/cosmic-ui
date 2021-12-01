@@ -1,8 +1,8 @@
 import React from 'react';
-import { PolicySourcesValues, PolicyDestinationValues, PolicyActionsValues } from '../../model';
 import { PolicyActionRow, PolicyItemWrapper, PolicyName } from './styles';
 import MatSelect from 'app/components/Inputs/MatSelect';
-import { IEdgePolicy } from 'lib/api/ApiModels/Edges/apiModel';
+import { IEdgePolicy, PolicyActions } from 'lib/api/ApiModels/Edges/apiModel';
+import TextInput from 'app/components/Inputs/TextInput';
 interface Props {
   index: number;
   item: IEdgePolicy;
@@ -21,7 +21,7 @@ const PolicyItem: React.FC<Props> = ({ item, index, onUpdateItem }) => {
           id={`${index}source`}
           label="Source"
           value={item.source}
-          options={PolicySourcesValues}
+          options={[]}
           styles={{ width: 'calc(50% - 5px)', margin: '0 5px 20px 0' }}
           required
           onChange={v => onSelectChange(v, 'source')}
@@ -30,14 +30,28 @@ const PolicyItem: React.FC<Props> = ({ item, index, onUpdateItem }) => {
           id={`${index}destination`}
           label="Destination"
           value={item.destination}
-          options={PolicyDestinationValues}
+          options={[]}
           styles={{ width: 'calc(50% - 5px)', margin: '0 0 20px 5px' }}
           required
           onChange={v => onSelectChange(v, 'destination')}
         />
       </PolicyActionRow>
       <PolicyActionRow>
-        <MatSelect
+        <TextInput
+          id={`${index}action`}
+          name="action"
+          value={PolicyActions.ALLOW}
+          label="Action"
+          onChange={v => {}}
+          readOnlyField
+          styles={{ width: 'calc(50% - 5px)' }}
+          // placeholder?: string;
+          required
+          // area?: boolean;
+          // inputStyles?: Object;
+          // error?: string;
+        />
+        {/* <MatSelect
           id={`${index}action`}
           label="Action"
           value={item.action}
@@ -45,7 +59,7 @@ const PolicyItem: React.FC<Props> = ({ item, index, onUpdateItem }) => {
           styles={{ width: 'calc(50% - 5px)', margin: '0 5px 0px 0' }}
           required
           onChange={v => onSelectChange(v, 'action')}
-        />
+        /> */}
       </PolicyActionRow>
     </PolicyItemWrapper>
   );

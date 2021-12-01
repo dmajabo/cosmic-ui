@@ -31,7 +31,7 @@ const Tag: React.FC<Props> = ({ text, subText, index, hideClearButton, styles, b
           {subText}
         </TagText>
       )}
-      {!hideClearButton && <IconWrapper styles={{ zIndex: 2 }} width="12px" height="12px" icon={closeSmallIcon} onClick={onDelete} />}
+      {!hideClearButton && <IconWrapper styles={{ zIndex: 2 }} width="10px" height="10px" icon={closeSmallIcon} onClick={onDelete} />}
     </TagStyles>
   );
 };

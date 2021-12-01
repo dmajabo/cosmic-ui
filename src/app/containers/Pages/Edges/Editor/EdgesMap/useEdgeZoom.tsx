@@ -60,10 +60,9 @@ export function useEdgeZoom(props: IProps) {
     const svg = d3.select(`#${svgId}`);
     const root = d3.select(`#${scaleRootId}`);
     const rootSize = root.node().getBBox();
-    const devWidth = rootSize.width;
     const devHeight = rootSize.height;
-    const scale = getScaleSizeHelper(890, 816, devWidth, devHeight);
-    const translateX = 890 / 2 - (rootSize.width * scale) / 2 - rootSize.x * scale;
+    const scale = getScaleSizeHelper(890, 816, 794, devHeight);
+    const translateX = 890 / 2 - (794 * scale) / 2 - rootSize.x * scale;
     const translateY = 816 / 2 - (rootSize.height * scale) / 2 - rootSize.y * scale;
     svg.call(zoom.transform, d3.zoomIdentity.translate(translateX, translateY).scale(scale));
   };
