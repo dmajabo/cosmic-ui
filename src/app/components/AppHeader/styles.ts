@@ -1,5 +1,6 @@
 import styled from 'styled-components';
-import { sideBarCloseWidth, sideBarOpenWidth, sideBarTransition } from 'app/components/Sidebar/styles';
+import { sideBarCloseWidth, sideBarOpenWidth } from 'app/components/Sidebar/styles';
+import { DEFAULT_TRANSITION } from 'lib/constants/general';
 interface HeaderStyleProps {
   isOpenSidebar: boolean;
 }
@@ -15,7 +16,7 @@ export const HeaderStyles = styled.div<HeaderStyleProps>`
   padding: 20px 30px;
   background: var(--_primaryBg);
   z-index: 100;
-  transition: width ${sideBarTransition}, left ${sideBarTransition};
+  transition: width ${DEFAULT_TRANSITION}, left ${DEFAULT_TRANSITION};
 `;
 
 interface ISideBlock {
