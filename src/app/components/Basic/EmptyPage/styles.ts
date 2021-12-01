@@ -2,8 +2,7 @@ import styled from 'styled-components';
 
 export const PageWrapper = styled.div`
   width: 100%;
-  min-height: 100%;
-  height: auto;
+  height: 100%;
   display: flex;
   margin: auto;
   flex-direction: column;
@@ -35,9 +34,17 @@ export const StepperText = styled.div<TextProps>`
 `;
 
 export const StepperImg = styled.img`
-  width: 80vw;
-  max-width: 834px;
-  height: 50vw;
-  max-height: 416px;
+  width: 200px;
+  height: 200px;
   margin: auto auto 0 auto;
+`;
+
+export const StepperSwgWrapper = styled.div`
+  width: 200px;
+  height: 200px;
+  margin: auto auto 60px auto;
+  svg {
+    width: 100%;
+    height: 100%;
+  }
 `;

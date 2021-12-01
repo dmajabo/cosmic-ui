@@ -1,7 +1,6 @@
 import React from 'react';
 import EmptyPage from 'app/components/Basic/EmptyPage';
 import { StepperText } from 'app/components/Basic/EmptyPage/styles';
-import imgBg from 'app/images/EdgesMap.png';
 import TableComponent from 'app/components/Basic/Table/TableComponent';
 import { ITableColumn } from 'app/components/Basic/Table/model';
 import Search from 'app/components/Inputs/Search';
@@ -9,6 +8,7 @@ import PrimaryButton from 'app/components/Buttons/PrimaryButton';
 import { addIcon } from 'app/components/SVGIcons/addIcon';
 import { ActionPart, ActionRowStyles } from 'app/containers/Pages/Shared/styles';
 import { useAutomationDataContext } from 'lib/hooks/Automation/useAutomationDataContext';
+import { emptyAutomationIcon } from 'app/components/SVGIcons/emptyPages/emptyAutomation';
 interface Props {
   onCreateNew: () => void;
 }
@@ -34,7 +34,7 @@ const AutomationTable: React.FC<Props> = (props: Props) => {
 
   if (!data) {
     return (
-      <EmptyPage icon={imgBg} buttonLabel="Create New" onClick={onCreateNew}>
+      <EmptyPage iconStyles={{ width: '196px', height: '209px' }} icon={emptyAutomationIcon} buttonLabel="Create automation" onClick={onCreateNew}>
         <StepperText highLight margin="0 auto 20px auto">
           There is no created automation yet
         </StepperText>

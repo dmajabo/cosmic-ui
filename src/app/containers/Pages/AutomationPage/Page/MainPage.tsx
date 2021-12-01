@@ -84,10 +84,18 @@ const MainPage: React.FC<IProps> = (props: IProps) => {
           ))}
         </Tabs>
       </TabsWrapperStyles>
-      <TabPanel value={automation.selectedTab.index} index={AUTOMATIONS_TABS[0].index}>
+      <TabPanel
+        styles={{ display: 'flex', flexDirection: 'column', flex: automation.selectedTab.index === AUTOMATIONS_TABS[0].index ? '1 1 100%' : '0' }}
+        value={automation.selectedTab.index}
+        index={AUTOMATIONS_TABS[0].index}
+      >
         <AutomationTable onCreateNew={onCreateNewAutomation} />
       </TabPanel>
-      <TabPanel value={automation.selectedTab.index} index={AUTOMATIONS_TABS[1].index}>
+      <TabPanel
+        styles={{ display: 'flex', flexDirection: 'column', flex: automation.selectedTab.index === AUTOMATIONS_TABS[1].index ? '1 1 100%' : '0' }}
+        value={automation.selectedTab.index}
+        index={AUTOMATIONS_TABS[1].index}
+      >
         <TriggersTable onCreateNew={onCreateNewTrigger} />
       </TabPanel>
     </PageWrapperStyles>

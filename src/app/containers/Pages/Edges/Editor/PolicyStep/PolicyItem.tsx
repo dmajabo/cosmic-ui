@@ -9,47 +9,48 @@ interface Props {
   onUpdateItem: (value: any | null, field: string, index: number) => void;
 }
 
-const PolicyItem: React.FC<Props> = ({ item, index, onUpdateItem }) => {
+const PolicyItem: React.FC<Props> = (props: Props) => {
+  const [sources, setSources] = React.useState<string[]>([]);
+  const [destinations, setdestinations] = React.useState<string[]>([]);
   const onSelectChange = (value: string, field: string) => {
-    onUpdateItem(value, field, index);
+    props.onUpdateItem(value, field, props.index);
   };
   return (
     <PolicyItemWrapper>
-      <PolicyName>Policy {index + 1}</PolicyName>
+      <PolicyName>Policy {props.index + 1}</PolicyName>
       <PolicyActionRow>
         <MatSelect
-          id={`${index}source`}
+          id={`${props.index}source`}
           label="Source"
-          value={item.source}
-          options={[]}
+          value={props.item.source}
+          options={sources}
           styles={{ width: 'calc(50% - 5px)', margin: '0 5px 20px 0' }}
           required
+          disabled={!sources || !sources.length}
           onChange={v => onSelectChange(v, 'source')}
         />
         <MatSelect
-          id={`${index}destination`}
+          id={`${props.index}destination`}
           label="Destination"
-          value={item.destination}
-          options={[]}
+          value={props.item.destination}
+          options={destinations}
           styles={{ width: 'calc(50% - 5px)', margin: '0 0 20px 5px' }}
           required
+          disabled={!destinations || !destinations.length}
           onChange={v => onSelectChange(v, 'destination')}
         />
       </PolicyActionRow>
       <PolicyActionRow>
         <TextInput
-          id={`${index}action`}
+          id={`${props.index}action`}
           name="action"
           value={PolicyActions.ALLOW}
           label="Action"
           onChange={v => {}}
           readOnlyField
           styles={{ width: 'calc(50% - 5px)' }}
-          // placeholder?: string;
+          labelStyles={{ display: 'inline-block', verticalAlign: 'middle' }}
           required
-          // area?: boolean;
-          // inputStyles?: Object;
-          // error?: string;
         />
         {/* <MatSelect
           id={`${index}action`}

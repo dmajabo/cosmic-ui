@@ -16,6 +16,7 @@ import { ITopologyGroupsData, TopologyGroupApi } from 'lib/api/ApiModels/Topolog
 import EmptyPage from 'app/components/Basic/EmptyPage';
 import { StepperText } from 'app/components/Basic/EmptyPage/styles';
 import imgBg from 'app/images/EdgesMap.png';
+
 interface Props {}
 
 const MainPage: React.FC<Props> = (props: Props) => {
@@ -137,7 +138,7 @@ const MainPage: React.FC<Props> = (props: Props) => {
     return (
       <>
         {!edges.data || !edges.data.length ? (
-          <EmptyPage icon={imgBg} buttonLabel="Create Edge" onClick={() => onOpenEditor()}>
+          <EmptyPage iconStyles={{ width: '80vw', maxWidth: '834px', height: '50vw', maxHeight: '416px' }} iconAsString={imgBg} buttonLabel="Create Edge" onClick={() => onOpenEditor()}>
             <StepperText highLight margin="0 auto 20px auto">
               There is no created edges yet
             </StepperText>

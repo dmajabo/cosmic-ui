@@ -20,6 +20,7 @@ interface IProps {
   required?: boolean;
   area?: boolean;
   inputStyles?: Object;
+  labelStyles?: Object;
   error?: string;
 }
 
@@ -49,7 +50,7 @@ const TextInput: React.FC<IProps> = (props: IProps) => {
 
   return (
     <TextInputWrapper style={props.styles}>
-      <InputLabel htmlFor={props.id} disabled={props.disabled || props.readOnly}>
+      <InputLabel style={props.labelStyles} htmlFor={props.id} disabled={props.disabled || props.readOnly}>
         {props.label}
         {props.required && <Required>*</Required>}
       </InputLabel>
