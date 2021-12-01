@@ -5,7 +5,7 @@ import { APP_PAGES, IPage } from 'lib/Routes/model';
 import ListLink from './ListLink';
 import { Demo, DemoBorder, DemoLabel, List, Logo, LogoLabel, LogoWrapper, TransitionWrapper, WrapSidebar } from './styles';
 import IconWrapper from '../Buttons/IconWrapper';
-import { arrowRightIcon, nextArrow } from '../SVGIcons/arrows';
+import { nextArrow } from '../SVGIcons/arrows';
 
 interface SidebarProps {
   activePageId: string;
