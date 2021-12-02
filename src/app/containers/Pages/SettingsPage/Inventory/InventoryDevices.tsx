@@ -85,7 +85,7 @@ const InventoryDevices: React.FC<Props> = (props: Props) => {
         className={gridStyles.borderedRow}
         disableColumnMenu
         hideFooter
-        headerHeight={70}
+        headerHeight={50}
         rowHeight={70}
         rowCount={dataRows.length}
         disableColumnFilter

@@ -29,7 +29,7 @@ export const GridStyles = makeStyles(
         },
         '& .MuiDataGrid-columnsContainer': {
           background: 'var(--_appBg)',
-          height: 70,
+          height: 50,
           borderBottom: '1px solid var(--_rowBorder)',
         },
         '& .MuiDataGrid-columnHeader': {
