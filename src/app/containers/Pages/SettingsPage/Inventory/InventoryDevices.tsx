@@ -2,7 +2,7 @@ import React from 'react';
 import { GridColDef, DataGrid, GridSelectionModel } from '@mui/x-data-grid';
 import { GridStyles } from 'app/components/Grid/GridStyles';
 import Paging from 'app/components/Basic/Paging';
-import SimpleCheckbox from 'app/components/Inputs/Checkbox/SimpleCheckbox';
+// import SimpleCheckbox from 'app/components/Inputs/Checkbox/SimpleCheckbox';
 import { gridAscArrow, gridDescArrow } from 'app/components/SVGIcons/arrows';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { useGet } from 'lib/api/http/useAxiosHook';
@@ -25,8 +25,8 @@ import { getSearchedList } from 'lib/helpers/listHelper';
 interface Props {
   searchValue: string;
   columns: GridColDef[];
-  selectedItems: GridSelectionModel;
-  onSelectionModelChange: (selectionModel: GridSelectionModel, option: InventoryOptions) => void;
+  selectedItems?: GridSelectionModel;
+  onSelectionModelChange?: (selectionModel: GridSelectionModel, option: InventoryOptions) => void;
 }
 
 const InventoryDevices: React.FC<Props> = (props: Props) => {
@@ -64,9 +64,9 @@ const InventoryDevices: React.FC<Props> = (props: Props) => {
     }
   }, [props.searchValue]);
 
-  const onSelectionModelChange = (e: GridSelectionModel) => {
-    props.onSelectionModelChange(e, InventoryOptions.DEVICE);
-  };
+  // const onSelectionModelChange = (e: GridSelectionModel) => {
+  //   props.onSelectionModelChange(e, InventoryOptions.DEVICE);
+  // };
 
   const onChangeCurrentPage = (_page: number) => {
     setCurrentPage(_page);
@@ -106,10 +106,10 @@ const InventoryDevices: React.FC<Props> = (props: Props) => {
         autoHeight
         rows={filteredData}
         columns={props.columns}
-        checkboxSelection
-        disableSelectionOnClick
-        onSelectionModelChange={onSelectionModelChange}
-        selectionModel={props.selectedItems}
+        // checkboxSelection
+        // disableSelectionOnClick
+        // onSelectionModelChange={onSelectionModelChange}
+        // selectionModel={props.selectedItems}
         loading={loading}
         error={error ? error.message : null}
         components={{
@@ -129,7 +129,7 @@ const InventoryDevices: React.FC<Props> = (props: Props) => {
           ColumnUnsortedIcon: () => null,
           ColumnSortedAscendingIcon: () => <>{gridAscArrow}</>,
           ColumnSortedDescendingIcon: () => <>{gridDescArrow}</>,
-          Checkbox: ({ checked, onChange, indeterminate }) => <SimpleCheckbox isChecked={checked} toggleCheckboxChange={onChange} indeterminate={indeterminate} />,
+          // Checkbox: ({ checked, onChange, indeterminate }) => <SimpleCheckbox isChecked={checked} toggleCheckboxChange={onChange} indeterminate={indeterminate} />,
         }}
         pageSize={filteredData ? filteredData.length : 0}
       />

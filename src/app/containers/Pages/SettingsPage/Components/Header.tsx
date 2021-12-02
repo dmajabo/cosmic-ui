@@ -14,7 +14,7 @@ import { ISelectedListItem } from 'lib/models/general';
 import { InventoryOptions } from '../Inventory/model';
 import Toogle from 'app/components/Inputs/Toogle';
 interface Props {
-  selectedItems: GridSelectionModel;
+  selectedItems?: GridSelectionModel;
   searchValue: string | null;
   columns: GridColDef[];
   selectedToogleOption?: ISelectedListItem<InventoryOptions>;

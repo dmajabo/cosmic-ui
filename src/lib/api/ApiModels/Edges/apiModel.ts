@@ -26,6 +26,8 @@ export interface IDeploymentP {
   id?: string;
   controllerName: string;
   regionCode: string[];
+  // type: Regions | Wedge;
+  wedgeExtIds: string[];
 }
 
 export enum ConnectionPKeysMap {

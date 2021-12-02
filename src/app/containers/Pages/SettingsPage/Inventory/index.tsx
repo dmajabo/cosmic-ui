@@ -1,5 +1,5 @@
 import React from 'react';
-import { GridSelectionModel, GridColDef, GridValueFormatterParams } from '@mui/x-data-grid';
+import { GridColDef, GridValueFormatterParams } from '@mui/x-data-grid';
 import { ISelectedListItem } from 'lib/models/general';
 import Header from '../Components/Header';
 import { InventoryOptions, InventoryToogleOptions } from './model';
@@ -14,10 +14,10 @@ import InventoryCloud from './InventoryCloud';
 interface IProps {}
 
 const Inventory: React.FC<IProps> = (props: IProps) => {
-  const [cloudSelectionModel, setCloudSelectionModel] = React.useState<GridSelectionModel>([]);
   const [selectedOption, setSelectedOptions] = React.useState<ISelectedListItem<InventoryOptions>>(InventoryToogleOptions[0]);
   const [searchValue, setSearchValue] = React.useState<string>(null);
-  const [deviceSelectionModel, setDeviceSelectionModel] = React.useState<GridSelectionModel>([]);
+  // const [cloudSelectionModel, setCloudSelectionModel] = React.useState<GridSelectionModel>([]);
+  // const [deviceSelectionModel, setDeviceSelectionModel] = React.useState<GridSelectionModel>([]);
   const [gridDeviceColumns, setGridDeviceColumns] = React.useState<GridColDef[]>([
     {
       field: 'rowIndex',
@@ -39,22 +39,9 @@ const Inventory: React.FC<IProps> = (props: IProps) => {
     {
       field: 'name',
       headerName: 'Name',
-      minWidth: 120,
-      width: 120,
-      flex: 0.5,
-      disableColumnMenu: true,
-      resizable: false,
-      editable: false,
-      filterable: false,
-      disableReorder: true,
-      disableExport: true,
-    },
-    {
-      field: 'extId',
-      headerName: 'Ext ID',
-      minWidth: 200,
-      width: 200,
-      flex: 0.5,
+      minWidth: 240,
+      width: 240,
+      flex: 0.25,
       disableColumnMenu: true,
       resizable: false,
       editable: false,
@@ -87,23 +74,9 @@ const Inventory: React.FC<IProps> = (props: IProps) => {
       disableExport: true,
     },
     {
-      field: 'description',
-      headerName: 'Description',
-      minWidth: 200,
-      width: 200,
-      flex: 0.25,
-      disableColumnMenu: true,
-      resizable: false,
-      editable: false,
-      filterable: false,
-      disableReorder: true,
-      disableExport: true,
-      hide: true,
-    },
-    {
       field: 'networkId',
       headerName: 'Network ID',
-      minWidth: 200,
+      minWidth: 240,
       width: 200,
       disableColumnMenu: true,
       resizable: false,
@@ -111,7 +84,18 @@ const Inventory: React.FC<IProps> = (props: IProps) => {
       filterable: false,
       disableReorder: true,
       disableExport: true,
-      hide: true,
+    },
+    {
+      field: 'hostname',
+      headerName: 'Network Name',
+      minWidth: 240,
+      flex: 0.5,
+      resizable: false,
+      disableColumnMenu: true,
+      editable: false,
+      filterable: false,
+      disableReorder: true,
+      disableExport: true,
     },
     {
       field: 'publicIp',
@@ -138,40 +122,19 @@ const Inventory: React.FC<IProps> = (props: IProps) => {
       disableExport: true,
     },
     {
-      field: 'hostname',
-      headerName: 'Hostname',
-      minWidth: 240,
-      flex: 0.5,
-      resizable: false,
+      field: 'description',
+      headerName: 'Description',
+      minWidth: 200,
+      width: 200,
+      flex: 0.25,
       disableColumnMenu: true,
+      resizable: false,
       editable: false,
       filterable: false,
       disableReorder: true,
       disableExport: true,
       hide: true,
     },
-    // {
-    //   field: '',
-    //   headerName: '',
-    //   width: 40,
-    //   resizable: false,
-    //   filterable: false,
-    //   sortable: false,
-    //   editable: false,
-    //   hideSortIcons: true,
-    //   disableColumnMenu: true,
-    //   disableReorder: true,
-    //   disableExport: true,
-    //   renderCell: (param: GridRenderCellParams) => (
-    //     <GridCellWrapper>
-    //       <SettingsButton buttonStyles={{ position: 'static', width: '20px', height: '100%', margin: 'auto' }} id={param.id.toString()} hoverIconColor="var(--_sHoverButtonColor)">
-    //         <PopupContent>
-    //           <PopupItem color="var(--_errorColor)" label="Delete" icon={deleteIcon()} onClick={() => onDelete(param)} />
-    //         </PopupContent>
-    //       </SettingsButton>
-    //     </GridCellWrapper>
-    //   ),
-    // },
   ]);
 
   const [gridCloudColumns, setGridCloudColumns] = React.useState<GridColDef[]>([
@@ -195,9 +158,9 @@ const Inventory: React.FC<IProps> = (props: IProps) => {
     {
       field: 'name',
       headerName: 'Name',
-      minWidth: 120,
-      width: 120,
-      flex: 0.5,
+      minWidth: 200,
+      width: 200,
+      flex: 0.25,
       disableColumnMenu: true,
       resizable: false,
       editable: false,
@@ -208,9 +171,9 @@ const Inventory: React.FC<IProps> = (props: IProps) => {
     {
       field: 'extId',
       headerName: 'Ext ID',
-      minWidth: 200,
-      width: 200,
-      flex: 0.5,
+      minWidth: 240,
+      width: 240,
+      flex: 0.25,
       disableColumnMenu: true,
       resizable: false,
       editable: false,
@@ -230,28 +193,19 @@ const Inventory: React.FC<IProps> = (props: IProps) => {
       disableReorder: true,
       disableExport: true,
     },
-    // {
-    //   field: '',
-    //   headerName: '',
-    //   width: 40,
-    //   resizable: false,
-    //   filterable: false,
-    //   sortable: false,
-    //   editable: false,
-    //   hideSortIcons: true,
-    //   disableColumnMenu: true,
-    //   disableReorder: true,
-    //   disableExport: true,
-    //   renderCell: (param: GridRenderCellParams) => (
-    //     <GridCellWrapper>
-    //       <SettingsButton buttonStyles={{ position: 'static', width: '20px', height: '100%', margin: 'auto' }} id={param.id.toString()} hoverIconColor="var(--_sHoverButtonColor)">
-    //         <PopupContent>
-    //           <PopupItem color="var(--_errorColor)" label="Delete" icon={deleteIcon()} onClick={() => onDelete(param)} />
-    //         </PopupContent>
-    //       </SettingsButton>
-    //     </GridCellWrapper>
-    //   ),
-    // },
+    {
+      field: 'description',
+      headerName: 'Description',
+      minWidth: 200,
+      width: 200,
+      flex: 0.5,
+      disableColumnMenu: true,
+      resizable: false,
+      editable: false,
+      filterable: false,
+      disableReorder: true,
+      disableExport: true,
+    },
   ]);
 
   const onSearhChange = (value: string) => {
@@ -282,16 +236,16 @@ const Inventory: React.FC<IProps> = (props: IProps) => {
     // setDeviceSelectionModel([]);
   };
 
-  const onSelectionModelChange = (e: GridSelectionModel, option: InventoryOptions) => {
-    if (option === InventoryOptions.DEVICE) {
-      setDeviceSelectionModel(e);
-      return;
-    }
-    if (option === InventoryOptions.CLOUD) {
-      setCloudSelectionModel(e);
-      return;
-    }
-  };
+  // const onSelectionModelChange = (e: GridSelectionModel, option: InventoryOptions) => {
+  //   if (option === InventoryOptions.DEVICE) {
+  //     setDeviceSelectionModel(e);
+  //     return;
+  //   }
+  //   if (option === InventoryOptions.CLOUD) {
+  //     setCloudSelectionModel(e);
+  //     return;
+  //   }
+  // };
 
   const onToogleChange = (value: ISelectedListItem<InventoryOptions>) => {
     if (value.id === selectedOption.id) return;
@@ -300,7 +254,7 @@ const Inventory: React.FC<IProps> = (props: IProps) => {
   return (
     <>
       <Header
-        selectedItems={selectedOption.id === InventoryOptions.DEVICE ? deviceSelectionModel : cloudSelectionModel}
+        // selectedItems={selectedOption.id === InventoryOptions.DEVICE ? deviceSelectionModel : cloudSelectionModel}
         searchValue={searchValue}
         columns={selectedOption.id === InventoryOptions.DEVICE ? gridDeviceColumns : gridCloudColumns}
         onMassDelete={onMassDelete}
@@ -314,10 +268,20 @@ const Inventory: React.FC<IProps> = (props: IProps) => {
         hideDelete
       />
       {selectedOption.id === InventoryOptions.DEVICE && (
-        <InventoryDevices searchValue={searchValue} columns={gridDeviceColumns} selectedItems={deviceSelectionModel} onSelectionModelChange={onSelectionModelChange} />
+        <InventoryDevices
+          searchValue={searchValue}
+          columns={gridDeviceColumns}
+          // selectedItems={deviceSelectionModel}
+          // onSelectionModelChange={onSelectionModelChange}
+        />
       )}
       {selectedOption.id === InventoryOptions.CLOUD && (
-        <InventoryCloud searchValue={searchValue} columns={gridCloudColumns} selectedItems={cloudSelectionModel} onSelectionModelChange={onSelectionModelChange} />
+        <InventoryCloud
+          searchValue={searchValue}
+          columns={gridCloudColumns}
+          // selectedItems={cloudSelectionModel}
+          // onSelectionModelChange={onSelectionModelChange}
+        />
       )}
     </>
   );
