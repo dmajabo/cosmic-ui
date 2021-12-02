@@ -1,21 +1,14 @@
 import React from 'react';
-import { AnalyticsStyles } from '../AnalyticsStyles';
+import './ChartTypeOption.css';
+import { SelectChartTypeOption } from './MetricsExplorer';
 
-interface ChartTypeOptionProps {
-  readonly image: string;
-  readonly label: string;
-  readonly value: string;
-}
-
-export const ChartTypeOption: React.FC<ChartTypeOptionProps> = ({ label, image, value }) => {
-  const classes = AnalyticsStyles();
-
+export const ChartTypeOption: React.FC<SelectChartTypeOption> = ({ label, image, value }) => {
   return (
-    <div className={classes.flexStart}>
-      <div>
-        <img className={classes.chartImage} src={image} alt={value} />
-      </div>
-      <div className={classes.chartTypeText}>{label}</div>
+    <div>
+      <span>
+        <img className="chartImage" src={image} alt={value} />
+      </span>
+      <span className="chartTypeText">{label}</span>
     </div>
   );
 };

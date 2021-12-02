@@ -11,27 +11,35 @@ interface ChartTypeDropdownProps {
   readonly handleChartTypeChange: (value: SelectChartTypeOption) => void;
 }
 
-export enum ChartType {
+export enum ChartTypeValue {
   lineChart = 'lineChart',
   stackedBarChart = 'stackedBarChart',
 }
 
-const chartTypeOptions: SelectChartTypeOption[] = [
+export enum ChartTypeLabel {
+  lineChart = 'Line Chart',
+  stackedBarChart = 'Stacked Bar Chart',
+}
+
+const CHART_TYPE_OPTIONS: SelectChartTypeOption[] = [
   {
-    label: <ChartTypeOption label="Line Chart" image={LineChartIcon} value={ChartType.lineChart} />,
-    value: ChartType.lineChart,
+    label: ChartTypeLabel.lineChart,
+    value: ChartTypeValue.lineChart,
+    image: LineChartIcon,
   },
   {
-    label: <ChartTypeOption label="Stacked Bar Chart" image={StackedBarChartIcon} value={ChartType.stackedBarChart} />,
-    value: ChartType.stackedBarChart,
+    label: ChartTypeLabel.stackedBarChart,
+    value: ChartTypeValue.stackedBarChart,
+    image: StackedBarChartIcon,
   },
 ];
 
 export const ChartTypeDropdown: React.FC<ChartTypeDropdownProps> = ({ chartType, handleChartTypeChange }) => {
   const classes = AnalyticsStyles();
+
   return (
     <div className={classes.lookbackContainer}>
-      <Select className={classes.lookbackSelect} label="lookup select" value={chartType} options={chartTypeOptions} onChange={e => handleChartTypeChange(e)} />
+      <Select className={classes.lookbackSelect} label="lookup select" formatOptionLabel={ChartTypeOption} value={chartType} options={CHART_TYPE_OPTIONS} onChange={handleChartTypeChange} />
     </div>
   );
 };

@@ -23,8 +23,7 @@ import { Tab, Tabs } from '@material-ui/core';
 import { LookbackLabel, LookbackSelectOption, LookbackTimeTab, LookbackValue } from './LookbackTimeTab';
 import { CustomTimeRangeLabel, CustomTimeRangeSelectOption, CustomTimeTab } from './CustomTimeTab';
 import { DataUnitDropdown, DataUnitLabel, DataUnitValue, DataUnitSelectOption } from './DataUnitDropdown';
-import { ChartTypeOption } from './ChartTypeOption';
-import { ChartType, ChartTypeDropdown } from './ChartTypeDropdown';
+import { ChartTypeValue, ChartTypeDropdown, ChartTypeLabel } from './ChartTypeDropdown';
 import LineChartIcon from '../icons/metrics explorer/chartType/lineChart.svg';
 
 //TODO: Remove this once API is integrated
@@ -176,8 +175,9 @@ export interface SelectOption {
 }
 
 export interface SelectChartTypeOption {
-  readonly value: string;
-  readonly label: string | JSX.Element;
+  readonly value: ChartTypeValue;
+  readonly label: ChartTypeLabel;
+  readonly image: string;
 }
 
 export const getDimensionCount = (dimensions: DimensionOptions[]) => {
@@ -221,9 +221,10 @@ const INITIAL_DATA_UNIT_VALUE: DataUnitSelectOption = {
   value: DataUnitValue.bits,
 };
 
-const INITIAL_CHART_TYPE_VALUE = {
-  label: <ChartTypeOption label="Line Chart" image={LineChartIcon} value={ChartType.lineChart} />,
-  value: ChartType.lineChart,
+const INITIAL_CHART_TYPE_VALUE: SelectChartTypeOption = {
+  label: ChartTypeLabel.lineChart,
+  value: ChartTypeValue.lineChart,
+  image: LineChartIcon,
 };
 
 export const MetricsExplorer: React.FC = () => {
