@@ -19,6 +19,12 @@ interface MetricsTableProps {
   readonly dataUnit: string;
 }
 
+enum DataUnitPrefix {
+  unit = '',
+  kiloUnit = 'K',
+  megaUnit = 'M',
+}
+
 const COLOURS = [
   '#0288D1',
   '#6A1B9A',
@@ -338,7 +344,7 @@ const MILLION = 1000000;
 
 const getTableDataUnitPrefix = (tableData: MetricsExplorerTableData[]) => {
   const maxAverage = Math.max(...tableData.map(item => item.average));
-  return maxAverage >= TEN_THOUSAND ? (maxAverage >= MILLION ? 'M' : 'K') : '';
+  return maxAverage >= TEN_THOUSAND ? (maxAverage >= MILLION ? DataUnitPrefix.megaUnit : DataUnitPrefix.kiloUnit) : DataUnitPrefix.unit;
 };
 
 export const MetricsTable: React.FC<MetricsTableProps> = ({ dimensions, tableData, dataUnit }) => {
@@ -390,10 +396,10 @@ export const MetricsTable: React.FC<MetricsTableProps> = ({ dimensions, tableDat
   };
 
   const getDataUnitAppliedValue = (data: number) => {
-    if (tableDataUnit === 'K' + dataUnit) {
+    if (tableDataUnit === DataUnitPrefix.kiloUnit + dataUnit) {
       return data / TEN_THOUSAND;
     }
-    if (tableDataUnit === 'M' + dataUnit) {
+    if (tableDataUnit === DataUnitPrefix.megaUnit + dataUnit) {
       return data / MILLION;
     }
     return data;
