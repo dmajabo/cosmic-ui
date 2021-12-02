@@ -3,7 +3,6 @@ import TextInput from 'app/components/Inputs/TextInput';
 import { TopologyGroupTypesAsNumber } from 'lib/models/topology';
 import { jsonClone } from 'lib/helpers/cloneHelper';
 import { ButtonsGroup, GroupWrapper } from './styles';
-import Dropdown from 'app/components/Inputs/Dropdown';
 import { ISelectedListItem } from 'lib/models/general';
 import { ITopologyGroupFields, PossibleJoins, PossibleOperators, SelectGroupTypes } from './model';
 import ExpresionComponent from 'app/components/Inputs/ExpresionComponent';
@@ -13,6 +12,9 @@ import SecondaryButton from 'app/components/Buttons/SecondaryButton';
 import { addIcon } from 'app/components/SVGIcons/addIcon';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import { ITopologyGroup, SelectorEvalType } from 'lib/api/ApiModels/Topology/endpoints';
+import MatSelect from 'app/components/Inputs/MatSelect';
+import { ValueLabel } from 'app/components/Inputs/MatSelect/styles';
+import { getSelectedItem } from 'lib/helpers/selectionHelper';
 interface IProps {
   group?: ITopologyGroup;
   onCancel: () => void;
@@ -34,6 +36,12 @@ const EditGroupView: React.FC<IProps> = (props: IProps) => {
   const [possibleOperators] = React.useState<ISelectedListItem<any>[] | null>(jsonClone(PossibleOperators));
   const [possibleJoins] = React.useState<ISelectedListItem<any>[] | null>(jsonClone(PossibleJoins));
   const [error, setError] = React.useState<string | null>(props.error || null);
+  const [selectedType, setSelectedType] = React.useState<ISelectedListItem<TopologyGroupTypesAsNumber>>(null);
+
+  React.useEffect(() => {
+    const _selectedItem = getSelectedItem(SelectGroupTypes, group.type, 'id');
+    setSelectedType(_selectedItem);
+  }, []);
 
   React.useEffect(() => {
     if (props.error !== error) {
@@ -60,6 +68,7 @@ const EditGroupView: React.FC<IProps> = (props: IProps) => {
     const _possibleKeys: ISelectedListItem<any>[] | null = getPossibleKeys(_group.type);
     const isValid = onValidateGroup(_group);
     setGroup(_group);
+    setSelectedType(_item);
     setIsGroupValid(isValid);
     setPossibleKeys(_possibleKeys);
   };
@@ -83,8 +92,26 @@ const EditGroupView: React.FC<IProps> = (props: IProps) => {
 
   return (
     <GroupWrapper>
-      <TextInput id="groupName" name="groupName" value={group.name} label="Group Name" onChange={_value => onChangeField(_value, ITopologyGroupFields.NAME)} />
-      <Dropdown wrapStyles={{ flexDirection: 'column', width: '100%' }} label="Type" selectedValue={group.type} values={SelectGroupTypes} onSelectValue={onChangeType} />
+      <TextInput
+        required
+        id="groupName"
+        name="groupName"
+        value={group.name}
+        label="Group Name"
+        inputStyles={{ height: '50px' }}
+        onChange={_value => onChangeField(_value, ITopologyGroupFields.NAME)}
+      />
+      <MatSelect
+        id="groupType"
+        label="Type"
+        value={selectedType}
+        options={SelectGroupTypes}
+        styles={{ height: '72px', minHeight: '72px', margin: '0 0 20px 0' }}
+        required
+        selectClaassName="withLabel"
+        onChange={onChangeType}
+        renderValue={(v: ISelectedListItem<TopologyGroupTypesAsNumber>) => <ValueLabel>{v.label}</ValueLabel>}
+      />
       <ExpresionComponent
         disabled={!group.type}
         label="Expression"

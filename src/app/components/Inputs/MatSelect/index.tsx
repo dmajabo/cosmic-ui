@@ -40,6 +40,10 @@ const MatSelect: React.FC<Props> = (props: Props) => {
     }
   }, [debouncedSearchTerm]);
 
+  React.useEffect(() => {
+    setTextValue(props.value);
+  }, [props.value]);
+
   const handleChange = (event: SelectChangeEvent<typeof textValue>) => {
     setTextValue(event.target.value);
     setIsTyping(true);

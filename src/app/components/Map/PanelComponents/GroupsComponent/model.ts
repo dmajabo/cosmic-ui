@@ -1,5 +1,5 @@
 import { ISelectedListItem } from 'lib/models/general';
-import { TopologyGroupTypesAsNumber, TopologyGroupTypesAsString } from 'lib/models/topology';
+import { TopologyGroupTypesAsNumber, TopologyGroupTypesAsString, TopologyGroupTypesLabel } from 'lib/models/topology';
 
 export enum ITopologyGroupFields {
   NAME = 'name',
@@ -13,8 +13,8 @@ export enum TopologyGroupsView {
 }
 
 export const SelectGroupTypes: ISelectedListItem<TopologyGroupTypesAsNumber>[] = [
-  { id: TopologyGroupTypesAsString.BRANCH_NETWORKS, value: TopologyGroupTypesAsNumber.BRANCH_NETWORKS, label: 'Branch networks' },
-  { id: TopologyGroupTypesAsString.APPLICATION, value: TopologyGroupTypesAsNumber.APPLICATION, label: 'Application' },
+  { id: TopologyGroupTypesAsString.BRANCH_NETWORKS, value: TopologyGroupTypesAsNumber.BRANCH_NETWORKS, label: TopologyGroupTypesLabel.BRANCH_NETWORKS },
+  { id: TopologyGroupTypesAsString.APPLICATION, value: TopologyGroupTypesAsNumber.APPLICATION, label: TopologyGroupTypesLabel.APPLICATION },
 ];
 
 export enum BrancheNetworksKeysEnum {

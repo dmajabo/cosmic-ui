@@ -1,7 +1,7 @@
 import React from 'react';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { ciscoMerakiLogoIcon } from 'app/components/SVGIcons/topologyIcons/ciscoMerakiLogo';
-import { TopologyGroupTypesAsNumber, TopologyGroupTypesAsString } from 'lib/models/topology';
+import { TopologyGroupTypesAsNumber, TopologyGroupTypesAsString, TopologyGroupTypesLabel } from 'lib/models/topology';
 import { Content, GroupField, GroupWrapper } from './styles';
 import { editIcon } from 'app/components/SVGIcons/edit';
 import { dublicateIcon } from 'app/components/SVGIcons/dublicate';
@@ -50,7 +50,10 @@ const TopologyGroup: React.FC<IProps> = (props: IProps) => {
       )}
       <Content>
         <GroupField primary>{props.group.name}</GroupField>
-        <GroupField>{props.group.type}</GroupField>
+        {(props.group.type === TopologyGroupTypesAsNumber.BRANCH_NETWORKS || props.group.type === TopologyGroupTypesAsString.BRANCH_NETWORKS) && (
+          <GroupField>{TopologyGroupTypesLabel.BRANCH_NETWORKS}</GroupField>
+        )}
+        {(props.group.type === TopologyGroupTypesAsNumber.APPLICATION || props.group.type === TopologyGroupTypesAsString.APPLICATION) && <GroupField>{TopologyGroupTypesLabel.APPLICATION}</GroupField>}
       </Content>
       <SettingsButton id={props.group.id} width="24px" height="40px" hoverIconColor="var(--_hoverButtonBg)" disabled={props.disabled}>
         <PopupContent>

@@ -273,3 +273,8 @@ export enum TopologyGroupTypesAsString {
   BRANCH_NETWORKS = 'DEVICE',
   APPLICATION = 'APPLICATION',
 }
+
+export enum TopologyGroupTypesLabel {
+  BRANCH_NETWORKS = 'Branch networks',
+  APPLICATION = 'Application',
+}
