@@ -2,33 +2,45 @@ import { Checkbox } from '@mui/material';
 import React, { useState } from 'react';
 import { AnalyticsStyles } from '../AnalyticsStyles';
 import Select from 'react-select';
-import { SelectOption } from './MetricsExplorer';
+import { LookbackValue } from './LookbackTimeTab';
+
+export interface CustomTimeRangeSelectOption {
+  readonly label: CustomTimeRangeLabel;
+  readonly value: LookbackValue;
+}
 
 interface CustomTimeTabProps {
   readonly fromDate: string;
   readonly toDate: string;
   readonly onFromDateChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   readonly onToDateChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  readonly timeRange: SelectOption;
-  readonly onTimeRangeChange: (value: SelectOption) => void;
+  readonly timeRange: CustomTimeRangeSelectOption;
+  readonly onTimeRangeChange: (value: CustomTimeRangeSelectOption) => void;
 }
 
-const TIME_RANGE_OPTIONS: SelectOption[] = [
+export enum CustomTimeRangeLabel {
+  oneHour = 'Hour',
+  oneDay = 'Day',
+  oneWeek = 'Week',
+  oneMonth = 'Month',
+}
+
+const TIME_RANGE_OPTIONS: CustomTimeRangeSelectOption[] = [
   {
-    label: 'Hour',
-    value: '-1h',
+    label: CustomTimeRangeLabel.oneHour,
+    value: LookbackValue.oneHour,
   },
   {
-    label: 'Day',
-    value: '-1d',
+    label: CustomTimeRangeLabel.oneDay,
+    value: LookbackValue.oneDay,
   },
   {
-    label: 'Week',
-    value: '-7d',
+    label: CustomTimeRangeLabel.oneWeek,
+    value: LookbackValue.oneWeek,
   },
   {
-    label: 'Month',
-    value: '-30d',
+    label: CustomTimeRangeLabel.oneMonth,
+    value: LookbackValue.oneMonth,
   },
 ];
 

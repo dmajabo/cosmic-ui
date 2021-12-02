@@ -20,8 +20,8 @@ import { DataSource, DataSourceOptions } from './DataSource';
 import { MetricsChart } from './MetricsChart';
 import { ColumnAccessor, MetricsExplorerTableData } from 'lib/api/http/SharedTypes';
 import { Tab, Tabs } from '@material-ui/core';
-import { LookbackTimeTab } from './LookbackTimeTab';
-import { CustomTimeTab } from './CustomTimeTab';
+import { LookbackLabel, LookbackSelectOption, LookbackTimeTab, LookbackValue } from './LookbackTimeTab';
+import { CustomTimeRangeLabel, CustomTimeRangeSelectOption, CustomTimeTab } from './CustomTimeTab';
 
 //TODO: Remove this once API is integrated
 const DUMMY_DIMENSION_DATA: DimensionOptions[] = [
@@ -162,7 +162,6 @@ enum TimeMetricTabValue {
 }
 
 interface TabPanelProps {
-  readonly children?: React.ReactNode;
   readonly name: string;
   readonly value: string;
 }
@@ -183,15 +182,13 @@ export const getDataSourceCount = (dataSources: DataSourceOptions[]) => {
   return dataSources.reduce((acc, nextValue) => acc + nextValue.options.length, 0);
 };
 
-function TabPanel(props: TabPanelProps) {
-  const { children, value, name, ...other } = props;
-
+const TabPanel: React.FC<TabPanelProps> = ({ children, value, name }) => {
   return (
-    <div role="tabpanel" hidden={value !== name} id={`simple-tabpanel-${name}`} aria-labelledby={`simple-tab-${name}`} {...other}>
+    <div role="tabpanel" hidden={value !== name} id={`simple-tabpanel-${name}`} aria-labelledby={`simple-tab-${name}`}>
       {children}
     </div>
   );
-}
+};
 
 function a11yProps(index: any) {
   return {
@@ -200,14 +197,14 @@ function a11yProps(index: any) {
   };
 }
 
-const INITIAL_LOOKBACK_TIME_RANGE_VALUE = {
-  label: 'Last 5 minutes',
-  value: '-5m',
+const INITIAL_LOOKBACK_TIME_RANGE_VALUE: LookbackSelectOption = {
+  label: LookbackLabel.fiveMinutes,
+  value: LookbackValue.fiveMinutes,
 };
 
-const INITIAL_SHOW_TIME_RANGE_VALUE = {
-  label: 'Day',
-  value: '-1d',
+const INITIAL_SHOW_TIME_RANGE_VALUE: CustomTimeRangeSelectOption = {
+  label: CustomTimeRangeLabel.oneDay,
+  value: LookbackValue.oneDay,
 };
 
 export const MetricsExplorer: React.FC = () => {
@@ -218,10 +215,10 @@ export const MetricsExplorer: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalName, setModalName] = useState<ModalName>(ModalName.Dimensions);
   const [timeTab, setTimeTab] = useState<TimeMetricTabValue>(TimeMetricTabValue.Lookback);
-  const [selectedLookbackTimeRange, setSelectedLookbackTimeRange] = useState<SelectOption>(INITIAL_LOOKBACK_TIME_RANGE_VALUE);
+  const [selectedLookbackTimeRange, setSelectedLookbackTimeRange] = useState<LookbackSelectOption>(INITIAL_LOOKBACK_TIME_RANGE_VALUE);
   const [selectedCustomFromDate, setSelectedCustomFromDate] = useState<string>('');
   const [selectedCustomToDate, setSelectedCustomToDate] = useState<string>('');
-  const [selectedShowTimeRange, setSelectedShowTimeRange] = useState<SelectOption>(INITIAL_SHOW_TIME_RANGE_VALUE);
+  const [selectedShowTimeRange, setSelectedShowTimeRange] = useState<CustomTimeRangeSelectOption>(INITIAL_SHOW_TIME_RANGE_VALUE);
 
   const handleDimensionModalOpen = () => {
     setModalName(ModalName.Dimensions);
@@ -259,13 +256,13 @@ export const MetricsExplorer: React.FC = () => {
 
   const handleTimeTabChange = (event, newValue: TimeMetricTabValue) => setTimeTab(newValue);
 
-  const handleLookbackTimeRangeChange = (value: SelectOption) => setSelectedLookbackTimeRange(value);
+  const handleLookbackTimeRangeChange = (value: LookbackSelectOption) => setSelectedLookbackTimeRange(value);
 
   const handleCustomFromDateChange = (event: React.ChangeEvent<HTMLInputElement>) => setSelectedCustomFromDate(event.target.value);
 
   const handleCustomToDateChange = (event: React.ChangeEvent<HTMLInputElement>) => setSelectedCustomToDate(event.target.value);
 
-  const handleTimeRangeChange = (value: SelectOption) => setSelectedShowTimeRange(value);
+  const handleTimeRangeChange = (value: CustomTimeRangeSelectOption) => setSelectedShowTimeRange(value);
 
   const customizationtabOptions: CustomizationTabProps[] = [
     {
