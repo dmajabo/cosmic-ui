@@ -38,7 +38,7 @@ export enum LookbackLabel {
   oneMonth = 'Last Month',
 }
 
-const lookbackOptions: LookbackSelectOption[] = [
+const LOOKBACK_OPTIONS: LookbackSelectOption[] = [
   {
     label: LookbackLabel.fiveMinutes,
     value: LookbackValue.fiveMinutes,
@@ -86,7 +86,7 @@ export const LookbackTimeTab: React.FC<LookbackTimeTabProps> = ({ timeRange, han
   return (
     <div className={classes.lookbackContainer}>
       <div className={classes.tableHeaderText}>SHOW</div>
-      <Select className={classes.lookbackSelect} label="lookup select" value={timeRange} options={lookbackOptions} onChange={handleTimeRangeChange} />
+      <Select className={classes.lookbackSelect} label="lookup select" value={timeRange} options={LOOKBACK_OPTIONS} onChange={handleTimeRangeChange} />
     </div>
   );
 };
