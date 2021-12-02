@@ -387,6 +387,71 @@ export const AnalyticsStyles = makeStyles(
         width: 15,
         height: 15,
       },
+      timeTabContainer: {
+        position: 'relative',
+        right: 30,
+        width: '121%',
+        backgroundColor: '#F3F6FC',
+        padding: 3,
+      },
+      indicator: {
+        backgroundColor: 'transparent',
+      },
+      selectedTab: {
+        backgroundColor: 'white',
+        borderRadius: 6,
+      },
+      tableHeaderText: {
+        fontWeight: 700,
+        fontSize: 12,
+        color: '#848DA3',
+      },
+      lookbackContainer: {
+        position: 'relative',
+        right: 20,
+        marginTop: 10,
+      },
+      customContainer: {
+        position: 'relative',
+        right: 40,
+        marginTop: 10,
+        width: '130%',
+      },
+      lookbackSelect: {
+        margin: 10,
+        marginLeft: -5,
+        width: '110%',
+      },
+      dateTimeInput: {
+        height: 40,
+        width: '70%',
+        border: '1px solid #CBD2DC',
+        borderRadius: 6,
+      },
+      labelContainer: {
+        display: 'inline-block',
+        width: 50,
+      },
+      dateTimeLabelText: {
+        color: '#848DA3',
+        fontSize: 14,
+      },
+      blockContainer: {
+        display: 'block',
+        paddingTop: 5,
+        paddingBottom: 5,
+      },
+      showSelect: {
+        margin: 10,
+        marginLeft: -5,
+        width: '60%',
+      },
+      selectBlockContainer: {
+        display: 'block',
+        paddingTop: 5,
+        paddingBottom: 5,
+        marginLeft: 10,
+      },
     }),
   {
     index: 1,
