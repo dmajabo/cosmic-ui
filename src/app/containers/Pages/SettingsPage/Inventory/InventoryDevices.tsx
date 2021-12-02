@@ -15,6 +15,7 @@ import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import LoadingIndicator from 'app/components/Loading';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import { InventoryOptions } from './model';
+import { getSearchedList } from 'lib/helpers/listHelper';
 // import SettingsButton from 'app/components/Buttons/SettingsButton';
 // import PopupItem from 'app/components/Buttons/SettingsButton/PopupItem';
 // import { PopupContent } from 'app/components/Buttons/SettingsButton/PopupItemStyles';
@@ -22,6 +23,7 @@ import { InventoryOptions } from './model';
 // import { deleteIcon } from 'app/components/SVGIcons/delete';
 
 interface Props {
+  searchValue: string;
   columns: GridColDef[];
   selectedItems: GridSelectionModel;
   onSelectionModelChange: (selectionModel: GridSelectionModel, option: InventoryOptions) => void;
@@ -32,6 +34,7 @@ const InventoryDevices: React.FC<Props> = (props: Props) => {
   const userContext = React.useContext<UserContextState>(UserContext);
   const { loading, error, response, onGet } = useGet<ISitesRes>();
   const [dataRows, setDataRows] = React.useState<IDevice[]>([]);
+  const [filteredData, setFilteredData] = React.useState<IDevice[]>([]);
   const [totalCount, setTotalCount] = React.useState<number>(0);
   const [currentPage, setCurrentPage] = React.useState<number>(1);
   const [pageSize, setPageSize] = React.useState<number>(PAGING_DEFAULT_PAGE_SIZE);
@@ -45,10 +48,21 @@ const InventoryDevices: React.FC<Props> = (props: Props) => {
     if (response && response.devices) {
       const startIndex = (settings.loggingCurrentPage - 1) * settings.loggingPageSize;
       const _items = response.devices.map((it, i) => ({ ...it, rowIndex: i + startIndex }));
+      const _arr: IDevice[] = getSearchedList(dataRows, props.searchValue, ['name', 'extId', 'serial', 'model', 'description', 'networkId', 'publicIp', 'privateIp', 'hostname']);
       setDataRows(_items);
+      setFilteredData(_arr);
       setTotalCount(response.totalCount);
     }
   }, [response]);
+
+  React.useEffect(() => {
+    if (props.searchValue) {
+      const _items: IDevice[] = getSearchedList(dataRows, props.searchValue, ['name', 'extId', 'serial', 'model', 'description', 'networkId', 'publicIp', 'privateIp', 'hostname']);
+      setFilteredData(_items);
+    } else {
+      setFilteredData(dataRows);
+    }
+  }, [props.searchValue]);
 
   const onSelectionModelChange = (e: GridSelectionModel) => {
     props.onSelectionModelChange(e, InventoryOptions.DEVICE);
@@ -87,10 +101,10 @@ const InventoryDevices: React.FC<Props> = (props: Props) => {
         hideFooter
         headerHeight={50}
         rowHeight={70}
-        rowCount={dataRows.length}
+        rowCount={filteredData.length}
         disableColumnFilter
         autoHeight
-        rows={dataRows}
+        rows={filteredData}
         columns={props.columns}
         checkboxSelection
         disableSelectionOnClick
@@ -117,7 +131,7 @@ const InventoryDevices: React.FC<Props> = (props: Props) => {
           ColumnSortedDescendingIcon: () => <>{gridDescArrow}</>,
           Checkbox: ({ checked, onChange, indeterminate }) => <SimpleCheckbox isChecked={checked} toggleCheckboxChange={onChange} indeterminate={indeterminate} />,
         }}
-        pageSize={dataRows ? dataRows.length : 0}
+        pageSize={filteredData ? filteredData.length : 0}
       />
       <Paging count={totalCount} disabled={!dataRows.length} pageSize={pageSize} currentPage={currentPage} onChangePage={onChangeCurrentPage} onChangePageSize={onChangePageSize} />
     </>

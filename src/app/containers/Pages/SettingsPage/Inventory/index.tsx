@@ -389,8 +389,12 @@ const Inventory: React.FC<IProps> = (props: IProps) => {
         showToogle
         hideDelete
       />
-      {selectedOption.id === InventoryOptions.DEVICE && <InventoryDevices columns={gridDeviceColumns} selectedItems={deviceSelectionModel} onSelectionModelChange={onSelectionModelChange} />}
-      {selectedOption.id === InventoryOptions.CLOUD && <InventoryCloud columns={gridCloudColumns} selectedItems={cloudSelectionModel} onSelectionModelChange={onSelectionModelChange} />}
+      {selectedOption.id === InventoryOptions.DEVICE && (
+        <InventoryDevices searchValue={searchValue} columns={gridDeviceColumns} selectedItems={deviceSelectionModel} onSelectionModelChange={onSelectionModelChange} />
+      )}
+      {selectedOption.id === InventoryOptions.CLOUD && (
+        <InventoryCloud searchValue={searchValue} columns={gridCloudColumns} selectedItems={cloudSelectionModel} onSelectionModelChange={onSelectionModelChange} />
+      )}
     </>
   );
 };
