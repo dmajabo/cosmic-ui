@@ -1,3 +1,4 @@
+import { DEFAULT_TRANSITION } from 'lib/constants/general';
 import styled from 'styled-components';
 
 export const ContainerWithPanel = styled.div`
@@ -37,7 +38,7 @@ export const ContainerWithMetrics = styled.div`
     height: 100%;
   }
   transition-property: height;
-  transition: 0.3s linear;
+  transition: ${DEFAULT_TRANSITION};
 `;
 
 export const MapContainer = styled.div`
@@ -48,7 +49,7 @@ export const MapContainer = styled.div`
   height: 100%;
   flex: 1 1 100%;
   transition-property: width;
-  transition: 0.3s linear;
+  transition: ${DEFAULT_TRANSITION};
   padding: 0;
 `;
 

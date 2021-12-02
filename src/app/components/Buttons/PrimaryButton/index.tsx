@@ -10,6 +10,8 @@ interface IProps {
   onClick: () => void;
   disabled?: boolean;
   styles?: Object;
+  width?: string;
+  height?: string;
   color?: string;
   bgColor?: string;
   borderColor?: string;
@@ -28,6 +30,8 @@ const PrimaryButton: React.FC<IProps> = ({
   onClick,
   disabled,
   styles,
+  width,
+  height,
   color,
   bgColor,
   borderColor,
@@ -41,6 +45,8 @@ const PrimaryButton: React.FC<IProps> = ({
   return (
     <PrimaryButtonStyles
       color={color}
+      width={width}
+      height={height}
       bgColor={bgColor}
       borderColor={borderColor}
       hoverColor={hoverColor}

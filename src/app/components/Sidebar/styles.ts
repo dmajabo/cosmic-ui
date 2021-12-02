@@ -1,16 +1,16 @@
+import { DEFAULT_TRANSITION } from 'lib/constants/general';
 import styled from 'styled-components';
 
 export const sideBarCloseWidth = '90px';
 export const sideBarOpenWidth = '320px';
-export const sideBarTransition = '0.8s ease-in-out';
 export const WrapText = styled.p`
   font-size: 18px;
   font-weight: 700;
   color: inherit;
   margin: auto 0 auto 15px;
   white-space: nowrap;
-  width: calc(100% - 63px);
-  transition: width ${sideBarTransition};
+  width: calc(100% - 41px);
+  transition: width ${DEFAULT_TRANSITION};
   overflow: hidden;
   text-overflow: ellipsis;
   span {
@@ -25,7 +25,7 @@ export const WrapSidebar = styled.div<WrapSidebarProps>`
   background-color: var(--_primaryColor);
   height: 100%;
   position: fixed;
-  transition: width ${sideBarTransition};
+  transition: width ${DEFAULT_TRANSITION};
   width: ${props => (props.isOpen ? sideBarOpenWidth : sideBarCloseWidth)};
   overflow: auto;
   flex-shrink: 0;
@@ -33,26 +33,96 @@ export const WrapSidebar = styled.div<WrapSidebarProps>`
   z-index: 101;
   display: flex;
   flex-direction: column;
+  overflow-x: hidden;
   ${WrapText} {
-    width: ${props => (props.isOpen ? 'calc(100% - 63px)' : '0')};
+    width: ${props => (props.isOpen ? 'calc(100% - 41px)' : '0')};
   }
+`;
+
+export const LogoWrapper = styled.div`
+  display: flex;
+  margin: 16px auto;
+  flex-shrink: 0;
+  padding: 0 21px;
+  height: 48px;
+  align-items: center;
+`;
+
+export const TransitionWrapper = styled.div<WrapSidebarProps>`
+  display: flex;
+  overflow: hidden;
+  cursor: pointer;
+  flex-shrink: 0;
+  width: auto;
+  max-width: ${props => (props.isOpen ? '100%' : '48px')};
+  transition: max-width ${DEFAULT_TRANSITION};
 `;
 
 export const Logo = styled.div`
   flex-shrink: 0;
-  width: 69px;
-  height: 69px;
-  margin: 0 auto 38px 0;
-  padding: 21px 0 0 21px;
-  cursor: pointer;
+  width: 48px;
+  height: 48px;
 `;
 
-export const Demo = styled.div`
+export const LogoLabel = styled.span`
+  display: inline-block;
   flex-shrink: 0;
-  width: 34px;
-  height: 54px;
-  padding: 16px 0 0 0;
-  margin: auto auto 16px auto;
+  margin: 0 0 0 10px;
+  color: var(--_primaryTextColor);
+  font-size: 30px;
+  line-height: 48px;
+  font-style: normal;
+  font-weight: 700;
+`;
+
+export const DemoLabel = styled.span`
+  font-family: 'DMSans';
+  font-style: normal;
+  font-weight: bold;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0.1em;
+  margin: auto 0 auto 18px;
+  white-space: nowrap;
+  color: inherit;
+`;
+
+export const DemoBorder = styled.div<WrapSidebarProps>`
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  border: 1px solid #fbfcfe;
+  border-radius: 6px;
+  opacity: ${props => (props.isOpen ? '0.2' : '0')};
+  transition: opacity ${DEFAULT_TRANSITION};
+`;
+
+export const Demo = styled.div<WrapSidebarProps>`
+  display: flex;
+  position: relative;
+  margin: auto auto 34px auto;
+  flex-shrink: 0;
+  height: 55px;
+  padding: 10px 17px;
+  overflow: hidden;
+  color: var(--_primaryTextColor);
+  width: ${props => (props.isOpen ? '160px' : '65px')};
+  transition-property: width;
+  transition: ${DEFAULT_TRANSITION};
+  cursor: pointer;
+  &:hover {
+    ${DemoBorder} {
+      opacity: ${props => (props.isOpen ? '0.5' : '0')};
+    }
+  }
+  .demoIcon {
+    flex-shrink: 0;
+    width: 31px;
+    height: 100%;
+  }
 `;
 
 export const List = styled.div`
@@ -70,7 +140,7 @@ export const HighlightBg = styled.div`
   left: 0;
   opacity: 0;
   background: transparent;
-  transition: opacity 0.3s linear;
+  transition: opacity ${DEFAULT_TRANSITION};
 `;
 
 export const HighlightBorder = styled.div`
@@ -83,7 +153,7 @@ export const HighlightBorder = styled.div`
   top: 0;
   left: 0;
   opacity: 0;
-  transition: opacity 0.3s linear;
+  transition: opacity ${DEFAULT_TRANSITION};
 `;
 
 export const StyledListLink = styled.div`
@@ -100,17 +170,19 @@ export const StyledListLink = styled.div`
   text-decoration: none;
   border: none;
   background: transparent;
-  transition: background 0.3s linear;
-  color: var(--_secondaryTextColor);
-  svg {
-    opacity: 0.3;
-    transition: opacity 0.3s linear;
+  color: var(--_defaultIconColor);
+  transition-property: background, color;
+  transition: ${DEFAULT_TRANSITION};
+  svg .routeIcon {
+    fill: var(--_defaultIconColor);
+    transition: fill ${DEFAULT_TRANSITION};
   }
+
   &:hover,
   &.active {
     color: var(--_primaryTextColor);
-    svg {
-      opacity: 1;
+    svg .routeIcon {
+      fill: var(--_primaryTextColor);
     }
     ${HighlightBorder} {
       opacity: 1;

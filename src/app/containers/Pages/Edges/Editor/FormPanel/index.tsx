@@ -15,7 +15,7 @@ import ExpandedIcon from 'app/components/Basic/ExpandedIcon';
 import PanelHeader from 'app/containers/Pages/AutomationPage/Components/PanelHeader';
 import SecondaryButton from 'app/components/Buttons/SecondaryButton';
 import accordionStyles from 'app/containers/Pages/AutomationPage/styles/AccordionStyles';
-import { IEdgeP } from 'lib/api/ApiModels/Edges/apiModel';
+import { IEdgeP, IEdgePolicy } from 'lib/api/ApiModels/Edges/apiModel';
 import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
 import GeneralPreview from './GeneralPreview';
 import TransitPreview from './TransitPreview';
@@ -37,6 +37,7 @@ interface Props {
   onDeleteSitesGroup: (gr: ITopologyGroup) => void;
   onDeleteAppsGroup: (gr: ITopologyGroup) => void;
   onToogleAccordionItem: (id: EdgesStepperTypes) => void;
+  onChangePolicyField: (items: IEdgePolicy[]) => void;
   onClose: () => void;
   onSave: () => void;
 }
@@ -183,13 +184,18 @@ const FormPanel: React.FC<Props> = (props: Props) => {
             </AccordionHeaderPanel>
           </AccordionSummary>
           <AccordionDetails className={AccordionStyles.deteilItemEdges}>
-            <PolicyStep policies={props.dataItem.policies} onChange={(v: any, f: string) => props.onChangeField(v, f, EdgesStepperTypes.POLICY)} />
+            <PolicyStep siteGroupIds={props.dataItem.siteGroupIds} appGroupIds={props.dataItem.appGroupIds} policies={props.dataItem.policies} onChange={props.onChangePolicyField} />
           </AccordionDetails>
         </Accordion>
       </PanelContent>
       <PanelFotter>
         <SecondaryButton styles={{ height: '100%', margin: '0 10px 0 0' }} label="Cancel" onClick={props.onClose} />
-        <PrimaryButton disabled={props.saveDisabled} styles={{ height: '100%', margin: '0 0 0 10px' }} label="CREATE EDGE" onClick={props.onSave} />
+        <PrimaryButton
+          disabled={props.saveDisabled}
+          styles={{ height: '100%', margin: '0 0 0 10px' }}
+          label={props.dataItem && props.dataItem.id ? 'UPDATE EDGE' : 'CREATE EDGE'}
+          onClick={props.onSave}
+        />
       </PanelFotter>
     </>
   );

@@ -45,10 +45,14 @@ export const DeleteWrapper = styled.div`
   position: relative;
 `;
 
-export const IconStyles = styled.div`
+interface IconProps {
+  width?: string;
+  height?: string;
+}
+export const IconStyles = styled.div<IconProps>`
   margin: 0 auto 30px auto;
-  width: 140px;
-  height: 140px;
+  width: ${props => props.width || '140px'};
+  height: ${props => props.height || '140px'};
   display: flex;
   align-items: center;
   justify-content: center;

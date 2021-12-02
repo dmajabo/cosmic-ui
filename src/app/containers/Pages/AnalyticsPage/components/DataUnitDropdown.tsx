@@ -1,41 +1,65 @@
 import React from 'react';
 import { AnalyticsStyles } from '../AnalyticsStyles';
 import Select from 'react-select';
-import { SelectOption } from './MetricsExplorer';
 
 interface DataUnitDropdownProps {
-  readonly dataUnit: SelectOption;
-  readonly handleDataUnitChange: (value: SelectOption) => void;
+  readonly dataUnit: DataUnitSelectOption;
+  readonly handleDataUnitChange: (value: DataUnitSelectOption) => void;
 }
 
-const dataUnitOptions: SelectOption[] = [
+export interface DataUnitSelectOption {
+  readonly label: DataUnitLabel;
+  readonly value: DataUnitValue;
+}
+
+export enum DataUnitLabel {
+  bits = 'bits/s',
+  packets = 'packets/s',
+  flows = 'flows/s',
+  uniqueSrcIp = `Unique Src IP's`,
+  uniqueDstIp = `Unique Dst IP's`,
+  uniqueSrcPrefixes = 'Unique Src Prefixes',
+  uniqueDstPrefixes = 'Unique Dst Prefixes',
+}
+
+export enum DataUnitValue {
+  bits = 'bits/s',
+  packets = 'packets/s',
+  flows = 'flows/s',
+  uniqueSrcIp = 'unique_src_ip',
+  uniqueDstIp = 'unique_dst_ip',
+  uniqueSrcPrefixes = 'unique_src_prefixes',
+  uniqueDstPrefixes = 'unique_dst_prefixes',
+}
+
+const DATA_UNIT_OPTIONS: DataUnitSelectOption[] = [
   {
-    label: 'bits/s',
-    value: 'bits/s',
+    label: DataUnitLabel.bits,
+    value: DataUnitValue.bits,
   },
   {
-    label: 'packets/s',
-    value: 'packets/s',
+    label: DataUnitLabel.packets,
+    value: DataUnitValue.packets,
   },
   {
-    label: 'flows/s',
-    value: 'flows/s',
+    label: DataUnitLabel.flows,
+    value: DataUnitValue.flows,
   },
   {
-    label: `Unique Src IP's`,
-    value: 'unique_src_ip',
+    label: DataUnitLabel.uniqueSrcIp,
+    value: DataUnitValue.uniqueSrcIp,
   },
   {
-    label: `Unique Dest IP's`,
-    value: 'unique_dest_ip',
+    label: DataUnitLabel.uniqueDstIp,
+    value: DataUnitValue.uniqueDstIp,
   },
   {
-    label: `Unique Src Prefixes`,
-    value: 'unique_src_prefixes',
+    label: DataUnitLabel.uniqueSrcPrefixes,
+    value: DataUnitValue.uniqueSrcPrefixes,
   },
   {
-    label: `Unique Dest Prefixes`,
-    value: 'unique_dest_prefixes',
+    label: DataUnitLabel.uniqueDstPrefixes,
+    value: DataUnitValue.uniqueDstPrefixes,
   },
 ];
 
@@ -43,7 +67,7 @@ export const DataUnitDropdown: React.FC<DataUnitDropdownProps> = ({ dataUnit, ha
   const classes = AnalyticsStyles();
   return (
     <div className={classes.lookbackContainer}>
-      <Select className={classes.lookbackSelect} label="lookup select" value={dataUnit} options={dataUnitOptions} onChange={e => handleDataUnitChange(e)} />
+      <Select className={classes.lookbackSelect} label="lookup select" value={dataUnit} options={DATA_UNIT_OPTIONS} onChange={handleDataUnitChange} />
     </div>
   );
 };

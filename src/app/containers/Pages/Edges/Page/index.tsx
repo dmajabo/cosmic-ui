@@ -4,8 +4,6 @@ import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 import LoadingIndicator from 'app/components/Loading';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import { useEdgesDataContext } from 'lib/hooks/Edges/useEdgesDataContext';
-import Setuper from '../Setuper';
-import { PageWrapperStyles } from '../../Shared/styles';
 import { IEdgeP, IEdgesRes } from 'lib/api/ApiModels/Edges/apiModel';
 import Editor from '../Editor';
 import { useBreadCrumbDataContext } from 'lib/hooks/Breadcrumb/useBreadcrumbDataContext';
@@ -15,6 +13,10 @@ import { IAccountsRes, IAwsRegionsRes } from 'lib/api/ApiModels/Accounts/apiMode
 import { EdgesApi } from 'lib/api/ApiModels/Edges/edpoints';
 import EdgeList from '../EdgeList';
 import { ITopologyGroupsData, TopologyGroupApi } from 'lib/api/ApiModels/Topology/endpoints';
+import EmptyPage from 'app/components/Basic/EmptyPage';
+import { StepperText } from 'app/components/Basic/EmptyPage/styles';
+import imgBg from 'app/images/EdgesMap.png';
+
 interface Props {}
 
 const MainPage: React.FC<Props> = (props: Props) => {
@@ -102,7 +104,8 @@ const MainPage: React.FC<Props> = (props: Props) => {
   };
 
   const onOpenEditor = (_item?: IEdgeP) => {
-    breadcrumb.onGoToEdges(EdgesBreadCrumbItemsType.CREATE);
+    const _bredCrumbState = _item && _item.id ? EdgesBreadCrumbItemsType.EDIT : EdgesBreadCrumbItemsType.CREATE;
+    breadcrumb.onGoToEdges(_bredCrumbState);
     setEdgeDataItem(_item || null);
   };
 
@@ -133,10 +136,17 @@ const MainPage: React.FC<Props> = (props: Props) => {
   }
   if (edges.dataReadyToShow) {
     return (
-      <PageWrapperStyles>
-        {!edges.data || !edges.data.length ? <Setuper onGoToEditor={onOpenEditor} /> : null}
-        {edges.data && edges.data.length && <EdgeList data={edges.data} onCreate={onOpenEditor} onEdit={onOpenEditor} onDelete={onDeleteEdge} />}
-      </PageWrapperStyles>
+      <>
+        {!edges.data || !edges.data.length ? (
+          <EmptyPage iconStyles={{ width: '80vw', maxWidth: '834px', height: '50vw', maxHeight: '416px' }} iconAsString={imgBg} buttonLabel="Create Edge" onClick={() => onOpenEditor()}>
+            <StepperText highLight margin="0 auto 20px auto">
+              There is no created edges yet
+            </StepperText>
+            <StepperText margin="0 auto">To create an edge click on the button below.</StepperText>
+          </EmptyPage>
+        ) : null}
+        {edges.data && edges.data.length ? <EdgeList data={edges.data} onCreate={onOpenEditor} onEdit={onOpenEditor} onDelete={onDeleteEdge} /> : null}
+      </>
     );
   }
 

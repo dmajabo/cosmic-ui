@@ -73,7 +73,7 @@ const EdgeItem: React.FC<Props> = ({ dataItem, onEdit, onDelete }) => {
         </DataItemsRow>
       </EdgeContent>
       <EdgeFooter>
-        <ValueItem margin="auto 6px auto 0">
+        <ValueItem margin="6px 6px 6px 0">
           <ItemLabel fontSize="16px" lineHeight="21px" color="var(--_primaryColor)" fontWeight="500">
             Traffic:
           </ItemLabel>
@@ -82,7 +82,7 @@ const EdgeItem: React.FC<Props> = ({ dataItem, onEdit, onDelete }) => {
             8 Mbit/s
           </ItemValue>
         </ValueItem>
-        <ValueItem margin="auto 6px">
+        <ValueItem margin="6px 6px 6px 0">
           <ItemLabel fontSize="16px" lineHeight="21px" color="var(--_primaryColor)" fontWeight="500">
             Status:
           </ItemLabel>
@@ -91,7 +91,7 @@ const EdgeItem: React.FC<Props> = ({ dataItem, onEdit, onDelete }) => {
             Acive
           </ItemValue>
         </ValueItem>
-        <ValueItem margin="auto 0 auto 6px">
+        <ValueItem margin="6px 0">
           <IconWrapper icon={deployedSuccessIcon} styles={{ margin: '0 6px 0 0' }} />
           <ItemValue fontSize="14px" lineHeight="18px" color="var(--_successColor)">
             Deployed

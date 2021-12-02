@@ -8,9 +8,9 @@ import TagItem from './TagItem';
 import { AutoCompleteStyles } from './AutoCompleteStyles';
 import { arrowBottomIcon } from 'app/components/SVGIcons/arrows';
 import { closeSmallIcon } from 'app/components/SVGIcons/close';
-import { TextInputWrapper } from '../TextInput/styles';
 import { InputLabel } from '../styles/Label';
 import { Required } from '../FormTextInput/styles';
+import { AutoCompleteWrapper } from './styles';
 interface Props {
   id: string;
   options: string[];
@@ -24,8 +24,8 @@ interface Props {
   simpleTag?: boolean;
 }
 
-const CustomAutocomplete: React.FC<Props> = ({ id, options, value, onChange, styles, label, disabled, readOnly, required, simpleTag }) => {
-  const [textValue, setTextValue] = React.useState<string[]>(value || []);
+const CustomAutocomplete: React.FC<Props> = (props: Props) => {
+  const [textValue, setTextValue] = React.useState<string[]>(props.value || []);
   const [inputValue, setInputValue] = React.useState('');
   const [isTyping, setIsTyping] = React.useState(false);
   const debouncedSearchTerm = useDebounce(textValue, 500);
@@ -33,9 +33,13 @@ const CustomAutocomplete: React.FC<Props> = ({ id, options, value, onChange, sty
   React.useEffect(() => {
     if ((debouncedSearchTerm || debouncedSearchTerm === '' || debouncedSearchTerm === null) && isTyping) {
       setIsTyping(false);
-      onChange(textValue);
+      props.onChange(textValue);
     }
   }, [debouncedSearchTerm]);
+
+  React.useEffect(() => {
+    setTextValue(props.value);
+  }, [props.value]);
 
   const handleInputChange = (event, newInputValue) => {
     setInputValue(newInputValue);
@@ -47,17 +51,16 @@ const CustomAutocomplete: React.FC<Props> = ({ id, options, value, onChange, sty
   };
 
   return (
-    <TextInputWrapper style={styles}>
-      <InputLabel disabled={disabled || readOnly}>
-        {label}
-        {required && <Required>*</Required>}
+    <AutoCompleteWrapper style={props.styles}>
+      <InputLabel disabled={props.disabled || props.readOnly}>
+        {props.label}
+        {props.required && <Required>*</Required>}
       </InputLabel>
       <Autocomplete
         multiple
-        className={classes.root}
         classes={{ paper: classes.paper, listbox: classes.listbox }}
-        id={id}
-        options={options}
+        id={props.id}
+        options={props.options}
         disableCloseOnSelect
         getOptionLabel={option => option}
         renderOption={(props, option, { selected }) => (
@@ -75,14 +78,14 @@ const CustomAutocomplete: React.FC<Props> = ({ id, options, value, onChange, sty
         inputValue={inputValue}
         onInputChange={handleInputChange}
         renderTags={(value: readonly string[], getTagProps) => {
-          if (simpleTag) {
+          if (props.simpleTag) {
             return value.join(', ');
           }
           return value.map((option: string, index: number) => <TagItem tagValue={option} {...getTagProps({ index })} />);
         }}
         renderInput={params => <TextField {...params} />}
       />
-    </TextInputWrapper>
+    </AutoCompleteWrapper>
   );
 };
 

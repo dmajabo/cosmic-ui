@@ -1,53 +1,83 @@
 import React from 'react';
 import { AnalyticsStyles } from '../AnalyticsStyles';
 import Select from 'react-select';
-import { SelectOption } from './MetricsExplorer';
 
-interface LookbackTimeTabProps {
-  readonly timeRange: SelectOption;
-  readonly handleTimeRangeChange: (value: SelectOption) => void;
+export interface LookbackSelectOption {
+  readonly label: LookbackLabel;
+  readonly value: LookbackValue;
 }
 
-const lookbackOptions: SelectOption[] = [
+interface LookbackTimeTabProps {
+  readonly timeRange: LookbackSelectOption;
+  readonly handleTimeRangeChange: (value: LookbackSelectOption) => void;
+}
+
+export enum LookbackValue {
+  fiveMinutes = '-5m',
+  fifteenMinutes = '-15m',
+  thirtyMinutes = '-30m',
+  oneHour = '-1h',
+  sixHours = '-6h',
+  twelveHours = '-12h',
+  twentyFourHours = '-24h',
+  oneDay = '-1d',
+  oneWeek = '-7d',
+  oneMonth = '-30d',
+}
+
+export enum LookbackLabel {
+  fiveMinutes = 'Last 5 minutes',
+  fifteenMinutes = 'Last 15 minutes',
+  thirtyMinutes = 'Last 30 minutes',
+  oneHour = 'Last Hour',
+  sixHours = 'Last 6 Hours',
+  twelveHours = 'Last 12 Hours',
+  twentyFourHours = 'Last 24 Hours',
+  oneDay = 'Last Day',
+  oneWeek = 'Last Week',
+  oneMonth = 'Last Month',
+}
+
+const LOOKBACK_OPTIONS: LookbackSelectOption[] = [
   {
-    label: 'Last 5 minutes',
-    value: '-5m',
+    label: LookbackLabel.fiveMinutes,
+    value: LookbackValue.fiveMinutes,
   },
   {
-    label: 'Last 15 minutes',
-    value: '-15m',
+    label: LookbackLabel.fifteenMinutes,
+    value: LookbackValue.fifteenMinutes,
   },
   {
-    label: 'Last 30 minutes',
-    value: '-30m',
+    label: LookbackLabel.thirtyMinutes,
+    value: LookbackValue.thirtyMinutes,
   },
   {
-    label: 'Last Hour',
-    value: '-1h',
+    label: LookbackLabel.oneHour,
+    value: LookbackValue.oneHour,
   },
   {
-    label: 'Last 6 Hours',
-    value: '-6h',
+    label: LookbackLabel.sixHours,
+    value: LookbackValue.sixHours,
   },
   {
-    label: 'Last 12 Hours',
-    value: '-12h',
+    label: LookbackLabel.twelveHours,
+    value: LookbackValue.twelveHours,
   },
   {
-    label: 'Last 24 Hours',
-    value: '-24h',
+    label: LookbackLabel.twentyFourHours,
+    value: LookbackValue.twentyFourHours,
   },
   {
-    label: 'Last Day',
-    value: '-1d',
+    label: LookbackLabel.oneDay,
+    value: LookbackValue.oneDay,
   },
   {
-    label: 'Last Week',
-    value: '-7d',
+    label: LookbackLabel.oneWeek,
+    value: LookbackValue.oneWeek,
   },
   {
-    label: 'Last Month',
-    value: '-30d',
+    label: LookbackLabel.oneMonth,
+    value: LookbackValue.oneMonth,
   },
 ];
 
@@ -56,7 +86,7 @@ export const LookbackTimeTab: React.FC<LookbackTimeTabProps> = ({ timeRange, han
   return (
     <div className={classes.lookbackContainer}>
       <div className={classes.tableHeaderText}>SHOW</div>
-      <Select className={classes.lookbackSelect} label="lookup select" value={timeRange} options={lookbackOptions} onChange={e => handleTimeRangeChange(e)} />
+      <Select className={classes.lookbackSelect} label="lookup select" value={timeRange} options={LOOKBACK_OPTIONS} onChange={handleTimeRangeChange} />
     </div>
   );
 };

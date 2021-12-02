@@ -3,7 +3,7 @@ import { sankey, sankeyLinkHorizontal } from 'd3-sankey';
 import { ISankeyData, SankeyNodeType } from 'lib/api/ApiModels/Sessions/apiModel';
 import { jsonClone } from 'lib/helpers/cloneHelper';
 
-export const createSankeyChart = (id: string, data: ISankeyData) => {
+export const createSankeyChart = (id: string, data: ISankeyData, linkClickCallBack: (e: any, link: any) => void) => {
   const container = d3.select(`#${id}`);
   container.select(`#sankeyHeader`).attr('opacity', 0);
   container.select('#sankeyChartContainerLinks').selectAll('*').remove();
@@ -11,11 +11,11 @@ export const createSankeyChart = (id: string, data: ISankeyData) => {
   if (!data) return;
   const _data: ISankeyData = jsonClone(data);
   const size = container.node().getBoundingClientRect();
-  drawSankey(container, size, _data);
+  drawSankey(container, size, _data, linkClickCallBack);
   container.select(`#sankeyHeader`).attr('opacity', 1);
 };
 
-const drawSankey = (container, size, data: ISankeyData) => {
+const drawSankey = (container, size, data: ISankeyData, linkClickCallBack: (e: any, link: any) => void) => {
   const rootG = container.select('#sankeyChartContainerRoot');
   const _sankey = sankey()
     .nodeId(d => d.node)
@@ -27,11 +27,11 @@ const drawSankey = (container, size, data: ISankeyData) => {
     .size([size.width - 60, size.height - 82])
     .iterations(32);
   _sankey(data);
-  createLinks(rootG, data.links);
+  createLinks(rootG, data.links, linkClickCallBack);
   createNodes(rootG, data.nodes);
 };
 
-const createLinks = (g: any, links: any[]) => {
+const createLinks = (g: any, links: any[], linkClickCallBack: (e: any, link: any) => void) => {
   const _linksG = g.select('#sankeyChartContainerLinks');
   const link = _linksG.selectAll('.link').data(links).enter();
   const _pathEl = link.append('path').classed('link', true);
@@ -52,10 +52,41 @@ const createLinks = (g: any, links: any[]) => {
     })
 
     .attr('stroke-width', d => Math.max(1, d.width));
-  _pathEl.on('mouseenter', onRaise);
+  _pathEl.on('mouseenter', onRaise).on('mouseleave', onLeave);
+  _pathEl.on('click', (e, d) => linkClickCallBack(e, d));
 
   function onRaise(this: any, e) {
-    d3.select(this).raise();
+    const _link = d3.select(this);
+    _link.raise();
+    _link.attr('stroke-width', d => Math.max(4, d.width));
+    const _snodeId = _link.attr('data-source');
+    const _tnodeId = _link.attr('data-target');
+    const _sNode = d3.select(`rect[data-node='${_snodeId}']`);
+    const _tNode = d3.select(`rect[data-node='${_tnodeId}']`);
+    _sNode
+      .attr('height', d => Math.max(4, d.y1 - d.y0))
+      .attr('y', d => {
+        const _h = Math.max(4, d.y1 - d.y0);
+        if (_h === 4) return -2;
+        return 0;
+      });
+    _tNode
+      .attr('height', d => Math.max(4, d.y1 - d.y0))
+      .attr('y', d => {
+        const _h = Math.max(4, d.y1 - d.y0);
+        if (_h === 4) return -2;
+        return 0;
+      });
+  }
+  function onLeave(this: any, e) {
+    const _link = d3.select(this);
+    _link.attr('stroke-width', d => Math.max(1, d.width));
+    const _snodeId = _link.attr('data-source');
+    const _tnodeId = _link.attr('data-target');
+    const _sNode = d3.select(`rect[data-node='${_snodeId}']`);
+    const _tNode = d3.select(`rect[data-node='${_tnodeId}']`);
+    _sNode.attr('height', d => Math.max(1, d.y1 - d.y0)).attr('y', 0);
+    _tNode.attr('height', d => Math.max(1, d.y1 - d.y0)).attr('y', 0);
   }
 };
 
@@ -81,6 +112,8 @@ const buildNode = (nodeContainer: any) => {
       return 'var(--_pButtonBg)';
     })
     .attr('stroke', '#F3F6FC')
+    .attr('data-name', d => d.name)
+    .attr('data-node', d => d.node)
     .append('title')
     .text(d => d.name || `ID: ${d.node}\nType: ${d.type}`);
   textG

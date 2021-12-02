@@ -59,18 +59,17 @@ export function useEdgeZoom(props: IProps) {
   const onCentered = () => {
     const svg = d3.select(`#${svgId}`);
     const root = d3.select(`#${scaleRootId}`);
-    const svgSize = document.getElementById(svgId).getBoundingClientRect();
     const rootSize = root.node().getBBox();
-    const devWidth = rootSize.width;
     const devHeight = rootSize.height;
-    const scale = getScaleSizeHelper(svgSize, devWidth, devHeight);
-    zoom.translateTo(svg, svgSize.width / 2, svgSize.height / 2);
-    zoom.scaleTo(svg, scale);
+    const scale = getScaleSizeHelper(890, 816, 794, devHeight);
+    const translateX = 890 / 2 - (794 * scale) / 2 - rootSize.x * scale;
+    const translateY = 816 / 2 - (rootSize.height * scale) / 2 - rootSize.y * scale;
+    svg.call(zoom.transform, d3.zoomIdentity.translate(translateX, translateY).scale(scale));
   };
 
-  const getScaleSizeHelper = (svg, width, height) => {
-    const scaleX = Math.min(1, (svg.width - 50) / width);
-    const scaleY = Math.min(1, (svg.height - 50) / height);
+  const getScaleSizeHelper = (svgW, svgH, width, height) => {
+    const scaleX = Math.min(1, (svgW - 50) / width);
+    const scaleY = Math.min(1, (svgH - 50) / height);
     let k = Math.min(scaleX, scaleY);
     k = checkMinMaxScale(k);
     return k;

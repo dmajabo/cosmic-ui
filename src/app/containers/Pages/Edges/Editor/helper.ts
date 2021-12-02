@@ -12,13 +12,15 @@ export const updateSteps = (steps: IStepperItem<EdgesStepperTypes>[], dataItem: 
       return;
     }
     if (step.id === EdgesStepperTypes.SITES) {
-      step.disabled = false;
+      const _completed = checkIsStepCompleted(dataItem.siteGroupIds);
+      step.state = !_completed ? StepperItemStateType.EMPTY : StepperItemStateType.COMPLETE;
       // const _completed = checkIsStepCompleted(dataItem.actions);
       // step.state = !_completed ? StepperItemStateType.EMPTY : StepperItemStateType.COMPLETE;
       return;
     }
     if (step.id === EdgesStepperTypes.APPS) {
-      step.disabled = false;
+      const _completed = checkIsStepCompleted(dataItem.appGroupIds);
+      step.state = !_completed ? StepperItemStateType.EMPTY : StepperItemStateType.COMPLETE;
       // const _completed = checkIsStepCompleted(dataItem.actions);
       // step.state = !_completed ? StepperItemStateType.EMPTY : StepperItemStateType.COMPLETE;
       return;

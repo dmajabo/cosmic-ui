@@ -1,26 +1,21 @@
 import { IBaseTotalCount } from 'lib/models/general';
 import { IDevice, IVm } from 'lib/models/topology';
-import { VendorTypes } from '../Topology/endpoints';
 
-export enum PolicyDestinations {
-  DEST_TRUE = 'dest_true',
-  DEST_FAlSE = 'dest_false',
-}
 export enum PolicyActions {
-  ALLOW = 'allow',
-  CUSTOM = 'custom',
+  ALLOW = 'Allow',
+  CUSTOM = 'Custom',
 }
 
 export interface IEdgePolicy {
-  source: VendorTypes;
-  destination: PolicyDestinations;
+  source: string;
+  destination: string;
   action: PolicyActions;
 }
 
 export enum ValidationFields {
   // GENERAL
   NAME = 'name',
-  CONNECTION = 'connections',
+  CONNECTION = 'connectionPolicy',
   TAGS = 'tags',
   // DEPLOYMENT
   CONTROLLER_NAME = 'controllerName',
@@ -34,14 +29,14 @@ export interface IDeploymentP {
 }
 
 export enum ConnectionPKeysMap {
-  enableNetworklink = 'vpc',
-  enableVpnlink = 'vpn',
+  enableNetworkLink = 'VPC',
+  enableVpnLink = 'VPN',
 }
 
-export const getNewConnectionP = (): IConnectionP => ({ enableNetworklink: false, enableVpnlink: false });
+export const getNewConnectionP = (): IConnectionP => ({ enableNetworkLink: false, enableVpnLink: false });
 export interface IConnectionP {
-  enableNetworklink: boolean;
-  enableVpnlink: boolean;
+  enableNetworkLink: boolean;
+  enableVpnLink: boolean;
 }
 
 export enum NwServiceT {

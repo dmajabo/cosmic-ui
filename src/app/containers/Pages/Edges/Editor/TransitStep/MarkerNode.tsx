@@ -17,7 +17,7 @@ const MarkerNode: React.FC<Props> = ({ region, onClick, index, selectedList }) =
   };
   return (
     <Marker onClick={onSelectRegion}>
-      <SimpleCheckbox isChecked={!!(selectedList && selectedList.length && selectedList.find(it => it.id === region.id))} />
+      <SimpleCheckbox readOnly inputStyles={{ pointerEvents: 'none' }} isChecked={!!(selectedList && selectedList.length && selectedList.find(it => it.id === region.id))} />
       <IconWrapper icon={awsIcon(30)} styles={{ margin: 'auto 12px auto 16px' }} />
       <MarkerContent>
         <MarkerRegion>{region.city}</MarkerRegion>

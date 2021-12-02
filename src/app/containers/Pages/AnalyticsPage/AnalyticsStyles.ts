@@ -420,7 +420,7 @@ export const AnalyticsStyles = makeStyles(
       lookbackSelect: {
         margin: 10,
         marginLeft: -5,
-        width: '110%',
+        width: '120%',
       },
       dateTimeInput: {
         height: 40,

@@ -1,3 +1,4 @@
+import { DEFAULT_TRANSITION } from 'lib/constants/general';
 import styled from 'styled-components';
 interface TableProps {
   minHeight?: string;
@@ -43,7 +44,7 @@ export const TableContainer = styled.div<TableProps>`
     }
     .bodyRow {
       background: var(--_primaryBg);
-      transition: background 0.3s linear;
+      transition: background ${DEFAULT_TRANSITION};
     }
     .expandedRow,
     .nestedRow {

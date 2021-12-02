@@ -9,35 +9,36 @@ interface IProps {
   data: ISankeyRes;
   loading: boolean;
   errorMessage: string;
+  onLoadDetails: (netName: string, destName: string) => void;
 }
 
-const ChartComponent: React.FC<IProps> = ({ loading, errorMessage, data }) => {
+const ChartComponent: React.FC<IProps> = (props: IProps) => {
   const [emptyMessage, setEmptyMessage] = React.useState<string>(null);
 
   React.useEffect(() => {
-    if (loading && emptyMessage) {
+    if (props.loading && emptyMessage) {
       setEmptyMessage(null);
     }
-  }, [loading]);
+  }, [props.loading]);
 
   React.useEffect(() => {
-    if (data && (!data.sankey || !data.sankey.nodes || !data.sankey.nodes.length || !data.sankey.links || !data.sankey.links.length)) {
+    if (props.data && (!props.data.sankey || !props.data.sankey.nodes || !props.data.sankey.nodes.length || !props.data.sankey.links || !props.data.sankey.links.length)) {
       setEmptyMessage('The data is empty');
     } else {
       setEmptyMessage(null);
     }
-  }, [data]);
+  }, [props.data]);
   return (
     <>
       <ChartWrapper height="660px" padding="0">
-        {loading && (
+        {props.loading && (
           <AbsLoaderWrapper width="100%" height="100%">
             <LoadingIndicator margin="auto" />
           </AbsLoaderWrapper>
         )}
-        {errorMessage && !loading && (
+        {props.errorMessage && !props.loading && (
           <ErrorMessage margin="auto" fontSize={18}>
-            {errorMessage}
+            {props.errorMessage}
           </ErrorMessage>
         )}
         {emptyMessage && (
@@ -45,7 +46,7 @@ const ChartComponent: React.FC<IProps> = ({ loading, errorMessage, data }) => {
             {emptyMessage}
           </ErrorMessage>
         )}
-        {!emptyMessage && data && data.sankey && <SankeyChart data={data.sankey} />}
+        {!emptyMessage && props.data && props.data.sankey && <SankeyChart data={props.data.sankey} onLinkClick={props.onLoadDetails} />}
       </ChartWrapper>
     </>
   );

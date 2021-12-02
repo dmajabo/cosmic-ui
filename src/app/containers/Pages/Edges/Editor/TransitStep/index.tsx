@@ -11,6 +11,7 @@ import ModalComponent from 'app/components/Modal';
 import TransitionTable from './TransitionTable';
 import MatSelect from 'app/components/Inputs/MatSelect';
 import { NwServiceT, NwServicesVendor } from 'lib/api/ApiModels/Edges/apiModel';
+import { Required } from 'app/components/Inputs/FormTextInput/styles';
 
 interface Props {
   serviceType: NwServiceT;
@@ -65,8 +66,11 @@ const TransitStep: React.FC<Props> = (props: Props) => {
         onChange={onAccountChange}
         styles={{ height: '72px', minHeight: '72px', margin: '0 0 20px 0' }}
         selectClaassName="withLabel"
+        required
       />
-      <PanelContentLabel>Map</PanelContentLabel>
+      <PanelContentLabel>
+        Deploy <Required>*</Required>
+      </PanelContentLabel>
       <Map regions={edges.regions} selectedRegions={props.regionCodes} onSelectRegion={onSelectRegion} onOpenLargeWindow={onOpenModal} />
       {props.regionCodes && props.regionCodes.length ? <TransitionTable regions={edges.regions} selectedRegions={props.regionCodes} /> : null}
       {showLargeWindow && (

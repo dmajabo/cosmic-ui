@@ -14,11 +14,13 @@ interface IProps {
   onChange: (value: string | null) => void;
   disabled?: boolean;
   readOnly?: boolean;
+  readOnlyField?: boolean;
   styles?: Object;
   placeholder?: string;
   required?: boolean;
   area?: boolean;
   inputStyles?: Object;
+  labelStyles?: Object;
   error?: string;
 }
 
@@ -48,7 +50,7 @@ const TextInput: React.FC<IProps> = (props: IProps) => {
 
   return (
     <TextInputWrapper style={props.styles}>
-      <InputLabel htmlFor={props.id} disabled={props.disabled || props.readOnly}>
+      <InputLabel style={props.labelStyles} htmlFor={props.id} disabled={props.disabled || props.readOnly}>
         {props.label}
         {props.required && <Required>*</Required>}
       </InputLabel>
@@ -60,7 +62,7 @@ const TextInput: React.FC<IProps> = (props: IProps) => {
           type="text"
           value={textValue}
           onChange={onChange}
-          readOnly={props.readOnly}
+          readOnly={props.readOnly || props.readOnlyField}
           disabled={props.disabled}
           placeholder={props.placeholder}
           style={props.inputStyles}

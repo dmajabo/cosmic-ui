@@ -238,7 +238,7 @@ const ExistingGroups: React.FC<Props> = (props: Props) => {
         />
       </ModalContent>
       <ModalFooter>
-        <PrimaryButton styles={{ width: '100%', height: '100%' }} disabled={!groupsData.length || !selectionModel.length} label="Add group" onClick={onSaveChanges} />
+        <PrimaryButton styles={{ width: '100%', height: '100%' }} disabled={!groupsData || !groupsData.length || !selectionModel || !selectionModel.length} label="Add group" onClick={onSaveChanges} />
       </ModalFooter>
     </>
   );

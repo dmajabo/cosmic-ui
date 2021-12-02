@@ -8,6 +8,7 @@ import { ISessionsGridFieldColumn } from '../models';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { arrowBottomIcon } from 'app/components/SVGIcons/arrows';
 import { VendorTdWrapper } from './styles';
+import { DEFAULT_TRANSITION } from 'lib/constants/general';
 
 interface Props {
   row: IAggregateRow;
@@ -26,7 +27,7 @@ const AggregateRow: React.FC<Props> = (props: Props) => {
                 <IconWrapper
                   width="12px"
                   height="12px"
-                  styles={{ verticalAlign: 'middle', transform: open ? 'rotate(-180deg)' : 'rotate(0)', transition: 'transform 0.3s linear' }}
+                  styles={{ verticalAlign: 'middle', transform: open ? 'rotate(-180deg)' : 'rotate(0)', transition: `transform ${DEFAULT_TRANSITION}` }}
                   icon={arrowBottomIcon}
                   onClick={() => setOpen(!open)}
                 />

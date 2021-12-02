@@ -59,18 +59,18 @@ const AggregateTable: React.FC<Props> = (props: Props) => {
         <Table aria-label="collapsible table" className="largeTable">
           <TableHead>
             <TableRow>
-              {aggregatedColumns.map(it => {
+              {aggregatedColumns.map((it, index) => {
                 if (it.hide) return null;
                 if (it.resField === 'id') {
-                  return <TableCell key={`thRow${it.resField}`} style={{ width: '20px' }} />;
+                  return <TableCell key={`thRow${it.resField}${index}`} style={{ width: '20px' }} />;
                 }
-                return <TableCell key={`thRow${it.resField}`}>{it.label}</TableCell>;
+                return <TableCell key={`thRow${it.resField}${index}`}>{it.label}</TableCell>;
               })}
             </TableRow>
           </TableHead>
           <TableBody>
-            {(rowsPerPage > 0 ? data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) : data).map(row => (
-              <AggregateRow key={row.id} row={row} columns={aggregatedColumns} />
+            {(rowsPerPage > 0 ? data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) : data).map((row, index) => (
+              <AggregateRow key={`rowIndex${row.id}${index}`} row={row} columns={aggregatedColumns} />
             ))}
           </TableBody>
         </Table>

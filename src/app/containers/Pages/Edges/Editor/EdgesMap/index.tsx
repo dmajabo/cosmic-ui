@@ -76,7 +76,7 @@ const EdgesMap: React.FC<Props> = (props: Props) => {
   return (
     <>
       <SvgWrapper>
-        <SvgStyles id={EDGE_MAP_CONSTANTS.svg} width="100%" height="100%" fill="none" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
+        <SvgStyles id={EDGE_MAP_CONSTANTS.svg} viewBox="0 0 890 816" width="100%" height="100%" fill="none" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
           <g id={EDGE_MAP_CONSTANTS.root}>
             <rect x="0" y="-5000" width="calc(100% / 3)" height="10000" fill="var(--_tableBg)" />
             <rect x="calc(100% / 3)" y="-5000" width="calc(100% / 3)" height="10000" fill="var(--_vmBg)" />

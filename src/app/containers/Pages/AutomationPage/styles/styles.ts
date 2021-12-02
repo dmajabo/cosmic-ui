@@ -22,7 +22,6 @@ export const ContentStyles = styled.div`
   width: 100%;
   height: calc(100% - 60px);
   background: var(--_primaryBg);
-  padding-top: 30px;
 `;
 
 export const StepsWrapper = styled.div`
@@ -33,14 +32,14 @@ export const StepsWrapper = styled.div`
   height: 100%;
   overflow-x: hidden;
   overflow-y: scroll;
-  padding: 0 30px;
+  padding: 40px 40px 20px 40px;
 `;
 
 export const FooterWrapper = styled.div`
   display: flex;
   flex-shrink: 0;
   justify-content: space-between;
-  padding: 30px;
+  padding: 30px 40px;
   border-top: 1px solid var(--_primaryButtonBorder);
 `;
 

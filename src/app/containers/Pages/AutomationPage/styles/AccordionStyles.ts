@@ -33,6 +33,18 @@ const accordionStyles = makeStyles(
           margin: '0 0 0 0 !important',
         },
       },
+      automationPanel: {
+        padding: '30px !important',
+        minHeight: '80px !important',
+        width: '100%',
+        '& .MuiAccordionSummary-content': {
+          margin: '0 0 0 0 !important',
+          alignItems: 'center',
+        },
+        '& .Mui-expanded': {
+          margin: '0 0 0 0 !important',
+        },
+      },
       panelEdges: {
         padding: '20px 30px !important',
         minHeight: '80px !important',
@@ -52,7 +64,7 @@ const accordionStyles = makeStyles(
         },
       },
       deteilItem: {
-        padding: '0 0 0 70px !important',
+        padding: '0 30px 0 110px !important',
       },
       deteilItemEdges: {
         borderTop: '1px solid var(--_borderColor) !important',

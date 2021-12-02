@@ -46,7 +46,7 @@ export const UserComponent: React.FC<Props> = (props: Props) => {
   }
   return (
     <UserWrapper>
-      <ImgComponent width="40px" height="40px" src={userContext.idToken.picture} styles={{ borderRadius: '6px', flexShrink: 0 }} />
+      <ImgComponent onClick={onShowPopup} width="40px" height="40px" src={userContext.idToken.picture} styles={{ borderRadius: '6px', flexShrink: 0 }} />
       <User onClick={onShowPopup}>
         <>
           <UserName>{userContext.idToken.name}</UserName>

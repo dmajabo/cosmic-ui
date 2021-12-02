@@ -21,6 +21,7 @@ import accordionStyles from '../../styles/AccordionStyles';
 import PanelHeader from '../../Components/PanelHeader';
 import ExpandedIcon from 'app/components/Basic/ExpandedIcon';
 import HeaderTag from '../../Components/Tag/HeaderTag';
+import H2Label from 'app/components/Basic/Labels/H2';
 
 interface Props {
   dataItem?: IAutomation;
@@ -136,9 +137,10 @@ const NewAutomation: React.FC<Props> = (props: Props) => {
         {steps && (
           <ContentStyles>
             <StepsWrapper>
+              <H2Label margin="0 0 20px 0">New Automation</H2Label>
               <Accordion className={AccordionStyles.accContainer} expanded={expanded === NewAutomationStepperTypes.GENERAL} onChange={onAccordionChange(NewAutomationStepperTypes.GENERAL)}>
                 <AccordionSummary
-                  className={AccordionStyles.panel}
+                  className={AccordionStyles.automationPanel}
                   expandIcon={<ExpandedIcon />}
                   aria-controls={`${NewAutomationStepperTypes.GENERAL}-content`}
                   id={`${NewAutomationStepperTypes.GENERAL}-header`}
@@ -162,7 +164,7 @@ const NewAutomation: React.FC<Props> = (props: Props) => {
               </Accordion>
               <Accordion className={AccordionStyles.accContainer} expanded={expanded === NewAutomationStepperTypes.EDGES} onChange={onAccordionChange(NewAutomationStepperTypes.EDGES)}>
                 <AccordionSummary
-                  className={AccordionStyles.panel}
+                  className={AccordionStyles.automationPanel}
                   expandIcon={<ExpandedIcon />}
                   aria-controls={`${NewAutomationStepperTypes.EDGES}-content`}
                   id={`${NewAutomationStepperTypes.EDGES}-header`}
@@ -183,7 +185,7 @@ const NewAutomation: React.FC<Props> = (props: Props) => {
               </Accordion>
               <Accordion className={AccordionStyles.accContainer} expanded={expanded === NewAutomationStepperTypes.TRIGGERS} onChange={onAccordionChange(NewAutomationStepperTypes.TRIGGERS)}>
                 <AccordionSummary
-                  className={AccordionStyles.panel}
+                  className={AccordionStyles.automationPanel}
                   expandIcon={<ExpandedIcon />}
                   aria-controls={`${NewAutomationStepperTypes.TRIGGERS}-content`}
                   id={`${NewAutomationStepperTypes.TRIGGERS}-header`}
@@ -207,7 +209,7 @@ const NewAutomation: React.FC<Props> = (props: Props) => {
               </Accordion>
               <Accordion className={AccordionStyles.accContainer} expanded={expanded === NewAutomationStepperTypes.ACTIONS} onChange={onAccordionChange(NewAutomationStepperTypes.ACTIONS)}>
                 <AccordionSummary
-                  className={AccordionStyles.panel}
+                  className={AccordionStyles.automationPanel}
                   expandIcon={<ExpandedIcon />}
                   aria-controls={`${NewAutomationStepperTypes.ACTIONS}-content`}
                   id={`${NewAutomationStepperTypes.ACTIONS}-header`}

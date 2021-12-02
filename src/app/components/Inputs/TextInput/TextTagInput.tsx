@@ -50,6 +50,16 @@ const TextTagInput: React.FC<IProps> = (props: IProps) => {
     }
   };
 
+  const onBlur = () => {
+    if (inputValue && inputValue.length) {
+      const _arr: string[] = valueArr.slice();
+      _arr.push(inputValue);
+      setValueArr(_arr);
+      setInputValue('');
+      props.onChange(_arr);
+    }
+  };
+
   const onRemove = (index: number) => {
     const _arr: string[] = valueArr.slice();
     _arr.splice(index, 1);
@@ -73,6 +83,7 @@ const TextTagInput: React.FC<IProps> = (props: IProps) => {
           value={inputValue}
           onChange={onChange}
           onKeyUp={onKeyUp}
+          onBlur={onBlur}
           readOnly={props.readOnly}
           disabled={props.disabled}
           placeholder={props.placeholder}

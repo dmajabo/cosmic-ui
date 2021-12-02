@@ -9,13 +9,13 @@ import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
 import FormPanel from './FormPanel';
 import EdgesMap from './EdgesMap';
-import { IEdgeP, ValidationFields } from 'lib/api/ApiModels/Edges/apiModel';
+import { IEdgeP, IEdgePolicy, ValidationFields } from 'lib/api/ApiModels/Edges/apiModel';
 import { ITopologyGroup, TopologyGroupApi } from 'lib/api/ApiModels/Topology/endpoints';
 import { useEdgesDataContext } from 'lib/hooks/Edges/useEdgesDataContext';
 import { IBaseEntity, IModal } from 'lib/models/general';
 import ModalComponent from 'app/components/Modal';
 import { TopologyGroupTypesAsString } from 'lib/models/topology';
-import { useDelete, useGet, usePost } from 'lib/api/http/useAxiosHook';
+import { useDelete, useGet, usePost, usePut } from 'lib/api/http/useAxiosHook';
 import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -30,6 +30,7 @@ const Editor: React.FC<Props> = (props: Props) => {
   const userContext = React.useContext<UserContextState>(UserContext);
   const { edges } = useEdgesDataContext();
   const { loading: postLoading, error: postError, response: postResponce, onPost } = usePost<IEdgeP, IBaseEntity<string>>();
+  const { loading: putLoading, error: putError, response: putResponce, onPut } = usePut<IEdgeP, IBaseEntity<string>>();
   const { loading: getLoading, error: getError, response: resEdge, onGet } = useGet<IEdgeP>();
   const { loading: deleteLoading, error: deleteError, response: resDelete, onDelete: onDeleteGroup } = useDelete<any>();
   const [dataItem, setDataItem] = React.useState<IEdgeP>(null);
@@ -37,6 +38,7 @@ const Editor: React.FC<Props> = (props: Props) => {
   const [steps, setSteps] = React.useState<IStepperItem<EdgesStepperTypes>[]>([]);
   const [selectedStep, setSelectedStep] = React.useState<IStepperItem<EdgesStepperTypes>>(null);
   const [saveDisabled, setSavedisabled] = React.useState<boolean>(true);
+  const [hasChanges, setHasChanges] = React.useState<boolean>(false);
   const [deleteModalData, setDeleteModalData] = React.useState<IModal<IDeleteDataModel>>({ show: false, dataItem: null });
   React.useEffect(() => {
     const _item = props.dataItem || createNewEdge();
@@ -60,7 +62,6 @@ const Editor: React.FC<Props> = (props: Props) => {
 
   React.useEffect(() => {
     if (postResponce && postResponce.id) {
-      console.log(postResponce);
       onTryLoadEdge(postResponce.id);
       return;
     } else if (postResponce && !postResponce.id) {
@@ -69,8 +70,18 @@ const Editor: React.FC<Props> = (props: Props) => {
   }, [postResponce]);
 
   React.useEffect(() => {
+    if (putResponce && putResponce.id) {
+      onTryLoadEdge(putResponce.id);
+      return;
+    } else if (putResponce && !putResponce.id) {
+      toast.error('Something went wrong. Please try Again!');
+    }
+  }, [putResponce]);
+
+  React.useEffect(() => {
     if (resEdge) {
       edges.onUpdateEdges(resEdge);
+      props.onClose();
     }
   }, [resEdge]);
 
@@ -81,10 +92,10 @@ const Editor: React.FC<Props> = (props: Props) => {
   }, [getError]);
 
   React.useEffect(() => {
-    if (postError) {
+    if (postError || putError) {
       toast.error('Something went wrong. Please try Again!');
     }
-  }, [postError]);
+  }, [postError, putError]);
 
   React.useEffect(() => {
     if (resDelete && deleteModalData && deleteModalData.dataItem) {
@@ -101,6 +112,7 @@ const Editor: React.FC<Props> = (props: Props) => {
       }
       toast.success(`Group '${deleteModalData.dataItem.name}' was deleted successfully!`);
       setDataItem(_dataItem);
+      setHasChanges(true);
       setDeleteModalData({ show: false, dataItem: null });
       edges.onDeleteGroup(deleteModalData.dataItem.id);
     }
@@ -126,6 +138,7 @@ const Editor: React.FC<Props> = (props: Props) => {
     const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, step, _dataItem[field]);
     setSteps(_items);
     setDataItem(_dataItem);
+    setHasChanges(true);
   };
 
   const onChangeGeneralField = (value: any, field: string) => {
@@ -134,6 +147,7 @@ const Editor: React.FC<Props> = (props: Props) => {
     const _items: IStepperItem<EdgesStepperTypes>[] = updateStep(steps, EdgesStepperTypes.GENERAL, _dataItem, [ValidationFields.NAME, ValidationFields.CONNECTION, ValidationFields.TAGS]);
     setSteps(_items);
     setDataItem(_dataItem);
+    setHasChanges(true);
   };
 
   const onChangeTransitionDataField = (value: any, field: string) => {
@@ -142,6 +156,7 @@ const Editor: React.FC<Props> = (props: Props) => {
     const _items: IStepperItem<EdgesStepperTypes>[] = updateStep(steps, EdgesStepperTypes.TRANSIT, _dataItem.deploymentPolicy[0], [ValidationFields.CONTROLLER_NAME, ValidationFields.REGION_CODE]);
     setSteps(_items);
     setDataItem(_dataItem);
+    setHasChanges(true);
   };
 
   const onChangeTransitionNetworkField = (value: any, field: string) => {
@@ -150,6 +165,16 @@ const Editor: React.FC<Props> = (props: Props) => {
     const _items: IStepperItem<EdgesStepperTypes>[] = updateStep(steps, EdgesStepperTypes.TRANSIT, _dataItem.nwServicesPolicy[0], [ValidationFields.CONTROLLER_NAME, ValidationFields.REGION_CODE]);
     setSteps(_items);
     setDataItem(_dataItem);
+    setHasChanges(true);
+  };
+
+  const onChangePolicyField = (items: IEdgePolicy[]) => {
+    const _dataItem = { ...dataItem };
+    _dataItem.policies = items;
+    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.POLICY, _dataItem.policies);
+    setSteps(_items);
+    setDataItem(_dataItem);
+    setHasChanges(true);
   };
 
   const onChangeSitesField = (value: ITopologyGroup) => {
@@ -161,6 +186,7 @@ const Editor: React.FC<Props> = (props: Props) => {
     edges.onUpdateGroups(value);
     setSteps(_items);
     setDataItem(_dataItem);
+    setHasChanges(true);
   };
 
   const onSetSitesGroups = (ids: string[]) => {
@@ -169,6 +195,7 @@ const Editor: React.FC<Props> = (props: Props) => {
     const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.SITES, _dataItem.siteGroupIds);
     setSteps(_items);
     setDataItem(_dataItem);
+    setHasChanges(true);
   };
 
   const onAddExistingApps = (ids: string[]) => {
@@ -177,6 +204,7 @@ const Editor: React.FC<Props> = (props: Props) => {
     const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.APPS, _dataItem.appGroupIds);
     setSteps(_items);
     setDataItem(_dataItem);
+    setHasChanges(true);
   };
 
   const onChangeAppsField = (value: ITopologyGroup) => {
@@ -188,6 +216,7 @@ const Editor: React.FC<Props> = (props: Props) => {
     edges.onUpdateGroups(value);
     setSteps(_items);
     setDataItem(_dataItem);
+    setHasChanges(true);
   };
 
   const onDeleteSitesGroup = (gr: ITopologyGroup) => {
@@ -231,6 +260,7 @@ const Editor: React.FC<Props> = (props: Props) => {
       setSteps(_items);
     }
     setDataItem(_dataItem);
+    setHasChanges(true);
     setDeleteModalData({ show: false, dataItem: null });
   };
 
@@ -256,8 +286,10 @@ const Editor: React.FC<Props> = (props: Props) => {
     if (!_obj.id) {
       delete _obj.id;
       delete _obj.policies;
+      await onPost(EdgesApi.postCreateEdge(), { edge_p: _obj }, userContext.accessToken!);
+      return;
     }
-    await onPost(EdgesApi.postCreateEdge(), { edge_p: _obj }, userContext.accessToken!);
+    await onPut(EdgesApi.putUpdateEdge(_obj.id), { edge_p: _obj }, userContext.accessToken!);
   };
 
   const onTryLoadEdge = async (id: string) => {
@@ -297,7 +329,7 @@ const Editor: React.FC<Props> = (props: Props) => {
             steps={steps}
             dataItem={dataItem}
             selectedStep={selectedStep}
-            saveDisabled={saveDisabled}
+            saveDisabled={saveDisabled || !hasChanges}
             onChangeSitesField={onChangeSitesField}
             onAddExistingSites={onSetSitesGroups}
             onAddExistingApps={onAddExistingApps}
@@ -309,9 +341,10 @@ const Editor: React.FC<Props> = (props: Props) => {
             onToogleAccordionItem={onToogleAccordionItem}
             onDeleteSitesGroup={onDeleteSitesGroup}
             onDeleteAppsGroup={onDeleteAppsGroup}
+            onChangePolicyField={onChangePolicyField}
           />
         </PanelColumn>
-        {(postLoading || getLoading) && (
+        {(postLoading || getLoading || putLoading) && (
           <AbsLoaderWrapper width="100%" height="100%">
             <LoadingIndicator margin="auto" />
           </AbsLoaderWrapper>

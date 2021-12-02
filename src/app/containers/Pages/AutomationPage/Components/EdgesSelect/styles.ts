@@ -27,6 +27,7 @@ export const ValueWrapper = styled.div`
   line-height: 21px;
   color: var(--_disabledTextColor);
   cursor: pointer;
+  background: var(--_primaryBg);
   ${Icon} {
     &.rotation {
       transform: rotate(0deg);
