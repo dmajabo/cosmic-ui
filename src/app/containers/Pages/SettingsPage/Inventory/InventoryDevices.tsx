@@ -38,6 +38,7 @@ const InventoryDevices: React.FC<Props> = (props: Props) => {
   const [totalCount, setTotalCount] = React.useState<number>(0);
   const [currentPage, setCurrentPage] = React.useState<number>(1);
   const [pageSize, setPageSize] = React.useState<number>(PAGING_DEFAULT_PAGE_SIZE);
+  const [searchValue, setSearchValue] = React.useState<string>(props.searchValue || null);
   const gridStyles = GridStyles();
 
   React.useEffect(() => {
@@ -48,7 +49,7 @@ const InventoryDevices: React.FC<Props> = (props: Props) => {
     if (response && response.devices) {
       const startIndex = (settings.loggingCurrentPage - 1) * settings.loggingPageSize;
       const _items = response.devices.map((it, i) => ({ ...it, rowIndex: i + startIndex }));
-      const _arr: IDevice[] = getSearchedList(dataRows, props.searchValue, ['name', 'extId', 'serial', 'model', 'description', 'networkId', 'publicIp', 'privateIp', 'hostname']);
+      const _arr: IDevice[] = getSearchedList(_items, props.searchValue, ['name', 'extId', 'serial', 'model', 'description', 'networkId', 'publicIp', 'privateIp', 'hostname']);
       setDataRows(_items);
       setFilteredData(_arr);
       setTotalCount(response.totalCount);
@@ -56,11 +57,10 @@ const InventoryDevices: React.FC<Props> = (props: Props) => {
   }, [response]);
 
   React.useEffect(() => {
-    if (props.searchValue) {
+    if (props.searchValue !== searchValue) {
       const _items: IDevice[] = getSearchedList(dataRows, props.searchValue, ['name', 'extId', 'serial', 'model', 'description', 'networkId', 'publicIp', 'privateIp', 'hostname']);
       setFilteredData(_items);
-    } else {
-      setFilteredData(dataRows);
+      setSearchValue(props.searchValue);
     }
   }, [props.searchValue]);
 

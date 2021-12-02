@@ -8,13 +8,14 @@ import { InventoryOptions } from './model';
 import { PAGING_DEFAULT_PAGE_SIZE } from 'lib/hooks/Sessions/model';
 import { useSettingsDataContext } from 'lib/hooks/Settings/useSettingsDataContenxt';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
-import { ICloudRes } from 'lib/api/ApiModels/Edges/apiModel';
+import { IWEdgesRes } from 'lib/api/ApiModels/Edges/apiModel';
 import { useGet } from 'lib/api/http/useAxiosHook';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import LoadingIndicator from 'app/components/Loading';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import { buildPagingParam, EdgesApi } from 'lib/api/ApiModels/Edges/edpoints';
 import { getSearchedList } from 'lib/helpers/listHelper';
+import { INetworkwEdge } from 'lib/models/topology';
 
 interface Props {
   searchValue: string;
@@ -26,23 +27,24 @@ interface Props {
 const InventoryCloud: React.FC<Props> = (props: Props) => {
   const { settings } = useSettingsDataContext();
   const userContext = React.useContext<UserContextState>(UserContext);
-  const { loading, error, response, onGet } = useGet<ICloudRes>();
-  const [dataRows, setDataRows] = React.useState<any[]>([]);
-  const [filteredData, setFilteredData] = React.useState<any[]>([]);
+  const { loading, error, response, onGet } = useGet<IWEdgesRes>();
+  const [dataRows, setDataRows] = React.useState<INetworkwEdge[]>([]);
+  const [filteredData, setFilteredData] = React.useState<INetworkwEdge[]>([]);
   const [totalCount, setTotalCount] = React.useState<number>(0);
   const [currentPage, setCurrentPage] = React.useState<number>(1);
   const [pageSize, setPageSize] = React.useState<number>(PAGING_DEFAULT_PAGE_SIZE);
+  const [searchValue, setSearchValue] = React.useState<string>(props.searchValue || null);
   const gridStyles = GridStyles();
 
   React.useEffect(() => {
-    onTryLoadDevices(settings.loggingPageSize, settings.loggingCurrentPage);
+    onTryLoadWedges(settings.loggingPageSize, settings.loggingCurrentPage);
   }, []);
 
   React.useEffect(() => {
-    if (response && response.devices) {
+    if (response && response.wEdges) {
       const startIndex = (settings.loggingCurrentPage - 1) * settings.loggingPageSize;
-      const _items = response.devices.map((it, i) => ({ ...it, rowIndex: i + startIndex }));
-      const _arr: any[] = getSearchedList(dataRows, props.searchValue, ['name', 'extId', 'serial', 'model', 'description', 'networkId', 'publicIp', 'privateIp', 'hostname']);
+      const _items = response.wEdges.map((it, i) => ({ ...it, rowIndex: i + startIndex }));
+      const _arr: INetworkwEdge[] = getSearchedList(_items, searchValue, ['name', 'extId', 'vnetkey', 'description']);
       setDataRows(_items);
       setFilteredData(_arr);
       setTotalCount(response.totalCount);
@@ -50,11 +52,10 @@ const InventoryCloud: React.FC<Props> = (props: Props) => {
   }, [response]);
 
   React.useEffect(() => {
-    if (props.searchValue) {
-      const _items: any[] = getSearchedList(dataRows, props.searchValue, ['name', 'extId', 'serial', 'model', 'description', 'networkId', 'publicIp', 'privateIp', 'hostname']);
+    if (props.searchValue !== searchValue) {
+      const _items: INetworkwEdge[] = getSearchedList(dataRows, props.searchValue, ['name', 'extId', 'vnetkey', 'description']);
       setFilteredData(_items);
-    } else {
-      setFilteredData(dataRows);
+      setSearchValue(props.searchValue);
     }
   }, [props.searchValue]);
 
@@ -64,23 +65,23 @@ const InventoryCloud: React.FC<Props> = (props: Props) => {
 
   const onChangeCurrentPage = (_page: number) => {
     setCurrentPage(_page);
-    onTryLoadDevices(pageSize, _page);
+    onTryLoadWedges(pageSize, _page);
   };
 
   const onChangePageSize = (size: number, page?: number) => {
     if (page) {
       setCurrentPage(page);
       setPageSize(size);
-      onTryLoadDevices(size, page);
+      onTryLoadWedges(size, page);
       return;
     }
     setPageSize(size);
-    onTryLoadDevices(size, currentPage);
+    onTryLoadWedges(size, currentPage);
   };
 
-  const onTryLoadDevices = async (pageSize: number, currentPage: number) => {
+  const onTryLoadWedges = async (pageSize: number, currentPage: number) => {
     const _param = buildPagingParam(pageSize, currentPage);
-    await onGet(EdgesApi.getSites(), userContext.accessToken!, _param);
+    await onGet(EdgesApi.getWedges(), userContext.accessToken!, _param);
   };
 
   return (

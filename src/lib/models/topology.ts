@@ -185,6 +185,11 @@ export interface INetworkLink extends IBaseEntity<string> {
 
 export interface IIp {}
 
+export interface INetworkTag extends IBaseEntity<string> {
+  key: string;
+  value: string;
+}
+
 export interface IWedge extends IBaseEntity<string> {
   name: string;
   description: string;
@@ -194,6 +199,10 @@ export interface IWedge extends IBaseEntity<string> {
   vpns: IVpn[];
   networkLinks: INetworkLink[];
   ips: IIp[];
+}
+
+export interface INetworkwEdge extends IWedge {
+  tags: INetworkTag[];
 }
 
 export interface IWedgeNode extends IWedge, IMappedNode, ICoord {}

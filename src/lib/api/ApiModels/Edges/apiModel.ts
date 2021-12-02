@@ -1,5 +1,5 @@
 import { IBaseTotalCount } from 'lib/models/general';
-import { IDevice, IVm } from 'lib/models/topology';
+import { IDevice, INetworkwEdge, IVm } from 'lib/models/topology';
 
 export enum PolicyActions {
   ALLOW = 'Allow',
@@ -77,8 +77,8 @@ export interface IAppsRes extends IBaseTotalCount {
   pageNum: number;
 }
 
-export interface ICloudRes extends IBaseTotalCount {
-  devices: any[];
+export interface IWEdgesRes extends IBaseTotalCount {
+  wEdges: INetworkwEdge[];
   pageSize: number;
   pageNum: number;
 }
