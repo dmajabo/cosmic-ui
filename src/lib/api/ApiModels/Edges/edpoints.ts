@@ -6,6 +6,7 @@ export const EdgesApi = {
   putUpdateEdge: (id: string) => 'topo/api/v1/topology/cloud/edges/' + id,
   getSites: () => 'topo/api/v1/topology/onprem/devices',
   getApps: () => 'topo/api/v1/topology/cloud/apps',
+  getCloud: () => 'topo/api/v1/topology/onprem/devices',
 };
 
 interface IPagingParam {

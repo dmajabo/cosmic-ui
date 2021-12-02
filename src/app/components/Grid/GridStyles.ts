@@ -29,14 +29,14 @@ export const GridStyles = makeStyles(
         },
         '& .MuiDataGrid-columnsContainer': {
           background: 'var(--_appBg)',
-          height: 50,
+          height: 70,
           borderBottom: '1px solid var(--_rowBorder)',
         },
         '& .MuiDataGrid-columnHeader': {
           outline: 'none !important',
         },
         '& .MuiDataGrid-row': {
-          height: 50,
+          height: 70,
           '&:hover': {
             background: 'transparent',
           },

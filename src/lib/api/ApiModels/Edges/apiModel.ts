@@ -77,6 +77,12 @@ export interface IAppsRes extends IBaseTotalCount {
   pageNum: number;
 }
 
+export interface ICloudRes extends IBaseTotalCount {
+  devices: any[];
+  pageSize: number;
+  pageNum: number;
+}
+
 export interface IEdgesRes extends IBaseTotalCount {
   edgeps: IEdgeP[];
 }

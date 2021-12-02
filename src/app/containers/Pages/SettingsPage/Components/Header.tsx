@@ -26,6 +26,7 @@ interface Props {
   onToogleChange?: (value: ISelectedListItem<InventoryOptions>) => void;
   hideEditButton?: boolean;
   showToogle?: boolean;
+  hideDelete?: boolean;
 }
 
 const Header: React.FC<Props> = (props: Props) => {
@@ -54,7 +55,7 @@ const Header: React.FC<Props> = (props: Props) => {
           <Search searchQuery={props.searchValue} onChange={onSearhChange} styles={{ width: '100%' }} />
         </ActionPart>
         <ActionPart margin="0 0 0 auto">
-          {props.selectedItems && props.selectedItems.length ? (
+          {!props.hideDelete && props.selectedItems && props.selectedItems.length ? (
             <PrimaryButton
               label="Delete"
               icon={deleteIcon('var(--_pButtonColor)')}

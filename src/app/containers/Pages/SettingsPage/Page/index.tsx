@@ -6,7 +6,7 @@ import { PageWrapperStyles, TabsWrapperStyles } from '../../Shared/styles';
 import TabPanel from 'app/components/Tabs/TabPanel';
 import { SETTINGS_TABS } from 'lib/hooks/Settings/model';
 import { useSettingsDataContext } from 'lib/hooks/Settings/useSettingsDataContenxt';
-import AdminPage from 'app/containers/Pages/SettingsPage/Admin';
+// import AdminPage from 'app/containers/Pages/SettingsPage/Admin';
 import Logging from '../Logging';
 import Inventory from '../Inventory';
 
@@ -40,24 +40,24 @@ const Page: React.FC<IProps> = (props: IProps) => {
           ))}
         </Tabs>
       </TabsWrapperStyles>
-      <TabPanel
+      {/* <TabPanel
         styles={{ display: 'flex', flexDirection: 'column', flex: settings.selectedTab.index === SETTINGS_TABS[0].index ? '1 1 100%' : '0' }}
         value={settings.selectedTab.index}
         index={SETTINGS_TABS[0].index}
       >
         <AdminPage />
+      </TabPanel> */}
+      <TabPanel
+        styles={{ display: 'flex', flexDirection: 'column', flex: settings.selectedTab.index === SETTINGS_TABS[0].index ? '1 1 100%' : '0' }}
+        value={settings.selectedTab.index}
+        index={SETTINGS_TABS[0].index}
+      >
+        <Logging />
       </TabPanel>
       <TabPanel
         styles={{ display: 'flex', flexDirection: 'column', flex: settings.selectedTab.index === SETTINGS_TABS[1].index ? '1 1 100%' : '0' }}
         value={settings.selectedTab.index}
         index={SETTINGS_TABS[1].index}
-      >
-        <Logging />
-      </TabPanel>
-      <TabPanel
-        styles={{ display: 'flex', flexDirection: 'column', flex: settings.selectedTab.index === SETTINGS_TABS[2].index ? '1 1 100%' : '0' }}
-        value={settings.selectedTab.index}
-        index={SETTINGS_TABS[2].index}
       >
         <Inventory />
       </TabPanel>

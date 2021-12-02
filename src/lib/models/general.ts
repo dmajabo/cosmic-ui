@@ -100,10 +100,6 @@ export interface IVisible {
   visible: boolean;
 }
 
-export interface IMappedObject {
-  [key: string]: any;
-}
-
 export interface IObject<T> {
   [key: string]: T;
 }
