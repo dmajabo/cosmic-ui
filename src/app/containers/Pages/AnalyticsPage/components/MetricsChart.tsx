@@ -10,12 +10,13 @@ import { MetricsExplorerTableData } from 'lib/api/http/SharedTypes';
 interface MetricsChartProps {
   readonly dimensions: DimensionOptions[];
   readonly tableData: MetricsExplorerTableData[];
+  readonly dataUnit: string;
   readonly lookback: string;
 }
 
 const DEFAULT_CONTAINER_TITLE = 'Metrics';
 
-export const MetricsChart: React.FC<MetricsChartProps> = ({ dimensions, tableData, lookback }) => {
+export const MetricsChart: React.FC<MetricsChartProps> = ({ dimensions, tableData, dataUnit, lookback }) => {
   const classes = AnalyticsStyles();
 
   const getChartContainerTitle = (dimensions: DimensionOptions[]) => {
@@ -52,7 +53,7 @@ export const MetricsChart: React.FC<MetricsChartProps> = ({ dimensions, tableDat
         ) : (
           <div>
             <div className={classes.noChartContainer}>Placeholder for Chart</div>
-            <MetricsTable dimensions={dimensions} tableData={tableData} />
+            <MetricsTable dimensions={dimensions} tableData={tableData} dataUnit={dataUnit} />
           </div>
         )}
       </div>

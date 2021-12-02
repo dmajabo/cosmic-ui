@@ -22,6 +22,7 @@ import { ColumnAccessor, MetricsExplorerTableData } from 'lib/api/http/SharedTyp
 import { Tab, Tabs } from '@material-ui/core';
 import { LookbackLabel, LookbackSelectOption, LookbackTimeTab, LookbackValue } from './LookbackTimeTab';
 import { CustomTimeRangeLabel, CustomTimeRangeSelectOption, CustomTimeTab } from './CustomTimeTab';
+import { DataUnitDropdown, DataUnitLabel, DataUnitValue, DataUnitSelectOption } from './DataUnitDropdown';
 
 //TODO: Remove this once API is integrated
 const DUMMY_DIMENSION_DATA: DimensionOptions[] = [
@@ -90,10 +91,10 @@ const DUMMY_DATA_SOURCE_OPTIONS: DataSourceOptions[] = [
 
 const DUMMY_METRICS_TABLE_DATA: MetricsExplorerTableData[] = [
   {
-    average: 10,
-    ninetyFifthPercentile: 10,
-    max: 10,
-    lastDatapoint: 10,
+    average: 10000,
+    ninetyFifthPercentile: 1000,
+    max: 1000,
+    lastDatapoint: 10000,
     interfaceSource: 'interface source',
     interfaceDestination: 'interface dest',
     connectivityTypeSource: 'conn type source',
@@ -112,10 +113,10 @@ const DUMMY_METRICS_TABLE_DATA: MetricsExplorerTableData[] = [
     macAddressDestination: 'mac add dest',
   },
   {
-    average: 5,
-    ninetyFifthPercentile: 20,
-    max: 30,
-    lastDatapoint: 15,
+    average: 5000,
+    ninetyFifthPercentile: 200,
+    max: 300,
+    lastDatapoint: 15000,
     interfaceSource: 'abc',
     interfaceDestination: 'interface dest 2',
     connectivityTypeSource: 'conn type source 2',
@@ -207,6 +208,11 @@ const INITIAL_SHOW_TIME_RANGE_VALUE: CustomTimeRangeSelectOption = {
   value: LookbackValue.oneDay,
 };
 
+const INITIAL_DATA_UNIT_VALUE: DataUnitSelectOption = {
+  label: DataUnitLabel.bits,
+  value: DataUnitValue.bits,
+};
+
 export const MetricsExplorer: React.FC = () => {
   const classes = AnalyticsStyles();
 
@@ -219,6 +225,7 @@ export const MetricsExplorer: React.FC = () => {
   const [selectedCustomFromDate, setSelectedCustomFromDate] = useState<string>('');
   const [selectedCustomToDate, setSelectedCustomToDate] = useState<string>('');
   const [selectedShowTimeRange, setSelectedShowTimeRange] = useState<CustomTimeRangeSelectOption>(INITIAL_SHOW_TIME_RANGE_VALUE);
+  const [dataUnit, setDataUnit] = useState<DataUnitSelectOption>(INITIAL_DATA_UNIT_VALUE);
 
   const handleDimensionModalOpen = () => {
     setModalName(ModalName.Dimensions);
@@ -263,6 +270,8 @@ export const MetricsExplorer: React.FC = () => {
   const handleCustomToDateChange = (event: React.ChangeEvent<HTMLInputElement>) => setSelectedCustomToDate(event.target.value);
 
   const handleTimeRangeChange = (value: CustomTimeRangeSelectOption) => setSelectedShowTimeRange(value);
+
+  const handleDataUnitChange = (value: DataUnitSelectOption) => setDataUnit(value);
 
   const customizationtabOptions: CustomizationTabProps[] = [
     {
@@ -329,6 +338,7 @@ export const MetricsExplorer: React.FC = () => {
     {
       img: MetricsIcon,
       title: 'Metrics',
+      content: <DataUnitDropdown dataUnit={dataUnit} handleDataUnitChange={handleDataUnitChange} />,
     },
     {
       img: TimeIcon,
@@ -405,7 +415,7 @@ export const MetricsExplorer: React.FC = () => {
   return (
     <div className={classes.metricsExplorerContainer}>
       <div className={classes.leftBox}>
-        <MetricsChart dimensions={dimensions} tableData={DUMMY_METRICS_TABLE_DATA} lookback={selectedLookbackTimeRange.label} />
+        <MetricsChart dimensions={dimensions} tableData={DUMMY_METRICS_TABLE_DATA} lookback={selectedLookbackTimeRange.label} dataUnit={dataUnit.label} />
       </div>
       <div className={classes.rightBox}>
         <div className={classes.rightContainerTitle}>Metrics Customization</div>
