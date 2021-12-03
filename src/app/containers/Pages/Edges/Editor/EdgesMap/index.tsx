@@ -3,7 +3,7 @@ import { ButtonsGroup } from '../styles';
 import { FooterLabel, FooterRow, MapTitle, SvgStyles, SvgWrapper } from './styles';
 import IconButton from 'app/components/Buttons/IconButton';
 import { zoomCenterIcon, zoomInIcon, zoomOutIcon } from 'app/components/SVGIcons/zoom';
-import { buildNodes, buildtransitNodes, EdgeNodeType, EDGE_MAP_CONSTANTS, INodesObject, ITransitionObject, ILinkObject, buildLinks } from './helpers';
+import { buildNodes, buildtransitNodes, EdgeNodeType, EDGE_MAP_CONSTANTS, INodesObject, ITransitionObject, ILinkObject, buildLinks, ISvgEdgeGroup } from './helpers';
 import EdgeNode from './EdgeNode';
 import { useEdgeZoom } from './useEdgeZoom';
 import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
@@ -85,6 +85,14 @@ const EdgesMap: React.FC<Props> = (props: Props) => {
     setLinks(_linksObj);
   }, [props.policies, sites, apps, transits]);
 
+  const onExpandCollapseSites = (node: ISvgEdgeGroup) => {
+    console.log(node);
+  };
+
+  const onExpandCollapseApps = (node: ISvgEdgeGroup) => {
+    console.log(node);
+  };
+
   const zoomIn = () => {
     onZoomIn();
   };
@@ -102,8 +110,12 @@ const EdgesMap: React.FC<Props> = (props: Props) => {
 
             <g id={EDGE_MAP_CONSTANTS.rootScaleContainer}>
               <g id={EDGE_MAP_CONSTANTS.links}>{links && links.links && links.links.map(it => <EdgeLink key={`linksKey${it.id}`} dataItem={it} />)}</g>
-              <g id={EDGE_MAP_CONSTANTS.sites}>{sites && sites.nodes && sites.nodes.map(it => <EdgeNode type={EdgeNodeType.SITES} key={`sitesNodeKey${it.nodeId}`} dataItem={it} />)}</g>
-              <g id={EDGE_MAP_CONSTANTS.apps}>{apps && apps.nodes && apps.nodes.map(it => <EdgeNode type={EdgeNodeType.APPS} key={`appsNodeKey${it.nodeId}`} dataItem={it} />)}</g>
+              <g id={EDGE_MAP_CONSTANTS.sites}>
+                {sites && sites.nodes && sites.nodes.map(it => <EdgeNode type={EdgeNodeType.SITES} key={`sitesNodeKey${it.nodeId}`} dataItem={it} onExpandCollapse={onExpandCollapseSites} />)}
+              </g>
+              <g id={EDGE_MAP_CONSTANTS.apps}>
+                {apps && apps.nodes && apps.nodes.map(it => <EdgeNode type={EdgeNodeType.APPS} key={`appsNodeKey${it.nodeId}`} dataItem={it} onExpandCollapse={onExpandCollapseApps} />)}
+              </g>
               <g id={EDGE_MAP_CONSTANTS.transit}>{transits && transits.nodes && transits.nodes.map(it => <EdgeNode type={EdgeNodeType.TRANSIT} key={`transitNodeKey${it.id}`} dataItem={it} />)}</g>
             </g>
           </g>

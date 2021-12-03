@@ -34,13 +34,21 @@ export const NodeName = styled.span`
   color: var(--_primaryTextColor);
 `;
 
+export const GroupWrapper = styled.div`
+  display: inline-flex;
+  flex-wrap: nowrap;
+  max-width: 100%;
+  align-items: center;
+  justify-content: center;
+  margin: 14px 0;
+`;
+
 export const GroupName = styled.div`
   font-size: 14px;
   line-height: 16px;
   height: 18px;
   text-align: center;
   color: var(--_primaryColor);
-  margin: 14px 0;
   flex-shrink: 0;
 `;
 

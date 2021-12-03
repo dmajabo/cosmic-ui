@@ -46,6 +46,7 @@ export interface ISvgEdgeGroup extends ITopologyGroup {
   scale: number;
   nodeId: string;
   offsetX: number;
+  collapsed: boolean;
 }
 
 export interface ISvgTransitNode {
@@ -136,8 +137,8 @@ export const buildNodes = (data: ITopologyGroup[], idPrefix: string, offset: num
   let offsetY = svgSize.height / 2;
   let totalHeight = 0;
   const _arr: ISvgEdgeGroup[] = data.map((it, index) => {
-    const height = getItemHeight(it);
-    const _obj = { ...it, id: it.id, height: height, y: offsetY, x: 48, nodeId: `${idPrefix}${index}`, scale: 1, offsetX: offset };
+    const height = getItemExpandedHeight(it);
+    const _obj = { ...it, id: it.id, height: height, y: offsetY, x: 48, nodeId: `${idPrefix}${index}`, scale: 1, offsetX: offset, collapsed: false };
     offsetY = offsetY + height + EdgeNodeStyles.nodeMargin;
     totalHeight = totalHeight + height + EdgeNodeStyles.nodeMargin;
     return _obj;
@@ -171,9 +172,14 @@ export const buildtransitNodes = (data: string[], type: DeploymentTypes, offset:
   return { nodes: _arr, scale: scaleFactor };
 };
 
-const getItemHeight = (group: ITopologyGroup): number => {
+const getItemExpandedHeight = (group: ITopologyGroup): number => {
+  const _collapsedHeight = getItemCollapsedHeight();
+  const _c = group.extIds.length * EdgeNodeStyles.siteHeight + (group.extIds.length - 1) * EdgeNodeStyles.sitepadding;
+  return _collapsedHeight + _c;
+};
+
+const getItemCollapsedHeight = (): number => {
   const _h = EdgeNodeStyles.header + EdgeNodeStyles.headerPadding;
   const _n = EdgeNodeStyles.nameHeight + EdgeNodeStyles.namePadding;
-  const _c = group.extIds.length * EdgeNodeStyles.siteHeight + (group.extIds.length - 1) * EdgeNodeStyles.sitepadding;
-  return _h + _n + _c + EdgeNodeStyles.nodePaddingBottom;
+  return _h + _n + EdgeNodeStyles.nodePaddingBottom;
 };

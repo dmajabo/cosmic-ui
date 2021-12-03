@@ -1,31 +1,32 @@
 import React from 'react';
 import AppsNode from '../Components/MapComponnets/AppsNode';
 import SitesNode from '../Components/MapComponnets/SitesNode';
-import { EdgeNodeType, ISvgEdgeGroup, ISvgTransitNode } from './helpers';
+import { EdgeNodeType, ISvgEdgeGroup, ISvgTransitNode, SVG_EDGES_STYLES } from './helpers';
 import TransitNode from '../Components/MapComponnets/TransitNode';
 interface Props {
   dataItem: ISvgEdgeGroup | ISvgTransitNode;
   type: EdgeNodeType;
+  onExpandCollapse?: (node: ISvgEdgeGroup) => void;
 }
 
-const EdgeNode: React.FC<Props> = ({ dataItem, type }) => {
+const EdgeNode: React.FC<Props> = ({ dataItem, type, onExpandCollapse }) => {
   if (type === EdgeNodeType.SITES) {
     return (
-      <foreignObject transform={`translate(${dataItem.x}, ${dataItem.y})`} width="calc(300px - 96px)" height={dataItem.height}>
-        <SitesNode data={dataItem as ISvgEdgeGroup} />
+      <foreignObject transform={`translate(${dataItem.x}, ${dataItem.y})`} width={SVG_EDGES_STYLES.siteNode.width} height={dataItem.height}>
+        <SitesNode data={dataItem as ISvgEdgeGroup} onExpandCollapse={onExpandCollapse} />
       </foreignObject>
     );
   }
   if (type === EdgeNodeType.APPS) {
     return (
-      <foreignObject transform={`translate(${dataItem.x}, ${dataItem.y})`} width="calc(300px - 96px)" height={dataItem.height}>
-        <AppsNode data={dataItem as ISvgEdgeGroup} />
+      <foreignObject transform={`translate(${dataItem.x}, ${dataItem.y})`} width={SVG_EDGES_STYLES.appNode.width} height={dataItem.height}>
+        <AppsNode data={dataItem as ISvgEdgeGroup} onExpandCollapse={onExpandCollapse} />
       </foreignObject>
     );
   }
   if (type === EdgeNodeType.TRANSIT) {
     return (
-      <foreignObject transform={`translate(${dataItem.x}, ${dataItem.y})`} width="calc(300px - 176px)" height={dataItem.height}>
+      <foreignObject transform={`translate(${dataItem.x}, ${dataItem.y})`} width={SVG_EDGES_STYLES.transitNode.width} height={dataItem.height}>
         <TransitNode data={dataItem as ISvgTransitNode} />
       </foreignObject>
     );
