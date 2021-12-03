@@ -5,6 +5,7 @@ import { IEdgePolicy } from 'lib/api/ApiModels/Edges/apiModel';
 import TextInput from 'app/components/Inputs/TextInput';
 import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
 import { ValueLabel } from 'app/components/Inputs/MatSelect/styles';
+import { getSelectedItem } from 'lib/helpers/selectionHelper';
 
 interface Props {
   index: number;
@@ -15,6 +16,16 @@ interface Props {
 }
 
 const PolicyItem: React.FC<Props> = (props: Props) => {
+  const [selectedSource, setSelectedSource] = React.useState<ITopologyGroup>(null);
+  const [selecteddestination, setSelectedDestination] = React.useState<ITopologyGroup>(null);
+
+  React.useEffect(() => {
+    const _s = getSelectedItem(props.sources, props.item.source, 'id');
+    const _d = getSelectedItem(props.destinations, props.item.destination, 'id');
+    setSelectedSource(_s);
+    setSelectedDestination(_d);
+  }, [props.item]);
+
   const onSelectChange = (value: ITopologyGroup, field: string) => {
     props.onUpdateItem(value.id, field, props.index);
   };
@@ -25,7 +36,7 @@ const PolicyItem: React.FC<Props> = (props: Props) => {
         <MatSelect
           id={`${props.index}source`}
           label="Source"
-          value={props.item.source}
+          value={selectedSource}
           options={props.sources}
           styles={{ width: 'calc(50% - 5px)', margin: '0 5px 20px 0' }}
           required
@@ -37,7 +48,7 @@ const PolicyItem: React.FC<Props> = (props: Props) => {
         <MatSelect
           id={`${props.index}destination`}
           label="Destination"
-          value={props.item.destination}
+          value={selecteddestination}
           options={props.destinations}
           styles={{ width: 'calc(50% - 5px)', margin: '0 0 20px 5px' }}
           required

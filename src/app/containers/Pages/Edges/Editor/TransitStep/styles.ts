@@ -93,3 +93,8 @@ export const SelectdLabel = styled.span`
   color: var(--_primaryColor);
   margin-right: 12px;
 `;
+
+export const CellContent = styled.div`
+  display: inline-flex;
+  align-items: center;
+`;

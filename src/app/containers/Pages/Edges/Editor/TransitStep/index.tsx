@@ -1,30 +1,36 @@
 import React from 'react';
 import { PanelRow } from './styles';
 import CheckBox from 'app/components/Inputs/Checkbox/CheckBox';
-import { PanelContentLabel } from '../FormPanel/styles';
 import { useEdgesDataContext } from 'lib/hooks/Edges/useEdgesDataContext';
-import Map from './Map';
 import { poloAltoIcon } from 'app/components/SVGIcons/edges/poloAlto';
 import { Input, InputWrapper, TextInputWrapper } from 'app/components/Inputs/TextInput/styles';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import ModalComponent from 'app/components/Modal';
 import TransitionTable from './TransitionTable';
 import MatSelect from 'app/components/Inputs/MatSelect';
-import { NwServiceT, NwServicesVendor } from 'lib/api/ApiModels/Edges/apiModel';
-import { Required } from 'app/components/Inputs/FormTextInput/styles';
+import { NwServiceT, NwServicesVendor, DeploymentTypes } from 'lib/api/ApiModels/Edges/apiModel';
+import { EmptyMessage } from '../Components/styles';
+import { FormRow } from '../PolicyStep/styles';
+import SecondaryButton from 'app/components/Buttons/SecondaryButton';
+import { plusIcon } from 'app/components/SVGIcons/plusIcon';
+import TransitModalWindow from './TransitModalWindow';
 
 interface Props {
   serviceType: NwServiceT;
   serviceVendor: NwServicesVendor;
+  transitType: DeploymentTypes;
   regionCodes: string[];
+  wedgesIds: string[];
   selectedAccount: string;
   onChange: (value: any, field: string) => void;
+  onChangeRegions: (value: any, option: DeploymentTypes) => void;
   onChangeNetwork: (value: any, field: string) => void;
 }
 
 const TransitStep: React.FC<Props> = (props: Props) => {
   const { edges } = useEdgesDataContext();
-  const [showLargeWindow, setShowLargeWindow] = React.useState<boolean>(false);
+  const [showCreator, setShowCreator] = React.useState<boolean>(false);
+
   const onFirewallChange = (v: boolean) => {
     const _v = v ? NwServiceT.FIREWALL : null;
     props.onChangeNetwork(_v, 'serviceType');
@@ -34,16 +40,17 @@ const TransitStep: React.FC<Props> = (props: Props) => {
     props.onChange(v, 'controllerName');
   };
 
-  const onSelectRegion = (r: string[]) => {
-    props.onChange(r, 'regionCode');
+  const onAddTransits = (r: string[], option: DeploymentTypes) => {
+    props.onChangeRegions(r, option);
+    setShowCreator(false);
   };
 
-  const onOpenModal = () => {
-    setShowLargeWindow(true);
+  const onAddGroup = () => {
+    setShowCreator(true);
   };
 
   const onClose = () => {
-    setShowLargeWindow(false);
+    setShowCreator(false);
   };
 
   return (
@@ -68,22 +75,27 @@ const TransitStep: React.FC<Props> = (props: Props) => {
         selectClaassName="withLabel"
         required
       />
-      <PanelContentLabel>
-        Deploy <Required>*</Required>
-      </PanelContentLabel>
-      <Map regions={edges.regions} selectedRegions={props.regionCodes} onSelectRegion={onSelectRegion} onOpenLargeWindow={onOpenModal} />
-      {props.regionCodes && props.regionCodes.length ? <TransitionTable regions={edges.regions} selectedRegions={props.regionCodes} /> : null}
-      {showLargeWindow && (
-        <ModalComponent showHeader title="Map" showCloseButton modalStyles={{ maxWidth: '80vw', maxHeight: '90vh' }} useFadeAnimation id="mapModalWindow" open={showLargeWindow} onClose={onClose}>
-          <Map
-            showFooterRow
-            zoom={4}
-            mapWrapStyles={{ height: 'calc(100% - 60px)', margin: '0' }}
-            hideLargeButton
-            regions={edges.regions}
-            selectedRegions={props.regionCodes}
-            onSelectRegion={onSelectRegion}
-          />
+      {(props.transitType === DeploymentTypes.Regions && props.regionCodes && props.regionCodes.length) ||
+      (props.transitType === DeploymentTypes.Wedge && props.wedgesIds && props.wedgesIds.length) ? (
+        <TransitionTable type={props.transitType} wedges={edges.wedges} selectedWedgesIds={props.wedgesIds} regions={edges.regions} selectedRegions={props.regionCodes} />
+      ) : (
+        <EmptyMessage>There is no transit yet. To add transit click the button bellow.</EmptyMessage>
+      )}
+      <FormRow justifyContent={edges.regions && edges.regions.length ? 'flex-end' : 'flex-start'}>
+        <SecondaryButton icon={plusIcon} label="Add Transit" onClick={onAddGroup} />
+      </FormRow>
+      {showCreator && (
+        <ModalComponent
+          showHeader
+          title="Add Transit"
+          showCloseButton
+          modalStyles={{ maxWidth: '800px', maxHeight: '90vh', padding: '40px' }}
+          useFadeAnimation
+          id="sitesModalWindow"
+          open={showCreator}
+          onClose={onClose}
+        >
+          <TransitModalWindow selectedRegion={props.regionCodes} selectedWedgeIds={props.wedgesIds} onAddTransits={onAddTransits} />
         </ModalComponent>
       )}
     </>

@@ -20,13 +20,22 @@ export enum ValidationFields {
   // DEPLOYMENT
   CONTROLLER_NAME = 'controllerName',
   REGION_CODE = 'regionCode',
+  WEDGES_IDS = 'wedgeExtIds',
+  // NwService
+  SERVICE_TYPE = 'serviceType',
+  SERVICE_VENDOR = 'serviceVendor',
+}
+
+export enum DeploymentTypes {
+  Regions = 'Regions',
+  Wedge = 'Wedge',
 }
 
 export interface IDeploymentP {
   id?: string;
   controllerName: string;
   regionCode: string[];
-  // type: Regions | Wedge;
+  type: DeploymentTypes;
   wedgeExtIds: string[];
 }
 

@@ -1,4 +1,6 @@
+import { DeploymentTypes } from 'lib/api/ApiModels/Edges/apiModel';
 import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
+import { INetworkwEdge } from 'lib/models/topology';
 
 export const EDGE_MAP_CONSTANTS = {
   svg: 'edgeMap',
@@ -33,6 +35,7 @@ export interface ISvgTransitNode {
   name: string;
   scale: number;
   height: number;
+  type: DeploymentTypes;
 }
 
 interface IEdgeNodeStyles {
@@ -80,12 +83,13 @@ export const buildNodes = (data: ITopologyGroup[], idPrefix: string): INodesObje
   return { nodes: _arr, scale: scaleFactor };
 };
 
-export const buildtransitNodes = (data: string[]): ISvgTransitNode[] => {
+export const buildtransitNodes = (data: string[], type: DeploymentTypes, wedges?: INetworkwEdge[]): ISvgTransitNode[] => {
   const svgSize = document.getElementById(EDGE_MAP_CONSTANTS.svg).getBoundingClientRect();
   let offsetY = svgSize.height / 2;
   let totalHeight = 0;
   const _arr: ISvgTransitNode[] = data.map((it, index) => {
-    const _obj = { name: it, height: 84, y: offsetY, x: 88, id: `${EDGE_MAP_CONSTANTS.transitNodePrefix}${index}`, scale: 1 };
+    const _wedge = wedges && wedges.length ? wedges.find(w => w.extId === it) : null;
+    const _obj = { name: _wedge && _wedge.name ? _wedge.name : it, height: 84, y: offsetY, x: 88, id: `${EDGE_MAP_CONSTANTS.transitNodePrefix}${index}`, scale: 1, type: type };
     offsetY += 94;
     totalHeight += 94;
     return _obj;

@@ -15,7 +15,7 @@ import ExpandedIcon from 'app/components/Basic/ExpandedIcon';
 import PanelHeader from 'app/containers/Pages/AutomationPage/Components/PanelHeader';
 import SecondaryButton from 'app/components/Buttons/SecondaryButton';
 import accordionStyles from 'app/containers/Pages/AutomationPage/styles/AccordionStyles';
-import { IEdgeP, IEdgePolicy } from 'lib/api/ApiModels/Edges/apiModel';
+import { DeploymentTypes, IEdgeP, IEdgePolicy } from 'lib/api/ApiModels/Edges/apiModel';
 import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
 import GeneralPreview from './GeneralPreview';
 import TransitPreview from './TransitPreview';
@@ -30,6 +30,7 @@ interface Props {
   onChangeGeneralField: (value: any, field: string) => void;
   onChangeTransitionDataField: (value: any, field: string) => void;
   onChangeTransitionNetworkField: (value: any, field: string) => void;
+  onChangeRegions: (value: any, option: DeploymentTypes) => void;
   onChangeSitesField: (value: ITopologyGroup) => void;
   onAddExistingSites: (ids: string[]) => void;
   onAddExistingApps: (ids: string[]) => void;
@@ -157,11 +158,14 @@ const FormPanel: React.FC<Props> = (props: Props) => {
           </AccordionSummary>
           <AccordionDetails className={AccordionStyles.deteilItemEdges}>
             <TransitStep
+              transitType={props.dataItem.deploymentPolicy && props.dataItem.deploymentPolicy.length ? props.dataItem.deploymentPolicy[0].type : DeploymentTypes.Wedge}
+              wedgesIds={props.dataItem.deploymentPolicy && props.dataItem.deploymentPolicy.length ? props.dataItem.deploymentPolicy[0].wedgeExtIds : []}
               regionCodes={props.dataItem.deploymentPolicy && props.dataItem.deploymentPolicy.length ? props.dataItem.deploymentPolicy[0].regionCode : []}
               selectedAccount={props.dataItem.deploymentPolicy && props.dataItem.deploymentPolicy.length ? props.dataItem.deploymentPolicy[0].controllerName : null}
               serviceType={props.dataItem.nwServicesPolicy && props.dataItem.nwServicesPolicy.length ? props.dataItem.nwServicesPolicy[0].serviceType : null}
               serviceVendor={props.dataItem.nwServicesPolicy && props.dataItem.nwServicesPolicy.length ? props.dataItem.nwServicesPolicy[0].serviceVendor : null}
               onChange={props.onChangeTransitionDataField}
+              onChangeRegions={props.onChangeRegions}
               onChangeNetwork={props.onChangeTransitionNetworkField}
             />
           </AccordionDetails>

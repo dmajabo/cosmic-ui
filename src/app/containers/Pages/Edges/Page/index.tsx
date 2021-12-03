@@ -4,7 +4,7 @@ import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 import LoadingIndicator from 'app/components/Loading';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import { useEdgesDataContext } from 'lib/hooks/Edges/useEdgesDataContext';
-import { IEdgeP, IEdgesRes } from 'lib/api/ApiModels/Edges/apiModel';
+import { IEdgeP, IEdgesRes, IWEdgesRes } from 'lib/api/ApiModels/Edges/apiModel';
 import Editor from '../Editor';
 import { useBreadCrumbDataContext } from 'lib/hooks/Breadcrumb/useBreadcrumbDataContext';
 import { EdgesBreadCrumbItemsType } from 'lib/hooks/Breadcrumb/models';
@@ -26,6 +26,7 @@ const MainPage: React.FC<Props> = (props: Props) => {
   const { response: resGroupds, onGet: onGetGroups } = useGet<ITopologyGroupsData>();
   const { response: resRegions, onGet: onGetRegions } = useGet<IAwsRegionsRes>();
   const { response: resAccounts, onGet: onGetAccounts } = useGet<IAccountsRes>();
+  const { response: resWedges, onGet: onGetWedges } = useGet<IWEdgesRes>();
   const { response: resDelete, onDelete: onDeleteEedge } = useDelete<any>();
   const { edges } = useEdgesDataContext();
   const [showEditorPage, setShowEditorPage] = React.useState(false);
@@ -36,6 +37,7 @@ const MainPage: React.FC<Props> = (props: Props) => {
     onTryLoadGroups();
     onTryLoadRegions();
     onTryLoadAccounts();
+    onTryLoadWedges();
   }, []);
 
   React.useEffect(() => {
@@ -61,6 +63,12 @@ const MainPage: React.FC<Props> = (props: Props) => {
       edges.onSetAccounts(resAccounts.controllers);
     }
   }, [resAccounts]);
+
+  React.useEffect(() => {
+    if (resWedges && resWedges.wEdges) {
+      edges.onSetWedges(resWedges.wEdges);
+    }
+  }, [resWedges]);
 
   React.useEffect(() => {
     if (resDelete && tempItem) {
@@ -101,6 +109,10 @@ const MainPage: React.FC<Props> = (props: Props) => {
 
   const onTryLoadGroups = async () => {
     await onGetGroups(TopologyGroupApi.getAllGroups(), userContext.accessToken!);
+  };
+
+  const onTryLoadWedges = async () => {
+    await onGetWedges(EdgesApi.getWedges(), userContext.accessToken!);
   };
 
   const onOpenEditor = (_item?: IEdgeP) => {

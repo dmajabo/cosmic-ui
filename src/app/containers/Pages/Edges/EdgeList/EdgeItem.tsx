@@ -26,7 +26,7 @@ const EdgeItem: React.FC<Props> = ({ dataItem, onEdit, onDelete }) => {
   return (
     <EdgeListItemWrapper>
       <EdgeContent>
-        <EdgeNameWrapper>{dataItem.name}</EdgeNameWrapper>
+        <EdgeNameWrapper onClick={handlerEdit}>{dataItem.name}</EdgeNameWrapper>
         <SettingsButton buttonStyles={{ top: '10px', right: '20px' }} id={`settingsButton${dataItem.id}`} width="24px" height="40px" hoverIconColor="var(--_hoverButtonBg)">
           <PopupContent>
             <PopupItem label="Edit" icon={editIcon} onClick={handlerEdit} />

@@ -37,6 +37,10 @@ export const EdgeNameWrapper = styled.div`
   overflow: hidden;
   padding-right: 30px;
   flex-shrink: 0;
+  cursor: pointer;
+  &:hover {
+    color: var(--_hoverButtonBg);
+  }
 `;
 
 export const EdgeContent = styled.div`

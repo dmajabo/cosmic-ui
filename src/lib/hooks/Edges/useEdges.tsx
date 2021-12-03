@@ -3,6 +3,7 @@ import { AccountVendorTypes, IAwsRegion, IAWS_Account, IMeraki_Account } from 'l
 import { jsonClone } from 'lib/helpers/cloneHelper';
 import { IEdgeP } from 'lib/api/ApiModels/Edges/apiModel';
 import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
+import { INetworkwEdge } from 'lib/models/topology';
 
 export interface EdgesContextType {
   dataReadyToShow: boolean;
@@ -11,6 +12,7 @@ export interface EdgesContextType {
   groups: ITopologyGroup[];
   regions: IAwsRegion[];
   awsAccounts: string[];
+  wedges: INetworkwEdge[];
   onSetData: (res: IEdgeP[]) => void;
   onUpdateGroups: (res: ITopologyGroup) => void;
   onDeleteGroup: (id: string) => void;
@@ -19,6 +21,7 @@ export interface EdgesContextType {
   onDeleteEdge: (id: string) => void;
   onSetGroups: (res: ITopologyGroup[]) => void;
   onSetRegions: (res: IAwsRegion[]) => void;
+  onSetWedges: (res: INetworkwEdge[]) => void;
   onSetAccounts: (res: (IMeraki_Account | IAWS_Account)[]) => void;
 }
 export function useEdgesContext(): EdgesContextType {
@@ -28,6 +31,7 @@ export function useEdgesContext(): EdgesContextType {
   const [groups, setGroups] = React.useState<ITopologyGroup[]>([]);
   const [regions, setRegions] = React.useState<IAwsRegion[]>([]);
   const [awsAccounts, setAwsAccounts] = React.useState<string[]>([]);
+  const [wedges, setWedges] = React.useState<INetworkwEdge[]>([]);
 
   const onSetData = (res: IEdgeP[]) => {
     if (!res) {
@@ -100,6 +104,15 @@ export function useEdgesContext(): EdgesContextType {
     const _data: IAWS_Account[] = res.filter((it, index) => it.vendor === AccountVendorTypes.AMAZON_AWS) as IAWS_Account[];
     setAwsAccounts(_data.map(it => it.name));
   };
+
+  const onSetWedges = (res: INetworkwEdge[]) => {
+    if (!res || !res.length) {
+      setWedges([]);
+      return;
+    }
+    setWedges(res);
+  };
+
   return {
     dataReadyToShow,
     data,
@@ -107,6 +120,7 @@ export function useEdgesContext(): EdgesContextType {
     searchQuery,
     regions,
     awsAccounts,
+    wedges,
     onSetData,
     onSetGroups,
     onUpdateGroups,
@@ -114,6 +128,7 @@ export function useEdgesContext(): EdgesContextType {
     onSearchChange,
     onSetRegions,
     onSetAccounts,
+    onSetWedges,
     onUpdateEdges,
     onDeleteEdge,
   };

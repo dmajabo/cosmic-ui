@@ -1,5 +1,5 @@
-export const wedgeIcon = (
-  <svg width="29" height="29" viewBox="0 0 29 29" fill="none" xmlns="http://www.w3.org/2000/svg">
+export const wedgeIcon = (size?: number | string) => (
+  <svg width={size || '29'} height={size || '29'} viewBox="0 0 29 29" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
       fillRule="evenodd"
       clipRule="evenodd"

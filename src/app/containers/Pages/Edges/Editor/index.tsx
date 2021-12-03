@@ -9,7 +9,7 @@ import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
 import FormPanel from './FormPanel';
 import EdgesMap from './EdgesMap';
-import { IEdgeP, IEdgePolicy, ValidationFields } from 'lib/api/ApiModels/Edges/apiModel';
+import { DeploymentTypes, IEdgeP, IEdgePolicy, ValidationFields } from 'lib/api/ApiModels/Edges/apiModel';
 import { ITopologyGroup, TopologyGroupApi } from 'lib/api/ApiModels/Topology/endpoints';
 import { useEdgesDataContext } from 'lib/hooks/Edges/useEdgesDataContext';
 import { IBaseEntity, IModal } from 'lib/models/general';
@@ -42,6 +42,9 @@ const Editor: React.FC<Props> = (props: Props) => {
   const [deleteModalData, setDeleteModalData] = React.useState<IModal<IDeleteDataModel>>({ show: false, dataItem: null });
   React.useEffect(() => {
     const _item = props.dataItem || createNewEdge();
+    if (_item.deploymentPolicy && _item.deploymentPolicy[0] && !_item.deploymentPolicy[0].type) {
+      _item.deploymentPolicy[0].type = DeploymentTypes.Regions;
+    }
     const _steps: IStepperItem<EdgesStepperTypes>[] = jsonClone(EdgesStepperItems);
     const _items: IStepperItem<EdgesStepperTypes>[] = updateSteps(_steps, _item);
     setSelectedStep(_items[0]);
@@ -133,7 +136,7 @@ const Editor: React.FC<Props> = (props: Props) => {
   };
 
   const onChangeDataField = (value: any, field: string, step: EdgesStepperTypes) => {
-    const _dataItem = { ...dataItem };
+    const _dataItem: IEdgeP = { ...dataItem };
     _dataItem[field] = value;
     const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, step, _dataItem[field]);
     setSteps(_items);
@@ -142,7 +145,7 @@ const Editor: React.FC<Props> = (props: Props) => {
   };
 
   const onChangeGeneralField = (value: any, field: string) => {
-    const _dataItem = { ...dataItem };
+    const _dataItem: IEdgeP = { ...dataItem };
     _dataItem[field] = value;
     const _items: IStepperItem<EdgesStepperTypes>[] = updateStep(steps, EdgesStepperTypes.GENERAL, _dataItem, [ValidationFields.NAME, ValidationFields.CONNECTION, ValidationFields.TAGS]);
     setSteps(_items);
@@ -151,25 +154,42 @@ const Editor: React.FC<Props> = (props: Props) => {
   };
 
   const onChangeTransitionDataField = (value: any, field: string) => {
-    const _dataItem = { ...dataItem };
+    const _dataItem: IEdgeP = { ...dataItem };
     _dataItem.deploymentPolicy[0][field] = value;
-    const _items: IStepperItem<EdgesStepperTypes>[] = updateStep(steps, EdgesStepperTypes.TRANSIT, _dataItem.deploymentPolicy[0], [ValidationFields.CONTROLLER_NAME, ValidationFields.REGION_CODE]);
+    const _items: IStepperItem<EdgesStepperTypes>[] = updateStep(steps, EdgesStepperTypes.TRANSIT, _dataItem.deploymentPolicy[0], []);
     setSteps(_items);
     setDataItem(_dataItem);
     setHasChanges(true);
   };
 
   const onChangeTransitionNetworkField = (value: any, field: string) => {
-    const _dataItem = { ...dataItem };
+    const _dataItem: IEdgeP = { ...dataItem };
     _dataItem.nwServicesPolicy[0][field] = value;
-    const _items: IStepperItem<EdgesStepperTypes>[] = updateStep(steps, EdgesStepperTypes.TRANSIT, _dataItem.nwServicesPolicy[0], [ValidationFields.CONTROLLER_NAME, ValidationFields.REGION_CODE]);
+    const _items: IStepperItem<EdgesStepperTypes>[] = updateStep(steps, EdgesStepperTypes.TRANSIT, _dataItem.nwServicesPolicy[0], []);
+    setSteps(_items);
+    setDataItem(_dataItem);
+    setHasChanges(true);
+  };
+
+  const onChangeRegions = (r: string[], option: DeploymentTypes) => {
+    const _dataItem: IEdgeP = { ...dataItem };
+    _dataItem.deploymentPolicy[0].type = option;
+    if (option === DeploymentTypes.Regions) {
+      _dataItem.deploymentPolicy[0].regionCode = r;
+      _dataItem.deploymentPolicy[0].wedgeExtIds = [];
+    }
+    if (option === DeploymentTypes.Wedge) {
+      _dataItem.deploymentPolicy[0].regionCode = [];
+      _dataItem.deploymentPolicy[0].wedgeExtIds = r;
+    }
+    const _items: IStepperItem<EdgesStepperTypes>[] = updateStep(steps, EdgesStepperTypes.TRANSIT, _dataItem.deploymentPolicy[0], []);
     setSteps(_items);
     setDataItem(_dataItem);
     setHasChanges(true);
   };
 
   const onChangePolicyField = (items: IEdgePolicy[]) => {
-    const _dataItem = { ...dataItem };
+    const _dataItem: IEdgeP = { ...dataItem };
     _dataItem.policies = items;
     const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.POLICY, _dataItem.policies);
     setSteps(_items);
@@ -318,7 +338,10 @@ const Editor: React.FC<Props> = (props: Props) => {
               name={dataItem.name}
               sites={dataItem.siteGroupIds}
               apps={dataItem.appGroupIds}
+              wedges={edges.wedges}
+              transitType={dataItem && dataItem.deploymentPolicy && dataItem.deploymentPolicy.length ? dataItem.deploymentPolicy[0].type : DeploymentTypes.Wedge}
               selectedRegions={dataItem && dataItem.deploymentPolicy && dataItem.deploymentPolicy.length ? dataItem.deploymentPolicy[0].regionCode : null}
+              selectedWedgeIds={dataItem && dataItem.deploymentPolicy && dataItem.deploymentPolicy.length ? dataItem.deploymentPolicy[0].wedgeExtIds : null}
             />
           )}
         </MainColumn>
@@ -338,6 +361,7 @@ const Editor: React.FC<Props> = (props: Props) => {
             onChangeGeneralField={onChangeGeneralField}
             onChangeTransitionNetworkField={onChangeTransitionNetworkField}
             onChangeTransitionDataField={onChangeTransitionDataField}
+            onChangeRegions={onChangeRegions}
             onToogleAccordionItem={onToogleAccordionItem}
             onDeleteSitesGroup={onDeleteSitesGroup}
             onDeleteAppsGroup={onDeleteAppsGroup}

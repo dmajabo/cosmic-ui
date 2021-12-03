@@ -8,12 +8,17 @@ import EdgeNode from './EdgeNode';
 import { useEdgeZoom } from './useEdgeZoom';
 import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
 import { useEdgesDataContext } from 'lib/hooks/Edges/useEdgesDataContext';
+import { DeploymentTypes } from 'lib/api/ApiModels/Edges/apiModel';
+import { INetworkwEdge } from 'lib/models/topology';
 
 interface Props {
   name: string;
   sites: string[];
   apps: string[];
+  wedges: INetworkwEdge[];
+  transitType: DeploymentTypes;
   selectedRegions: string[];
+  selectedWedgeIds: string[];
 }
 
 const EdgesMap: React.FC<Props> = (props: Props) => {
@@ -35,11 +40,15 @@ const EdgesMap: React.FC<Props> = (props: Props) => {
   }, []);
 
   React.useEffect(() => {
-    if (props.selectedRegions) {
-      const _transits: ISvgTransitNode[] = buildtransitNodes(props.selectedRegions);
+    if (props.transitType === DeploymentTypes.Regions && props.selectedRegions) {
+      const _transits: ISvgTransitNode[] = buildtransitNodes(props.selectedRegions, DeploymentTypes.Regions);
       setTransits(_transits);
     }
-  }, [props.selectedRegions]);
+    if (props.transitType === DeploymentTypes.Wedge && props.selectedWedgeIds) {
+      const _transits: ISvgTransitNode[] = buildtransitNodes(props.selectedWedgeIds, DeploymentTypes.Wedge, props.wedges);
+      setTransits(_transits);
+    }
+  }, [props.transitType, props.selectedRegions, props.selectedWedgeIds]);
 
   React.useEffect(() => {
     if (!edges || !edges.groups || !edges.groups.length || !props.sites) return;

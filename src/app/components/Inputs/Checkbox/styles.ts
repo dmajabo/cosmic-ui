@@ -42,7 +42,7 @@ export const Overlay = styled.span<Props>`
   background-color: var(--primaryBg);
   transition: all 0.1s ease-in-out;
   border: 1px solid;
-  border-color: var(--_hoverButtonBg);
+  border-color: #b4bfcf;
   box-sizing: border-box;
   border-radius: 4px;
   overflow: hidden;
@@ -68,6 +68,11 @@ export const Checkbox = styled.label<CheckboxProps>`
   position: relative;
   font-weight: normal;
   padding-left: ${props => props.paddingLeft || '20px'};
+  &:hover:not(:disabled) {
+    ${Overlay} {
+      border-color: var(--_hoverButtonBg);
+    }
+  }
   ${Input} ~ ${Overlay} {
     svg {
       vertical-align: ${props => props.alignSvg || 'top'};

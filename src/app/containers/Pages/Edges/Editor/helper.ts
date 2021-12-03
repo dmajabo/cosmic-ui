@@ -26,8 +26,7 @@ export const updateSteps = (steps: IStepperItem<EdgesStepperTypes>[], dataItem: 
       return;
     }
     if (step.id === EdgesStepperTypes.TRANSIT) {
-      const _completed =
-        dataItem.deploymentPolicy && dataItem.deploymentPolicy.length ? checkIsAnyFieldEmpty(dataItem.deploymentPolicy[0], [ValidationFields.CONTROLLER_NAME, ValidationFields.REGION_CODE]) : false;
+      const _completed = dataItem.deploymentPolicy && dataItem.deploymentPolicy.length ? checkIsAnyFieldEmpty(dataItem.deploymentPolicy[0], [ValidationFields.CONTROLLER_NAME]) : false;
       step.state = !_completed ? StepperItemStateType.EMPTY : StepperItemStateType.COMPLETE;
       return;
     }

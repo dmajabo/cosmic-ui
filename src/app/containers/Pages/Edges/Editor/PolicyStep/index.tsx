@@ -7,6 +7,7 @@ import { createNewEdgePolicy } from '../model';
 import { IEdgePolicy } from 'lib/api/ApiModels/Edges/apiModel';
 import { useEdgesDataContext } from 'lib/hooks/Edges/useEdgesDataContext';
 import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
+import { jsonClone } from 'lib/helpers/cloneHelper';
 interface Props {
   siteGroupIds: string[];
   appGroupIds: string[];
@@ -58,8 +59,8 @@ const PolicyStep: React.FC<Props> = (props: Props) => {
   //   onChange(value, 'name');
   // };
 
-  const onUpdateItem = (value: string | null, field: string, index) => {
-    const _items: IEdgePolicy[] = items.slice();
+  const onUpdateItem = (value: string | null, field: string, index: number) => {
+    const _items: IEdgePolicy[] = jsonClone(items);
     _items[index][field] = value;
     setItems(_items);
     if (_items[index].source && _items[index].destination) {
