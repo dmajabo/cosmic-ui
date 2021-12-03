@@ -23,6 +23,8 @@ import { Tab, Tabs } from '@material-ui/core';
 import { LookbackLabel, LookbackSelectOption, LookbackTimeTab, LookbackValue } from './LookbackTimeTab';
 import { CustomTimeRangeLabel, CustomTimeRangeSelectOption, CustomTimeTab } from './CustomTimeTab';
 import { DataUnitDropdown, DataUnitLabel, DataUnitValue, DataUnitSelectOption } from './DataUnitDropdown';
+import { ChartTypeValue, ChartTypeDropdown, ChartTypeLabel } from './ChartTypeDropdown';
+import LineChartIcon from '../icons/metrics explorer/chartType/lineChart.svg';
 
 //TODO: Remove this once API is integrated
 const DUMMY_DIMENSION_DATA: DimensionOptions[] = [
@@ -172,6 +174,12 @@ export interface SelectOption {
   readonly label: string;
 }
 
+export interface SelectChartTypeOption {
+  readonly value: ChartTypeValue;
+  readonly label: ChartTypeLabel;
+  readonly icon: string;
+}
+
 export const getDimensionCount = (dimensions: DimensionOptions[]) => {
   return dimensions.reduce((accu, nextValue) => {
     const subDimensionCount = nextValue.source.length + nextValue.destination.length;
@@ -213,6 +221,12 @@ const INITIAL_DATA_UNIT_VALUE: DataUnitSelectOption = {
   value: DataUnitValue.bits,
 };
 
+const INITIAL_CHART_TYPE_VALUE: SelectChartTypeOption = {
+  label: ChartTypeLabel.lineChart,
+  value: ChartTypeValue.lineChart,
+  icon: LineChartIcon,
+};
+
 export const MetricsExplorer: React.FC = () => {
   const classes = AnalyticsStyles();
 
@@ -226,6 +240,7 @@ export const MetricsExplorer: React.FC = () => {
   const [selectedCustomToDate, setSelectedCustomToDate] = useState<string>('');
   const [selectedShowTimeRange, setSelectedShowTimeRange] = useState<CustomTimeRangeSelectOption>(INITIAL_SHOW_TIME_RANGE_VALUE);
   const [dataUnit, setDataUnit] = useState<DataUnitSelectOption>(INITIAL_DATA_UNIT_VALUE);
+  const [chartType, setChartType] = useState<SelectChartTypeOption>(INITIAL_CHART_TYPE_VALUE);
 
   const handleDimensionModalOpen = () => {
     setModalName(ModalName.Dimensions);
@@ -273,10 +288,13 @@ export const MetricsExplorer: React.FC = () => {
 
   const handleDataUnitChange = (value: DataUnitSelectOption) => setDataUnit(value);
 
+  const handleChartTypeChange = (value: SelectChartTypeOption) => setChartType(value);
+
   const customizationtabOptions: CustomizationTabProps[] = [
     {
       img: DesignIcon,
       title: 'Design',
+      content: <ChartTypeDropdown chartType={chartType} handleChartTypeChange={handleChartTypeChange} />,
     },
     {
       img: DimensionsIcon,
