@@ -25,12 +25,12 @@ const CHART_TYPE_OPTIONS: SelectChartTypeOption[] = [
   {
     label: ChartTypeLabel.lineChart,
     value: ChartTypeValue.lineChart,
-    image: LineChartIcon,
+    icon: LineChartIcon,
   },
   {
     label: ChartTypeLabel.stackedBarChart,
     value: ChartTypeValue.stackedBarChart,
-    image: StackedBarChartIcon,
+    icon: StackedBarChartIcon,
   },
 ];
 

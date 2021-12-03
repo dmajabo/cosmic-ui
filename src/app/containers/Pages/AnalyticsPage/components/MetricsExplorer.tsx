@@ -177,7 +177,7 @@ export interface SelectOption {
 export interface SelectChartTypeOption {
   readonly value: ChartTypeValue;
   readonly label: ChartTypeLabel;
-  readonly image: string;
+  readonly icon: string;
 }
 
 export const getDimensionCount = (dimensions: DimensionOptions[]) => {
@@ -224,7 +224,7 @@ const INITIAL_DATA_UNIT_VALUE: DataUnitSelectOption = {
 const INITIAL_CHART_TYPE_VALUE: SelectChartTypeOption = {
   label: ChartTypeLabel.lineChart,
   value: ChartTypeValue.lineChart,
-  image: LineChartIcon,
+  icon: LineChartIcon,
 };
 
 export const MetricsExplorer: React.FC = () => {
