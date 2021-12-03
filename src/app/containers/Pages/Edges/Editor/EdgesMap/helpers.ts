@@ -1,4 +1,4 @@
-import { DeploymentTypes } from 'lib/api/ApiModels/Edges/apiModel';
+import { DeploymentTypes, IEdgePolicy } from 'lib/api/ApiModels/Edges/apiModel';
 import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
 import { INetworkwEdge } from 'lib/models/topology';
 
@@ -12,6 +12,24 @@ export const EDGE_MAP_CONSTANTS = {
   sitesNodePrefix: 'sitesNode_',
   appsNodePrefix: 'appsNode_',
   transitNodePrefix: 'transitNode_',
+  links: 'links',
+  transitionPrefix: 'transitionLink_',
+};
+
+export const SVG_EDGES_STYLES = {
+  siteNode: {
+    width: 204,
+  },
+  appNode: {
+    width: 204,
+  },
+  transitNode: {
+    width: 124,
+  },
+  link: {
+    strokeWidth: 0.5,
+    color: 'var(--_defaultLinkFill)',
+  },
 };
 
 export enum EdgeNodeType {
@@ -26,6 +44,8 @@ export interface ISvgEdgeGroup extends ITopologyGroup {
   id: string;
   height: number;
   scale: number;
+  nodeId: string;
+  offsetX: number;
 }
 
 export interface ISvgTransitNode {
@@ -36,6 +56,7 @@ export interface ISvgTransitNode {
   scale: number;
   height: number;
   type: DeploymentTypes;
+  offsetX: number;
 }
 
 interface IEdgeNodeStyles {
@@ -63,13 +84,60 @@ export interface INodesObject {
   nodes: ISvgEdgeGroup[];
   scale: number;
 }
-export const buildNodes = (data: ITopologyGroup[], idPrefix: string): INodesObject => {
+
+export interface ITransitionObject {
+  nodes: ISvgTransitNode[];
+  scale: number;
+}
+
+export interface IEdgeLink {
+  id: string;
+  source: ISvgEdgeGroup;
+  destination: ISvgEdgeGroup;
+  transit: ISvgTransitNode[];
+}
+
+export interface ILinkObject {
+  links: IEdgeLink[];
+  scale: number;
+}
+
+export const buildLinks = (sources: INodesObject, destinations: INodesObject, transits: ITransitionObject, policies: IEdgePolicy[], idPrefix: string): ILinkObject => {
+  const _arr: IEdgeLink[] = [];
+  policies.forEach((policy, index) => {
+    const link: IEdgeLink = {
+      id: `${idPrefix}${index}`,
+      source: null,
+      destination: null,
+      transit: null,
+    };
+    if (sources && sources.nodes && sources.nodes.length) {
+      const _s = sources.nodes.find(it => it.id === policy.source);
+      if (_s) {
+        link.source = _s;
+      }
+    }
+    if (destinations && destinations.nodes && destinations.nodes.length) {
+      const _d = destinations.nodes.find(it => it.id === policy.destination);
+      if (_d) {
+        link.destination = _d;
+      }
+    }
+    if (transits && transits.nodes && transits.nodes.length) {
+      link.transit = [...transits.nodes];
+    }
+    _arr.push(link);
+  });
+  return { links: _arr, scale: 1 };
+};
+
+export const buildNodes = (data: ITopologyGroup[], idPrefix: string, offset: number): INodesObject => {
   const svgSize = document.getElementById(EDGE_MAP_CONSTANTS.svg).getBoundingClientRect();
   let offsetY = svgSize.height / 2;
   let totalHeight = 0;
   const _arr: ISvgEdgeGroup[] = data.map((it, index) => {
     const height = getItemHeight(it);
-    const _obj = { ...it, height: height, y: offsetY, x: 48, id: `${idPrefix}${index}`, scale: 1 };
+    const _obj = { ...it, id: it.id, height: height, y: offsetY, x: 48, nodeId: `${idPrefix}${index}`, scale: 1, offsetX: offset };
     offsetY = offsetY + height + EdgeNodeStyles.nodeMargin;
     totalHeight = totalHeight + height + EdgeNodeStyles.nodeMargin;
     return _obj;
@@ -83,13 +151,13 @@ export const buildNodes = (data: ITopologyGroup[], idPrefix: string): INodesObje
   return { nodes: _arr, scale: scaleFactor };
 };
 
-export const buildtransitNodes = (data: string[], type: DeploymentTypes, wedges?: INetworkwEdge[]): ISvgTransitNode[] => {
+export const buildtransitNodes = (data: string[], type: DeploymentTypes, offset: number, wedges?: INetworkwEdge[]): ITransitionObject => {
   const svgSize = document.getElementById(EDGE_MAP_CONSTANTS.svg).getBoundingClientRect();
   let offsetY = svgSize.height / 2;
   let totalHeight = 0;
   const _arr: ISvgTransitNode[] = data.map((it, index) => {
     const _wedge = wedges && wedges.length ? wedges.find(w => w.extId === it) : null;
-    const _obj = { name: _wedge && _wedge.name ? _wedge.name : it, height: 84, y: offsetY, x: 88, id: `${EDGE_MAP_CONSTANTS.transitNodePrefix}${index}`, scale: 1, type: type };
+    const _obj = { name: _wedge && _wedge.name ? _wedge.name : it, height: 84, y: offsetY, x: 88, id: `${EDGE_MAP_CONSTANTS.transitNodePrefix}${index}`, scale: 1, type: type, offsetX: offset };
     offsetY += 94;
     totalHeight += 94;
     return _obj;
@@ -100,7 +168,7 @@ export const buildtransitNodes = (data: string[], type: DeploymentTypes, wedges?
     it.y = _y;
     it.scale = scaleFactor;
   });
-  return _arr;
+  return { nodes: _arr, scale: scaleFactor };
 };
 
 const getItemHeight = (group: ITopologyGroup): number => {

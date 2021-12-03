@@ -339,6 +339,7 @@ const Editor: React.FC<Props> = (props: Props) => {
               sites={dataItem.siteGroupIds}
               apps={dataItem.appGroupIds}
               wedges={edges.wedges}
+              policies={dataItem.policies}
               transitType={dataItem && dataItem.deploymentPolicy && dataItem.deploymentPolicy.length ? dataItem.deploymentPolicy[0].type : DeploymentTypes.Wedge}
               selectedRegions={dataItem && dataItem.deploymentPolicy && dataItem.deploymentPolicy.length ? dataItem.deploymentPolicy[0].regionCode : null}
               selectedWedgeIds={dataItem && dataItem.deploymentPolicy && dataItem.deploymentPolicy.length ? dataItem.deploymentPolicy[0].wedgeExtIds : null}

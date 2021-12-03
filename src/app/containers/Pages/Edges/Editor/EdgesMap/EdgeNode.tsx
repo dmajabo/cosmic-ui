@@ -11,21 +11,21 @@ interface Props {
 const EdgeNode: React.FC<Props> = ({ dataItem, type }) => {
   if (type === EdgeNodeType.SITES) {
     return (
-      <foreignObject transform={`translate(${dataItem.x}, ${dataItem.y})`} width="calc(100% / 3 - 96px)" height={dataItem.height}>
+      <foreignObject transform={`translate(${dataItem.x}, ${dataItem.y})`} width="calc(300px - 96px)" height={dataItem.height}>
         <SitesNode data={dataItem as ISvgEdgeGroup} />
       </foreignObject>
     );
   }
   if (type === EdgeNodeType.APPS) {
     return (
-      <foreignObject transform={`translate(${dataItem.x}, ${dataItem.y})`} width="calc(100% / 3 - 96px)" height={dataItem.height}>
+      <foreignObject transform={`translate(${dataItem.x}, ${dataItem.y})`} width="calc(300px - 96px)" height={dataItem.height}>
         <AppsNode data={dataItem as ISvgEdgeGroup} />
       </foreignObject>
     );
   }
   if (type === EdgeNodeType.TRANSIT) {
     return (
-      <foreignObject transform={`translate(${dataItem.x}, ${dataItem.y})`} width="calc(100% / 3 - 176px)" height={dataItem.height}>
+      <foreignObject transform={`translate(${dataItem.x}, ${dataItem.y})`} width="calc(300px - 176px)" height={dataItem.height}>
         <TransitNode data={dataItem as ISvgTransitNode} />
       </foreignObject>
     );
