@@ -1,3 +1,4 @@
+import { DEFAULT_TRANSITION } from 'lib/constants/general';
 import styled from 'styled-components';
 
 export const PolicyItemsWrapper = styled.div`
@@ -33,15 +34,29 @@ export const PolicyName = styled.div`
   font-size: 16px;
   line-height: 21px;
   color: var(--_primaryColor);
-  width: 100%;
+  width: auto;
+  max-width: calc(100% - 32px);
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-  margin: 0 0 20px 0;
+  margin: 0 12px 0 0;
 `;
 
-export const PolicyActionRow = styled.div`
+interface RowProps {
+  margin?: string;
+}
+export const PolicyActionRow = styled.div<RowProps>`
   display: flex;
   width: 100%;
   flex-shrink: 0;
+  margin: ${props => props.margin || '0'};
+  .visibleOnHover {
+    opacity: 0;
+    transition: opacity ${DEFAULT_TRANSITION};
+  }
+  &:hover {
+    .visibleOnHover {
+      opacity: 1;
+    }
+  }
 `;

@@ -6,6 +6,8 @@ import TextInput from 'app/components/Inputs/TextInput';
 import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
 import { ValueLabel } from 'app/components/Inputs/MatSelect/styles';
 import { getSelectedItem } from 'lib/helpers/selectionHelper';
+import IconWrapper from 'app/components/Buttons/IconWrapper';
+import { deleteIcon } from 'app/components/SVGIcons/delete';
 
 interface Props {
   index: number;
@@ -13,6 +15,7 @@ interface Props {
   sources: ITopologyGroup[];
   destinations: ITopologyGroup[];
   onUpdateItem: (value: any | null, field: string, index: number) => void;
+  onDeleteItem: (index: number) => void;
 }
 
 const PolicyItem: React.FC<Props> = (props: Props) => {
@@ -29,9 +32,16 @@ const PolicyItem: React.FC<Props> = (props: Props) => {
   const onSelectChange = (value: ITopologyGroup, field: string) => {
     props.onUpdateItem(value.id, field, props.index);
   };
+
+  const onDelete = () => {
+    props.onDeleteItem(props.index);
+  };
   return (
     <PolicyItemWrapper>
-      <PolicyName>Policy {props.index + 1}</PolicyName>
+      <PolicyActionRow margin="0 0 20px 0">
+        <PolicyName>Policy {props.index + 1}</PolicyName>
+        <IconWrapper classes="visibleOnHover" onClick={onDelete} styles={{ margin: '0 0 0 auto' }} width="20px" height="20px" icon={deleteIcon()} />
+      </PolicyActionRow>
       <PolicyActionRow>
         <MatSelect
           id={`${props.index}source`}

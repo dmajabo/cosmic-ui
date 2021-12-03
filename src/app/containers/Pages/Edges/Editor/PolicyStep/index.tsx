@@ -68,6 +68,13 @@ const PolicyStep: React.FC<Props> = (props: Props) => {
     }
   };
 
+  const onDeleteItem = (index: number) => {
+    const _items: IEdgePolicy[] = jsonClone(items);
+    _items.splice(index, 1);
+    setItems(_items);
+    props.onChange(_items);
+  };
+
   const onAddPolicy = () => {
     const _items: IEdgePolicy[] = items && items.length ? [...items] : [];
     const _obj: IEdgePolicy = createNewEdgePolicy();
@@ -80,7 +87,7 @@ const PolicyStep: React.FC<Props> = (props: Props) => {
       {items && items.length ? (
         <PolicyItemsWrapper>
           {items.map((it, index) => (
-            <PolicyItem key={`policy${index}`} index={index} item={it} onUpdateItem={onUpdateItem} sources={sources} destinations={destinations} />
+            <PolicyItem key={`policy${index}`} index={index} item={it} onUpdateItem={onUpdateItem} onDeleteItem={onDeleteItem} sources={sources} destinations={destinations} />
           ))}
         </PolicyItemsWrapper>
       ) : null}
