@@ -31,7 +31,7 @@ const AppsNode: React.FC<Props> = (props: Props) => {
           onClick={onClickExpandCollapse}
         />
       </GroupWrapper>
-      {props.data.extIds && props.data.extIds.length ? props.data.extIds.map(it => <Office key={`office${it}`}>{it}</Office>) : null}
+      {!props.data.collapsed && props.data.extIds && props.data.extIds.length ? props.data.extIds.map(it => <Office key={`office${it}`}>{it}</Office>) : null}
     </NodeWrapper>
   );
 };

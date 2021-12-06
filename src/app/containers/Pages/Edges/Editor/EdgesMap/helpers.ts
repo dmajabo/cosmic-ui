@@ -1,5 +1,6 @@
 import { DeploymentTypes, IEdgePolicy } from 'lib/api/ApiModels/Edges/apiModel';
 import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
+import { jsonClone } from 'lib/helpers/cloneHelper';
 import { INetworkwEdge } from 'lib/models/topology';
 
 export const EDGE_MAP_CONSTANTS = {
@@ -62,23 +63,25 @@ export interface ISvgTransitNode {
 
 interface IEdgeNodeStyles {
   header: number;
-  headerPadding: number;
+  headerMargin: number;
   nameHeight: number;
   namePadding: number;
+  nameCollapsedPadding: number;
   siteHeight: number;
-  sitepadding: number;
+  siteMargin: number;
   nodeMargin: number;
   nodePaddingBottom: number;
 }
 export const EdgeNodeStyles: IEdgeNodeStyles = {
-  header: 16,
-  headerPadding: 14,
+  header: 24,
+  headerMargin: 14,
   nameHeight: 18,
   namePadding: 14,
+  nameCollapsedPadding: 4,
   siteHeight: 32,
-  sitepadding: 6,
+  siteMargin: 6,
   nodeMargin: 10,
-  nodePaddingBottom: 18,
+  nodePaddingBottom: 10,
 };
 
 export interface INodesObject {
@@ -137,7 +140,7 @@ export const buildNodes = (data: ITopologyGroup[], idPrefix: string, offset: num
   let offsetY = svgSize.height / 2;
   let totalHeight = 0;
   const _arr: ISvgEdgeGroup[] = data.map((it, index) => {
-    const height = getItemExpandedHeight(it);
+    const height = getItemExpandedHeight(it, false);
     const _obj = { ...it, id: it.id, height: height, y: offsetY, x: 48, nodeId: `${idPrefix}${index}`, scale: 1, offsetX: offset, collapsed: false };
     offsetY = offsetY + height + EdgeNodeStyles.nodeMargin;
     totalHeight = totalHeight + height + EdgeNodeStyles.nodeMargin;
@@ -172,14 +175,60 @@ export const buildtransitNodes = (data: string[], type: DeploymentTypes, offset:
   return { nodes: _arr, scale: scaleFactor };
 };
 
-const getItemExpandedHeight = (group: ITopologyGroup): number => {
-  const _collapsedHeight = getItemCollapsedHeight();
-  const _c = group.extIds.length * EdgeNodeStyles.siteHeight + (group.extIds.length - 1) * EdgeNodeStyles.sitepadding;
+const getItemExpandedHeight = (group: ITopologyGroup, collapsed: boolean): number => {
+  const _collapsedHeight = getItemCollapsedHeight(collapsed);
+  const _c = group.extIds.length * EdgeNodeStyles.siteHeight + (group.extIds.length - 1) * EdgeNodeStyles.nodeMargin;
   return _collapsedHeight + _c;
 };
 
-const getItemCollapsedHeight = (): number => {
-  const _h = EdgeNodeStyles.header + EdgeNodeStyles.headerPadding;
-  const _n = EdgeNodeStyles.nameHeight + EdgeNodeStyles.namePadding;
-  return _h + _n + EdgeNodeStyles.nodePaddingBottom;
+const getItemCollapsedHeight = (collapsed: boolean): number => {
+  const _p = collapsed ? EdgeNodeStyles.nameCollapsedPadding : EdgeNodeStyles.namePadding;
+  const _n = EdgeNodeStyles.header + EdgeNodeStyles.headerMargin + EdgeNodeStyles.nameHeight + _p;
+  return _n + EdgeNodeStyles.nodePaddingBottom;
+};
+
+export const updateNodesCoord = (node: ISvgEdgeGroup, data: INodesObject): INodesObject => {
+  const _nodes: ISvgEdgeGroup[] = jsonClone(data.nodes);
+  const svgSize = document.getElementById(EDGE_MAP_CONSTANTS.svg).getBoundingClientRect();
+  const _n = _nodes.find(it => it.id === node.id);
+  updateNode(_n, _n.collapsed);
+  let offsetY = svgSize.height / 2;
+  let totalHeight = 0;
+  _nodes.forEach(it => {
+    it.y = offsetY;
+    offsetY = offsetY + it.height + EdgeNodeStyles.nodeMargin;
+    totalHeight = totalHeight + it.height + EdgeNodeStyles.nodeMargin;
+  });
+  const scaleFactor = Math.min(1, svgSize.height / totalHeight);
+  _nodes.forEach(it => {
+    const _y = it.y - totalHeight / 2;
+    it.y = _y;
+    it.scale = scaleFactor;
+  });
+  return { nodes: _nodes, scale: scaleFactor };
+};
+
+const updateNode = (node: ISvgEdgeGroup, currentState: boolean) => {
+  node.collapsed = currentState ? false : true;
+  node.height = node.collapsed ? getItemCollapsedHeight(node.collapsed) : getItemExpandedHeight(node, node.collapsed);
+};
+
+export const updateAllNodes = (data: INodesObject, state: boolean): INodesObject => {
+  const _nodes: ISvgEdgeGroup[] = jsonClone(data.nodes);
+  const svgSize = document.getElementById(EDGE_MAP_CONSTANTS.svg).getBoundingClientRect();
+  let offsetY = svgSize.height / 2;
+  let totalHeight = 0;
+  _nodes.forEach(it => {
+    updateNode(it, state);
+    it.y = offsetY;
+    offsetY = offsetY + it.height + EdgeNodeStyles.nodeMargin;
+    totalHeight = totalHeight + it.height + EdgeNodeStyles.nodeMargin;
+  });
+  const scaleFactor = Math.min(1, svgSize.height / totalHeight);
+  _nodes.forEach(it => {
+    const _y = it.y - totalHeight / 2;
+    it.y = _y;
+    it.scale = scaleFactor;
+  });
+  return { nodes: _nodes, scale: scaleFactor };
 };

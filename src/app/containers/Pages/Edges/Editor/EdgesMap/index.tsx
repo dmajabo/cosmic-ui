@@ -3,7 +3,7 @@ import { ButtonsGroup } from '../styles';
 import { FooterLabel, FooterRow, MapTitle, SvgStyles, SvgWrapper } from './styles';
 import IconButton from 'app/components/Buttons/IconButton';
 import { zoomCenterIcon, zoomInIcon, zoomOutIcon } from 'app/components/SVGIcons/zoom';
-import { buildNodes, buildtransitNodes, EdgeNodeType, EDGE_MAP_CONSTANTS, INodesObject, ITransitionObject, ILinkObject, buildLinks, ISvgEdgeGroup } from './helpers';
+import { buildNodes, buildtransitNodes, EdgeNodeType, EDGE_MAP_CONSTANTS, INodesObject, ITransitionObject, ILinkObject, buildLinks, ISvgEdgeGroup, updateNodesCoord, updateAllNodes } from './helpers';
 import EdgeNode from './EdgeNode';
 import { useEdgeZoom } from './useEdgeZoom';
 import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
@@ -11,6 +11,7 @@ import { useEdgesDataContext } from 'lib/hooks/Edges/useEdgesDataContext';
 import { DeploymentTypes, IEdgePolicy } from 'lib/api/ApiModels/Edges/apiModel';
 import { INetworkwEdge } from 'lib/models/topology';
 import EdgeLink from './EdgeLink';
+import ExpandCollapseAll from './ExpandCollapseAll';
 
 interface Props {
   name: string;
@@ -86,11 +87,27 @@ const EdgesMap: React.FC<Props> = (props: Props) => {
   }, [props.policies, sites, apps, transits]);
 
   const onExpandCollapseSites = (node: ISvgEdgeGroup) => {
-    console.log(node);
+    const obj: INodesObject = updateNodesCoord(node, sites);
+    setSites(obj);
   };
 
   const onExpandCollapseApps = (node: ISvgEdgeGroup) => {
-    console.log(node);
+    const obj: INodesObject = updateNodesCoord(node, apps);
+    setApps(obj);
+  };
+
+  const onExpandAll = () => {
+    const _sites: INodesObject = updateAllNodes(sites, true);
+    const _apps: INodesObject = updateAllNodes(apps, true);
+    setSites(_sites);
+    setApps(_apps);
+  };
+
+  const onCollapseAll = () => {
+    const _sites: INodesObject = sites && sites.nodes && sites.nodes.length ? updateAllNodes(sites, false) : null;
+    const _apps: INodesObject = apps && apps.nodes && apps.nodes.length ? updateAllNodes(apps, false) : null;
+    setSites(_sites);
+    setApps(_apps);
   };
 
   const zoomIn = () => {
@@ -120,6 +137,7 @@ const EdgesMap: React.FC<Props> = (props: Props) => {
             </g>
           </g>
         </SvgStyles>
+        <ExpandCollapseAll sites={sites && sites.nodes ? sites.nodes : null} apps={apps && apps.nodes ? apps.nodes : null} onCollapseAll={onCollapseAll} onExpandAll={onExpandAll} />
         <ButtonsGroup>
           <IconButton styles={{ margin: '10px 0 0 0' }} icon={zoomInIcon} title="Zoom in" onClick={zoomIn} />
           <IconButton iconStyles={{ verticalAlign: 'middle', height: '4px' }} styles={{ margin: '10px 0 0 0' }} icon={zoomOutIcon} title="Zoom out" onClick={zoomOut} />

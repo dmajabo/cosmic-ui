@@ -43,7 +43,8 @@ export const GroupWrapper = styled.div`
   margin: 14px 0;
 `;
 
-export const GroupName = styled.div`
+export const GroupName = styled.span`
+  display: inline-block;
   font-size: 14px;
   line-height: 16px;
   height: 18px;

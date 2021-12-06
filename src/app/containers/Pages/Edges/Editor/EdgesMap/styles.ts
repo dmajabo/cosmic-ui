@@ -51,3 +51,30 @@ export const SvgStyles = styled.svg`
     transform: translate(calc(100% / 3), 0);
   }
 `;
+
+export const ExpandCollapseAllWrapper = styled.div`
+  display: flex;
+  position: absolute;
+  bottom: 20px;
+  width: 100%;
+  text-align: center;
+`;
+
+export const ExpandCollapseButton = styled.button`
+  display: inline-flex;
+  margin: 0 auto;
+  padding: 0;
+  background: transparent;
+  border: none;
+  outline: 0;
+  text-transform: uppercase;
+  font-family: 'DMSans';
+  font-style: normal;
+  font-weight: bold;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0.1em;
+  text-align: center;
+  color: var(--_primaryColor);
+  cursor: pointer;
+`;
