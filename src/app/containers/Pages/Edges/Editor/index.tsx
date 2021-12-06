@@ -4,12 +4,12 @@ import { IStepperItem, StepperItemStateType, valueNumberFormat } from 'app/compo
 import Stepper from 'app/components/Stepper';
 import { createNewEdge, EdgesStepperItems, EdgesStepperTypes, IDeleteDataModel } from './model';
 import { jsonClone } from 'lib/helpers/cloneHelper';
-import { updateStep, updateStepById, updateSteps } from './helper';
+import { updateStepById, updateSteps, ValidateAppsFields, ValidateGeneralFields, ValidatePolicies, ValidateSitesFields, ValidateTransits } from './helper';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
 import FormPanel from './FormPanel';
 import EdgesMap from './EdgesMap';
-import { DeploymentTypes, IEdgeP, IEdgePolicy, ValidationFields } from 'lib/api/ApiModels/Edges/apiModel';
+import { DeploymentTypes, IEdgeP, IEdgePolicy } from 'lib/api/ApiModels/Edges/apiModel';
 import { ITopologyGroup, TopologyGroupApi } from 'lib/api/ApiModels/Topology/endpoints';
 import { useEdgesDataContext } from 'lib/hooks/Edges/useEdgesDataContext';
 import { IBaseEntity, IModal } from 'lib/models/general';
@@ -54,8 +54,7 @@ const Editor: React.FC<Props> = (props: Props) => {
   }, []);
 
   React.useEffect(() => {
-    // to do it.id !== EdgesStepperTypes.POLICY => remove after
-    const _isSomeStepEmpty = steps.some(it => it.state === StepperItemStateType.EMPTY && it.id !== EdgesStepperTypes.POLICY);
+    const _isSomeStepEmpty = steps.some(it => it.state === StepperItemStateType.EMPTY);
     if (_isSomeStepEmpty) {
       setSavedisabled(true);
     } else {
@@ -105,12 +104,12 @@ const Editor: React.FC<Props> = (props: Props) => {
       const _dataItem: IEdgeP = jsonClone(dataItem);
       if (deleteModalData.dataItem.type === TopologyGroupTypesAsString.BRANCH_NETWORKS) {
         _dataItem.siteGroupIds = dataItem.siteGroupIds.filter(it => it !== deleteModalData.dataItem.id);
-        const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.SITES, _dataItem.siteGroupIds);
+        const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.SITES, _dataItem, ValidateSitesFields);
         setSteps(_items);
       }
       if (deleteModalData.dataItem.type === TopologyGroupTypesAsString.APPLICATION) {
         _dataItem.appGroupIds = dataItem.appGroupIds.filter(it => it !== deleteModalData.dataItem.id);
-        const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.APPS, _dataItem.appGroupIds);
+        const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.APPS, _dataItem.deploymentPolicy, ValidateAppsFields);
         setSteps(_items);
       }
       toast.success(`Group '${deleteModalData.dataItem.name}' was deleted successfully!`);
@@ -135,19 +134,10 @@ const Editor: React.FC<Props> = (props: Props) => {
     props.onClose();
   };
 
-  const onChangeDataField = (value: any, field: string, step: EdgesStepperTypes) => {
-    const _dataItem: IEdgeP = { ...dataItem };
-    _dataItem[field] = value;
-    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, step, _dataItem[field]);
-    setSteps(_items);
-    setDataItem(_dataItem);
-    setHasChanges(true);
-  };
-
   const onChangeGeneralField = (value: any, field: string) => {
     const _dataItem: IEdgeP = { ...dataItem };
     _dataItem[field] = value;
-    const _items: IStepperItem<EdgesStepperTypes>[] = updateStep(steps, EdgesStepperTypes.GENERAL, _dataItem, [ValidationFields.NAME, ValidationFields.CONNECTION, ValidationFields.TAGS]);
+    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.GENERAL, _dataItem, ValidateGeneralFields);
     setSteps(_items);
     setDataItem(_dataItem);
     setHasChanges(true);
@@ -156,7 +146,7 @@ const Editor: React.FC<Props> = (props: Props) => {
   const onChangeTransitionDataField = (value: any, field: string) => {
     const _dataItem: IEdgeP = { ...dataItem };
     _dataItem.deploymentPolicy[0][field] = value;
-    const _items: IStepperItem<EdgesStepperTypes>[] = updateStep(steps, EdgesStepperTypes.TRANSIT, _dataItem.deploymentPolicy[0], []);
+    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.TRANSIT, _dataItem, ValidateTransits);
     setSteps(_items);
     setDataItem(_dataItem);
     setHasChanges(true);
@@ -165,7 +155,7 @@ const Editor: React.FC<Props> = (props: Props) => {
   const onChangeTransitionNetworkField = (value: any, field: string) => {
     const _dataItem: IEdgeP = { ...dataItem };
     _dataItem.nwServicesPolicy[0][field] = value;
-    const _items: IStepperItem<EdgesStepperTypes>[] = updateStep(steps, EdgesStepperTypes.TRANSIT, _dataItem.nwServicesPolicy[0], []);
+    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.TRANSIT, _dataItem, ValidateTransits);
     setSteps(_items);
     setDataItem(_dataItem);
     setHasChanges(true);
@@ -182,7 +172,7 @@ const Editor: React.FC<Props> = (props: Props) => {
       _dataItem.deploymentPolicy[0].regionCode = [];
       _dataItem.deploymentPolicy[0].wedgeExtIds = r;
     }
-    const _items: IStepperItem<EdgesStepperTypes>[] = updateStep(steps, EdgesStepperTypes.TRANSIT, _dataItem.deploymentPolicy[0], []);
+    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.TRANSIT, _dataItem, ValidateTransits);
     setSteps(_items);
     setDataItem(_dataItem);
     setHasChanges(true);
@@ -191,7 +181,7 @@ const Editor: React.FC<Props> = (props: Props) => {
   const onChangePolicyField = (items: IEdgePolicy[]) => {
     const _dataItem: IEdgeP = { ...dataItem };
     _dataItem.policies = items;
-    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.POLICY, _dataItem.policies);
+    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.POLICY, _dataItem, ValidatePolicies);
     setSteps(_items);
     setDataItem(_dataItem);
     setHasChanges(true);
@@ -202,7 +192,7 @@ const Editor: React.FC<Props> = (props: Props) => {
     const _arrSet = new Set(_dataItem.siteGroupIds);
     _arrSet.add(value.id);
     _dataItem.siteGroupIds = Array.from(_arrSet);
-    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.SITES, _dataItem.siteGroupIds);
+    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.SITES, _dataItem, ValidateSitesFields);
     edges.onUpdateGroups(value);
     setSteps(_items);
     setDataItem(_dataItem);
@@ -212,7 +202,7 @@ const Editor: React.FC<Props> = (props: Props) => {
   const onSetSitesGroups = (ids: string[]) => {
     const _dataItem: IEdgeP = jsonClone(dataItem);
     _dataItem.siteGroupIds = ids;
-    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.SITES, _dataItem.siteGroupIds);
+    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.SITES, _dataItem, ValidateSitesFields);
     setSteps(_items);
     setDataItem(_dataItem);
     setHasChanges(true);
@@ -221,7 +211,7 @@ const Editor: React.FC<Props> = (props: Props) => {
   const onAddExistingApps = (ids: string[]) => {
     const _dataItem: IEdgeP = jsonClone(dataItem);
     _dataItem.appGroupIds = ids;
-    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.APPS, _dataItem.appGroupIds);
+    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.APPS, _dataItem, ValidateAppsFields);
     setSteps(_items);
     setDataItem(_dataItem);
     setHasChanges(true);
@@ -232,7 +222,7 @@ const Editor: React.FC<Props> = (props: Props) => {
     const _arrSet = new Set(_dataItem.appGroupIds);
     _arrSet.add(value.id);
     _dataItem.appGroupIds = Array.from(_arrSet);
-    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.APPS, _dataItem.appGroupIds);
+    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.APPS, _dataItem, ValidateAppsFields);
     edges.onUpdateGroups(value);
     setSteps(_items);
     setDataItem(_dataItem);
@@ -271,12 +261,12 @@ const Editor: React.FC<Props> = (props: Props) => {
     const _dataItem: IEdgeP = jsonClone(dataItem);
     if (deleteModalData.dataItem.type === TopologyGroupTypesAsString.BRANCH_NETWORKS) {
       _dataItem.siteGroupIds = dataItem.siteGroupIds.filter(it => it !== deleteModalData.dataItem.id);
-      const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.SITES, _dataItem.siteGroupIds);
+      const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.SITES, _dataItem, ValidateSitesFields);
       setSteps(_items);
     }
     if (deleteModalData.dataItem.type === TopologyGroupTypesAsString.APPLICATION) {
       _dataItem.appGroupIds = dataItem.appGroupIds.filter(it => it !== deleteModalData.dataItem.id);
-      const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.APPS, _dataItem.appGroupIds);
+      const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.APPS, _dataItem, ValidateAppsFields);
       setSteps(_items);
     }
     setDataItem(_dataItem);
@@ -305,7 +295,6 @@ const Editor: React.FC<Props> = (props: Props) => {
     const _obj: IEdgeP = { ...dataItem };
     if (!_obj.id) {
       delete _obj.id;
-      delete _obj.policies;
       await onPost(EdgesApi.postCreateEdge(), { edge_p: _obj }, userContext.accessToken!);
       return;
     }
@@ -358,7 +347,6 @@ const Editor: React.FC<Props> = (props: Props) => {
             onAddExistingSites={onSetSitesGroups}
             onAddExistingApps={onAddExistingApps}
             onChangeAppsField={onChangeAppsField}
-            onChangeField={onChangeDataField}
             onChangeGeneralField={onChangeGeneralField}
             onChangeTransitionNetworkField={onChangeTransitionNetworkField}
             onChangeTransitionDataField={onChangeTransitionDataField}

@@ -26,7 +26,6 @@ interface Props {
   steps: IStepperItem<EdgesStepperTypes>[];
   selectedStep: IStepperItem<EdgesStepperTypes>;
   saveDisabled: boolean;
-  onChangeField: (value: any, field: string, step: EdgesStepperTypes) => void;
   onChangeGeneralField: (value: any, field: string) => void;
   onChangeTransitionDataField: (value: any, field: string) => void;
   onChangeTransitionNetworkField: (value: any, field: string) => void;
