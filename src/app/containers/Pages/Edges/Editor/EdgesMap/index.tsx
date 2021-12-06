@@ -144,7 +144,7 @@ const EdgesMap: React.FC<Props> = (props: Props) => {
           <IconButton styles={{ margin: '10px 0 0 0' }} icon={zoomCenterIcon} title="Center" onClick={onCentered} />
         </ButtonsGroup>
       </SvgWrapper>
-      <MapTitle>{props.name || 'Unknow'}</MapTitle>
+      <MapTitle>{props.name || 'Unknown'}</MapTitle>
       <FooterRow>
         <FooterLabel>Sites</FooterLabel>
         <FooterLabel>Transit</FooterLabel>

@@ -8,7 +8,7 @@ import { PageWrapperStyles, TabsWrapperStyles } from '../../Shared/styles';
 import OverviewPage from '../OverviewPage';
 import TabPanel from 'app/components/Tabs/TabPanel';
 // import TrendsPage from '../TrendsPage';
-import SessionPage from '../SessionPage';
+// import SessionPage from '../SessionPage';
 
 interface IProps {}
 
@@ -46,9 +46,9 @@ const Page: React.FC<IProps> = (props: IProps) => {
       {/* <TabPanel value={sessions.selectedTab.index} index={SESSIONS_TABS[1].index}>
         <TrendsPage />
       </TabPanel> */}
-      <TabPanel value={sessions.selectedTab.index} index={SESSIONS_TABS[1].index}>
+      {/* <TabPanel value={sessions.selectedTab.index} index={SESSIONS_TABS[1].index}>
         <SessionPage />
-      </TabPanel>
+      </TabPanel> */}
     </PageWrapperStyles>
   );
 };

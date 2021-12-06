@@ -10,6 +10,7 @@ export const ElasticFilterWrapper = styled.div`
   padding: 0;
   margin-bottom: 40px;
   background: var(--_primaryBg);
+  flex-shrink: 0;
 `;
 
 export const ElasticLabel = styled.div`

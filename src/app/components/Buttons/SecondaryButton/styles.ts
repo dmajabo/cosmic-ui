@@ -11,7 +11,7 @@ export const SecondaryButtonStyles = styled.button<BProps>`
   color: var(--_sButtonColor);
   background: var(--_sButtonBg);
   width: ${props => props.width || 'auto'};
-  height: ${props => props.height || '40px'};
+  height: ${props => props.height || '50px'};
   border: 1px solid;
   border-color: ${props => (props.withoutBorder ? 'var(--_sButtonBg)' : 'var(--_sButtonBorder)')};
   transition-property: color, background, border-color;

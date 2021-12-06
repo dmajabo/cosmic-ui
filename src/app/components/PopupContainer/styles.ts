@@ -51,12 +51,15 @@ export const OverflowContainer = styled.div`
   padding-right: 20px;
 `;
 
-export const FilteredColumnItem = styled.div`
+interface ColumnItemProps {
+  dragPosible?: boolean;
+}
+export const FilteredColumnItem = styled.div<ColumnItemProps>`
   width: auto;
   display: flex;
   align-items: center;
   height: 36px;
-  padding: 8px 12px;
+  padding: ${props => (props.dragPosible ? '8px 28px 8px 12px' : '8px 12px')};
   direction: ltr;
   background: var(--_chartBg);
   border: 1px solid var(--_rowBorder);
@@ -64,6 +67,7 @@ export const FilteredColumnItem = styled.div`
   flex-shrink: 0;
   cursor: pointer;
   max-width: 100%;
+  position: relative;
 `;
 
 export const FilteredColumnLabel = styled.div`

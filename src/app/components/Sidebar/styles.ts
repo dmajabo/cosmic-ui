@@ -18,25 +18,56 @@ export const WrapText = styled.p`
   }
 `;
 
+export const ToogleButton = styled.button`
+  position: absolute;
+  top: calc(50% - 15px);
+  right: -15px;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  outline: none;
+  border: none;
+  border-radius: 50%;
+  background: var(--_sidebarBorder);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity ${DEFAULT_TRANSITION};
+`;
+
 interface WrapSidebarProps {
   isOpen?: boolean;
 }
 export const WrapSidebar = styled.div<WrapSidebarProps>`
   background-color: var(--_primaryColor);
-  height: 100%;
   position: fixed;
   transition: width ${DEFAULT_TRANSITION};
   width: ${props => (props.isOpen ? sideBarOpenWidth : sideBarCloseWidth)};
-  overflow: auto;
   flex-shrink: 0;
   height: 100vh;
   z-index: 101;
-  display: flex;
-  flex-direction: column;
-  overflow-x: hidden;
   ${WrapText} {
     width: ${props => (props.isOpen ? 'calc(100% - 41px)' : '0')};
   }
+  &:hover {
+    ${ToogleButton} {
+      opacity: 1;
+    }
+  }
+`;
+
+export const ContentWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+`;
+
+export const ToogleWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  position: relative;
 `;
 
 export const LogoWrapper = styled.div`
@@ -130,6 +161,7 @@ export const List = styled.div`
   flex-direction: column;
   width: 100%;
   margin-bottom: auto;
+  position: relative;
 `;
 
 export const HighlightBg = styled.div`

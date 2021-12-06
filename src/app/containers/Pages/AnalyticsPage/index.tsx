@@ -2,6 +2,7 @@ import { Tab, Tabs } from '@material-ui/core';
 import React, { useState } from 'react';
 import { AnalyticsStyles } from './AnalyticsStyles';
 import { MetricsExplorer } from './components/MetricsExplorer';
+import SessionPage from './SessionPage';
 
 interface TabPanelProps {
   readonly title: string;
@@ -79,7 +80,7 @@ const AnalyticsPage: React.FC = () => {
         {TabName.Insights}
       </TabPanel>
       <TabPanel value={selectedTabName} title={TabName.Sessions}>
-        {TabName.Sessions}
+        <SessionPage />
       </TabPanel>
       <TabPanel value={selectedTabName} title={TabName.Reporting}>
         {TabName.Reporting}
