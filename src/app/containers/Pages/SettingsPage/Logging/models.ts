@@ -1,4 +1,4 @@
-import { IGridColumnField } from 'lib/models/general';
+import { IGridColumnField } from 'lib/models/grid';
 
 export interface ILoggingGridColumns {
   time: IGridColumnField;

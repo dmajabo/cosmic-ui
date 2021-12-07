@@ -108,8 +108,3 @@ export interface ISelectionGridCellValue<T, P> {
   field: T;
   value: P;
 }
-
-export interface IGridColumnField {
-  resField: string;
-  label: string;
-}

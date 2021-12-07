@@ -1,5 +1,5 @@
 import { ACCESS_SECTIONS_PERMISION_VALUE } from 'lib/api/ApiModels/Settings/apiModels';
-import { IGridColumnField } from 'lib/models/general';
+import { IGridColumnField } from 'lib/models/grid';
 
 export interface IAdminsGridColumns {
   name: IGridColumnField;

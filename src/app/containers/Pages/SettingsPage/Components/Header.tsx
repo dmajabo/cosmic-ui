@@ -1,10 +1,5 @@
 import React from 'react';
-import { columnsIcon } from 'app/components/SVGIcons/columnsIcon';
-import { GridColDef, GridSelectionModel } from '@mui/x-data-grid';
-import SecondaryButtonWithPopup from 'app/components/Buttons/SecondaryButton/SecondaryButtonWithPopup';
-import PopupContainer from 'app/components/PopupContainer';
-import SimpleCheckbox from 'app/components/Inputs/Checkbox/SimpleCheckbox';
-import { PopupTitle, OverflowContainer, FilteredColumnItem, FilteredColumnLabel } from 'app/components/PopupContainer/styles';
+import { GridSelectionModel } from '@mui/x-data-grid';
 import PrimaryButton from 'app/components/Buttons/PrimaryButton';
 import Search from 'app/components/Inputs/Search';
 import { plusIcon } from 'app/components/SVGIcons/plusIcon';
@@ -13,24 +8,27 @@ import { deleteIcon } from 'app/components/SVGIcons/delete';
 import { ISelectedListItem } from 'lib/models/general';
 import { InventoryOptions } from '../Inventory/model';
 import Toogle from 'app/components/Inputs/Toogle';
+import ColumnFilter from 'app/components/Basic/ColumnFilter';
+import { IColumn } from 'lib/models/grid';
 interface Props {
   selectedItems?: GridSelectionModel;
   searchValue: string | null;
-  columns: GridColDef[];
+  columns: IColumn[];
   selectedToogleOption?: ISelectedListItem<InventoryOptions>;
   toggleOptions?: ISelectedListItem<InventoryOptions>[];
-  onChangeColumn: (col: GridColDef) => void;
+  onChangeColumn: (col: IColumn) => void;
   onSearchChange: (v: string | null) => void;
   onToogleEditForm?: () => void;
-  onMassDelete: () => void;
+  onMassDelete?: () => void;
   onToogleChange?: (value: ISelectedListItem<InventoryOptions>) => void;
+  onChangeOrder: (items: IColumn[]) => void;
   hideEditButton?: boolean;
   showToogle?: boolean;
   hideDelete?: boolean;
 }
 
 const Header: React.FC<Props> = (props: Props) => {
-  const onColumnChange = (col: GridColDef) => {
+  const onColumnChange = (col: IColumn) => {
     props.onChangeColumn(col);
   };
   const onSearhChange = (value: string | null) => {
@@ -38,6 +36,9 @@ const Header: React.FC<Props> = (props: Props) => {
   };
   const onToogleEditForm = () => {
     props.onToogleEditForm();
+  };
+  const onChangeOrder = (items: IColumn[]) => {
+    props.onChangeOrder(items);
   };
   return (
     <>
@@ -52,7 +53,7 @@ const Header: React.FC<Props> = (props: Props) => {
               onChange={props.onToogleChange}
             />
           )}
-          <Search searchQuery={props.searchValue} onChange={onSearhChange} styles={{ width: '100%' }} />
+          <Search searchQuery={props.searchValue} onChange={onSearhChange} styles={{ width: '100%', height: '50px' }} />
         </ActionPart>
         <ActionPart margin="0 0 0 auto">
           {!props.hideDelete && props.selectedItems && props.selectedItems.length ? (
@@ -66,7 +67,8 @@ const Header: React.FC<Props> = (props: Props) => {
               hoverBorder="var(--_errorColor)"
             />
           ) : null}
-          <SecondaryButtonWithPopup wrapStyles={{ margin: '0 0 0 20px' }} label="Columns" icon={columnsIcon} direction="rtl">
+          <ColumnFilter label="Columns" items={props.columns} draggable onItemClick={onColumnChange} onChangeOrder={onChangeOrder} />
+          {/* <SecondaryButtonWithPopup wrapStyles={{ margin: '0 0 0 20px' }} label="Columns" icon={columnsIcon} direction="rtl">
             <PopupContainer
               styles={{
                 overflow: 'hidden',
@@ -101,7 +103,7 @@ const Header: React.FC<Props> = (props: Props) => {
                 })}
               </OverflowContainer>
             </PopupContainer>
-          </SecondaryButtonWithPopup>
+          </SecondaryButtonWithPopup> */}
           {!props.hideEditButton && (
             <PrimaryButton
               label="Create new"

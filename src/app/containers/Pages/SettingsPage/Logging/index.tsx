@@ -1,15 +1,10 @@
 import React from 'react';
 import { useSettingsDataContext } from 'lib/hooks/Settings/useSettingsDataContenxt';
-import { DataGrid, GridColDef, GridRenderCellParams, GridSelectionModel, GridValueFormatterParams } from '@mui/x-data-grid';
+import { DataGrid, GridRenderCellParams, GridValueFormatterParams } from '@mui/x-data-grid';
 import { GridStyles } from 'app/components/Grid/GridStyles';
 import Drawer from '@mui/material/Drawer';
-import SettingsButton from 'app/components/Buttons/SettingsButton';
-import { PopupContent } from 'app/components/Buttons/SettingsButton/PopupItemStyles';
-import PopupItem from 'app/components/Buttons/SettingsButton/PopupItem';
-import { deleteIcon } from 'app/components/SVGIcons/delete';
 import { GridCellWrapper } from 'app/components/Grid/styles';
 import { IModal } from 'lib/models/general';
-import SimpleCheckbox from 'app/components/Inputs/Checkbox/SimpleCheckbox';
 import Paging from 'app/components/Basic/Paging';
 import { gridAscArrow, gridDescArrow } from 'app/components/SVGIcons/arrows';
 import Header from '../Components/Header';
@@ -18,30 +13,8 @@ import { format } from 'date-fns';
 import DetailsButton from '../Components/DetailsButton';
 import Details from './Details';
 import { SettingsTabTypes } from 'lib/hooks/Settings/model';
+import { IColumn } from 'lib/models/grid';
 interface IProps {}
-
-// export const LoggingGridColumns: ILoggingGridColumns = {
-//   time: {
-//     resField: 'name',
-//     label: 'Name',
-//   },
-//   edge: {
-//     resField: 'type',
-//     label: 'Type',
-//   },
-//   user: {
-//     resField: 'profile',
-//     label: 'Profile',
-//   },
-//   operation: {
-//     resField: 'apiAccess',
-//     label: 'JSON Api Access',
-//   },
-//   changes: {
-//     resField: 'adoms',
-//     label: 'Adoms',
-//   },
-// };
 
 const Logging: React.FC<IProps> = (props: IProps) => {
   const { settings } = useSettingsDataContext();
@@ -66,10 +39,12 @@ const Logging: React.FC<IProps> = (props: IProps) => {
     },
   ]);
   const [searchValue, setSearchValue] = React.useState<string>(null);
-  const [gridColumns, setGridColumns] = React.useState<GridColDef[]>([
+  const [gridColumns, setGridColumns] = React.useState<IColumn[]>([
     {
+      id: 'logginsRowIndex',
       field: 'rowIndex',
       headerName: '#',
+      label: '',
       minWidth: 70,
       flex: 0,
       resizable: false,
@@ -83,8 +58,10 @@ const Logging: React.FC<IProps> = (props: IProps) => {
       valueFormatter: (params: GridValueFormatterParams) => +params.value + 1,
     },
     {
+      id: `loggins${LoggingGridColumns.time.resField}`,
       field: LoggingGridColumns.time.resField,
       headerName: LoggingGridColumns.time.label,
+      label: LoggingGridColumns.time.label,
       minWidth: 200,
       flex: 0.5,
       resizable: false,
@@ -97,10 +74,20 @@ const Logging: React.FC<IProps> = (props: IProps) => {
       //   </GridCellWrapper>
       // ),
     },
-    { field: LoggingGridColumns.edge.resField, headerName: LoggingGridColumns.edge.label, minWidth: 200, flex: 0.5, resizable: false },
     {
+      id: `loggins${LoggingGridColumns.edge.resField}`,
+      field: LoggingGridColumns.edge.resField,
+      headerName: LoggingGridColumns.edge.label,
+      label: LoggingGridColumns.edge.label,
+      minWidth: 200,
+      flex: 0.5,
+      resizable: false,
+    },
+    {
+      id: `loggins${LoggingGridColumns.user.resField}`,
       field: LoggingGridColumns.user.resField,
       headerName: LoggingGridColumns.user.label,
+      label: LoggingGridColumns.user.label,
       minWidth: 200,
       flex: 0.5,
       resizable: false,
@@ -112,12 +99,30 @@ const Logging: React.FC<IProps> = (props: IProps) => {
       //   </GridCellWrapper>
       // ),
     },
-    { field: LoggingGridColumns.operation.resField, headerName: LoggingGridColumns.operation.label, minWidth: 200, flex: 0.5, resizable: false },
-    { field: LoggingGridColumns.changes.resField, headerName: LoggingGridColumns.changes.label, minWidth: 200, flex: 0.5, resizable: false },
     {
+      id: `loggins${LoggingGridColumns.operation.resField}`,
+      field: LoggingGridColumns.operation.resField,
+      headerName: LoggingGridColumns.operation.label,
+      label: LoggingGridColumns.operation.label,
+      minWidth: 200,
+      flex: 0.5,
+      resizable: false,
+    },
+    {
+      id: `loggins${LoggingGridColumns.changes.resField}`,
+      field: LoggingGridColumns.changes.resField,
+      headerName: LoggingGridColumns.changes.label,
+      label: LoggingGridColumns.changes.label,
+      minWidth: 200,
+      flex: 0.5,
+      resizable: false,
+    },
+    {
+      id: `logginsDeteilCol`,
       field: '',
       headerName: '',
-      width: 200,
+      label: '',
+      width: 150,
       resizable: false,
       filterable: false,
       sortable: false,
@@ -129,16 +134,11 @@ const Logging: React.FC<IProps> = (props: IProps) => {
       renderCell: (param: GridRenderCellParams) => (
         <GridCellWrapper>
           <DetailsButton dataItem={param.row} onClick={onOpenDetails} />
-          <SettingsButton buttonStyles={{ position: 'static', width: '20px', height: '100%', margin: 'auto' }} id={param.id.toString()} hoverIconColor="var(--_sHoverButtonColor)">
-            <PopupContent>
-              <PopupItem color="var(--_errorColor)" label="Delete" icon={deleteIcon()} onClick={() => onDelete(param)} />
-            </PopupContent>
-          </SettingsButton>
         </GridCellWrapper>
       ),
     },
   ]);
-  const [selectionModel, setSelectionModel] = React.useState<GridSelectionModel>([]);
+
   const [showDetails, setDetailsForm] = React.useState<IModal<any>>(null);
   const gridStyles = GridStyles();
 
@@ -146,10 +146,14 @@ const Logging: React.FC<IProps> = (props: IProps) => {
     setSearchValue(value);
   };
 
-  const onChangeColumn = (col: GridColDef) => {
-    const _items: GridColDef[] = gridColumns.slice();
+  const onChangeColumn = (col: IColumn) => {
+    const _items: IColumn[] = gridColumns.slice();
     const _index = _items.findIndex(it => it.field === col.field);
     _items[_index].hide = !col.hide;
+    setGridColumns(_items);
+  };
+
+  const onChangeOrder = (_items: IColumn[]) => {
     setGridColumns(_items);
   };
 
@@ -161,18 +165,6 @@ const Logging: React.FC<IProps> = (props: IProps) => {
     setDetailsForm(null);
   };
 
-  const onDelete = (param: GridRenderCellParams) => {
-    console.log(param);
-  };
-
-  const onMassDelete = () => {
-    setSelectionModel([]);
-  };
-
-  const onSelectionModelChange = e => {
-    setSelectionModel(e);
-  };
-
   const onChangePage = (page: number) => {
     settings.onChangeCurrentPage(SettingsTabTypes.Logging, page);
   };
@@ -182,15 +174,7 @@ const Logging: React.FC<IProps> = (props: IProps) => {
 
   return (
     <>
-      <Header
-        selectedItems={selectionModel}
-        searchValue={searchValue}
-        columns={gridColumns}
-        onMassDelete={onMassDelete}
-        onChangeColumn={onChangeColumn}
-        onSearchChange={onSearhChange}
-        hideEditButton
-      />
+      <Header searchValue={searchValue} columns={gridColumns} onChangeColumn={onChangeColumn} onChangeOrder={onChangeOrder} onSearchChange={onSearhChange} hideEditButton hideDelete />
 
       <DataGrid
         className={gridStyles.borderedRow}
@@ -204,15 +188,10 @@ const Logging: React.FC<IProps> = (props: IProps) => {
         // error={props.isError}
         rows={dataRows}
         columns={gridColumns}
-        checkboxSelection
-        disableSelectionOnClick
-        onSelectionModelChange={onSelectionModelChange}
-        selectionModel={selectionModel}
         components={{
           ColumnUnsortedIcon: () => null,
           ColumnSortedAscendingIcon: () => <>{gridAscArrow}</>,
           ColumnSortedDescendingIcon: () => <>{gridDescArrow}</>,
-          Checkbox: ({ checked, onChange, indeterminate }) => <SimpleCheckbox isChecked={checked} toggleCheckboxChange={onChange} indeterminate={indeterminate} />,
         }}
         pageSize={dataRows ? dataRows.length : 0}
       />
