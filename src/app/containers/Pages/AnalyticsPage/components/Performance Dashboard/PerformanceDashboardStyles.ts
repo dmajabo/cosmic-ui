@@ -9,13 +9,15 @@ export const PerformanceDashboardStyles = makeStyles(
         fontWeight: 700,
       },
       performanceDashboardContainer: {
-        padding: 20,
+        height: '100%',
+        overflow: 'auto',
       },
       pageCenter: {
         marginTop: '40vh',
       },
       slaTestListContainer: {
-        marginTop: 60,
+        paddingTop: 20,
+        paddingBottom: '6%',
       },
       itemContainer: {
         width: '100%',

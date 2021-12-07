@@ -1,8 +1,8 @@
 import { Backdrop, Button, Tab, Tabs, Typography } from '@material-ui/core';
 import { Add as AddIcon } from '@material-ui/icons';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
-import { PerformanceDashboardStyles } from '../PerformanceDashboardStyles';
-import ColumnsIcon from '../icons/columns.svg';
+import { PerformanceDashboardStyles } from './PerformanceDashboardStyles';
+import ColumnsIcon from '../../icons/performance dashboard/columns.svg';
 import Table, { Data } from './Table';
 import { CreateSLATest } from './CreateSLATest';
 import { Organization, Column, FinalTableData, SLATest, UpdateSLATestRequest, ColumnAccessor } from 'lib/api/http/SharedTypes';
@@ -11,11 +11,11 @@ import { Latency } from './Latency';
 import Select from 'react-select';
 import AverageQoe from './AverageQoe';
 import { Goodput } from './Goodput';
-import { MetricTabValue } from '../../DashboardPage/enum/MetricTabValue';
+import { MetricTabValue } from '../../../DashboardPage/enum/MetricTabValue';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { createApiClient } from 'lib/api/http/apiClient';
-import { CheckboxData } from '../../AnalyticsPage/components/Dimensions';
 import { Checkbox, FormControlLabel, FormGroup, Popover } from '@mui/material';
+import { CheckboxData } from '../Metrics Explorer/Dimensions';
 
 interface SLATestListProps {
   readonly finalTableData: FinalTableData[];

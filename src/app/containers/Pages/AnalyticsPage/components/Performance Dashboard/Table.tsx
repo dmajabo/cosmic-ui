@@ -2,10 +2,10 @@ import { Typography } from '@material-ui/core';
 import React, { useEffect } from 'react';
 import { usePagination, useRowSelect, useSortBy, useTable } from 'react-table';
 import styled from 'styled-components';
-import { PerformanceDashboardStyles } from '../PerformanceDashboardStyles';
+import { PerformanceDashboardStyles } from './PerformanceDashboardStyles';
 import { Column } from 'lib/api/http/SharedTypes';
 import IndeterminateCheckbox from './IndeterminateCheckbox';
-import SortIcon from '../icons/sort.svg';
+import SortIcon from '../../icons/performance dashboard/sort.svg';
 
 export interface Data {
   readonly id: string;

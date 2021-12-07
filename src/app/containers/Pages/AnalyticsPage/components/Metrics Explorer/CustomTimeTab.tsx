@@ -1,6 +1,6 @@
 import { Checkbox } from '@mui/material';
 import React, { useState } from 'react';
-import { AnalyticsStyles } from '../AnalyticsStyles';
+import { AnalyticsStyles } from '../../AnalyticsStyles';
 import Select from 'react-select';
 import { LookbackValue } from './LookbackTimeTab';
 

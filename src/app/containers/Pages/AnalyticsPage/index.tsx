@@ -1,7 +1,8 @@
 import { Tab, Tabs } from '@material-ui/core';
 import React, { useState } from 'react';
 import { AnalyticsStyles } from './AnalyticsStyles';
-import { MetricsExplorer } from './components/MetricsExplorer';
+import { MetricsExplorer } from './components/Metrics Explorer/MetricsExplorer';
+import { PerformanceDashboard } from './components/Performance Dashboard/PerformanceDashboard';
 import SessionPage from './SessionPage';
 
 interface TabPanelProps {
@@ -27,16 +28,16 @@ function a11yProps(title: string) {
 }
 
 enum TabName {
-  Insights = 'Insights',
-  Sessions = 'Sessions',
-  Reporting = 'Reporting',
-  Inventory = 'Inventory',
+  SessionLogs = 'Session Logs',
+  Performance = 'Performance',
+  Anomalies = 'Anomalies',
+  PolicyLogs = 'Policy Logs',
   MetricsExplorer = 'Metrics Explorer',
 }
 
 const AnalyticsPage: React.FC = () => {
   const classes = AnalyticsStyles();
-  const [selectedTabName, setSelectedTabName] = useState<TabName>(TabName.MetricsExplorer);
+  const [selectedTabName, setSelectedTabName] = useState<TabName>(TabName.Performance);
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: TabName) => setSelectedTabName(newValue);
 
@@ -45,28 +46,28 @@ const AnalyticsPage: React.FC = () => {
       <div className={classes.fixedTabBar}>
         <Tabs value={selectedTabName} onChange={handleTabChange} indicatorColor="primary">
           <Tab
-            value={TabName.Insights}
-            label={<span className={selectedTabName === TabName.Insights ? classes.activeTabLabel : classes.tabLabel}>{TabName.Insights}</span>}
+            value={TabName.SessionLogs}
+            label={<span className={selectedTabName === TabName.SessionLogs ? classes.activeTabLabel : classes.tabLabel}>{TabName.SessionLogs}</span>}
             wrapped
-            {...a11yProps(TabName.Insights)}
+            {...a11yProps(TabName.SessionLogs)}
           />
           <Tab
-            value={TabName.Sessions}
-            label={<span className={selectedTabName === TabName.Sessions ? classes.activeTabLabel : classes.tabLabel}>{TabName.Sessions}</span>}
+            value={TabName.Performance}
+            label={<span className={selectedTabName === TabName.Performance ? classes.activeTabLabel : classes.tabLabel}>{TabName.Performance}</span>}
             wrapped
-            {...a11yProps(TabName.Sessions)}
+            {...a11yProps(TabName.Performance)}
           />
           <Tab
-            value={TabName.Reporting}
-            label={<span className={selectedTabName === TabName.Reporting ? classes.activeTabLabel : classes.tabLabel}>{TabName.Reporting}</span>}
+            value={TabName.Anomalies}
+            label={<span className={selectedTabName === TabName.Anomalies ? classes.activeTabLabel : classes.tabLabel}>{TabName.Anomalies}</span>}
             wrapped
-            {...a11yProps(TabName.Reporting)}
+            {...a11yProps(TabName.Anomalies)}
           />
           <Tab
-            value={TabName.Inventory}
-            label={<span className={selectedTabName === TabName.Inventory ? classes.activeTabLabel : classes.tabLabel}>{TabName.Inventory}</span>}
+            value={TabName.PolicyLogs}
+            label={<span className={selectedTabName === TabName.PolicyLogs ? classes.activeTabLabel : classes.tabLabel}>{TabName.PolicyLogs}</span>}
             wrapped
-            {...a11yProps(TabName.Inventory)}
+            {...a11yProps(TabName.PolicyLogs)}
           />
           <Tab
             value={TabName.MetricsExplorer}
@@ -76,17 +77,17 @@ const AnalyticsPage: React.FC = () => {
           />
         </Tabs>
       </div>
-      <TabPanel value={selectedTabName} title={TabName.Insights}>
-        {TabName.Insights}
-      </TabPanel>
-      <TabPanel value={selectedTabName} title={TabName.Sessions}>
+      <TabPanel value={selectedTabName} title={TabName.SessionLogs}>
         <SessionPage />
       </TabPanel>
-      <TabPanel value={selectedTabName} title={TabName.Reporting}>
-        {TabName.Reporting}
+      <TabPanel value={selectedTabName} title={TabName.Performance}>
+        <PerformanceDashboard />
       </TabPanel>
-      <TabPanel value={selectedTabName} title={TabName.Inventory}>
-        {TabName.Inventory}
+      <TabPanel value={selectedTabName} title={TabName.Anomalies}>
+        {TabName.Anomalies}
+      </TabPanel>
+      <TabPanel value={selectedTabName} title={TabName.PolicyLogs}>
+        {TabName.PolicyLogs}
       </TabPanel>
       <TabPanel value={selectedTabName} title={TabName.MetricsExplorer}>
         <MetricsExplorer />

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { AnalyticsStyles } from '../AnalyticsStyles';
-import DownArrow from '../icons/metrics explorer/downArrowTriangle.svg';
-import UpArrow from '../icons/metrics explorer/upArrowTriangle.svg';
+import { AnalyticsStyles } from '../../AnalyticsStyles';
+import DownArrow from '../../icons/metrics explorer/downArrowTriangle.svg';
+import UpArrow from '../../icons/metrics explorer/upArrowTriangle.svg';
 
 export interface CustomizationTabProps {
   readonly img: string;

@@ -7,6 +7,8 @@ export const AnalyticsStyles = makeStyles(
       analyticsContainer: {
         padding: 30,
         position: 'fixed',
+        width: '95%',
+        height: '100%',
       },
       fixedTabBar: {
         position: 'fixed',
@@ -15,6 +17,7 @@ export const AnalyticsStyles = makeStyles(
         paddingTop: 10,
         paddingBottom: 10,
         backgroundColor: '#F3F6FC',
+        zIndex: 2,
       },
       tabLabel: {
         textTransform: 'none',

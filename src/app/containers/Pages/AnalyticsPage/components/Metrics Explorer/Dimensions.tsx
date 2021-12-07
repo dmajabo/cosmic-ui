@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { AnalyticsStyles } from '../AnalyticsStyles';
-import CloseIcon from '../icons/metrics explorer/close.svg';
-import SearchIcon from '../icons/metrics explorer/search.svg';
-import SaveIcon from '../icons/metrics explorer/save.svg';
+import { AnalyticsStyles } from '../../AnalyticsStyles';
+import CloseIcon from '../../icons/metrics explorer/close.svg';
+import SearchIcon from '../../icons/metrics explorer/search.svg';
+import SaveIcon from '../../icons/metrics explorer/save.svg';
 import { SubDimension } from './SubDimension';
 import { getDimensionCount } from './MetricsExplorer';
 import produce from 'immer';

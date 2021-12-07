@@ -1,11 +1,11 @@
 import { FormControlLabel } from '@material-ui/core';
 import { Checkbox } from '@mui/material';
 import React, { useState } from 'react';
-import { AnalyticsStyles } from '../AnalyticsStyles';
+import { AnalyticsStyles } from '../../AnalyticsStyles';
 import { DataSourceOptions } from './DataSource';
 import { CheckboxData } from './Dimensions';
-import DownArrow from '../icons/metrics explorer/downArrowTriangle.svg';
-import UpArrow from '../icons/metrics explorer/upArrowTriangle.svg';
+import DownArrow from '../../icons/metrics explorer/downArrowTriangle.svg';
+import UpArrow from '../../icons/metrics explorer/upArrowTriangle.svg';
 
 interface DataSourceOptionProps {
   readonly dataSourceOption: DataSourceOptions;

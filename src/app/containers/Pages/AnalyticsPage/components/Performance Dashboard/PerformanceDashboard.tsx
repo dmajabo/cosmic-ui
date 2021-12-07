@@ -1,10 +1,7 @@
-import { Tab, Tabs } from '@material-ui/core';
 import React, { useContext, useEffect, useState } from 'react';
-import { CreateSLATest } from './components/CreateSLATest';
 import { PerformanceDashboardStyles } from './PerformanceDashboardStyles';
-import { SLATestList } from './components/SLATestList';
+import { SLATestList } from './SLATestList';
 import { CreateSLATestRequest, FinalTableData, Organization, UpdateSLATestRequest } from 'lib/api/http/SharedTypes';
-import { GetDevicesString, GetSelectedOrganization } from './components/filterFunctions';
 import LoadingIndicator from 'app/components/Loading';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -13,31 +10,11 @@ import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { createApiClient } from 'lib/api/http/apiClient';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
+import { GetDevicesString, GetSelectedOrganization } from './filterFunctions';
+import { CreateSLATest } from './CreateSLATest';
+import './Toastify.css';
 
-interface TabPanelProps {
-  children?: React.ReactNode;
-  index: string;
-  value: string;
-}
-
-function TabPanel(props: TabPanelProps) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div role="tabpanel" hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
-      {children}
-    </div>
-  );
-}
-
-function a11yProps(index: any) {
-  return {
-    id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
-  };
-}
-
-const PerformanceDashboardPage: React.FC = () => {
+export const PerformanceDashboard: React.FC = () => {
   const classes = PerformanceDashboardStyles();
 
   const userContext = useContext<UserContextState>(UserContext);
@@ -128,44 +105,33 @@ const PerformanceDashboardPage: React.FC = () => {
     }
   };
 
-  const tab = 'sla_tests';
-
   return (
     <div className={classes.performanceDashboardContainer}>
-      <div className={classes.fixedTabBar}>
-        <Tabs value={tab} indicatorColor="primary">
-          <Tab value="sla_tests" label={<span className={classes.tabLabel}>SLA Tests</span>} wrapped {...a11yProps('sla_tests')} />
-        </Tabs>
-      </div>
-      <TabPanel value={tab} index={'sla_tests'}>
-        {isLoading ? (
-          <div className={classes.pageCenter}>
-            <LoadingIndicator />
-          </div>
-        ) : !isEmpty(merakiOrganizations) && !isEmpty(awsOrganizations) ? (
-          !isEmpty(finalTableData) ? (
-            <SLATestList
-              updateSlaTest={updateSlaTest}
-              deleteSlaTest={deleteSlaTest}
-              awsOrganizations={awsOrganizations}
-              merakiOrganizations={merakiOrganizations}
-              finalTableData={finalTableData}
-              addSlaTest={addSlaTest}
-            />
-          ) : (
-            <CreateSLATest awsOrganizations={awsOrganizations} merakiOrganizations={merakiOrganizations} addSlaTest={addSlaTest} />
-          )
+      {isLoading ? (
+        <div className={classes.pageCenter}>
+          <LoadingIndicator />
+        </div>
+      ) : !isEmpty(merakiOrganizations) && !isEmpty(awsOrganizations) ? (
+        !isEmpty(finalTableData) ? (
+          <SLATestList
+            updateSlaTest={updateSlaTest}
+            deleteSlaTest={deleteSlaTest}
+            awsOrganizations={awsOrganizations}
+            merakiOrganizations={merakiOrganizations}
+            finalTableData={finalTableData}
+            addSlaTest={addSlaTest}
+          />
         ) : (
-          <AbsLoaderWrapper width="100%" height="100%">
-            <ErrorMessage fontSize={28} margin="auto">
-              Something went wrong. Please refresh page
-            </ErrorMessage>
-          </AbsLoaderWrapper>
-        )}
-        <ToastContainer />
-      </TabPanel>
+          <CreateSLATest awsOrganizations={awsOrganizations} merakiOrganizations={merakiOrganizations} addSlaTest={addSlaTest} />
+        )
+      ) : (
+        <AbsLoaderWrapper width="100%" height="100%">
+          <ErrorMessage fontSize={28} margin="auto">
+            Something went wrong. Please refresh page
+          </ErrorMessage>
+        </AbsLoaderWrapper>
+      )}
+      <ToastContainer />
     </div>
   );
 };
-
-export default PerformanceDashboardPage;
