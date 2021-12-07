@@ -46,7 +46,7 @@ const Header: React.FC<Props> = (props: Props) => {
         <ActionPart margin="0 auto 0 0" minWidth="440px">
           {props.showToogle && (
             <Toogle
-              styles={{ height: '40px', margin: '0 30px 0 0', padding: '3px', background: 'var(--_primaryBg)' }}
+              styles={{ height: '50px', margin: '0 30px 0 0', padding: '3px', background: 'var(--_primaryBg)' }}
               buttonStyles={{ padding: '8px 24px' }}
               selectedValue={props.selectedToogleOption}
               values={props.toggleOptions}
