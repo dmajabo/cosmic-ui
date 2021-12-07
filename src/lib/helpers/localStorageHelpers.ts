@@ -1,13 +1,14 @@
 import { getFromBase64, getToBase64, OKULIS_LOCAL_STORAGE_KEYS } from 'lib/api/http/utils';
 
-export enum SessionStoragePreferenceKeys {
+export enum StoragePreferenceKeys {
   SESSIONS_FILTER = 'sessions_filter',
   SESSIONS_TIME_PERIOD = 'sessions_time_period',
   SESSIONS_STITCH = 'sessions_stitch',
   SESSIONS_OVERVIEW_TIME_PERIOD = 'sessions_overview_time_period',
+  AUDIT_LOG_TIME_PERIOD = 'audit_log_time_period',
 }
 
-export const updateSessionStoragePreference = (_value: any, _key: OKULIS_LOCAL_STORAGE_KEYS, _subKey?: SessionStoragePreferenceKeys) => {
+export const updateSessionStoragePreference = (_value: any, _key: OKULIS_LOCAL_STORAGE_KEYS, _subKey?: StoragePreferenceKeys) => {
   let data: any = sessionStorage.getItem(_key);
   if (data) {
     data = getFromBase64(data);
@@ -26,7 +27,7 @@ export const updateSessionStoragePreference = (_value: any, _key: OKULIS_LOCAL_S
   sessionStorage.setItem(_key, getToBase64(data));
 };
 
-export const getSessionStoragePreference = (_key: OKULIS_LOCAL_STORAGE_KEYS, _subKey?: SessionStoragePreferenceKeys) => {
+export const getSessionStoragePreference = (_key: OKULIS_LOCAL_STORAGE_KEYS, _subKey?: StoragePreferenceKeys) => {
   const data: any = sessionStorage.getItem(_key);
   if (!data) return null;
   const _obj = getFromBase64(data);
@@ -38,7 +39,7 @@ export const getSessionStoragePreference = (_key: OKULIS_LOCAL_STORAGE_KEYS, _su
   return _obj[_key];
 };
 
-export const getSessionStoragePreferences = (_key: OKULIS_LOCAL_STORAGE_KEYS, _subKey: SessionStoragePreferenceKeys[]) => {
+export const getSessionStoragePreferences = (_key: OKULIS_LOCAL_STORAGE_KEYS, _subKey: StoragePreferenceKeys[]) => {
   const data: any = sessionStorage.getItem(_key);
   if (!data) return null;
   const _obj = getFromBase64(data);

@@ -1,5 +1,5 @@
-import { IBaseTotalCount } from 'lib/models/general';
 import { IDevice, INetworkwEdge, IVm } from 'lib/models/topology';
+import { IBasePages, IBaseTotalCount } from 'lib/api/ApiModels/generalApiModel';
 
 export enum PolicyActions {
   ALLOW = 'Allow',
@@ -76,22 +76,20 @@ export interface IEdgeP {
   policies: IEdgePolicy[] | null;
 }
 
-export interface ISitesRes extends IBaseTotalCount {
+export interface ISitesRes extends IBaseTotalCount, IBasePages {
   devices: IDevice[];
-  pageSize: number;
-  pageNum: number;
 }
 
-export interface IAppsRes extends IBaseTotalCount {
+export interface IAppsRes extends IBaseTotalCount, IBasePages {
   apps: IVm[];
   pageSize: number;
-  pageNum: number;
+  pageOffset: number;
 }
 
-export interface IWEdgesRes extends IBaseTotalCount {
+export interface IWEdgesRes extends IBaseTotalCount, IBasePages {
   wEdges: INetworkwEdge[];
   pageSize: number;
-  pageNum: number;
+  pageOffset: number;
 }
 
 export interface IEdgesRes extends IBaseTotalCount {

@@ -214,7 +214,11 @@ const ExistingGroups: React.FC<Props> = (props: Props) => {
                 </AbsLoaderWrapper>
               ),
               ErrorOverlay: () => <ErrorMessage margin="auto">{error ? error.message : null}</ErrorMessage>,
-              LoadingOverlay: () => <LoadingIndicator margin="auto" />,
+              LoadingOverlay: () => (
+                <AbsLoaderWrapper width="100%" height="calc(100% - 50px)" top="50px">
+                  <LoadingIndicator margin="auto" />
+                </AbsLoaderWrapper>
+              ),
               Checkbox: React.forwardRef(({ checked, onChange, indeterminate }, ref) => <SimpleCheckbox ref={ref} isChecked={checked} toggleCheckboxChange={onChange} indeterminate={indeterminate} />),
             }}
           />

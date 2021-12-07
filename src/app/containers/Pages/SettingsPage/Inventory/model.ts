@@ -12,6 +12,7 @@ export const InventoryToogleOptions: ISelectedListItem<InventoryOptions>[] = [
 ];
 
 export interface IInventoryDeviceGridColumns {
+  extId: IGridColumnField;
   name: IGridColumnField;
   serial: IGridColumnField;
   model: IGridColumnField;
@@ -23,6 +24,10 @@ export interface IInventoryDeviceGridColumns {
 }
 
 export const InventoryDeviceGridColumns: IInventoryDeviceGridColumns = {
+  extId: {
+    resField: 'extId',
+    label: 'extId',
+  },
   name: {
     resField: 'name',
     label: 'Name',

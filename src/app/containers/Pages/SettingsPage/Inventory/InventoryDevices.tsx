@@ -1,36 +1,27 @@
 import React from 'react';
-import { GridColDef, DataGrid, GridSelectionModel } from '@mui/x-data-grid';
+import { DataGrid } from '@mui/x-data-grid';
 import { GridStyles } from 'app/components/Grid/GridStyles';
 import Paging from 'app/components/Basic/Paging';
-// import SimpleCheckbox from 'app/components/Inputs/Checkbox/SimpleCheckbox';
 import { gridAscArrow, gridDescArrow } from 'app/components/SVGIcons/arrows';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { useGet } from 'lib/api/http/useAxiosHook';
 import { ISitesRes } from 'lib/api/ApiModels/Edges/apiModel';
 import { IDevice } from 'lib/models/topology';
-import { useSettingsDataContext } from 'lib/hooks/Settings/useSettingsDataContenxt';
 import { PAGING_DEFAULT_PAGE_SIZE } from 'lib/hooks/Sessions/model';
 import { buildPagingParam, EdgesApi } from 'lib/api/ApiModels/Edges/edpoints';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import LoadingIndicator from 'app/components/Loading';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
-import { InventoryOptions } from './model';
+import { InventoryDeviceGridColumns } from './model';
 import { getSearchedList } from 'lib/helpers/listHelper';
-// import SettingsButton from 'app/components/Buttons/SettingsButton';
-// import PopupItem from 'app/components/Buttons/SettingsButton/PopupItem';
-// import { PopupContent } from 'app/components/Buttons/SettingsButton/PopupItemStyles';
-// import { GridCellWrapper } from 'app/components/Grid/styles';
-// import { deleteIcon } from 'app/components/SVGIcons/delete';
+import { IColumn } from 'lib/models/grid';
 
 interface Props {
   searchValue: string;
-  columns: GridColDef[];
-  selectedItems?: GridSelectionModel;
-  onSelectionModelChange?: (selectionModel: GridSelectionModel, option: InventoryOptions) => void;
+  columns: IColumn[];
 }
 
 const InventoryDevices: React.FC<Props> = (props: Props) => {
-  const { settings } = useSettingsDataContext();
   const userContext = React.useContext<UserContextState>(UserContext);
   const { loading, error, response, onGet } = useGet<ISitesRes>();
   const [dataRows, setDataRows] = React.useState<IDevice[]>([]);
@@ -42,14 +33,24 @@ const InventoryDevices: React.FC<Props> = (props: Props) => {
   const gridStyles = GridStyles();
 
   React.useEffect(() => {
-    onTryLoadDevices(settings.loggingPageSize, settings.loggingCurrentPage);
+    onTryLoadDevices(pageSize, currentPage);
   }, []);
 
   React.useEffect(() => {
     if (response && response.devices) {
-      const startIndex = (settings.loggingCurrentPage - 1) * settings.loggingPageSize;
+      const startIndex = (currentPage - 1) * pageSize;
       const _items = response.devices.map((it, i) => ({ ...it, rowIndex: i + startIndex }));
-      const _arr: IDevice[] = getSearchedList(_items, props.searchValue, ['name', 'extId', 'serial', 'model', 'description', 'networkId', 'publicIp', 'privateIp', 'hostname']);
+      const _arr: IDevice[] = getSearchedList(_items, props.searchValue, [
+        InventoryDeviceGridColumns.name.resField,
+        InventoryDeviceGridColumns.extId.resField,
+        InventoryDeviceGridColumns.serial.resField,
+        InventoryDeviceGridColumns.model.resField,
+        InventoryDeviceGridColumns.description.resField,
+        InventoryDeviceGridColumns.networkId.resField,
+        InventoryDeviceGridColumns.publicIp.resField,
+        InventoryDeviceGridColumns.privateIp.resField,
+        InventoryDeviceGridColumns.hostname.resField,
+      ]);
       setDataRows(_items);
       setFilteredData(_arr);
       setTotalCount(response.totalCount);
@@ -58,15 +59,21 @@ const InventoryDevices: React.FC<Props> = (props: Props) => {
 
   React.useEffect(() => {
     if (props.searchValue !== searchValue) {
-      const _items: IDevice[] = getSearchedList(dataRows, props.searchValue, ['name', 'extId', 'serial', 'model', 'description', 'networkId', 'publicIp', 'privateIp', 'hostname']);
+      const _items: IDevice[] = getSearchedList(dataRows, props.searchValue, [
+        InventoryDeviceGridColumns.name.resField,
+        InventoryDeviceGridColumns.extId.resField,
+        InventoryDeviceGridColumns.serial.resField,
+        InventoryDeviceGridColumns.model.resField,
+        InventoryDeviceGridColumns.description.resField,
+        InventoryDeviceGridColumns.networkId.resField,
+        InventoryDeviceGridColumns.publicIp.resField,
+        InventoryDeviceGridColumns.privateIp.resField,
+        InventoryDeviceGridColumns.hostname.resField,
+      ]);
       setFilteredData(_items);
       setSearchValue(props.searchValue);
     }
   }, [props.searchValue]);
-
-  // const onSelectionModelChange = (e: GridSelectionModel) => {
-  //   props.onSelectionModelChange(e, InventoryOptions.DEVICE);
-  // };
 
   const onChangeCurrentPage = (_page: number) => {
     setCurrentPage(_page);
@@ -83,10 +90,6 @@ const InventoryDevices: React.FC<Props> = (props: Props) => {
     setPageSize(size);
     onTryLoadDevices(size, currentPage);
   };
-
-  // const onDelete = (param: GridRenderCellParams) => {
-  //   console.log(param);
-  // };
 
   const onTryLoadDevices = async (pageSize: number, currentPage: number) => {
     const _param = buildPagingParam(pageSize, currentPage);
@@ -106,10 +109,6 @@ const InventoryDevices: React.FC<Props> = (props: Props) => {
         autoHeight
         rows={filteredData}
         columns={props.columns}
-        // checkboxSelection
-        // disableSelectionOnClick
-        // onSelectionModelChange={onSelectionModelChange}
-        // selectionModel={props.selectedItems}
         loading={loading}
         error={error ? error.message : null}
         components={{
@@ -129,7 +128,6 @@ const InventoryDevices: React.FC<Props> = (props: Props) => {
           ColumnUnsortedIcon: () => null,
           ColumnSortedAscendingIcon: () => <>{gridAscArrow}</>,
           ColumnSortedDescendingIcon: () => <>{gridDescArrow}</>,
-          // Checkbox: ({ checked, onChange, indeterminate }) => <SimpleCheckbox isChecked={checked} toggleCheckboxChange={onChange} indeterminate={indeterminate} />,
         }}
         pageSize={filteredData ? filteredData.length : 0}
       />

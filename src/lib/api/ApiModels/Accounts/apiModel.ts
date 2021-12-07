@@ -1,4 +1,4 @@
-import { IBaseTotalCount } from 'lib/models/general';
+import { IBaseTotalCount } from 'lib/api/ApiModels/generalApiModel';
 
 export enum AccountVendorTypes {
   AMAZON_AWS = 'AMAZON_AWS',

@@ -35,10 +35,6 @@ export interface IBaseEntity<T> {
   id: T;
 }
 
-export interface IBaseTotalCount {
-  totalCount: number;
-}
-
 export interface ICoord {
   x: number;
   y: number;

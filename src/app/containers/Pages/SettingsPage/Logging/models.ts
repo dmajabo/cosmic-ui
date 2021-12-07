@@ -1,32 +1,57 @@
 import { IGridColumnField } from 'lib/models/grid';
 
 export interface ILoggingGridColumns {
-  time: IGridColumnField;
-  edge: IGridColumnField;
-  user: IGridColumnField;
-  operation: IGridColumnField;
-  changes: IGridColumnField;
+  timestamp: IGridColumnField;
+  reqBody: IGridColumnField;
+  serviceName: IGridColumnField;
+  respStatusCode: IGridColumnField;
+  userIP: IGridColumnField;
+  reqUrl: IGridColumnField;
+  reqType: IGridColumnField;
+  userEmail: IGridColumnField;
+  userName: IGridColumnField;
+  tenantId: IGridColumnField;
 }
 
 export const LoggingGridColumns: ILoggingGridColumns = {
-  time: {
-    resField: 'time',
+  timestamp: {
+    resField: 'timestamp',
     label: 'Time',
   },
-  edge: {
-    resField: 'edge',
-    label: 'Edge',
+  reqBody: {
+    resField: 'reqBody',
+    label: 'Request Body',
   },
-  user: {
-    resField: 'user',
-    label: 'User',
+  serviceName: {
+    resField: 'serviceName',
+    label: 'Service Name',
   },
-  operation: {
-    resField: 'operation',
-    label: 'Operation',
+  respStatusCode: {
+    resField: 'respStatusCode',
+    label: 'Status Code',
   },
-  changes: {
-    resField: 'changes',
-    label: 'Changes',
+  userIP: {
+    resField: 'userIP',
+    label: 'User IP',
+  },
+  reqUrl: {
+    resField: 'reqUrl',
+    label: 'Request Url',
+  },
+  reqType: {
+    resField: 'reqType',
+    label: 'Request Type',
+  },
+  userEmail: {
+    resField: 'userEmail',
+    label: 'Email',
+  },
+  userName: {
+    resField: 'userName',
+    label: 'Name',
+  },
+  tenantId: {
+    resField: 'tenantId',
+    label: 'Tenant Id',
   },
 };

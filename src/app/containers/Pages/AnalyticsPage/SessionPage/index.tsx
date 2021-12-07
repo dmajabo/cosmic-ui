@@ -15,6 +15,7 @@ import ElasticFilter from 'app/components/Inputs/ElasticFilter';
 import { FilterOpperatorsList, ISessionsGridField, SessionGridColumnItems } from './models';
 import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 import AggregateTable from './AggregateTable';
+import { convertStringToNumber } from 'lib/helpers/general';
 
 interface IProps {}
 
@@ -39,7 +40,7 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
     if (response && response.sessions) {
       const startIndex = (currentPage - 1) * pageSize;
       const _items = response.sessions && response.sessions.length ? response.sessions.map((it, i) => ({ ...it, rowIndex: i + startIndex })) : [];
-      const _total = response.count ? Number(response.count) : 0;
+      const _total = convertStringToNumber(response.count);
       setData(_items);
       setTotalCount(_total);
       setAggregatedData([]);
@@ -56,7 +57,7 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
     if (aggregRes && aggregRes.sessions) {
       const startIndex = (currentPage - 1) * pageSize;
       const _items = aggregRes.sessions && aggregRes.sessions.length ? aggregRes.sessions.map((it, i) => ({ ...it, rowIndex: i + startIndex })) : [];
-      const _total = aggregRes.count ? Number(aggregRes.count) : 0;
+      const _total = convertStringToNumber(aggregRes.count);
       setData([]);
       setTotalCount(0);
       setAggregatedData(_items);
