@@ -106,7 +106,7 @@ export const PerformanceDashboard: React.FC = () => {
   };
 
   return (
-    <div className={classes.performanceDashboardContainer}>
+    <>
       {isLoading ? (
         <div className={classes.pageCenter}>
           <LoadingIndicator />
@@ -132,6 +132,6 @@ export const PerformanceDashboard: React.FC = () => {
         </AbsLoaderWrapper>
       )}
       <ToastContainer />
-    </div>
+    </>
   );
 };

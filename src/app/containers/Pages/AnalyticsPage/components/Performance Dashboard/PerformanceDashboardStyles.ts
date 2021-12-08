@@ -8,16 +8,11 @@ export const PerformanceDashboardStyles = makeStyles(
         fontSize: 18,
         fontWeight: 700,
       },
-      performanceDashboardContainer: {
-        height: '100%',
-        overflow: 'auto',
-      },
       pageCenter: {
         marginTop: '40vh',
       },
       slaTestListContainer: {
         paddingTop: 20,
-        paddingBottom: '6%',
       },
       itemContainer: {
         width: '100%',
@@ -36,6 +31,7 @@ export const PerformanceDashboardStyles = makeStyles(
       },
       slaTestButton: {
         backgroundColor: '#437FEC',
+        height: 50,
       },
       slaTestButtonText: {
         fontSize: 12,
@@ -46,6 +42,7 @@ export const PerformanceDashboardStyles = makeStyles(
         backgroundColor: 'white',
         border: '1px solid #CBD2DC',
         marginRight: 20,
+        height: 50,
       },
       otherButtonText: {
         fontSize: 12,
@@ -106,9 +103,9 @@ export const PerformanceDashboardStyles = makeStyles(
         marginRight: 10,
       },
       createSlaTestContainer: {
-        marginTop: 60,
         display: 'flex',
         justifyContent: 'center',
+        alignItems: 'center',
       },
       slaFormElementContainer: {
         width: 560,
