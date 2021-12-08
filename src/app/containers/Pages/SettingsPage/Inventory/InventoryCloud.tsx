@@ -37,18 +37,20 @@ const InventoryCloud: React.FC<Props> = (props: Props) => {
   }, []);
 
   React.useEffect(() => {
-    if (response && response.wEdges) {
-      const startIndex = (currentPage - 1) * pageSize;
-      const _items = response.wEdges.map((it, i) => ({ ...it, rowIndex: i + startIndex }));
-      const _arr: INetworkwEdge[] = getSearchedList(_items, searchValue, [
+    if (response && response.wEdges && response.wEdges.length) {
+      const _arr: INetworkwEdge[] = getSearchedList(response.wEdges, searchValue, [
         InventoryCloudGridColumns.name.resField,
         InventoryCloudGridColumns.extId.resField,
         InventoryCloudGridColumns.vnetkey.resField,
         InventoryCloudGridColumns.description.resField,
       ]);
-      setDataRows(_items);
+      setDataRows(response.wEdges);
       setFilteredData(_arr);
       setTotalCount(response.totalCount);
+    } else {
+      setDataRows([]);
+      setFilteredData([]);
+      setTotalCount(0);
     }
   }, [response]);
 

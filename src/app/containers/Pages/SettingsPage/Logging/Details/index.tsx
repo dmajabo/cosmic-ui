@@ -27,7 +27,6 @@ const Details: React.FC<IProps> = ({ dataItem, onClose }) => {
           <DetailsFieldRow label={LoggingGridColumns.tenantId.label} value={dataItem[LoggingGridColumns.tenantId.resField]} />
           <DetailsFieldRow label={LoggingGridColumns.userName.label} value={dataItem[LoggingGridColumns.userName.resField]} />
           <DetailsFieldRow label={LoggingGridColumns.userEmail.label} value={dataItem[LoggingGridColumns.userEmail.resField]} />
-          <DetailsFieldRow label={LoggingGridColumns.userIP.label} value={dataItem[LoggingGridColumns.userIP.resField]} />
           <DetailsFieldRow label={LoggingGridColumns.serviceName.label} value={dataItem[LoggingGridColumns.serviceName.resField]} />
           <DetailsFieldRow
             label={LoggingGridColumns.respStatusCode.label}

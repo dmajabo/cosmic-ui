@@ -63,7 +63,7 @@ const Header: React.FC<Props> = (props: Props) => {
               onChange={props.onToogleChange}
             />
           )}
-          <Search searchQuery={props.searchValue} onChange={onSearhChange} styles={{ width: '100%', height: '50px' }} />
+          <Search searchQuery={props.searchValue} onChange={onSearhChange} styles={{ minWidth: '440px', height: '50px' }} />
         </ActionPart>
         <ActionPart margin="0 0 0 auto">
           {props.showTimeRange && (

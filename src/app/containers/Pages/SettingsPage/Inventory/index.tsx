@@ -1,5 +1,4 @@
 import React from 'react';
-import { GridValueFormatterParams } from '@mui/x-data-grid';
 import { ISelectedListItem } from 'lib/models/general';
 import Header from '../Components/Header';
 import { InventoryCloudGridColumns, InventoryDeviceGridColumns, InventoryOptions, InventoryToogleOptions } from './model';
@@ -18,25 +17,6 @@ const Inventory: React.FC<IProps> = (props: IProps) => {
   const [selectedOption, setSelectedOptions] = React.useState<ISelectedListItem<InventoryOptions>>(InventoryToogleOptions[0]);
   const [searchValue, setSearchValue] = React.useState<string>(null);
   const [gridDeviceColumns, setGridDeviceColumns] = React.useState<IColumn[]>([
-    {
-      id: 'inventoryDeviceRowIndex',
-      field: 'rowIndex',
-      headerName: '#',
-      label: '',
-      minWidth: 70,
-      flex: 0,
-      resizable: false,
-      filterable: false,
-      sortable: false,
-      editable: false,
-      hideSortIcons: true,
-      disableColumnMenu: true,
-      disableReorder: true,
-      disableExport: true,
-      valueFormatter: (params: GridValueFormatterParams) => {
-        return +params.value + 1;
-      },
-    },
     {
       id: `inventoryDevice${InventoryDeviceGridColumns.name.resField}`,
       field: InventoryDeviceGridColumns.name.resField,
@@ -154,25 +134,6 @@ const Inventory: React.FC<IProps> = (props: IProps) => {
     },
   ]);
   const [gridCloudColumns, setGridCloudColumns] = React.useState<IColumn[]>([
-    {
-      id: 'inventoryCloudRowIndex',
-      field: 'rowIndex',
-      headerName: '#',
-      label: '',
-      minWidth: 70,
-      flex: 0,
-      resizable: false,
-      filterable: false,
-      sortable: false,
-      editable: false,
-      hideSortIcons: true,
-      disableColumnMenu: true,
-      disableReorder: true,
-      disableExport: true,
-      valueFormatter: (params: GridValueFormatterParams) => {
-        return +params.value + 1;
-      },
-    },
     {
       id: `inventoryCloud${InventoryCloudGridColumns.name.resField}`,
       field: InventoryCloudGridColumns.name.resField,

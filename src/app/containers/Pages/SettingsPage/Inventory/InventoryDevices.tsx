@@ -37,10 +37,8 @@ const InventoryDevices: React.FC<Props> = (props: Props) => {
   }, []);
 
   React.useEffect(() => {
-    if (response && response.devices) {
-      const startIndex = (currentPage - 1) * pageSize;
-      const _items = response.devices.map((it, i) => ({ ...it, rowIndex: i + startIndex }));
-      const _arr: IDevice[] = getSearchedList(_items, props.searchValue, [
+    if (response && response.devices && response.devices.length) {
+      const _arr: IDevice[] = getSearchedList(response.devices, props.searchValue, [
         InventoryDeviceGridColumns.name.resField,
         InventoryDeviceGridColumns.extId.resField,
         InventoryDeviceGridColumns.serial.resField,
@@ -51,9 +49,13 @@ const InventoryDevices: React.FC<Props> = (props: Props) => {
         InventoryDeviceGridColumns.privateIp.resField,
         InventoryDeviceGridColumns.hostname.resField,
       ]);
-      setDataRows(_items);
+      setDataRows(response.devices);
       setFilteredData(_arr);
       setTotalCount(response.totalCount);
+    } else {
+      setDataRows([]);
+      setFilteredData([]);
+      setTotalCount(0);
     }
   }, [response]);
 

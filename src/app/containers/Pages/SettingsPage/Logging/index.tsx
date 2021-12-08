@@ -40,23 +40,6 @@ const Logging: React.FC<IProps> = (props: IProps) => {
   const [period, setPeriod] = React.useState<AuditLogsSelectValuesTypes>(AUDIT_LOGS_SELECT_VALUES[0].value);
   const [gridColumns, setGridColumns] = React.useState<IColumn[]>([
     {
-      id: 'logginsRowIndex',
-      field: 'rowIndex',
-      headerName: '#',
-      label: '',
-      minWidth: 70,
-      flex: 0,
-      resizable: false,
-      filterable: false,
-      sortable: false,
-      editable: false,
-      hideSortIcons: true,
-      disableColumnMenu: true,
-      disableReorder: true,
-      disableExport: true,
-      valueFormatter: (params: GridValueFormatterParams) => +params.value + 1,
-    },
-    {
       id: `loggins${LoggingGridColumns.timestamp.resField}`,
       field: LoggingGridColumns.timestamp.resField,
       headerName: LoggingGridColumns.timestamp.label,
@@ -95,33 +78,6 @@ const Logging: React.FC<IProps> = (props: IProps) => {
       filterable: false,
       disableReorder: true,
       disableExport: true,
-      hide: true,
-    },
-    {
-      id: `loggins${LoggingGridColumns.userIP.resField}`,
-      field: LoggingGridColumns.userIP.resField,
-      headerName: LoggingGridColumns.userIP.label,
-      label: LoggingGridColumns.userIP.label,
-      width: 140,
-      disableColumnMenu: true,
-      resizable: false,
-      editable: false,
-      filterable: false,
-      disableReorder: true,
-      disableExport: true,
-    },
-    {
-      id: `loggins${LoggingGridColumns.serviceName.resField}`,
-      field: LoggingGridColumns.serviceName.resField,
-      headerName: LoggingGridColumns.serviceName.label,
-      label: LoggingGridColumns.serviceName.label,
-      width: 140,
-      disableColumnMenu: true,
-      resizable: false,
-      editable: false,
-      filterable: false,
-      disableReorder: true,
-      disableExport: true,
     },
     {
       id: `loggins${LoggingGridColumns.reqType.resField}`,
@@ -149,6 +105,11 @@ const Logging: React.FC<IProps> = (props: IProps) => {
       filterable: false,
       disableReorder: true,
       disableExport: true,
+      renderCell: (param: GridRenderCellParams) => (
+        <GridCellWrapper title={param.value as string}>
+          <GridCellLabel cursor="default">{param.value}</GridCellLabel>
+        </GridCellWrapper>
+      ),
     },
     {
       id: `loggins${LoggingGridColumns.respStatusCode.resField}`,
@@ -236,22 +197,22 @@ const Logging: React.FC<IProps> = (props: IProps) => {
   }, []);
 
   React.useEffect(() => {
-    if (response && response.auditLogs) {
+    if (response && response.auditLogs && response.auditLogs.length) {
       const _total = convertStringToNumber(response.count);
-      const startIndex = (currentPage - 1) * pageSize;
-      const _items = response.auditLogs.map((it, i) => ({ ...it, rowIndex: i + startIndex }));
-      const _arr: INetworkAuditLog[] = getSearchedList(_items, searchValue, [
+      const _arr: INetworkAuditLog[] = getSearchedList(response.auditLogs, searchValue, [
         LoggingGridColumns.userName.resField,
         LoggingGridColumns.userEmail.resField,
-        LoggingGridColumns.userIP.resField,
-        LoggingGridColumns.serviceName.resField,
         LoggingGridColumns.respStatusCode.resField,
         LoggingGridColumns.reqUrl.resField,
         LoggingGridColumns.reqType.resField,
       ]);
-      setDataRows(_items);
+      setDataRows(response.auditLogs);
       setFilteredData(_arr);
       setTotalCount(_total);
+    } else {
+      setDataRows([]);
+      setFilteredData([]);
+      setTotalCount(0);
     }
   }, [response]);
 
@@ -260,8 +221,6 @@ const Logging: React.FC<IProps> = (props: IProps) => {
       const _items: INetworkAuditLog[] = getSearchedList(dataRows, value, [
         LoggingGridColumns.userName.resField,
         LoggingGridColumns.userEmail.resField,
-        LoggingGridColumns.userIP.resField,
-        LoggingGridColumns.serviceName.resField,
         LoggingGridColumns.respStatusCode.resField,
         LoggingGridColumns.reqUrl.resField,
         LoggingGridColumns.reqType.resField,

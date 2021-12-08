@@ -45,6 +45,7 @@ export const APP_THEME: ITheme = {
     '--_sButtonBg': '#FFFFFF',
     '--_sButtonBorder': '#CBD2DC',
     '--_sButtonColor': '#05143A',
+    '--_sIconColor': '#3A5277',
     '--_sHoverButtonBg': '#FFFFFF',
     '--_sHoverButtonBorder': '#437FEC',
     '--_sHoverButtonColor': '#437FEC',
