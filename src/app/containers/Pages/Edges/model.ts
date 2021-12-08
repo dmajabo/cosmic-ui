@@ -1,4 +1,4 @@
-import { PolicyActions } from 'lib/api/ApiModels/Edges/apiModel';
+import { SegmentRuleAction } from 'lib/api/ApiModels/Edges/apiModel';
 import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
 
 export interface EditGroupItem {
@@ -6,4 +6,4 @@ export interface EditGroupItem {
   index: number | null;
 }
 
-export const PolicyActionsValues: string[] = [PolicyActions.ALLOW];
+export const PolicyActionsValues: string[] = [SegmentRuleAction.ALLOW];

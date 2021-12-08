@@ -2,7 +2,7 @@ import { IStepperItem, StepperItemStateType } from 'app/components/Stepper/model
 import { Mark } from '@material-ui/core/Slider';
 import { ISelectedListItem } from 'lib/models/general';
 import { poloAltoIcon } from 'app/components/SVGIcons/edges/poloAlto';
-import { ConnectionPKeysMap, DeploymentTypes, IEdgeP, IEdgePolicy, NwServicesVendor, PolicyActions } from 'lib/api/ApiModels/Edges/apiModel';
+import { ConnectionPKeysMap, DeploymentTypes, IEdgeP, NwServicesVendor } from 'lib/api/ApiModels/Edges/apiModel';
 import { TopologyGroupTypesAsString } from 'lib/models/topology';
 
 export enum EdgesStepperTypes {
@@ -25,20 +25,6 @@ export const createNewEdge = (): IEdgeP => ({
   id: '',
   name: '',
   description: '',
-  deploymentPolicy: [
-    {
-      controllerName: '',
-      regionCode: [],
-      type: DeploymentTypes.Wedge,
-      wedgeExtIds: [],
-    },
-  ],
-  nwServicesPolicy: [
-    {
-      serviceType: null,
-      serviceVendor: NwServicesVendor.PALO_ALTO_NW,
-    },
-  ],
   connectionPolicy: {
     enableNetworkLink: false,
     enableVpnLink: false,
@@ -46,13 +32,22 @@ export const createNewEdge = (): IEdgeP => ({
   tags: [],
   siteGroupIds: [],
   appGroupIds: [],
-  policies: null,
-});
-
-export const createNewEdgePolicy = (): IEdgePolicy => ({
-  source: null,
-  destination: null,
-  action: PolicyActions.ALLOW,
+  deploymentPolicy: [
+    {
+      controllerName: '',
+      regionCode: [],
+      deploymentType: DeploymentTypes.EXISTING_GWS,
+      wanGwExtIds: [],
+      nwServicesPolicy: {
+        serviceType: null, // NwServiceT.FIREWALL,
+        serviceVendor: NwServicesVendor.PALO_ALTO_NW,
+      },
+    },
+  ],
+  segmentPolicy: {
+    name: '',
+    rules: [],
+  },
 });
 
 export const EdgePriceValues: Mark[] = [

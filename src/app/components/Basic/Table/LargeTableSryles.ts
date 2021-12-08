@@ -18,9 +18,15 @@ export const TableContainer = styled.div<TableProps>`
     font-family: 'DMSans' !important;
     font-style: normal;
     background: var(--__tableBg);
-    * {
+    *:not(.errorCell) {
       font-family: inherit !important;
       text-align: left !important;
+    }
+    td.errorCell {
+      text-align: center;
+      * {
+        text-align: inherit !important;
+      }
     }
     th {
       border: none;
@@ -78,6 +84,15 @@ export const TableContainer = styled.div<TableProps>`
       }
       &:last-child {
         border-right: 1px solid var(--_rowBorder);
+      }
+    }
+    td.errorCell {
+      border: none;
+      &:first-child {
+        border-left: none;
+      }
+      &:last-child {
+        border-right: none;
       }
     }
   }

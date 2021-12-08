@@ -8,11 +8,12 @@ import TableHeader from './TableHeader';
 import Paging from 'app/components/Basic/Paging';
 import { ISessionsGridFieldColumn, SessionGridColumns } from '../models';
 import { TableContainer } from 'app/components/Basic/Table/LargeTableSryles';
+import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 
 interface Props {
   data: ISession[];
   logCount: number;
-  isError: any;
+  error: string;
   pageSize: number;
   currentPage: number;
   onChangeCurrentPage: (_page: number) => void;
@@ -72,9 +73,14 @@ const AggregateTable: React.FC<Props> = (props: Props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.map((row, index) => (
-              <AggregateRow key={`rowIndex${row.id}${index}`} row={row} columns={aggregatedColumns} />
-            ))}
+            {!props.error && data && data.length ? data.map((row, index) => <AggregateRow key={`rowIndex${row.id}${index}`} row={row} columns={aggregatedColumns} />) : null}
+            {props.error && (
+              <TableRow>
+                <TableCell className="errorCell" colSpan={aggregatedColumns.length}>
+                  <ErrorMessage margin="48px 0">{props.error}</ErrorMessage>
+                </TableCell>
+              </TableRow>
+            )}
           </TableBody>
         </Table>
       </TableContainer>

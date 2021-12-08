@@ -3,12 +3,25 @@ import { ButtonsGroup } from '../styles';
 import { FooterLabel, FooterRow, MapTitle, SvgStyles, SvgWrapper } from './styles';
 import IconButton from 'app/components/Buttons/IconButton';
 import { zoomCenterIcon, zoomInIcon, zoomOutIcon } from 'app/components/SVGIcons/zoom';
-import { buildNodes, buildtransitNodes, EdgeNodeType, EDGE_MAP_CONSTANTS, INodesObject, ITransitionObject, ILinkObject, buildLinks, ISvgEdgeGroup, updateNodesCoord, updateAllNodes } from './helpers';
+import {
+  buildNodes,
+  buildtransitNodes,
+  EdgeNodeType,
+  EDGE_MAP_CONSTANTS,
+  INodesObject,
+  ITransitionObject,
+  ILinkObject,
+  buildLinks,
+  ISvgEdgeGroup,
+  updateNodesCoord,
+  updateAllNodes,
+  SVG_EDGES_STYLES,
+} from './helpers';
 import EdgeNode from './EdgeNode';
 import { useEdgeZoom } from './useEdgeZoom';
 import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
 import { useEdgesDataContext } from 'lib/hooks/Edges/useEdgesDataContext';
-import { DeploymentTypes, IEdgePolicy } from 'lib/api/ApiModels/Edges/apiModel';
+import { DeploymentTypes, ISegmentRuleP } from 'lib/api/ApiModels/Edges/apiModel';
 import { INetworkwEdge } from 'lib/models/topology';
 import EdgeLink from './EdgeLink';
 import ExpandCollapseAll from './ExpandCollapseAll';
@@ -21,7 +34,7 @@ interface Props {
   transitType: DeploymentTypes;
   selectedRegions: string[];
   selectedWedgeIds: string[];
-  policies: IEdgePolicy[] | null;
+  policies: ISegmentRuleP[] | null;
 }
 
 const EdgesMap: React.FC<Props> = (props: Props) => {
@@ -44,12 +57,12 @@ const EdgesMap: React.FC<Props> = (props: Props) => {
   }, []);
 
   React.useEffect(() => {
-    if (props.transitType === DeploymentTypes.Regions && props.selectedRegions) {
-      const _transits: ITransitionObject = buildtransitNodes(props.selectedRegions, DeploymentTypes.Regions, 300);
+    if (props.transitType === DeploymentTypes.NEW_REGIONS && props.selectedRegions) {
+      const _transits: ITransitionObject = buildtransitNodes(props.selectedRegions, DeploymentTypes.NEW_REGIONS, 300);
       setTransits(_transits);
     }
-    if (props.transitType === DeploymentTypes.Wedge && props.selectedWedgeIds) {
-      const _transits: ITransitionObject = buildtransitNodes(props.selectedWedgeIds, DeploymentTypes.Wedge, 300, props.wedges);
+    if (props.transitType === DeploymentTypes.EXISTING_GWS && props.selectedWedgeIds) {
+      const _transits: ITransitionObject = buildtransitNodes(props.selectedWedgeIds, DeploymentTypes.EXISTING_GWS, 300, props.wedges);
       setTransits(_transits);
     }
   }, [props.transitType, props.selectedRegions, props.selectedWedgeIds]);
@@ -119,11 +132,11 @@ const EdgesMap: React.FC<Props> = (props: Props) => {
   return (
     <>
       <SvgWrapper>
-        <SvgStyles id={EDGE_MAP_CONSTANTS.svg} viewBox="0 0 900 816" width="100%" height="100%" fill="none" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
+        <SvgStyles id={EDGE_MAP_CONSTANTS.svg} viewBox={SVG_EDGES_STYLES.viewBox} width="100%" height="100%" fill="none" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
           <g id={EDGE_MAP_CONSTANTS.root}>
-            <rect x="0" y="-5000" width="300" height="10000" fill="var(--_tableBg)" />
-            <rect x="300" y="-5000" width="300" height="10000" fill="var(--_vmBg)" />
-            <rect x="600" y="-5000" width="300" height="10000" fill="var(--_tableBg)" />
+            <rect x="0" y="-5000" width={SVG_EDGES_STYLES.mapColumn} height="10000" fill="var(--_tableBg)" />
+            <rect x={SVG_EDGES_STYLES.mapColumn} y="-5000" width={SVG_EDGES_STYLES.mapColumn} height="10000" fill="var(--_vmBg)" />
+            <rect x={SVG_EDGES_STYLES.mapColumn * 2} y="-5000" width={SVG_EDGES_STYLES.mapColumn} height="10000" fill="var(--_tableBg)" />
 
             <g id={EDGE_MAP_CONSTANTS.rootScaleContainer}>
               <g id={EDGE_MAP_CONSTANTS.links}>{links && links.links && links.links.map(it => <EdgeLink key={`linksKey${it.id}`} dataItem={it} />)}</g>

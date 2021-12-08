@@ -1,7 +1,7 @@
 import React from 'react';
 import { PolicyActionRow, PolicyItemWrapper, PolicyName } from './styles';
 import MatSelect from 'app/components/Inputs/MatSelect';
-import { IEdgePolicy } from 'lib/api/ApiModels/Edges/apiModel';
+import { ISegmentRuleP } from 'lib/api/ApiModels/Edges/apiModel';
 import TextInput from 'app/components/Inputs/TextInput';
 import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
 import { ValueLabel } from 'app/components/Inputs/MatSelect/styles';
@@ -11,7 +11,7 @@ import { deleteIcon } from 'app/components/SVGIcons/delete';
 
 interface Props {
   index: number;
-  item: IEdgePolicy;
+  item: ISegmentRuleP;
   sources: ITopologyGroup[];
   destinations: ITopologyGroup[];
   onUpdateItem: (value: any | null, field: string, index: number) => void;
@@ -23,10 +23,10 @@ const PolicyItem: React.FC<Props> = (props: Props) => {
   const [selecteddestination, setSelectedDestination] = React.useState<ITopologyGroup>(null);
 
   React.useEffect(() => {
-    const _s = getSelectedItem(props.sources, props.item.source, 'id');
-    const _d = getSelectedItem(props.destinations, props.item.destination, 'id');
-    setSelectedSource(_s);
-    setSelectedDestination(_d);
+    // const _s = getSelectedItem(props.sources, props.item.source, 'id');
+    // const _d = getSelectedItem(props.destinations, props.item.destination, 'id');
+    // setSelectedSource(_s);
+    // setSelectedDestination(_d);
   }, [props.item]);
 
   const onSelectChange = (value: ITopologyGroup, field: string) => {
@@ -50,7 +50,6 @@ const PolicyItem: React.FC<Props> = (props: Props) => {
           options={props.sources}
           styles={{ width: 'calc(50% - 5px)', margin: '0 5px 20px 0' }}
           required
-          disabled={!props.sources || !props.sources.length}
           onChange={v => onSelectChange(v, 'source')}
           renderValue={(v: ITopologyGroup) => <ValueLabel>{v.name}</ValueLabel>}
           renderOption={(v: ITopologyGroup) => <>{v.name}</>}
@@ -62,7 +61,6 @@ const PolicyItem: React.FC<Props> = (props: Props) => {
           options={props.destinations}
           styles={{ width: 'calc(50% - 5px)', margin: '0 0 20px 5px' }}
           required
-          disabled={!props.destinations || !props.destinations.length}
           onChange={v => onSelectChange(v, 'destination')}
           renderValue={(v: ITopologyGroup) => <ValueLabel>{v.name}</ValueLabel>}
           renderOption={(v: ITopologyGroup) => <>{v.name}</>}

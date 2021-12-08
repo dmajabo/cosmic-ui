@@ -22,7 +22,7 @@ interface IProps {}
 const SessionPage: React.FC<IProps> = (props: IProps) => {
   const userContext = useContext<UserContextState>(UserContext);
   const { response, loading, error, onGet } = useGet<IAllSessionsRes>();
-  const { response: aggregRes, loading: loadingAggreg, onGet: onGetAggregatedData } = useGet<IAllSessionsRes>();
+  const { response: aggregRes, loading: loadingAggreg, error: errorAggreg, onGet: onGetAggregatedData } = useGet<IAllSessionsRes>();
   const [data, setData] = React.useState<ISession[]>([]);
   const [aggregatedData, setAggregatedData] = React.useState<any[]>([]);
   const [totalCount, setTotalCount] = React.useState<number>(0);
@@ -32,6 +32,7 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
   const [period, setPeriod] = React.useState<SessionsSelectValuesTypes>(SESSIONS_SELECT_VALUES[0].value);
   const [stitch, setStitch] = React.useState<boolean>(false);
   const [filterValue, setSessionsFilterValue] = React.useState<(ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> | string)[]>([]);
+
   React.useEffect(() => {
     onTryToLoadData(pageSize, currentPage, period, stitch, filterValue);
   }, [pageSize, currentPage, period, stitch, filterValue]);
@@ -189,7 +190,7 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
             <AggregateTable
               currentPage={currentPage}
               onChangeCurrentPage={onChangeCurrentPage}
-              isError={error}
+              error={errorAggreg && errorAggreg.message ? errorAggreg.message : null}
               data={aggregatedData}
               logCount={aggregCount}
               pageSize={pageSize}

@@ -1,7 +1,6 @@
 import React from 'react';
 import { MainColumn, PanelColumn, Wrapper } from './styles';
-import { IStepperItem, StepperItemStateType, valueNumberFormat } from 'app/components/Stepper/model';
-import Stepper from 'app/components/Stepper';
+import { IStepperItem, StepperItemStateType } from 'app/components/Stepper/model';
 import { createNewEdge, EdgesStepperItems, EdgesStepperTypes, IDeleteDataModel } from './model';
 import { jsonClone } from 'lib/helpers/cloneHelper';
 import { updateStepById, updateSteps, ValidateAppsFields, ValidateGeneralFields, ValidatePolicies, ValidateSitesFields, ValidateTransits } from './helper';
@@ -9,7 +8,7 @@ import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
 import FormPanel from './FormPanel';
 import EdgesMap from './EdgesMap';
-import { DeploymentTypes, IEdgeP, IEdgePolicy } from 'lib/api/ApiModels/Edges/apiModel';
+import { DeploymentTypes, IDeploymentP, IEdgeP, ISegmentRuleP } from 'lib/api/ApiModels/Edges/apiModel';
 import { ITopologyGroup, TopologyGroupApi } from 'lib/api/ApiModels/Topology/endpoints';
 import { useEdgesDataContext } from 'lib/hooks/Edges/useEdgesDataContext';
 import { IBaseEntity, IModal } from 'lib/models/general';
@@ -40,11 +39,9 @@ const Editor: React.FC<Props> = (props: Props) => {
   const [saveDisabled, setSavedisabled] = React.useState<boolean>(true);
   const [hasChanges, setHasChanges] = React.useState<boolean>(false);
   const [deleteModalData, setDeleteModalData] = React.useState<IModal<IDeleteDataModel>>({ show: false, dataItem: null });
+
   React.useEffect(() => {
     const _item = props.dataItem || createNewEdge();
-    if (_item.deploymentPolicy && _item.deploymentPolicy[0] && !_item.deploymentPolicy[0].type) {
-      _item.deploymentPolicy[0].type = DeploymentTypes.Regions;
-    }
     const _steps: IStepperItem<EdgesStepperTypes>[] = jsonClone(EdgesStepperItems);
     const _items: IStepperItem<EdgesStepperTypes>[] = updateSteps(_steps, _item);
     setSelectedStep(_items[0]);
@@ -126,16 +123,12 @@ const Editor: React.FC<Props> = (props: Props) => {
     }
   }, [deleteError]);
 
-  const onSelectStep = (step: IStepperItem<EdgesStepperTypes>) => {
-    setSelectedStep(step);
-  };
-
   const onClose = () => {
     props.onClose();
   };
 
   const onChangeGeneralField = (value: any, field: string) => {
-    const _dataItem: IEdgeP = { ...dataItem };
+    const _dataItem: IEdgeP = jsonClone(dataItem);
     _dataItem[field] = value;
     const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.GENERAL, _dataItem, ValidateGeneralFields);
     setSteps(_items);
@@ -143,44 +136,46 @@ const Editor: React.FC<Props> = (props: Props) => {
     setHasChanges(true);
   };
 
-  const onChangeTransitionDataField = (value: any, field: string) => {
-    const _dataItem: IEdgeP = { ...dataItem };
-    _dataItem.deploymentPolicy[0][field] = value;
+  const onChangeDeployment = (item: IDeploymentP, index: number) => {
+    const _dataItem: IEdgeP = jsonClone(dataItem);
+    _dataItem.deploymentPolicy.splice(index, 1, item);
+    console.log(_dataItem);
     const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.TRANSIT, _dataItem, ValidateTransits);
     setSteps(_items);
     setDataItem(_dataItem);
     setHasChanges(true);
   };
 
-  const onChangeTransitionNetworkField = (value: any, field: string) => {
-    const _dataItem: IEdgeP = { ...dataItem };
-    _dataItem.nwServicesPolicy[0][field] = value;
-    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.TRANSIT, _dataItem, ValidateTransits);
+  const onAddPolicy = (policy: ISegmentRuleP) => {
+    const _dataItem: IEdgeP = jsonClone(dataItem);
+    _dataItem.segmentPolicy.rules.push(policy);
+    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.POLICY, _dataItem, ValidatePolicies);
     setSteps(_items);
     setDataItem(_dataItem);
     setHasChanges(true);
   };
 
-  const onChangeRegions = (r: string[], option: DeploymentTypes) => {
-    const _dataItem: IEdgeP = { ...dataItem };
-    _dataItem.deploymentPolicy[0].type = option;
-    if (option === DeploymentTypes.Regions) {
-      _dataItem.deploymentPolicy[0].regionCode = r;
-      _dataItem.deploymentPolicy[0].wedgeExtIds = [];
-    }
-    if (option === DeploymentTypes.Wedge) {
-      _dataItem.deploymentPolicy[0].regionCode = [];
-      _dataItem.deploymentPolicy[0].wedgeExtIds = r;
-    }
-    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.TRANSIT, _dataItem, ValidateTransits);
+  const onDeletePolicy = (index: number) => {
+    const _dataItem: IEdgeP = jsonClone(dataItem);
+    _dataItem.segmentPolicy.rules.splice(index, 1);
+    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.POLICY, _dataItem, ValidatePolicies);
     setSteps(_items);
     setDataItem(_dataItem);
     setHasChanges(true);
   };
 
-  const onChangePolicyField = (items: IEdgePolicy[]) => {
-    const _dataItem: IEdgeP = { ...dataItem };
-    _dataItem.policies = items;
+  const onUpdatePolicy = (policy: ISegmentRuleP, index: number) => {
+    const _dataItem: IEdgeP = jsonClone(dataItem);
+    _dataItem.segmentPolicy.rules.splice(index, 1, policy);
+    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.POLICY, _dataItem, ValidatePolicies);
+    setSteps(_items);
+    setDataItem(_dataItem);
+    setHasChanges(true);
+  };
+
+  const onChangeSegmentPolicy = (v: any, field: string) => {
+    const _dataItem: IEdgeP = jsonClone(dataItem);
+    _dataItem.segmentPolicy[field] = v;
     const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.POLICY, _dataItem, ValidatePolicies);
     setSteps(_items);
     setDataItem(_dataItem);
@@ -318,9 +313,6 @@ const Editor: React.FC<Props> = (props: Props) => {
   return (
     <>
       <Wrapper>
-        <PanelColumn width="50vw" maxWidth="260px">
-          {steps && steps.length && <Stepper formatValue={valueNumberFormat} valueFormattedField="index" selectedStep={selectedStep && selectedStep.id} steps={steps} onSelectStep={onSelectStep} />}
-        </PanelColumn>
         <MainColumn>
           {dataItem && (
             <EdgesMap
@@ -328,10 +320,10 @@ const Editor: React.FC<Props> = (props: Props) => {
               sites={dataItem.siteGroupIds}
               apps={dataItem.appGroupIds}
               wedges={edges.wedges}
-              policies={dataItem.policies}
-              transitType={dataItem && dataItem.deploymentPolicy && dataItem.deploymentPolicy.length ? dataItem.deploymentPolicy[0].type : DeploymentTypes.Wedge}
+              policies={[]} // {dataItem.policies}
+              transitType={dataItem && dataItem.deploymentPolicy && dataItem.deploymentPolicy.length ? dataItem.deploymentPolicy[0].deploymentType : DeploymentTypes.EXISTING_GWS}
               selectedRegions={dataItem && dataItem.deploymentPolicy && dataItem.deploymentPolicy.length ? dataItem.deploymentPolicy[0].regionCode : null}
-              selectedWedgeIds={dataItem && dataItem.deploymentPolicy && dataItem.deploymentPolicy.length ? dataItem.deploymentPolicy[0].wedgeExtIds : null}
+              selectedWedgeIds={dataItem && dataItem.deploymentPolicy && dataItem.deploymentPolicy.length ? dataItem.deploymentPolicy[0].wanGwExtIds : null}
             />
           )}
         </MainColumn>
@@ -348,13 +340,14 @@ const Editor: React.FC<Props> = (props: Props) => {
             onAddExistingApps={onAddExistingApps}
             onChangeAppsField={onChangeAppsField}
             onChangeGeneralField={onChangeGeneralField}
-            onChangeTransitionNetworkField={onChangeTransitionNetworkField}
-            onChangeTransitionDataField={onChangeTransitionDataField}
-            onChangeRegions={onChangeRegions}
+            onChangeDeployment={onChangeDeployment}
+            onChangeSegmentPolicy={onChangeSegmentPolicy}
             onToogleAccordionItem={onToogleAccordionItem}
             onDeleteSitesGroup={onDeleteSitesGroup}
             onDeleteAppsGroup={onDeleteAppsGroup}
-            onChangePolicyField={onChangePolicyField}
+            onUpdatePolicy={onUpdatePolicy}
+            onAddPolicy={onAddPolicy}
+            onDeletePolicy={onDeletePolicy}
           />
         </PanelColumn>
         {(postLoading || getLoading || putLoading) && (

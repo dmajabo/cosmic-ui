@@ -4,7 +4,8 @@ import { useEdgesDataContext } from 'lib/hooks/Edges/useEdgesDataContext';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { logoIcon } from 'app/components/SVGIcons/pagesIcons/logo';
 import { poloAltoIcon } from 'app/components/SVGIcons/edges/poloAlto';
-import { IDeploymentP, INwServicesP, NwServicesVendor, NwServiceT } from 'lib/api/ApiModels/Edges/apiModel';
+import { IDeploymentP, NwServicesVendor, DeploymentTypes, NwServiceT } from 'lib/api/ApiModels/Edges/apiModel';
+import { wedgeIcon } from 'app/components/SVGIcons/topologyIcons/wedge';
 
 interface IMapRegion {
   code: string;
@@ -12,46 +13,69 @@ interface IMapRegion {
 }
 interface Props {
   deploymentPolicy: IDeploymentP[];
-  nwServicesPolicy: INwServicesP[];
 }
 
 const TransitPreview: React.FC<Props> = (props: Props) => {
   const { edges } = useEdgesDataContext();
   const [selectedRegions, setSelectedRegions] = React.useState<IMapRegion[]>([]);
+  const [selectedWedges, setSelectedWedges] = React.useState<string[]>([]);
   React.useEffect(() => {
     if (!props.deploymentPolicy || !props.deploymentPolicy.length) {
       setSelectedRegions([]);
+      setSelectedWedges([]);
       return;
     }
-    // to do
-    if (!props.deploymentPolicy[0].regionCode || !props.deploymentPolicy[0].regionCode.length) {
+    if (props.deploymentPolicy[0].deploymentType === DeploymentTypes.NEW_REGIONS) {
+      if (!props.deploymentPolicy[0].regionCode || !props.deploymentPolicy[0].regionCode.length) {
+        setSelectedRegions([]);
+        return;
+      }
+      const _arr: IMapRegion[] = [];
+      if (edges.regions && edges.regions.length) {
+        props.deploymentPolicy[0].regionCode.forEach(it => {
+          const _item = edges.regions.find(reg => reg.code === it);
+          if (_item) {
+            _arr.push({ code: it, city: _item.city });
+          } else {
+            _arr.push({ code: it, city: null });
+          }
+        });
+      }
+      setSelectedRegions(_arr);
+      setSelectedWedges([]);
+      return;
+    }
+    if (props.deploymentPolicy[0].deploymentType === DeploymentTypes.EXISTING_GWS) {
+      if (!props.deploymentPolicy[0].wanGwExtIds || !props.deploymentPolicy[0].wanGwExtIds.length) {
+        setSelectedWedges([]);
+        return;
+      }
+      const _arr: string[] = [];
+      if (edges.wedges && edges.wedges.length) {
+        props.deploymentPolicy[0].wanGwExtIds.forEach(it => {
+          const _item = edges.wedges.find(reg => reg.extId === it);
+          if (_item) {
+            _arr.push(_item.name);
+          } else {
+            _arr.push(it);
+          }
+        });
+      }
+      setSelectedWedges(_arr);
       setSelectedRegions([]);
-      return;
     }
-    const _arr: IMapRegion[] = [];
-    if (edges.regions && edges.regions.length) {
-      props.deploymentPolicy[0].regionCode.forEach(it => {
-        const _item = edges.regions.find(reg => reg.code === it);
-        if (_item) {
-          _arr.push({ code: it, city: _item.city });
-        } else {
-          _arr.push({ code: it, city: null });
-        }
-      });
-    }
-    setSelectedRegions(_arr);
   }, [props.deploymentPolicy]);
 
-  if ((!props.deploymentPolicy || !props.deploymentPolicy.length) && (!props.nwServicesPolicy || !props.nwServicesPolicy.length)) return null;
+  if (!props.deploymentPolicy || !props.deploymentPolicy.length) return null;
   return (
     <PreviewWrapper>
-      {props.nwServicesPolicy[0].serviceType === NwServiceT.FIREWALL && (
+      {props.deploymentPolicy[0].nwServicesPolicy.serviceType === NwServiceT.FIREWALL && (
         <PreviewRow margin="20px 0 0 0">
           <PreviewText className="label" margin="0 16px 0 0">
             Add Firewall in each edge region:
           </PreviewText>
           <IconWrapper width="20px" height="18px" icon={poloAltoIcon()} />
-          {props.nwServicesPolicy[0].serviceVendor === NwServicesVendor.PALO_ALTO_NW && (
+          {props.deploymentPolicy[0].nwServicesPolicy.serviceVendor === NwServicesVendor.PALO_ALTO_NW && (
             <PreviewText className="label" margin="0 0 0 12px">
               Palo Alto
             </PreviewText>
@@ -66,7 +90,7 @@ const TransitPreview: React.FC<Props> = (props: Props) => {
           <PreviewText color="var(--_disabledTextColor)">{props.deploymentPolicy[0].controllerName}</PreviewText>
         </PreviewRow>
       )}
-      {selectedRegions && selectedRegions.length ? (
+      {props.deploymentPolicy[0].deploymentType === DeploymentTypes.NEW_REGIONS && selectedRegions && selectedRegions.length ? (
         <PreviewRow margin="8px 0 0 0" wrap="wrap">
           {selectedRegions.map(it => (
             <PreviewTag key={`previewTag${it.code}`}>
@@ -79,6 +103,16 @@ const TransitPreview: React.FC<Props> = (props: Props) => {
               <PreviewText margin="auto 0" color="var(--_disabledTextColor)">
                 ( {it.code} )
               </PreviewText>
+            </PreviewTag>
+          ))}
+        </PreviewRow>
+      ) : null}
+      {props.deploymentPolicy[0].deploymentType === DeploymentTypes.EXISTING_GWS && selectedWedges && selectedWedges.length ? (
+        <PreviewRow margin="8px 0 0 0" wrap="wrap">
+          {selectedWedges.map((it, index) => (
+            <PreviewTag key={`previewTagwanGwExtIds${index}`} fontSize="12px">
+              <IconWrapper styles={{ margin: 'auto 12px auto 0', verticalAlign: 'top' }} width="14px" height="14px" icon={wedgeIcon()} />
+              <PreviewText margin="auto 0">{it}</PreviewText>
             </PreviewTag>
           ))}
         </PreviewRow>

@@ -15,11 +15,12 @@ import ExpandedIcon from 'app/components/Basic/ExpandedIcon';
 import PanelHeader from 'app/containers/Pages/AutomationPage/Components/PanelHeader';
 import SecondaryButton from 'app/components/Buttons/SecondaryButton';
 import accordionStyles from 'app/containers/Pages/AutomationPage/styles/AccordionStyles';
-import { DeploymentTypes, IEdgeP, IEdgePolicy } from 'lib/api/ApiModels/Edges/apiModel';
+import { IDeploymentP, IEdgeP, ISegmentRuleP } from 'lib/api/ApiModels/Edges/apiModel';
 import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
 import GeneralPreview from './GeneralPreview';
 import TransitPreview from './TransitPreview';
 import GroupPreview from './GroupPreview';
+import PolicyPreview from './PolicyPreview';
 
 interface Props {
   dataItem: IEdgeP;
@@ -27,17 +28,18 @@ interface Props {
   selectedStep: IStepperItem<EdgesStepperTypes>;
   saveDisabled: boolean;
   onChangeGeneralField: (value: any, field: string) => void;
-  onChangeTransitionDataField: (value: any, field: string) => void;
-  onChangeTransitionNetworkField: (value: any, field: string) => void;
-  onChangeRegions: (value: any, option: DeploymentTypes) => void;
-  onChangeSitesField: (value: ITopologyGroup) => void;
+  onChangeDeployment: (item: IDeploymentP, index: number) => void;
+  onChangeSegmentPolicy: (v: any, field: string) => void;
+  onAddPolicy: (policy: ISegmentRuleP) => void;
+  onUpdatePolicy: (policy: ISegmentRuleP, index: number) => void;
+  onDeletePolicy: (index: number) => void;
   onAddExistingSites: (ids: string[]) => void;
   onAddExistingApps: (ids: string[]) => void;
+  onChangeSitesField: (value: ITopologyGroup) => void;
   onChangeAppsField: (value: ITopologyGroup) => void;
   onDeleteSitesGroup: (gr: ITopologyGroup) => void;
   onDeleteAppsGroup: (gr: ITopologyGroup) => void;
   onToogleAccordionItem: (id: EdgesStepperTypes) => void;
-  onChangePolicyField: (items: IEdgePolicy[]) => void;
   onClose: () => void;
   onSave: () => void;
 }
@@ -150,23 +152,11 @@ const FormPanel: React.FC<Props> = (props: Props) => {
               />
             </AccordionHeaderPanel>
             {(!props.selectedStep || (props.selectedStep && props.selectedStep.id !== EdgesStepperTypes.TRANSIT)) && (
-              <AccordionHeaderPanel>
-                <TransitPreview deploymentPolicy={props.dataItem.deploymentPolicy} nwServicesPolicy={props.dataItem.nwServicesPolicy} />
-              </AccordionHeaderPanel>
+              <AccordionHeaderPanel>{<TransitPreview deploymentPolicy={props.dataItem.deploymentPolicy} />}</AccordionHeaderPanel>
             )}
           </AccordionSummary>
           <AccordionDetails className={AccordionStyles.deteilItemEdges}>
-            <TransitStep
-              transitType={props.dataItem.deploymentPolicy && props.dataItem.deploymentPolicy.length ? props.dataItem.deploymentPolicy[0].type : DeploymentTypes.Wedge}
-              wedgesIds={props.dataItem.deploymentPolicy && props.dataItem.deploymentPolicy.length ? props.dataItem.deploymentPolicy[0].wedgeExtIds : []}
-              regionCodes={props.dataItem.deploymentPolicy && props.dataItem.deploymentPolicy.length ? props.dataItem.deploymentPolicy[0].regionCode : []}
-              selectedAccount={props.dataItem.deploymentPolicy && props.dataItem.deploymentPolicy.length ? props.dataItem.deploymentPolicy[0].controllerName : null}
-              serviceType={props.dataItem.nwServicesPolicy && props.dataItem.nwServicesPolicy.length ? props.dataItem.nwServicesPolicy[0].serviceType : null}
-              serviceVendor={props.dataItem.nwServicesPolicy && props.dataItem.nwServicesPolicy.length ? props.dataItem.nwServicesPolicy[0].serviceVendor : null}
-              onChange={props.onChangeTransitionDataField}
-              onChangeRegions={props.onChangeRegions}
-              onChangeNetwork={props.onChangeTransitionNetworkField}
-            />
+            <TransitStep deploymentPolicy={props.dataItem.deploymentPolicy} onChangeDeployment={props.onChangeDeployment} />
           </AccordionDetails>
         </Accordion>
         <Accordion
@@ -185,9 +175,20 @@ const FormPanel: React.FC<Props> = (props: Props) => {
                 state={props.steps[4].state !== StepperItemStateType.EMPTY ? props.steps[4].state : null}
               />
             </AccordionHeaderPanel>
+            {(!props.selectedStep || (props.selectedStep && props.selectedStep.id !== EdgesStepperTypes.POLICY)) && (
+              <AccordionHeaderPanel>{<PolicyPreview segmentPolicy={props.dataItem.segmentPolicy} />}</AccordionHeaderPanel>
+            )}
           </AccordionSummary>
           <AccordionDetails className={AccordionStyles.deteilItemEdges}>
-            <PolicyStep siteGroupIds={props.dataItem.siteGroupIds} appGroupIds={props.dataItem.appGroupIds} policies={props.dataItem.policies} onChange={props.onChangePolicyField} />
+            <PolicyStep
+              onChangeSegmentPolicy={props.onChangeSegmentPolicy}
+              onUpdatePolicy={props.onUpdatePolicy}
+              onAddPolicy={props.onAddPolicy}
+              onDeletePolicy={props.onDeletePolicy}
+              siteGroupIds={props.dataItem.siteGroupIds}
+              appGroupIds={props.dataItem.appGroupIds}
+              segmentPolicy={props.dataItem.segmentPolicy}
+            />
           </AccordionDetails>
         </Accordion>
       </PanelContent>

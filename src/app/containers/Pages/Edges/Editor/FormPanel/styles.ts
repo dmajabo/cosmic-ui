@@ -65,6 +65,7 @@ export const PreviewTagCount = styled.span`
 
 interface PreviewTagProps {
   bg?: string;
+  fontSize?: string;
 }
 export const PreviewTag = styled.span<PreviewTagProps>`
   display: inline-flex;
@@ -73,6 +74,7 @@ export const PreviewTag = styled.span<PreviewTagProps>`
   margin: 3px 6px 3px 0;
   border-radius: 30px;
   padding: 5px 20px;
+  font-size: ${props => props.fontSize || 'inherit'};
   background: ${props => props.bg || 'var(--_tableBg)'};
 `;
 

@@ -1,15 +1,27 @@
 import { IDevice, INetworkwEdge, IVm } from 'lib/models/topology';
 import { IBasePages, IBaseTotalCount } from 'lib/api/ApiModels/generalApiModel';
 
-export enum PolicyActions {
-  ALLOW = 'Allow',
-  CUSTOM = 'Custom',
+export enum SegmentTargetT {
+  SITE_GROUP = 'SITE_GROUP',
+  APP_GROUP = 'APP_GROUP',
 }
 
-export interface IEdgePolicy {
-  source: string;
-  destination: string;
-  action: PolicyActions;
+export enum SegmentRuleAction {
+  ALLOW = 'Allow',
+}
+
+export interface ISegmentRuleP {
+  name: string;
+  sourceType: SegmentTargetT;
+  sourceId: string;
+  destType: SegmentTargetT;
+  destId: string;
+  action: SegmentRuleAction;
+}
+
+export interface ISegmentP {
+  name: string;
+  rules: ISegmentRuleP[];
 }
 
 export enum ValidationFields {
@@ -27,16 +39,17 @@ export enum ValidationFields {
 }
 
 export enum DeploymentTypes {
-  Regions = 'Regions',
-  Wedge = 'Wedge',
+  NEW_REGIONS = 'NEW_REGIONS',
+  EXISTING_GWS = 'EXISTING_GWS',
 }
 
 export interface IDeploymentP {
   id?: string;
   controllerName: string;
   regionCode: string[];
-  type: DeploymentTypes;
-  wedgeExtIds: string[];
+  deploymentType: DeploymentTypes;
+  wanGwExtIds: string[];
+  nwServicesPolicy: INwServicesP;
 }
 
 export enum ConnectionPKeysMap {
@@ -72,8 +85,7 @@ export interface IEdgeP {
   siteGroupIds: string[];
   appGroupIds: string[];
   deploymentPolicy: IDeploymentP[];
-  nwServicesPolicy: INwServicesP[];
-  policies: IEdgePolicy[] | null;
+  segmentPolicy: ISegmentP;
 }
 
 export interface ISitesRes extends IBaseTotalCount, IBasePages {
