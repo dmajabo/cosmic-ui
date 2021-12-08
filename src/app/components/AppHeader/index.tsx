@@ -41,8 +41,8 @@ const AppHeader: React.FC<Props> = (props: Props) => {
           ) : null}
         </Side>
         <Side margin="0 0 0 auto">
-          <IconButton icon={infoIcon} onClick={onInfoClick} styles={{ margin: '0 0 0 20px' }} />
-          <IconButton icon={notificationIcon} onClick={onShowNotification} styles={{ margin: '0 0 0 20px' }} />
+          <IconButton icon={infoIcon} onClick={onInfoClick} styles={{ margin: '0 0 0 20px', width: '40px', height: '40px' }} />
+          <IconButton icon={notificationIcon} onClick={onShowNotification} styles={{ margin: '0 0 0 20px', width: '40px', height: '40px' }} />
           <UserComponent onOpenAbout={onToggleAbout} />
         </Side>
       </HeaderStyles>

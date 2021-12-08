@@ -82,7 +82,7 @@ const CalendarComponent: React.FC<IProps> = (props: IProps) => {
         }}
       />
       {!displayDay ? (
-        <IconButton styles={{ margin: '0', position: 'absolute', top: 0, left: 0 }} icon={calendarIcon} onClick={() => onFocus(ref)} />
+        <IconButton styles={{ margin: '0', position: 'absolute', top: 0, left: 0, width: '40px', height: '40px' }} icon={calendarIcon} onClick={() => onFocus(ref)} />
       ) : (
         <DisplayedDay onClick={() => onFocus(ref)}>
           <DisplayedDaySpan>{displayDay[0]}</DisplayedDaySpan>

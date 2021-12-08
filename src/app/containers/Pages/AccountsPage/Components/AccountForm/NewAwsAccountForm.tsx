@@ -201,7 +201,7 @@ const NewAwsAccountForm: React.FC<Props> = (props: Props) => {
                 value={dataItem.awsPol.regions}
                 options={props.regions}
                 onChange={onRegionsChange}
-                styles={{ height: '62px', minHeight: '62px', margin: '0 0 20px 0' }}
+                styles={{ height: '72px', minHeight: '72px', margin: '0 0 20px 0' }}
                 selectClaassName="withLabel"
                 required
                 optionCheckMark

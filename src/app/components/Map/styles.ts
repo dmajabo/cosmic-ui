@@ -1,4 +1,4 @@
-import { DEFAULT_TRANSITION } from 'lib/constants/general';
+import { APP_HEADER_HEIGHT, DEFAULT_TRANSITION } from 'lib/constants/general';
 import styled from 'styled-components';
 
 export const ContainerWithPanel = styled.div`
@@ -7,7 +7,7 @@ export const ContainerWithPanel = styled.div`
   flex-wrap: nowrap;
   width: 100%;
   height: 100%;
-  max-height: calc(100vh - 81px);
+  max-height: ${`calc(100vh - ${APP_HEADER_HEIGHT})`};
   overflow: hidden;
   background-color: var(--_appBg);
   &.fullscreen {
