@@ -1,9 +1,9 @@
 import { Button, Typography } from '@material-ui/core';
 import React, { useState, useEffect } from 'react';
-import { PerformanceDashboardStyles } from '../PerformanceDashboardStyles';
+import { PerformanceDashboardStyles } from './PerformanceDashboardStyles';
 import Select from 'react-select';
 import { CreateSLATestRequest, Organization, SLATest, UpdateSLATestRequest } from 'lib/api/http/SharedTypes';
-import CloseIcon from '../icons/close.svg';
+import CloseIcon from '../../icons/performance dashboard/close.svg';
 import { GetSelectedOrganization } from './filterFunctions';
 import CreatableSelect from 'react-select/creatable';
 import { isEmpty } from 'lodash';

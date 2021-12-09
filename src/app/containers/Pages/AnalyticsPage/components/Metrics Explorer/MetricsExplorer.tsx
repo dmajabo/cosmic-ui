@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
-import { AnalyticsStyles } from '../AnalyticsStyles';
+import { AnalyticsStyles } from '../../AnalyticsStyles';
 import { CustomizationTile, CustomizationTabProps } from './CustomizationTile';
-import DesignIcon from '../icons/metrics explorer/design.svg';
-import DimensionsIcon from '../icons/metrics explorer/dimensions.svg';
-import MetricsIcon from '../icons/metrics explorer/metrics.svg';
-import TimeIcon from '../icons/metrics explorer/time.svg';
-import DataSourceIcon from '../icons/metrics explorer/dataSource.svg';
-import AddIcon from '../icons/metrics explorer/add.svg';
-import EditIcon from '../icons/metrics explorer/edit.svg';
-import CloseIcon from '../icons/metrics explorer/close.svg';
-import NetworkIcon from '../icons/metrics explorer/dimensions-network.svg';
-import AwsIcon from '../icons/metrics explorer/dimensions-aws.svg';
-import MerakiIcon from '../icons/metrics explorer/dimensions-meraki.svg';
+import DesignIcon from '../../icons/metrics explorer/design.svg';
+import DimensionsIcon from '../../icons/metrics explorer/dimensions.svg';
+import MetricsIcon from '../../icons/metrics explorer/metrics.svg';
+import TimeIcon from '../../icons/metrics explorer/time.svg';
+import DataSourceIcon from '../../icons/metrics explorer/dataSource.svg';
+import AddIcon from '../../icons/metrics explorer/add.svg';
+import EditIcon from '../../icons/metrics explorer/edit.svg';
+import CloseIcon from '../../icons/metrics explorer/close.svg';
+import NetworkIcon from '../../icons/metrics explorer/dimensions-network.svg';
+import AwsIcon from '../../icons/metrics explorer/dimensions-aws.svg';
+import MerakiIcon from '../../icons/metrics explorer/dimensions-meraki.svg';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import produce from 'immer';
@@ -24,7 +24,7 @@ import { LookbackLabel, LookbackSelectOption, LookbackTimeTab, LookbackValue } f
 import { CustomTimeRangeLabel, CustomTimeRangeSelectOption, CustomTimeTab } from './CustomTimeTab';
 import { DataUnitDropdown, DataUnitLabel, DataUnitValue, DataUnitSelectOption } from './DataUnitDropdown';
 import { ChartTypeValue, ChartTypeDropdown, ChartTypeLabel } from './ChartTypeDropdown';
-import LineChartIcon from '../icons/metrics explorer/chartType/lineChart.svg';
+import LineChartIcon from '../../icons/metrics explorer/chartType/lineChart.svg';
 
 //TODO: Remove this once API is integrated
 const DUMMY_DIMENSION_DATA: DimensionOptions[] = [

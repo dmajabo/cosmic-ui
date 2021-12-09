@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { CheckboxData, DimensionOptions, OptionData } from './Dimensions';
 import { Checkbox, FormControlLabel } from '@mui/material';
-import { AnalyticsStyles } from '../AnalyticsStyles';
-import DownArrow from '../icons/metrics explorer/downArrowTriangle.svg';
-import UpArrow from '../icons/metrics explorer/upArrowTriangle.svg';
+import { AnalyticsStyles } from '../../AnalyticsStyles';
+import DownArrow from '../../icons/metrics explorer/downArrowTriangle.svg';
+import UpArrow from '../../icons/metrics explorer/upArrowTriangle.svg';
 
 interface DimensionOptionsProps {
   readonly dimensionOption: DimensionOptions;

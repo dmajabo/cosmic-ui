@@ -1,5 +1,5 @@
 import React from 'react';
-import { AnalyticsStyles } from '../AnalyticsStyles';
+import { AnalyticsStyles } from '../../AnalyticsStyles';
 import Select from 'react-select';
 
 export interface LookbackSelectOption {

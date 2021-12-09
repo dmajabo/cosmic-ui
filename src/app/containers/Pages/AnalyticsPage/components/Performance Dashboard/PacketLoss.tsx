@@ -1,10 +1,10 @@
 import { Typography } from '@material-ui/core';
 import React, { useContext, useEffect, useState } from 'react';
 import { createApiClient } from 'lib/api/http/apiClient';
-import { PerformanceDashboardStyles } from '../PerformanceDashboardStyles';
+import { PerformanceDashboardStyles } from './PerformanceDashboardStyles';
 import { MetricsLineChart } from './MetricsLineChart';
-import InfoIcon from '../icons/info.svg';
-import LoadingIndicator from '../../../../components/Loading';
+import InfoIcon from '../../icons/performance dashboard/info.svg';
+import LoadingIndicator from 'app/components/Loading';
 import { Data } from './Table';
 import Heatmap, { LegendData } from './Heatmap';
 import { HeatMapData } from 'lib/api/http/SharedTypes';

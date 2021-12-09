@@ -1,5 +1,5 @@
 import React from 'react';
-import { AnalyticsStyles } from '../AnalyticsStyles';
+import { AnalyticsStyles } from '../../AnalyticsStyles';
 import { DimensionOptions } from './Dimensions';
 import { Button, Typography } from '@material-ui/core';
 import RefreshIcon from '@mui/icons-material/Refresh';
