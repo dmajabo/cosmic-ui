@@ -99,6 +99,7 @@ export interface ITransitionObject {
 
 export interface IEdgeLink {
   id: string;
+  sourceType: SegmentTargetT;
   source: ISvgEdgeGroup;
   destination: ISvgEdgeGroup;
   transit: ISvgTransitNode[];
@@ -135,10 +136,12 @@ export const buildLinks = (sources: INodesObject, destinations: INodesObject, tr
     policy.rules.forEach(rule => {
       const link: IEdgeLink = {
         id: `${idPrefix}${index}`,
+        sourceType: null,
         source: null,
         destination: null,
         transit: null,
       };
+      link.sourceType = rule.sourceType;
       if (sources && sources.nodes && sources.nodes.length && rule.sourceType && rule.sourceId) {
         link.source = getNodeFromPolicyRule(sources, destinations, rule.sourceType, rule.sourceId);
       }
