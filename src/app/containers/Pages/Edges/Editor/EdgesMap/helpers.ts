@@ -133,9 +133,9 @@ export const buildLinks = (sources: INodesObject, destinations: INodesObject, tr
   const _arr: IEdgeLink[] = [];
   policies.forEach((policy, index) => {
     if (!policy.rules || !policy.rules.length) return;
-    policy.rules.forEach(rule => {
+    policy.rules.forEach((rule, ruleIndex) => {
       const link: IEdgeLink = {
-        id: `${idPrefix}${index}`,
+        id: `${idPrefix}${index}${ruleIndex}`,
         sourceType: null,
         source: null,
         destination: null,

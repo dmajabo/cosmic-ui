@@ -157,8 +157,8 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
   };
 
   return (
-    <PageContentWrapper style={{ width: '92vw', height: '78vh', overflow: 'auto', borderRadius: '6px' }}>
-      <ActionRowStyles margin="0 0 40px 0">
+    <PageContentWrapper margin="20px 0 0 0">
+      <ActionRowStyles margin="0 0 40px 0" zIndex={2}>
         <ActionPart margin="0 auto 0 0">
           <SessionsSwitch checked={stitch} onChange={onSwitchChange} />
         </ActionPart>

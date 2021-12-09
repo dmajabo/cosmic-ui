@@ -16,6 +16,8 @@ export const HeaderStyles = styled.div<HeaderStyleProps>`
   padding: 20px 30px;
   background: var(--_primaryBg);
   z-index: 100;
+  box-sizing: border-box;
+  border-bottom: 1px solid var(--_appBg);
   transition: width ${DEFAULT_TRANSITION}, left ${DEFAULT_TRANSITION};
 `;
 
