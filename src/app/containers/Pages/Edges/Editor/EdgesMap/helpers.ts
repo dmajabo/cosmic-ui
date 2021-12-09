@@ -1,4 +1,4 @@
-import { DeploymentTypes, ISegmentRuleP } from 'lib/api/ApiModels/Edges/apiModel';
+import { DeploymentTypes, ISegmentP, SegmentTargetT } from 'lib/api/ApiModels/Edges/apiModel';
 import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
 import { jsonClone } from 'lib/helpers/cloneHelper';
 import { INetworkwEdge, TopologyGroupTypesAsString } from 'lib/models/topology';
@@ -28,6 +28,7 @@ export const SVG_EDGES_STYLES = {
   },
   transitNode: {
     width: 164,
+    height: 120,
   },
   link: {
     strokeWidth: 0.5,
@@ -108,31 +109,47 @@ export interface ILinkObject {
   scale: number;
 }
 
-export const buildLinks = (sources: INodesObject, destinations: INodesObject, transits: ITransitionObject, policies: ISegmentRuleP[], idPrefix: string): ILinkObject => {
+const getNodeFromPolicyRule = (sources: INodesObject, destinations: INodesObject, type: SegmentTargetT, id: string) => {
+  let _n: ISvgEdgeGroup = null;
+  if (type === SegmentTargetT.SITE_GROUP) {
+    let nodeS = sources.nodes.find(it => it.id === id);
+    if (nodeS) {
+      _n = nodeS;
+    }
+    return _n;
+  }
+  if (type === SegmentTargetT.APP_GROUP) {
+    let nodeS = destinations.nodes.find(it => it.id === id);
+    if (nodeS) {
+      _n = nodeS;
+    }
+    return _n;
+  }
+  return _n;
+};
+
+export const buildLinks = (sources: INodesObject, destinations: INodesObject, transits: ITransitionObject, policies: ISegmentP[], idPrefix: string): ILinkObject => {
   const _arr: IEdgeLink[] = [];
   policies.forEach((policy, index) => {
-    const link: IEdgeLink = {
-      id: `${idPrefix}${index}`,
-      source: null,
-      destination: null,
-      transit: null,
-    };
-    // if (sources && sources.nodes && sources.nodes.length) {
-    //   const _s = sources.nodes.find(it => it.id === policy.source);
-    //   if (_s) {
-    //     link.source = _s;
-    //   }
-    // }
-    // if (destinations && destinations.nodes && destinations.nodes.length) {
-    //   const _d = destinations.nodes.find(it => it.id === policy.destination);
-    //   if (_d) {
-    //     link.destination = _d;
-    //   }
-    // }
-    if (transits && transits.nodes && transits.nodes.length) {
-      link.transit = [...transits.nodes];
-    }
-    _arr.push(link);
+    if (!policy.rules || !policy.rules.length) return;
+    policy.rules.forEach(rule => {
+      const link: IEdgeLink = {
+        id: `${idPrefix}${index}`,
+        source: null,
+        destination: null,
+        transit: null,
+      };
+      if (sources && sources.nodes && sources.nodes.length && rule.sourceType && rule.sourceId) {
+        link.source = getNodeFromPolicyRule(sources, destinations, rule.sourceType, rule.sourceId);
+      }
+      if (destinations && destinations.nodes && destinations.nodes.length) {
+        link.destination = getNodeFromPolicyRule(sources, destinations, rule.destType, rule.destId);
+      }
+      if (transits && transits.nodes && transits.nodes.length) {
+        link.transit = [...transits.nodes];
+      }
+      _arr.push(link);
+    });
   });
   return { links: _arr, scale: 1 };
 };
@@ -166,9 +183,18 @@ export const buildtransitNodes = (data: string[], type: DeploymentTypes, offset:
   const _arr: ISvgTransitNode[] = data.map((it, index) => {
     const _wedge = wedges && wedges.length ? wedges.find(w => w.extId === it) : null;
     const _x = (SVG_EDGES_STYLES.mapColumn - SVG_EDGES_STYLES.transitNode.width) / 2;
-    const _obj = { name: _wedge && _wedge.name ? _wedge.name : it, height: 84, y: offsetY, x: _x, id: `${EDGE_MAP_CONSTANTS.transitNodePrefix}${index}`, scale: 1, type: type, offsetX: offset };
-    offsetY += 94;
-    totalHeight += 94;
+    const _obj = {
+      name: _wedge && _wedge.name ? _wedge.name : it,
+      height: SVG_EDGES_STYLES.transitNode.height,
+      y: offsetY,
+      x: _x,
+      id: `${EDGE_MAP_CONSTANTS.transitNodePrefix}${index}`,
+      scale: 1,
+      type: type,
+      offsetX: offset,
+    };
+    offsetY = offsetY + SVG_EDGES_STYLES.transitNode.height + 10;
+    totalHeight = totalHeight + SVG_EDGES_STYLES.transitNode.height + 10;
     return _obj;
   });
   const scaleFactor = Math.min(1, svgSize.height / totalHeight);

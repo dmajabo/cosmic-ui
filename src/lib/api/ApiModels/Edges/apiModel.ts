@@ -7,7 +7,7 @@ export enum SegmentTargetT {
 }
 
 export enum SegmentRuleAction {
-  ALLOW = 'Allow',
+  ALLOW = 'ALLOW',
 }
 
 export interface ISegmentRuleP {
@@ -49,7 +49,7 @@ export interface IDeploymentP {
   regionCode: string[];
   deploymentType: DeploymentTypes;
   wanGwExtIds: string[];
-  nwServicesPolicy: INwServicesP;
+  nwServicesPolicy: INwServicesP[];
 }
 
 export enum ConnectionPKeysMap {
@@ -85,7 +85,7 @@ export interface IEdgeP {
   siteGroupIds: string[];
   appGroupIds: string[];
   deploymentPolicy: IDeploymentP[];
-  segmentPolicy: ISegmentP;
+  segmentPolicy: ISegmentP[];
 }
 
 export interface ISitesRes extends IBaseTotalCount, IBasePages {

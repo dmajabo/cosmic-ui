@@ -15,7 +15,7 @@ import ExpandedIcon from 'app/components/Basic/ExpandedIcon';
 import PanelHeader from 'app/containers/Pages/AutomationPage/Components/PanelHeader';
 import SecondaryButton from 'app/components/Buttons/SecondaryButton';
 import accordionStyles from 'app/containers/Pages/AutomationPage/styles/AccordionStyles';
-import { IDeploymentP, IEdgeP, ISegmentRuleP } from 'lib/api/ApiModels/Edges/apiModel';
+import { IDeploymentP, IEdgeP, ISegmentP } from 'lib/api/ApiModels/Edges/apiModel';
 import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
 import GeneralPreview from './GeneralPreview';
 import TransitPreview from './TransitPreview';
@@ -29,10 +29,9 @@ interface Props {
   saveDisabled: boolean;
   onChangeGeneralField: (value: any, field: string) => void;
   onChangeDeployment: (item: IDeploymentP, index: number) => void;
-  onChangeSegmentPolicy: (v: any, field: string) => void;
-  onAddPolicy: (policy: ISegmentRuleP) => void;
-  onUpdatePolicy: (policy: ISegmentRuleP, index: number) => void;
-  onDeletePolicy: (index: number) => void;
+  onAddPolicy: (policy: ISegmentP) => void;
+  onUpdatePolicy: (policy: ISegmentP, policyIndex: number) => void;
+  onDeletePolicy: (policyIndex: number) => void;
   onAddExistingSites: (ids: string[]) => void;
   onAddExistingApps: (ids: string[]) => void;
   onChangeSitesField: (value: ITopologyGroup) => void;
@@ -53,7 +52,7 @@ const FormPanel: React.FC<Props> = (props: Props) => {
     <>
       <PanelContent>
         <ColumnPanelHeader>
-          <PanelTitle>{!props.dataItem.id ? 'Create Edge' : 'Update Edge'}</PanelTitle>
+          <PanelTitle>{!props.dataItem.id ? 'Create Transit' : 'Update Transit'}</PanelTitle>
         </ColumnPanelHeader>
         <Accordion
           className={AccordionStyles.accContainer}
@@ -137,21 +136,21 @@ const FormPanel: React.FC<Props> = (props: Props) => {
         </Accordion>
         <Accordion
           className={AccordionStyles.accContainer}
-          expanded={!!(props.selectedStep && props.selectedStep.id === EdgesStepperTypes.TRANSIT)}
-          onChange={onAccordionChange(EdgesStepperTypes.TRANSIT)}
+          expanded={!!(props.selectedStep && props.selectedStep.id === EdgesStepperTypes.EDGES)}
+          onChange={onAccordionChange(EdgesStepperTypes.EDGES)}
         >
-          <AccordionSummary className={AccordionStyles.panelEdges} expandIcon={<ExpandedIcon />} aria-controls={`${EdgesStepperTypes.TRANSIT}-content`} id={`${EdgesStepperTypes.TRANSIT}-header`}>
+          <AccordionSummary className={AccordionStyles.panelEdges} expandIcon={<ExpandedIcon />} aria-controls={`${EdgesStepperTypes.EDGES}-content`} id={`${EdgesStepperTypes.EDGES}-header`}>
             <AccordionHeaderPanel>
               <PanelHeader
                 index={props.steps[3].index + 1}
-                label="Transit"
+                label="Edges"
                 stepNumberWidth="40px"
                 stepNumberHeight="40px"
-                selected={props.selectedStep && props.selectedStep.id === EdgesStepperTypes.TRANSIT}
+                selected={props.selectedStep && props.selectedStep.id === EdgesStepperTypes.EDGES}
                 state={props.steps[3].state !== StepperItemStateType.EMPTY ? props.steps[3].state : null}
               />
             </AccordionHeaderPanel>
-            {(!props.selectedStep || (props.selectedStep && props.selectedStep.id !== EdgesStepperTypes.TRANSIT)) && (
+            {(!props.selectedStep || (props.selectedStep && props.selectedStep.id !== EdgesStepperTypes.EDGES)) && (
               <AccordionHeaderPanel>{<TransitPreview deploymentPolicy={props.dataItem.deploymentPolicy} />}</AccordionHeaderPanel>
             )}
           </AccordionSummary>
@@ -181,7 +180,6 @@ const FormPanel: React.FC<Props> = (props: Props) => {
           </AccordionSummary>
           <AccordionDetails className={AccordionStyles.deteilItemEdges}>
             <PolicyStep
-              onChangeSegmentPolicy={props.onChangeSegmentPolicy}
               onUpdatePolicy={props.onUpdatePolicy}
               onAddPolicy={props.onAddPolicy}
               onDeletePolicy={props.onDeletePolicy}
@@ -197,7 +195,7 @@ const FormPanel: React.FC<Props> = (props: Props) => {
         <PrimaryButton
           disabled={props.saveDisabled}
           styles={{ height: '100%', margin: '0 0 0 10px' }}
-          label={props.dataItem && props.dataItem.id ? 'UPDATE EDGE' : 'CREATE EDGE'}
+          label={props.dataItem && props.dataItem.id ? 'UPDATE TRANSIT' : 'CREATE TRANSIT'}
           onClick={props.onSave}
         />
       </PanelFotter>

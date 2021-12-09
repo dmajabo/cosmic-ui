@@ -11,7 +11,8 @@ interface IProps {
   name: string;
   value: string | null;
   label: JSX.Element | string;
-  onChange: (value: string | null) => void;
+  onChange?: (value: string | null) => void;
+  onBlurChange?: (value: string | null) => void;
   disabled?: boolean;
   readOnly?: boolean;
   readOnlyField?: boolean;
@@ -31,8 +32,10 @@ const TextInput: React.FC<IProps> = (props: IProps) => {
   React.useEffect(() => {
     if ((debouncedSearchTerm || debouncedSearchTerm === '' || debouncedSearchTerm === null) && isTyping) {
       setIsTyping(false);
-      const value = textValue || null;
-      props.onChange(value);
+      if (props.onChange) {
+        const value = textValue || null;
+        props.onChange(value);
+      }
     }
   }, [debouncedSearchTerm]);
 
@@ -40,6 +43,12 @@ const TextInput: React.FC<IProps> = (props: IProps) => {
     setIsTyping(true);
     const { value } = e.target;
     setTextValue(value);
+  };
+
+  const onBlur = () => {
+    if (!props.onBlurChange) return;
+    const value = textValue || null;
+    props.onBlurChange(value);
   };
 
   const onTextAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -62,6 +71,7 @@ const TextInput: React.FC<IProps> = (props: IProps) => {
           type="text"
           value={textValue}
           onChange={onChange}
+          onBlur={onBlur}
           readOnly={props.readOnly || props.readOnlyField}
           disabled={props.disabled}
           placeholder={props.placeholder}
@@ -73,6 +83,7 @@ const TextInput: React.FC<IProps> = (props: IProps) => {
           id={props.id}
           name={props.name}
           value={textValue}
+          onBlur={onBlur}
           onChange={onTextAreaChange}
           readOnly={props.readOnly}
           disabled={props.disabled}

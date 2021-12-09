@@ -69,13 +69,13 @@ const TransitPreview: React.FC<Props> = (props: Props) => {
   if (!props.deploymentPolicy || !props.deploymentPolicy.length) return null;
   return (
     <PreviewWrapper>
-      {props.deploymentPolicy[0].nwServicesPolicy.serviceType === NwServiceT.FIREWALL && (
+      {props.deploymentPolicy[0].nwServicesPolicy[0].serviceType === NwServiceT.FIREWALL && (
         <PreviewRow margin="20px 0 0 0">
           <PreviewText className="label" margin="0 16px 0 0">
             Add Firewall in each edge region:
           </PreviewText>
           <IconWrapper width="20px" height="18px" icon={poloAltoIcon()} />
-          {props.deploymentPolicy[0].nwServicesPolicy.serviceVendor === NwServicesVendor.PALO_ALTO_NW && (
+          {props.deploymentPolicy[0].nwServicesPolicy[0].serviceVendor === NwServicesVendor.PALO_ALTO_NW && (
             <PreviewText className="label" margin="0 0 0 12px">
               Palo Alto
             </PreviewText>

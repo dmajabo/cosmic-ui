@@ -21,7 +21,7 @@ import EdgeNode from './EdgeNode';
 import { useEdgeZoom } from './useEdgeZoom';
 import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
 import { useEdgesDataContext } from 'lib/hooks/Edges/useEdgesDataContext';
-import { DeploymentTypes, ISegmentRuleP } from 'lib/api/ApiModels/Edges/apiModel';
+import { DeploymentTypes, ISegmentP } from 'lib/api/ApiModels/Edges/apiModel';
 import { INetworkwEdge } from 'lib/models/topology';
 import EdgeLink from './EdgeLink';
 import ExpandCollapseAll from './ExpandCollapseAll';
@@ -34,7 +34,7 @@ interface Props {
   transitType: DeploymentTypes;
   selectedRegions: string[];
   selectedWedgeIds: string[];
-  policies: ISegmentRuleP[] | null;
+  segmentPolicy: ISegmentP[];
 }
 
 const EdgesMap: React.FC<Props> = (props: Props) => {
@@ -58,11 +58,11 @@ const EdgesMap: React.FC<Props> = (props: Props) => {
 
   React.useEffect(() => {
     if (props.transitType === DeploymentTypes.NEW_REGIONS && props.selectedRegions) {
-      const _transits: ITransitionObject = buildtransitNodes(props.selectedRegions, DeploymentTypes.NEW_REGIONS, 300);
+      const _transits: ITransitionObject = buildtransitNodes(props.selectedRegions, DeploymentTypes.NEW_REGIONS, SVG_EDGES_STYLES.mapColumn);
       setTransits(_transits);
     }
     if (props.transitType === DeploymentTypes.EXISTING_GWS && props.selectedWedgeIds) {
-      const _transits: ITransitionObject = buildtransitNodes(props.selectedWedgeIds, DeploymentTypes.EXISTING_GWS, 300, props.wedges);
+      const _transits: ITransitionObject = buildtransitNodes(props.selectedWedgeIds, DeploymentTypes.EXISTING_GWS, SVG_EDGES_STYLES.mapColumn, props.wedges);
       setTransits(_transits);
     }
   }, [props.transitType, props.selectedRegions, props.selectedWedgeIds]);
@@ -89,15 +89,15 @@ const EdgesMap: React.FC<Props> = (props: Props) => {
         _arr.push(_gr);
       }
     });
-    const _appsObj: INodesObject = buildNodes(_arr, EDGE_MAP_CONSTANTS.appsNodePrefix, 600);
+    const _appsObj: INodesObject = buildNodes(_arr, EDGE_MAP_CONSTANTS.appsNodePrefix, SVG_EDGES_STYLES.mapColumn * 2);
     setApps(_appsObj);
   }, [props.apps]);
 
   React.useEffect(() => {
-    if (!props.policies || !props.policies.length) return;
-    const _linksObj: ILinkObject = buildLinks(sites, apps, transits, props.policies, EDGE_MAP_CONSTANTS.transitionPrefix);
+    if (!props.segmentPolicy || !props.segmentPolicy.length) return;
+    const _linksObj: ILinkObject = buildLinks(sites, apps, transits, props.segmentPolicy, EDGE_MAP_CONSTANTS.transitionPrefix);
     setLinks(_linksObj);
-  }, [props.policies, sites, apps, transits]);
+  }, [props.segmentPolicy, sites, apps, transits]);
 
   const onExpandCollapseSites = (node: ISvgEdgeGroup) => {
     const obj: INodesObject = updateNodesCoord(node, sites);

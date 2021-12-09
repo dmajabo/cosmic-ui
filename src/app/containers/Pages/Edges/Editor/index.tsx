@@ -8,7 +8,7 @@ import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
 import FormPanel from './FormPanel';
 import EdgesMap from './EdgesMap';
-import { DeploymentTypes, IDeploymentP, IEdgeP, ISegmentRuleP } from 'lib/api/ApiModels/Edges/apiModel';
+import { DeploymentTypes, IDeploymentP, IEdgeP, ISegmentP } from 'lib/api/ApiModels/Edges/apiModel';
 import { ITopologyGroup, TopologyGroupApi } from 'lib/api/ApiModels/Topology/endpoints';
 import { useEdgesDataContext } from 'lib/hooks/Edges/useEdgesDataContext';
 import { IBaseEntity, IModal } from 'lib/models/general';
@@ -140,42 +140,33 @@ const Editor: React.FC<Props> = (props: Props) => {
     const _dataItem: IEdgeP = jsonClone(dataItem);
     _dataItem.deploymentPolicy.splice(index, 1, item);
     console.log(_dataItem);
-    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.TRANSIT, _dataItem, ValidateTransits);
+    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.EDGES, _dataItem, ValidateTransits);
     setSteps(_items);
     setDataItem(_dataItem);
     setHasChanges(true);
   };
 
-  const onAddPolicy = (policy: ISegmentRuleP) => {
+  const onAddPolicy = (policy: ISegmentP) => {
     const _dataItem: IEdgeP = jsonClone(dataItem);
-    _dataItem.segmentPolicy.rules.push(policy);
+    _dataItem.segmentPolicy.push(policy);
     const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.POLICY, _dataItem, ValidatePolicies);
     setSteps(_items);
     setDataItem(_dataItem);
     setHasChanges(true);
   };
 
-  const onDeletePolicy = (index: number) => {
+  const onDeletePolicy = (policyIndex: number) => {
     const _dataItem: IEdgeP = jsonClone(dataItem);
-    _dataItem.segmentPolicy.rules.splice(index, 1);
+    _dataItem.segmentPolicy.splice(policyIndex, 1);
     const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.POLICY, _dataItem, ValidatePolicies);
     setSteps(_items);
     setDataItem(_dataItem);
     setHasChanges(true);
   };
 
-  const onUpdatePolicy = (policy: ISegmentRuleP, index: number) => {
+  const onUpdatePolicy = (policy: ISegmentP, policyIndex: number) => {
     const _dataItem: IEdgeP = jsonClone(dataItem);
-    _dataItem.segmentPolicy.rules.splice(index, 1, policy);
-    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.POLICY, _dataItem, ValidatePolicies);
-    setSteps(_items);
-    setDataItem(_dataItem);
-    setHasChanges(true);
-  };
-
-  const onChangeSegmentPolicy = (v: any, field: string) => {
-    const _dataItem: IEdgeP = jsonClone(dataItem);
-    _dataItem.segmentPolicy[field] = v;
+    _dataItem.segmentPolicy.splice(policyIndex, 1, policy);
     const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.POLICY, _dataItem, ValidatePolicies);
     setSteps(_items);
     setDataItem(_dataItem);
@@ -320,7 +311,7 @@ const Editor: React.FC<Props> = (props: Props) => {
               sites={dataItem.siteGroupIds}
               apps={dataItem.appGroupIds}
               wedges={edges.wedges}
-              policies={[]} // {dataItem.policies}
+              segmentPolicy={dataItem.segmentPolicy}
               transitType={dataItem && dataItem.deploymentPolicy && dataItem.deploymentPolicy.length ? dataItem.deploymentPolicy[0].deploymentType : DeploymentTypes.EXISTING_GWS}
               selectedRegions={dataItem && dataItem.deploymentPolicy && dataItem.deploymentPolicy.length ? dataItem.deploymentPolicy[0].regionCode : null}
               selectedWedgeIds={dataItem && dataItem.deploymentPolicy && dataItem.deploymentPolicy.length ? dataItem.deploymentPolicy[0].wanGwExtIds : null}
@@ -341,7 +332,6 @@ const Editor: React.FC<Props> = (props: Props) => {
             onChangeAppsField={onChangeAppsField}
             onChangeGeneralField={onChangeGeneralField}
             onChangeDeployment={onChangeDeployment}
-            onChangeSegmentPolicy={onChangeSegmentPolicy}
             onToogleAccordionItem={onToogleAccordionItem}
             onDeleteSitesGroup={onDeleteSitesGroup}
             onDeleteAppsGroup={onDeleteAppsGroup}

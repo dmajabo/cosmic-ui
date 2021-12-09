@@ -100,7 +100,12 @@ export interface IObject<T> {
   [key: string]: T;
 }
 
-export interface ISelectionGridCellValue<T, P> {
-  field: T;
-  value: P;
+export interface ISelectionGridCellValue<F, V> {
+  field: F;
+  value: V;
+}
+
+export interface IFieldValuePair<V> {
+  field: string;
+  value: V;
 }

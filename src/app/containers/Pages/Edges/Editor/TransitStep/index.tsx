@@ -37,7 +37,7 @@ const TransitStep: React.FC<Props> = (props: Props) => {
 
   const onFirewallChange = (v: boolean) => {
     const _d: IDeploymentP = jsonClone(deployment);
-    _d.nwServicesPolicy.serviceType = v ? NwServiceT.FIREWALL : null;
+    _d.nwServicesPolicy[0].serviceType = v ? NwServiceT.FIREWALL : null;
     setDeployment(_d);
     props.onChangeDeployment(_d, currentIndex);
   };
@@ -77,8 +77,19 @@ const TransitStep: React.FC<Props> = (props: Props) => {
 
   return (
     <>
+      <MatSelect
+        id="accounts"
+        label="Account"
+        value={deployment.controllerName}
+        options={edges.awsAccounts}
+        disabled={!edges.awsAccounts || !edges.awsAccounts.length}
+        onChange={onAccountChange}
+        styles={{ height: '72px', minHeight: '72px', margin: '0 0 20px 0' }}
+        selectClaassName="withLabel"
+        required
+      />
       <PanelRow>
-        <CheckBox label="Add Firewall in each edge region" isChecked={deployment.nwServicesPolicy.serviceType === NwServiceT.FIREWALL} toggleCheckboxChange={onFirewallChange} />
+        <CheckBox label="Add Firewall in each edge region" isChecked={deployment.nwServicesPolicy[0].serviceType === NwServiceT.FIREWALL} toggleCheckboxChange={onFirewallChange} />
         <TextInputWrapper style={{ width: '244px', height: '50px', minHeight: '50px', margin: '0 0 0 20px' }}>
           <InputWrapper>
             <Input
@@ -95,30 +106,20 @@ const TransitStep: React.FC<Props> = (props: Props) => {
           </InputWrapper>
         </TextInputWrapper>
       </PanelRow>
-      <MatSelect
-        id="accounts"
-        label="Account"
-        value={deployment.controllerName}
-        options={edges.awsAccounts}
-        disabled={!edges.awsAccounts || !edges.awsAccounts.length}
-        onChange={onAccountChange}
-        styles={{ height: '72px', minHeight: '72px', margin: '0 0 20px 0' }}
-        selectClaassName="withLabel"
-        required
-      />
+
       {(deployment.deploymentType === DeploymentTypes.NEW_REGIONS && deployment.regionCode && deployment.regionCode.length) ||
       (deployment.deploymentType === DeploymentTypes.EXISTING_GWS && deployment.wanGwExtIds && deployment.wanGwExtIds.length) ? (
         <TransitionTable type={deployment.deploymentType} wedges={edges.wedges} selectedWedgesIds={deployment.wanGwExtIds} regions={edges.regions} selectedRegions={deployment.regionCode} />
       ) : (
-        <EmptyMessage>There is no transit yet. To add transit click the button bellow.</EmptyMessage>
+        <EmptyMessage>There are no edges yet. To add edge click the button bellow.</EmptyMessage>
       )}
       <FormRow justifyContent={edges.regions && edges.regions.length ? 'flex-end' : 'flex-start'}>
-        <SecondaryButton icon={plusIcon} label="Add Transit" onClick={onAddGroup} />
+        <SecondaryButton icon={plusIcon} label="Add Edge" onClick={onAddGroup} />
       </FormRow>
       {showCreator && (
         <ModalComponent
           showHeader
-          title="Add Transit"
+          title="Add Edge"
           showCloseButton
           modalStyles={{ maxWidth: '800px', maxHeight: '90vh', padding: '40px' }}
           useFadeAnimation

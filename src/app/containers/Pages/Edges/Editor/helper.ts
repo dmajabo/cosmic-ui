@@ -1,5 +1,5 @@
 import { IStepperItem, StepperItemStateType } from 'app/components/Stepper/model';
-import { DeploymentTypes, IDeploymentP, IEdgeP, ISegmentRuleP, SegmentTargetT, SegmentRuleAction, NwServiceT, NwServicesVendor } from 'lib/api/ApiModels/Edges/apiModel';
+import { DeploymentTypes, IDeploymentP, IEdgeP, ISegmentRuleP, SegmentRuleAction, NwServiceT, NwServicesVendor, INwServicesP, ISegmentP } from 'lib/api/ApiModels/Edges/apiModel';
 import { EdgesStepperTypes } from './model';
 
 export const ValidateGeneralFields = (dataItem: IEdgeP): boolean => {
@@ -38,22 +38,35 @@ const onValidateDeployment = (data: IDeploymentP): boolean => {
   if (!data.controllerName || !data.deploymentType) return false;
   if (data.deploymentType === DeploymentTypes.NEW_REGIONS && (!data.regionCode || !data.regionCode.length)) return false;
   if (data.deploymentType === DeploymentTypes.EXISTING_GWS && (!data.wanGwExtIds || !data.wanGwExtIds.length)) return false;
-  if (!data.nwServicesPolicy || !data.nwServicesPolicy.serviceVendor) return false;
+  if (!data.nwServicesPolicy || !data.nwServicesPolicy.length) return false;
+  const _isAllSevicePoliciesValid = data.nwServicesPolicy.some(it => onValidateNwServicePolicy(it));
+  if (!_isAllSevicePoliciesValid) return false;
+  return true;
+};
+
+const onValidateNwServicePolicy = (data: INwServicesP): boolean => {
+  if (!data || !data.serviceVendor) return false;
   return true;
 };
 
 export const ValidatePolicies = (dataItem: IEdgeP): boolean => {
   if (!dataItem) return false;
   const { segmentPolicy } = dataItem;
-  if (!segmentPolicy || !segmentPolicy.name) return false;
-  if (!segmentPolicy.rules || !segmentPolicy.rules.length) return false;
-  const _isAllPolicyValid = segmentPolicy.rules.some(it => onValidatePolicy(it));
+  if (!segmentPolicy || !segmentPolicy.length) return false;
+  const _isAllPolicyValid = segmentPolicy.some(it => onValidatePolicy(it));
   if (!_isAllPolicyValid) return false;
   return true;
 };
 
-const onValidatePolicy = (data: ISegmentRuleP): boolean => {
-  // if (!data.source || !data.destination || !data.action) return false;
+const onValidatePolicy = (data: ISegmentP): boolean => {
+  if (!data || !data.name || !data.rules || !data.rules.length) return false;
+  const _isAllRulesValid = data.rules.some(it => onValidateRule(it));
+  if (!_isAllRulesValid) return false;
+  return true;
+};
+
+const onValidateRule = (data: ISegmentRuleP): boolean => {
+  if (!data || !data.action || !data.name || !data.destId || !data.sourceId) return false;
   return true;
 };
 
@@ -76,7 +89,7 @@ export const updateSteps = (steps: IStepperItem<EdgesStepperTypes>[], dataItem: 
       step.state = !_completed ? StepperItemStateType.EMPTY : StepperItemStateType.COMPLETE;
       return;
     }
-    if (step.id === EdgesStepperTypes.TRANSIT) {
+    if (step.id === EdgesStepperTypes.EDGES) {
       const _completed = ValidateTransits(dataItem);
       step.state = !_completed ? StepperItemStateType.EMPTY : StepperItemStateType.COMPLETE;
       return;
@@ -97,11 +110,19 @@ export const updateStepById = (steps: IStepperItem<EdgesStepperTypes>[], id: Edg
   return _items;
 };
 
-export const createNewEdgePolicy = (): ISegmentRuleP => ({
+export const createNewSegmentP = (): ISegmentP => {
+  const _obj: ISegmentP = {
+    name: '',
+    rules: [],
+  };
+  return _obj;
+};
+
+export const createNewRulePolicy = (): ISegmentRuleP => ({
   name: '',
-  sourceType: SegmentTargetT.SITE_GROUP,
+  sourceType: null,
   sourceId: '',
-  destType: SegmentTargetT.SITE_GROUP,
+  destType: null,
   destId: '',
   action: SegmentRuleAction.ALLOW,
 });
@@ -111,8 +132,10 @@ export const createNewDeploymentPolicy = (): IDeploymentP => ({
   regionCode: [],
   deploymentType: DeploymentTypes.EXISTING_GWS,
   wanGwExtIds: [],
-  nwServicesPolicy: {
-    serviceType: NwServiceT.FIREWALL,
-    serviceVendor: NwServicesVendor.PALO_ALTO_NW,
-  },
+  nwServicesPolicy: [
+    {
+      serviceType: NwServiceT.FIREWALL,
+      serviceVendor: NwServicesVendor.PALO_ALTO_NW,
+    },
+  ],
 });

@@ -81,7 +81,7 @@ const SitesStep: React.FC<Props> = (props: Props) => {
       {props.data && props.data.length ? (
         <FormTable data={groups} onEditGroup={onEdit} onDeleteGroup={onDelete} />
       ) : (
-        <EmptyMessage>There is no site groups yet. To create group click the button bellow.</EmptyMessage>
+        <EmptyMessage>There are no site groups yet. To create group click the button bellow.</EmptyMessage>
       )}
       <FormRow justifyContent={props.data && props.data.length ? 'flex-end' : 'flex-start'}>
         <SecondaryButton icon={plusIcon} label="Add group" onClick={onAddGroup} />

@@ -8,7 +8,7 @@ interface Props {
 
 const GroupPreview: React.FC<Props> = (props: Props) => {
   const { edges } = useEdgesDataContext();
-  const [sitesGroups, setSitesGroups] = React.useState<ITopologyGroup[]>([]);
+  const [groups, setGroups] = React.useState<ITopologyGroup[]>([]);
 
   React.useEffect(() => {
     if (!edges.groups || !edges.groups.length) return;
@@ -21,14 +21,14 @@ const GroupPreview: React.FC<Props> = (props: Props) => {
         }
       });
     }
-    setSitesGroups(_arr);
+    setGroups(_arr);
   }, [props.ids, edges.groups]);
 
-  if (!sitesGroups || !sitesGroups.length) return null;
+  if (!groups || !groups.length) return null;
   return (
     <PreviewWrapper>
       <PreviewRow margin="8px 0 0 0" wrap="wrap">
-        {sitesGroups.map(it => (
+        {groups.map(it => (
           <PreviewTag key={`previewSitesTag${it.id}`} bg="var(--_rowBorder)">
             <PreviewText margin="auto 12px auto 0">{it.name}</PreviewText>
             {it.extIds && it.extIds.length ? <PreviewTagCount>{it.extIds.length}</PreviewTagCount> : null}

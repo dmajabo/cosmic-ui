@@ -9,7 +9,7 @@ export enum EdgesStepperTypes {
   GENERAL = 'general',
   SITES = 'sites',
   APPS = 'apps',
-  TRANSIT = 'transit',
+  EDGES = 'edges',
   POLICY = 'policy',
 }
 
@@ -17,7 +17,7 @@ export const EdgesStepperItems: IStepperItem<EdgesStepperTypes>[] = [
   { id: EdgesStepperTypes.GENERAL, index: 0, icon: null, label: 'General', disabled: false, state: StepperItemStateType.EMPTY, showEdge: true },
   { id: EdgesStepperTypes.SITES, index: 1, icon: null, label: 'Sites', disabled: false, state: StepperItemStateType.EMPTY, showEdge: true },
   { id: EdgesStepperTypes.APPS, index: 2, icon: null, label: 'Apps', disabled: false, state: StepperItemStateType.EMPTY, showEdge: true },
-  { id: EdgesStepperTypes.TRANSIT, index: 3, icon: null, label: 'Transit', disabled: false, state: StepperItemStateType.EMPTY, showEdge: true },
+  { id: EdgesStepperTypes.EDGES, index: 3, icon: null, label: 'Edges', disabled: false, state: StepperItemStateType.EMPTY, showEdge: true },
   { id: EdgesStepperTypes.POLICY, index: 4, icon: null, label: 'Policy', disabled: false, state: StepperItemStateType.EMPTY, showEdge: false },
 ];
 
@@ -38,16 +38,15 @@ export const createNewEdge = (): IEdgeP => ({
       regionCode: [],
       deploymentType: DeploymentTypes.EXISTING_GWS,
       wanGwExtIds: [],
-      nwServicesPolicy: {
-        serviceType: null, // NwServiceT.FIREWALL,
-        serviceVendor: NwServicesVendor.PALO_ALTO_NW,
-      },
+      nwServicesPolicy: [
+        {
+          serviceType: null, // NwServiceT.FIREWALL,
+          serviceVendor: NwServicesVendor.PALO_ALTO_NW,
+        },
+      ],
     },
   ],
-  segmentPolicy: {
-    name: '',
-    rules: [],
-  },
+  segmentPolicy: [],
 });
 
 export const EdgePriceValues: Mark[] = [

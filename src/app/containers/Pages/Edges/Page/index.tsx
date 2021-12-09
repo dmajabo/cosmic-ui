@@ -150,11 +150,11 @@ const MainPage: React.FC<Props> = (props: Props) => {
     return (
       <>
         {!edges.data || !edges.data.length ? (
-          <EmptyPage iconStyles={{ width: '80vw', maxWidth: '834px', height: '50vw', maxHeight: '416px' }} iconAsString={imgBg} buttonLabel="Create Edge" onClick={() => onOpenEditor()}>
+          <EmptyPage iconStyles={{ width: '80vw', maxWidth: '834px', height: '50vw', maxHeight: '416px' }} iconAsString={imgBg} buttonLabel="Create Transit" onClick={() => onOpenEditor()}>
             <StepperText highLight margin="0 auto 20px auto">
-              There is no created edges yet
+              There are no created transits yet
             </StepperText>
-            <StepperText margin="0 auto">To create an edge click on the button below.</StepperText>
+            <StepperText margin="0 auto">To create a transit click on the button below.</StepperText>
           </EmptyPage>
         ) : null}
         {edges.data && edges.data.length ? <EdgeList data={edges.data} onCreate={onOpenEditor} onEdit={onOpenEditor} onDelete={onDeleteEdge} /> : null}

@@ -36,7 +36,7 @@ const AppHeader: React.FC<Props> = (props: Props) => {
           {props.currentPage && props.currentPage.breadcrumb === BreadCrumbTypes.AUTOMATIONS && breadcrumb.automationsBreadCrumbItems && breadcrumb.automationsBreadCrumbItems.length ? (
             <BreadCrumb startItem={AutomationBreadCrumbItemsType.ALL} onClick={onAutoMationBreadCrumbChange} items={breadcrumb.automationsBreadCrumbItems} />
           ) : null}
-          {props.currentPage && props.currentPage.breadcrumb === BreadCrumbTypes.EDGES && breadcrumb.edgesBreadCrumbItems && breadcrumb.edgesBreadCrumbItems.length ? (
+          {props.currentPage && props.currentPage.breadcrumb === BreadCrumbTypes.TRANSIT && breadcrumb.edgesBreadCrumbItems && breadcrumb.edgesBreadCrumbItems.length ? (
             <BreadCrumb startItem={EdgesBreadCrumbItemsType.EDGES} onClick={onEdgesBreadCrumbChange} items={breadcrumb.edgesBreadCrumbItems} />
           ) : null}
         </Side>

@@ -135,7 +135,7 @@ const TransitModalWindow: React.FC<Props> = (props: Props) => {
         <PrimaryButton
           styles={{ width: '100%', height: '100%' }}
           disabled={(radioGroupValue === DeploymentTypes.NEW_REGIONS && !selectedRegions.length) || (radioGroupValue === DeploymentTypes.EXISTING_GWS && !selectedTransitsIds.length)}
-          label="Add Transit"
+          label="Add Edge"
           onClick={onAddTransits}
         />
       </ModalFooter>

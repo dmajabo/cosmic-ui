@@ -17,7 +17,7 @@ export default function BaseRouting() {
       <Switch>
         <Route exact path={`${match.path}${ROUTE.dashboard}`} component={DashboardPage} />
         <Route exact path={`${match.path}${ROUTE.topology}`} component={TopologyPage} />
-        <Route exact path={`${match.path}${ROUTE.edges}`} component={Edges} />
+        <Route exact path={`${match.path}${ROUTE.transit}`} component={Edges} />
         <Route exact path={`${match.path}${ROUTE.performanceDashboard}`} component={PerformanceDashboardPage} />
         <Route exact path={`${match.path}${ROUTE.sessions}`} component={SessionsPage} />
         <Route exact path={`${match.path}${ROUTE.analytics}`} component={AnalyticsPage} />
