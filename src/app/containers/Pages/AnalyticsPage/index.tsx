@@ -1,6 +1,7 @@
 import { Tab, Tabs } from '@material-ui/core';
 import React, { useState } from 'react';
 import { AnalyticsStyles } from './AnalyticsStyles';
+import { Anomalies } from './components/Anomalies/Anomalies';
 import { MetricsExplorer } from './components/Metrics Explorer/MetricsExplorer';
 import { PerformanceDashboard } from './components/Performance Dashboard/PerformanceDashboard';
 import SessionPage from './SessionPage';
@@ -37,7 +38,7 @@ enum TabName {
 
 const AnalyticsPage: React.FC = () => {
   const classes = AnalyticsStyles();
-  const [selectedTabName, setSelectedTabName] = useState<TabName>(TabName.Performance);
+  const [selectedTabName, setSelectedTabName] = useState<TabName>(TabName.Anomalies);
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: TabName) => setSelectedTabName(newValue);
 
@@ -84,7 +85,7 @@ const AnalyticsPage: React.FC = () => {
         <PerformanceDashboard />
       </TabPanel>
       <TabPanel value={selectedTabName} title={TabName.Anomalies}>
-        {TabName.Anomalies}
+        <Anomalies />
       </TabPanel>
       <TabPanel value={selectedTabName} title={TabName.PolicyLogs}>
         {TabName.PolicyLogs}
