@@ -1,7 +1,7 @@
 import { IconButton, Menu, MenuItem, Typography } from '@material-ui/core';
 import { MoreVert } from '@material-ui/icons';
 import React, { useState } from 'react';
-import { PerformanceDashboardStyles } from '../PerformanceDashboardStyles';
+import { PerformanceDashboardStyles } from './PerformanceDashboardStyles';
 import { LegendData } from './Heatmap';
 import { LATENCY_HEATMAP_LEGEND } from './Latency';
 import { PACKET_LOSS_HEATMAP_LEGEND } from './PacketLoss';

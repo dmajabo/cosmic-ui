@@ -1,5 +1,5 @@
 import React, { forwardRef, MutableRefObject, useEffect, useRef } from 'react';
-import { PerformanceDashboardStyles } from '../PerformanceDashboardStyles';
+import { PerformanceDashboardStyles } from './PerformanceDashboardStyles';
 
 interface Props {
   readonly indeterminate?: boolean;
