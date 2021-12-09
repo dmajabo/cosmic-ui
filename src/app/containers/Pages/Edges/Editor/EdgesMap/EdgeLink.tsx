@@ -9,6 +9,7 @@ interface Props {
 
 const EdgeLink: React.FC<Props> = ({ dataItem }) => {
   if (!dataItem.transit || !dataItem.transit.length) {
+    if (!dataItem.source || !dataItem.destination) return null;
     return (
       <g>
         <SvgLinkComponent

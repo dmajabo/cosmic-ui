@@ -22,7 +22,7 @@ const RuleSelect: React.FC<Props> = (props: Props) => {
   React.useEffect(() => {
     const _v: ITopologyGroup = getSelectedItem([...props.sources, ...props.destinations], props.value, 'id');
     setSelectedValue(_v);
-  }, [props.value]);
+  }, [props.value, props.sources, props.destinations]);
 
   React.useEffect(() => {
     if (!props.type) {
