@@ -1,4 +1,5 @@
 import { Theme, createStyles, makeStyles } from '@material-ui/core';
+import { borderRadius } from 'react-select/src/theme';
 import DragIcon from './icons/metrics explorer/drag.svg';
 
 export const AnalyticsStyles = makeStyles(
@@ -472,6 +473,9 @@ export const AnalyticsStyles = makeStyles(
       inlineSelect: {
         display: 'inline-block',
         width: 200,
+      },
+      anomalyTabPanelContainer: {
+        marginTop: 40,
       },
     }),
   {
