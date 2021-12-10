@@ -1,7 +1,7 @@
 import React from 'react';
 import { Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
 import AggregateRow from './AggregateRow';
-import { ISession } from 'lib/api/ApiModels/Sessions/apiModel';
+import { IBuckets, ISession } from 'lib/api/ApiModels/Sessions/apiModel';
 import { IAggregateRow } from './models';
 import { buildAggregatedData } from './helper';
 import TableHeader from './TableHeader';
@@ -11,7 +11,8 @@ import { TableContainer } from 'app/components/Basic/Table/LargeTableSryles';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 
 interface Props {
-  data: ISession[];
+  sessions: ISession[];
+  buckets: IBuckets[];
   logCount: number;
   error: string;
   pageSize: number;
@@ -32,9 +33,9 @@ const AggregateTable: React.FC<Props> = (props: Props) => {
     { ...SessionGridColumns.vendorsColumn, hide: false },
   ]);
   React.useEffect(() => {
-    const _data: IAggregateRow[] = buildAggregatedData(props.data);
+    const _data: IAggregateRow[] = buildAggregatedData(props.sessions, props.buckets);
     setData(_data);
-  }, [props.data]);
+  }, [props.sessions, props.buckets]);
 
   const onChangeColumn = (col: ISessionsGridFieldColumn) => {
     const _items: ISessionsGridFieldColumn[] = aggregatedColumns.slice();
@@ -73,7 +74,7 @@ const AggregateTable: React.FC<Props> = (props: Props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {!props.error && data && data.length ? data.map((row, index) => <AggregateRow key={`rowIndex${row.id}${index}`} row={row} columns={aggregatedColumns} />) : null}
+            {!props.error && data && data.length ? data.map((row, index) => <AggregateRow key={`rowIndex${row.session.id}${index}`} row={row} columns={aggregatedColumns} />) : null}
             {props.error && (
               <TableRow>
                 <TableCell className="errorCell" colSpan={aggregatedColumns.length}>

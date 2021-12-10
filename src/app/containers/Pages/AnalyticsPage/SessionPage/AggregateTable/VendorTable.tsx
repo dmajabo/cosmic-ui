@@ -58,7 +58,7 @@ const VendorTable: React.FC<Props> = (props: Props) => {
         disableColumnMenu
         hideFooter
         headerHeight={40}
-        rowHeight={70}
+        rowHeight={50}
         rowCount={props.data.length}
         disableColumnFilter
         autoHeight

@@ -103,6 +103,8 @@ export function useSessionsContext(): SessionsContextType {
   const onChangeSwitch = (_v: boolean, _page: SessionsTabTypes) => {
     if (_page === SessionsTabTypes.Sessions) {
       updateSessionStoragePreference(_v, OKULIS_LOCAL_STORAGE_KEYS.OKULIS_PREFERENCE, StoragePreferenceKeys.SESSIONS_STITCH);
+      setSessionsCurrentPage(1);
+      setSessionsPageSize(PAGING_DEFAULT_PAGE_SIZE);
       setSessionsStitch(_v);
     }
   };

@@ -1,43 +1,58 @@
 import { AccountVendorTypes } from 'lib/api/ApiModels/Accounts/apiModel';
-import { ISession } from 'lib/api/ApiModels/Sessions/apiModel';
-import { IAggregateRow } from './models';
+import { IBuckets, ISession } from 'lib/api/ApiModels/Sessions/apiModel';
+import { IAggregateRow, IGroupedData, IState } from './models';
 import { ciscoMerakiLogoIcon } from 'app/components/SVGIcons/topologyIcons/ciscoMerakiLogo';
 import { awsIcon } from 'app/components/SVGIcons/topologyIcons/aws';
 import { poloAltoIcon } from 'app/components/SVGIcons/edges/poloAlto';
+import { IObject } from 'lib/models/general';
 
-export const buildAggregatedData = (data: ISession[]): IAggregateRow[] => {
+export const buildAggregatedData = (data: ISession[], buckets: IBuckets[]): IAggregateRow[] => {
   if (!data || !data.length) return [];
-  const _arr = new Map();
+  const _arr: IAggregateRow[] = [];
   data.forEach(sessionItem => {
-    if (!_arr.has(sessionItem.sessionId)) {
-      const _row = buildRow(sessionItem);
-      _arr.set(sessionItem.sessionId, _row);
-      return;
-    }
-    const _row = _arr.get(sessionItem.sessionId);
-    updateRow(_row, sessionItem);
-    _arr.set(sessionItem.sessionId, _row);
+    const _row: IAggregateRow = buildRow(sessionItem, buckets);
+    _arr.push(_row);
   });
-  return Array.from(_arr, ([name, value]) => value);
+  return _arr;
 };
 
-const buildRow = (item: ISession): IAggregateRow => {
-  const _v = getNestedTableHeader(item.deviceVendor);
-  const _row: IAggregateRow = { ...item, data: {}, vendors: [_v] };
-  _row.data[item.deviceVendor] = [item];
+const buildRow = (item: ISession, buckets: IBuckets[]): IAggregateRow => {
+  const _buckects: IBuckets[] = buckets && buckets.length ? buckets.filter(it => it.key === item.sessionId) : [];
+  const _groupData = getGroupedData(_buckects);
+  const _vendors: IState[] = _groupData.vendors ? Object.keys(_groupData.vendors).map(key => getNestedTableHeader(_groupData.vendors[key])) : [];
+  const _row: IAggregateRow = { session: item, data: _groupData.groupData, vendors: _vendors };
   return _row;
 };
 
-const updateRow = (row: IAggregateRow, item: ISession) => {
-  const _v = getNestedTableHeader(item.deviceVendor);
-  if (!row.vendors.find(it => it.label === _v.label)) {
-    row.vendors.push(_v);
-  }
-  if (row.data[item.deviceVendor]) {
-    row.data[item.deviceVendor].push(item);
-    return;
-  }
-  row.data[item.deviceVendor] = [item];
+const getGroupedData = (data: IBuckets[]) => {
+  if (!data || !data.length) return null;
+  const _obj: IGroupedData = {};
+  const _vendors: IObject<AccountVendorTypes> = {};
+  data.forEach((bucket, i) => {
+    if (!bucket.sessions || !bucket.sessions.length) return;
+    bucket.sessions.forEach((session, index) => {
+      if (!_obj[session.deviceVendor]) {
+        _vendors[session.deviceVendor] = session.deviceVendor;
+        const _s = { ...session };
+        if (!_s.id) {
+          _s.id = `${i}${bucket.key}${session.deviceVendor}${index}`;
+        } else {
+          _s.id = `${i}${bucket.key}${session.id}${index}`;
+        }
+        _obj[session.deviceVendor] = [_s];
+        return;
+      }
+      const _s = { ...session };
+      if (!_s.id) {
+        _s.id = `${i}${bucket.key}${session.deviceVendor}${index}`;
+      } else {
+        _s.id = `${i}${bucket.key}${session.id}${index}`;
+      }
+      _obj[session.deviceVendor].push(_s);
+    });
+  });
+  debugger;
+  return { groupData: Object.keys(_obj).length ? _obj : null, vendors: Object.keys(_vendors).length ? _vendors : null };
 };
 
 export const getNestedTableHeader = (label: AccountVendorTypes) => {

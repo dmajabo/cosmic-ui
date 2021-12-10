@@ -30,6 +30,17 @@ export interface IAllSessionsRes {
   sessions: ISession[];
 }
 
+export interface IBuckets {
+  key: string;
+  docCount: number;
+  sessions: ISession[];
+}
+export interface IAggregatedSessionsLogRes {
+  count: string | number;
+  sessions: ISession[];
+  buckets: IBuckets[];
+}
+
 export interface ISankeyNode {
   node: number;
   name: string;

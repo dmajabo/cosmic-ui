@@ -27,16 +27,6 @@ const Table: React.FC<Props> = (props: Props) => {
   const gridStyles = GridStyles();
   const [columns, setColumns] = React.useState<IColumn[]>([
     {
-      id: 'sessionsRowIndex',
-      field: 'rowIndex',
-      headerName: '#',
-      label: '',
-      minWidth: 70,
-      flex: 0,
-      resizable: false,
-      valueFormatter: (params: GridValueFormatterParams) => +params.value + 1,
-    },
-    {
       id: `sessions${SessionGridColumns.timestamp.resField}`,
       field: SessionGridColumns.timestamp.resField,
       headerName: SessionGridColumns.timestamp.label,

@@ -5,7 +5,7 @@ export enum IQuryFieldtype {
   NUMBER = 'number',
 }
 export interface ISessionsGridField {
-  id: string;
+  id?: string;
   resField: string;
   searchField: string;
   queryType?: IQuryFieldtype;
