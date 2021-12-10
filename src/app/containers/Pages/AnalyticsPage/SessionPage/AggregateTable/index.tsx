@@ -96,7 +96,7 @@ const AggregateTable: React.FC<Props> = (props: Props) => {
         </Table>
       </TableContainer>
       <Paging
-        count={data.length}
+        count={props.logCount}
         disabled={!data.length || props.logCount === 0}
         pageSize={props.pageSize}
         currentPage={props.currentPage}
