@@ -19,6 +19,7 @@ interface Props {
   error: string;
   pageSize: number;
   currentPage: number;
+  rowHeight?: number;
   onChangeCurrentPage: (_page: number) => void;
   onChangePageSize: (size: number, page?: number) => void;
   // onSetSelection: (values: ISelectionGridCellValue[]) => void;
@@ -193,7 +194,7 @@ const Table: React.FC<Props> = (props: Props) => {
         disableColumnMenu
         hideFooter
         headerHeight={50}
-        rowHeight={50}
+        rowHeight={props.rowHeight || 70}
         rowCount={props.logCount}
         disableColumnFilter
         autoHeight
