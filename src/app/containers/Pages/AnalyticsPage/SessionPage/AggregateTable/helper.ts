@@ -51,7 +51,6 @@ const getGroupedData = (data: IBuckets[]) => {
       _obj[session.deviceVendor].push(_s);
     });
   });
-  debugger;
   return { groupData: Object.keys(_obj).length ? _obj : null, vendors: Object.keys(_vendors).length ? _vendors : null };
 };
 
