@@ -60,7 +60,7 @@ const AggregateTable: React.FC<Props> = (props: Props) => {
   return (
     <>
       <TableHeader count={props.logCount} columns={aggregatedColumns} onChangeColumn={onChangeColumn} onChangeOrder={onChangeOrder} />
-      <TableContainer minHeight="200px">
+      <TableContainer minHeight="290px">
         <Table aria-label="collapsible table" className="largeTable">
           <TableHead>
             <TableRow>
@@ -74,7 +74,17 @@ const AggregateTable: React.FC<Props> = (props: Props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {!props.error && data && data.length ? data.map((row, index) => <AggregateRow key={`rowIndex${row.session.id}${index}`} row={row} columns={aggregatedColumns} />) : null}
+            {!props.error && data && data.length ? (
+              data.map((row, index) => <AggregateRow key={`rowIndex${row.session.id}${index}`} row={row} columns={aggregatedColumns} />)
+            ) : (
+              <TableRow>
+                <TableCell className="errorCell" colSpan={aggregatedColumns.length}>
+                  <ErrorMessage color="var(--_primaryColor)" margin="48px auto">
+                    No data
+                  </ErrorMessage>
+                </TableCell>
+              </TableRow>
+            )}
             {props.error && (
               <TableRow>
                 <TableCell className="errorCell" colSpan={aggregatedColumns.length}>
@@ -92,12 +102,6 @@ const AggregateTable: React.FC<Props> = (props: Props) => {
         currentPage={props.currentPage}
         onChangePage={onChangeCurrentPage}
         onChangePageSize={onChangePageSize}
-        // boundaryCount={0}
-        // siblingCount={0}
-        // pageSizeValues={[20, 50, 100]}
-        // hideLabelAfter
-        // showFirstButton={false}
-        // showLastButton={false}
         pagingWrapStyles={{ marginTop: 'auto' }}
       />
     </>

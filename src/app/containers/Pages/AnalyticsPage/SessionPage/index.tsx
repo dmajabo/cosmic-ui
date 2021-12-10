@@ -143,7 +143,7 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
   };
 
   return (
-    <PageContentWrapper margin="20px 0 0 0">
+    <PageContentWrapper margin="20px 0 0 0" style={{ minHeight: 'calc(100% - 20px)' }}>
       <ActionRowStyles margin="0 0 40px 0" zIndex={2}>
         <ActionPart margin="0 auto 0 0">
           <SessionsSwitch checked={sessions.sessionsStitch} onChange={onSwitchChange} />
@@ -167,14 +167,14 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
         onAddFilter={onAddFilter}
         onClearFilter={onClearFilter}
       />
-      <ContentWrapper style={{ flexGrow: 1 }}>
-        <TableWrapper style={{ minHeight: 'unset', height: '100%' }}>
+      <ContentWrapper style={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+        <TableWrapper style={{ minHeight: 'unset', height: '100%', flexGrow: 1 }}>
           {!sessions.sessionsStitch && (
             <Table
               currentPage={sessions.sessionsCurrentPage}
               onChangeCurrentPage={onChangeCurrentPage}
               logCount={totalCount}
-              isError={error}
+              error={error && error.message ? error.message : null}
               data={data}
               pageSize={sessions.sessionsPageSize}
               onChangePageSize={onChangePageSize}
