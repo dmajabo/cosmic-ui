@@ -7,16 +7,17 @@ import CustomAutocomplete from 'app/components/Inputs/CustomAutocomplete';
 import { PanelContentLabel } from '../FormPanel/styles';
 import TextTagInput from 'app/components/Inputs/TextInput/TextTagInput';
 import { ConnectionPKeysMap, getNewConnectionP, IConnectionP } from 'lib/api/ApiModels/Edges/apiModel';
+import { useEdgesDataContext } from 'lib/hooks/Edges/useEdgesDataContext';
 interface Props {
   name: string;
   description: string;
   // price: number;
   tags: string[];
   connectionPolicy: IConnectionP;
-  onChange: (value: any | null, field: string) => void;
 }
 
 const GeneralStep: React.FC<Props> = (props: Props) => {
+  const { edges } = useEdgesDataContext();
   const [connectionsValueString, setConnectionValueString] = React.useState<string[]>([]);
 
   React.useEffect(() => {
@@ -32,11 +33,11 @@ const GeneralStep: React.FC<Props> = (props: Props) => {
   }, [props.connectionPolicy]);
 
   const onInputChange = (value: string | null) => {
-    props.onChange(value, 'name');
+    edges.onChangeGeneralField(value, 'name');
   };
 
   const onDescriptionChange = (value: string | null) => {
-    props.onChange(value, 'description');
+    edges.onChangeGeneralField(value, 'description');
   };
 
   const onConnectionChange = (values: string[]) => {
@@ -47,11 +48,11 @@ const GeneralStep: React.FC<Props> = (props: Props) => {
         _values[key] = true;
       }
     });
-    props.onChange(_values, 'connectionPolicy');
+    edges.onChangeGeneralField(_values, 'connectionPolicy');
   };
 
   const onTagsChange = (value: string[]) => {
-    props.onChange(value, 'tags');
+    edges.onChangeGeneralField(value, 'tags');
   };
 
   return (

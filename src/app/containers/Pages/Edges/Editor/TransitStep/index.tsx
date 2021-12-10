@@ -19,7 +19,6 @@ import { jsonClone } from 'lib/helpers/cloneHelper';
 
 interface Props {
   deploymentPolicy: IDeploymentP[];
-  onChangeDeployment: (value: IDeploymentP, index: number) => void;
 }
 
 const TransitStep: React.FC<Props> = (props: Props) => {
@@ -39,14 +38,14 @@ const TransitStep: React.FC<Props> = (props: Props) => {
     const _d: IDeploymentP = jsonClone(deployment);
     _d.nwServicesPolicy[0].serviceType = v ? NwServiceT.FIREWALL : null;
     setDeployment(_d);
-    props.onChangeDeployment(_d, currentIndex);
+    edges.onChangeDeployment(_d, currentIndex);
   };
 
   const onAccountChange = (v: string) => {
     const _d: IDeploymentP = jsonClone(deployment);
     _d.controllerName = v;
     setDeployment(_d);
-    props.onChangeDeployment(_d, currentIndex);
+    edges.onChangeDeployment(_d, currentIndex);
   };
 
   const onAddTransits = (r: string[], option: DeploymentTypes) => {
@@ -62,7 +61,7 @@ const TransitStep: React.FC<Props> = (props: Props) => {
     }
     setShowCreator(false);
     setDeployment(_d);
-    props.onChangeDeployment(_d, currentIndex);
+    edges.onChangeDeployment(_d, currentIndex);
   };
 
   const onAddGroup = () => {

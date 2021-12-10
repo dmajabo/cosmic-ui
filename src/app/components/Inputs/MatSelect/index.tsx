@@ -32,7 +32,7 @@ const MatSelect: React.FC<Props> = (props: Props) => {
   const classes = SelectStyles();
 
   React.useEffect(() => {
-    setTextValue(props.value);
+    setTextValue(props.value || '');
   }, [props.value]);
 
   const handleChange = (event: SelectChangeEvent<typeof textValue>) => {

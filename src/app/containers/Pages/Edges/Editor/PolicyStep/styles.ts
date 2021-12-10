@@ -10,7 +10,7 @@ export const PolicyItemsWrapper = styled.div`
 
 interface RowProps {
   margin?: string;
-  justifyContent?: 'flex-start' | 'flex-end';
+  justifyContent?: 'flex-start' | 'flex-end' | 'space-between';
 }
 export const FormRow = styled.div<RowProps>`
   flex-shrink: 0;
@@ -68,4 +68,5 @@ export const SegmentPolicyWrapper = styled.div`
   border-radius: 6px;
   margin: 0 0 20px 0;
   padding: 20px;
+  border: 1px solid var(--_borderColor);
 `;

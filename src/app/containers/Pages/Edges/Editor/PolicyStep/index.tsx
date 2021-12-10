@@ -8,18 +8,13 @@ import SecondaryButton from 'app/components/Buttons/SecondaryButton';
 import { FormRow } from './styles';
 import { plusIcon } from 'app/components/SVGIcons/plusIcon';
 import { EmptyMessage } from '../Components/styles';
+import { onValidatePolicy } from './helper';
 
-interface Props {
-  siteGroupIds: string[];
-  appGroupIds: string[];
-  segmentPolicy: ISegmentP[];
-  onUpdatePolicy: (policy: ISegmentP, policyIndex: number) => void;
-  onAddPolicy: (policy: ISegmentP) => void;
-  onDeletePolicy: (policyIndex: number) => void;
-}
+interface Props {}
 
 const PolicyStep: React.FC<Props> = (props: Props) => {
   const { edges } = useEdgesDataContext();
+  // const [disabledCreate, setDisabledCreate] = React.useState<boolean>(true);
   const [sources, setSources] = React.useState<ITopologyGroup[]>([]);
   const [destinations, setDestinations] = React.useState<ITopologyGroup[]>([]);
 
@@ -27,16 +22,16 @@ const PolicyStep: React.FC<Props> = (props: Props) => {
     if (edges && edges.groups) {
       const _sources: ITopologyGroup[] = [];
       const _destinations: ITopologyGroup[] = [];
-      if (props.siteGroupIds && props.siteGroupIds.length) {
-        props.siteGroupIds.forEach(it => {
+      if (edges.editEdge.siteGroupIds && edges.editEdge.siteGroupIds.length) {
+        edges.editEdge.siteGroupIds.forEach(it => {
           const _gr: ITopologyGroup = edges.groups.find(el => el.id === it);
           if (_gr) {
             _sources.push(_gr);
           }
         });
       }
-      if (props.appGroupIds && props.appGroupIds.length) {
-        props.appGroupIds.forEach(it => {
+      if (edges.editEdge.appGroupIds && edges.editEdge.appGroupIds.length) {
+        edges.editEdge.appGroupIds.forEach(it => {
           const _gr: ITopologyGroup = edges.groups.find(el => el.id === it);
           if (_gr) {
             _destinations.push(_gr);
@@ -53,31 +48,48 @@ const PolicyStep: React.FC<Props> = (props: Props) => {
       setSources([]);
       setDestinations([]);
     }
-  }, [edges.groups, props.siteGroupIds, props.appGroupIds]);
+  }, [edges.groups, edges.editEdge.siteGroupIds, edges.editEdge.appGroupIds]);
+
+  // React.useEffect(() => {
+  //   if (!edges.editEdge.segmentPolicy || !edges.editEdge.segmentPolicy) {
+  //     setDisabledCreate(false);
+  //     return;
+  //   }
+  //   const _isAllPolicyValid = onValidatePolicy(edges.editEdge.segmentPolicy);
+  //   setDisabledCreate(_isAllPolicyValid);
+  // }, [edges.editEdge.segmentPolicy]);
 
   const onUpdatePolicy = (policy: ISegmentP, policyIndex: number) => {
-    props.onUpdatePolicy(policy, policyIndex);
+    edges.onUpdatePolicy(policy, policyIndex);
   };
 
   const onDeletePolicy = (policyIndex: number) => {
-    props.onDeletePolicy(policyIndex);
+    edges.onDeletePolicy(policyIndex);
   };
 
   const onAddPolicy = () => {
     const _obj: ISegmentP = createNewSegmentP();
-    props.onAddPolicy(_obj);
+    edges.onAddPolicy(_obj);
   };
 
   return (
     <>
-      {props.segmentPolicy && props.segmentPolicy.length ? (
-        props.segmentPolicy.map((policy, index) => (
-          <SegmentPolicy key={`segmentPolicy${index}`} index={index} policy={policy} sources={sources} destinations={destinations} onUpdatePolicy={onUpdatePolicy} onDeletePolicy={onDeletePolicy} />
+      {edges.editEdge.segmentPolicy && edges.editEdge.segmentPolicy.length ? (
+        edges.editEdge.segmentPolicy.map((policy, index) => (
+          <SegmentPolicy
+            key={`segmentPolicy${index}${policy}`}
+            index={index}
+            policy={policy}
+            sources={sources}
+            destinations={destinations}
+            onUpdatePolicy={onUpdatePolicy}
+            onDeletePolicy={onDeletePolicy}
+          />
         ))
       ) : (
         <EmptyMessage>There are no policies yet. To create policy click the button bellow.</EmptyMessage>
       )}
-      <FormRow justifyContent={props.segmentPolicy && props.segmentPolicy.length ? 'flex-end' : 'flex-start'}>
+      <FormRow justifyContent={edges.editEdge.segmentPolicy && edges.editEdge.segmentPolicy.length ? 'flex-end' : 'flex-start'}>
         <SecondaryButton icon={plusIcon} label="Create Policy" onClick={onAddPolicy} />
       </FormRow>
     </>

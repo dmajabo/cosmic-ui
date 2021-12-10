@@ -4,35 +4,33 @@ import { useEdgesDataContext } from 'lib/hooks/Edges/useEdgesDataContext';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { logoIcon } from 'app/components/SVGIcons/pagesIcons/logo';
 import { poloAltoIcon } from 'app/components/SVGIcons/edges/poloAlto';
-import { IDeploymentP, NwServicesVendor, DeploymentTypes, NwServiceT } from 'lib/api/ApiModels/Edges/apiModel';
+import { NwServicesVendor, DeploymentTypes, NwServiceT } from 'lib/api/ApiModels/Edges/apiModel';
 import { wedgeIcon } from 'app/components/SVGIcons/topologyIcons/wedge';
 
 interface IMapRegion {
   code: string;
   city: string;
 }
-interface Props {
-  deploymentPolicy: IDeploymentP[];
-}
+interface Props {}
 
 const TransitPreview: React.FC<Props> = (props: Props) => {
   const { edges } = useEdgesDataContext();
   const [selectedRegions, setSelectedRegions] = React.useState<IMapRegion[]>([]);
   const [selectedWedges, setSelectedWedges] = React.useState<string[]>([]);
   React.useEffect(() => {
-    if (!props.deploymentPolicy || !props.deploymentPolicy.length) {
+    if (!edges.editEdge.deploymentPolicy || !edges.editEdge.deploymentPolicy.length) {
       setSelectedRegions([]);
       setSelectedWedges([]);
       return;
     }
-    if (props.deploymentPolicy[0].deploymentType === DeploymentTypes.NEW_REGIONS) {
-      if (!props.deploymentPolicy[0].regionCode || !props.deploymentPolicy[0].regionCode.length) {
+    if (edges.editEdge.deploymentPolicy[0].deploymentType === DeploymentTypes.NEW_REGIONS) {
+      if (!edges.editEdge.deploymentPolicy[0].regionCode || !edges.editEdge.deploymentPolicy[0].regionCode.length) {
         setSelectedRegions([]);
         return;
       }
       const _arr: IMapRegion[] = [];
       if (edges.regions && edges.regions.length) {
-        props.deploymentPolicy[0].regionCode.forEach(it => {
+        edges.editEdge.deploymentPolicy[0].regionCode.forEach(it => {
           const _item = edges.regions.find(reg => reg.code === it);
           if (_item) {
             _arr.push({ code: it, city: _item.city });
@@ -45,14 +43,14 @@ const TransitPreview: React.FC<Props> = (props: Props) => {
       setSelectedWedges([]);
       return;
     }
-    if (props.deploymentPolicy[0].deploymentType === DeploymentTypes.EXISTING_GWS) {
-      if (!props.deploymentPolicy[0].wanGwExtIds || !props.deploymentPolicy[0].wanGwExtIds.length) {
+    if (edges.editEdge.deploymentPolicy[0].deploymentType === DeploymentTypes.EXISTING_GWS) {
+      if (!edges.editEdge.deploymentPolicy[0].wanGwExtIds || !edges.editEdge.deploymentPolicy[0].wanGwExtIds.length) {
         setSelectedWedges([]);
         return;
       }
       const _arr: string[] = [];
       if (edges.wedges && edges.wedges.length) {
-        props.deploymentPolicy[0].wanGwExtIds.forEach(it => {
+        edges.editEdge.deploymentPolicy[0].wanGwExtIds.forEach(it => {
           const _item = edges.wedges.find(reg => reg.extId === it);
           if (_item) {
             _arr.push(_item.name);
@@ -64,33 +62,33 @@ const TransitPreview: React.FC<Props> = (props: Props) => {
       setSelectedWedges(_arr);
       setSelectedRegions([]);
     }
-  }, [props.deploymentPolicy]);
+  }, [edges.editEdge.deploymentPolicy]);
 
-  if (!props.deploymentPolicy || !props.deploymentPolicy.length) return null;
+  if (!edges.editEdge.deploymentPolicy || !edges.editEdge.deploymentPolicy.length) return null;
   return (
     <PreviewWrapper>
-      {props.deploymentPolicy[0].nwServicesPolicy[0].serviceType === NwServiceT.FIREWALL && (
-        <PreviewRow margin="20px 0 0 0">
+      {edges.editEdge.deploymentPolicy[0].nwServicesPolicy[0].serviceType === NwServiceT.FIREWALL && (
+        <PreviewRow margin="8px 0 0 0">
           <PreviewText className="label" margin="0 16px 0 0">
             Add Firewall in each edge region:
           </PreviewText>
           <IconWrapper width="20px" height="18px" icon={poloAltoIcon()} />
-          {props.deploymentPolicy[0].nwServicesPolicy[0].serviceVendor === NwServicesVendor.PALO_ALTO_NW && (
+          {edges.editEdge.deploymentPolicy[0].nwServicesPolicy[0].serviceVendor === NwServicesVendor.PALO_ALTO_NW && (
             <PreviewText className="label" margin="0 0 0 12px">
               Palo Alto
             </PreviewText>
           )}
         </PreviewRow>
       )}
-      {props.deploymentPolicy[0].controllerName && (
+      {edges.editEdge.deploymentPolicy[0].controllerName && (
         <PreviewRow margin="8px 0 0 0">
           <PreviewText className="label" margin="0 4px 0 0">
             Account:
           </PreviewText>
-          <PreviewText color="var(--_disabledTextColor)">{props.deploymentPolicy[0].controllerName}</PreviewText>
+          <PreviewText color="var(--_disabledTextColor)">{edges.editEdge.deploymentPolicy[0].controllerName}</PreviewText>
         </PreviewRow>
       )}
-      {props.deploymentPolicy[0].deploymentType === DeploymentTypes.NEW_REGIONS && selectedRegions && selectedRegions.length ? (
+      {edges.editEdge.deploymentPolicy[0].deploymentType === DeploymentTypes.NEW_REGIONS && selectedRegions && selectedRegions.length ? (
         <PreviewRow margin="8px 0 0 0" wrap="wrap">
           {selectedRegions.map(it => (
             <PreviewTag key={`previewTag${it.code}`}>
@@ -107,11 +105,11 @@ const TransitPreview: React.FC<Props> = (props: Props) => {
           ))}
         </PreviewRow>
       ) : null}
-      {props.deploymentPolicy[0].deploymentType === DeploymentTypes.EXISTING_GWS && selectedWedges && selectedWedges.length ? (
+      {edges.editEdge.deploymentPolicy[0].deploymentType === DeploymentTypes.EXISTING_GWS && selectedWedges && selectedWedges.length ? (
         <PreviewRow margin="8px 0 0 0" wrap="wrap">
           {selectedWedges.map((it, index) => (
-            <PreviewTag key={`previewTagwanGwExtIds${index}`} fontSize="12px">
-              <IconWrapper styles={{ margin: 'auto 12px auto 0', verticalAlign: 'top' }} width="14px" height="14px" icon={wedgeIcon()} />
+            <PreviewTag key={`previewTagwanGwExtIds${index}`}>
+              <IconWrapper styles={{ margin: 'auto 12px auto 0', verticalAlign: 'top' }} width="20px" height="20px" icon={wedgeIcon()} />
               <PreviewText margin="auto 0">{it}</PreviewText>
             </PreviewTag>
           ))}

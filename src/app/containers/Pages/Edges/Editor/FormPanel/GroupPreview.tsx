@@ -3,7 +3,7 @@ import { PreviewRow, PreviewTag, PreviewTagCount, PreviewText, PreviewWrapper } 
 import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
 import { useEdgesDataContext } from 'lib/hooks/Edges/useEdgesDataContext';
 interface Props {
-  ids: string[];
+  field: string;
 }
 
 const GroupPreview: React.FC<Props> = (props: Props) => {
@@ -13,8 +13,8 @@ const GroupPreview: React.FC<Props> = (props: Props) => {
   React.useEffect(() => {
     if (!edges.groups || !edges.groups.length) return;
     const _arr: ITopologyGroup[] = [];
-    if (props.ids && props.ids.length) {
-      props.ids.forEach(it => {
+    if (edges.editEdge[props.field] && edges.editEdge[props.field].length) {
+      edges.editEdge[props.field].forEach(it => {
         const _gr = edges.groups.find(el => el.id === it);
         if (_gr) {
           _arr.push(_gr);
@@ -22,7 +22,7 @@ const GroupPreview: React.FC<Props> = (props: Props) => {
       });
     }
     setGroups(_arr);
-  }, [props.ids, edges.groups]);
+  }, [edges.editEdge, edges.groups]);
 
   if (!groups || !groups.length) return null;
   return (

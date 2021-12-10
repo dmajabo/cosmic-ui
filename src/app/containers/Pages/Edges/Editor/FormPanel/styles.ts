@@ -11,6 +11,7 @@ export const PreviewWrapper = styled.div`
   flex-direction: column;
   width: 100%;
   flex-shrink: 0;
+  margin: 12px 0 0 0;
 `;
 
 interface RowProps {
@@ -74,6 +75,7 @@ export const PreviewTag = styled.span<PreviewTagProps>`
   margin: 3px 6px 3px 0;
   border-radius: 30px;
   padding: 5px 20px;
+  height: 30px;
   font-size: ${props => props.fontSize || 'inherit'};
   background: ${props => props.bg || 'var(--_tableBg)'};
 `;

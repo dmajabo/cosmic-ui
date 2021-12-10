@@ -15,9 +15,7 @@ import ExistingGroups from '../Components/ExistingGroups';
 
 interface Props {
   data: string[];
-  onAddExistingSites: (ids: string[]) => void;
-  onChangeSites: (v: ITopologyGroup, index: number | null) => void;
-  onDeleteGroup: (gr: ITopologyGroup) => void;
+  onDeleteGroup: (gr: ITopologyGroup, edgeName: string) => void;
 }
 
 const SitesStep: React.FC<Props> = (props: Props) => {
@@ -53,7 +51,7 @@ const SitesStep: React.FC<Props> = (props: Props) => {
   const onAddExistingGroups = (ids: string[]) => {
     setShowExistingGroups(true);
     setShowCreator(false);
-    props.onAddExistingSites(ids);
+    edges.onAddSitesGroups(ids);
   };
 
   const onEdit = (dataItem: ITopologyGroup, index: number) => {
@@ -63,12 +61,12 @@ const SitesStep: React.FC<Props> = (props: Props) => {
   };
 
   const onDelete = (gr: ITopologyGroup) => {
-    props.onDeleteGroup(gr);
+    props.onDeleteGroup(gr, edges.editEdge.name);
   };
 
-  const onSave = (item: ITopologyGroup, index: number | null) => {
+  const onSave = (item: ITopologyGroup) => {
     setShowExistingGroups(true);
-    props.onChangeSites(item, index);
+    edges.onChangeSitesField(item);
   };
 
   const onClose = () => {

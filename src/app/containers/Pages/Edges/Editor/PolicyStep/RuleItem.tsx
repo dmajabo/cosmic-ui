@@ -8,6 +8,9 @@ import { deleteIcon } from 'app/components/SVGIcons/delete';
 import RuleSelect from './RuleSelect';
 import { getDifferentSegmentType, getSegmentType } from './helper';
 import { IFieldValuePair } from 'lib/models/general';
+import Collapse from '@mui/material/Collapse';
+import { arrowBottomIcon } from 'app/components/SVGIcons/arrows';
+import PrimaryButton from 'app/components/Buttons/PrimaryButton';
 
 interface Props {
   index: number;
@@ -20,6 +23,7 @@ interface Props {
 }
 
 const RuleItem: React.FC<Props> = (props: Props) => {
+  const [expanded, setExpanded] = React.useState(false);
   const onSourceChange = (value: ITopologyGroup) => {
     const _type: SegmentTargetT = getSegmentType(value);
     let _pairs: IFieldValuePair<string | null>[] = [
@@ -27,8 +31,9 @@ const RuleItem: React.FC<Props> = (props: Props) => {
       { field: 'sourceType', value: _type },
     ];
     if (props.item.destType === _type) {
+      const _desType: SegmentTargetT = getDifferentSegmentType(_type);
       _pairs = _pairs.concat([
-        { field: 'destType', value: null },
+        { field: 'destType', value: _desType },
         { field: 'destId', value: null },
       ]);
     }
@@ -46,8 +51,9 @@ const RuleItem: React.FC<Props> = (props: Props) => {
       { field: 'destType', value: _type },
     ];
     if (props.item.sourceType === _type) {
+      const _sourceType: SegmentTargetT = getDifferentSegmentType(_type);
       _pairs = _pairs.concat([
-        { field: 'sourceType', value: null },
+        { field: 'sourceType', value: _sourceType },
         { field: 'sourceId', value: null },
       ]);
     }
@@ -65,49 +71,76 @@ const RuleItem: React.FC<Props> = (props: Props) => {
   const onDelete = () => {
     props.onDeleteRule(props.index);
   };
+
+  const onExpandCollapse = () => {
+    setExpanded(!expanded);
+  };
+
   return (
     <PolicyItemWrapper>
-      <PolicyActionRow margin="0 0 20px 0">
+      <PolicyActionRow style={{ cursor: 'pointer' }} onClick={onExpandCollapse}>
         <PolicyName>{props.item.name || `Rule ${props.index + 1}`}</PolicyName>
-        <IconWrapper classes="visibleOnHover" onClick={onDelete} styles={{ margin: '0 0 0 auto' }} width="20px" height="20px" icon={deleteIcon()} />
+        <IconWrapper classes={expanded ? 'arrowTop' : 'arrow'} icon={arrowBottomIcon} styles={{ margin: 'auto 0 auto auto' }} />
+        {/* <IconWrapper classes="visibleOnHover" onClick={onDelete} styles={{ margin: '0 0 0 auto' }} width="20px" height="20px" icon={deleteIcon()} /> */}
       </PolicyActionRow>
-      <PolicyActionRow margin="0 0 20px 0">
-        <TextInput id={`${props.index}name`} name="policyName" value={props.item.name} label="Name" onChange={onInputChange} styles={{ minHeight: '60px' }} inputStyles={{ height: '40px' }} required />
-      </PolicyActionRow>
-      <PolicyActionRow>
-        <RuleSelect
-          type={props.item.sourceType}
-          sources={props.sources}
-          destinations={props.destinations}
-          value={props.item.sourceId}
-          label="Source"
-          id={`${props.index}source`}
-          onChange={onSourceChange}
-        />
-        <RuleSelect
-          type={props.item.destType}
-          sources={props.sources}
-          destinations={props.destinations}
-          value={props.item.destId}
-          label="Destination"
-          id={`${props.index}destination`}
-          onChange={onDestinationChange}
-        />
-      </PolicyActionRow>
-      <PolicyActionRow>
-        <TextInput
-          id={`${props.index}action`}
-          name="action"
-          value="Allow" //{props.item.action}
-          label="Action"
-          onChange={v => {}}
-          readOnlyField
-          styles={{ width: 'calc(50% - 5px)', minHeight: '60px' }}
-          labelStyles={{ display: 'inline-block', verticalAlign: 'middle' }}
-          inputStyles={{ height: '40px' }}
-          required
-        />
-      </PolicyActionRow>
+      <Collapse in={expanded} timeout="auto">
+        <PolicyActionRow margin="20px 0">
+          <TextInput
+            id={`${props.index}name`}
+            name="policyName"
+            value={props.item.name}
+            label="Name"
+            onChange={onInputChange}
+            styles={{ minHeight: '60px' }}
+            inputStyles={{ height: '40px' }}
+            required
+          />
+        </PolicyActionRow>
+        <PolicyActionRow>
+          <RuleSelect
+            type={props.item.sourceType}
+            sources={props.sources}
+            destinations={props.destinations}
+            value={props.item.sourceId}
+            label="Source"
+            id={`${props.index}source`}
+            onChange={onSourceChange}
+          />
+          <RuleSelect
+            type={props.item.destType}
+            sources={props.sources}
+            destinations={props.destinations}
+            value={props.item.destId}
+            label="Destination"
+            id={`${props.index}destination`}
+            onChange={onDestinationChange}
+          />
+        </PolicyActionRow>
+        <PolicyActionRow>
+          <TextInput
+            id={`${props.index}action`}
+            name="action"
+            value="Allow" //{props.item.action}
+            label="Action"
+            onChange={v => {}}
+            readOnlyField
+            styles={{ width: 'calc(50% - 5px)', minHeight: '60px' }}
+            labelStyles={{ display: 'inline-block', verticalAlign: 'middle' }}
+            inputStyles={{ height: '40px' }}
+            required
+          />
+          <PrimaryButton
+            styles={{ margin: 'auto 0px 0px auto', height: '40px' }}
+            label="DELETE RULE"
+            icon={deleteIcon('var(--_pButtonColor)')}
+            onClick={onDelete}
+            bgColor="var(--_errorColor)"
+            borderColor="var(--_errorColor)"
+            hoverBg="var(--_errorColor)"
+            hoverBorder="var(--_errorColor)"
+          />
+        </PolicyActionRow>
+      </Collapse>
     </PolicyItemWrapper>
   );
 };

@@ -1,45 +1,47 @@
-import { IConnectionP } from 'lib/api/ApiModels/Edges/apiModel';
 import React from 'react';
 import { PreviewRow, PreviewText, PreviewWrapper } from './styles';
+import { useEdgesDataContext } from 'lib/hooks/Edges/useEdgesDataContext';
 
-interface Props {
-  name: string;
-  connectionPolicy: IConnectionP;
-  tags: string[];
-}
+interface Props {}
 
-const GeneralPreview: React.FC<Props> = ({ name, connectionPolicy, tags }) => {
-  if (!name && (!tags || !tags.length) && (!connectionPolicy || (!connectionPolicy.enableNetworkLink && !connectionPolicy.enableVpnLink))) return null;
+const GeneralPreview: React.FC<Props> = (props: Props) => {
+  const { edges } = useEdgesDataContext();
+  if (
+    !edges.editEdge.name &&
+    (!edges.editEdge.tags || !edges.editEdge.tags.length) &&
+    (!edges.editEdge.connectionPolicy || (!edges.editEdge.connectionPolicy.enableNetworkLink && !edges.editEdge.connectionPolicy.enableVpnLink))
+  )
+    return null;
   return (
     <PreviewWrapper>
-      {name && (
-        <PreviewRow margin="20px 0 0 0">
+      {edges.editEdge.name && (
+        <PreviewRow margin="8px 0 0 0">
           <PreviewText className="label" margin="0 4px 0 0">
             Name:
           </PreviewText>
-          <PreviewText color="var(--_disabledTextColor)">{name}</PreviewText>
+          <PreviewText color="var(--_disabledTextColor)">{edges.editEdge.name}</PreviewText>
         </PreviewRow>
       )}
-      {connectionPolicy && (connectionPolicy.enableNetworkLink || connectionPolicy.enableVpnLink) && (
+      {edges.editEdge.connectionPolicy && (edges.editEdge.connectionPolicy.enableNetworkLink || edges.editEdge.connectionPolicy.enableVpnLink) && (
         <PreviewRow margin="8px 0 0 0">
           <PreviewText className="label" margin="0 4px 0 0">
             Connection Types:
           </PreviewText>
-          {connectionPolicy.enableNetworkLink && <PreviewText color="var(--_disabledTextColor)">VPC</PreviewText>}
-          {connectionPolicy.enableNetworkLink && connectionPolicy.enableVpnLink && (
+          {edges.editEdge.connectionPolicy.enableNetworkLink && <PreviewText color="var(--_disabledTextColor)">VPC</PreviewText>}
+          {edges.editEdge.connectionPolicy.enableNetworkLink && edges.editEdge.connectionPolicy.enableVpnLink && (
             <PreviewText margin="0 4px 0 0" color="var(--_disabledTextColor)">
               ,
             </PreviewText>
           )}
-          {connectionPolicy.enableVpnLink && <PreviewText color="var(--_disabledTextColor)">VPN</PreviewText>}
+          {edges.editEdge.connectionPolicy.enableVpnLink && <PreviewText color="var(--_disabledTextColor)">VPN</PreviewText>}
         </PreviewRow>
       )}
-      {tags && tags.length ? (
+      {edges.editEdge.tags && edges.editEdge.tags.length ? (
         <PreviewRow margin="8px 0 0 0">
           <PreviewText className="label" margin="0 4px 0 0">
             Tags:
           </PreviewText>
-          <PreviewText color="var(--_disabledTextColor)">{tags.join(', ')}</PreviewText>
+          <PreviewText color="var(--_disabledTextColor)">{edges.editEdge.tags.join(', ')}</PreviewText>
         </PreviewRow>
       ) : null}
     </PreviewWrapper>

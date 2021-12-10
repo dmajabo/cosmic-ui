@@ -20,11 +20,6 @@ const RuleSelect: React.FC<Props> = (props: Props) => {
   const [selectedValue, setSelectedValue] = React.useState<ITopologyGroup>(null);
 
   React.useEffect(() => {
-    const _v: ITopologyGroup = getSelectedItem([...props.sources, ...props.destinations], props.value, 'id');
-    setSelectedValue(_v);
-  }, [props.value, props.sources, props.destinations]);
-
-  React.useEffect(() => {
     if (!props.type) {
       setPossibleValues([...props.sources, ...props.destinations]);
       return;
@@ -38,6 +33,14 @@ const RuleSelect: React.FC<Props> = (props: Props) => {
       return;
     }
   }, [props.type, props.sources, props.destinations]);
+
+  React.useEffect(() => {
+    const _v: ITopologyGroup = getSelectedItem([...props.sources, ...props.destinations], props.value, 'id');
+    setSelectedValue(_v);
+    if (props.value && props.type) {
+      setPossibleValues([...props.sources, ...props.destinations]);
+    }
+  }, [props.value, props.sources, props.destinations]);
 
   const onChange = (v: ITopologyGroup) => {
     props.onChange(v);

@@ -22,7 +22,6 @@ import { useEdgeZoom } from './useEdgeZoom';
 import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
 import { useEdgesDataContext } from 'lib/hooks/Edges/useEdgesDataContext';
 import { DeploymentTypes, ISegmentP } from 'lib/api/ApiModels/Edges/apiModel';
-import { INetworkwEdge } from 'lib/models/topology';
 import EdgeLink from './EdgeLink';
 import ExpandCollapseAll from './ExpandCollapseAll';
 
@@ -30,7 +29,6 @@ interface Props {
   name: string;
   sites: string[];
   apps: string[];
-  wedges: INetworkwEdge[];
   transitType: DeploymentTypes;
   selectedRegions: string[];
   selectedWedgeIds: string[];
@@ -62,7 +60,7 @@ const EdgesMap: React.FC<Props> = (props: Props) => {
       setTransits(_transits);
     }
     if (props.transitType === DeploymentTypes.EXISTING_GWS && props.selectedWedgeIds) {
-      const _transits: ITransitionObject = buildtransitNodes(props.selectedWedgeIds, DeploymentTypes.EXISTING_GWS, SVG_EDGES_STYLES.mapColumn, props.wedges);
+      const _transits: ITransitionObject = buildtransitNodes(props.selectedWedgeIds, DeploymentTypes.EXISTING_GWS, SVG_EDGES_STYLES.mapColumn, edges.wedges);
       setTransits(_transits);
     }
   }, [props.transitType, props.selectedRegions, props.selectedWedgeIds]);

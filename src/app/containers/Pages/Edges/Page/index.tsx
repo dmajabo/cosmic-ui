@@ -30,7 +30,6 @@ const MainPage: React.FC<Props> = (props: Props) => {
   const { response: resDelete, onDelete: onDeleteEedge } = useDelete<any>();
   const { edges } = useEdgesDataContext();
   const [showEditorPage, setShowEditorPage] = React.useState(false);
-  const [edgeDataItem, setEdgeDataItem] = React.useState<IEdgeP>(null);
   const [tempItem, setTempItem] = React.useState<IEdgeP>(null);
   React.useEffect(() => {
     onTryLoadEdges();
@@ -86,7 +85,7 @@ const MainPage: React.FC<Props> = (props: Props) => {
 
   React.useEffect(() => {
     if (showEditorPage && !breadcrumb.edgesBreadCrumbItems.length) {
-      setEdgeDataItem(null);
+      edges.onSetEditEdge(null);
       setShowEditorPage(false);
       return;
     }
@@ -118,12 +117,12 @@ const MainPage: React.FC<Props> = (props: Props) => {
   const onOpenEditor = (_item?: IEdgeP) => {
     const _bredCrumbState = _item && _item.id ? EdgesBreadCrumbItemsType.EDIT : EdgesBreadCrumbItemsType.CREATE;
     breadcrumb.onGoToEdges(_bredCrumbState);
-    setEdgeDataItem(_item || null);
+    edges.onSetEditEdge(_item || null);
   };
 
   const onCloseEditor = () => {
     breadcrumb.onGoToEdges(EdgesBreadCrumbItemsType.EDGES);
-    setEdgeDataItem(null);
+    edges.onSetEditEdge(null);
   };
 
   const onDeleteEdge = (_item: IEdgeP) => {
@@ -144,7 +143,7 @@ const MainPage: React.FC<Props> = (props: Props) => {
   }
 
   if (showEditorPage) {
-    return <Editor dataItem={edgeDataItem} onClose={onCloseEditor} />;
+    return <Editor onClose={onCloseEditor} />;
   }
   if (edges.dataReadyToShow) {
     return (
