@@ -193,7 +193,7 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
             />
           )}
           {(loading || loadingAggreg) && (
-            <AbsLoaderWrapper width="100%" height="calc(100% - 50px)" top="50px">
+            <AbsLoaderWrapper width="100%" height="calc(100% - 50px)" top="50px" zIndex={1}>
               <LoadingIndicator margin="auto" />
             </AbsLoaderWrapper>
           )}
