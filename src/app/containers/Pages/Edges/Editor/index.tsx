@@ -32,14 +32,11 @@ const Editor: React.FC<Props> = (props: Props) => {
 
   const [deleteModalData, setDeleteModalData] = React.useState<IModal<IDeleteDataModel>>({ show: false, dataItem: null });
 
-  // React.useEffect(() => {
-  //   const _isSomeStepEmpty = steps.some(it => it.state === StepperItemStateType.EMPTY);
-  //   if (_isSomeStepEmpty) {
-  //     setSavedisabled(true);
-  //   } else {
-  //     setSavedisabled(false);
-  //   }
-  // }, [steps]);
+  React.useEffect(() => {
+    if (!edges.editEdge) {
+      edges.onSetEditEdge(null);
+    }
+  }, []);
 
   React.useEffect(() => {
     if (postResponce && postResponce.id) {

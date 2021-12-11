@@ -4,9 +4,19 @@ import { jsonClone } from 'lib/helpers/cloneHelper';
 import { IDeploymentP, IEdgeP, ISegmentP } from 'lib/api/ApiModels/Edges/apiModel';
 import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
 import { INetworkwEdge, TopologyGroupTypesAsString } from 'lib/models/topology';
-import { createNewEdge, EdgesStepperItems, EdgesStepperTypes } from 'app/containers/Pages/Edges/Editor/model';
+import { createNewEdge, EdgesStepperItems, EdgesStepperTypes, IEdgeModelValidation, IEdgeStepValidation } from 'app/containers/Pages/Edges/Editor/model';
 import { IStepperItem } from 'app/components/Stepper/model';
-import { updateStepById, updateSteps, ValidateAppsFields, ValidateGeneralFields, ValidatePolicies, ValidateSitesFields, ValidateTransits } from 'app/containers/Pages/Edges/Editor/helper';
+import {
+  onUpdateValidationObject,
+  updateStepById,
+  updateSteps,
+  ValidateGeneralFields,
+  ValidateSitesFields,
+  ValidateAppsFields,
+  ValidateTransits,
+  ValidatePolicies,
+  checkIsSaveEdgePossible,
+} from 'app/containers/Pages/Edges/Editor/helper';
 
 export interface EdgesContextType {
   dataReadyToShow: boolean;
@@ -19,9 +29,11 @@ export interface EdgesContextType {
   onDeleteGroup: (type: TopologyGroupTypesAsString, id: string, removeFromGroups: boolean) => void;
 
   editEdge: IEdgeP;
+  edgeValidationResult: IEdgeModelValidation;
   steps: IStepperItem<EdgesStepperTypes>[];
   saveDisabled: boolean;
   hasChanges: boolean;
+  onClearEditEdgeContext: () => void;
   onSetEditEdge: (dataItem: IEdgeP) => void;
   onChangeGeneralField: (value: any, field: string) => void;
   onChangeDeployment: (item: IDeploymentP, index: number) => void;
@@ -53,14 +65,33 @@ export function useEdgesContext(): EdgesContextType {
   const [wedges, setWedges] = React.useState<INetworkwEdge[]>([]);
 
   const [editEdge, setEditEdge] = React.useState<IEdgeP>(null);
+  const [edgeValidationResult, setEditEdgeValidationResult] = React.useState<IEdgeModelValidation>(null);
   const [steps, setSteps] = React.useState<IStepperItem<EdgesStepperTypes>[]>([]);
   const [saveDisabled, setSavedisabled] = React.useState<boolean>(true);
   const [hasChanges, setHasChanges] = React.useState<boolean>(false);
 
+  const onClearEditEdgeContext = () => {
+    setEditEdge(null);
+    setEditEdgeValidationResult(null);
+    setSteps([]);
+    setSavedisabled(true);
+    setHasChanges(false);
+  };
+
   const onSetEditEdge = (_dataItem: IEdgeP | null) => {
     const _item = _dataItem || createNewEdge();
+    const _vO: IEdgeModelValidation = {
+      general: ValidateGeneralFields(_item),
+      sites: ValidateSitesFields(_item),
+      apps: ValidateAppsFields(_item),
+      edges: ValidateTransits(_item),
+      policy: ValidatePolicies(_item),
+    };
     const _steps: IStepperItem<EdgesStepperTypes>[] = jsonClone(EdgesStepperItems);
-    const _items: IStepperItem<EdgesStepperTypes>[] = updateSteps(_steps, _item);
+    const _items: IStepperItem<EdgesStepperTypes>[] = updateSteps(_steps, _vO);
+    const _isSaveImPosition: boolean = checkIsSaveEdgePossible(_vO);
+    setSavedisabled(!_isSaveImPosition);
+    setEditEdgeValidationResult(_vO);
     setSteps(_items);
     setEditEdge(_item);
   };
@@ -68,27 +99,42 @@ export function useEdgesContext(): EdgesContextType {
   const onChangeGeneralField = (value: any, field: string) => {
     const _dataItem: IEdgeP = jsonClone(editEdge);
     _dataItem[field] = value;
-    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.GENERAL, _dataItem, ValidateGeneralFields);
-    setSteps(_items);
+    const _validationObj: IEdgeStepValidation = ValidateGeneralFields(_dataItem);
+    const _vO: IEdgeModelValidation = onUpdateValidationObject(edgeValidationResult, _validationObj, EdgesStepperTypes.GENERAL);
+    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.GENERAL, _validationObj.state);
+    const _isSaveImPosition: boolean = checkIsSaveEdgePossible(_vO);
+    setSavedisabled(!_isSaveImPosition);
+    setEditEdgeValidationResult(_vO);
     setHasChanges(true);
+    setSteps(_items);
     setEditEdge(_dataItem);
   };
 
   const onChangeDeployment = (item: IDeploymentP, index: number) => {
     const _dataItem: IEdgeP = jsonClone(editEdge);
     _dataItem.deploymentPolicy.splice(index, 1, item);
-    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.EDGES, _dataItem, ValidateTransits);
-    setSteps(_items);
+    const _validationObj: IEdgeStepValidation = ValidateTransits(_dataItem);
+    const _vO: IEdgeModelValidation = onUpdateValidationObject(edgeValidationResult, _validationObj, EdgesStepperTypes.EDGES);
+    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.EDGES, _validationObj.state);
+    const _isSaveImPosition: boolean = checkIsSaveEdgePossible(_vO);
+    setSavedisabled(!_isSaveImPosition);
+    setEditEdgeValidationResult(_vO);
     setHasChanges(true);
+    setSteps(_items);
     setEditEdge(_dataItem);
   };
 
   const onAddSitesGroups = (ids: string[]) => {
     const _dataItem: IEdgeP = jsonClone(editEdge);
     _dataItem.siteGroupIds = ids;
-    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.SITES, _dataItem, ValidateSitesFields);
-    setSteps(_items);
+    const _validationObj: IEdgeStepValidation = ValidateSitesFields(_dataItem);
+    const _vO: IEdgeModelValidation = onUpdateValidationObject(edgeValidationResult, _validationObj, EdgesStepperTypes.SITES);
+    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.SITES, _validationObj.state);
+    const _isSaveImPosition: boolean = checkIsSaveEdgePossible(_vO);
+    setSavedisabled(!_isSaveImPosition);
+    setEditEdgeValidationResult(_vO);
     setHasChanges(true);
+    setSteps(_items);
     setEditEdge(_dataItem);
   };
 
@@ -97,20 +143,30 @@ export function useEdgesContext(): EdgesContextType {
     const _arrSet = new Set(_dataItem.siteGroupIds);
     _arrSet.add(value.id);
     _dataItem.siteGroupIds = Array.from(_arrSet);
-    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.SITES, _dataItem, ValidateSitesFields);
-    setSteps(_items);
     const _groups = onUpdateGroups(value);
+    const _validationObj: IEdgeStepValidation = ValidateSitesFields(_dataItem);
+    const _vO: IEdgeModelValidation = onUpdateValidationObject(edgeValidationResult, _validationObj, EdgesStepperTypes.SITES);
+    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.SITES, _validationObj.state);
+    const _isSaveImPosition: boolean = checkIsSaveEdgePossible(_vO);
     setGroups(_groups);
+    setSavedisabled(!_isSaveImPosition);
+    setEditEdgeValidationResult(_vO);
     setHasChanges(true);
+    setSteps(_items);
     setEditEdge(_dataItem);
   };
 
   const onAddExistingApps = (ids: string[]) => {
     const _dataItem: IEdgeP = jsonClone(editEdge);
     _dataItem.appGroupIds = ids;
-    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.APPS, _dataItem, ValidateAppsFields);
-    setSteps(_items);
+    const _validationObj: IEdgeStepValidation = ValidateAppsFields(_dataItem);
+    const _vO: IEdgeModelValidation = onUpdateValidationObject(edgeValidationResult, _validationObj, EdgesStepperTypes.APPS);
+    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.APPS, _validationObj.state);
+    const _isSaveImPosition: boolean = checkIsSaveEdgePossible(_vO);
+    setSavedisabled(!_isSaveImPosition);
+    setEditEdgeValidationResult(_vO);
     setHasChanges(true);
+    setSteps(_items);
     setEditEdge(_dataItem);
   };
 
@@ -119,11 +175,16 @@ export function useEdgesContext(): EdgesContextType {
     const _arrSet = new Set(_dataItem.appGroupIds);
     _arrSet.add(value.id);
     _dataItem.appGroupIds = Array.from(_arrSet);
-    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.APPS, _dataItem, ValidateAppsFields);
-    setSteps(_items);
     const _groups = onUpdateGroups(value);
+    const _validationObj: IEdgeStepValidation = ValidateAppsFields(_dataItem);
+    const _vO: IEdgeModelValidation = onUpdateValidationObject(edgeValidationResult, _validationObj, EdgesStepperTypes.APPS);
+    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.APPS, _validationObj.state);
+    const _isSaveImPosition: boolean = checkIsSaveEdgePossible(_vO);
     setGroups(_groups);
+    setSavedisabled(!_isSaveImPosition);
+    setEditEdgeValidationResult(_vO);
     setHasChanges(true);
+    setSteps(_items);
     setEditEdge(_dataItem);
   };
 
@@ -131,12 +192,22 @@ export function useEdgesContext(): EdgesContextType {
     const _dataItem: IEdgeP = jsonClone(editEdge);
     if (type === TopologyGroupTypesAsString.BRANCH_NETWORKS) {
       _dataItem.siteGroupIds = editEdge.siteGroupIds.filter(it => it !== id);
-      const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.SITES, _dataItem, ValidateSitesFields);
+      const _validationObj: IEdgeStepValidation = ValidateSitesFields(_dataItem);
+      const _vO: IEdgeModelValidation = onUpdateValidationObject(edgeValidationResult, _validationObj, EdgesStepperTypes.SITES);
+      const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.SITES, _validationObj.state);
+      const _isSaveImPosition: boolean = checkIsSaveEdgePossible(_vO);
+      setEditEdgeValidationResult(_vO);
+      setSavedisabled(!_isSaveImPosition);
       setSteps(_items);
     }
     if (type === TopologyGroupTypesAsString.APPLICATION) {
       _dataItem.appGroupIds = editEdge.appGroupIds.filter(it => it !== id);
-      const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.APPS, _dataItem, ValidateAppsFields);
+      const _validationObj: IEdgeStepValidation = ValidateAppsFields(_dataItem);
+      const _vO: IEdgeModelValidation = onUpdateValidationObject(edgeValidationResult, _validationObj, EdgesStepperTypes.APPS);
+      const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.APPS, _validationObj.state);
+      const _isSaveImPosition: boolean = checkIsSaveEdgePossible(_vO);
+      setEditEdgeValidationResult(_vO);
+      setSavedisabled(!_isSaveImPosition);
       setSteps(_items);
     }
     if (removeFromGroups) {
@@ -150,27 +221,42 @@ export function useEdgesContext(): EdgesContextType {
   const onAddPolicy = (policy: ISegmentP) => {
     const _dataItem: IEdgeP = jsonClone(editEdge);
     _dataItem.segmentPolicy.push(policy);
-    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.POLICY, _dataItem, ValidatePolicies);
-    setSteps(_items);
+    const _validationObj: IEdgeStepValidation = ValidatePolicies(_dataItem);
+    const _vO: IEdgeModelValidation = onUpdateValidationObject(edgeValidationResult, _validationObj, EdgesStepperTypes.POLICY);
+    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.POLICY, _validationObj.state);
+    const _isSaveImPosition: boolean = checkIsSaveEdgePossible(_vO);
+    setSavedisabled(!_isSaveImPosition);
+    setEditEdgeValidationResult(_vO);
     setHasChanges(true);
+    setSteps(_items);
     setEditEdge(_dataItem);
   };
 
   const onDeletePolicy = (policyIndex: number) => {
     const _dataItem: IEdgeP = jsonClone(editEdge);
     _dataItem.segmentPolicy.splice(policyIndex, 1);
-    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.POLICY, _dataItem, ValidatePolicies);
-    setSteps(_items);
+    const _validationObj: IEdgeStepValidation = ValidatePolicies(_dataItem);
+    const _vO: IEdgeModelValidation = onUpdateValidationObject(edgeValidationResult, _validationObj, EdgesStepperTypes.POLICY);
+    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.POLICY, _validationObj.state);
+    const _isSaveImPosition: boolean = checkIsSaveEdgePossible(_vO);
+    setSavedisabled(!_isSaveImPosition);
+    setEditEdgeValidationResult(_vO);
     setHasChanges(true);
+    setSteps(_items);
     setEditEdge(_dataItem);
   };
 
   const onUpdatePolicy = (policy: ISegmentP, policyIndex: number) => {
     const _dataItem: IEdgeP = jsonClone(editEdge);
     _dataItem.segmentPolicy.splice(policyIndex, 1, policy);
-    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.POLICY, _dataItem, ValidatePolicies);
-    setSteps(_items);
+    const _validationObj: IEdgeStepValidation = ValidatePolicies(_dataItem);
+    const _vO: IEdgeModelValidation = onUpdateValidationObject(edgeValidationResult, _validationObj, EdgesStepperTypes.POLICY);
+    const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.POLICY, _validationObj.state);
+    const _isSaveImPosition: boolean = checkIsSaveEdgePossible(_vO);
+    setSavedisabled(!_isSaveImPosition);
+    setEditEdgeValidationResult(_vO);
     setHasChanges(true);
+    setSteps(_items);
     setEditEdge(_dataItem);
   };
 
@@ -260,9 +346,11 @@ export function useEdgesContext(): EdgesContextType {
     onDeleteGroup,
 
     editEdge,
+    edgeValidationResult,
     steps,
     saveDisabled,
     hasChanges,
+    onClearEditEdgeContext,
     onSetEditEdge,
     onChangeGeneralField,
     onChangeDeployment,

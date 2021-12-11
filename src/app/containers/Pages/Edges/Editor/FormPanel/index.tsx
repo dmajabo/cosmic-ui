@@ -1,6 +1,6 @@
 import React from 'react';
 import GeneralStep from '../GeneralStep';
-import { IStepperItem, StepperItemStateType } from 'app/components/Stepper/model';
+import { IStepperItem } from 'app/components/Stepper/model';
 import { EdgesStepperTypes } from '../model';
 import { PanelContent, PanelFotter, ColumnPanelHeader, PanelTitle, AccordionHeaderPanel } from './styles';
 import SitesStep from '../SitesStep';
@@ -12,7 +12,6 @@ import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import ExpandedIcon from 'app/components/Basic/ExpandedIcon';
-import PanelHeader from 'app/containers/Pages/AutomationPage/Components/PanelHeader';
 import SecondaryButton from 'app/components/Buttons/SecondaryButton';
 import accordionStyles from 'app/containers/Pages/AutomationPage/styles/AccordionStyles';
 import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
@@ -21,6 +20,7 @@ import TransitPreview from './TransitPreview';
 import GroupPreview from './GroupPreview';
 import PolicyPreview from './PolicyPreview';
 import { useEdgesDataContext } from 'lib/hooks/Edges/useEdgesDataContext';
+import PanelHeader from './PanelHeader';
 
 interface Props {
   onDeleteSitesGroup: (gr: ITopologyGroup, edgeName: string) => void;
@@ -34,6 +34,7 @@ const FormPanel: React.FC<Props> = (props: Props) => {
   const [selectedStep, setSelectedStep] = React.useState<IStepperItem<EdgesStepperTypes>>(edges.steps ? edges.steps[0] : null);
   const AccordionStyles = accordionStyles();
   const onAccordionChange = (panel: EdgesStepperTypes) => (event: React.SyntheticEvent, isExpanded: boolean) => {
+    console.log(event);
     const _id = isExpanded ? panel : null;
     if (selectedStep && _id === selectedStep.id) {
       setSelectedStep(null);
@@ -55,7 +56,7 @@ const FormPanel: React.FC<Props> = (props: Props) => {
                 index={edges.steps[0].index + 1}
                 label="General"
                 selected={selectedStep && selectedStep.id === EdgesStepperTypes.GENERAL}
-                state={edges.steps[0].state !== StepperItemStateType.EMPTY ? edges.steps[0].state : null}
+                validationObject={edges.edgeValidationResult && edges.edgeValidationResult.general ? edges.edgeValidationResult.general : null}
                 stepNumberWidth="40px"
                 stepNumberHeight="40px"
               />
@@ -79,7 +80,7 @@ const FormPanel: React.FC<Props> = (props: Props) => {
                 stepNumberWidth="40px"
                 stepNumberHeight="40px"
                 selected={selectedStep && selectedStep.id === EdgesStepperTypes.SITES}
-                state={edges.steps[1].state !== StepperItemStateType.EMPTY ? edges.steps[1].state : null}
+                validationObject={edges.edgeValidationResult && edges.edgeValidationResult.sites ? edges.edgeValidationResult.sites : null}
               />
             </AccordionHeaderPanel>
             {(!selectedStep || (selectedStep && selectedStep.id !== EdgesStepperTypes.SITES)) && (
@@ -101,7 +102,7 @@ const FormPanel: React.FC<Props> = (props: Props) => {
                 stepNumberWidth="40px"
                 stepNumberHeight="40px"
                 selected={selectedStep && selectedStep.id === EdgesStepperTypes.APPS}
-                state={edges.steps[2].state !== StepperItemStateType.EMPTY ? edges.steps[2].state : null}
+                validationObject={edges.edgeValidationResult && edges.edgeValidationResult.apps ? edges.edgeValidationResult.apps : null}
               />
             </AccordionHeaderPanel>
             {(!selectedStep || (selectedStep && selectedStep.id !== EdgesStepperTypes.APPS)) && (
@@ -123,7 +124,7 @@ const FormPanel: React.FC<Props> = (props: Props) => {
                 stepNumberWidth="40px"
                 stepNumberHeight="40px"
                 selected={selectedStep && selectedStep.id === EdgesStepperTypes.EDGES}
-                state={edges.steps[3].state !== StepperItemStateType.EMPTY ? edges.steps[3].state : null}
+                validationObject={edges.edgeValidationResult && edges.edgeValidationResult.edges ? edges.edgeValidationResult.edges : null}
               />
             </AccordionHeaderPanel>
             {(!selectedStep || (selectedStep && selectedStep.id !== EdgesStepperTypes.EDGES)) && (
@@ -145,7 +146,7 @@ const FormPanel: React.FC<Props> = (props: Props) => {
                 stepNumberWidth="40px"
                 stepNumberHeight="40px"
                 selected={selectedStep && selectedStep.id === EdgesStepperTypes.POLICY}
-                state={edges.steps[4].state !== StepperItemStateType.EMPTY ? edges.steps[4].state : null}
+                validationObject={edges.edgeValidationResult && edges.edgeValidationResult.policy ? edges.edgeValidationResult.policy : null}
               />
             </AccordionHeaderPanel>
             {(!selectedStep || (selectedStep && selectedStep.id !== EdgesStepperTypes.POLICY)) && (

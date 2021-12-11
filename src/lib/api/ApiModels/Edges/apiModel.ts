@@ -17,11 +17,15 @@ export interface ISegmentRuleP {
   destType: SegmentTargetT;
   destId: string;
   action: SegmentRuleAction;
+
+  isNew: boolean;
 }
 
 export interface ISegmentP {
   name: string;
   rules: ISegmentRuleP[];
+
+  isNew?: boolean;
 }
 
 export enum ValidationFields {

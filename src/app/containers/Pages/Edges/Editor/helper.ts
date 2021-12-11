@@ -1,112 +1,233 @@
 import { IStepperItem, StepperItemStateType } from 'app/components/Stepper/model';
 import { DeploymentTypes, IDeploymentP, IEdgeP, ISegmentRuleP, SegmentRuleAction, NwServiceT, NwServicesVendor, INwServicesP, ISegmentP } from 'lib/api/ApiModels/Edges/apiModel';
-import { EdgesStepperTypes } from './model';
+import { jsonClone } from 'lib/helpers/cloneHelper';
+import { EdgesStepperTypes, IEdgeModelValidation, IEdgeStepValidation } from './model';
 
-export const ValidateGeneralFields = (dataItem: IEdgeP): boolean => {
-  if (!dataItem) return false;
+export const checkIsSaveEdgePossible = (data: IEdgeModelValidation): boolean => {
+  if (!data) return false;
+  return Object.keys(data).every(key => data[key] && data[key].state && data[key].state === StepperItemStateType.COMPLETE);
+};
+
+export const onUpdateValidationObject = (validationObject: IEdgeModelValidation, stepObject: IEdgeStepValidation, step: EdgesStepperTypes): IEdgeModelValidation => {
+  const _obj: IEdgeModelValidation = jsonClone(validationObject);
+  _obj[step] = stepObject;
+  return _obj;
+};
+
+export const ValidateGeneralFields = (dataItem: IEdgeP): IEdgeStepValidation | null => {
+  if (!dataItem) return null;
   const { name, tags, connectionPolicy } = dataItem;
-  if (!name || !name.length) return false;
-  if (!tags || !tags.length) return false;
-  if (!connectionPolicy || (!connectionPolicy.enableNetworkLink && !connectionPolicy.enableVpnLink)) return false;
-  return true;
+  const _obj: IEdgeStepValidation = {
+    errors: [],
+    state: null,
+  };
+  if ((!name || !name.length) && (!tags || !tags.length) && (!connectionPolicy || (!connectionPolicy.enableNetworkLink && !connectionPolicy.enableVpnLink))) {
+    _obj.state = StepperItemStateType.EMPTY;
+    return _obj;
+  }
+  if (name && tags && tags.length && connectionPolicy && (connectionPolicy.enableNetworkLink || connectionPolicy.enableVpnLink)) {
+    _obj.state = StepperItemStateType.COMPLETE;
+    return _obj;
+  }
+  _obj.state = StepperItemStateType.WARNING;
+  if (!name || !name.length) {
+    _obj.errors.push('Name field is required.');
+  }
+  if (!tags || !tags.length) {
+    _obj.errors.push('Tags field is required.');
+  }
+  if (!connectionPolicy || (!connectionPolicy.enableNetworkLink && !connectionPolicy.enableVpnLink)) {
+    _obj.errors.push('Connection Types is required. Please choose one or more options.');
+  }
+  return _obj;
 };
 
-export const ValidateSitesFields = (dataItem: IEdgeP): boolean => {
-  if (!dataItem) return false;
+export const ValidateSitesFields = (dataItem: IEdgeP): IEdgeStepValidation | null => {
+  if (!dataItem) return null;
   const { siteGroupIds } = dataItem;
-  if (!siteGroupIds || !siteGroupIds.length) return false;
-  return true;
+  const _obj: IEdgeStepValidation = {
+    errors: [],
+    state: null,
+  };
+  if (!siteGroupIds || !siteGroupIds.length) {
+    _obj.state = StepperItemStateType.EMPTY;
+    return _obj;
+  }
+  _obj.state = StepperItemStateType.COMPLETE;
+  return _obj;
 };
 
-export const ValidateAppsFields = (dataItem: IEdgeP): boolean => {
-  if (!dataItem) return false;
+export const ValidateAppsFields = (dataItem: IEdgeP): IEdgeStepValidation | null => {
+  if (!dataItem) return null;
   const { appGroupIds } = dataItem;
-  if (!appGroupIds || !appGroupIds.length) return false;
-  return true;
+  const _obj: IEdgeStepValidation = {
+    errors: [],
+    state: null,
+  };
+  if (!appGroupIds || !appGroupIds.length) {
+    _obj.state = StepperItemStateType.EMPTY;
+    return _obj;
+  }
+  _obj.state = StepperItemStateType.COMPLETE;
+  return _obj;
 };
 
-export const ValidateTransits = (dataItem: IEdgeP): boolean => {
-  if (!dataItem) return false;
+export const ValidateTransits = (dataItem: IEdgeP): IEdgeStepValidation | null => {
+  if (!dataItem) return null;
   const { deploymentPolicy } = dataItem;
-  if (!deploymentPolicy || !deploymentPolicy.length) return false;
-  const _isAllDeploymentValid = deploymentPolicy.some(it => onValidateDeployment(it));
-  if (!_isAllDeploymentValid) return false;
-  return true;
+  const _obj: IEdgeStepValidation = {
+    errors: [],
+    state: null,
+  };
+  if (!deploymentPolicy || !deploymentPolicy.length) {
+    _obj.state = StepperItemStateType.EMPTY;
+    return _obj;
+  }
+  if (deploymentPolicy.length === 1 && !deploymentPolicy[0].controllerName && !deploymentPolicy[0].deploymentType) {
+    _obj.state = StepperItemStateType.EMPTY;
+    return _obj;
+  }
+  for (let i = 0; i < deploymentPolicy.length; i++) {
+    const error = onValidateDeployment(deploymentPolicy[i], i);
+    if (error) {
+      _obj.errors.push(error);
+      break;
+    }
+  }
+  if (_obj.errors && _obj.errors.length) {
+    _obj.state = StepperItemStateType.WARNING;
+    return _obj;
+  }
+  _obj.state = StepperItemStateType.COMPLETE;
+  return _obj;
 };
 
-const onValidateDeployment = (data: IDeploymentP): boolean => {
-  if (!data.controllerName || !data.deploymentType) return false;
-  if (data.deploymentType === DeploymentTypes.NEW_REGIONS && (!data.regionCode || !data.regionCode.length)) return false;
-  if (data.deploymentType === DeploymentTypes.EXISTING_GWS && (!data.wanGwExtIds || !data.wanGwExtIds.length)) return false;
-  if (!data.nwServicesPolicy || !data.nwServicesPolicy.length) return false;
-  const _isAllSevicePoliciesValid = data.nwServicesPolicy.some(it => onValidateNwServicePolicy(it));
-  if (!_isAllSevicePoliciesValid) return false;
-  return true;
+const onValidateDeployment = (data: IDeploymentP, index: number): string | null => {
+  if (!data.controllerName) {
+    return `Account field in "Edge ${index + 1}" is required.`;
+  }
+  if (data.deploymentType === DeploymentTypes.NEW_REGIONS && (!data.regionCode || !data.regionCode.length)) {
+    return `You have to choose one or more regions in "Edge ${index + 1}".`;
+  }
+  if (data.deploymentType === DeploymentTypes.EXISTING_GWS && (!data.wanGwExtIds || !data.wanGwExtIds.length)) {
+    return `You have to choose one or more existing wedges in "Edge ${index + 1}".`;
+  }
+  if (!data.nwServicesPolicy || !data.nwServicesPolicy.length) {
+    return `"Edge ${index + 1}" should contain one or more nwServicesPolicy.`;
+  }
+  let nwError = null;
+  for (let i = 0; i < data.nwServicesPolicy.length; i++) {
+    const error = onValidateNwServicePolicyIsInvalid(data.nwServicesPolicy[i], i);
+    if (error) {
+      nwError = `"Edge ${index + 1}" containe invalid nwServicesPolicy. Vendor in nwServicesPolicy ${i + 1} is required.`;
+      break;
+    }
+  }
+  if (nwError) {
+    return nwError;
+  }
+  return null;
 };
 
-const onValidateNwServicePolicy = (data: INwServicesP): boolean => {
-  if (!data || !data.serviceVendor) return false;
-  return true;
+const onValidateNwServicePolicyIsInvalid = (data: INwServicesP, index: number): boolean => {
+  if (!data || !data.serviceVendor) return true;
+  return false;
 };
 
-export const ValidatePolicies = (dataItem: IEdgeP): boolean => {
-  if (!dataItem) return false;
+export const ValidatePolicies = (dataItem: IEdgeP): IEdgeStepValidation | null => {
+  if (!dataItem) return null;
   const { segmentPolicy } = dataItem;
-  if (!segmentPolicy || !segmentPolicy.length) return false;
-  const _isAllPolicyValid = segmentPolicy.some(it => onValidatePolicy(it));
-  if (!_isAllPolicyValid) return false;
-  return true;
+  const _obj: IEdgeStepValidation = {
+    errors: [],
+    state: null,
+  };
+  if (!segmentPolicy || !segmentPolicy.length) {
+    _obj.state = StepperItemStateType.EMPTY;
+    return _obj;
+  }
+  for (let i = 0; i < segmentPolicy.length; i++) {
+    const error = onValidatePolicy(segmentPolicy[i], i);
+    if (error) {
+      _obj.errors.push(error);
+      break;
+    }
+  }
+  if (_obj.errors && _obj.errors.length) {
+    _obj.state = StepperItemStateType.WARNING;
+    return _obj;
+  }
+  _obj.state = StepperItemStateType.COMPLETE;
+  return _obj;
 };
 
-const onValidatePolicy = (data: ISegmentP): boolean => {
-  if (!data || !data.name || !data.rules || !data.rules.length) return false;
-  const _isAllRulesValid = data.rules.some(it => onValidateRule(it));
-  if (!_isAllRulesValid) return false;
-  return true;
+const onValidatePolicy = (data: ISegmentP, index: number): string => {
+  if (!data.name) {
+    return `Name field in "Policy ${index + 1}" is required.`;
+  }
+  if (!data.rules || !data.rules.length) {
+    return `Policy "${data.name}" should containe one or more valid rule.`;
+  }
+  let nwError = null;
+  for (let i = 0; i < data.rules.length; i++) {
+    const error = onValidateRule(data.rules[i], data.name, i);
+    if (error) {
+      nwError = error;
+      break;
+    }
+  }
+  if (nwError) {
+    return nwError;
+  }
+  return null;
 };
 
-const onValidateRule = (data: ISegmentRuleP): boolean => {
-  if (!data || !data.action || !data.name || !data.destId || !data.sourceId) return false;
-  return true;
+const onValidateRule = (data: ISegmentRuleP, name: string, ruleIndex: number): string => {
+  if (!data.name) {
+    return `"Policy ${name}" should containe valid "Rule ${ruleIndex + 1}". Name is required.`;
+  }
+  if (!data.action) {
+    return `"Policy ${name}" should containe valid "Rule ${data.name}". Action is required.`;
+  }
+  if (!data.sourceId) {
+    return `"Policy ${name}" should containe valid "Rule ${data.name}". Source is required.`;
+  }
+  if (!data.destId) {
+    return `"Policy ${name}" should containe valid "Rule ${data.name}". Destionation is required.`;
+  }
+  return null;
 };
 
-export const updateSteps = (steps: IStepperItem<EdgesStepperTypes>[], dataItem: IEdgeP): IStepperItem<EdgesStepperTypes>[] => {
+export const updateSteps = (steps: IStepperItem<EdgesStepperTypes>[], validationObject: IEdgeModelValidation): IStepperItem<EdgesStepperTypes>[] => {
   const _items: IStepperItem<EdgesStepperTypes>[] = steps.slice();
   _items.forEach((step, index) => {
     step.disabled = index !== 0 && _items[index - 1].disabled;
     if (step.id === EdgesStepperTypes.GENERAL) {
-      const _completed = ValidateGeneralFields(dataItem);
-      step.state = !_completed ? StepperItemStateType.EMPTY : StepperItemStateType.COMPLETE;
+      step.state = validationObject && validationObject.general && validationObject.general.state ? validationObject.general.state : StepperItemStateType.EMPTY;
       return;
     }
     if (step.id === EdgesStepperTypes.SITES) {
-      const _completed = ValidateSitesFields(dataItem);
-      step.state = !_completed ? StepperItemStateType.EMPTY : StepperItemStateType.COMPLETE;
+      step.state = validationObject && validationObject.sites && validationObject.sites.state ? validationObject.sites.state : StepperItemStateType.EMPTY;
       return;
     }
     if (step.id === EdgesStepperTypes.APPS) {
-      const _completed = ValidateAppsFields(dataItem);
-      step.state = !_completed ? StepperItemStateType.EMPTY : StepperItemStateType.COMPLETE;
+      step.state = validationObject && validationObject.apps && validationObject.apps.state ? validationObject.apps.state : StepperItemStateType.EMPTY;
       return;
     }
     if (step.id === EdgesStepperTypes.EDGES) {
-      const _completed = ValidateTransits(dataItem);
-      step.state = !_completed ? StepperItemStateType.EMPTY : StepperItemStateType.COMPLETE;
+      step.state = validationObject && validationObject.edges && validationObject.edges.state ? validationObject.edges.state : StepperItemStateType.EMPTY;
       return;
     }
     if (step.id === EdgesStepperTypes.POLICY) {
-      const _completed = ValidatePolicies(dataItem);
-      step.state = !_completed ? StepperItemStateType.EMPTY : StepperItemStateType.COMPLETE;
+      step.state = validationObject && validationObject.policy && validationObject.policy.state ? validationObject.policy.state : StepperItemStateType.EMPTY;
     }
   });
   return _items;
 };
 
-export const updateStepById = (steps: IStepperItem<EdgesStepperTypes>[], id: EdgesStepperTypes, data: any, validator: (dataItem: IEdgeP) => boolean): IStepperItem<EdgesStepperTypes>[] => {
+export const updateStepById = (steps: IStepperItem<EdgesStepperTypes>[], id: EdgesStepperTypes, state: StepperItemStateType): IStepperItem<EdgesStepperTypes>[] => {
   const _items: IStepperItem<EdgesStepperTypes>[] = steps.slice();
   const _i = _items.findIndex(it => it.id === id);
-  const _completed = validator(data);
-  _items[_i].state = !_completed ? StepperItemStateType.EMPTY : StepperItemStateType.COMPLETE;
+  _items[_i].state = state;
   return _items;
 };
 
@@ -114,6 +235,7 @@ export const createNewSegmentP = (): ISegmentP => {
   const _obj: ISegmentP = {
     name: '',
     rules: [],
+    isNew: true,
   };
   return _obj;
 };
@@ -125,6 +247,7 @@ export const createNewRulePolicy = (): ISegmentRuleP => ({
   destType: null,
   destId: '',
   action: SegmentRuleAction.ALLOW,
+  isNew: true,
 });
 
 export const createNewDeploymentPolicy = (): IDeploymentP => ({

@@ -23,7 +23,7 @@ interface Props {
 }
 
 const RuleItem: React.FC<Props> = (props: Props) => {
-  const [expanded, setExpanded] = React.useState(false);
+  const [expanded, setExpanded] = React.useState(props.item.isNew);
   const onSourceChange = (value: ITopologyGroup) => {
     const _type: SegmentTargetT = getSegmentType(value);
     let _pairs: IFieldValuePair<string | null>[] = [

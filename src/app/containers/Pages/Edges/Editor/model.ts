@@ -2,7 +2,7 @@ import { IStepperItem, StepperItemStateType } from 'app/components/Stepper/model
 import { Mark } from '@material-ui/core/Slider';
 import { ISelectedListItem } from 'lib/models/general';
 import { poloAltoIcon } from 'app/components/SVGIcons/edges/poloAlto';
-import { ConnectionPKeysMap, DeploymentTypes, IEdgeP, NwServicesVendor } from 'lib/api/ApiModels/Edges/apiModel';
+import { ConnectionPKeysMap, IEdgeP, NwServicesVendor } from 'lib/api/ApiModels/Edges/apiModel';
 import { TopologyGroupTypesAsString } from 'lib/models/topology';
 
 export enum EdgesStepperTypes {
@@ -36,7 +36,7 @@ export const createNewEdge = (): IEdgeP => ({
     {
       controllerName: '',
       regionCode: [],
-      deploymentType: DeploymentTypes.EXISTING_GWS,
+      deploymentType: null, // DeploymentTypes.EXISTING_GWS,
       wanGwExtIds: [],
       nwServicesPolicy: [
         {
@@ -66,4 +66,16 @@ export interface IDeleteDataModel {
   type: TopologyGroupTypesAsString;
   name: string;
   message: string;
+}
+
+export interface IEdgeStepValidation {
+  errors: string[];
+  state: StepperItemStateType;
+}
+export interface IEdgeModelValidation {
+  general: IEdgeStepValidation;
+  sites: IEdgeStepValidation;
+  apps: IEdgeStepValidation;
+  edges: IEdgeStepValidation;
+  policy: IEdgeStepValidation;
 }

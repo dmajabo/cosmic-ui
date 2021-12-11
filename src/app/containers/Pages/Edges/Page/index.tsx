@@ -85,7 +85,7 @@ const MainPage: React.FC<Props> = (props: Props) => {
 
   React.useEffect(() => {
     if (showEditorPage && !breadcrumb.edgesBreadCrumbItems.length) {
-      edges.onSetEditEdge(null);
+      edges.onClearEditEdgeContext();
       setShowEditorPage(false);
       return;
     }
@@ -121,8 +121,9 @@ const MainPage: React.FC<Props> = (props: Props) => {
   };
 
   const onCloseEditor = () => {
+    setShowEditorPage(false);
+    edges.onClearEditEdgeContext();
     breadcrumb.onGoToEdges(EdgesBreadCrumbItemsType.EDGES);
-    edges.onSetEditEdge(null);
   };
 
   const onDeleteEdge = (_item: IEdgeP) => {

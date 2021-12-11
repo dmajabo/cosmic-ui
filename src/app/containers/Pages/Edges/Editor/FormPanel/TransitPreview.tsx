@@ -4,7 +4,7 @@ import { useEdgesDataContext } from 'lib/hooks/Edges/useEdgesDataContext';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { logoIcon } from 'app/components/SVGIcons/pagesIcons/logo';
 import { poloAltoIcon } from 'app/components/SVGIcons/edges/poloAlto';
-import { NwServicesVendor, DeploymentTypes, NwServiceT } from 'lib/api/ApiModels/Edges/apiModel';
+import { NwServicesVendor, DeploymentTypes, NwServiceT, IEdgeP } from 'lib/api/ApiModels/Edges/apiModel';
 import { wedgeIcon } from 'app/components/SVGIcons/topologyIcons/wedge';
 
 interface IMapRegion {
@@ -17,6 +17,7 @@ const TransitPreview: React.FC<Props> = (props: Props) => {
   const { edges } = useEdgesDataContext();
   const [selectedRegions, setSelectedRegions] = React.useState<IMapRegion[]>([]);
   const [selectedWedges, setSelectedWedges] = React.useState<string[]>([]);
+  const [canShowPreview, setcanShowPreview] = React.useState<boolean>(false);
   React.useEffect(() => {
     if (!edges.editEdge.deploymentPolicy || !edges.editEdge.deploymentPolicy.length) {
       setSelectedRegions([]);
@@ -64,7 +65,29 @@ const TransitPreview: React.FC<Props> = (props: Props) => {
     }
   }, [edges.editEdge.deploymentPolicy]);
 
-  if (!edges.editEdge.deploymentPolicy || !edges.editEdge.deploymentPolicy.length) return null;
+  React.useEffect(() => {
+    const canShow = onChackIsPossibleToShow(edges.editEdge);
+    setcanShowPreview(canShow);
+  }, [selectedRegions, selectedWedges]);
+
+  const onChackIsPossibleToShow = (dataItem: IEdgeP) => {
+    if (!dataItem || !edges.editEdge.deploymentPolicy || !edges.editEdge.deploymentPolicy.length) {
+      return false;
+    }
+    const _serviceTypePresent = !!edges.editEdge.deploymentPolicy[0].nwServicesPolicy[0].serviceType;
+    if (_serviceTypePresent) return true;
+    const _controllerNamePresent = !!edges.editEdge.deploymentPolicy[0].controllerName;
+    if (_controllerNamePresent) return true;
+    if (edges.editEdge.deploymentPolicy[0].deploymentType === DeploymentTypes.NEW_REGIONS) {
+      return !!(selectedRegions && selectedRegions.length);
+    }
+    if (edges.editEdge.deploymentPolicy[0].deploymentType === DeploymentTypes.EXISTING_GWS) {
+      return !!(selectedWedges && selectedWedges.length);
+    }
+    return false;
+  };
+
+  if (!canShowPreview) return null;
   return (
     <PreviewWrapper>
       {edges.editEdge.deploymentPolicy[0].nwServicesPolicy[0].serviceType === NwServiceT.FIREWALL && (

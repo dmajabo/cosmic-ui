@@ -16,24 +16,22 @@ import Collapse from '@mui/material/Collapse';
 import { arrowBottomIcon } from 'app/components/SVGIcons/arrows';
 import PrimaryButton from 'app/components/Buttons/PrimaryButton';
 import { PreviewTagCount } from '../FormPanel/styles';
+import { useEdgesDataContext } from 'lib/hooks/Edges/useEdgesDataContext';
 interface Props {
   policy: ISegmentP;
   index: number;
   sources: ITopologyGroup[];
   destinations: ITopologyGroup[];
-  onUpdatePolicy: (policy: ISegmentP, index: number) => void;
-  onDeletePolicy: (index: number) => void;
 }
 
 const SegmentPolicy: React.FC<Props> = (props: Props) => {
-  const [expanded, setExpanded] = React.useState(false);
-  const [policy, setPolicy] = React.useState<ISegmentP>(props.policy);
+  const { edges } = useEdgesDataContext();
+  const [expanded, setExpanded] = React.useState(props.policy.isNew);
   const [disabledCreateRule, setDisabledCreateRule] = React.useState<boolean>(true);
 
   React.useEffect(() => {
     const _isValid = onValidate(props.policy);
     setDisabledCreateRule(!_isValid);
-    setPolicy(props.policy);
   }, [props.policy]);
 
   const onValidate = (_policy: ISegmentP): boolean => {
@@ -44,66 +42,79 @@ const SegmentPolicy: React.FC<Props> = (props: Props) => {
   };
 
   const onInputChange = (value: string | null) => {
-    const _obj: ISegmentP = jsonClone(policy);
+    const _obj: ISegmentP = jsonClone(props.policy);
     _obj.name = value;
-    props.onUpdatePolicy(_obj, props.index);
+    if (_obj.isNew) {
+      delete _obj.isNew;
+    }
+    edges.onUpdatePolicy(_obj, props.index);
   };
 
   const onUpdateField = (value: string | null, field: string, ruleIndex: number) => {
-    const _obj: ISegmentP = jsonClone(policy);
+    const _obj: ISegmentP = jsonClone(props.policy);
     _obj.rules[ruleIndex][field] = value;
-    setPolicy(_obj);
-    if (_obj.rules[ruleIndex].sourceId && _obj.rules[ruleIndex].destId && _obj.rules[ruleIndex].sourceType && _obj.rules[ruleIndex].destType) {
-      props.onUpdatePolicy(_obj, props.index);
+    if (_obj.rules[ruleIndex].isNew) {
+      delete _obj.rules[ruleIndex].isNew;
     }
+    if (_obj.isNew) {
+      delete _obj.isNew;
+    }
+    edges.onUpdatePolicy(_obj, props.index);
   };
 
   const onUpdateFields = (pairs: IFieldValuePair<string | null>[], ruleIndex: number) => {
-    const _obj: ISegmentP = jsonClone(policy);
+    const _obj: ISegmentP = jsonClone(props.policy);
     pairs.forEach(pair => {
       _obj.rules[ruleIndex][pair.field] = pair.value;
+      if (_obj.rules[ruleIndex].isNew) {
+        delete _obj.rules[ruleIndex].isNew;
+      }
     });
-    setPolicy(_obj);
-    if (_obj.rules[ruleIndex].sourceId && _obj.rules[ruleIndex].destId) {
-      props.onUpdatePolicy(_obj, props.index);
+    if (_obj.isNew) {
+      delete _obj.isNew;
     }
+    edges.onUpdatePolicy(_obj, props.index);
   };
 
   const onDeleteRule = (ruleIndex: number) => {
-    const _obj: ISegmentP = jsonClone(policy);
+    const _obj: ISegmentP = jsonClone(props.policy);
     _obj.rules.splice(ruleIndex, 1);
-    setPolicy(_obj);
-    props.onUpdatePolicy(_obj, props.index);
+    if (_obj.isNew) {
+      delete _obj.isNew;
+    }
+    edges.onUpdatePolicy(_obj, props.index);
   };
 
   const onAddRule = () => {
     const _rule: ISegmentRuleP = createNewRulePolicy();
-    const _obj: ISegmentP = jsonClone(policy);
+    const _obj: ISegmentP = jsonClone(props.policy);
     _obj.rules.push(_rule);
-    setDisabledCreateRule(true);
-    setPolicy(_obj);
-  };
-
-  const onDeletePolicy = () => {
-    props.onDeletePolicy(props.index);
+    if (_obj.isNew) {
+      delete _obj.isNew;
+    }
+    edges.onUpdatePolicy(_obj, props.index);
   };
 
   const onExpandCollapse = () => {
     setExpanded(!expanded);
   };
 
+  const onDeletePolicy = () => {
+    edges.onDeletePolicy(props.index);
+  };
+
   return (
     <SegmentPolicyWrapper>
       <PolicyActionRow style={{ cursor: 'pointer' }} onClick={onExpandCollapse}>
-        <PolicyName>{policy.name || `Policy ${props.index + 1}`}</PolicyName>
-        {!expanded && policy && policy.rules && policy.rules.length ? <PreviewTagCount>{policy.rules.length}</PreviewTagCount> : null}
+        <PolicyName>{props.policy.name || `Policy ${props.index + 1}`}</PolicyName>
+        {!expanded && props.policy && props.policy.rules && props.policy.rules.length ? <PreviewTagCount>{props.policy.rules.length}</PreviewTagCount> : null}
         <IconWrapper classes={expanded ? 'arrowTop' : 'arrow'} icon={arrowBottomIcon} styles={{ margin: 'auto 0 auto auto' }} />
       </PolicyActionRow>
       <Collapse in={expanded} timeout="auto">
-        <TextInput styles={{ margin: '20px 0' }} id="segmentName" name="policiesName" value={policy.name} label="Name" onChange={onInputChange} required />
-        {policy && policy.rules && policy.rules.length ? (
+        <TextInput styles={{ margin: '20px 0' }} id="segmentName" name="policiesName" value={props.policy.name} label="Name" onChange={onInputChange} required />
+        {props.policy && props.policy.rules && props.policy.rules.length ? (
           <PolicyItemsWrapper>
-            {policy.rules.map((it, index) => (
+            {props.policy.rules.map((it, index) => (
               <RuleItem
                 key={`policy${index}`}
                 index={index}
