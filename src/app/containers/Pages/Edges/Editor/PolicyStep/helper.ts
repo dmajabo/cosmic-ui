@@ -17,17 +17,30 @@ export const getFilteredGroups = (policies: ISegmentRuleP[] | null, groups: ITop
 
 export const getCartesianValues = (sources: ITopologyGroup[], destination: ITopologyGroup[]): ITopologyGroup[][] => {
   if (!sources || !sources.length || !destination || !destination.length) return [];
-  return sources.flatMap(d => destination.map(v => [d, v]));
+  const _arr1 = sources
+    .flatMap(d =>
+      destination.map(v => [
+        [d, v],
+        [v, d],
+      ]),
+    )
+    .flat();
+  return _arr1;
 };
 
-export const getPossibleValues = (policies: ISegmentRuleP[], values: ITopologyGroup[][]): ITopologyGroup[][] => {
-  if (!policies || !policies.length || !values || !values.length) return values;
+export const getPossibleValues = (policies: ISegmentP[], values: ITopologyGroup[][]): ITopologyGroup[][] => {
+  if (!policies || !policies.length) return values;
   const _arr: ITopologyGroup[][] = [];
-  // values.forEach(v => {
-  //   if (policies.find(it => it.source === v[0].id && it.destination === v[1].id)) return;
-  //   _arr.push(v);
-  // });
+  values.forEach(v => {
+    const _isPresent = checkIsCombinationPresent(policies, v);
+    if (_isPresent) return;
+    _arr.push(v);
+  });
   return _arr;
+};
+
+const checkIsCombinationPresent = (policies: ISegmentP[], v) => {
+  return policies.find(it => it.rules && it.rules.length && it.rules.find(r => r.sourceId === v[0].id && r.destId === v[1].id));
 };
 
 export const getSegmentType = (gr: ITopologyGroup): SegmentTargetT => {

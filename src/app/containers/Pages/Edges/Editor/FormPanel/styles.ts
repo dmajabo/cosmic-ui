@@ -130,3 +130,20 @@ export const PanelContentLabel = styled.div`
   color: var(--_primaryColor);
   margin: 0 0 20px 0;
 `;
+
+export const InfoErrorWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  max-width: 400px;
+  overflow: hidden;
+`;
+
+export const InfoError = styled.div`
+  font-family: 'DMSans';
+  font-style: normal;
+  font-size: 12px;
+  margin: 0 0 4px 0;
+  flex-shrink: 0;
+  text-align: left;
+  line-height: 16px;
+`;

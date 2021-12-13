@@ -32,12 +32,14 @@ const EdgeLink: React.FC<Props> = ({ dataItem }) => {
           return (
             <>
               <SvgLinkComponent
+                key={`${it.id}linkSource`}
                 x1={dataItem.sourceType === SegmentTargetT.SITE_GROUP ? dataItem.source.x + dataItem.source.offsetX + SVG_EDGES_STYLES.siteNode.width : dataItem.source.x + dataItem.source.offsetX}
                 y1={dataItem.source.y + dataItem.source.height / 2}
                 x2={it.x + it.offsetX}
                 y2={it.y + it.height / 2}
               />
               <SvgLinkComponent
+                key={`${it.id}linkDestination`}
                 x1={
                   dataItem.sourceType === SegmentTargetT.SITE_GROUP
                     ? dataItem.destination.x + dataItem.destination.offsetX
@@ -54,6 +56,7 @@ const EdgeLink: React.FC<Props> = ({ dataItem }) => {
           return (
             <>
               <SvgLinkComponent
+                key={`${it.id}linkSource`}
                 x1={dataItem.sourceType === SegmentTargetT.SITE_GROUP ? dataItem.source.x + dataItem.source.offsetX + SVG_EDGES_STYLES.siteNode.width : dataItem.source.x + dataItem.source.offsetX}
                 y1={dataItem.source.y + dataItem.source.height / 2}
                 x2={it.x + it.offsetX}
@@ -66,6 +69,7 @@ const EdgeLink: React.FC<Props> = ({ dataItem }) => {
           return (
             <>
               <SvgLinkComponent
+                key={`${it.id}linkDestination`}
                 x1={
                   dataItem.sourceType === SegmentTargetT.SITE_GROUP
                     ? dataItem.destination.x + dataItem.destination.offsetX

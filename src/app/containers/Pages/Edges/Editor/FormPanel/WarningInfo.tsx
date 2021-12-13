@@ -5,6 +5,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { TooltipPlacement } from 'lib/models/general';
 import Fade from '@material-ui/core/Fade';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
+import { InfoError, InfoErrorWrapper } from './styles';
 const HtmlTooltip = withStyles(() => ({
   tooltip: {
     backgroundColor: 'var(--_primaryBg)',
@@ -34,11 +35,11 @@ const WarningInfo: React.FC<Props> = (props: Props) => {
   return (
     <HtmlTooltip
       title={
-        <>
+        <InfoErrorWrapper>
           {props.errors.map((error, i) => (
-            <span key={`${props.stepNumber}${i}stepError`}>{error}</span>
+            <InfoError key={`${props.stepNumber}${i}stepError`}>{error}</InfoError>
           ))}
-        </>
+        </InfoErrorWrapper>
       }
       placement={TooltipPlacement.BOTTOM_END}
       disableFocusListener

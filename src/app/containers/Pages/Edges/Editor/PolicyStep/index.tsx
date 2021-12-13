@@ -8,6 +8,7 @@ import SecondaryButton from 'app/components/Buttons/SecondaryButton';
 import { FormRow } from './styles';
 import { plusIcon } from 'app/components/SVGIcons/plusIcon';
 import { EmptyMessage } from '../Components/styles';
+import { getCartesianValues, getPossibleValues } from './helper';
 
 interface Props {}
 
@@ -15,6 +16,7 @@ const PolicyStep: React.FC<Props> = (props: Props) => {
   const { edges } = useEdgesDataContext();
   const [sources, setSources] = React.useState<ITopologyGroup[]>([]);
   const [destinations, setDestinations] = React.useState<ITopologyGroup[]>([]);
+  const [combinations, setCombinations] = React.useState<ITopologyGroup[][]>([]);
 
   React.useEffect(() => {
     if (edges && edges.groups) {
@@ -36,17 +38,23 @@ const PolicyStep: React.FC<Props> = (props: Props) => {
           }
         });
       }
-      // const _arr: ITopologyGroup[][] = getCartesianValues(_sources, _destinations);
-      // // const _combinations: ITopologyGroup[][] = getPossibleValues(props.policies, _arr);
-      // setCombinations(_arr);
       setSources(_sources);
       setDestinations(_destinations);
     } else {
-      // setCombinations([]);
       setSources([]);
       setDestinations([]);
     }
   }, [edges.groups, edges.editEdge.siteGroupIds, edges.editEdge.appGroupIds]);
+
+  React.useEffect(() => {
+    if (sources && sources.length && destinations && destinations.length) {
+      const _arr: ITopologyGroup[][] = getCartesianValues(sources, destinations);
+      const _combinations: ITopologyGroup[][] = getPossibleValues(edges.editEdge.segmentPolicy, _arr);
+      setCombinations(_combinations);
+      return;
+    }
+    setCombinations([]);
+  }, [sources, destinations, edges.editEdge.segmentPolicy]);
 
   const onAddPolicy = () => {
     const _obj: ISegmentP = createNewSegmentP();
@@ -56,13 +64,19 @@ const PolicyStep: React.FC<Props> = (props: Props) => {
   return (
     <>
       {edges.editEdge.segmentPolicy && edges.editEdge.segmentPolicy.length ? (
-        edges.editEdge.segmentPolicy.map((policy, index) => <SegmentPolicy key={`segmentPolicy${index}${policy}`} index={index} policy={policy} sources={sources} destinations={destinations} />)
+        edges.editEdge.segmentPolicy.map((policy, index) => (
+          <SegmentPolicy key={`segmentPolicy${index}${policy}`} index={index} policy={policy} sources={sources} destinations={destinations} combinations={combinations} />
+        ))
       ) : (
         <EmptyMessage>There are no policies yet. To create policy click the button bellow.</EmptyMessage>
       )}
       <FormRow justifyContent={edges.editEdge.segmentPolicy && edges.editEdge.segmentPolicy.length ? 'flex-end' : 'flex-start'}>
         <SecondaryButton
-          disabled={!!(edges.edgeValidationResult && edges.edgeValidationResult.policy && edges.edgeValidationResult.policy.errors && edges.edgeValidationResult.policy.errors.length)}
+          disabled={
+            !!(edges.edgeValidationResult && edges.edgeValidationResult.policy && edges.edgeValidationResult.policy.errors && edges.edgeValidationResult.policy.errors.length) ||
+            !combinations ||
+            !combinations.length
+          }
           icon={plusIcon}
           label="Create Policy"
           onClick={onAddPolicy}

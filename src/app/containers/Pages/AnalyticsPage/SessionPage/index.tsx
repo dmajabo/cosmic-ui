@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { ActionPart, ActionRowStyles, ContentWrapper, PageContentWrapper, TableWrapper } from '../../Shared/styles';
 import { useGet } from 'lib/api/http/useAxiosHook';
-import { IAggregatedSessionsLogRes, IAllSessionsRes, ISession } from 'lib/api/ApiModels/Sessions/apiModel';
+import { IAllSessionsRes, ISession } from 'lib/api/ApiModels/Sessions/apiModel';
 import { SessionsApi } from 'lib/api/ApiModels/Sessions/endpoints';
 import Table from './Table';
 import Dropdown from 'app/components/Inputs/Dropdown';
@@ -24,9 +24,9 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
   const { sessions } = useSessionsDataContext();
   const userContext = useContext<UserContextState>(UserContext);
   const { response, loading, error, onGet } = useGet<IAllSessionsRes>();
-  const { response: aggregRes, loading: loadingAggreg, error: errorAggreg, onGet: onGetAggregatedData } = useGet<IAggregatedSessionsLogRes>();
+  const { response: aggregRes, loading: loadingAggreg, error: errorAggreg, onGet: onGetAggregatedData } = useGet<IAllSessionsRes>();
   const [data, setData] = React.useState<ISession[]>([]);
-  const [aggregatedData, setAggregatedData] = React.useState<IAggregatedSessionsLogRes>(null);
+  const [aggregatedData, setAggregatedData] = React.useState<IAllSessionsRes>(null);
   const [totalCount, setTotalCount] = React.useState<number>(0);
   const [aggregCount, setAggregTotalCount] = React.useState<number>(0);
 

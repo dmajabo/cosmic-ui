@@ -25,17 +25,13 @@ export interface ISession extends IBaseEntity<string> {
   deviceVendor: AccountVendorTypes;
 }
 
-export interface IAllSessionsRes {
-  count: string | number;
-  sessions: ISession[];
-}
-
 export interface IBuckets {
   key: string;
   docCount: number;
   sessions: ISession[];
 }
-export interface IAggregatedSessionsLogRes {
+
+export interface IAllSessionsRes {
   count: string | number;
   sessions: ISession[];
   buckets: IBuckets[];

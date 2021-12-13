@@ -34,7 +34,6 @@ const FormPanel: React.FC<Props> = (props: Props) => {
   const [selectedStep, setSelectedStep] = React.useState<IStepperItem<EdgesStepperTypes>>(edges.steps ? edges.steps[0] : null);
   const AccordionStyles = accordionStyles();
   const onAccordionChange = (panel: EdgesStepperTypes) => (event: React.SyntheticEvent, isExpanded: boolean) => {
-    console.log(event);
     const _id = isExpanded ? panel : null;
     if (selectedStep && _id === selectedStep.id) {
       setSelectedStep(null);

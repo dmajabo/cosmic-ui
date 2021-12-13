@@ -17,6 +17,7 @@ interface Props {
   item: ISegmentRuleP;
   sources: ITopologyGroup[];
   destinations: ITopologyGroup[];
+  combinations: ITopologyGroup[][];
   onUpdateField: (value: any | null, field: string, index: number) => void;
   onUpdateRule: (pairs: IFieldValuePair<string | null>[], ruleIndex: number) => void;
   onDeleteRule: (index: number) => void;
@@ -102,6 +103,7 @@ const RuleItem: React.FC<Props> = (props: Props) => {
             sources={props.sources}
             destinations={props.destinations}
             value={props.item.sourceId}
+            combinations={props.combinations}
             label="Source"
             id={`${props.index}source`}
             onChange={onSourceChange}
@@ -110,6 +112,7 @@ const RuleItem: React.FC<Props> = (props: Props) => {
             type={props.item.destType}
             sources={props.sources}
             destinations={props.destinations}
+            combinations={props.combinations}
             value={props.item.destId}
             label="Destination"
             id={`${props.index}destination`}

@@ -154,6 +154,7 @@ export const buildLinks = (sources: INodesObject, destinations: INodesObject, tr
       _arr.push(link);
     });
   });
+  console.log(_arr);
   return { links: _arr, scale: 1 };
 };
 

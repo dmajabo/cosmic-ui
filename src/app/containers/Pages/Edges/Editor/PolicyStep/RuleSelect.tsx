@@ -4,11 +4,13 @@ import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
 import MatSelect from 'app/components/Inputs/MatSelect';
 import { SegmentTargetT } from 'lib/api/ApiModels/Edges/apiModel';
 import { getSelectedItem } from 'lib/helpers/selectionHelper';
+import { TopologyGroupTypesAsNumber, TopologyGroupTypesAsString } from 'lib/models/topology';
 
 interface Props {
   type: SegmentTargetT;
   sources: ITopologyGroup[];
   destinations: ITopologyGroup[];
+  combinations: ITopologyGroup[][];
   value: string;
   label: string;
   id: string;
@@ -20,27 +22,52 @@ const RuleSelect: React.FC<Props> = (props: Props) => {
   const [selectedValue, setSelectedValue] = React.useState<ITopologyGroup>(null);
 
   React.useEffect(() => {
-    if (!props.type) {
-      setPossibleValues([...props.sources, ...props.destinations]);
-      return;
-    }
-    if (props.type === SegmentTargetT.SITE_GROUP) {
-      setPossibleValues(props.sources);
-      return;
-    }
-    if (props.type === SegmentTargetT.APP_GROUP) {
-      setPossibleValues(props.destinations);
-      return;
-    }
-  }, [props.type, props.sources, props.destinations]);
+    const _velues = getValues(props.type, props.value, props.combinations);
+    setPossibleValues(_velues);
+  }, [props.type, props.value, props.combinations]);
 
   React.useEffect(() => {
     const _v: ITopologyGroup = getSelectedItem([...props.sources, ...props.destinations], props.value, 'id');
     setSelectedValue(_v);
-    if (props.value && props.type) {
-      setPossibleValues([...props.sources, ...props.destinations]);
-    }
   }, [props.value, props.sources, props.destinations]);
+
+  const getValues = (type: SegmentTargetT, selectedValue: string, combinations: ITopologyGroup[][]): ITopologyGroup[] => {
+    if (!combinations || !combinations.length) return [];
+    if (!type || (type && selectedValue)) {
+      const _arr = new Map();
+      combinations.forEach(it => {
+        if (!_arr.has(it[0].id)) {
+          _arr.set(it[0].id, it[0]);
+        }
+        if (!_arr.has(it[1].id)) {
+          _arr.set(it[1].id, it[1]);
+        }
+      });
+      return Array.from(_arr, ([name, value]) => value);
+    }
+    const _arr = new Map();
+    combinations.forEach(it => {
+      if (checkType(type, it[0].type) && !_arr.has(it[0].id)) {
+        _arr.set(it[0].id, it[0]);
+      }
+      if (checkType(type, it[1].type) && !_arr.has(it[1].id)) {
+        _arr.set(it[1].id, it[1]);
+      }
+    });
+    return Array.from(_arr, ([name, value]) => value);
+  };
+
+  const checkType = (type: SegmentTargetT, grType: TopologyGroupTypesAsString | TopologyGroupTypesAsNumber): boolean => {
+    if (type === SegmentTargetT.SITE_GROUP) {
+      if (grType === TopologyGroupTypesAsString.BRANCH_NETWORKS || grType === TopologyGroupTypesAsNumber.BRANCH_NETWORKS) return true;
+      return false;
+    }
+    if (type === SegmentTargetT.APP_GROUP) {
+      if (grType === TopologyGroupTypesAsString.APPLICATION || grType === TopologyGroupTypesAsNumber.APPLICATION) return true;
+      return false;
+    }
+    return false;
+  };
 
   const onChange = (v: ITopologyGroup) => {
     props.onChange(v);
@@ -52,7 +79,6 @@ const RuleSelect: React.FC<Props> = (props: Props) => {
       label={props.label}
       value={selectedValue}
       options={possibleValues}
-      disabled={!possibleValues || !possibleValues.length}
       styles={{ width: 'calc(50% - 5px)', margin: '0 5px 20px 0' }}
       required
       onChange={onChange}

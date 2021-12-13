@@ -22,13 +22,13 @@ interface Props {
   index: number;
   sources: ITopologyGroup[];
   destinations: ITopologyGroup[];
+  combinations: ITopologyGroup[][];
 }
 
 const SegmentPolicy: React.FC<Props> = (props: Props) => {
   const { edges } = useEdgesDataContext();
   const [expanded, setExpanded] = React.useState(props.policy.isNew);
   const [disabledCreateRule, setDisabledCreateRule] = React.useState<boolean>(true);
-
   React.useEffect(() => {
     const _isValid = onValidate(props.policy);
     setDisabledCreateRule(!_isValid);
@@ -124,6 +124,7 @@ const SegmentPolicy: React.FC<Props> = (props: Props) => {
                 onDeleteRule={onDeleteRule}
                 sources={props.sources}
                 destinations={props.destinations}
+                combinations={props.combinations}
               />
             ))}
           </PolicyItemsWrapper>
