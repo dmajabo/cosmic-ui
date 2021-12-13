@@ -1,4 +1,4 @@
-import { IOrganization, ITopologyGroup, VendorTypes } from 'lib/api/ApiModels/Topology/endpoints';
+import { INetworkOrg, INetworkVNetwork, ITopologyGroup, VendorTypes } from 'lib/api/ApiModels/Topology/endpoints';
 import { IVpcSize } from 'lib/helpers/tree';
 import { IBaseEntity, ICollapsed, ICoord, ISelectedListItem, IVisible } from './general';
 export const DEFAULT_GROUP_ID = 'default_group_id';
@@ -149,18 +149,7 @@ export interface IVm extends IBaseEntity<string> {
   uiId?: string;
 }
 
-export interface IVnet extends IBaseEntity<string> {
-  name: string;
-  description: string;
-  extId: string;
-  endpoints: any[];
-  vms: IVm[];
-  cidr: any[] | null;
-  subnets?: any[];
-  securityGroups: any[];
-}
-
-export interface IVnetNode extends IVnet, IMappedNode, ICoord {
+export interface IVnetNode extends INetworkVNetwork, IMappedNode, ICoord {
   nodeSize: IVpcSize;
   applicationGroups: ITopologyGroup[];
 }
@@ -180,7 +169,7 @@ export interface INetworkLink extends IBaseEntity<string> {
   extId: string;
   peerType: string; // enum peerType
   peerExtId: string;
-  vnet: IVnet;
+  vnet: INetworkVNetwork;
 }
 
 export interface IIp {}
@@ -267,7 +256,7 @@ export interface ILink extends IVisible {
 
 export interface IConnectionToLink extends ILink {}
 
-export interface IOrganizationNode extends IOrganization {
+export interface IOrganizationNode extends INetworkOrg {
   type: TOPOLOGY_NODE_TYPES.ORGANIZATION;
 }
 
