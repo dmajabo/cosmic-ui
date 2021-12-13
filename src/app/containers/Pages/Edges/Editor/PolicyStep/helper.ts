@@ -3,6 +3,10 @@ import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
 import { IObject } from 'lib/models/general';
 import { TopologyGroupTypesAsNumber, TopologyGroupTypesAsString } from 'lib/models/topology';
 
+export interface IPolicyCombination {
+  source: ITopologyGroup;
+  destination: ITopologyGroup;
+}
 export const getFilteredGroups = (policies: ISegmentRuleP[] | null, groups: ITopologyGroup[], field: string): ITopologyGroup[] => {
   if (!groups || !groups.length) return [];
   if (!policies || !policies.length) return groups;
@@ -15,22 +19,22 @@ export const getFilteredGroups = (policies: ISegmentRuleP[] | null, groups: ITop
   return _arr;
 };
 
-export const getCartesianValues = (sources: ITopologyGroup[], destination: ITopologyGroup[]): ITopologyGroup[][] => {
+export const getCartesianValues = (sources: ITopologyGroup[], destination: ITopologyGroup[]): IPolicyCombination[] => {
   if (!sources || !sources.length || !destination || !destination.length) return [];
   const _arr1 = sources
     .flatMap(d =>
       destination.map(v => [
-        [d, v],
-        [v, d],
+        { source: d, destination: v },
+        { source: v, destination: d },
       ]),
     )
     .flat();
   return _arr1;
 };
 
-export const getPossibleValues = (policies: ISegmentP[], values: ITopologyGroup[][]): ITopologyGroup[][] => {
+export const getPossibleValues = (policies: ISegmentP[], values: IPolicyCombination[]): IPolicyCombination[] => {
   if (!policies || !policies.length) return values;
-  const _arr: ITopologyGroup[][] = [];
+  const _arr: IPolicyCombination[] = [];
   values.forEach(v => {
     const _isPresent = checkIsCombinationPresent(policies, v);
     if (_isPresent) return;
@@ -39,8 +43,8 @@ export const getPossibleValues = (policies: ISegmentP[], values: ITopologyGroup[
   return _arr;
 };
 
-const checkIsCombinationPresent = (policies: ISegmentP[], v) => {
-  return policies.find(it => it.rules && it.rules.length && it.rules.find(r => r.sourceId === v[0].id && r.destId === v[1].id));
+const checkIsCombinationPresent = (policies: ISegmentP[], v: IPolicyCombination) => {
+  return policies.find(it => it.rules && it.rules.length && it.rules.find(r => r.sourceId === v.source.id && r.destId === v.destination.id));
 };
 
 export const getSegmentType = (gr: ITopologyGroup): SegmentTargetT => {

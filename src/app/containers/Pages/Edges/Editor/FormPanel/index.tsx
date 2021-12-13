@@ -55,7 +55,11 @@ const FormPanel: React.FC<Props> = (props: Props) => {
                 index={edges.steps[0].index + 1}
                 label="General"
                 selected={selectedStep && selectedStep.id === EdgesStepperTypes.GENERAL}
-                validationObject={edges.edgeValidationResult && edges.edgeValidationResult.general ? edges.edgeValidationResult.general : null}
+                validationObject={
+                  (!selectedStep || (selectedStep && selectedStep.id !== EdgesStepperTypes.GENERAL)) && edges.edgeValidationResult && edges.edgeValidationResult.general
+                    ? edges.edgeValidationResult.general
+                    : null
+                }
                 stepNumberWidth="40px"
                 stepNumberHeight="40px"
               />
@@ -79,7 +83,11 @@ const FormPanel: React.FC<Props> = (props: Props) => {
                 stepNumberWidth="40px"
                 stepNumberHeight="40px"
                 selected={selectedStep && selectedStep.id === EdgesStepperTypes.SITES}
-                validationObject={edges.edgeValidationResult && edges.edgeValidationResult.sites ? edges.edgeValidationResult.sites : null}
+                validationObject={
+                  (!selectedStep || (selectedStep && selectedStep.id !== EdgesStepperTypes.SITES)) && edges.edgeValidationResult && edges.edgeValidationResult.sites
+                    ? edges.edgeValidationResult.sites
+                    : null
+                }
               />
             </AccordionHeaderPanel>
             {(!selectedStep || (selectedStep && selectedStep.id !== EdgesStepperTypes.SITES)) && (
@@ -101,7 +109,11 @@ const FormPanel: React.FC<Props> = (props: Props) => {
                 stepNumberWidth="40px"
                 stepNumberHeight="40px"
                 selected={selectedStep && selectedStep.id === EdgesStepperTypes.APPS}
-                validationObject={edges.edgeValidationResult && edges.edgeValidationResult.apps ? edges.edgeValidationResult.apps : null}
+                validationObject={
+                  (!selectedStep || (selectedStep && selectedStep.id !== EdgesStepperTypes.APPS)) && edges.edgeValidationResult && edges.edgeValidationResult.apps
+                    ? edges.edgeValidationResult.apps
+                    : null
+                }
               />
             </AccordionHeaderPanel>
             {(!selectedStep || (selectedStep && selectedStep.id !== EdgesStepperTypes.APPS)) && (
@@ -123,7 +135,11 @@ const FormPanel: React.FC<Props> = (props: Props) => {
                 stepNumberWidth="40px"
                 stepNumberHeight="40px"
                 selected={selectedStep && selectedStep.id === EdgesStepperTypes.EDGES}
-                validationObject={edges.edgeValidationResult && edges.edgeValidationResult.edges ? edges.edgeValidationResult.edges : null}
+                validationObject={
+                  (!selectedStep || (selectedStep && selectedStep.id !== EdgesStepperTypes.EDGES)) && edges.edgeValidationResult && edges.edgeValidationResult.edges
+                    ? edges.edgeValidationResult.edges
+                    : null
+                }
               />
             </AccordionHeaderPanel>
             {(!selectedStep || (selectedStep && selectedStep.id !== EdgesStepperTypes.EDGES)) && (
@@ -145,7 +161,11 @@ const FormPanel: React.FC<Props> = (props: Props) => {
                 stepNumberWidth="40px"
                 stepNumberHeight="40px"
                 selected={selectedStep && selectedStep.id === EdgesStepperTypes.POLICY}
-                validationObject={edges.edgeValidationResult && edges.edgeValidationResult.policy ? edges.edgeValidationResult.policy : null}
+                validationObject={
+                  (!selectedStep || (selectedStep && selectedStep.id !== EdgesStepperTypes.POLICY)) && edges.edgeValidationResult && edges.edgeValidationResult.policy
+                    ? edges.edgeValidationResult.policy
+                    : null
+                }
               />
             </AccordionHeaderPanel>
             {(!selectedStep || (selectedStep && selectedStep.id !== EdgesStepperTypes.POLICY)) && (

@@ -6,18 +6,19 @@ import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { deleteIcon } from 'app/components/SVGIcons/delete';
 import RuleSelect from './RuleSelect';
-import { getDifferentSegmentType, getSegmentType } from './helper';
+import { getDifferentSegmentType, getSegmentType, IPolicyCombination } from './helper';
 import { IFieldValuePair } from 'lib/models/general';
 import Collapse from '@mui/material/Collapse';
 import { arrowBottomIcon } from 'app/components/SVGIcons/arrows';
 import PrimaryButton from 'app/components/Buttons/PrimaryButton';
+import { getSelectedItem } from 'lib/helpers/selectionHelper';
 
 interface Props {
   index: number;
   item: ISegmentRuleP;
   sources: ITopologyGroup[];
   destinations: ITopologyGroup[];
-  combinations: ITopologyGroup[][];
+  combinations: IPolicyCombination[];
   onUpdateField: (value: any | null, field: string, index: number) => void;
   onUpdateRule: (pairs: IFieldValuePair<string | null>[], ruleIndex: number) => void;
   onDeleteRule: (index: number) => void;
@@ -25,6 +26,45 @@ interface Props {
 
 const RuleItem: React.FC<Props> = (props: Props) => {
   const [expanded, setExpanded] = React.useState(props.item.isNew);
+  const [selectedSource, setSelectedSource] = React.useState<ITopologyGroup>(null);
+  const [selectedDest, setSelectedDest] = React.useState<ITopologyGroup>(null);
+  const [possibleSources, setPossibleSource] = React.useState<ITopologyGroup[]>([]);
+  const [possibleDests, setPossibleDest] = React.useState<ITopologyGroup[]>([]);
+  React.useEffect(() => {
+    const _vS: ITopologyGroup = getSelectedItem([...props.sources, ...props.destinations], props.item.sourceId, 'id');
+    const _vD: ITopologyGroup = getSelectedItem([...props.sources, ...props.destinations], props.item.destId, 'id');
+    setSelectedSource(_vS);
+    setSelectedDest(_vD);
+  }, [props.item, props.sources, props.destinations]);
+
+  React.useEffect(() => {
+    if (selectedSource) {
+      let _arr: ITopologyGroup[] = props.combinations.filter(it => it.source.id === selectedSource.id).map(it => it.destination);
+      if (selectedDest) {
+        _arr = _arr.filter(it => it.id !== selectedDest.id);
+      }
+      setPossibleSource(props.combinations.map(it => it.source));
+      setPossibleDest(_arr);
+    } else {
+      const _arr = props.combinations.map(it => it.source);
+      setPossibleSource(_arr);
+    }
+  }, [selectedSource, props.combinations]);
+
+  React.useEffect(() => {
+    if (selectedDest) {
+      let _arr: ITopologyGroup[] = props.combinations.filter(it => it.destination.id === selectedDest.id).map(it => it.source);
+      if (selectedSource) {
+        _arr = _arr.filter(it => it.id !== selectedSource.id);
+      }
+      setPossibleDest(props.combinations.map(it => it.destination));
+      setPossibleSource(_arr);
+    } else {
+      const _arr = props.combinations.map(it => it.destination);
+      setPossibleDest(_arr);
+    }
+  }, [selectedDest, props.combinations]);
+
   const onSourceChange = (value: ITopologyGroup) => {
     const _type: SegmentTargetT = getSegmentType(value);
     let _pairs: IFieldValuePair<string | null>[] = [
@@ -99,21 +139,19 @@ const RuleItem: React.FC<Props> = (props: Props) => {
         </PolicyActionRow>
         <PolicyActionRow>
           <RuleSelect
+            field="source"
             type={props.item.sourceType}
-            sources={props.sources}
-            destinations={props.destinations}
-            value={props.item.sourceId}
-            combinations={props.combinations}
+            possibleValues={possibleSources}
+            selectedValue={selectedSource}
             label="Source"
             id={`${props.index}source`}
             onChange={onSourceChange}
           />
           <RuleSelect
+            field="destination"
             type={props.item.destType}
-            sources={props.sources}
-            destinations={props.destinations}
-            combinations={props.combinations}
-            value={props.item.destId}
+            possibleValues={possibleDests}
+            selectedValue={selectedDest}
             label="Destination"
             id={`${props.index}destination`}
             onChange={onDestinationChange}

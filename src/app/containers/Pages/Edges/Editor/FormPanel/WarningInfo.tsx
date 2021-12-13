@@ -1,11 +1,11 @@
 import React from 'react';
-import { infoIcon } from 'app/components/SVGIcons/infoIcon';
 import Tooltip from '@material-ui/core/Tooltip';
 import { withStyles } from '@material-ui/core/styles';
 import { TooltipPlacement } from 'lib/models/general';
 import Fade from '@material-ui/core/Fade';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { InfoError, InfoErrorWrapper } from './styles';
+import { warningInfo } from 'app/components/SVGIcons/warningInfo';
 const HtmlTooltip = withStyles(() => ({
   tooltip: {
     backgroundColor: 'var(--_primaryBg)',
@@ -53,7 +53,7 @@ const WarningInfo: React.FC<Props> = (props: Props) => {
       }}
     >
       <span style={{ margin: 'auto 30px auto auto', display: 'inline-block', flexShrink: 0 }}>
-        <IconWrapper width="20px" height="20px" icon={infoIcon} />
+        <IconWrapper width="20px" height="20px" icon={warningInfo} />
       </span>
     </HtmlTooltip>
   );

@@ -17,12 +17,13 @@ import { arrowBottomIcon } from 'app/components/SVGIcons/arrows';
 import PrimaryButton from 'app/components/Buttons/PrimaryButton';
 import { PreviewTagCount } from '../FormPanel/styles';
 import { useEdgesDataContext } from 'lib/hooks/Edges/useEdgesDataContext';
+import { IPolicyCombination } from './helper';
 interface Props {
   policy: ISegmentP;
   index: number;
   sources: ITopologyGroup[];
   destinations: ITopologyGroup[];
-  combinations: ITopologyGroup[][];
+  combinations: IPolicyCombination[];
 }
 
 const SegmentPolicy: React.FC<Props> = (props: Props) => {
@@ -30,11 +31,12 @@ const SegmentPolicy: React.FC<Props> = (props: Props) => {
   const [expanded, setExpanded] = React.useState(props.policy.isNew);
   const [disabledCreateRule, setDisabledCreateRule] = React.useState<boolean>(true);
   React.useEffect(() => {
-    const _isValid = onValidate(props.policy);
+    const _isValid = onValidate(props.policy, props.combinations);
     setDisabledCreateRule(!_isValid);
-  }, [props.policy]);
+  }, [props.policy, props.combinations]);
 
-  const onValidate = (_policy: ISegmentP): boolean => {
+  const onValidate = (_policy: ISegmentP, combinations: IPolicyCombination[]): boolean => {
+    if (!combinations || !combinations.length) return false;
     if (!_policy.rules || !_policy.rules.length) return true;
     const _isInValidRule = _policy.rules.some(it => !it.destId || !it.destType || !it.sourceId || !it.sourceType || !it.name);
     if (_isInValidRule) return false;

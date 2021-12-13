@@ -39,6 +39,12 @@ export const getNumberStyles = (props: StepItemWrapperProps) => {
       color: var(--_completedStepperNumberTextColor);
     `;
   }
+  if (props.state === StepperItemStateType.WARNING) {
+    return css`
+      background: var(--_errorColor);
+      color: var(--_completedStepperNumberTextColor);
+    `;
+  }
   return css`
     background: var(--_defStepperBgColor);
     color: var(--_defStepperNumberTextColor);

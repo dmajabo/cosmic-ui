@@ -8,7 +8,7 @@ import SecondaryButton from 'app/components/Buttons/SecondaryButton';
 import { FormRow } from './styles';
 import { plusIcon } from 'app/components/SVGIcons/plusIcon';
 import { EmptyMessage } from '../Components/styles';
-import { getCartesianValues, getPossibleValues } from './helper';
+import { getCartesianValues, getPossibleValues, IPolicyCombination } from './helper';
 
 interface Props {}
 
@@ -16,7 +16,7 @@ const PolicyStep: React.FC<Props> = (props: Props) => {
   const { edges } = useEdgesDataContext();
   const [sources, setSources] = React.useState<ITopologyGroup[]>([]);
   const [destinations, setDestinations] = React.useState<ITopologyGroup[]>([]);
-  const [combinations, setCombinations] = React.useState<ITopologyGroup[][]>([]);
+  const [combinations, setCombinations] = React.useState<IPolicyCombination[]>([]);
 
   React.useEffect(() => {
     if (edges && edges.groups) {
@@ -48,8 +48,8 @@ const PolicyStep: React.FC<Props> = (props: Props) => {
 
   React.useEffect(() => {
     if (sources && sources.length && destinations && destinations.length) {
-      const _arr: ITopologyGroup[][] = getCartesianValues(sources, destinations);
-      const _combinations: ITopologyGroup[][] = getPossibleValues(edges.editEdge.segmentPolicy, _arr);
+      const _arr: IPolicyCombination[] = getCartesianValues(sources, destinations);
+      const _combinations: IPolicyCombination[] = getPossibleValues(edges.editEdge.segmentPolicy, _arr);
       setCombinations(_combinations);
       return;
     }
