@@ -167,6 +167,7 @@ export interface AverageQoe {
 }
 
 export interface FinalTableData {
+  readonly hits?: number;
   readonly id: string;
   readonly name: string;
   readonly sourceOrg: string;
@@ -190,6 +191,25 @@ export enum ColumnAccessor {
   ninetyFifthPercentile = 'ninetyFifthPercentile',
   max = 'max',
   lastDatapoint = 'lastDatapoint',
+  severity = 'severity',
+  hits = 'hits',
+  details = 'details',
+  time = 'time',
+  sessionId = 'sessionId',
+  edgeName = 'edgeName',
+  edgeType = 'edgeType',
+  source = 'source',
+  tgwName = 'tgwName',
+  tgwRegion = 'tgwRegion',
+  tgwBytesin = 'tgwBytesin',
+  awsAccountId = 'awsAccountId',
+  awsAction = 'awsAction',
+  awsRegion = 'awsRegion',
+  wpcId = 'wpcId',
+  instanceId = 'instanceId',
+  sdwanRuleId = 'sdwanRuleId',
+  firewallPolicyId = 'firewallPolicyId',
+  destApp = 'destApp',
   //TODO: change below enum params when api is integrated
   interfaceSource = 'interfaceSource',
   interfaceDestination = 'interfaceDestination',
@@ -213,6 +233,8 @@ export interface Column {
   readonly Header: JSX.Element | string;
   readonly accessor: ColumnAccessor;
   readonly order?: number;
+  readonly id?: string;
+  readonly Cell?: ({ row }: { row: any }) => JSX.Element;
 }
 
 interface HeatMapMetric {
@@ -316,4 +338,43 @@ export interface MetricsExplorerTableData {
   readonly vlanDestination?: string | JSX.Element;
   readonly macAddressSource?: string | JSX.Element;
   readonly macAddressDestination?: string | JSX.Element;
+}
+
+export interface AnomalyExperienceTableData {
+  readonly name: string;
+  readonly severity: string | JSX.Element;
+  readonly hits: number | JSX.Element;
+}
+
+export interface AnomalySlaTestData {
+  readonly hits: number | JSX.Element;
+  readonly id: string;
+  readonly name: string;
+  readonly sourceOrg: string;
+  readonly sourceNetwork: string;
+  readonly sourceDevice: string;
+  readonly destination: string;
+  readonly description: string;
+  readonly averageQoe: JSX.Element;
+}
+
+export interface AnomalySessionLogsData {
+  readonly hits: number | JSX.Element;
+  readonly time: string | number;
+  readonly sessionId: number | string;
+  readonly edgeName: string;
+  readonly edgeType: string;
+  readonly source: string;
+  readonly destination: string;
+  readonly tgwName: string;
+  readonly tgwRegion: string;
+  readonly tgwBytesin: string | number;
+  readonly awsAccountId: number | string;
+  readonly awsAction: string;
+  readonly awsRegion: string;
+  readonly wpcId: string | number;
+  readonly instanceId: string | number;
+  readonly sdwanRuleId: string | number;
+  readonly firewallPolicyId: string | number;
+  readonly destApp: string;
 }

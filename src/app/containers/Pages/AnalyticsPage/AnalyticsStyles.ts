@@ -476,6 +476,56 @@ export const AnalyticsStyles = makeStyles(
       },
       anomalyTabPanelContainer: {
         marginTop: 40,
+        width: '100%',
+      },
+      anomalyTableContainer: {
+        marginTop: 40,
+      },
+      anomalyTableTitle: {
+        color: '#05143A',
+        fontSize: 20,
+        fontWeight: 700,
+        marginRight: 15,
+      },
+      anomalyCount: {
+        fontSize: 16,
+        color: '#437FEC',
+        fontWeight: 500,
+        borderRadius: 20,
+        backgroundColor: '#F3F6FC',
+        padding: '5px 20px 5px 20px',
+      },
+      anomalyExperienceTableTitle: {
+        marginBottom: 20,
+      },
+      sortIcon: {
+        marginLeft: 15,
+      },
+      hitsCount: {
+        color: 'white',
+        backgroundColor: '#2C82C9',
+        textAlign: 'center',
+        width: 50,
+        borderRadius: 20,
+      },
+      severityText: {
+        marginLeft: 10,
+      },
+      anomalySubcomponentTitle: {
+        fontSize: 16,
+        fontWeight: 700,
+        color: '#05143A',
+      },
+      averageQoeText: {
+        paddingTop: 5,
+      },
+      qoeValueText: {
+        paddingLeft: 5,
+        paddingRight: 10,
+      },
+      sessionLogs: {
+        paddingTop: 20,
+        paddingBottom: 10,
       },
     }),
   {

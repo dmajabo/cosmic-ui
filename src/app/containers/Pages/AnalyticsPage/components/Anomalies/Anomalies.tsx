@@ -11,7 +11,7 @@ interface TabPanelProps {
   readonly value: string;
 }
 
-enum AnomalyTabValue {
+export enum AnomalyTabValue {
   Experience = 'Experience',
   Policy = 'Policy',
   Cost = 'Cost',
