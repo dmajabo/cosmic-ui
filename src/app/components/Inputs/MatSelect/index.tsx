@@ -20,6 +20,7 @@ interface Props {
   readOnly?: boolean;
   styles?: Object;
   labelStyles?: Object;
+  selectStyles?: Object;
   selectClaassName?: string;
   labelBefore?: string;
   renderValue?: (v: any) => React.ReactNode;
@@ -98,6 +99,7 @@ const MatSelect: React.FC<Props> = (props: Props) => {
         MenuProps={{ classes: { paper: classes.menuRoot, list: classes.menuList } }}
         className={props.selectClaassName}
         disabled={props.disabled || props.readOnly}
+        style={props.selectStyles}
       >
         {props.options.map((option, index) => {
           if (props.renderOption) {

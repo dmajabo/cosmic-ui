@@ -1,4 +1,4 @@
-import { IBaseTotalCount } from 'lib/api/ApiModels/generalApiModel';
+import { IBasePages, IBaseTotalCount } from 'lib/api/ApiModels/generalApiModel';
 
 export enum AccountVendorTypes {
   AMAZON_AWS = 'AMAZON_AWS',
@@ -31,9 +31,16 @@ export interface IMerakiPolicy {
   flowlogPol: IMerakiFlowLogPolicy;
 }
 
+export enum AwsLogStorageType {
+  CLOUD_WATCH = 'CLOUD_WATCH',
+  S3 = 'S3',
+}
+
 export interface IAwsFlowLogPolicy {
   enable: boolean;
+  logStorageType: AwsLogStorageType;
   logGroupName: string;
+  storageBucketName: string;
 }
 
 export interface IAwsPolicy {
@@ -44,6 +51,15 @@ export interface IAwsPolicy {
   flowlogPol: IAwsFlowLogPolicy;
 }
 
+export interface IAzurePolicy {
+  azureTenantId: string;
+  azureClientId: string;
+  azureClientSecret: string;
+  azureSubscriptionId: string;
+  azureEnvironment: string;
+  azureAdResource: string;
+}
+
 export interface IMeraki_Account extends IAccount {
   merakiPol: IMerakiPolicy;
 }
@@ -52,8 +68,12 @@ export interface IAWS_Account extends IAccount {
   awsPol: IAwsPolicy;
 }
 
-export interface IAccountsRes {
-  controllers: (IMeraki_Account | IAWS_Account)[];
+export interface IAZURE_Account extends IAccount {
+  azurePol: IAzurePolicy;
+}
+
+export interface IAccountsRes extends IBaseTotalCount, IBasePages {
+  controllers: (IMeraki_Account | IAWS_Account | IAZURE_Account)[];
 }
 
 export interface IAwsRegion {

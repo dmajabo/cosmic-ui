@@ -1,4 +1,4 @@
-import { AccountVendorTypes, IAccountsRes, IAWS_Account, IMeraki_Account } from './apiModel';
+import { AccountVendorTypes, AwsLogStorageType, IAccountsRes, IAWS_Account, IMeraki_Account } from './apiModel';
 
 export const getPreparedAccountsRes = (res: IAccountsRes) => {
   if (!res || !res.controllers) return [];
@@ -20,6 +20,8 @@ export const getPreparedAccountsRes = (res: IAccountsRes) => {
         _item.awsPol.flowlogPol = {
           enable: false,
           logGroupName: '',
+          logStorageType: AwsLogStorageType.CLOUD_WATCH,
+          storageBucketName: '',
         };
         return _item;
       }

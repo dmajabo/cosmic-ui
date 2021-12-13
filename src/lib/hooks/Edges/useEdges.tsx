@@ -1,5 +1,5 @@
 import React from 'react';
-import { AccountVendorTypes, IAwsRegion, IAWS_Account, IMeraki_Account } from 'lib/api/ApiModels/Accounts/apiModel';
+import { AccountVendorTypes, IAwsRegion, IAWS_Account, IAZURE_Account, IMeraki_Account } from 'lib/api/ApiModels/Accounts/apiModel';
 import { jsonClone } from 'lib/helpers/cloneHelper';
 import { IDeploymentP, IEdgeP, ISegmentP } from 'lib/api/ApiModels/Edges/apiModel';
 import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
@@ -52,7 +52,7 @@ export interface EdgesContextType {
   onSetGroups: (res: ITopologyGroup[]) => void;
   onSetRegions: (res: IAwsRegion[]) => void;
   onSetWedges: (res: INetworkwEdge[]) => void;
-  onSetAccounts: (res: (IMeraki_Account | IAWS_Account)[]) => void;
+  onSetAccounts: (res: (IMeraki_Account | IAWS_Account | IAZURE_Account)[]) => void;
 }
 
 export function useEdgesContext(): EdgesContextType {
@@ -318,7 +318,7 @@ export function useEdgesContext(): EdgesContextType {
     setRegions(res.map((it, index) => ({ ...it, id: `region${it.code}` })));
   };
 
-  const onSetAccounts = (res: (IMeraki_Account | IAWS_Account)[]) => {
+  const onSetAccounts = (res: (IMeraki_Account | IAWS_Account | IAZURE_Account)[]) => {
     if (!res || !res.length) {
       setAwsAccounts([]);
       return;
