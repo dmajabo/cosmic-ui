@@ -2,11 +2,8 @@ import { ISegmentP, ISegmentRuleP, SegmentTargetT } from 'lib/api/ApiModels/Edge
 import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
 import { IObject } from 'lib/models/general';
 import { TopologyGroupTypesAsNumber, TopologyGroupTypesAsString } from 'lib/models/topology';
+import { IPolicyCombination } from '../../model';
 
-export interface IPolicyCombination {
-  source: ITopologyGroup;
-  destination: ITopologyGroup;
-}
 export const getFilteredGroups = (policies: ISegmentRuleP[] | null, groups: ITopologyGroup[], field: string): ITopologyGroup[] => {
   if (!groups || !groups.length) return [];
   if (!policies || !policies.length) return groups;
@@ -19,17 +16,18 @@ export const getFilteredGroups = (policies: ISegmentRuleP[] | null, groups: ITop
   return _arr;
 };
 
-export const getCartesianValues = (sources: ITopologyGroup[], destination: ITopologyGroup[]): IPolicyCombination[] => {
-  if (!sources || !sources.length || !destination || !destination.length) return [];
-  const _arr1 = sources
-    .flatMap(d =>
-      destination.map(v => [
-        { source: d, destination: v },
-        { source: v, destination: d },
-      ]),
-    )
-    .flat();
-  return _arr1;
+export const getCartesianValues = (a: ITopologyGroup[], b: ITopologyGroup[]): IPolicyCombination[] => {
+  if (!a || !a.length || !b || !b.length) return [];
+  return [].concat(
+    ...a.map(d =>
+      b
+        .map(e => [
+          { source: d, destination: e },
+          { source: e, destination: d },
+        ])
+        .flat(),
+    ),
+  );
 };
 
 export const getPossibleValues = (policies: ISegmentP[], values: IPolicyCombination[]): IPolicyCombination[] => {
@@ -43,8 +41,36 @@ export const getPossibleValues = (policies: ISegmentP[], values: IPolicyCombinat
   return _arr;
 };
 
+export const getAllValues = (values: IPolicyCombination[]): any[] => {
+  if (!values || !values.length) return [];
+  const _arr = new Map();
+  values.forEach(v => {
+    if (!_arr.has(v.source.id)) {
+      _arr.set(v.source.id, v.source);
+    }
+    if (!_arr.has(v.destination.id)) {
+      _arr.set(v.destination.id, v.destination);
+    }
+  });
+  return Array.from(_arr, ([name, value]) => value);
+};
+
+export const getValues = (values: IPolicyCombination[], id: string, selectedField: string): any[] => {
+  if (!values || !values.length) return [];
+  const _arr = new Map();
+  const _filteredItems = values.filter(it => it[selectedField].id === id);
+  let neededField = selectedField === 'source' ? 'destination' : 'source';
+  _filteredItems.forEach(v => {
+    if (_arr.has(v[neededField].id)) return;
+    _arr.set(v[neededField].id, v[neededField]);
+  });
+  return Array.from(_arr, ([name, value]) => value);
+};
+
 const checkIsCombinationPresent = (policies: ISegmentP[], v: IPolicyCombination) => {
-  return policies.find(it => it.rules && it.rules.length && it.rules.find(r => r.sourceId === v.source.id && r.destId === v.destination.id));
+  return policies.find(
+    it => it.rules && it.rules.length && it.rules.find(r => (r.sourceId === v.source.id && r.destId === v.destination.id) || (r.sourceId === v.destination.id && r.destId === v.source.id)),
+  );
 };
 
 export const getSegmentType = (gr: ITopologyGroup): SegmentTargetT => {

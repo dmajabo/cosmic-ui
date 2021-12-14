@@ -6,18 +6,18 @@ import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { deleteIcon } from 'app/components/SVGIcons/delete';
 import RuleSelect from './RuleSelect';
-import { getDifferentSegmentType, getSegmentType, IPolicyCombination } from './helper';
+import { getAllValues, getDifferentSegmentType, getSegmentType, getValues } from './helper';
 import { IFieldValuePair } from 'lib/models/general';
 import Collapse from '@mui/material/Collapse';
 import { arrowBottomIcon } from 'app/components/SVGIcons/arrows';
 import PrimaryButton from 'app/components/Buttons/PrimaryButton';
 import { getSelectedItem } from 'lib/helpers/selectionHelper';
+import { IPolicyCombination } from '../../model';
 
 interface Props {
   index: number;
   item: ISegmentRuleP;
-  sources: ITopologyGroup[];
-  destinations: ITopologyGroup[];
+  groups: ITopologyGroup[];
   combinations: IPolicyCombination[];
   onUpdateField: (value: any | null, field: string, index: number) => void;
   onUpdateRule: (pairs: IFieldValuePair<string | null>[], ruleIndex: number) => void;
@@ -31,39 +31,30 @@ const RuleItem: React.FC<Props> = (props: Props) => {
   const [possibleSources, setPossibleSource] = React.useState<ITopologyGroup[]>([]);
   const [possibleDests, setPossibleDest] = React.useState<ITopologyGroup[]>([]);
   React.useEffect(() => {
-    const _vS: ITopologyGroup = getSelectedItem([...props.sources, ...props.destinations], props.item.sourceId, 'id');
-    const _vD: ITopologyGroup = getSelectedItem([...props.sources, ...props.destinations], props.item.destId, 'id');
+    const _vS: ITopologyGroup = getSelectedItem(props.groups, props.item.sourceId, 'id');
+    const _vD: ITopologyGroup = getSelectedItem(props.groups, props.item.destId, 'id');
     setSelectedSource(_vS);
     setSelectedDest(_vD);
-  }, [props.item, props.sources, props.destinations]);
+  }, [props.item, props.groups]);
 
   React.useEffect(() => {
+    if ((!selectedSource && !selectedDest) || (selectedSource && selectedDest)) {
+      const _values: ITopologyGroup[] = getAllValues(props.combinations);
+      setPossibleSource(_values);
+      setPossibleDest(_values);
+      return;
+    }
     if (selectedSource) {
-      let _arr: ITopologyGroup[] = props.combinations.filter(it => it.source.id === selectedSource.id).map(it => it.destination);
-      if (selectedDest) {
-        _arr = _arr.filter(it => it.id !== selectedDest.id);
-      }
-      setPossibleSource(props.combinations.map(it => it.source));
-      setPossibleDest(_arr);
-    } else {
-      const _arr = props.combinations.map(it => it.source);
-      setPossibleSource(_arr);
+      let _destValues = getValues(props.combinations, selectedSource.id, 'source');
+      _destValues = _destValues.filter(it => it.type !== selectedSource.type);
+      setPossibleDest(_destValues);
     }
-  }, [selectedSource, props.combinations]);
-
-  React.useEffect(() => {
     if (selectedDest) {
-      let _arr: ITopologyGroup[] = props.combinations.filter(it => it.destination.id === selectedDest.id).map(it => it.source);
-      if (selectedSource) {
-        _arr = _arr.filter(it => it.id !== selectedSource.id);
-      }
-      setPossibleDest(props.combinations.map(it => it.destination));
-      setPossibleSource(_arr);
-    } else {
-      const _arr = props.combinations.map(it => it.destination);
-      setPossibleDest(_arr);
+      let _sourceValues = getValues(props.combinations, selectedDest.id, 'destination');
+      _sourceValues = _sourceValues.filter(it => it.type !== selectedDest.type);
+      setPossibleSource(_sourceValues);
     }
-  }, [selectedDest, props.combinations]);
+  }, [selectedSource, selectedDest, props.combinations]);
 
   const onSourceChange = (value: ITopologyGroup) => {
     const _type: SegmentTargetT = getSegmentType(value);

@@ -182,7 +182,7 @@ const FormPanel: React.FC<Props> = (props: Props) => {
       <PanelFotter>
         <SecondaryButton styles={{ height: '100%', margin: '0 10px 0 0' }} label="Cancel" onClick={props.onClose} />
         <PrimaryButton
-          disabled={edges.saveDisabled}
+          disabled={edges.saveDisabled || (edges.editEdge.id && !edges.hasChanges)}
           styles={{ height: '100%', margin: '0 0 0 10px' }}
           label={edges.editEdge && edges.editEdge.id ? 'UPDATE TRANSIT' : 'CREATE TRANSIT'}
           onClick={props.onSave}

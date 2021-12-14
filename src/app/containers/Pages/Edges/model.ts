@@ -7,3 +7,8 @@ export interface EditGroupItem {
 }
 
 export const PolicyActionsValues: string[] = [SegmentRuleAction.ALLOW];
+
+export interface IPolicyCombination {
+  source: ITopologyGroup;
+  destination: ITopologyGroup;
+}

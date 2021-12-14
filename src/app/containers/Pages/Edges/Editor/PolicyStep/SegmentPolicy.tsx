@@ -1,6 +1,5 @@
 import React from 'react';
 import { ISegmentP, ISegmentRuleP } from 'lib/api/ApiModels/Edges/apiModel';
-import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
 import { createNewRulePolicy } from '../helper';
 import TextInput from 'app/components/Inputs/TextInput';
 import { EmptyMessage } from '../Components/styles';
@@ -17,13 +16,10 @@ import { arrowBottomIcon } from 'app/components/SVGIcons/arrows';
 import PrimaryButton from 'app/components/Buttons/PrimaryButton';
 import { PreviewTagCount } from '../FormPanel/styles';
 import { useEdgesDataContext } from 'lib/hooks/Edges/useEdgesDataContext';
-import { IPolicyCombination } from './helper';
+
 interface Props {
   policy: ISegmentP;
   index: number;
-  sources: ITopologyGroup[];
-  destinations: ITopologyGroup[];
-  combinations: IPolicyCombination[];
 }
 
 const SegmentPolicy: React.FC<Props> = (props: Props) => {
@@ -31,12 +27,11 @@ const SegmentPolicy: React.FC<Props> = (props: Props) => {
   const [expanded, setExpanded] = React.useState(props.policy.isNew);
   const [disabledCreateRule, setDisabledCreateRule] = React.useState<boolean>(true);
   React.useEffect(() => {
-    const _isValid = onValidate(props.policy, props.combinations);
+    const _isValid = onValidate(props.policy);
     setDisabledCreateRule(!_isValid);
-  }, [props.policy, props.combinations]);
+  }, [props.policy]);
 
-  const onValidate = (_policy: ISegmentP, combinations: IPolicyCombination[]): boolean => {
-    if (!combinations || !combinations.length) return false;
+  const onValidate = (_policy: ISegmentP): boolean => {
     if (!_policy.rules || !_policy.rules.length) return true;
     const _isInValidRule = _policy.rules.some(it => !it.destId || !it.destType || !it.sourceId || !it.sourceType || !it.name);
     if (_isInValidRule) return false;
@@ -121,12 +116,11 @@ const SegmentPolicy: React.FC<Props> = (props: Props) => {
                 key={`policy${index}`}
                 index={index}
                 item={it}
+                groups={edges.groups}
+                combinations={edges.combinations}
                 onUpdateRule={onUpdateFields}
                 onUpdateField={onUpdateField}
                 onDeleteRule={onDeleteRule}
-                sources={props.sources}
-                destinations={props.destinations}
-                combinations={props.combinations}
               />
             ))}
           </PolicyItemsWrapper>
@@ -144,7 +138,7 @@ const SegmentPolicy: React.FC<Props> = (props: Props) => {
             hoverBg="var(--_errorColor)"
             hoverBorder="var(--_errorColor)"
           />
-          <SecondaryButton disabled={disabledCreateRule} icon={plusIcon} label="CREATE RULE" onClick={onAddRule} />
+          <SecondaryButton disabled={disabledCreateRule || !edges.combinations || !edges.combinations.length} icon={plusIcon} label="CREATE RULE" onClick={onAddRule} />
         </FormRow>
       </Collapse>
     </SegmentPolicyWrapper>

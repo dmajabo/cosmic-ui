@@ -23,7 +23,7 @@ const RuleSelect: React.FC<Props> = (props: Props) => {
     <MatSelect
       id={props.id}
       label={props.label}
-      value={props.selectedValue}
+      value={props.selectedValue || ''}
       options={props.possibleValues}
       styles={{ width: 'calc(50% - 5px)', margin: '0 5px 20px 0' }}
       required

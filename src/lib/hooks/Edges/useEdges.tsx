@@ -17,6 +17,8 @@ import {
   ValidatePolicies,
   checkIsSaveEdgePossible,
 } from 'app/containers/Pages/Edges/Editor/helper';
+import { getCartesianValues, getPossibleValues } from 'app/containers/Pages/Edges/Editor/PolicyStep/helper';
+import { IPolicyCombination } from 'app/containers/Pages/Edges/model';
 
 export interface EdgesContextType {
   dataReadyToShow: boolean;
@@ -31,6 +33,7 @@ export interface EdgesContextType {
   editEdge: IEdgeP;
   edgeValidationResult: IEdgeModelValidation;
   steps: IStepperItem<EdgesStepperTypes>[];
+  combinations: IPolicyCombination[];
   saveDisabled: boolean;
   hasChanges: boolean;
   onClearEditEdgeContext: () => void;
@@ -65,6 +68,7 @@ export function useEdgesContext(): EdgesContextType {
   const [wedges, setWedges] = React.useState<INetworkwEdge[]>([]);
 
   const [editEdge, setEditEdge] = React.useState<IEdgeP>(null);
+  const [combinations, setCombinations] = React.useState<IPolicyCombination[]>([]);
   const [edgeValidationResult, setEditEdgeValidationResult] = React.useState<IEdgeModelValidation>(null);
   const [steps, setSteps] = React.useState<IStepperItem<EdgesStepperTypes>[]>([]);
   const [saveDisabled, setSavedisabled] = React.useState<boolean>(true);
@@ -74,6 +78,7 @@ export function useEdgesContext(): EdgesContextType {
     setEditEdge(null);
     setEditEdgeValidationResult(null);
     setSteps([]);
+    setCombinations([]);
     setSavedisabled(true);
     setHasChanges(false);
   };
@@ -87,6 +92,12 @@ export function useEdgesContext(): EdgesContextType {
       edges: ValidateTransits(_item),
       policy: ValidatePolicies(_item),
     };
+    if (_item.siteGroupIds && _item.siteGroupIds.length && _item.appGroupIds && _item.appGroupIds.length) {
+      const _arr: IPolicyCombination[] = onBuildPossiblePolicyCombinations(groups, _item);
+      setCombinations(_arr);
+    } else {
+      setCombinations([]);
+    }
     const _steps: IStepperItem<EdgesStepperTypes>[] = jsonClone(EdgesStepperItems);
     const _items: IStepperItem<EdgesStepperTypes>[] = updateSteps(_steps, _vO);
     const _isSaveImPosition: boolean = checkIsSaveEdgePossible(_vO);
@@ -131,6 +142,12 @@ export function useEdgesContext(): EdgesContextType {
     const _vO: IEdgeModelValidation = onUpdateValidationObject(edgeValidationResult, _validationObj, EdgesStepperTypes.SITES);
     const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.SITES, _validationObj.state);
     const _isSaveImPosition: boolean = checkIsSaveEdgePossible(_vO);
+    if (_dataItem.siteGroupIds && _dataItem.siteGroupIds.length && _dataItem.appGroupIds && _dataItem.appGroupIds.length) {
+      const _arr: IPolicyCombination[] = onBuildPossiblePolicyCombinations(groups, _dataItem);
+      setCombinations(_arr);
+    } else {
+      setCombinations([]);
+    }
     setSavedisabled(!_isSaveImPosition);
     setEditEdgeValidationResult(_vO);
     setHasChanges(true);
@@ -148,6 +165,12 @@ export function useEdgesContext(): EdgesContextType {
     const _vO: IEdgeModelValidation = onUpdateValidationObject(edgeValidationResult, _validationObj, EdgesStepperTypes.SITES);
     const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.SITES, _validationObj.state);
     const _isSaveImPosition: boolean = checkIsSaveEdgePossible(_vO);
+    if (_dataItem.siteGroupIds && _dataItem.siteGroupIds.length && _dataItem.appGroupIds && _dataItem.appGroupIds.length) {
+      const _arr: IPolicyCombination[] = onBuildPossiblePolicyCombinations(groups, _dataItem);
+      setCombinations(_arr);
+    } else {
+      setCombinations([]);
+    }
     setGroups(_groups);
     setSavedisabled(!_isSaveImPosition);
     setEditEdgeValidationResult(_vO);
@@ -163,6 +186,12 @@ export function useEdgesContext(): EdgesContextType {
     const _vO: IEdgeModelValidation = onUpdateValidationObject(edgeValidationResult, _validationObj, EdgesStepperTypes.APPS);
     const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.APPS, _validationObj.state);
     const _isSaveImPosition: boolean = checkIsSaveEdgePossible(_vO);
+    if (_dataItem.siteGroupIds && _dataItem.siteGroupIds.length && _dataItem.appGroupIds && _dataItem.appGroupIds.length) {
+      const _arr: IPolicyCombination[] = onBuildPossiblePolicyCombinations(groups, _dataItem);
+      setCombinations(_arr);
+    } else {
+      setCombinations([]);
+    }
     setSavedisabled(!_isSaveImPosition);
     setEditEdgeValidationResult(_vO);
     setHasChanges(true);
@@ -180,6 +209,12 @@ export function useEdgesContext(): EdgesContextType {
     const _vO: IEdgeModelValidation = onUpdateValidationObject(edgeValidationResult, _validationObj, EdgesStepperTypes.APPS);
     const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.APPS, _validationObj.state);
     const _isSaveImPosition: boolean = checkIsSaveEdgePossible(_vO);
+    if (_dataItem.siteGroupIds && _dataItem.siteGroupIds.length && _dataItem.appGroupIds && _dataItem.appGroupIds.length) {
+      const _arr: IPolicyCombination[] = onBuildPossiblePolicyCombinations(groups, _dataItem);
+      setCombinations(_arr);
+    } else {
+      setCombinations([]);
+    }
     setGroups(_groups);
     setSavedisabled(!_isSaveImPosition);
     setEditEdgeValidationResult(_vO);
@@ -196,6 +231,14 @@ export function useEdgesContext(): EdgesContextType {
       const _vO: IEdgeModelValidation = onUpdateValidationObject(edgeValidationResult, _validationObj, EdgesStepperTypes.SITES);
       const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.SITES, _validationObj.state);
       const _isSaveImPosition: boolean = checkIsSaveEdgePossible(_vO);
+      if (!removeFromGroups) {
+        if (_dataItem.siteGroupIds && _dataItem.siteGroupIds.length && _dataItem.appGroupIds && _dataItem.appGroupIds.length) {
+          const _arr: IPolicyCombination[] = onBuildPossiblePolicyCombinations(groups, _dataItem);
+          setCombinations(_arr);
+        } else {
+          setCombinations([]);
+        }
+      }
       setEditEdgeValidationResult(_vO);
       setSavedisabled(!_isSaveImPosition);
       setSteps(_items);
@@ -206,12 +249,26 @@ export function useEdgesContext(): EdgesContextType {
       const _vO: IEdgeModelValidation = onUpdateValidationObject(edgeValidationResult, _validationObj, EdgesStepperTypes.APPS);
       const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.APPS, _validationObj.state);
       const _isSaveImPosition: boolean = checkIsSaveEdgePossible(_vO);
+      if (!removeFromGroups) {
+        if (_dataItem.siteGroupIds && _dataItem.siteGroupIds.length && _dataItem.appGroupIds && _dataItem.appGroupIds.length) {
+          const _arr: IPolicyCombination[] = onBuildPossiblePolicyCombinations(groups, _dataItem);
+          setCombinations(_arr);
+        } else {
+          setCombinations([]);
+        }
+      }
       setEditEdgeValidationResult(_vO);
       setSavedisabled(!_isSaveImPosition);
       setSteps(_items);
     }
     if (removeFromGroups) {
       const _groups: ITopologyGroup[] = groups.filter(it => it.id !== id);
+      if (_dataItem.siteGroupIds && _dataItem.siteGroupIds.length && _dataItem.appGroupIds && _dataItem.appGroupIds.length) {
+        const _arr: IPolicyCombination[] = onBuildPossiblePolicyCombinations(_groups, _dataItem);
+        setCombinations(_arr);
+      } else {
+        setCombinations([]);
+      }
       setGroups(_groups);
     }
     setHasChanges(true);
@@ -225,6 +282,9 @@ export function useEdgesContext(): EdgesContextType {
     const _vO: IEdgeModelValidation = onUpdateValidationObject(edgeValidationResult, _validationObj, EdgesStepperTypes.POLICY);
     const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.POLICY, _validationObj.state);
     const _isSaveImPosition: boolean = checkIsSaveEdgePossible(_vO);
+
+    const _combinations: IPolicyCombination[] = onBuildPossiblePolicyCombinations(groups, _dataItem);
+    setCombinations(_combinations);
     setSavedisabled(!_isSaveImPosition);
     setEditEdgeValidationResult(_vO);
     setHasChanges(true);
@@ -239,6 +299,9 @@ export function useEdgesContext(): EdgesContextType {
     const _vO: IEdgeModelValidation = onUpdateValidationObject(edgeValidationResult, _validationObj, EdgesStepperTypes.POLICY);
     const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.POLICY, _validationObj.state);
     const _isSaveImPosition: boolean = checkIsSaveEdgePossible(_vO);
+
+    const _combinations: IPolicyCombination[] = onBuildPossiblePolicyCombinations(groups, _dataItem);
+    setCombinations(_combinations);
     setSavedisabled(!_isSaveImPosition);
     setEditEdgeValidationResult(_vO);
     setHasChanges(true);
@@ -253,11 +316,33 @@ export function useEdgesContext(): EdgesContextType {
     const _vO: IEdgeModelValidation = onUpdateValidationObject(edgeValidationResult, _validationObj, EdgesStepperTypes.POLICY);
     const _items: IStepperItem<EdgesStepperTypes>[] = updateStepById(steps, EdgesStepperTypes.POLICY, _validationObj.state);
     const _isSaveImPosition: boolean = checkIsSaveEdgePossible(_vO);
+
+    const _combinations: IPolicyCombination[] = onBuildPossiblePolicyCombinations(groups, _dataItem);
+    setCombinations(_combinations);
     setSavedisabled(!_isSaveImPosition);
     setEditEdgeValidationResult(_vO);
     setHasChanges(true);
     setSteps(_items);
     setEditEdge(_dataItem);
+  };
+
+  const onBuildPossiblePolicyCombinations = (groups: ITopologyGroup[], dataItem: IEdgeP): IPolicyCombination[] => {
+    const { siteGroupIds, appGroupIds, segmentPolicy } = dataItem;
+    const _sites: ITopologyGroup[] = [];
+    const _apps: ITopologyGroup[] = [];
+    siteGroupIds.forEach(id => {
+      const _gr = groups.find(g => g.id === id);
+      if (!_gr) return;
+      _sites.push(_gr);
+    });
+    appGroupIds.forEach(id => {
+      const _gr = groups.find(g => g.id === id);
+      if (!_gr) return;
+      _apps.push(_gr);
+    });
+    const _arr: IPolicyCombination[] = getCartesianValues(_sites, _apps);
+    const _combinations: IPolicyCombination[] = getPossibleValues(segmentPolicy, _arr);
+    return _combinations;
   };
 
   const onSetData = (res: IEdgeP[]) => {
@@ -346,6 +431,7 @@ export function useEdgesContext(): EdgesContextType {
     onDeleteGroup,
 
     editEdge,
+    combinations,
     edgeValidationResult,
     steps,
     saveDisabled,
