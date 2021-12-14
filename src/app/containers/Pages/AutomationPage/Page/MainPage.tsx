@@ -11,8 +11,7 @@ import { useBreadCrumbDataContext } from 'lib/hooks/Breadcrumb/useBreadcrumbData
 import { AutomationBreadCrumbItemsType } from 'lib/hooks/Breadcrumb/models';
 import EditorPage from './EditorPage';
 import AutomationTable from '../Components/AutomationTable';
-import TriggersTable from '../Components/TriggersTable';
-import { ITrigger } from 'lib/models/Automation/trigger';
+import Triggers from './Triggers';
 
 interface IProps {}
 
@@ -21,22 +20,6 @@ const MainPage: React.FC<IProps> = (props: IProps) => {
   const { breadcrumb } = useBreadCrumbDataContext();
   const [editorPage, setEditorPage] = React.useState<AutomationBreadCrumbItemsType>(null);
   const classes = TabsStyles();
-
-  // TO DO
-  React.useEffect(() => {
-    const _triggers: ITrigger[] = [];
-    for (let i = 0; i < 10; i++) {
-      const _obj: ITrigger = {
-        id: 'testTrigger' + i,
-        name: 'testTrigger' + i,
-        anomaly: [],
-        rules: [],
-        createdDate: new Date(2021, 9, 31 - i).toString(),
-      };
-      _triggers.push(_obj);
-    }
-    automation.onSetTriggers(_triggers);
-  }, []);
 
   React.useEffect(() => {
     if (editorPage && !breadcrumb.automationsBreadCrumbItems.length) {
@@ -89,14 +72,14 @@ const MainPage: React.FC<IProps> = (props: IProps) => {
         value={automation.selectedTab.index}
         index={AUTOMATIONS_TABS[0].index}
       >
-        <AutomationTable onCreateNew={onCreateNewAutomation} />
+        <Triggers onCreateNew={onCreateNewTrigger} />
       </TabPanel>
       <TabPanel
         styles={{ display: 'flex', flexDirection: 'column', flex: automation.selectedTab.index === AUTOMATIONS_TABS[1].index ? '1 1 100%' : '0' }}
         value={automation.selectedTab.index}
         index={AUTOMATIONS_TABS[1].index}
       >
-        <TriggersTable onCreateNew={onCreateNewTrigger} />
+        <AutomationTable onCreateNew={onCreateNewAutomation} />
       </TabPanel>
     </PageWrapperStyles>
   );

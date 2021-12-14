@@ -98,14 +98,10 @@ export interface ISitesRes extends IBaseTotalCount, IBasePages {
 
 export interface IAppsRes extends IBaseTotalCount, IBasePages {
   apps: IVm[];
-  pageSize: number;
-  pageOffset: number;
 }
 
 export interface IWEdgesRes extends IBaseTotalCount, IBasePages {
   wEdges: INetworkwEdge[];
-  pageSize: number;
-  pageOffset: number;
 }
 
 export interface IEdgesRes extends IBaseTotalCount {

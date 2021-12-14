@@ -3,6 +3,7 @@ import { IAwsRegion, IAWS_Account, IAZURE_Account, IMeraki_Account } from 'lib/a
 import { ISelectedListItem } from 'lib/models/general';
 
 export interface AccountsContextType {
+  dataReadyToShow: boolean;
   data: (IMeraki_Account | IAWS_Account | IAZURE_Account)[];
   regions: ISelectedListItem<string>[];
   onSetData: (res: (IMeraki_Account | IAWS_Account | IAZURE_Account)[]) => void;
@@ -11,10 +12,12 @@ export interface AccountsContextType {
   onSetRegions: (res: IAwsRegion[]) => void;
 }
 export function useAccountsContext(): AccountsContextType {
+  const [dataReadyToShow, setDataReadyToShow] = React.useState<boolean>(false);
   const [data, setData] = React.useState<(IMeraki_Account | IAWS_Account | IAZURE_Account)[] | null>([]);
   const [regions, setRegions] = React.useState<ISelectedListItem<string>[]>([]);
 
   const onSetData = (items: (IMeraki_Account | IAWS_Account | IAZURE_Account)[]) => {
+    setDataReadyToShow(true);
     if (!items) {
       setData([]);
       return;
@@ -51,6 +54,7 @@ export function useAccountsContext(): AccountsContextType {
   };
 
   return {
+    dataReadyToShow,
     data,
     regions,
     onSetData,

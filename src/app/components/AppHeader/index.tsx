@@ -33,7 +33,7 @@ const AppHeader: React.FC<Props> = (props: Props) => {
       <HeaderStyles isOpenSidebar={props.isOpenSidebar}>
         <Side margin="0 auto 0 0">
           <PageName>{props.currentPage ? props.currentPage.pageName : null}</PageName>
-          {props.currentPage && props.currentPage.breadcrumb === BreadCrumbTypes.AUTOMATIONS && breadcrumb.automationsBreadCrumbItems && breadcrumb.automationsBreadCrumbItems.length ? (
+          {props.currentPage && props.currentPage.breadcrumb === BreadCrumbTypes.WORK_FLOW && breadcrumb.automationsBreadCrumbItems && breadcrumb.automationsBreadCrumbItems.length ? (
             <BreadCrumb startItem={AutomationBreadCrumbItemsType.ALL} onClick={onAutoMationBreadCrumbChange} items={breadcrumb.automationsBreadCrumbItems} />
           ) : null}
           {props.currentPage && props.currentPage.breadcrumb === BreadCrumbTypes.TRANSIT && breadcrumb.edgesBreadCrumbItems && breadcrumb.edgesBreadCrumbItems.length ? (

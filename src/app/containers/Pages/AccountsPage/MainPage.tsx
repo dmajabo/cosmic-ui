@@ -98,8 +98,8 @@ const MainPage: React.FC<IProps> = (props: IProps) => {
   return (
     <>
       <PageWrapperStyles>
-        {!loading && !error && accounts.data && accounts.data.length ? <PageHeaderRow onCreateAccount={onCreateAccount} /> : null}
-        {!loading && !error && accounts.data && (
+        {accounts.dataReadyToShow && accounts.data && accounts.data.length ? <PageHeaderRow onCreateAccount={onCreateAccount} /> : null}
+        {!loading && !error && accounts.dataReadyToShow && (
           <ContentWrapper>
             {accounts.data.length ? <AccountsListItems onEditAccount={onEditAccount} onDeleteAccount={onDeleteAccount} /> : null}
             {!accounts.data.length ? <AccountsEmptyPage onConnect={onCreateAccount} /> : null}

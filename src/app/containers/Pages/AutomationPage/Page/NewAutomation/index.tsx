@@ -12,8 +12,7 @@ import Footer from '../../Components/Footer';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
 import { getTagIcon, updateStepById, updateSteps } from './helper';
-import { ITrigger } from 'lib/models/Automation/trigger';
-import { useAutomationDataContext } from 'lib/hooks/Automation/useAutomationDataContext';
+// import { useAutomationDataContext } from 'lib/hooks/Automation/useAutomationDataContext';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
@@ -22,16 +21,17 @@ import PanelHeader from '../../Components/PanelHeader';
 import ExpandedIcon from 'app/components/Basic/ExpandedIcon';
 import HeaderTag from '../../Components/Tag/HeaderTag';
 import H2Label from 'app/components/Basic/Labels/H2';
+import { IAlertMeta } from 'lib/api/ApiModels/Workflow/apiModel';
 
 interface Props {
   dataItem?: IAutomation;
 }
 
 const NewAutomation: React.FC<Props> = (props: Props) => {
-  const { automation } = useAutomationDataContext();
+  // const { automation } = useAutomationDataContext();
   const [dataItem, setDataItem] = React.useState<IAutomation>(null);
   const [steps, setSteps] = React.useState<IStepperItem<NewAutomationStepperTypes>[]>(null);
-  const [triggers, setTriggers] = React.useState<ITrigger[]>([]);
+  const [triggers, setTriggers] = React.useState<IAlertMeta[]>([]);
   const [loading, setLoading] = React.useState<boolean>(true);
   const [saveDisabled, setSaveDisabled] = React.useState<boolean>(true);
   const [selectedStep, setSelectedStep] = React.useState<NewAutomationStepperTypes>(NewAutomationStepperTypes.GENERAL);
@@ -49,8 +49,8 @@ const NewAutomation: React.FC<Props> = (props: Props) => {
   }, []);
 
   React.useEffect(() => {
-    setTriggers(automation.triggers);
-  }, [automation.triggers]);
+    setTriggers([]);
+  }, []);
 
   React.useEffect(() => {
     if (steps && steps.length) {

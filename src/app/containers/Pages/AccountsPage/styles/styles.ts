@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 export const ActionRow = styled.div`
   display: flex;
-  padding: 30px 20px;
+  padding: 0 0 20px 0;
 `;
 
 export const ContentWrapper = styled.div`

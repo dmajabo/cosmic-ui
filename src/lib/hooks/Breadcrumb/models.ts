@@ -1,6 +1,6 @@
 export enum AutomationBreadCrumbItemsType {
-  ALL = 'All Automations',
-  NEW = 'New Automation',
+  ALL = 'All workflows',
+  NEW = 'New workflow',
 }
 
 export enum EdgesBreadCrumbItemsType {

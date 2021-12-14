@@ -4,10 +4,10 @@ import RadioButton from 'app/components/Inputs/RadioButton';
 import { TriggersTypes } from '../model';
 import Dropdown from 'app/components/Inputs/Dropdown';
 import { ISelectedListItem } from 'lib/models/general';
-import { ITrigger } from 'lib/models/Automation/trigger';
 import TriggerForm from '../../../Components/TriggerForm';
+import { IAlertMeta } from 'lib/api/ApiModels/Workflow/apiModel';
 interface Props {
-  triggers: ITrigger[];
+  triggers: IAlertMeta[];
   selectedTrigger: string;
   onSelectTrigger: (_value: string) => void;
 }

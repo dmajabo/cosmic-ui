@@ -18,14 +18,14 @@ export const ROUTE = {
   analytics: '/analytics',
   accounts: '/accounts',
   settings: '/settings',
-  automation: '/automation',
+  workflow: '/workflow',
   signUp: '/sign-up',
   sessions: '/sessions',
   notFound: '*',
 };
 
 export enum BreadCrumbTypes {
-  AUTOMATIONS = 'automations',
+  WORK_FLOW = 'workflow',
   NETWORKS = 'networks',
   TRANSIT = 'transit',
 }
@@ -45,7 +45,7 @@ export const APP_PAGES: IPage[] = [
   // { id: 'performanceDashboard', path: ROUTE.performanceDashboard, pageName: 'Performance Dashboard', icon: performanceDashboard, breadcrumb: null },
   { id: 'sessions', path: ROUTE.sessions, pageName: 'Sessions', icon: sessionsIcon, breadcrumb: null },
   { id: 'analytics', path: ROUTE.analytics, pageName: 'Analytics', icon: analyticsIcon, breadcrumb: null },
-  { id: 'automation', path: ROUTE.automation, pageName: 'Automation', icon: automationIcon, breadcrumb: BreadCrumbTypes.AUTOMATIONS },
+  { id: 'workflow', path: ROUTE.workflow, pageName: 'Workflow', icon: automationIcon, breadcrumb: BreadCrumbTypes.WORK_FLOW },
   { id: 'accounts', path: ROUTE.accounts, pageName: 'Accounts', icon: accountsIcon, breadcrumb: null },
   { id: 'settings', path: ROUTE.settings, pageName: 'Settings', icon: settingsIcon, breadcrumb: null },
 ];

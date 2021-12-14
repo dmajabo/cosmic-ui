@@ -19,7 +19,7 @@ export default function BaseRouting() {
         <Route exact path={`${match.path}${ROUTE.transit}`} component={Edges} />
         <Route exact path={`${match.path}${ROUTE.sessions}`} component={SessionsPage} />
         <Route exact path={`${match.path}${ROUTE.analytics}`} component={AnalyticsPage} />
-        <Route path={`${match.path}${ROUTE.automation}`} component={AutomationPage} />
+        <Route path={`${match.path}${ROUTE.workflow}`} component={AutomationPage} />
         <Route path={`${match.path}${ROUTE.accounts}`} component={AccountsPage} />
         <Route exact path={`${match.path}${ROUTE.settings}`} component={SettingsPage} />
         <Redirect path={ROUTE.notFound} to={`${match.path}${ROUTE.dashboard}`} />
