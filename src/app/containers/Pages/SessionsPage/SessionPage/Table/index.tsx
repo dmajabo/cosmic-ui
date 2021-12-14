@@ -92,7 +92,7 @@ const Table: React.FC<Props> = (props: Props) => {
         disableColumnMenu
         hideFooter
         headerHeight={50}
-        rowHeight={50}
+        rowHeight={70}
         rowCount={props.logCount}
         disableColumnFilter
         autoHeight

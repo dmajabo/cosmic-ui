@@ -4,69 +4,114 @@ import { useEdgesDataContext } from 'lib/hooks/Edges/useEdgesDataContext';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { logoIcon } from 'app/components/SVGIcons/pagesIcons/logo';
 import { poloAltoIcon } from 'app/components/SVGIcons/edges/poloAlto';
-import { IDeploymentP, INwServicesP, NwServicesVendor, NwServiceT } from 'lib/api/ApiModels/Edges/apiModel';
+import { NwServicesVendor, DeploymentTypes, NwServiceT, IEdgeP } from 'lib/api/ApiModels/Edges/apiModel';
+import { wedgeIcon } from 'app/components/SVGIcons/topologyIcons/wedge';
 
 interface IMapRegion {
   code: string;
   city: string;
 }
-interface Props {
-  deploymentPolicy: IDeploymentP[];
-  nwServicesPolicy: INwServicesP[];
-}
+interface Props {}
 
 const TransitPreview: React.FC<Props> = (props: Props) => {
   const { edges } = useEdgesDataContext();
   const [selectedRegions, setSelectedRegions] = React.useState<IMapRegion[]>([]);
+  const [selectedWedges, setSelectedWedges] = React.useState<string[]>([]);
+  const [canShowPreview, setcanShowPreview] = React.useState<boolean>(false);
   React.useEffect(() => {
-    if (!props.deploymentPolicy || !props.deploymentPolicy.length) {
+    if (!edges.editEdge.deploymentPolicy || !edges.editEdge.deploymentPolicy.length) {
       setSelectedRegions([]);
+      setSelectedWedges([]);
       return;
     }
-    // to do
-    if (!props.deploymentPolicy[0].regionCode || !props.deploymentPolicy[0].regionCode.length) {
-      setSelectedRegions([]);
+    if (edges.editEdge.deploymentPolicy[0].deploymentType === DeploymentTypes.NEW_REGIONS) {
+      if (!edges.editEdge.deploymentPolicy[0].regionCode || !edges.editEdge.deploymentPolicy[0].regionCode.length) {
+        setSelectedRegions([]);
+        return;
+      }
+      const _arr: IMapRegion[] = [];
+      if (edges.regions && edges.regions.length) {
+        edges.editEdge.deploymentPolicy[0].regionCode.forEach(it => {
+          const _item = edges.regions.find(reg => reg.code === it);
+          if (_item) {
+            _arr.push({ code: it, city: _item.city });
+          } else {
+            _arr.push({ code: it, city: null });
+          }
+        });
+      }
+      setSelectedRegions(_arr);
+      setSelectedWedges([]);
       return;
     }
-    const _arr: IMapRegion[] = [];
-    if (edges.regions && edges.regions.length) {
-      props.deploymentPolicy[0].regionCode.forEach(it => {
-        const _item = edges.regions.find(reg => reg.code === it);
-        if (_item) {
-          _arr.push({ code: it, city: _item.city });
-        } else {
-          _arr.push({ code: it, city: null });
-        }
-      });
+    if (edges.editEdge.deploymentPolicy[0].deploymentType === DeploymentTypes.EXISTING_GWS) {
+      if (!edges.editEdge.deploymentPolicy[0].wanGwExtIds || !edges.editEdge.deploymentPolicy[0].wanGwExtIds.length) {
+        setSelectedWedges([]);
+        return;
+      }
+      const _arr: string[] = [];
+      if (edges.wedges && edges.wedges.length) {
+        edges.editEdge.deploymentPolicy[0].wanGwExtIds.forEach(it => {
+          const _item = edges.wedges.find(reg => reg.extId === it);
+          if (_item) {
+            _arr.push(_item.name);
+          } else {
+            _arr.push(it);
+          }
+        });
+      }
+      setSelectedWedges(_arr);
+      setSelectedRegions([]);
     }
-    setSelectedRegions(_arr);
-  }, [props.deploymentPolicy]);
+  }, [edges.editEdge.deploymentPolicy]);
 
-  if ((!props.deploymentPolicy || !props.deploymentPolicy.length) && (!props.nwServicesPolicy || !props.nwServicesPolicy.length)) return null;
+  React.useEffect(() => {
+    const canShow = onChackIsPossibleToShow(edges.editEdge);
+    setcanShowPreview(canShow);
+  }, [selectedRegions, selectedWedges]);
+
+  const onChackIsPossibleToShow = (dataItem: IEdgeP) => {
+    if (!dataItem || !edges.editEdge.deploymentPolicy || !edges.editEdge.deploymentPolicy.length) {
+      return false;
+    }
+    const _serviceTypePresent = !!edges.editEdge.deploymentPolicy[0].nwServicesPolicy[0].serviceType;
+    if (_serviceTypePresent) return true;
+    const _controllerNamePresent = !!edges.editEdge.deploymentPolicy[0].controllerName;
+    if (_controllerNamePresent) return true;
+    if (edges.editEdge.deploymentPolicy[0].deploymentType === DeploymentTypes.NEW_REGIONS) {
+      return !!(selectedRegions && selectedRegions.length);
+    }
+    if (edges.editEdge.deploymentPolicy[0].deploymentType === DeploymentTypes.EXISTING_GWS) {
+      return !!(selectedWedges && selectedWedges.length);
+    }
+    return false;
+  };
+
+  if (!canShowPreview) return null;
   return (
     <PreviewWrapper>
-      {props.nwServicesPolicy[0].serviceType === NwServiceT.FIREWALL && (
-        <PreviewRow margin="20px 0 0 0">
+      {edges.editEdge.deploymentPolicy[0].nwServicesPolicy[0].serviceType === NwServiceT.FIREWALL && (
+        <PreviewRow margin="8px 0 0 0">
           <PreviewText className="label" margin="0 16px 0 0">
             Add Firewall in each edge region:
           </PreviewText>
           <IconWrapper width="20px" height="18px" icon={poloAltoIcon()} />
-          {props.nwServicesPolicy[0].serviceVendor === NwServicesVendor.PALO_ALTO_NW && (
+          {edges.editEdge.deploymentPolicy[0].nwServicesPolicy[0].serviceVendor === NwServicesVendor.PALO_ALTO_NW && (
             <PreviewText className="label" margin="0 0 0 12px">
               Palo Alto
             </PreviewText>
           )}
         </PreviewRow>
       )}
-      {props.deploymentPolicy[0].controllerName && (
+      {edges.editEdge.deploymentPolicy[0].controllerName && (
         <PreviewRow margin="8px 0 0 0">
           <PreviewText className="label" margin="0 4px 0 0">
             Account:
           </PreviewText>
-          <PreviewText color="var(--_disabledTextColor)">{props.deploymentPolicy[0].controllerName}</PreviewText>
+          <PreviewText color="var(--_disabledTextColor)">{edges.editEdge.deploymentPolicy[0].controllerName}</PreviewText>
         </PreviewRow>
       )}
-      {selectedRegions && selectedRegions.length ? (
+      {edges.editEdge.deploymentPolicy[0].deploymentType === DeploymentTypes.NEW_REGIONS && selectedRegions && selectedRegions.length ? (
         <PreviewRow margin="8px 0 0 0" wrap="wrap">
           {selectedRegions.map(it => (
             <PreviewTag key={`previewTag${it.code}`}>
@@ -79,6 +124,16 @@ const TransitPreview: React.FC<Props> = (props: Props) => {
               <PreviewText margin="auto 0" color="var(--_disabledTextColor)">
                 ( {it.code} )
               </PreviewText>
+            </PreviewTag>
+          ))}
+        </PreviewRow>
+      ) : null}
+      {edges.editEdge.deploymentPolicy[0].deploymentType === DeploymentTypes.EXISTING_GWS && selectedWedges && selectedWedges.length ? (
+        <PreviewRow margin="8px 0 0 0" wrap="wrap">
+          {selectedWedges.map((it, index) => (
+            <PreviewTag key={`previewTagwanGwExtIds${index}`}>
+              <IconWrapper styles={{ margin: 'auto 12px auto 0', verticalAlign: 'top' }} width="20px" height="20px" icon={wedgeIcon()} />
+              <PreviewText margin="auto 0">{it}</PreviewText>
             </PreviewTag>
           ))}
         </PreviewRow>

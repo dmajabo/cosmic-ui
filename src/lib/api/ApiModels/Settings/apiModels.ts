@@ -25,3 +25,21 @@ export interface IAdminsUser extends IBaseEntity<string> {
   profile: IProfile;
   apiAccess: string;
 }
+
+export interface IAuditLogsRes {
+  count: string | number;
+  auditLogs: INetworkAuditLog[];
+}
+
+export interface INetworkAuditLog extends IBaseEntity<string> {
+  reqBody: string;
+  tenantId: string;
+  userName: string;
+  userEmail: string;
+  reqType: string;
+  reqUrl: string;
+  userIP: string;
+  respStatusCode: number;
+  serviceName: string;
+  timestamp: string;
+}

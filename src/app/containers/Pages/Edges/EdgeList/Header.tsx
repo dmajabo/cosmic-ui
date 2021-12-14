@@ -21,7 +21,7 @@ const Header: React.FC<Props> = (props: Props) => {
       </ActionPart>
       <ActionPart width="50%" margin="0 0 0 auto" justifyContent="flex-end">
         <SecondaryButton height="50px" onClick={props.onOpenFilterPanel} styles={{ margin: '0 20px 0 0' }} withoutBorder label="Filter" icon={filterIcon} />
-        <PrimaryButton height="50px" label="Create Edge" icon={addIcon} onClick={props.onCreateEdge} />
+        <PrimaryButton height="50px" label="Create Transit" icon={addIcon} onClick={props.onCreateEdge} />
       </ActionPart>
     </ActionRowStyles>
   );

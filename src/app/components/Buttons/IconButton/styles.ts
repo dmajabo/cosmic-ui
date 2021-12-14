@@ -2,8 +2,8 @@ import styled from 'styled-components';
 import { defaultTransition } from 'styles/global-styles';
 
 export const Button = styled.button`
-  width: 40px;
-  height: 40px;
+  width: 50px;
+  height: 50px;
   outline: 0;
   padding: 0;
   background: var(--_primaryButtonBg);

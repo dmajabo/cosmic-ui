@@ -9,19 +9,20 @@ export const PolicyItemsWrapper = styled.div`
 `;
 
 interface RowProps {
-  justifyContent?: 'flex-start' | 'flex-end';
+  margin?: string;
+  justifyContent?: 'flex-start' | 'flex-end' | 'space-between';
 }
 export const FormRow = styled.div<RowProps>`
   flex-shrink: 0;
   display: flex;
   justify-content: ${props => props.justifyContent || 'flex-start'};
-  margin-bottom: 20px;
+  margin: ${props => props.margin || '0 0 20px 0'};
 `;
 
 export const PolicyItemWrapper = styled.div`
   width: 100%;
   padding: 20px;
-  height: 245px;
+  flex-shrink: 0;
   background: var(--_appBg);
   border-radius: 6px;
   margin: 0 0 20px 0;
@@ -59,4 +60,13 @@ export const PolicyActionRow = styled.div<RowProps>`
       opacity: 1;
     }
   }
+`;
+
+export const SegmentPolicyWrapper = styled.div`
+  width: 100%;
+  background-color: var(--_primaryBg);
+  border-radius: 6px;
+  margin: 0 0 20px 0;
+  padding: 20px;
+  border: 1px solid var(--_borderColor);
 `;

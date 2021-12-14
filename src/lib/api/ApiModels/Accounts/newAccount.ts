@@ -1,4 +1,4 @@
-import { AccountVendorTypes, IAWS_Account, IMeraki_Account } from './apiModel';
+import { AccountVendorTypes, AwsLogStorageType, IAWS_Account, IMeraki_Account } from './apiModel';
 
 export const createNewCiscoMerakiAccount = () => {
   const _obj: IMeraki_Account = {
@@ -31,7 +31,9 @@ export const createNewAwsAccount = () => {
       regions: [],
       flowlogPol: {
         enable: false,
+        logStorageType: AwsLogStorageType.CLOUD_WATCH,
         logGroupName: '',
+        storageBucketName: '',
       },
     },
   };

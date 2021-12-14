@@ -11,6 +11,7 @@ export const PreviewWrapper = styled.div`
   flex-direction: column;
   width: 100%;
   flex-shrink: 0;
+  margin: 12px 0 0 0;
 `;
 
 interface RowProps {
@@ -65,6 +66,7 @@ export const PreviewTagCount = styled.span`
 
 interface PreviewTagProps {
   bg?: string;
+  fontSize?: string;
 }
 export const PreviewTag = styled.span<PreviewTagProps>`
   display: inline-flex;
@@ -73,6 +75,8 @@ export const PreviewTag = styled.span<PreviewTagProps>`
   margin: 3px 6px 3px 0;
   border-radius: 30px;
   padding: 5px 20px;
+  height: 30px;
+  font-size: ${props => props.fontSize || 'inherit'};
   background: ${props => props.bg || 'var(--_tableBg)'};
 `;
 
@@ -125,4 +129,21 @@ export const PanelContentLabel = styled.div`
   line-height: 21px;
   color: var(--_primaryColor);
   margin: 0 0 20px 0;
+`;
+
+export const InfoErrorWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  max-width: 400px;
+  overflow: hidden;
+`;
+
+export const InfoError = styled.div`
+  font-family: 'DMSans';
+  font-style: normal;
+  font-size: 12px;
+  margin: 0 0 4px 0;
+  flex-shrink: 0;
+  text-align: left;
+  line-height: 16px;
 `;

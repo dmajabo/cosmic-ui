@@ -26,7 +26,7 @@ const TableHeader: React.FC<Props> = (props: Props) => {
           <GridLabel>Logs</GridLabel>
           {!props.count ? null : <GridCount>{props.count}</GridCount>}
         </GridLabelWrapper>
-        <ColumnFilter label="Columns" icon={columnsIcon} items={props.columns} draggable onItemClick={onColumnChange} onChangeOrder={onChangeOrder} />
+        <ColumnFilter label="Columns" popupLabel="Columns" icon={columnsIcon} items={props.columns} draggable onItemClick={onColumnChange} onChangeOrder={onChangeOrder} />
       </GridHeaderWrapper>
     </>
   );

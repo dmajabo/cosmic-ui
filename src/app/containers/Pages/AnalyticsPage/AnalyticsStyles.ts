@@ -1,25 +1,27 @@
 import { Theme, createStyles, makeStyles } from '@material-ui/core';
 import { borderRadius } from 'react-select/src/theme';
+import { APP_HEADER_HEIGHT } from 'lib/constants/general';
 import DragIcon from './icons/metrics explorer/drag.svg';
 
 export const AnalyticsStyles = makeStyles(
   (theme: Theme) =>
     createStyles({
       analyticsContainer: {
-        padding: 30,
+        padding: '20px 30px 30px 30px',
         position: 'relative',
+        display: 'flex',
+        flexDirection: 'column',
         width: '100%',
-        height: '90%',
+        minHeight: '100%',
       },
       fixedTabBar: {
         position: 'sticky',
         top: 80,
-        marginTop: -20,
         width: '100%',
         paddingTop: 10,
         paddingBottom: 10,
         backgroundColor: '#F3F6FC',
-        zIndex: 2,
+        zIndex: 3,
       },
       tabLabel: {
         textTransform: 'none',
@@ -34,30 +36,32 @@ export const AnalyticsStyles = makeStyles(
         fontWeight: 700,
       },
       tabContainer: {
-        height: '100%',
+        flexGrow: 1,
+        minHeight: 'calc(100% - 68px)', // 68px equal to tab panel height
       },
       metricsExplorerContainer: {
         display: 'flex',
         justifyContent: 'space-between',
-        maxHeight: '90%',
+        height: 'calc(100vh - 199px)',
         maxWidth: '100vw',
+        paddingTop: 20,
       },
       leftBox: {
-        backgroundColor: 'white',
+        backgroundColor: 'var(--_primaryBg)',
         padding: '0px 20px 20px 20px',
         width: 'calc(100% - 450px)',
         borderRadius: 6,
-        height: '78vh',
+        height: '100%',
         overflow: 'auto',
       },
       rightBox: {
-        backgroundColor: 'white',
+        backgroundColor: 'var(--_primaryBg)',
         position: 'fixed',
         right: 35,
-        marginTop: -130,
+        top: APP_HEADER_HEIGHT,
         marginRight: -30,
         width: 450,
-        height: '100vh',
+        height: `calc(100vh - ${APP_HEADER_HEIGHT})`,
         zIndex: 3,
         padding: 30,
         overflowY: 'scroll',
@@ -66,27 +70,26 @@ export const AnalyticsStyles = makeStyles(
       rightContainerTitle: {
         fontSize: 22,
         fontWeight: 700,
-        color: '#05143A',
-        padding: '20px 0px 20px 20px',
+        color: 'var(--_primaryColor)',
+        padding: '30px 0px',
         position: 'sticky',
-        marginLeft: -20,
         zIndex: 2,
-        top: 0,
-        backgroundColor: 'white',
-        width: 450,
+        top: -30,
+        marginTop: -30,
+        backgroundColor: 'var(--_primaryBg)',
+        width: '100%',
       },
       rightBoxContent: {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        marginBottom: 60,
       },
       customizationTabContainer: {
         background: '#FBFCFE',
         border: '1px solid #CBD2DC',
         boxSizing: 'border-box',
         borderRadius: 6,
-        width: 390,
+        width: '100%',
         marginBottom: 10,
         padding: 17,
       },
@@ -459,6 +462,7 @@ export const AnalyticsStyles = makeStyles(
         backgroundColor: 'white',
         borderRadius: 6,
         padding: 30,
+        marginTop: 20,
       },
       anomalyTabContainer: {
         backgroundColor: '#F3F6FC',

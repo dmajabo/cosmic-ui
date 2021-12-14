@@ -22,12 +22,11 @@ import { IBaseEntity, IObject } from 'lib/models/general';
 
 interface Props {
   data: EditGroupItem;
-  onAddGroup: (group: ITopologyGroup, index: number | null) => void;
+  onAddGroup: (group: ITopologyGroup) => void;
 }
 
 const NetworkEditor: React.FC<Props> = (props: Props) => {
   const userContext = React.useContext<UserContextState>(UserContext);
-  const [dataItemIndex] = React.useState<number | null>(props.data.index);
   const [dataItem, setDataItem] = React.useState<ITopologyGroup>(props.data.group);
   const [radioGroupValue, setRadioGroupValue] = React.useState<SelectorEvalType>(props.data.group.evalType);
   const { response: loadGroupRes, loading, onGet: onLoadGroup } = useGet<ITopologyGroup>();
@@ -84,7 +83,7 @@ const NetworkEditor: React.FC<Props> = (props: Props) => {
 
   React.useEffect(() => {
     if (loadGroupRes) {
-      props.onAddGroup(loadGroupRes, dataItemIndex);
+      props.onAddGroup(loadGroupRes);
     }
   }, [loadGroupRes]);
 

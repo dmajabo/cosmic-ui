@@ -30,7 +30,6 @@ const MainPage: React.FC<Props> = (props: Props) => {
   const { response: resDelete, onDelete: onDeleteEedge } = useDelete<any>();
   const { edges } = useEdgesDataContext();
   const [showEditorPage, setShowEditorPage] = React.useState(false);
-  const [edgeDataItem, setEdgeDataItem] = React.useState<IEdgeP>(null);
   const [tempItem, setTempItem] = React.useState<IEdgeP>(null);
   React.useEffect(() => {
     onTryLoadEdges();
@@ -86,7 +85,7 @@ const MainPage: React.FC<Props> = (props: Props) => {
 
   React.useEffect(() => {
     if (showEditorPage && !breadcrumb.edgesBreadCrumbItems.length) {
-      setEdgeDataItem(null);
+      edges.onClearEditEdgeContext();
       setShowEditorPage(false);
       return;
     }
@@ -118,12 +117,13 @@ const MainPage: React.FC<Props> = (props: Props) => {
   const onOpenEditor = (_item?: IEdgeP) => {
     const _bredCrumbState = _item && _item.id ? EdgesBreadCrumbItemsType.EDIT : EdgesBreadCrumbItemsType.CREATE;
     breadcrumb.onGoToEdges(_bredCrumbState);
-    setEdgeDataItem(_item || null);
+    edges.onSetEditEdge(_item || null);
   };
 
   const onCloseEditor = () => {
+    setShowEditorPage(false);
+    edges.onClearEditEdgeContext();
     breadcrumb.onGoToEdges(EdgesBreadCrumbItemsType.EDGES);
-    setEdgeDataItem(null);
   };
 
   const onDeleteEdge = (_item: IEdgeP) => {
@@ -144,17 +144,17 @@ const MainPage: React.FC<Props> = (props: Props) => {
   }
 
   if (showEditorPage) {
-    return <Editor dataItem={edgeDataItem} onClose={onCloseEditor} />;
+    return <Editor onClose={onCloseEditor} />;
   }
   if (edges.dataReadyToShow) {
     return (
       <>
         {!edges.data || !edges.data.length ? (
-          <EmptyPage iconStyles={{ width: '80vw', maxWidth: '834px', height: '50vw', maxHeight: '416px' }} iconAsString={imgBg} buttonLabel="Create Edge" onClick={() => onOpenEditor()}>
+          <EmptyPage iconStyles={{ width: '80vw', maxWidth: '834px', height: '50vw', maxHeight: '416px' }} iconAsString={imgBg} buttonLabel="Create Transit" onClick={() => onOpenEditor()}>
             <StepperText highLight margin="0 auto 20px auto">
-              There is no created edges yet
+              There are no created transits yet
             </StepperText>
-            <StepperText margin="0 auto">To create an edge click on the button below.</StepperText>
+            <StepperText margin="0 auto">To create a transit click on the button below.</StepperText>
           </EmptyPage>
         ) : null}
         {edges.data && edges.data.length ? <EdgeList data={edges.data} onCreate={onOpenEditor} onEdit={onOpenEditor} onDelete={onDeleteEdge} /> : null}

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { sideBarCloseWidth, sideBarOpenWidth } from 'app/components/Sidebar/styles';
-import { DEFAULT_TRANSITION } from 'lib/constants/general';
+import { APP_HEADER_HEIGHT, DEFAULT_TRANSITION } from 'lib/constants/general';
 export const WrapperLayout = styled.section`
   display: flex;
   flex-direction: row;
@@ -14,9 +14,9 @@ interface LayoutWithHeaderFooterSidebarProps {
 }
 export const WrapperContent = styled.main<LayoutWithHeaderFooterSidebarProps>`
   width: ${props => (props.isOpen ? `calc(100% - ${sideBarOpenWidth})` : `calc(100% - ${sideBarCloseWidth})`)};
-  min-height: 100%;
+  min-height: ${`calc(100% - ${APP_HEADER_HEIGHT})`};
   transition: margin-left ${DEFAULT_TRANSITION}, width ${DEFAULT_TRANSITION};
-  margin: 81px 0 0 ${props => (props.isOpen ? sideBarOpenWidth : sideBarCloseWidth)};
+  margin: ${APP_HEADER_HEIGHT} 0 0 ${props => (props.isOpen ? sideBarOpenWidth : sideBarCloseWidth)};
   display: flex;
   flex-direction: column;
   position: relative;

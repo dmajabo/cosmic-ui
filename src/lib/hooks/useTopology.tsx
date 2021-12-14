@@ -124,7 +124,7 @@ export function useTopologyContext(): TopologyContextType {
     setDataReadyToShow(DATA_READY_STATE.SUCCESS);
   };
 
-  // const onCreateOrganization = (index: number): IOrganization => {
+  // const onCreateOrganization = (index: number): INetworkOrg => {
   //   return {
   //     id: `0xeaa4_temporaryDevice${index}`,
   //     name: "Getriskaware",

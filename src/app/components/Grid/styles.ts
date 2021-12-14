@@ -24,3 +24,18 @@ export const GridCellLabel = styled.span<ICellProps>`
   margin: auto 0;
   cursor: ${props => props.cursor || 'pointer'};
 `;
+
+interface ICellProps {
+  color?: string;
+  cursor?: 'pointer' | 'default';
+}
+export const GridCellStatusCircle = styled.span<ICellProps>`
+  background: ${props => props.color || 'var(--_primaryColor)'};
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin: auto 12px auto 0;
+  user-select: none;
+  pointer-events: none;
+`;

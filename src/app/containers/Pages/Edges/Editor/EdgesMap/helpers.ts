@@ -1,7 +1,7 @@
-import { DeploymentTypes, IEdgePolicy } from 'lib/api/ApiModels/Edges/apiModel';
+import { DeploymentTypes, ISegmentP, SegmentTargetT } from 'lib/api/ApiModels/Edges/apiModel';
 import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
 import { jsonClone } from 'lib/helpers/cloneHelper';
-import { INetworkwEdge } from 'lib/models/topology';
+import { INetworkwEdge, TopologyGroupTypesAsString } from 'lib/models/topology';
 
 export const EDGE_MAP_CONSTANTS = {
   svg: 'edgeMap',
@@ -18,14 +18,17 @@ export const EDGE_MAP_CONSTANTS = {
 };
 
 export const SVG_EDGES_STYLES = {
+  viewBox: '0 0 1200 816',
+  mapColumn: 400,
   siteNode: {
-    width: 204,
+    width: 304,
   },
   appNode: {
-    width: 204,
+    width: 304,
   },
   transitNode: {
-    width: 124,
+    width: 164,
+    height: 120,
   },
   link: {
     strokeWidth: 0.5,
@@ -96,6 +99,7 @@ export interface ITransitionObject {
 
 export interface IEdgeLink {
   id: string;
+  sourceType: SegmentTargetT;
   source: ISvgEdgeGroup;
   destination: ISvgEdgeGroup;
   transit: ISvgTransitNode[];
@@ -106,31 +110,49 @@ export interface ILinkObject {
   scale: number;
 }
 
-export const buildLinks = (sources: INodesObject, destinations: INodesObject, transits: ITransitionObject, policies: IEdgePolicy[], idPrefix: string): ILinkObject => {
+const getNodeFromPolicyRule = (sources: INodesObject, destinations: INodesObject, type: SegmentTargetT, id: string) => {
+  let _n: ISvgEdgeGroup = null;
+  if (type === SegmentTargetT.SITE_GROUP) {
+    let nodeS = sources.nodes.find(it => it.id === id);
+    if (nodeS) {
+      _n = nodeS;
+    }
+    return _n;
+  }
+  if (type === SegmentTargetT.APP_GROUP) {
+    let nodeS = destinations.nodes.find(it => it.id === id);
+    if (nodeS) {
+      _n = nodeS;
+    }
+    return _n;
+  }
+  return _n;
+};
+
+export const buildLinks = (sources: INodesObject, destinations: INodesObject, transits: ITransitionObject, policies: ISegmentP[], idPrefix: string): ILinkObject => {
   const _arr: IEdgeLink[] = [];
   policies.forEach((policy, index) => {
-    const link: IEdgeLink = {
-      id: `${idPrefix}${index}`,
-      source: null,
-      destination: null,
-      transit: null,
-    };
-    if (sources && sources.nodes && sources.nodes.length) {
-      const _s = sources.nodes.find(it => it.id === policy.source);
-      if (_s) {
-        link.source = _s;
+    if (!policy.rules || !policy.rules.length) return;
+    policy.rules.forEach((rule, ruleIndex) => {
+      const link: IEdgeLink = {
+        id: `${idPrefix}${index}${ruleIndex}`,
+        sourceType: null,
+        source: null,
+        destination: null,
+        transit: null,
+      };
+      link.sourceType = rule.sourceType;
+      if (sources && sources.nodes && sources.nodes.length && rule.sourceType && rule.sourceId) {
+        link.source = getNodeFromPolicyRule(sources, destinations, rule.sourceType, rule.sourceId);
       }
-    }
-    if (destinations && destinations.nodes && destinations.nodes.length) {
-      const _d = destinations.nodes.find(it => it.id === policy.destination);
-      if (_d) {
-        link.destination = _d;
+      if (destinations && destinations.nodes && destinations.nodes.length) {
+        link.destination = getNodeFromPolicyRule(sources, destinations, rule.destType, rule.destId);
       }
-    }
-    if (transits && transits.nodes && transits.nodes.length) {
-      link.transit = [...transits.nodes];
-    }
-    _arr.push(link);
+      if (transits && transits.nodes && transits.nodes.length) {
+        link.transit = [...transits.nodes];
+      }
+      _arr.push(link);
+    });
   });
   return { links: _arr, scale: 1 };
 };
@@ -141,7 +163,9 @@ export const buildNodes = (data: ITopologyGroup[], idPrefix: string, offset: num
   let totalHeight = 0;
   const _arr: ISvgEdgeGroup[] = data.map((it, index) => {
     const height = getItemExpandedHeight(it, false);
-    const _obj = { ...it, id: it.id, height: height, y: offsetY, x: 48, nodeId: `${idPrefix}${index}`, scale: 1, offsetX: offset, collapsed: false };
+    const _nodeWidth = it.type === TopologyGroupTypesAsString.BRANCH_NETWORKS ? SVG_EDGES_STYLES.siteNode.width : SVG_EDGES_STYLES.appNode.width;
+    const _x = (SVG_EDGES_STYLES.mapColumn - _nodeWidth) / 2;
+    const _obj = { ...it, id: it.id, height: height, y: offsetY, x: _x, nodeId: `${idPrefix}${index}`, scale: 1, offsetX: offset, collapsed: false };
     offsetY = offsetY + height + EdgeNodeStyles.nodeMargin;
     totalHeight = totalHeight + height + EdgeNodeStyles.nodeMargin;
     return _obj;
@@ -161,9 +185,19 @@ export const buildtransitNodes = (data: string[], type: DeploymentTypes, offset:
   let totalHeight = 0;
   const _arr: ISvgTransitNode[] = data.map((it, index) => {
     const _wedge = wedges && wedges.length ? wedges.find(w => w.extId === it) : null;
-    const _obj = { name: _wedge && _wedge.name ? _wedge.name : it, height: 84, y: offsetY, x: 88, id: `${EDGE_MAP_CONSTANTS.transitNodePrefix}${index}`, scale: 1, type: type, offsetX: offset };
-    offsetY += 94;
-    totalHeight += 94;
+    const _x = (SVG_EDGES_STYLES.mapColumn - SVG_EDGES_STYLES.transitNode.width) / 2;
+    const _obj = {
+      name: _wedge && _wedge.name ? _wedge.name : it,
+      height: SVG_EDGES_STYLES.transitNode.height,
+      y: offsetY,
+      x: _x,
+      id: `${EDGE_MAP_CONSTANTS.transitNodePrefix}${index}`,
+      scale: 1,
+      type: type,
+      offsetX: offset,
+    };
+    offsetY = offsetY + SVG_EDGES_STYLES.transitNode.height + 10;
+    totalHeight = totalHeight + SVG_EDGES_STYLES.transitNode.height + 10;
     return _obj;
   });
   const scaleFactor = Math.min(1, svgSize.height / totalHeight);

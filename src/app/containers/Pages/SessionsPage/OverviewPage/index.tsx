@@ -41,6 +41,8 @@ const OverviewPage: React.FC<IProps> = (props: IProps) => {
   React.useEffect(() => {
     if (resDetails && resDetails.sankeydetail) {
       setDetailData(resDetails.sankeydetail);
+    } else {
+      setDetailData(null);
     }
   }, [resDetails]);
 

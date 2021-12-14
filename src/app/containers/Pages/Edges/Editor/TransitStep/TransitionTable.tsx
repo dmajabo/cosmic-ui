@@ -23,7 +23,7 @@ const TransitionTable: React.FC<Props> = (props: Props) => {
   const [selectedList, setSelectedList] = React.useState<IAwsRegion[] | INetworkwEdge[]>([]);
 
   React.useEffect(() => {
-    if (props.type === DeploymentTypes.Regions && Array.isArray(props.selectedRegions)) {
+    if (props.type === DeploymentTypes.NEW_REGIONS && Array.isArray(props.selectedRegions)) {
       const _arr: IAwsRegion[] = [];
       props.selectedRegions.forEach(it => {
         const present = props.regions.find(key => key.code === it);
@@ -33,7 +33,7 @@ const TransitionTable: React.FC<Props> = (props: Props) => {
       });
       setSelectedList(_arr);
     }
-    if (props.type === DeploymentTypes.Wedge && Array.isArray(props.selectedWedgesIds)) {
+    if (props.type === DeploymentTypes.EXISTING_GWS && Array.isArray(props.selectedWedgesIds)) {
       const _arr: INetworkwEdge[] = [];
       props.selectedWedgesIds.forEach(it => {
         const present = props.wedges.find(wedge => wedge.extId === it);
@@ -51,7 +51,7 @@ const TransitionTable: React.FC<Props> = (props: Props) => {
         <Table stickyHeader aria-label="sticky table" className={classes.table}>
           <TableHead>
             <TableRow>
-              {props.type === DeploymentTypes.Regions && (
+              {props.type === DeploymentTypes.NEW_REGIONS && (
                 <TableCell className={classes.tableHeadCell} style={{ minWidth: 100 }}>
                   Type
                 </TableCell>
@@ -60,7 +60,7 @@ const TransitionTable: React.FC<Props> = (props: Props) => {
                 Name
               </TableCell>
               <TableCell className={classes.tableHeadCell} style={{ minWidth: 100 }}>
-                {props.type === DeploymentTypes.Wedge ? 'Ext ID' : 'Region'}
+                {props.type === DeploymentTypes.EXISTING_GWS ? 'Ext ID' : 'Region'}
               </TableCell>
             </TableRow>
           </TableHead>
@@ -68,7 +68,7 @@ const TransitionTable: React.FC<Props> = (props: Props) => {
             {selectedList && selectedList.length
               ? selectedList.map((it, rowIndex) => (
                   <TableRow hover tabIndex={-1} key={`tableRow${it.id}${rowIndex}`} className={classes.row}>
-                    {props.type === DeploymentTypes.Regions && (
+                    {props.type === DeploymentTypes.NEW_REGIONS && (
                       <TableCell className={classes.tableCell}>
                         <CellContent>
                           <IconWrapper width="20px" height="20px" styles={{ margin: '0 12px 0 0' }} icon={awsIcon(20)} />
@@ -78,11 +78,11 @@ const TransitionTable: React.FC<Props> = (props: Props) => {
                     )}
                     <TableCell className={classes.tableCell}>
                       <CellContent>
-                        {props.type === DeploymentTypes.Wedge && <IconWrapper width="16px" height="16px" styles={{ margin: '0 12px 0 0' }} icon={wedgeIcon(16)} />}
+                        {props.type === DeploymentTypes.EXISTING_GWS && <IconWrapper width="16px" height="16px" styles={{ margin: '0 12px 0 0' }} icon={wedgeIcon(16)} />}
                         <>{it.name}</>
                       </CellContent>
                     </TableCell>
-                    <TableCell className={classes.tableCell}>{props.type === DeploymentTypes.Wedge ? it.extId : it.code}</TableCell>
+                    <TableCell className={classes.tableCell}>{props.type === DeploymentTypes.EXISTING_GWS ? it.extId : it.code}</TableCell>
                   </TableRow>
                 ))
               : null}

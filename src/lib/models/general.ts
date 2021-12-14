@@ -35,10 +35,6 @@ export interface IBaseEntity<T> {
   id: T;
 }
 
-export interface IBaseTotalCount {
-  totalCount: number;
-}
-
 export interface ICoord {
   x: number;
   y: number;
@@ -104,12 +100,12 @@ export interface IObject<T> {
   [key: string]: T;
 }
 
-export interface ISelectionGridCellValue<T, P> {
-  field: T;
-  value: P;
+export interface ISelectionGridCellValue<F, V> {
+  field: F;
+  value: V;
 }
 
-export interface IGridColumnField {
-  resField: string;
-  label: string;
+export interface IFieldValuePair<V> {
+  field: string;
+  value: V;
 }

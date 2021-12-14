@@ -47,10 +47,10 @@ const HeadeerAction: React.FC<IProps> = (props: IProps) => {
         />
       </Side> */}
       <Side margin="0 0 0 auto">
-        <IconButton styles={{ margin: '0' }} icon={refreshIcon} title="Zoom in" onClick={props.onRefresh} />
-        <SecondaryButton withoutBorder label="ENTITIES" icon={entitiesIcon} onClick={() => onClick(TopologyPanelTypes.ENTITIES)} disabled={false} styles={{ margin: '0 0 0 20px' }} />
+        <IconButton styles={{ margin: '0' }} icon={refreshIcon} title="Refresh Topology" onClick={props.onRefresh} />
+        <SecondaryButton label="ENTITIES" icon={entitiesIcon} onClick={() => onClick(TopologyPanelTypes.ENTITIES)} disabled={false} styles={{ margin: '0 0 0 20px' }} />
         {/* <Filter onChange={onFilter} searchQuery={topology?.searchQuery || ''} /> */}
-        <SecondaryButton withoutBorder label="Edit Topology" icon={editIcon} onClick={() => onClick(TopologyPanelTypes.GROUPS)} disabled={false} styles={{ margin: '0 0 0 20px' }} />
+        <SecondaryButton label="Edit Topology" icon={editIcon} onClick={() => onClick(TopologyPanelTypes.GROUPS)} disabled={false} styles={{ margin: '0 0 0 20px' }} />
       </Side>
     </Wrapper>
   );

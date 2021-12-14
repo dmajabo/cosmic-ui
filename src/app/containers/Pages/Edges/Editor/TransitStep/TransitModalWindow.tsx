@@ -19,11 +19,11 @@ interface Props {
 const TransitModalWindow: React.FC<Props> = (props: Props) => {
   const userContext = React.useContext<UserContextState>(UserContext);
   const { edges } = useEdgesDataContext();
-  const [radioGroupValue, setRadioGroupValue] = React.useState<DeploymentTypes>(DeploymentTypes.Wedge);
+  const [radioGroupValue, setRadioGroupValue] = React.useState<DeploymentTypes>(DeploymentTypes.EXISTING_GWS);
   const { response, error, loading, onGet } = useGet<IWEdgesRes>();
   const [selectedRegions, setSelectedRegions] = React.useState<string[]>(props.selectedRegion || []);
   const [selectedTransitsIds, setSelectedTransit] = React.useState<string[]>(props.selectedWedgeIds || []);
-  const [wedges, setDevices] = React.useState<INetworkwEdge[]>([]);
+  const [wedges, setWedges] = React.useState<INetworkwEdge[]>([]);
   const [totalCount, setTotalCount] = React.useState<number>(0);
   const [currentPage, setCurrentPage] = React.useState<number>(1);
   const [pageSize, setPageSize] = React.useState<number>(10);
@@ -33,15 +33,17 @@ const TransitModalWindow: React.FC<Props> = (props: Props) => {
   }, []);
 
   React.useEffect(() => {
-    if (response && response.wEdges) {
-      setDevices(response.wEdges);
+    if (response && response.wEdges && response.wEdges.length) {
+      setWedges(response.wEdges);
       setTotalCount(response.totalCount);
+    } else {
+      setWedges([]);
+      setTotalCount(0);
     }
   }, [response]);
 
   const handleChange = (checked: boolean, value: DeploymentTypes) => {
     if (value === radioGroupValue) return;
-    setSelectedRegions(props.selectedRegion);
     setRadioGroupValue(value);
   };
 
@@ -65,7 +67,7 @@ const TransitModalWindow: React.FC<Props> = (props: Props) => {
   };
 
   const onAddTransits = () => {
-    if (radioGroupValue === DeploymentTypes.Regions) {
+    if (radioGroupValue === DeploymentTypes.NEW_REGIONS) {
       if (!selectedRegions || !selectedRegions.length) return;
       props.onAddTransits(selectedRegions, radioGroupValue);
       return;
@@ -101,19 +103,19 @@ const TransitModalWindow: React.FC<Props> = (props: Props) => {
         <ModalRow>
           <RadioButton
             wrapstyles={{ margin: '0 30px 0 0' }}
-            checked={radioGroupValue === DeploymentTypes.Wedge}
+            checked={radioGroupValue === DeploymentTypes.EXISTING_GWS}
             onValueChange={handleChange}
-            value={DeploymentTypes.Wedge}
+            value={DeploymentTypes.EXISTING_GWS}
             label="Use Existing"
             name="radio-buttons"
           />
-          <RadioButton checked={radioGroupValue === DeploymentTypes.Regions} onValueChange={handleChange} value={DeploymentTypes.Regions} name="radio-buttons" label="Create New" />
+          <RadioButton checked={radioGroupValue === DeploymentTypes.NEW_REGIONS} onValueChange={handleChange} value={DeploymentTypes.NEW_REGIONS} name="radio-buttons" label="Create New" />
         </ModalRow>
-        {radioGroupValue === DeploymentTypes.Regions && (
+        {radioGroupValue === DeploymentTypes.NEW_REGIONS && (
           <Map mapWrapStyles={{ height: 'calc(100% - 54px)', margin: '0' }} hideLargeButton regions={edges.regions} selectedRegions={selectedRegions} onSelectRegion={onSelectRegion} />
         )}
 
-        {radioGroupValue === DeploymentTypes.Wedge && (
+        {radioGroupValue === DeploymentTypes.EXISTING_GWS && (
           <WedgesGridWrapper
             pageSize={pageSize}
             currentPage={currentPage}
@@ -132,8 +134,8 @@ const TransitModalWindow: React.FC<Props> = (props: Props) => {
       <ModalFooter>
         <PrimaryButton
           styles={{ width: '100%', height: '100%' }}
-          disabled={(radioGroupValue === DeploymentTypes.Regions && !selectedRegions.length) || (radioGroupValue === DeploymentTypes.Wedge && !selectedTransitsIds.length)}
-          label="Add Transit"
+          disabled={(radioGroupValue === DeploymentTypes.NEW_REGIONS && !selectedRegions.length) || (radioGroupValue === DeploymentTypes.EXISTING_GWS && !selectedTransitsIds.length)}
+          label="Add Edge"
           onClick={onAddTransits}
         />
       </ModalFooter>

@@ -2,7 +2,6 @@ import React from 'react';
 import { Required } from '../FormTextInput/styles';
 import { InputLabel } from '../styles/Label';
 import MenuItem from '@material-ui/core/MenuItem';
-import useDebounce from 'lib/hooks/useDebounce';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { arrowBottomIcon } from 'app/components/SVGIcons/arrows';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
@@ -21,6 +20,7 @@ interface Props {
   readOnly?: boolean;
   styles?: Object;
   labelStyles?: Object;
+  selectStyles?: Object;
   selectClaassName?: string;
   labelBefore?: string;
   renderValue?: (v: any) => React.ReactNode;
@@ -30,23 +30,14 @@ interface Props {
 const MatSelect: React.FC<Props> = (props: Props) => {
   const [textValue, setTextValue] = React.useState<ISelectedListItem<any> | string | number>(props.value || '');
   const [open, setOpen] = React.useState(false);
-  const [isTyping, setIsTyping] = React.useState(false);
-  const debouncedSearchTerm = useDebounce(textValue, 500);
   const classes = SelectStyles();
-  React.useEffect(() => {
-    if ((debouncedSearchTerm || debouncedSearchTerm === '' || debouncedSearchTerm === null) && isTyping) {
-      setIsTyping(false);
-      props.onChange(textValue);
-    }
-  }, [debouncedSearchTerm]);
 
   React.useEffect(() => {
-    setTextValue(props.value);
+    setTextValue(props.value || '');
   }, [props.value]);
 
   const handleChange = (event: SelectChangeEvent<typeof textValue>) => {
-    setTextValue(event.target.value);
-    setIsTyping(true);
+    props.onChange(event.target.value);
   };
 
   const handleClose = () => {
@@ -108,6 +99,7 @@ const MatSelect: React.FC<Props> = (props: Props) => {
         MenuProps={{ classes: { paper: classes.menuRoot, list: classes.menuList } }}
         className={props.selectClaassName}
         disabled={props.disabled || props.readOnly}
+        style={props.selectStyles}
       >
         {props.options.map((option, index) => {
           if (props.renderOption) {

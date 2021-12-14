@@ -71,7 +71,7 @@ const VpcPanel: React.FC<IProps> = (props: IProps) => {
   return (
     <>
       <PanelHeader direction="row" align="center">
-        {selectedVm && <IconButton styles={{ margin: '0 12px 0 0' }} icon={returnArrow} title="Back" onClick={onReturn} />}
+        {selectedVm && <IconButton styles={{ margin: '0 12px 0 0', width: '40px', height: '40px' }} icon={returnArrow} title="Back" onClick={onReturn} />}
         {selectedVm && <PanelTitle maxWidth="calc(100% - 32px)">{selectedVm.name ? selectedVm.name : selectedVm.extId}</PanelTitle>}
         {!selectedVm && (
           <PanelTitle margin="0 0 0 8px" maxWidth="calc(100% - 32px)">

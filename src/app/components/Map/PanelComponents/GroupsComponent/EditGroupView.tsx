@@ -98,7 +98,7 @@ const EditGroupView: React.FC<IProps> = (props: IProps) => {
         name="groupName"
         value={group.name}
         label="Group Name"
-        inputStyles={{ height: '50px' }}
+        inputStyles={{ height: '50px', margin: '0 0 20px 0' }}
         onChange={_value => onChangeField(_value, ITopologyGroupFields.NAME)}
       />
       <MatSelect

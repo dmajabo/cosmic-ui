@@ -1,12 +1,10 @@
 import React from 'react';
-import { GridColDef, DataGrid, GridSelectionModel } from '@mui/x-data-grid';
+import { DataGrid } from '@mui/x-data-grid';
 import { GridStyles } from 'app/components/Grid/GridStyles';
 import Paging from 'app/components/Basic/Paging';
-// import SimpleCheckbox from 'app/components/Inputs/Checkbox/SimpleCheckbox';
 import { gridAscArrow, gridDescArrow } from 'app/components/SVGIcons/arrows';
-import { InventoryOptions } from './model';
+import { InventoryCloudGridColumns } from './model';
 import { PAGING_DEFAULT_PAGE_SIZE } from 'lib/hooks/Sessions/model';
-import { useSettingsDataContext } from 'lib/hooks/Settings/useSettingsDataContenxt';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { IWEdgesRes } from 'lib/api/ApiModels/Edges/apiModel';
 import { useGet } from 'lib/api/http/useAxiosHook';
@@ -16,16 +14,14 @@ import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import { buildPagingParam, EdgesApi } from 'lib/api/ApiModels/Edges/edpoints';
 import { getSearchedList } from 'lib/helpers/listHelper';
 import { INetworkwEdge } from 'lib/models/topology';
+import { IColumn } from 'lib/models/grid';
 
 interface Props {
   searchValue: string;
-  columns: GridColDef[];
-  selectedItems?: GridSelectionModel;
-  onSelectionModelChange?: (selectionModel: GridSelectionModel, option: InventoryOptions) => void;
+  columns: IColumn[];
 }
 
 const InventoryCloud: React.FC<Props> = (props: Props) => {
-  const { settings } = useSettingsDataContext();
   const userContext = React.useContext<UserContextState>(UserContext);
   const { loading, error, response, onGet } = useGet<IWEdgesRes>();
   const [dataRows, setDataRows] = React.useState<INetworkwEdge[]>([]);
@@ -37,31 +33,39 @@ const InventoryCloud: React.FC<Props> = (props: Props) => {
   const gridStyles = GridStyles();
 
   React.useEffect(() => {
-    onTryLoadWedges(settings.loggingPageSize, settings.loggingCurrentPage);
+    onTryLoadWedges(pageSize, currentPage);
   }, []);
 
   React.useEffect(() => {
-    if (response && response.wEdges) {
-      const startIndex = (settings.loggingCurrentPage - 1) * settings.loggingPageSize;
-      const _items = response.wEdges.map((it, i) => ({ ...it, rowIndex: i + startIndex }));
-      const _arr: INetworkwEdge[] = getSearchedList(_items, searchValue, ['name', 'extId', 'vnetkey', 'description']);
-      setDataRows(_items);
+    if (response && response.wEdges && response.wEdges.length) {
+      const _arr: INetworkwEdge[] = getSearchedList(response.wEdges, searchValue, [
+        InventoryCloudGridColumns.name.resField,
+        InventoryCloudGridColumns.extId.resField,
+        InventoryCloudGridColumns.vnetkey.resField,
+        InventoryCloudGridColumns.description.resField,
+      ]);
+      setDataRows(response.wEdges);
       setFilteredData(_arr);
       setTotalCount(response.totalCount);
+    } else {
+      setDataRows([]);
+      setFilteredData([]);
+      setTotalCount(0);
     }
   }, [response]);
 
   React.useEffect(() => {
     if (props.searchValue !== searchValue) {
-      const _items: INetworkwEdge[] = getSearchedList(dataRows, props.searchValue, ['name', 'extId', 'vnetkey', 'description']);
+      const _items: INetworkwEdge[] = getSearchedList(dataRows, props.searchValue, [
+        InventoryCloudGridColumns.name.resField,
+        InventoryCloudGridColumns.extId.resField,
+        InventoryCloudGridColumns.vnetkey.resField,
+        InventoryCloudGridColumns.description.resField,
+      ]);
       setFilteredData(_items);
       setSearchValue(props.searchValue);
     }
   }, [props.searchValue]);
-
-  // const onSelectionModelChange = (e: GridSelectionModel) => {
-  //   props.onSelectionModelChange(e, InventoryOptions.CLOUD);
-  // };
 
   const onChangeCurrentPage = (_page: number) => {
     setCurrentPage(_page);
@@ -97,10 +101,6 @@ const InventoryCloud: React.FC<Props> = (props: Props) => {
         autoHeight
         rows={filteredData}
         columns={props.columns}
-        // checkboxSelection
-        // disableSelectionOnClick
-        // onSelectionModelChange={onSelectionModelChange}
-        // selectionModel={props.selectedItems}
         loading={loading}
         error={error ? error.message : null}
         components={{
@@ -120,7 +120,6 @@ const InventoryCloud: React.FC<Props> = (props: Props) => {
           ColumnUnsortedIcon: () => null,
           ColumnSortedAscendingIcon: () => <>{gridAscArrow}</>,
           ColumnSortedDescendingIcon: () => <>{gridDescArrow}</>,
-          // Checkbox: ({ checked, onChange, indeterminate }) => <SimpleCheckbox isChecked={checked} toggleCheckboxChange={onChange} indeterminate={indeterminate} />,
         }}
         pageSize={filteredData ? filteredData.length : 0}
       />

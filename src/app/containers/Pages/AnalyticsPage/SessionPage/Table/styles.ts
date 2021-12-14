@@ -8,7 +8,6 @@ export const GridHeaderWrapper = styled.div`
   align-items: center;
   font-family: 'DMSans';
   font-style: normal;
-  z-index: 1;
 `;
 
 export const GridLabelWrapper = styled.div`

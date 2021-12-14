@@ -9,8 +9,6 @@ export interface SettingsContextType {
   adminsData: any;
   adminCurrentPage: number;
   adminsPageSize: number;
-  loggingPageSize: number;
-  loggingCurrentPage: number;
   onChangeSelectedTab: (_tabIndex: number) => void;
   onSetSettingsAdminData: (res: any) => void;
   onChangePageSize: (tab: SettingsTabTypes, _size: number, _page?: number, subTab?: InventoryOptions) => void;
@@ -22,8 +20,6 @@ export function useSettingsContext(): SettingsContextType {
   // const [sessionsCount, setSessionsCount] = React.useState<number>(0);
   const [adminsPageSize, setAdminsPageSize] = React.useState<number>(PAGING_DEFAULT_PAGE_SIZE);
   const [adminCurrentPage, setAdminsCurrentPage] = React.useState<number>(1);
-  const [loggingPageSize, setLoggingPageSize] = React.useState<number>(PAGING_DEFAULT_PAGE_SIZE);
-  const [loggingCurrentPage, setLoggingCurrentPage] = React.useState<number>(1);
 
   const onSetSettingsAdminData = (res: any) => {
     if (!res || !res.length) {
@@ -46,22 +42,11 @@ export function useSettingsContext(): SettingsContextType {
       setAdminsPageSize(_size);
       return;
     }
-    if (tab === SettingsTabTypes.Logging) {
-      if (_page) {
-        setLoggingCurrentPage(_page);
-      }
-      setLoggingPageSize(_size);
-      return;
-    }
   };
 
   const onChangeCurrentPage = (tab: SettingsTabTypes, _page: number, subTab?: InventoryOptions) => {
     if (tab === SettingsTabTypes.Admins) {
       setAdminsCurrentPage(_page);
-      return;
-    }
-    if (tab === SettingsTabTypes.Logging) {
-      setLoggingCurrentPage(_page);
       return;
     }
   };
@@ -71,8 +56,6 @@ export function useSettingsContext(): SettingsContextType {
     adminsData,
     adminsPageSize,
     adminCurrentPage,
-    loggingPageSize,
-    loggingCurrentPage,
     onChangeSelectedTab,
     onSetSettingsAdminData,
     onChangePageSize,

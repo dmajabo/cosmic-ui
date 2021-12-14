@@ -9,7 +9,8 @@ export interface IGroupedData {
   [key: string]: ISession[];
 }
 
-export interface IAggregateRow extends ISession {
+export interface IAggregateRow {
+  session: ISession;
   data: IGroupedData;
   vendors: IState[];
 }

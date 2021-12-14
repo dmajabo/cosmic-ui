@@ -36,13 +36,13 @@ const AppHeader: React.FC<Props> = (props: Props) => {
           {props.currentPage && props.currentPage.breadcrumb === BreadCrumbTypes.AUTOMATIONS && breadcrumb.automationsBreadCrumbItems && breadcrumb.automationsBreadCrumbItems.length ? (
             <BreadCrumb startItem={AutomationBreadCrumbItemsType.ALL} onClick={onAutoMationBreadCrumbChange} items={breadcrumb.automationsBreadCrumbItems} />
           ) : null}
-          {props.currentPage && props.currentPage.breadcrumb === BreadCrumbTypes.EDGES && breadcrumb.edgesBreadCrumbItems && breadcrumb.edgesBreadCrumbItems.length ? (
+          {props.currentPage && props.currentPage.breadcrumb === BreadCrumbTypes.TRANSIT && breadcrumb.edgesBreadCrumbItems && breadcrumb.edgesBreadCrumbItems.length ? (
             <BreadCrumb startItem={EdgesBreadCrumbItemsType.EDGES} onClick={onEdgesBreadCrumbChange} items={breadcrumb.edgesBreadCrumbItems} />
           ) : null}
         </Side>
         <Side margin="0 0 0 auto">
-          <IconButton icon={infoIcon} onClick={onInfoClick} styles={{ margin: '0 0 0 20px' }} />
-          <IconButton icon={notificationIcon} onClick={onShowNotification} styles={{ margin: '0 0 0 20px' }} />
+          <IconButton icon={infoIcon} onClick={onInfoClick} styles={{ margin: '0 0 0 20px', width: '40px', height: '40px' }} />
+          <IconButton icon={notificationIcon} onClick={onShowNotification} styles={{ margin: '0 0 0 20px', width: '40px', height: '40px' }} />
           <UserComponent onOpenAbout={onToggleAbout} />
         </Side>
       </HeaderStyles>
