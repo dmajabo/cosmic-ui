@@ -173,6 +173,7 @@ const sessionLogsColumns: Column[] = [
   {
     Header: 'TIME',
     accessor: ColumnAccessor.time,
+    width: 250,
   },
   {
     Header: 'SESSION ID',
@@ -193,6 +194,7 @@ const sessionLogsColumns: Column[] = [
   {
     Header: 'DESTINATION IP',
     accessor: ColumnAccessor.destination,
+    width: 200,
   },
   {
     Header: 'TGW NAME',
@@ -229,10 +231,12 @@ const sessionLogsColumns: Column[] = [
   {
     Header: 'SDWAN RULE ID',
     accessor: ColumnAccessor.sdwanRuleId,
+    width: 200,
   },
   {
     Header: 'FIREWALL POLICY ID',
     accessor: ColumnAccessor.firewallPolicyId,
+    width: 200,
   },
   {
     Header: 'DESTINATION APPLICATION',
@@ -290,9 +294,9 @@ export const ExperienceTab: React.FC<ExperienceTabProps> = () => {
     return (
       <div>
         <div className={classes.anomalySubcomponentTitle}>SLA Tests</div>
-        <AnomalySLATestTable columns={slaTestColumns} data={slaTestTableData} />
+        <AnomalySLATestTable columns={slaTestColumns} data={slaTestTableData} sortableHeaders={['NAME']} />
         <div className={`${classes.sessionLogs} ${classes.anomalySubcomponentTitle}`}>Session Logs</div>
-        <AnomalyBlockTable columns={sessionLogsColumns} data={sessionLogsTableData} />
+        <AnomalyBlockTable columns={sessionLogsColumns} data={sessionLogsTableData} sortableHeaders={['SESSION ID', 'SOURCE IP', 'DESTINATION IP', 'SDWAN RULE ID', 'FIREWALL POLICY ID']} />
       </div>
     );
   }, []);

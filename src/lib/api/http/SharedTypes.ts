@@ -210,6 +210,10 @@ export enum ColumnAccessor {
   sdwanRuleId = 'sdwanRuleId',
   firewallPolicyId = 'firewallPolicyId',
   destApp = 'destApp',
+  edge = 'edge',
+  user = 'user',
+  operation = 'operation',
+  changes = 'changes',
   //TODO: change below enum params when api is integrated
   interfaceSource = 'interfaceSource',
   interfaceDestination = 'interfaceDestination',
@@ -234,6 +238,7 @@ export interface Column {
   readonly accessor: ColumnAccessor;
   readonly order?: number;
   readonly id?: string;
+  readonly width?: number;
   readonly Cell?: ({ row }: { row: any }) => JSX.Element;
 }
 
@@ -377,4 +382,13 @@ export interface AnomalySessionLogsData {
   readonly sdwanRuleId: string | number;
   readonly firewallPolicyId: string | number;
   readonly destApp: string;
+}
+
+export interface AnomalyPolicyLogsTableData {
+  readonly hits: number | JSX.Element;
+  readonly time: string | number;
+  readonly edge: string | JSX.Element;
+  readonly user: string | JSX.Element;
+  readonly operation: string;
+  readonly changes: string | JSX.Element;
 }

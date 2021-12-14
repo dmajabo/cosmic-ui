@@ -527,6 +527,20 @@ export const AnalyticsStyles = makeStyles(
         paddingTop: 20,
         paddingBottom: 10,
       },
+      circularImage: {
+        width: 28,
+        height: 28,
+        borderRadius: '50%',
+      },
+      profileNameText: {
+        marginLeft: 10,
+      },
+      ellipsisText: {
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        maxWidth: 300,
+      },
     }),
   {
     index: 1,

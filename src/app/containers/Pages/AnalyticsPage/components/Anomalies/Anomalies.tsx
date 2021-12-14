@@ -5,6 +5,7 @@ import FilterIcon from '../../icons/performance dashboard/filter.svg';
 import { LookbackLabel, LookbackSelectOption, LookbackValue } from '../Metrics Explorer/LookbackTimeTab';
 import Select from 'react-select';
 import { ExperienceTab } from './ExperienceTab';
+import { PolicyTab } from './PolicyTab';
 
 interface TabPanelProps {
   readonly name: string;
@@ -133,7 +134,7 @@ export const Anomalies: React.FC = () => {
         <ExperienceTab />
       </TabPanel>
       <TabPanel value={tab} name={AnomalyTabValue.Policy}>
-        {AnomalyTabValue.Policy}
+        <PolicyTab />
       </TabPanel>
       <TabPanel value={tab} name={AnomalyTabValue.Cost}>
         {AnomalyTabValue.Cost}

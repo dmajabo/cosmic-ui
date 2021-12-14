@@ -27,9 +27,10 @@ const Styles = styled.div`
 interface AnomalyBlockTableProps {
   readonly columns: Column[];
   readonly data: AnomalySessionLogsData[];
+  readonly sortableHeaders: string[];
 }
 
-export const AnomalyBlockTable: React.FC<AnomalyBlockTableProps> = ({ data, columns }) => {
+export const AnomalyBlockTable: React.FC<AnomalyBlockTableProps> = ({ data, columns, sortableHeaders }) => {
   const classes = AnalyticsStyles();
 
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable(
@@ -51,7 +52,7 @@ export const AnomalyBlockTable: React.FC<AnomalyBlockTableProps> = ({ data, colu
                 <th {...column.getHeaderProps(column.getSortByToggleProps())}>
                   <div className={classes.tableHeaderText}>
                     {column.render('Header')}
-                    <span className={classes.sortIcon}>{column.Header === 'NAME' ? <img src={SortIcon} alt="sort by name" /> : <span />}</span>
+                    <span className={classes.sortIcon}>{sortableHeaders.includes(column.Header.toString()) ? <img src={SortIcon} alt="sort by name" /> : <span />}</span>
                   </div>
                 </th>
               ))}
