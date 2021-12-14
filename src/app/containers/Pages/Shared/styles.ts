@@ -37,6 +37,7 @@ export const TabsWrapperStyles = styled.div`
 interface IActionRowProps {
   height?: string;
   margin?: string;
+  zIndex?: number;
 }
 
 export const ActionRowStyles = styled.div<IActionRowProps>`
@@ -45,7 +46,7 @@ export const ActionRowStyles = styled.div<IActionRowProps>`
   height: ${props => props.height || '50px'};
   flex-shrink: 0;
   margin: ${props => props.margin || '0 0 20px 0'};
-  z-index: 11;
+  z-index: ${props => props.zIndex || 11};
 `;
 
 interface IPageActionPart {
@@ -120,11 +121,15 @@ export const TableWrapper = styled.div`
   min-height: 400px;
 `;
 
-export const PageContentWrapper = styled.div`
+interface PageContainerWrapperProps {
+  margin?: string;
+}
+export const PageContentWrapper = styled.div<PageContainerWrapperProps>`
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
   border-radius: 6px;
   padding: 40px;
+  margin: ${props => props.margin || '0'};
   background: var(--_primaryBg);
 `;

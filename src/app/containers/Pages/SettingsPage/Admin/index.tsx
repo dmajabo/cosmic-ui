@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSettingsDataContext } from 'lib/hooks/Settings/useSettingsDataContenxt';
-import { DataGrid, GridCellParams, GridColDef, GridRenderCellParams, GridSelectionModel, GridValueFormatterParams } from '@mui/x-data-grid';
+import { DataGrid, GridCellParams, GridRenderCellParams, GridSelectionModel, GridValueFormatterParams } from '@mui/x-data-grid';
 import { GridStyles } from 'app/components/Grid/GridStyles';
 import { ACCESS_VALUES_TYPE, AdminsGridColumns } from './model';
 import Drawer from '@mui/material/Drawer';
@@ -18,6 +18,7 @@ import Paging from 'app/components/Basic/Paging';
 import { gridAscArrow, gridDescArrow } from 'app/components/SVGIcons/arrows';
 import Header from '../Components/Header';
 import { SettingsTabTypes } from 'lib/hooks/Settings/model';
+import { IColumn } from 'lib/models/grid';
 interface IProps {}
 
 const AdminPage: React.FC<IProps> = (props: IProps) => {
@@ -55,18 +56,22 @@ const AdminPage: React.FC<IProps> = (props: IProps) => {
   const [searchValue, setSearchValue] = React.useState<string>(null);
   const [showEditForm, setShowEditForm] = React.useState<IModal<any>>(null);
   const [showEditProfileForm, setShowEditProfileForm] = React.useState<IModal<any>>(null);
-  const [gridColumns, setGridColumns] = React.useState<GridColDef[]>([
+  const [gridColumns, setGridColumns] = React.useState<IColumn[]>([
     {
+      id: 'adminsRowIndex',
       field: 'rowIndex',
       headerName: '#',
+      label: '',
       minWidth: 70,
       flex: 0,
       resizable: false,
       valueFormatter: (params: GridValueFormatterParams) => +params.value + 1,
     },
     {
+      id: `admins${AdminsGridColumns.name.resField}`,
       field: AdminsGridColumns.name.resField,
       headerName: AdminsGridColumns.name.label,
+      label: AdminsGridColumns.name.label,
       minWidth: 200,
       flex: 0.5,
       resizable: false,
@@ -78,10 +83,20 @@ const AdminPage: React.FC<IProps> = (props: IProps) => {
         </GridCellWrapper>
       ),
     },
-    { field: AdminsGridColumns.type.resField, headerName: AdminsGridColumns.type.label, minWidth: 200, flex: 0.5, resizable: false },
     {
+      id: `admins${AdminsGridColumns.type.resField}`,
+      field: AdminsGridColumns.type.resField,
+      headerName: AdminsGridColumns.type.label,
+      label: AdminsGridColumns.type.label,
+      minWidth: 200,
+      flex: 0.5,
+      resizable: false,
+    },
+    {
+      id: `admins${AdminsGridColumns.profile.resField}`,
       field: AdminsGridColumns.profile.resField,
       headerName: AdminsGridColumns.profile.label,
+      label: AdminsGridColumns.profile.label,
       minWidth: 200,
       flex: 0.5,
       resizable: false,
@@ -94,8 +109,10 @@ const AdminPage: React.FC<IProps> = (props: IProps) => {
       ),
     },
     {
+      id: `admins${AdminsGridColumns.apiAccess.resField}`,
       field: AdminsGridColumns.apiAccess.resField,
       headerName: AdminsGridColumns.apiAccess.label,
+      label: AdminsGridColumns.apiAccess.label,
       minWidth: 200,
       flex: 0.5,
       resizable: false,
@@ -105,11 +122,29 @@ const AdminPage: React.FC<IProps> = (props: IProps) => {
         return params.value;
       },
     },
-    { field: AdminsGridColumns.adoms.resField, headerName: AdminsGridColumns.adoms.label, minWidth: 200, flex: 0.5, resizable: false },
-    { field: AdminsGridColumns.ipvHost.resField, headerName: AdminsGridColumns.ipvHost.label, minWidth: 200, flex: 0.5, resizable: false },
     {
+      id: `admins${AdminsGridColumns.adoms.resField}`,
+      field: AdminsGridColumns.adoms.resField,
+      headerName: AdminsGridColumns.adoms.label,
+      label: AdminsGridColumns.adoms.label,
+      minWidth: 200,
+      flex: 0.5,
+      resizable: false,
+    },
+    {
+      id: `admins${AdminsGridColumns.ipvHost.resField}`,
+      field: AdminsGridColumns.ipvHost.resField,
+      headerName: AdminsGridColumns.ipvHost.label,
+      label: AdminsGridColumns.ipvHost.label,
+      minWidth: 200,
+      flex: 0.5,
+      resizable: false,
+    },
+    {
+      id: `adminsActionColumn`,
       field: '',
       headerName: '',
+      label: '',
       width: 40,
       resizable: false,
       filterable: false,
@@ -138,10 +173,14 @@ const AdminPage: React.FC<IProps> = (props: IProps) => {
     setSearchValue(value);
   };
 
-  const onChangeColumn = (col: GridColDef) => {
-    const _items: GridColDef[] = gridColumns.slice();
+  const onChangeColumn = (col: IColumn) => {
+    const _items: IColumn[] = gridColumns.slice();
     const _index = _items.findIndex(it => it.field === col.field);
     _items[_index].hide = !col.hide;
+    setGridColumns(_items);
+  };
+
+  const onChangeOrder = (_items: IColumn[]) => {
     setGridColumns(_items);
   };
 
@@ -191,6 +230,7 @@ const AdminPage: React.FC<IProps> = (props: IProps) => {
         onChangeColumn={onChangeColumn}
         onSearchChange={onSearhChange}
         onToogleEditForm={onEditUser}
+        onChangeOrder={onChangeOrder}
       />
 
       <DataGrid

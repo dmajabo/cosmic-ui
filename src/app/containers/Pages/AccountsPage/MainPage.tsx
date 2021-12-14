@@ -5,7 +5,7 @@ import ModalComponent from 'app/components/Modal';
 import AccountForm from './Components/AccountForm/AccountForm';
 import { useAccountsDataContext } from 'lib/hooks/Accounts/useAccountsDataContext';
 import { useDelete, useGet } from 'lib/api/http/useAxiosHook';
-import { AccountVendorTypes, IAccountsRes, IAwsRegionsRes, IAWS_Account, IMeraki_Account } from 'lib/api/ApiModels/Accounts/apiModel';
+import { AccountVendorTypes, IAccountsRes, IAwsRegionsRes, IAWS_Account, IAZURE_Account, IMeraki_Account } from 'lib/api/ApiModels/Accounts/apiModel';
 import { AccountsApi } from 'lib/api/ApiModels/Accounts/endpoints';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
@@ -25,7 +25,7 @@ const MainPage: React.FC<IProps> = (props: IProps) => {
   const { response, loading, error, onGet } = useGet<IAccountsRes>();
   const { response: resRegions, onGet: onGetRegions } = useGet<IAwsRegionsRes>();
   const { response: resDelete, loading: deleteLoading, onDelete } = useDelete<any>();
-  const [showModal, setShowModal] = React.useState<IModal<IMeraki_Account | IAWS_Account>>({ show: false, dataItem: null, isEditMode: false });
+  const [showModal, setShowModal] = React.useState<IModal<IMeraki_Account | IAWS_Account | IAZURE_Account>>({ show: false, dataItem: null, isEditMode: false });
   const [tempDeleteId, setTempDeleteId] = React.useState<string>(null);
   React.useEffect(() => {
     onTryToLoadData();
@@ -34,7 +34,7 @@ const MainPage: React.FC<IProps> = (props: IProps) => {
 
   React.useEffect(() => {
     if (response) {
-      const _data: (IMeraki_Account | IAWS_Account)[] = getPreparedAccountsRes(response);
+      const _data: (IMeraki_Account | IAWS_Account | IAZURE_Account)[] = getPreparedAccountsRes(response);
       accounts.onSetData(_data);
     }
   }, [response]);
@@ -60,7 +60,7 @@ const MainPage: React.FC<IProps> = (props: IProps) => {
   }, [error]);
 
   const onCreateAccount = (_type: AccountVendorTypes) => {
-    let _dataItem: IMeraki_Account | IAWS_Account = null;
+    let _dataItem: IMeraki_Account | IAWS_Account | IAZURE_Account = null;
     if (_type === AccountVendorTypes.CISCO_MERAKI) {
       _dataItem = createNewCiscoMerakiAccount();
     }
@@ -70,7 +70,7 @@ const MainPage: React.FC<IProps> = (props: IProps) => {
     if (!_dataItem) return;
     setShowModal({ show: true, dataItem: _dataItem, isEditMode: false });
   };
-  const onEditAccount = (item: IMeraki_Account | IAWS_Account) => {
+  const onEditAccount = (item: IMeraki_Account | IAWS_Account | IAZURE_Account) => {
     setShowModal({ show: true, dataItem: item, isEditMode: true });
   };
 

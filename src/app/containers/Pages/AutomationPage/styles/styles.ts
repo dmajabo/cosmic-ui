@@ -1,3 +1,4 @@
+import { APP_HEADER_HEIGHT } from 'lib/constants/general';
 import styled from 'styled-components';
 
 export const EditorPageWrapperStyles = styled.div`
@@ -11,7 +12,7 @@ export const EditorPageWrapperStyles = styled.div`
 export const MainStyles = styled.div`
   display: flex;
   width: calc(100% - 450px);
-  height: calc(100vh - 81px);
+  height: ${`calc(100vh - ${APP_HEADER_HEIGHT})`};
   position: relative;
 `;
 

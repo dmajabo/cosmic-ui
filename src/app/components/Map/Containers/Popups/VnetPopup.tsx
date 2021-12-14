@@ -1,9 +1,9 @@
 import React from 'react';
-import { IVnet } from 'lib/models/topology';
 import { ContentWrapper, DataField } from './styles';
+import { INetworkVNetwork } from 'lib/api/ApiModels/Topology/endpoints';
 
 interface IProps {
-  dataItem: IVnet;
+  dataItem: INetworkVNetwork;
 }
 const VnetPopup: React.FC<IProps> = (props: IProps) => {
   return (

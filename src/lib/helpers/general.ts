@@ -44,3 +44,10 @@ export const parseFieldAsDate = (value: any, formatString: string, splitter?: st
     return value;
   }
 };
+
+export const convertStringToNumber = (value: string | number): number => {
+  if (!value && value !== 0) return 0;
+  const num = Number(value);
+  if (!num && num !== 0) return 0;
+  return num;
+};

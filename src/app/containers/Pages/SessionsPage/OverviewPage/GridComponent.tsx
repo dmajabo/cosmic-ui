@@ -17,7 +17,6 @@ interface IProps {
 
 const GridComponent: React.FC<IProps> = (props: IProps) => {
   const [columns] = React.useState<GridColDef[]>([
-    { field: 'rowIndex', headerName: '#', minWidth: 70, flex: 0, resizable: false, valueFormatter: (params: GridValueFormatterParams) => +params.value + 1 },
     {
       field: 'time',
       headerName: 'Time',
@@ -42,7 +41,7 @@ const GridComponent: React.FC<IProps> = (props: IProps) => {
   React.useEffect(() => {
     if (props.data && props.data.appdetail) {
       if (props.data.appdetail && props.data.appdetail.length) {
-        setDataRows(props.data.appdetail.map((it, index) => ({ ...it, id: `rowIndex${index}`, rowIndex: index })));
+        setDataRows(props.data.appdetail.map((it, index) => ({ ...it, id: `rowIndex${index}` })));
       } else {
         setDataRows([]);
       }
@@ -72,7 +71,7 @@ const GridComponent: React.FC<IProps> = (props: IProps) => {
         disableColumnMenu
         hideFooter
         headerHeight={50}
-        rowHeight={50}
+        rowHeight={70}
         rowCount={dataRows.length}
         disableColumnFilter
         autoHeight

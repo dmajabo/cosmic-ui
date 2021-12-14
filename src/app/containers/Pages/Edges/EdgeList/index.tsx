@@ -13,6 +13,7 @@ import { FilterGroupsWrapper } from 'app/components/Basic/FilterComponents/style
 import FilterGroup from 'app/components/Basic/FilterComponents/FilterGroup';
 import EdgeFilterGroup from './EdgeFilterGroup';
 import EdgeStatusFilterGroup from './EdgeStatusFilterGroup';
+import { APP_HEADER_HEIGHT } from 'lib/constants/general';
 
 interface Props {
   data: IEdgeP[];
@@ -122,7 +123,7 @@ const EdgeList: React.FC<Props> = (props: Props) => {
         </EdgeListItemsWrapper>
       </PageWithPanelWrapperStyles>
       <PanelBar
-        styles={{ position: 'fixed', top: '81px', right: '0', maxHeight: 'calc(100% - 81px)', zIndex: 11 }}
+        styles={{ position: 'fixed', top: APP_HEADER_HEIGHT, right: '0', maxHeight: `calc(100% - ${APP_HEADER_HEIGHT})`, zIndex: 11 }}
         maxWidth="520px"
         show={showFilterPanel}
         onHidePanel={onHideFilterPanel}

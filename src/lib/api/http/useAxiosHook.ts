@@ -36,6 +36,8 @@ export const useGet = <T = any>(): IApiRes<T> => {
     setError(null);
     getDataAsync(isSubscribed, url, token, param);
     return () => {
+      setloading(false);
+      setError(null);
       isSubscribed = false;
     };
   }, []);
@@ -75,6 +77,8 @@ export const usePost = <T = any, R = any>(): IApiRes<R> => {
     setloading(true);
     postDataAsync(isSubscribed, url, _data, token, param);
     return () => {
+      setloading(false);
+      setError(null);
       isSubscribed = false;
     };
   }, []);
@@ -115,6 +119,8 @@ export const usePut = <T = any, R = any>(): IApiRes<R> => {
     setloading(true);
     putDataAsync(isSubscribed, url, _data, token, param);
     return () => {
+      setloading(false);
+      setError(null);
       isSubscribed = false;
     };
   }, []);
@@ -155,6 +161,8 @@ export const useDelete = <T = any>(): IApiRes<T> => {
     setloading(true);
     deleteDataAsync(isSubscribed, url, token, param);
     return () => {
+      setloading(false);
+      setError(null);
       isSubscribed = false;
     };
   }, []);
@@ -195,6 +203,8 @@ export const useGetChainData = <T = any>(): IApiRes<T> => {
     setError(null);
     getDataAsync(isSubscribed, url, keys, token, param);
     return () => {
+      setloading(false);
+      setError(null);
       isSubscribed = false;
     };
   }, []);

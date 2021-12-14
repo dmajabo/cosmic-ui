@@ -13,9 +13,9 @@ interface Props {
 const TransitNode: React.FC<Props> = (props: Props) => {
   return (
     <NodeWrapper style={{ padding: '12px 10px' }}>
-      {props.data.type === DeploymentTypes.Regions && <IconWrapper styles={{ margin: '0 auto 8px auto' }} width="26px" height="26px" icon={logoIcon()} />}
-      {props.data.type === DeploymentTypes.Wedge && <IconWrapper styles={{ margin: '0 auto 8px auto' }} width="26px" height="26px" icon={wedgeIcon()} />}
-      <GroupName style={{ margin: '0 auto 2px auto', height: '13px', fontSize: '10px', lineHeight: '13px' }}>Okulis Edge</GroupName>
+      {props.data.type === DeploymentTypes.NEW_REGIONS && <IconWrapper styles={{ margin: '8px auto 8px auto' }} width="34px" height="34px" icon={logoIcon()} />}
+      {props.data.type === DeploymentTypes.EXISTING_GWS && <IconWrapper styles={{ margin: '8px auto 8px auto' }} width="34px" height="34px" icon={wedgeIcon()} />}
+      <GroupName style={{ margin: '8px auto 4px auto' }}>Okulis Edge</GroupName>
       <NodeText>{props.data.name}</NodeText>
     </NodeWrapper>
   );

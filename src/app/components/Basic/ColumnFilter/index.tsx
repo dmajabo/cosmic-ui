@@ -9,6 +9,7 @@ import { dragIcon } from 'app/components/SVGIcons/dragIcon';
 
 interface IProps {
   label: string;
+  popupLabel?: string;
   icon?: any;
   items: any[];
   draggable?: boolean;
@@ -48,7 +49,7 @@ const ColumnFilter: React.FC<IProps> = (props: IProps) => {
   };
 
   return (
-    <SecondaryButtonWithPopup label="Columns" icon={props.icon || columnsIcon} direction="rtl">
+    <SecondaryButtonWithPopup label={props.label} icon={props.icon || columnsIcon} direction="rtl">
       <PopupContainer
         styles={{
           overflow: 'hidden',
@@ -70,7 +71,7 @@ const ColumnFilter: React.FC<IProps> = (props: IProps) => {
           background: 'var(--_primaryBg)',
         }}
       >
-        <PopupTitle>{props.label}</PopupTitle>
+        <PopupTitle>{props.popupLabel}</PopupTitle>
         <OverflowContainer>
           {data.map(col => {
             if (col.field === 'rowIndex' || !col.label) return null;

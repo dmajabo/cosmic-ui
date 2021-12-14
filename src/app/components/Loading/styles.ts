@@ -100,6 +100,6 @@ export const AbsLoaderWrapper = styled.div<ILoadProps>`
   width: ${props => props.width || '100%'};
   height: ${props => props.height || '100%'};
   pointer-events: ${props => props.pointerEvents || 'none'};
-  z-index: 100;
+  z-index: ${props => props.zIndex || 100};
   opacity: ${props => props.opacity || '0.5'};
 `;

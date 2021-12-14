@@ -26,7 +26,7 @@ export const SecondaryButtonStyles = styled.button<BProps>`
   .inheritFill {
     transition-property: fill;
     transition: 0.2s linear;
-    fill: var(--_sButtonColor);
+    fill: var(--_sIconColor);
   }
   &:disabled {
     cursor: default;

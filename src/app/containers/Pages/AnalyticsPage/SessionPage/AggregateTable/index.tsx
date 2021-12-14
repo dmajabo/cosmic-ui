@@ -1,18 +1,20 @@
 import React from 'react';
 import { Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
 import AggregateRow from './AggregateRow';
-import { ISession } from 'lib/api/ApiModels/Sessions/apiModel';
+import { IBuckets, ISession } from 'lib/api/ApiModels/Sessions/apiModel';
 import { IAggregateRow } from './models';
 import { buildAggregatedData } from './helper';
 import TableHeader from './TableHeader';
 import Paging from 'app/components/Basic/Paging';
 import { ISessionsGridFieldColumn, SessionGridColumns } from '../models';
 import { TableContainer } from 'app/components/Basic/Table/LargeTableSryles';
+import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 
 interface Props {
-  data: ISession[];
+  sessions: ISession[];
+  buckets: IBuckets[];
   logCount: number;
-  isError: any;
+  error: string;
   pageSize: number;
   currentPage: number;
   onChangeCurrentPage: (_page: number) => void;
@@ -31,9 +33,9 @@ const AggregateTable: React.FC<Props> = (props: Props) => {
     { ...SessionGridColumns.vendorsColumn, hide: false },
   ]);
   React.useEffect(() => {
-    const _data: IAggregateRow[] = buildAggregatedData(props.data);
+    const _data: IAggregateRow[] = buildAggregatedData(props.sessions, props.buckets);
     setData(_data);
-  }, [props.data]);
+  }, [props.sessions, props.buckets]);
 
   const onChangeColumn = (col: ISessionsGridFieldColumn) => {
     const _items: ISessionsGridFieldColumn[] = aggregatedColumns.slice();
@@ -58,7 +60,7 @@ const AggregateTable: React.FC<Props> = (props: Props) => {
   return (
     <>
       <TableHeader count={props.logCount} columns={aggregatedColumns} onChangeColumn={onChangeColumn} onChangeOrder={onChangeOrder} />
-      <TableContainer minHeight="200px">
+      <TableContainer minHeight="290px">
         <Table aria-label="collapsible table" className="largeTable">
           <TableHead>
             <TableRow>
@@ -72,25 +74,34 @@ const AggregateTable: React.FC<Props> = (props: Props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.map((row, index) => (
-              <AggregateRow key={`rowIndex${row.id}${index}`} row={row} columns={aggregatedColumns} />
-            ))}
+            {!props.error && data && data.length ? (
+              data.map((row, index) => <AggregateRow key={`rowIndex${row.session.id}${index}`} row={row} columns={aggregatedColumns} />)
+            ) : (
+              <TableRow>
+                <TableCell className="errorCell" colSpan={aggregatedColumns.length}>
+                  <ErrorMessage color="var(--_primaryColor)" margin="48px auto">
+                    No data
+                  </ErrorMessage>
+                </TableCell>
+              </TableRow>
+            )}
+            {props.error && (
+              <TableRow>
+                <TableCell className="errorCell" colSpan={aggregatedColumns.length}>
+                  <ErrorMessage margin="48px 0">{props.error}</ErrorMessage>
+                </TableCell>
+              </TableRow>
+            )}
           </TableBody>
         </Table>
       </TableContainer>
       <Paging
-        count={data.length}
+        count={props.logCount}
         disabled={!data.length || props.logCount === 0}
         pageSize={props.pageSize}
         currentPage={props.currentPage}
         onChangePage={onChangeCurrentPage}
         onChangePageSize={onChangePageSize}
-        // boundaryCount={0}
-        // siblingCount={0}
-        // pageSizeValues={[20, 50, 100]}
-        // hideLabelAfter
-        // showFirstButton={false}
-        // showLastButton={false}
         pagingWrapStyles={{ marginTop: 'auto' }}
       />
     </>

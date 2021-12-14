@@ -25,9 +25,16 @@ export interface ISession extends IBaseEntity<string> {
   deviceVendor: AccountVendorTypes;
 }
 
+export interface IBuckets {
+  key: string;
+  docCount: number;
+  sessions: ISession[];
+}
+
 export interface IAllSessionsRes {
   count: string | number;
   sessions: ISession[];
+  buckets: IBuckets[];
 }
 
 export interface ISankeyNode {

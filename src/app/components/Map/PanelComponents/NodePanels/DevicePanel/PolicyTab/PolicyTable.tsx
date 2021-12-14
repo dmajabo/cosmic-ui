@@ -28,7 +28,7 @@ const PolicyTable: React.FC<Props> = (props: Props) => {
               <TableCell className={classes.tableHeadCell} style={{ minWidth: '20px' }}>
                 #
               </TableCell>
-              <TableCell style={{ minWidth: '70px' }} className={classes.tableHeadCell}>
+              <TableCell style={{ minWidth: '80px' }} className={classes.tableHeadCell}>
                 Source
               </TableCell>
               <TableCell className={classes.tableHeadCell} style={{ minWidth: '110px' }}>

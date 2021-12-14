@@ -16,23 +16,23 @@ const RouteTable: React.FC<Props> = (props: Props) => {
   const classes = TableStyles();
   return (
     <TableWrapperStyles style={props.styles}>
+      {(props.data.name || props.data.extId) && (
+        <CaptionRow>
+          {props.data.name && (
+            <CaptionContent>
+              <span className="label">Name:</span>
+              <span className="highlightText">{props.data.name}</span>
+            </CaptionContent>
+          )}
+          {props.data.extId && (
+            <CaptionContent>
+              <span className="label">Id:</span>
+              <span className="highlightText">{props.data.extId}</span>
+            </CaptionContent>
+          )}
+        </CaptionRow>
+      )}
       <TableContainer className={classes.container}>
-        {(props.data.name || props.data.extId) && (
-          <CaptionRow>
-            {props.data.name && (
-              <CaptionContent>
-                <span className="label">Name:</span>
-                <span className="highlightText">{props.data.name}</span>
-              </CaptionContent>
-            )}
-            {props.data.extId && (
-              <CaptionContent>
-                <span className="label">Id:</span>
-                <span className="highlightText">{props.data.extId}</span>
-              </CaptionContent>
-            )}
-          </CaptionRow>
-        )}
         <Table stickyHeader aria-label="sticky table" className={classes.table}>
           <TableHead>
             <TableRow>

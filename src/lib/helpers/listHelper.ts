@@ -3,7 +3,6 @@ export const getSearchedList = (data: any[], query: string, fields?: string[]) =
   const str = query.toLowerCase();
   if (fields && fields.length) {
     const _arr = data.filter(it => Object.keys(it).find(key => checkValue(it[key], str)));
-    debugger;
     return _arr || [];
   }
   const _arr = data.filter(it => it.name && checkValue(it.name, str));
@@ -21,7 +20,6 @@ export const getFilteredList = (data: any[], filterItems: IFilterItems) => {
       if (it[key] === undefined) return;
       if (Array.isArray(it[key])) {
         const values = filterItems[key];
-        debugger;
         if (values.some(v => it[key].includes(v))) {
           arr.push(it);
         }

@@ -25,4 +25,12 @@ export const Icon = styled.span<IProps>`
   &:hover .inheritHoverFill {
     fill: var(--_hoverButtonBg);
   }
+  &.arrow svg {
+    transition: transform 0.5s linear;
+    transform: rotate(0deg);
+  }
+  &.arrowTop svg {
+    transition: transform 0.5s linear;
+    transform: rotate(-180deg);
+  }
 `;

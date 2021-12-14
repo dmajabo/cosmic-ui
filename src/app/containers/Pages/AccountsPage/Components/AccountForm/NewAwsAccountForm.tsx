@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { IAWS_Account } from 'lib/api/ApiModels/Accounts/apiModel';
+import { AwsLogStorageType, IAWS_Account } from 'lib/api/ApiModels/Accounts/apiModel';
 import { ModalContent, ModalFooter, ModalOverflowContainer } from '../../styles/styles';
 import { StepItemFormRow } from './styles';
 import StepItem from './StepItem';
@@ -18,6 +18,7 @@ import { AccountsApi } from 'lib/api/ApiModels/Accounts/endpoints';
 import { IBaseEntity, ISelectedListItem } from 'lib/models/general';
 import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 import MatMultipleSelect from 'app/components/Inputs/MatSelect/MatMultipleSelect';
+import MatSelect from 'app/components/Inputs/MatSelect';
 
 interface Props {
   isEditMode: boolean;
@@ -99,6 +100,19 @@ const NewAwsAccountForm: React.FC<Props> = (props: Props) => {
     setDataItem(_item);
   };
 
+  const onChangeStorageType = (value: AwsLogStorageType) => {
+    const _item: IAWS_Account = { ...dataItem };
+    _item.awsPol.flowlogPol.logStorageType = value;
+    if (value === AwsLogStorageType.CLOUD_WATCH) {
+      _item.awsPol.flowlogPol.storageBucketName = '';
+    }
+    if (value === AwsLogStorageType.S3) {
+      _item.awsPol.flowlogPol.logGroupName = '';
+    }
+    setIsValid(onValidate(_item));
+    setDataItem(_item);
+  };
+
   const onValidate = (_item: IAWS_Account): boolean => {
     if (!_item) return false;
     if (!_item.name) return false;
@@ -107,7 +121,15 @@ const NewAwsAccountForm: React.FC<Props> = (props: Props) => {
     if (!_item.awsPol.username) return false;
     if (!_item.awsPol.regions.length) return false;
     if (_item.awsPol.flowlogPol.enable) {
-      if (!_item.awsPol.flowlogPol.logGroupName) return false;
+      if (!_item.awsPol.flowlogPol.logStorageType) return false;
+      if (_item.awsPol.flowlogPol.logStorageType === AwsLogStorageType.CLOUD_WATCH) {
+        if (!_item.awsPol.flowlogPol.logGroupName) return false;
+        return true;
+      }
+      if (_item.awsPol.flowlogPol.logStorageType === AwsLogStorageType.S3) {
+        if (!_item.awsPol.flowlogPol.storageBucketName) return false;
+        return true;
+      }
     }
     return true;
   };
@@ -201,7 +223,7 @@ const NewAwsAccountForm: React.FC<Props> = (props: Props) => {
                 value={dataItem.awsPol.regions}
                 options={props.regions}
                 onChange={onRegionsChange}
-                styles={{ height: '62px', minHeight: '62px', margin: '0 0 20px 0' }}
+                styles={{ height: '72px', minHeight: '72px', margin: '0 0 20px 0' }}
                 selectClaassName="withLabel"
                 required
                 optionCheckMark
@@ -211,17 +233,49 @@ const NewAwsAccountForm: React.FC<Props> = (props: Props) => {
               <CheckBox label="Enable Flowlog Collection" isChecked={dataItem.awsPol.flowlogPol.enable} toggleCheckboxChange={onEnabledPolicyChange} />
             </StepItemFormRow>
             {dataItem.awsPol.flowlogPol.enable && (
-              <StepItemFormRow margin="0">
-                <TextInput
-                  id="flowGroupName"
-                  name="groupName"
-                  value={dataItem.awsPol.flowlogPol.logGroupName}
-                  label="Group Name"
-                  onChange={v => onFlowLogChange(v, 'logGroupName')}
-                  // styles?: Object;
-                  required
-                />
-              </StepItemFormRow>
+              <>
+                <StepItemFormRow>
+                  <MatSelect
+                    id="selectAwsLogStorageType"
+                    label="Storage Type"
+                    value={dataItem.awsPol.flowlogPol && dataItem.awsPol.flowlogPol.logStorageType ? dataItem.awsPol.flowlogPol.logStorageType : ''}
+                    options={[AwsLogStorageType.CLOUD_WATCH, AwsLogStorageType.S3]}
+                    onChange={onChangeStorageType}
+                    renderValue={(v: AwsLogStorageType) => {
+                      if (v === AwsLogStorageType.CLOUD_WATCH) return <>Cloud Watch</>;
+                      if (v === AwsLogStorageType.S3) return <>S3</>;
+                      return null;
+                    }}
+                    required
+                    styles={{ height: '72px', minHeight: '72px' }}
+                    selectStyles={{ height: '50px' }}
+                  />
+                </StepItemFormRow>
+                <StepItemFormRow margin="0">
+                  {dataItem.awsPol.flowlogPol.logStorageType === AwsLogStorageType.CLOUD_WATCH && (
+                    <TextInput
+                      id="flowGroupName"
+                      name="groupName"
+                      value={dataItem.awsPol.flowlogPol.logGroupName}
+                      label="Group Name"
+                      onChange={v => onFlowLogChange(v, 'logGroupName')}
+                      // styles?: Object;
+                      required
+                    />
+                  )}
+                  {dataItem.awsPol.flowlogPol.logStorageType === AwsLogStorageType.S3 && (
+                    <TextInput
+                      id="flowStorageBucketName"
+                      name="storageBucketName"
+                      value={dataItem.awsPol.flowlogPol.logGroupName}
+                      label="Storage Bucket Name"
+                      onChange={v => onFlowLogChange(v, 'storageBucketName')}
+                      // styles?: Object;
+                      required
+                    />
+                  )}
+                </StepItemFormRow>
+              </>
             )}
           </StepItem>
         </ModalOverflowContainer>

@@ -12,7 +12,6 @@ export const DetailsWrapper = styled.div`
   font-size: 12px;
   line-height: 16px;
   letter-spacing: 0.1em;
-  margin-right: 24px;
 `;
 
 export const DetailsText = styled.span`

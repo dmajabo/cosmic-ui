@@ -16,14 +16,15 @@ interface Props {
 }
 const AggregateRow: React.FC<Props> = (props: Props) => {
   const [open, setOpen] = React.useState(false);
+
   return (
     <React.Fragment>
       <TableRow className={`bodyRow ${open ? 'expandedRow' : ''}`}>
-        {props.columns.map(it => {
+        {props.columns.map((it, colIndex) => {
           if (it.hide) return null;
           if (it.resField === 'id') {
             return (
-              <TableCell key={`tdRow${it.resField}${props.row.id}`}>
+              <TableCell key={`tdRow${it.resField}${props.row.session.id}${colIndex}`}>
                 <IconWrapper
                   width="12px"
                   height="12px"
@@ -36,9 +37,9 @@ const AggregateRow: React.FC<Props> = (props: Props) => {
           }
           if (it.resField === 'vendors') {
             return (
-              <TableCell key={`tdRow${it.resField}`}>
+              <TableCell key={`tdRow${it.resField}${props.row.session.id}${colIndex}`}>
                 {props.row[it.resField].map((v, i) => (
-                  <VendorTdWrapper key={`tdRow${it.resField}vendor${props.row.id}${i}`}>
+                  <VendorTdWrapper key={`tdRow${it.resField}vendor${props.row.session.id}${i}`}>
                     {v.icon && <IconWrapper width="20px" height="20px" styles={{ margin: '0 8px 0 0' }} icon={v.icon} />}
                     <span>{v.label}</span>
                   </VendorTdWrapper>
@@ -46,14 +47,14 @@ const AggregateRow: React.FC<Props> = (props: Props) => {
               </TableCell>
             );
           }
-          return <TableCell>{props.row[it.resField]}</TableCell>;
+          return <TableCell key={`tdRow${it.resField}${props.row.session.id}${colIndex}`}>{props.row.session[it.resField]}</TableCell>;
         })}
       </TableRow>
       <TableRow className={`nestedRow ${!open ? 'rowCollapsed' : ''}`}>
         <TableCell className="nestedTd" style={open ? null : { paddingBottom: 0, paddingTop: 0, border: 'none' }} colSpan={props.columns.filter(it => !it.hide).length}>
           <Collapse in={open} timeout="auto" easing="linear" unmountOnExit>
             {Object.keys(props.row.data).map((key, index) => (
-              <VendorTable key={`${props.row.id}${key}`} isLast={index === Object.keys(props.row.data).length - 1} label={key} data={props.row.data[key]} />
+              <VendorTable key={`${props.row.session.id}${key}`} isLast={index === Object.keys(props.row.data).length - 1} label={key} data={props.row.data[key]} />
             ))}
           </Collapse>
         </TableCell>

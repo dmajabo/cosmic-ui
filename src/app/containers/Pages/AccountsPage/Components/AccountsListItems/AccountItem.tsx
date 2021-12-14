@@ -1,5 +1,5 @@
 import React from 'react';
-import { AccountStatus, IAWS_Account, IMeraki_Account } from 'lib/api/ApiModels/Accounts/apiModel';
+import { AccountStatus, IAWS_Account, IAZURE_Account, IMeraki_Account } from 'lib/api/ApiModels/Accounts/apiModel';
 import { AccountItemDescription, AccountItemFooter, AccountItemHeader, AccountItemTitle, AccountItemWrapper, StatusLabel, StatusWrapper } from './styles';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { getAccountIcon } from '../AccountForm/helper';
@@ -9,8 +9,8 @@ import SecondaryButton from 'app/components/Buttons/SecondaryButton';
 import { deleteIcon } from 'app/components/SVGIcons/delete';
 
 interface Props {
-  dataItem: IMeraki_Account | IAWS_Account;
-  onEdit: (item: IMeraki_Account | IAWS_Account) => void;
+  dataItem: IMeraki_Account | IAWS_Account | IAZURE_Account;
+  onEdit: (item: IMeraki_Account | IAWS_Account | IAZURE_Account) => void;
   onDelete: (id: string) => void;
 }
 const AccountItem: React.FC<Props> = (props: Props) => {

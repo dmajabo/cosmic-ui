@@ -10,13 +10,16 @@ import Paging from 'app/components/Basic/Paging';
 import { SessionGridColumns } from '../models';
 import { parseFieldAsDate } from 'lib/helpers/general';
 import { IColumn } from 'lib/models/grid';
-
+import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
+import LoadingIndicator from 'app/components/Loading';
+import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 interface Props {
   data: ISession[];
   logCount: number;
-  isError: any;
+  error: string;
   pageSize: number;
   currentPage: number;
+  rowHeight?: number;
   onChangeCurrentPage: (_page: number) => void;
   onChangePageSize: (size: number, page?: number) => void;
   // onSetSelection: (values: ISelectionGridCellValue[]) => void;
@@ -26,16 +29,6 @@ const Table: React.FC<Props> = (props: Props) => {
   const [dataRows, setDataRows] = React.useState<ISession[]>(props.data || []);
   const gridStyles = GridStyles();
   const [columns, setColumns] = React.useState<IColumn[]>([
-    {
-      id: 'sessionsRowIndex',
-      field: 'rowIndex',
-      headerName: '#',
-      label: '',
-      minWidth: 70,
-      flex: 0,
-      resizable: false,
-      valueFormatter: (params: GridValueFormatterParams) => +params.value + 1,
-    },
     {
       id: `sessions${SessionGridColumns.timestamp.resField}`,
       field: SessionGridColumns.timestamp.resField,
@@ -201,11 +194,11 @@ const Table: React.FC<Props> = (props: Props) => {
         disableColumnMenu
         hideFooter
         headerHeight={50}
-        rowHeight={50}
+        rowHeight={props.rowHeight || 70}
         rowCount={props.logCount}
         disableColumnFilter
         autoHeight
-        error={props.isError}
+        error={props.error}
         rows={dataRows}
         columns={columns}
         pageSize={dataRows ? dataRows.length : 0}
@@ -213,6 +206,19 @@ const Table: React.FC<Props> = (props: Props) => {
           ColumnUnsortedIcon: () => null,
           ColumnSortedAscendingIcon: () => <>{gridAscArrow}</>,
           ColumnSortedDescendingIcon: () => <>{gridDescArrow}</>,
+          NoRowsOverlay: () => (
+            <AbsLoaderWrapper width="100%" height="100%">
+              <ErrorMessage color="var(--_primaryColor)" margin="auto">
+                No data
+              </ErrorMessage>
+            </AbsLoaderWrapper>
+          ),
+          ErrorOverlay: () => <ErrorMessage margin="auto">{props.error}</ErrorMessage>,
+          LoadingOverlay: () => (
+            <AbsLoaderWrapper width="100%" height="calc(100% - 50px)" top="50px">
+              <LoadingIndicator margin="auto" />
+            </AbsLoaderWrapper>
+          ),
         }}
       />
       <Paging

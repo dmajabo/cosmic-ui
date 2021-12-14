@@ -1,3 +1,4 @@
+import { APP_HEADER_HEIGHT } from 'lib/constants/general';
 import styled from 'styled-components';
 
 export const Wrapper = styled.div`
@@ -7,7 +8,7 @@ export const Wrapper = styled.div`
   height: 100%;
   padding: 2px 0 0 0;
   overflow: hidden;
-  max-height: calc(100vh - 81px);
+  max-height: ${`calc(100vh - ${APP_HEADER_HEIGHT})`};
 `;
 
 export const MainColumn = styled.div`

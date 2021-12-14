@@ -11,7 +11,6 @@ import {
   IDevice,
   IWedge,
   TOPOLOGY_NODE_TYPES,
-  IVnet,
   IVm,
   DEFAULT_GROUP_ID,
   DEFAULT_RACK_RADIUS,
@@ -21,18 +20,18 @@ import * as d3 from 'd3';
 import { NODES_CONSTANTS } from 'app/components/Map/model';
 import { STANDART_DISPLAY_RESOLUTION } from 'lib/models/general';
 import uuid from 'react-uuid';
-import { IOrganization, ITopologyGroup, VendorTypes, ITopologyMapData, SelectorEvalType } from 'lib/api/ApiModels/Topology/endpoints';
+import { INetworkOrg, ITopologyGroup, VendorTypes, ITopologyMapData, SelectorEvalType, INetworkVNetwork } from 'lib/api/ApiModels/Topology/endpoints';
 // import { jsonClone } from './cloneHelper';
 
-const createDeviceNode = (org: IOrganization, orgIndex: number, node: IDevice, index: number): IDeviceNode => {
+const createDeviceNode = (org: INetworkOrg, orgIndex: number, node: IDevice, index: number): IDeviceNode => {
   return { ...node, uiId: uuid(), vendorType: org.vendorType, visible: true, childIndex: index, orgIndex: orgIndex, orgId: org.id, x: 0, y: 0, scaleFactor: 1, nodeType: TOPOLOGY_NODE_TYPES.DEVICE };
 };
 
-const createWedgeNode = (org: IOrganization, orgIndex: number, node: IWedge, index: number): IWedgeNode => {
+const createWedgeNode = (org: INetworkOrg, orgIndex: number, node: IWedge, index: number): IWedgeNode => {
   return { ...node, uiId: uuid(), vendorType: org.vendorType, visible: true, childIndex: index, orgIndex: orgIndex, orgId: org.id, x: 0, y: 0, nodeType: TOPOLOGY_NODE_TYPES.WEDGE };
 };
 
-const createVnetNode = (org: IOrganization, orgIndex: number, node: IVnet, index: number, groups: ITopologyGroup[]): IVnetNode => {
+const createVnetNode = (org: INetworkOrg, orgIndex: number, node: INetworkVNetwork, index: number, groups: ITopologyGroup[]): IVnetNode => {
   const _uniqueGroupsSet: Set<ITopologyGroup> = new Set();
   node.vms.forEach(vm => {
     vm.uiId = uuid();
@@ -306,7 +305,7 @@ export interface IVpcSize {
   showMore: boolean;
 }
 
-export const getVPCContainerSize = (node: IVnet, _arr: ITopologyGroup[]): IVpcSize => {
+export const getVPCContainerSize = (node: INetworkVNetwork, _arr: ITopologyGroup[]): IVpcSize => {
   if (!node.vms || !node.vms.length) {
     const _r = Math.sqrt(Math.pow(NODES_CONSTANTS.VNet.width, 2) + Math.pow(NODES_CONSTANTS.VNet.height, 2));
     return { r: _r, width: NODES_CONSTANTS.VNet.width, height: NODES_CONSTANTS.VNet.height, cols: 3, rows: 2, showMore: false };

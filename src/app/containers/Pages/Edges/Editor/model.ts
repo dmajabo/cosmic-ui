@@ -2,14 +2,14 @@ import { IStepperItem, StepperItemStateType } from 'app/components/Stepper/model
 import { Mark } from '@material-ui/core/Slider';
 import { ISelectedListItem } from 'lib/models/general';
 import { poloAltoIcon } from 'app/components/SVGIcons/edges/poloAlto';
-import { ConnectionPKeysMap, DeploymentTypes, IEdgeP, IEdgePolicy, NwServicesVendor, PolicyActions } from 'lib/api/ApiModels/Edges/apiModel';
+import { ConnectionPKeysMap, IEdgeP, NwServicesVendor } from 'lib/api/ApiModels/Edges/apiModel';
 import { TopologyGroupTypesAsString } from 'lib/models/topology';
 
 export enum EdgesStepperTypes {
   GENERAL = 'general',
   SITES = 'sites',
   APPS = 'apps',
-  TRANSIT = 'transit',
+  EDGES = 'edges',
   POLICY = 'policy',
 }
 
@@ -17,7 +17,7 @@ export const EdgesStepperItems: IStepperItem<EdgesStepperTypes>[] = [
   { id: EdgesStepperTypes.GENERAL, index: 0, icon: null, label: 'General', disabled: false, state: StepperItemStateType.EMPTY, showEdge: true },
   { id: EdgesStepperTypes.SITES, index: 1, icon: null, label: 'Sites', disabled: false, state: StepperItemStateType.EMPTY, showEdge: true },
   { id: EdgesStepperTypes.APPS, index: 2, icon: null, label: 'Apps', disabled: false, state: StepperItemStateType.EMPTY, showEdge: true },
-  { id: EdgesStepperTypes.TRANSIT, index: 3, icon: null, label: 'Transit', disabled: false, state: StepperItemStateType.EMPTY, showEdge: true },
+  { id: EdgesStepperTypes.EDGES, index: 3, icon: null, label: 'Edges', disabled: false, state: StepperItemStateType.EMPTY, showEdge: true },
   { id: EdgesStepperTypes.POLICY, index: 4, icon: null, label: 'Policy', disabled: false, state: StepperItemStateType.EMPTY, showEdge: false },
 ];
 
@@ -25,20 +25,6 @@ export const createNewEdge = (): IEdgeP => ({
   id: '',
   name: '',
   description: '',
-  deploymentPolicy: [
-    {
-      controllerName: '',
-      regionCode: [],
-      type: DeploymentTypes.Wedge,
-      wedgeExtIds: [],
-    },
-  ],
-  nwServicesPolicy: [
-    {
-      serviceType: null,
-      serviceVendor: NwServicesVendor.PALO_ALTO_NW,
-    },
-  ],
   connectionPolicy: {
     enableNetworkLink: false,
     enableVpnLink: false,
@@ -46,13 +32,21 @@ export const createNewEdge = (): IEdgeP => ({
   tags: [],
   siteGroupIds: [],
   appGroupIds: [],
-  policies: null,
-});
-
-export const createNewEdgePolicy = (): IEdgePolicy => ({
-  source: null,
-  destination: null,
-  action: PolicyActions.ALLOW,
+  deploymentPolicy: [
+    {
+      controllerName: '',
+      regionCode: [],
+      deploymentType: null, // DeploymentTypes.EXISTING_GWS,
+      wanGwExtIds: [],
+      nwServicesPolicy: [
+        {
+          serviceType: null, // NwServiceT.FIREWALL,
+          serviceVendor: NwServicesVendor.PALO_ALTO_NW,
+        },
+      ],
+    },
+  ],
+  segmentPolicy: [],
 });
 
 export const EdgePriceValues: Mark[] = [
@@ -72,4 +66,16 @@ export interface IDeleteDataModel {
   type: TopologyGroupTypesAsString;
   name: string;
   message: string;
+}
+
+export interface IEdgeStepValidation {
+  errors: string[];
+  state: StepperItemStateType;
+}
+export interface IEdgeModelValidation {
+  general: IEdgeStepValidation;
+  sites: IEdgeStepValidation;
+  apps: IEdgeStepValidation;
+  edges: IEdgeStepValidation;
+  policy: IEdgeStepValidation;
 }

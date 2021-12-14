@@ -5,7 +5,7 @@ export const TextInputWrapper = styled.div`
   width: 100%;
   flex-shrink: 0;
   overflow: hidden;
-  min-height: 60px;
+  min-height: 70px;
 `;
 interface Props {
   disabled?: boolean;
@@ -35,7 +35,7 @@ const InputStyles = css`
 `;
 export const Input = styled.input<Props>`
   ${InputStyles};
-  height: ${props => props.height || '40px'};
+  height: ${props => props.height || '50px'};
   padding: ${props => props.padding || '8px 24px 8px 16px'};
 `;
 

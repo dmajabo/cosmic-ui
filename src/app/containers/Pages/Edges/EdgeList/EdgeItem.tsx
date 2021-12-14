@@ -1,5 +1,5 @@
 import React from 'react';
-import { IEdgeP } from 'lib/api/ApiModels/Edges/apiModel';
+import { DeploymentTypes, IEdgeP } from 'lib/api/ApiModels/Edges/apiModel';
 import { DataItemsRow, EdgeContent, EdgeFooter, EdgeListItemWrapper, EdgeNameWrapper, ValueItem, ItemLabel, ItemValue, StatusCircle } from './styles';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { appsIcon, deployedSuccessIcon, sitesIcon, trafficIcon, transitIcon } from 'app/components/SVGIcons/edges/edgeIcons';
@@ -52,10 +52,11 @@ const EdgeItem: React.FC<Props> = ({ dataItem, onEdit, onDelete }) => {
             <ValueItem margin="auto 6px">
               <IconWrapper width="30px" height="30px" icon={transitIcon} styles={{ margin: '0 6px 0 0' }} />
               <ItemLabel fontSize="16px" lineHeight="21px" color="var(--_disabledTextColor)" margin="0 4px 0 0">
-                Transits:
+                Edges:
               </ItemLabel>
               <ItemValue fontSize="16px" lineHeight="21px" color="var(--_primaryColor)" fontWeight="500">
-                {dataItem.deploymentPolicy[0].regionCode.length}
+                {dataItem.deploymentPolicy[0].deploymentType === DeploymentTypes.NEW_REGIONS ? dataItem.deploymentPolicy[0].regionCode.length : null}
+                {dataItem.deploymentPolicy[0].deploymentType === DeploymentTypes.EXISTING_GWS ? dataItem.deploymentPolicy[0].wanGwExtIds.length : null}
               </ItemValue>
             </ValueItem>
           ) : null}

@@ -4,7 +4,7 @@ export enum AutomationBreadCrumbItemsType {
 }
 
 export enum EdgesBreadCrumbItemsType {
-  EDGES = 'Edges',
-  CREATE = 'Create Edge',
-  EDIT = 'Update Edge',
+  EDGES = 'Transit',
+  CREATE = 'Create Transit',
+  EDIT = 'Update Transit',
 }

@@ -26,7 +26,7 @@ export const PopupWrapper = styled.div`
   width: 100%;
   height: 50px;
   position: relative;
-  z-index: 3;
+  z-index: 1;
 `;
 
 export const OperatorPopupWrapper = styled.span`
