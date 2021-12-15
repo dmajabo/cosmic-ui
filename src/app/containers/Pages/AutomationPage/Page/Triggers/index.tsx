@@ -1,16 +1,16 @@
 import React from 'react';
 // import { useAutomationDataContext } from 'lib/hooks/Automation/useAutomationDataContext';
-import { IAlertMeta, IAlertMetaDataRes } from 'lib/api/ApiModels/Workflow/apiModel';
-import { useGet } from 'lib/api/http/useAxiosHook';
+import { AlertCategory, AlertConfigState, AlertSeverity, IAlertMeta, IAlertMetaDataRes, ModelalertType } from 'lib/api/ApiModels/Workflow/apiModel';
+import { useGet, usePatch } from 'lib/api/http/useAxiosHook';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { WorkflowApi } from 'lib/api/ApiModels/Workflow/endpoints';
 import { PAGING_DEFAULT_PAGE_SIZE } from 'lib/hooks/Sessions/model';
 import { AutomationSelectValuesTypes, AUTOMATION_SELECT_VALUES } from 'lib/hooks/Automation/models';
 import { workflowParamBuilder } from 'lib/api/ApiModels/Workflow/paramBuilder';
-import { ISelectedListItem } from 'lib/models/general';
+import { IBaseEntity, ISelectedListItem } from 'lib/models/general';
 import { OKULIS_LOCAL_STORAGE_KEYS } from 'lib/api/http/utils';
 import { getSessionStoragePreferences, StoragePreferenceKeys, updateSessionStoragePreference } from 'lib/helpers/localStorageHelpers';
-import { DataGrid } from '@mui/x-data-grid';
+import { DataGrid, GridColumnHeaderParams, GridRenderCellParams } from '@mui/x-data-grid';
 import { IColumn } from 'lib/models/grid';
 import { GridStyles } from 'app/components/Grid/GridStyles';
 import { gridAscArrow, gridDescArrow } from 'app/components/SVGIcons/arrows';
@@ -20,14 +20,17 @@ import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import Paging from 'app/components/Basic/Paging';
 import { getSearchedListData, TriggerGridColumns } from './model';
 import Header from './Header';
-interface Props {
-  onCreateNew: () => void;
-}
+import { GridCellTotalTag, GridCellWrapper } from 'app/components/Grid/styles';
+import SwitchInput from 'app/components/Inputs/SwitchInput';
+import MatSelect from 'app/components/Inputs/MatSelect';
+import SeverityOption from '../../Components/SeverityOption/SeverityOption';
+interface Props {}
 
 const Triggers: React.FC<Props> = (props: Props) => {
   // const { automation } = useAutomationDataContext();
   const userContext = React.useContext<UserContextState>(UserContext);
   const { loading, error, response, onGet } = useGet<IAlertMetaDataRes>();
+  const { loading: updateLoading, error: updateError, response: updateRes, onPatch } = usePatch<IBaseEntity<string>>();
   const [totalCount, setTotalCount] = React.useState<number>(0);
   const [currentPage, setCurrentPage] = React.useState<number>(1);
   const [pageSize, setPageSize] = React.useState<number>(PAGING_DEFAULT_PAGE_SIZE);
@@ -42,7 +45,8 @@ const Triggers: React.FC<Props> = (props: Props) => {
       field: TriggerGridColumns.name.resField,
       headerName: TriggerGridColumns.name.label,
       label: TriggerGridColumns.name.label,
-      minWidth: 220,
+      minWidth: 240,
+      flex: 0.25,
       disableColumnMenu: true,
       resizable: false,
       editable: false,
@@ -55,7 +59,8 @@ const Triggers: React.FC<Props> = (props: Props) => {
       field: TriggerGridColumns.type.resField,
       headerName: TriggerGridColumns.type.label,
       label: TriggerGridColumns.type.label,
-      width: 160,
+      minWidth: 240,
+      flex: 0.25,
       disableColumnMenu: true,
       resizable: false,
       editable: false,
@@ -64,17 +69,44 @@ const Triggers: React.FC<Props> = (props: Props) => {
       disableExport: true,
     },
     {
-      id: `loggins${TriggerGridColumns.category.resField}`,
-      field: TriggerGridColumns.category.resField,
-      headerName: TriggerGridColumns.category.label,
-      label: TriggerGridColumns.category.label,
-      minWidth: 200,
+      id: `loggins${TriggerGridColumns.severity.resField}`,
+      field: TriggerGridColumns.severity.resField,
+      headerName: TriggerGridColumns.severity.label,
+      label: TriggerGridColumns.severity.label,
+      width: 200,
       disableColumnMenu: true,
       resizable: false,
       editable: false,
       filterable: false,
       disableReorder: true,
       disableExport: true,
+      renderCell: (param: GridRenderCellParams) => (
+        <GridCellWrapper>
+          <MatSelect
+            id={`sevirity${param.row.id}`}
+            value={param.value}
+            options={[AlertSeverity.LOW, AlertSeverity.MEDIUM, AlertSeverity.HIGH]}
+            onChange={v => onSeverityChange(v, param)}
+            styles={{ maxWidth: '160px' }}
+            renderValue={(v: string) => <SeverityOption value={v as AlertSeverity} />}
+          />
+        </GridCellWrapper>
+      ),
+    },
+    {
+      id: `loggins${TriggerGridColumns.category.resField}`,
+      field: TriggerGridColumns.category.resField,
+      headerName: TriggerGridColumns.category.label,
+      label: TriggerGridColumns.category.label,
+      minWidth: 240,
+      flex: 0.25,
+      disableColumnMenu: true,
+      resizable: false,
+      editable: false,
+      filterable: false,
+      disableReorder: true,
+      disableExport: true,
+      hide: true,
       //   renderCell: (param: GridRenderCellParams) => (
       //     <GridCellWrapper title={param.value as string}>
       //       <GridCellLabel cursor="default">{param.value}</GridCellLabel>
@@ -82,53 +114,43 @@ const Triggers: React.FC<Props> = (props: Props) => {
       //   ),
     },
     {
-      id: `loggins${TriggerGridColumns.severity.resField}`,
-      field: TriggerGridColumns.severity.resField,
-      headerName: TriggerGridColumns.severity.label,
-      label: TriggerGridColumns.severity.label,
-      width: 180,
-      disableColumnMenu: true,
-      resizable: false,
-      editable: false,
-      filterable: false,
-      disableReorder: true,
-      disableExport: true,
-    },
-    {
       id: `loggins${TriggerGridColumns.triggerCount.resField}`,
       field: TriggerGridColumns.triggerCount.resField,
       headerName: TriggerGridColumns.triggerCount.label,
       label: TriggerGridColumns.triggerCount.label,
-      minWidth: 200,
+      minWidth: 160,
       disableColumnMenu: true,
       resizable: false,
       editable: false,
       filterable: false,
       disableReorder: true,
       disableExport: true,
-      // renderCell: (param: GridRenderCellParams) => (
-      //   <GridCellWrapper title={param.value as string}>
-      //     <GridCellLabel cursor="default">{param.value}</GridCellLabel>
-      //   </GridCellWrapper>
-      // ),
+      renderCell: (param: GridRenderCellParams) => {
+        return (
+          <GridCellWrapper>
+            <GridCellTotalTag>{param.value}</GridCellTotalTag>
+          </GridCellWrapper>
+        );
+      },
     },
     {
       id: `loggins${TriggerGridColumns.configState.resField}`,
       field: TriggerGridColumns.configState.resField,
       headerName: '',
       label: TriggerGridColumns.configState.label,
-      width: 80,
+      width: 160,
       disableColumnMenu: true,
       resizable: false,
       editable: false,
       filterable: false,
       disableReorder: true,
       disableExport: true,
-      // renderCell: (param: GridRenderCellParams) => (
-      //   <GridCellWrapper title={param.value as string}>
-      //     <GridCellLabel cursor="default">{param.value}</GridCellLabel>
-      //   </GridCellWrapper>
-      // ),
+      renderHeader: (params: GridColumnHeaderParams) => <></>,
+      renderCell: (param: GridRenderCellParams) => (
+        <GridCellWrapper>
+          <SwitchInput showLabels checked={param.value === AlertConfigState.ON} onChange={(e: React.ChangeEvent<HTMLInputElement>) => onToogleChange(e, param)} />
+        </GridCellWrapper>
+      ),
     },
     {
       id: `loggins${TriggerGridColumns.metaDescString.resField}`,
@@ -142,6 +164,7 @@ const Triggers: React.FC<Props> = (props: Props) => {
       filterable: false,
       disableReorder: true,
       disableExport: true,
+      hide: true,
       // renderCell: (param: GridRenderCellParams) => (
       //   <GridCellWrapper title={param.value as string}>
       //     <GridCellLabel cursor="default">{param.value}</GridCellLabel>
@@ -244,9 +267,57 @@ const Triggers: React.FC<Props> = (props: Props) => {
 
   React.useEffect(() => {
     if (error) {
-      setDataRows([]);
-      setFilteredData([]);
-      setTotalCount(0);
+      const _items: IAlertMeta[] = [
+        {
+          id: '61b82d31ba7900076a0f31bd',
+          name: 'ANOMALY_PACKETLOSS',
+          type: 'ANOMALY_PACKETLOSS' as ModelalertType,
+          category: 'EXPERIENCE' as AlertCategory,
+          severity: 'LOW' as AlertSeverity,
+          configState: 'ON' as AlertConfigState,
+          metaDescString: '',
+          channelIds: [],
+          triggerCount: 0,
+        },
+        {
+          id: '61b82d31ba7900076a0f31bc',
+          name: 'ANOMALY_GOODPUT',
+          type: 'ANOMALY_GOODPUT' as ModelalertType,
+          category: 'EXPERIENCE' as AlertCategory,
+          severity: AlertSeverity.MEDIUM,
+          configState: 'ON' as AlertConfigState,
+          metaDescString: '',
+          channelIds: [],
+          triggerCount: 0,
+        },
+        {
+          id: '61b82d31ba7900076a0f31bsf',
+          name: 'ANOMALY_GOODPUT',
+          type: ModelalertType.ANOMALY_LATENCY,
+          category: AlertCategory.COST,
+          severity: AlertSeverity.HIGH,
+          configState: AlertConfigState.OFF,
+          metaDescString: '',
+          channelIds: [],
+          triggerCount: 1020,
+        },
+        {
+          id: '61b82d31ba7900076a0f31bb',
+          name: 'ANOMALY_LATENCY',
+          type: 'ANOMALY_LATENCY' as ModelalertType,
+          category: 'EXPERIENCE' as AlertCategory,
+          severity: 'UNKNOWN_SEVERITY' as AlertSeverity,
+          configState: 'ON' as AlertConfigState,
+          metaDescString: '',
+          channelIds: ['61b82e22ba7900076a0f31bf'],
+          triggerCount: 1,
+        },
+      ];
+
+      const _arr: IAlertMeta[] = getSearchedListData(_items, searchValue);
+      setDataRows(_items);
+      setFilteredData(_arr);
+      setTotalCount(3);
     }
   }, [error]);
 
@@ -291,9 +362,28 @@ const Triggers: React.FC<Props> = (props: Props) => {
     setGridColumns(_items);
   };
 
+  const onToogleChange = (e: React.ChangeEvent<HTMLInputElement>, param: GridRenderCellParams) => {
+    console.log(dataRows);
+    const { checked } = e.target;
+    const _configState = checked ? AlertConfigState.ON : AlertConfigState.OFF;
+    const _obj = {};
+    _obj[TriggerGridColumns.configState.resField] = _configState;
+    onTryUpdateMetaData(param.row.id, _obj);
+  };
+
+  const onSeverityChange = (v: any, param: GridRenderCellParams) => {
+    const _obj = {};
+    _obj[TriggerGridColumns.severity.resField] = v;
+    onTryUpdateMetaData(param.row.id, _obj);
+  };
+
   const onTryLoadAlertMetaData = async (_pageSize: number, _currentPage: number, _period: AutomationSelectValuesTypes) => {
     const _param = workflowParamBuilder(_pageSize, _currentPage, _period);
     await onGet(WorkflowApi.getAllMetadata(), userContext.accessToken!, _param);
+  };
+
+  const onTryUpdateMetaData = async (id: string, data: any) => {
+    await onPatch(WorkflowApi.patchMetadata(id), data, userContext.accessToken!);
   };
 
   return (
@@ -319,7 +409,7 @@ const Triggers: React.FC<Props> = (props: Props) => {
         autoHeight
         rows={filteredData}
         loading={loading}
-        error={error ? error.message : null}
+        // error={error ? error.message : null}
         columns={gridColumns}
         components={{
           ColumnUnsortedIcon: () => null,

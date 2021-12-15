@@ -22,6 +22,7 @@ interface IApiRes<T> {
   onGetChainData?: (url: string[], keys: string[], token: string, param?: any) => void;
   onPost?: (url: string, _data: any, token: string, param?: any) => void;
   onPut?: (url: string, _data: any, token: string, param?: any) => void;
+  onPatch?: (url: string, _data: any, token: string, param?: any) => void;
   onDelete?: (url: string, token: string, param?: any) => void;
 }
 
@@ -149,6 +150,48 @@ export const usePut = <T = any, R = any>(): IApiRes<R> => {
   };
 
   return { response, error, loading, onPut };
+};
+
+export const usePatch = <T = any, R = any>(): IApiRes<R> => {
+  const [response, setResponse] = React.useState<R>(null);
+  const [error, setError] = React.useState<AxiosError>(null);
+  const [loading, setloading] = React.useState<boolean>(false);
+
+  const onPatch = React.useCallback((url: string, _data: T, token: string, param?: any) => {
+    let isSubscribed = true;
+    setloading(true);
+    patchDataAsync(isSubscribed, url, _data, token, param);
+    return () => {
+      setloading(false);
+      setError(null);
+      isSubscribed = false;
+    };
+  }, []);
+
+  const patchDataAsync = async (isSubscribed: boolean, url: string, _data: T, token: string, param?: any) => {
+    const _header = getHeaders(token, param);
+    const data = JSON.stringify(_data);
+    await axios
+      .patch(url, data, _header)
+      .then((res: AxiosResponse<R>) => {
+        if (!isSubscribed) return;
+        setResponse(res.data);
+      })
+      .catch(err => {
+        if (!isSubscribed) return;
+        if (err.response && err.response.data) {
+          setError(err.response.data);
+          return;
+        }
+        setError(err.toJSON());
+      })
+      .finally(() => {
+        if (!isSubscribed) return;
+        setloading(false);
+      });
+  };
+
+  return { response, error, loading, onPatch };
 };
 
 export const useDelete = <T = any>(): IApiRes<T> => {

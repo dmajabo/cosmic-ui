@@ -39,3 +39,21 @@ export const GridCellStatusCircle = styled.span<ICellProps>`
   user-select: none;
   pointer-events: none;
 `;
+
+export const GridCellTotalTag = styled.span`
+  background: var(--_tagBg);
+  display: inline-block;
+  width: auto;
+  min-width: 36px;
+  height: 22px;
+  border-radius: 20px;
+  font-family: 'DMSans';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 22px;
+  text-align: center;
+  color: var(--_primaryBg);
+  margin: auto auto auto 0;
+  padding: 0 10px;
+`;

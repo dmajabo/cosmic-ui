@@ -6,46 +6,18 @@ import { PageWrapperStyles, TabsWrapperStyles } from '../../Shared/styles';
 import TabPanel from 'app/components/Tabs/TabPanel';
 import { AUTOMATIONS_TABS } from 'lib/hooks/Automation/models';
 import { useAutomationDataContext } from 'lib/hooks/Automation/useAutomationDataContext';
-
-import { useBreadCrumbDataContext } from 'lib/hooks/Breadcrumb/useBreadcrumbDataContext';
-import { AutomationBreadCrumbItemsType } from 'lib/hooks/Breadcrumb/models';
-import EditorPage from './EditorPage';
-import AutomationTable from '../Components/AutomationTable';
 import Triggers from './Triggers';
+import Configutation from './Configutation';
 
 interface IProps {}
 
 const MainPage: React.FC<IProps> = (props: IProps) => {
   const { automation } = useAutomationDataContext();
-  const { breadcrumb } = useBreadCrumbDataContext();
-  const [editorPage, setEditorPage] = React.useState<AutomationBreadCrumbItemsType>(null);
   const classes = TabsStyles();
-
-  React.useEffect(() => {
-    if (editorPage && !breadcrumb.automationsBreadCrumbItems.length) {
-      setEditorPage(null);
-      return;
-    }
-    if (!editorPage && breadcrumb.automationsBreadCrumbItems.length) {
-      setEditorPage(breadcrumb.automationsBreadCrumbItems[breadcrumb.automationsBreadCrumbItems.length - 1]);
-    }
-  }, [breadcrumb.automationsBreadCrumbItems]);
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     automation.onChangeSelectedTab(newValue);
   };
-
-  const onCreateNewAutomation = () => {
-    breadcrumb.onGoToAutomation(AutomationBreadCrumbItemsType.NEW);
-  };
-
-  const onCreateNewTrigger = () => {
-    breadcrumb.onGoToAutomation(AutomationBreadCrumbItemsType.NEW);
-  };
-
-  if (editorPage) {
-    return <EditorPage editorPage={editorPage} />;
-  }
 
   return (
     <PageWrapperStyles>
@@ -72,14 +44,14 @@ const MainPage: React.FC<IProps> = (props: IProps) => {
         value={automation.selectedTab.index}
         index={AUTOMATIONS_TABS[0].index}
       >
-        <Triggers onCreateNew={onCreateNewTrigger} />
+        <Triggers />
       </TabPanel>
       <TabPanel
         styles={{ display: 'flex', flexDirection: 'column', flex: automation.selectedTab.index === AUTOMATIONS_TABS[1].index ? '1 1 100%' : '0' }}
         value={automation.selectedTab.index}
         index={AUTOMATIONS_TABS[1].index}
       >
-        <AutomationTable onCreateNew={onCreateNewAutomation} />
+        <Configutation />
       </TabPanel>
     </PageWrapperStyles>
   );

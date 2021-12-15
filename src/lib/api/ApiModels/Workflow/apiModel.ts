@@ -16,8 +16,8 @@ export enum AlertCategory {
   COST = 'COST',
 }
 export enum AlertSeverity {
-  // UNKNOWN_SEVERITY = 'UNKNOWN_SEVERITY',
-  LOW = 'LOW', // default
+  UNKNOWN_SEVERITY = 'UNKNOWN_SEVERITY', // default
+  LOW = 'LOW',
   MEDIUM = 'MEDIUM',
   HIGH = 'HIGH',
 }
