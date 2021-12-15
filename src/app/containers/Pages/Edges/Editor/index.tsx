@@ -17,6 +17,8 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import DeleteGroupComponent from './Components/DeleteGroupComponent';
 import { EdgesApi } from 'lib/api/ApiModels/Edges/edpoints';
+import { removeUiFields } from './helper';
+import { jsonClone } from 'lib/helpers/cloneHelper';
 
 interface Props {
   onClose: () => void;
@@ -135,13 +137,15 @@ const Editor: React.FC<Props> = (props: Props) => {
   };
 
   const onSave = async () => {
-    if (!edges.editEdge.id) {
-      const _obj: IEdgeP = { ...edges.editEdge };
+    const _obj: IEdgeP = jsonClone(edges.editEdge);
+    if (!_obj.id) {
       delete _obj.id;
+      removeUiFields(_obj);
       await onPost(EdgesApi.postCreateEdge(), { edge_p: _obj }, userContext.accessToken!);
       return;
     }
-    await onPut(EdgesApi.putUpdateEdge(edges.editEdge.id), { edge_p: edges.editEdge }, userContext.accessToken!);
+    removeUiFields(_obj);
+    await onPut(EdgesApi.putUpdateEdge(edges.editEdge.id), { edge_p: _obj }, userContext.accessToken!);
   };
 
   const onTryLoadEdge = async (id: string) => {

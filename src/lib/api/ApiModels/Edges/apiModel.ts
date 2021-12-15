@@ -18,14 +18,18 @@ export interface ISegmentRuleP {
   destId: string;
   action: SegmentRuleAction;
 
-  isNew: boolean;
+  // Used only in ui
+  uiId: string;
+  collapsed: boolean;
 }
 
 export interface ISegmentP {
   name: string;
   rules: ISegmentRuleP[];
 
-  isNew?: boolean;
+  // Used only in ui
+  uiId: string;
+  collapsed: boolean;
 }
 
 export enum ValidationFields {

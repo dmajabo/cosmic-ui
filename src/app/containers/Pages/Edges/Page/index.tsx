@@ -116,8 +116,8 @@ const MainPage: React.FC<Props> = (props: Props) => {
 
   const onOpenEditor = (_item?: IEdgeP) => {
     const _bredCrumbState = _item && _item.id ? EdgesBreadCrumbItemsType.EDIT : EdgesBreadCrumbItemsType.CREATE;
-    breadcrumb.onGoToEdges(_bredCrumbState);
     edges.onSetEditEdge(_item || null);
+    breadcrumb.onGoToEdges(_bredCrumbState);
   };
 
   const onCloseEditor = () => {
