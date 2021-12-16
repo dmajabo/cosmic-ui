@@ -24,13 +24,14 @@ import { GridCellTotalTag, GridCellWrapper } from 'app/components/Grid/styles';
 import SwitchInput from 'app/components/Inputs/SwitchInput';
 import MatSelect from 'app/components/Inputs/MatSelect';
 import SeverityOption from '../../Components/SeverityOption/SeverityOption';
+import { GridWrapper } from '../../styles/styles';
 interface Props {}
 
 const Triggers: React.FC<Props> = (props: Props) => {
   // const { automation } = useAutomationDataContext();
   const userContext = React.useContext<UserContextState>(UserContext);
   const { loading, error, response, onGet } = useGet<IAlertMetaDataRes>();
-  const { loading: updateLoading, error: updateError, response: updateRes, onPatch } = usePatch<IBaseEntity<string>>();
+  const { loading: patchLoading, error: patchError, response: updateRes, onPatch } = usePatch<IBaseEntity<string>>();
   const [totalCount, setTotalCount] = React.useState<number>(0);
   const [currentPage, setCurrentPage] = React.useState<number>(1);
   const [pageSize, setPageSize] = React.useState<number>(PAGING_DEFAULT_PAGE_SIZE);
@@ -45,8 +46,7 @@ const Triggers: React.FC<Props> = (props: Props) => {
       field: TriggerGridColumns.name.resField,
       headerName: TriggerGridColumns.name.label,
       label: TriggerGridColumns.name.label,
-      minWidth: 240,
-      flex: 0.25,
+      minWidth: 300,
       disableColumnMenu: true,
       resizable: false,
       editable: false,
@@ -59,8 +59,7 @@ const Triggers: React.FC<Props> = (props: Props) => {
       field: TriggerGridColumns.type.resField,
       headerName: TriggerGridColumns.type.label,
       label: TriggerGridColumns.type.label,
-      minWidth: 240,
-      flex: 0.25,
+      minWidth: 300,
       disableColumnMenu: true,
       resizable: false,
       editable: false,
@@ -73,7 +72,7 @@ const Triggers: React.FC<Props> = (props: Props) => {
       field: TriggerGridColumns.severity.resField,
       headerName: TriggerGridColumns.severity.label,
       label: TriggerGridColumns.severity.label,
-      width: 200,
+      width: 240,
       disableColumnMenu: true,
       resizable: false,
       editable: false,
@@ -98,8 +97,7 @@ const Triggers: React.FC<Props> = (props: Props) => {
       field: TriggerGridColumns.category.resField,
       headerName: TriggerGridColumns.category.label,
       label: TriggerGridColumns.category.label,
-      minWidth: 240,
-      flex: 0.25,
+      minWidth: 300,
       disableColumnMenu: true,
       resizable: false,
       editable: false,
@@ -107,11 +105,6 @@ const Triggers: React.FC<Props> = (props: Props) => {
       disableReorder: true,
       disableExport: true,
       hide: true,
-      //   renderCell: (param: GridRenderCellParams) => (
-      //     <GridCellWrapper title={param.value as string}>
-      //       <GridCellLabel cursor="default">{param.value}</GridCellLabel>
-      //     </GridCellWrapper>
-      //   ),
     },
     {
       id: `loggins${TriggerGridColumns.triggerCount.resField}`,
@@ -131,6 +124,32 @@ const Triggers: React.FC<Props> = (props: Props) => {
             <GridCellTotalTag>{param.value}</GridCellTotalTag>
           </GridCellWrapper>
         );
+      },
+    },
+    {
+      id: `loggins${TriggerGridColumns.channelIds.resField}`,
+      field: TriggerGridColumns.channelIds.resField,
+      headerName: TriggerGridColumns.channelIds.label,
+      label: TriggerGridColumns.channelIds.label,
+      minWidth: 200,
+      flex: 0.5,
+      disableColumnMenu: true,
+      resizable: false,
+      editable: false,
+      filterable: false,
+      disableReorder: true,
+      disableExport: true,
+      renderCell: (param: GridRenderCellParams) => {
+        if (Array.isArray(param.value)) {
+          return (
+            <GridCellWrapper>
+              {param.value.map(it => (
+                <>{it}</>
+              ))}
+            </GridCellWrapper>
+          );
+        }
+        return <GridCellWrapper>{param.value}</GridCellWrapper>;
       },
     },
     {
@@ -157,7 +176,7 @@ const Triggers: React.FC<Props> = (props: Props) => {
       field: TriggerGridColumns.metaDescString.resField,
       headerName: TriggerGridColumns.metaDescString.label,
       label: TriggerGridColumns.metaDescString.label,
-      width: 200,
+      width: 400,
       disableColumnMenu: true,
       resizable: false,
       editable: false,
@@ -165,77 +184,7 @@ const Triggers: React.FC<Props> = (props: Props) => {
       disableReorder: true,
       disableExport: true,
       hide: true,
-      // renderCell: (param: GridRenderCellParams) => (
-      //   <GridCellWrapper title={param.value as string}>
-      //     <GridCellLabel cursor="default">{param.value}</GridCellLabel>
-      //   </GridCellWrapper>
-      // ),
     },
-    // {
-    //   id: `loggins${LoggingGridColumns.respStatusCode.resField}`,
-    //   field: LoggingGridColumns.respStatusCode.resField,
-    //   headerName: LoggingGridColumns.respStatusCode.label,
-    //   label: LoggingGridColumns.respStatusCode.label,
-    //   width: 120,
-    //   disableColumnMenu: true,
-    //   resizable: false,
-    //   editable: false,
-    //   filterable: false,
-    //   disableReorder: true,
-    //   disableExport: true,
-    //   renderCell: (param: GridRenderCellParams) => {
-    //     if (param.value === '200' || param.value === 200 || (param.value >= 200 && param.value < 300)) {
-    //       return (
-    //         <GridCellWrapper>
-    //           <GridCellStatusCircle color="var(--_successColor)" />
-    //           <GridCellLabel cursor="default">{param.value}</GridCellLabel>
-    //         </GridCellWrapper>
-    //       );
-    //     }
-    //     if (param.value === '500' || param.value === 500 || param.value >= 500) {
-    //       return (
-    //         <GridCellWrapper>
-    //           <GridCellStatusCircle color="var(--_errorColor)" />
-    //           <GridCellLabel cursor="default">{param.value}</GridCellLabel>
-    //         </GridCellWrapper>
-    //       );
-    //     }
-    //     if (param.value === '400' || param.value === 400 || (param.value >= 400 && param.value < 500)) {
-    //       return (
-    //         <GridCellWrapper>
-    //           <GridCellStatusCircle color="var(--_errorColor)" />
-    //           <GridCellLabel cursor="default">{param.value}</GridCellLabel>
-    //         </GridCellWrapper>
-    //       );
-    //     }
-    //     return (
-    //       <GridCellWrapper>
-    //         <GridCellStatusCircle />
-    //         <GridCellLabel cursor="default">{param.value}</GridCellLabel>
-    //       </GridCellWrapper>
-    //     );
-    //   },
-    // },
-    // {
-    //   id: `logginsDeteilCol`,
-    //   field: '',
-    //   headerName: '',
-    //   label: '',
-    //   width: 150,
-    //   resizable: false,
-    //   filterable: false,
-    //   sortable: false,
-    //   editable: false,
-    //   hideSortIcons: true,
-    //   disableColumnMenu: true,
-    //   disableReorder: true,
-    //   disableExport: true,
-    //   renderCell: (param: GridRenderCellParams) => (
-    //     <GridCellWrapper>
-    //       <DetailsButton dataItem={param.row} onClick={onOpenDetails} />
-    //     </GridCellWrapper>
-    //   ),
-    // },
   ]);
   React.useEffect(() => {
     const _preference = getSessionStoragePreferences(OKULIS_LOCAL_STORAGE_KEYS.OKULIS_PREFERENCE, [StoragePreferenceKeys.WORKFLOW_TRIGGERS_TIME_PERIOD]);
@@ -321,11 +270,11 @@ const Triggers: React.FC<Props> = (props: Props) => {
     }
   }, [error]);
 
-  const onSearhChange = (value: string) => {
-    if (value !== searchValue) {
-      const _arr: IAlertMeta[] = getSearchedListData(response.alertMetadata, searchValue);
+  const onSearhChange = (_value: string) => {
+    if (_value !== searchValue) {
+      const _arr: IAlertMeta[] = getSearchedListData(dataRows, _value);
       setFilteredData(_arr);
-      setSearchValue(value);
+      setSearchValue(_value);
     }
   };
 
@@ -363,7 +312,6 @@ const Triggers: React.FC<Props> = (props: Props) => {
   };
 
   const onToogleChange = (e: React.ChangeEvent<HTMLInputElement>, param: GridRenderCellParams) => {
-    console.log(dataRows);
     const { checked } = e.target;
     const _configState = checked ? AlertConfigState.ON : AlertConfigState.OFF;
     const _obj = {};
@@ -398,39 +346,47 @@ const Triggers: React.FC<Props> = (props: Props) => {
         onChangeOrder={onChangeOrder}
         onSearchChange={onSearhChange}
       />
-      <DataGrid
-        className={gridStyles.borderedRow}
-        disableColumnMenu
-        hideFooter
-        headerHeight={50}
-        rowHeight={70}
-        rowCount={filteredData && filteredData.length ? filteredData.length : 0}
-        disableColumnFilter
-        autoHeight
-        rows={filteredData}
-        loading={loading}
-        // error={error ? error.message : null}
-        columns={gridColumns}
-        components={{
-          ColumnUnsortedIcon: () => null,
-          ColumnSortedAscendingIcon: () => <>{gridAscArrow}</>,
-          ColumnSortedDescendingIcon: () => <>{gridDescArrow}</>,
-          NoRowsOverlay: () => (
-            <AbsLoaderWrapper width="100%" height="100%">
-              <ErrorMessage color="var(--_primaryColor)" margin="auto">
-                No data
-              </ErrorMessage>
-            </AbsLoaderWrapper>
-          ),
-          ErrorOverlay: () => <ErrorMessage margin="auto">{error ? error.message : null}</ErrorMessage>,
-          LoadingOverlay: () => (
-            <AbsLoaderWrapper width="100%" height="calc(100% - 50px)" top="50px">
-              <LoadingIndicator margin="auto" />
-            </AbsLoaderWrapper>
-          ),
-        }}
-        pageSize={filteredData ? filteredData.length : 0}
-      />
+      <GridWrapper>
+        <DataGrid
+          className={gridStyles.borderedRow}
+          disableColumnMenu
+          hideFooter
+          headerHeight={50}
+          rowHeight={70}
+          rowCount={filteredData && filteredData.length ? filteredData.length : 0}
+          disableColumnFilter
+          autoHeight
+          rows={filteredData}
+          loading={loading}
+          // error={error ? error.message : null}
+          columns={gridColumns}
+          components={{
+            ColumnUnsortedIcon: () => null,
+            ColumnSortedAscendingIcon: () => <>{gridAscArrow}</>,
+            ColumnSortedDescendingIcon: () => <>{gridDescArrow}</>,
+            NoRowsOverlay: () => (
+              <AbsLoaderWrapper width="100%" height="100%">
+                <ErrorMessage color="var(--_primaryColor)" margin="auto">
+                  No data
+                </ErrorMessage>
+              </AbsLoaderWrapper>
+            ),
+            ErrorOverlay: () => <ErrorMessage margin="auto">{error ? error.message : null}</ErrorMessage>,
+            LoadingOverlay: () => (
+              <AbsLoaderWrapper width="100%" height="calc(100% - 50px)" top="50px">
+                <LoadingIndicator margin="auto" />
+              </AbsLoaderWrapper>
+            ),
+          }}
+          pageSize={filteredData ? filteredData.length : 0}
+        />
+        {patchLoading && (
+          <AbsLoaderWrapper width="100%" height="calc(100% - 50px)" top="50px">
+            <LoadingIndicator margin="auto" />
+          </AbsLoaderWrapper>
+        )}
+      </GridWrapper>
+
       <Paging count={totalCount} disabled={!dataRows.length} pageSize={pageSize} currentPage={currentPage} onChangePage={onChangeCurrentPage} onChangePageSize={onChangePageSize} />
     </>
   );

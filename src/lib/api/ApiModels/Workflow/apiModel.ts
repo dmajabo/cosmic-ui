@@ -41,3 +41,21 @@ export interface IAlertMeta extends IBaseEntity<string> {
 export interface IAlertMetaDataRes extends IBaseTotalCount, IBasePages {
   alertMetadata: IAlertMeta[];
 }
+
+export enum AlertChannelType {
+  EMAIL = 'EMAIL', // default
+  WEBHOOK = 'WEBHOOK',
+}
+
+export interface IAlertEmailChannel {
+  receiverEmailIds: string[];
+  emailSubjectPrefix: string;
+}
+export interface IAlertChannel extends IBaseEntity<string> {
+  name: string;
+  channelType: AlertChannelType;
+  emailPolicy: IAlertEmailChannel;
+}
+export interface IAlertChannelRes extends IBaseTotalCount, IBasePages {
+  channels: IAlertChannel[];
+}

@@ -39,7 +39,7 @@ export const TriggerGridColumns: ITriggerGridColumns = {
   },
   channelIds: {
     resField: 'channelIds',
-    label: 'Channel Ids',
+    label: 'Actions',
   },
   triggerCount: {
     resField: 'triggerCount',

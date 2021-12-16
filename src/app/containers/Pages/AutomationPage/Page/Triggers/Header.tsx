@@ -41,14 +41,15 @@ const Header: React.FC<Props> = (props: Props) => {
           <Search searchQuery={props.searchValue} onChange={onSearhChange} styles={{ minWidth: '440px', height: '50px' }} />
         </ActionPart>
         <ActionPart margin="0 0 0 auto">
+          <ColumnFilter label="Columns" popupLabel="Columns" items={props.columns} draggable onItemClick={onColumnChange} onChangeOrder={onChangeOrder} />
           <Dropdown
-            wrapStyles={{ height: '50px', border: '1px solid var(--_primaryButtonBorder)', borderRadius: '6px', margin: '0 20px 0 0' }}
-            label="Show"
+            dropWrapStyles={{ margin: '0 0 0 30px' }}
+            wrapStyles={{ height: '50px', border: '1px solid var(--_primaryButtonBorder)', borderRadius: '6px' }}
+            label="Show:"
             selectedValue={props.selectedTimeRangePeriod}
             values={props.timeRangeValues}
             onSelectValue={onChangePeriod}
           />
-          <ColumnFilter label="Columns" popupLabel="Columns" items={props.columns} draggable onItemClick={onColumnChange} onChangeOrder={onChangeOrder} />
         </ActionPart>
       </ActionRowStyles>
     </>
