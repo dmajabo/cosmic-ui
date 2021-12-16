@@ -9,6 +9,21 @@ import { BarChartData } from './ExperienceTab';
 
 interface PolicyTabProps {}
 
+const anomalyTableColumns: Column[] = [
+  {
+    Header: 'NAME',
+    accessor: ColumnAccessor.name,
+  },
+  {
+    Header: 'SEVERITY',
+    accessor: ColumnAccessor.severity,
+  },
+  {
+    Header: 'HITS',
+    accessor: ColumnAccessor.hits,
+  },
+];
+
 const DUMMY_BAR_CHART_DATA: BarChartData[] = [
   {
     date: 'Nov 10',
@@ -166,7 +181,7 @@ export const PolicyTab: React.FC<PolicyTabProps> = () => {
           <span className={classes.anomalyTableTitle}>Triggers</span>
           <span className={classes.anomalyCount}>7</span>
         </div>
-        <AnomalyTable data={tableData} subComponent={policySubComponent} />
+        <AnomalyTable inputColumns={anomalyTableColumns} data={tableData} subComponent={policySubComponent} />
       </div>
     </div>
   );

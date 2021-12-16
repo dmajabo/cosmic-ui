@@ -12,6 +12,21 @@ import { AnomalyBlockTable } from './AnomalyBlockTable';
 
 interface ExperienceTabProps {}
 
+const anomalyTableColumns: Column[] = [
+  {
+    Header: 'NAME',
+    accessor: ColumnAccessor.name,
+  },
+  {
+    Header: 'SEVERITY',
+    accessor: ColumnAccessor.severity,
+  },
+  {
+    Header: 'HITS',
+    accessor: ColumnAccessor.hits,
+  },
+];
+
 export interface BarChartData {
   readonly date: string;
   readonly value: number;
@@ -313,7 +328,7 @@ export const ExperienceTab: React.FC<ExperienceTabProps> = () => {
           <span className={classes.anomalyTableTitle}>Triggers</span>
           <span className={classes.anomalyCount}>7</span>
         </div>
-        <AnomalyTable data={tableData} subComponent={experienceSubComponent} />
+        <AnomalyTable inputColumns={anomalyTableColumns} data={tableData} subComponent={experienceSubComponent} />
       </div>
     </div>
   );

@@ -545,6 +545,21 @@ export const AnalyticsStyles = makeStyles(
         overflow: 'hidden',
         maxWidth: 300,
       },
+      costDetailHeaderContainer: {
+        padding: 10,
+      },
+      costDetailHeaderText: {
+        fontSize: 16,
+        fontWeight: 500,
+        padding: 5,
+      },
+      costDetailLabel: {
+        color: 'black',
+      },
+      costDetailValue: {
+        color: '#9ea5b7',
+        marginLeft: 5,
+      },
     }),
   {
     index: 1,
