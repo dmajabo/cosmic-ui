@@ -4,14 +4,18 @@ import { webhookIcon } from 'app/components/SVGIcons/automationIcons/configurati
 import { ChannelContent, ChannelHeaderRow, ChannelItemWrapper, ConfigurationSubTitle, ConfigurationTitle, LabelsWrapper } from '../styles';
 import SecondaryButton from 'app/components/Buttons/SecondaryButton';
 import { plusIcon } from 'app/components/SVGIcons/plusIcon';
+import { AlertChannelType, IAlertChannel } from 'lib/api/ApiModels/Workflow/apiModel';
+import { createChannel } from '../../helpers';
 
 interface Props {
   items: any[];
+  onAddServer: (_item: IAlertChannel) => void;
 }
 
 const WebHookConfiguration: React.FC<Props> = (props: Props) => {
   const onClick = () => {
-    console.log('add server');
+    const _obj: IAlertChannel = createChannel(AlertChannelType.WEBHOOK);
+    props.onAddServer(_obj);
   };
   return (
     <ChannelItemWrapper margin="0">

@@ -48,6 +48,13 @@ const TextInputWithIcon: React.FC<IProps> = (props: IProps) => {
     }
   }, [debouncedSearchTerm]);
 
+  React.useEffect(() => {
+    if (props.value !== textValue) {
+      const _v = props.value || '';
+      setTextValue(_v);
+    }
+  }, [props.value]);
+
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIsTyping(true);
     const { value } = e.target;
@@ -65,12 +72,6 @@ const TextInputWithIcon: React.FC<IProps> = (props: IProps) => {
 
   const onKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === KEYBOARD_KEYS.ENTER.key && textValue && textValue.length && props.onSubmit) {
-      if (props.pattern) {
-        const _valid = props.pattern.test(textValue);
-        if (!_valid) {
-          console.log(_valid);
-        }
-      }
       if (props.emptyAfterSet) {
         setTextValue('');
       }

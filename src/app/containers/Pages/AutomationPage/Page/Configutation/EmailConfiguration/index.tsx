@@ -1,4 +1,4 @@
-/* eslint-disable no-control-regex */
+/* eslint-disable no-useless-escape */
 import React from 'react';
 import { ChannelContent, ChannelHeaderRow, ChannelItemWrapper, ConfigurationSubTitle, ConfigurationTitle, LabelsWrapper } from '../styles';
 import { emailIcon } from 'app/components/SVGIcons/automationIcons/configurationIcons';
@@ -7,23 +7,52 @@ import TextInputWithIcon from 'app/components/Inputs/TextInput/TextInputWithIcon
 import { plusIcon } from 'app/components/SVGIcons/plusIcon';
 import { AlertChannelType, IAlertChannel } from 'lib/api/ApiModels/Workflow/apiModel';
 import { createChannel } from '../../helpers';
+import Tag from 'app/components/Basic/Tag';
+import { jsonClone } from 'lib/helpers/cloneHelper';
 
-const emailRegExp =
-  /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
+const emailRegExp = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 interface Props {
+  channel?: IAlertChannel;
   onCreateChannel: (item: IAlertChannel) => void;
 }
 
 const EmailConfiguration: React.FC<Props> = (props: Props) => {
+  const [channel, setChannel] = React.useState<IAlertChannel>(null);
+  const [typedEmail, setTypedEmail] = React.useState<string>(null);
+  const [emailError, setEmailError] = React.useState<string>(null);
+  React.useEffect(() => {
+    const _channel: IAlertChannel = props.channel || createChannel(AlertChannelType.EMAIL);
+    setChannel(_channel);
+    setEmailError(null);
+    setTypedEmail(null);
+  }, []);
+
   const onChange = (value: string | null) => {
-    if (!value) return;
-    const _newChannel: IAlertChannel = createChannel(AlertChannelType.EMAIL);
-    if (!_newChannel.id) {
-      delete _newChannel.id;
-    }
-    props.onCreateChannel(_newChannel);
+    const err = onValidateEmail(value);
+    setEmailError(err);
+    setTypedEmail(value);
+    if (err || !value || !value.length) return;
+    const _obj: IAlertChannel = jsonClone(channel);
+    _obj.emailPolicy.receiverEmailIds.push(value);
+    setEmailError(null);
+    setTypedEmail(null);
+    setChannel(_obj);
   };
 
+  const onValidateEmail = (value: string | null): string => {
+    if (!value) return null;
+    const isValid = emailRegExp.test(value);
+    if (!isValid) return 'Email invalid';
+    return null;
+  };
+
+  const onDeleteEmail = (index: number) => {
+    const _obj: IAlertChannel = jsonClone(channel);
+    _obj.emailPolicy.receiverEmailIds.splice(index, 1);
+    setChannel(_obj);
+  };
+
+  if (!channel) return null;
   return (
     <ChannelItemWrapper>
       <ChannelHeaderRow>
@@ -37,15 +66,24 @@ const EmailConfiguration: React.FC<Props> = (props: Props) => {
         <TextInputWithIcon
           id="emailServer"
           name="emailServer"
+          value={typedEmail}
+          error={emailError}
           icon={plusIcon}
           onSubmit={onChange}
           onBlurChange={onChange}
-          pattern={emailRegExp}
           type="email"
           placeholder="Type email here"
           emptyAfterSet
-          styles={{ minHeight: '50px', height: '50px', flexShrink: 0 }}
+          styles={{
+            minHeight: '50px',
+            height: 'auto',
+            flexShrink: 0,
+            margin: channel && channel.emailPolicy && channel.emailPolicy.receiverEmailIds && channel.emailPolicy.receiverEmailIds.length ? '0 0 20px 0' : '0',
+          }}
         />
+        {channel && channel.emailPolicy && channel.emailPolicy.receiverEmailIds && channel.emailPolicy.receiverEmailIds.length
+          ? channel.emailPolicy.receiverEmailIds.map((it, index) => <Tag key={`emailTag${it}`} text={it} index={index} onRemove={onDeleteEmail} />)
+          : null}
       </ChannelContent>
     </ChannelItemWrapper>
   );

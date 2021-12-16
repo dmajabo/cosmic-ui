@@ -39,6 +39,7 @@ export const useGet = <T = any>(): IApiRes<T> => {
     return () => {
       setloading(false);
       setError(null);
+      setResponse(null);
       isSubscribed = false;
     };
   }, []);
@@ -80,6 +81,7 @@ export const usePost = <T = any, R = any>(): IApiRes<R> => {
     return () => {
       setloading(false);
       setError(null);
+      setResponse(null);
       isSubscribed = false;
     };
   }, []);
@@ -122,6 +124,7 @@ export const usePut = <T = any, R = any>(): IApiRes<R> => {
     return () => {
       setloading(false);
       setError(null);
+      setResponse(null);
       isSubscribed = false;
     };
   }, []);
@@ -164,6 +167,7 @@ export const usePatch = <T = any, R = any>(): IApiRes<R> => {
     return () => {
       setloading(false);
       setError(null);
+      setResponse(null);
       isSubscribed = false;
     };
   }, []);
@@ -206,6 +210,7 @@ export const useDelete = <T = any>(): IApiRes<T> => {
     return () => {
       setloading(false);
       setError(null);
+      setResponse(null);
       isSubscribed = false;
     };
   }, []);
@@ -248,6 +253,7 @@ export const useGetChainData = <T = any>(): IApiRes<T> => {
     return () => {
       setloading(false);
       setError(null);
+      setResponse(null);
       isSubscribed = false;
     };
   }, []);

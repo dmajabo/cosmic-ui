@@ -120,7 +120,7 @@ const onValidateDeployment = (data: IDeploymentP, index: number): string | null 
   for (let i = 0; i < data.nwServicesPolicy.length; i++) {
     const error = onValidateNwServicePolicyIsInvalid(data.nwServicesPolicy[i], i);
     if (error) {
-      nwError = `"Edge ${index + 1}" containe invalid nwServicesPolicy. Vendor in nwServicesPolicy ${i + 1} is required.`;
+      nwError = `"Edge ${index + 1}" contain invalid nwServicesPolicy. Vendor in nwServicesPolicy ${i + 1} is required.`;
       break;
     }
   }
@@ -166,7 +166,7 @@ const onValidatePolicy = (data: ISegmentP, index: number): string => {
     return `Name field in "Policy ${index + 1}" is required.`;
   }
   if (!data.rules || !data.rules.length) {
-    return `Policy "${data.name}" should containe one or more valid rule.`;
+    return `Policy "${data.name}" should contain one or more valid rule.`;
   }
   let nwError = null;
   for (let i = 0; i < data.rules.length; i++) {
@@ -184,16 +184,16 @@ const onValidatePolicy = (data: ISegmentP, index: number): string => {
 
 const onValidateRule = (data: ISegmentRuleP, name: string, ruleIndex: number): string => {
   if (!data.name) {
-    return `"Policy ${name}" should containe valid "Rule ${ruleIndex + 1}". Name is required.`;
+    return `"Policy ${name}" should contain valid "Rule ${ruleIndex + 1}". Name is required.`;
   }
   if (!data.action) {
-    return `"Policy ${name}" should containe valid "Rule ${data.name}". Action is required.`;
+    return `"Policy ${name}" should contain valid "Rule ${data.name}". Action is required.`;
   }
   if (!data.sourceId) {
-    return `"Policy ${name}" should containe valid "Rule ${data.name}". Source is required.`;
+    return `"Policy ${name}" should contain valid "Rule ${data.name}". Source is required.`;
   }
   if (!data.destId) {
-    return `"Policy ${name}" should containe valid "Rule ${data.name}". Destionation is required.`;
+    return `"Policy ${name}" should contain valid "Rule ${data.name}". Destionation is required.`;
   }
   return null;
 };
