@@ -1,6 +1,5 @@
 import React from 'react';
-// import { useAutomationDataContext } from 'lib/hooks/Automation/useAutomationDataContext';
-import { AlertCategory, AlertConfigState, AlertSeverity, IAlertMeta, IAlertMetaDataRes, ModelalertType } from 'lib/api/ApiModels/Workflow/apiModel';
+import { AlertConfigState, AlertSeverity, IAlertMeta, IAlertMetaDataRes } from 'lib/api/ApiModels/Workflow/apiModel';
 import { useGet, usePatch } from 'lib/api/http/useAxiosHook';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { WorkflowApi } from 'lib/api/ApiModels/Workflow/endpoints';
@@ -25,13 +24,15 @@ import SwitchInput from 'app/components/Inputs/SwitchInput';
 import MatSelect from 'app/components/Inputs/MatSelect';
 import SeverityOption from '../../Components/SeverityOption/SeverityOption';
 import { GridWrapper } from '../../styles/styles';
+import { toast, ToastContainer } from 'react-toastify';
 interface Props {}
 
 const Triggers: React.FC<Props> = (props: Props) => {
   // const { automation } = useAutomationDataContext();
   const userContext = React.useContext<UserContextState>(UserContext);
   const { loading, error, response, onGet } = useGet<IAlertMetaDataRes>();
-  const { loading: patchLoading, error: patchError, response: updateRes, onPatch } = usePatch<IBaseEntity<string>>();
+  const { loading: loadingGetTriggerById, error: errTriggerById, response: resTriggerById, onGet: onGetTriggerById } = useGet<IAlertMetaDataRes>(); // To do replace by IAlertMeta
+  const { loading: patchLoading, error: patchError, response: updateRes, onPatch } = usePatch<any, IBaseEntity<string>>();
   const [totalCount, setTotalCount] = React.useState<number>(0);
   const [currentPage, setCurrentPage] = React.useState<number>(1);
   const [pageSize, setPageSize] = React.useState<number>(PAGING_DEFAULT_PAGE_SIZE);
@@ -215,58 +216,36 @@ const Triggers: React.FC<Props> = (props: Props) => {
   }, [response]);
 
   React.useEffect(() => {
-    if (error) {
-      const _items: IAlertMeta[] = [
-        {
-          id: '61b82d31ba7900076a0f31bd',
-          name: 'ANOMALY_PACKETLOSS',
-          type: 'ANOMALY_PACKETLOSS' as ModelalertType,
-          category: 'EXPERIENCE' as AlertCategory,
-          severity: 'LOW' as AlertSeverity,
-          configState: 'ON' as AlertConfigState,
-          metaDescString: '',
-          channelIds: [],
-          triggerCount: 0,
-        },
-        {
-          id: '61b82d31ba7900076a0f31bc',
-          name: 'ANOMALY_GOODPUT',
-          type: 'ANOMALY_GOODPUT' as ModelalertType,
-          category: 'EXPERIENCE' as AlertCategory,
-          severity: AlertSeverity.MEDIUM,
-          configState: 'ON' as AlertConfigState,
-          metaDescString: '',
-          channelIds: [],
-          triggerCount: 0,
-        },
-        {
-          id: '61b82d31ba7900076a0f31bsf',
-          name: 'ANOMALY_GOODPUT',
-          type: ModelalertType.ANOMALY_LATENCY,
-          category: AlertCategory.COST,
-          severity: AlertSeverity.HIGH,
-          configState: AlertConfigState.OFF,
-          metaDescString: '',
-          channelIds: [],
-          triggerCount: 1020,
-        },
-        {
-          id: '61b82d31ba7900076a0f31bb',
-          name: 'ANOMALY_LATENCY',
-          type: 'ANOMALY_LATENCY' as ModelalertType,
-          category: 'EXPERIENCE' as AlertCategory,
-          severity: 'UNKNOWN_SEVERITY' as AlertSeverity,
-          configState: 'ON' as AlertConfigState,
-          metaDescString: '',
-          channelIds: ['61b82e22ba7900076a0f31bf'],
-          triggerCount: 1,
-        },
-      ];
+    if (updateRes && updateRes.id) {
+      onTryLoadAlertMetaDataById(updateRes.id);
+    }
+  }, [updateRes]);
 
-      const _arr: IAlertMeta[] = getSearchedListData(_items, searchValue);
-      setDataRows(_items);
+  React.useEffect(() => {
+    if (resTriggerById) {
+      // const _items: IAlertMeta[] = dataRows.slice();
+      // console.log(_items);
+      // debugger
+      // const index: number = _items.findIndex(it => it.id === resTriggerById.id);
+      // _items.splice(index, 1, resTriggerById);
+      const _arr: IAlertMeta[] = getSearchedListData(resTriggerById.alertMetadata, searchValue);
+      setDataRows(resTriggerById.alertMetadata);
       setFilteredData(_arr);
-      setTotalCount(3);
+      toast.success('Trigger was updated successfully.');
+    }
+  }, [resTriggerById]);
+
+  React.useEffect(() => {
+    if (errTriggerById || patchError) {
+      toast.error('Something went wrong. Please try again later.');
+    }
+  }, [errTriggerById, patchError]);
+
+  React.useEffect(() => {
+    if (error) {
+      setDataRows([]);
+      setFilteredData([]);
+      setTotalCount(0);
     }
   }, [error]);
 
@@ -330,6 +309,10 @@ const Triggers: React.FC<Props> = (props: Props) => {
     await onGet(WorkflowApi.getAllMetadata(), userContext.accessToken!, _param);
   };
 
+  const onTryLoadAlertMetaDataById = async (id: string) => {
+    await onGetTriggerById(WorkflowApi.getMetadataById(id), userContext.accessToken!);
+  };
+
   const onTryUpdateMetaData = async (id: string, data: any) => {
     await onPatch(WorkflowApi.patchMetadata(id), data, userContext.accessToken!);
   };
@@ -380,7 +363,7 @@ const Triggers: React.FC<Props> = (props: Props) => {
           }}
           pageSize={filteredData ? filteredData.length : 0}
         />
-        {patchLoading && (
+        {(patchLoading || loadingGetTriggerById) && (
           <AbsLoaderWrapper width="100%" height="calc(100% - 50px)" top="50px">
             <LoadingIndicator margin="auto" />
           </AbsLoaderWrapper>
@@ -388,6 +371,7 @@ const Triggers: React.FC<Props> = (props: Props) => {
       </GridWrapper>
 
       <Paging count={totalCount} disabled={!dataRows.length} pageSize={pageSize} currentPage={currentPage} onChangePage={onChangeCurrentPage} onChangePageSize={onChangePageSize} />
+      <ToastContainer />
     </>
   );
 };
