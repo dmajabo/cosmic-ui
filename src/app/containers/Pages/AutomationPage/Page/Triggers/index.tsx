@@ -144,7 +144,7 @@ const Triggers: React.FC<Props> = (props: Props) => {
           return (
             <GridCellWrapper>
               {param.value.map(it => (
-                <>{it}</>
+                <span key={`channelId${it}`}>{it}</span>
               ))}
             </GridCellWrapper>
           );

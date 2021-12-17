@@ -17,7 +17,7 @@ interface Props {}
 const Configutation: React.FC<Props> = (props: Props) => {
   const userContext = React.useContext<UserContextState>(UserContext);
   const { loading, error, response, onGet } = useGet<IAlertChannelRes>();
-  const { loading: loadingGet, error: getErrorById, response: resGetById, onGet: onGetById } = useGet<IAlertChannelRes>();
+  const { loading: loadingGet, error: getErrorById, response: resGetById, onGet: onGetById } = useGet<IAlertChannel>();
   const { loading: postLoading, error: postError, response: postRes, onPost } = usePost<IAlertChannel, IBaseEntity<string>>();
   const [dataRows, setDataRows] = React.useState<IAlertChannel[]>([]);
   const [showServerModal, setShowServerModal] = React.useState<IModal<IAlertChannel>>({ show: false, dataItem: null });
@@ -33,8 +33,10 @@ const Configutation: React.FC<Props> = (props: Props) => {
 
   React.useEffect(() => {
     if (resGetById) {
-      console.log(resGetById);
+      const _items = dataRows.slice();
+      _items.push(resGetById);
       toast.success('Channel was created');
+      setDataRows(_items);
     }
   }, [resGetById]);
 
@@ -76,15 +78,17 @@ const Configutation: React.FC<Props> = (props: Props) => {
     onSaveChannel(item);
   };
 
+  const onUpdateChannel = (item: IAlertChannel) => {};
+
   const onSaveChannel = async (_newChannel: IAlertChannel) => {
     await onPost(WorkflowApi.postChannel(), _newChannel, userContext.accessToken!);
   };
   return (
     <>
       {dataRows && dataRows.length ? (
-        dataRows.map(it => <Channel key={it.id} item={it} onCreateChannel={onCreateChannel} onAddServer={onAddServer} />)
+        dataRows.map(it => <Channel key={it.id} item={it} onCreateChannel={onCreateChannel} onUpdateChannel={onUpdateChannel} onAddServer={onAddServer} />)
       ) : (
-        <EmailConfiguration onCreateChannel={onCreateChannel} />
+        <EmailConfiguration onCreateChannel={onCreateChannel} onUpdateChannel={onUpdateChannel} />
       )}
       {(loading || postLoading || loadingGet) && (
         <AbsLoaderWrapper width="100%" height="calc(100% - 50px)" top="50px">

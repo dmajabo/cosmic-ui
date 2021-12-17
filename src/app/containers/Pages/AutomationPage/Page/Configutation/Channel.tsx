@@ -6,12 +6,13 @@ import WebHookConfiguration from './WebHookConfiguration';
 interface Props {
   item: IAlertChannel;
   onCreateChannel: (channel: IAlertChannel) => void;
+  onUpdateChannel: (channel: IAlertChannel) => void;
   onAddServer: (_item: IAlertChannel) => void;
 }
 
 const Channel: React.FC<Props> = (props: Props) => {
   if (props.item.channelType === AlertChannelType.EMAIL) {
-    return <EmailConfiguration channel={props.item} onCreateChannel={props.onCreateChannel} />;
+    return <EmailConfiguration channel={props.item} onCreateChannel={props.onCreateChannel} onUpdateChannel={props.onUpdateChannel} />;
   }
   if (props.item.channelType === AlertChannelType.WEBHOOK) {
     return <WebHookConfiguration onAddServer={props.onAddServer} items={[]} />;

@@ -14,6 +14,7 @@ const emailRegExp = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9
 interface Props {
   channel?: IAlertChannel;
   onCreateChannel: (item: IAlertChannel) => void;
+  onUpdateChannel: (item: IAlertChannel) => void;
 }
 
 const EmailConfiguration: React.FC<Props> = (props: Props) => {
@@ -37,6 +38,11 @@ const EmailConfiguration: React.FC<Props> = (props: Props) => {
     setEmailError(null);
     setTypedEmail(null);
     setChannel(_obj);
+    if (!_obj.id) {
+      props.onCreateChannel(_obj);
+      return;
+    }
+    props.onUpdateChannel(_obj);
   };
 
   const onValidateEmail = (value: string | null): string => {
