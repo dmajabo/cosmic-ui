@@ -158,7 +158,7 @@ export const PolicyTab: React.FC<PolicyTabProps> = () => {
         </div>
       ),
       operation: item.operation,
-      changes: item.changes,
+      changes: <div className={classes.ellipsisText}>{item.changes}</div>,
     }));
 
     return (

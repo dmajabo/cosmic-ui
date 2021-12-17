@@ -13,11 +13,12 @@ export const PerformanceDashboardStyles = makeStyles(
       },
       slaTestListContainer: {
         paddingTop: 20,
+        backgroundColor: 'var(--_primaryBg)',
       },
       itemContainer: {
         width: '100%',
         padding: 20,
-        backgroundColor: 'white',
+        backgroundColor: 'var(--_primaryBg)',
         marginBottom: 30,
       },
       flexContainer: {
@@ -26,7 +27,7 @@ export const PerformanceDashboardStyles = makeStyles(
       },
       itemTitle: {
         fontSize: 22,
-        color: 'black',
+        color: 'var(--_primaryTextColor)',
         fontWeight: 700,
       },
       slaTestButton: {
@@ -82,16 +83,18 @@ export const PerformanceDashboardStyles = makeStyles(
       paginationText: {
         fontSize: 16,
         fontWeight: 500,
-        color: '#848DA3',
+        color: 'var(--_primaryTextColor)',
+        backgroundColor: 'var(--_primaryBg)',
       },
       activePaginationText: {
         fontSize: 16,
         fontWeight: 500,
-        color: '#05143A',
+        backgroundColor: 'var(--_primaryBg)',
+        color: 'var(--_primaryTextColor)',
       },
       paginationButton: {
         border: 'none',
-        backgroundColor: 'white',
+        backgroundColor: 'var(--_primaryBg)',
         cursor: 'pointer',
       },
       paginationSelect: {
@@ -110,7 +113,7 @@ export const PerformanceDashboardStyles = makeStyles(
       slaFormElementContainer: {
         width: 560,
         padding: 20,
-        backgroundColor: 'white',
+        backgroundColor: 'var(--_primaryBg)',
       },
       formInputContainer: {
         marginTop: 20,

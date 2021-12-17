@@ -5,6 +5,7 @@ import { AnalyticsStyles } from './AnalyticsStyles';
 import { Anomalies } from './components/Anomalies/Anomalies';
 import { MetricsExplorer } from './components/Metrics Explorer/MetricsExplorer';
 import { PerformanceDashboard } from './components/Performance Dashboard/PerformanceDashboard';
+import { PolicyLogs } from './components/PolicyLogs/PolicyLogs';
 import SessionPage from './SessionPage';
 
 interface TabPanelProps {
@@ -40,7 +41,7 @@ enum TabName {
 const AnalyticsPage: React.FC = () => {
   const classes = AnalyticsStyles();
   const sessionsActions = useSessionsActions();
-  const [selectedTabName, setSelectedTabName] = useState<TabName>(TabName.Anomalies);
+  const [selectedTabName, setSelectedTabName] = useState<TabName>(TabName.PolicyLogs);
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: TabName) => setSelectedTabName(newValue);
 
@@ -91,7 +92,7 @@ const AnalyticsPage: React.FC = () => {
           <Anomalies />
         </TabPanel>
         <TabPanel value={selectedTabName} title={TabName.PolicyLogs}>
-          {TabName.PolicyLogs}
+          <PolicyLogs />
         </TabPanel>
         <TabPanel value={selectedTabName} title={TabName.MetricsExplorer}>
           <MetricsExplorer />
