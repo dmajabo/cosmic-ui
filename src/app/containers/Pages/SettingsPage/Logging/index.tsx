@@ -271,6 +271,11 @@ const Logging: React.FC<IProps> = (props: IProps) => {
     onTryLoadAuditLogs(pageSize, currentPage, _item.value);
   };
 
+  const onRefresh = async () => {
+    const _param = settingsParamBuilder(pageSize, currentPage, period);
+    await onGet(SettingsApi.getAuditLogs(), userContext.accessToken!, _param);
+  };
+
   const onTryLoadAuditLogs = async (_pageSize: number, _currentPage: number, _period: AuditLogsSelectValuesTypes) => {
     const _param = settingsParamBuilder(_pageSize, _currentPage, _period);
     await onGet(SettingsApi.getAuditLogs(), userContext.accessToken!, _param);
@@ -288,8 +293,10 @@ const Logging: React.FC<IProps> = (props: IProps) => {
         onChangeColumn={onChangeColumn}
         onChangeOrder={onChangeOrder}
         onSearchChange={onSearhChange}
+        onRefresh={onRefresh}
         hideEditButton
         hideDelete
+        showReloadButton
       />
 
       <DataGrid

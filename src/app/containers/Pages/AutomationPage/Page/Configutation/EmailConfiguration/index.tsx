@@ -56,6 +56,8 @@ const EmailConfiguration: React.FC<Props> = (props: Props) => {
     const _obj: IAlertChannel = jsonClone(channel);
     _obj.emailPolicy.receiverEmailIds.splice(index, 1);
     setChannel(_obj);
+    if (!_obj.id) return;
+    props.onUpdateChannel(_obj);
   };
 
   if (!channel) return null;

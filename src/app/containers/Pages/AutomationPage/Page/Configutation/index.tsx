@@ -1,5 +1,5 @@
 import React from 'react';
-import { useGet, usePost } from 'lib/api/http/useAxiosHook';
+import { useGet, usePut, usePost } from 'lib/api/http/useAxiosHook';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { IAlertChannel, IAlertChannelRes } from 'lib/api/ApiModels/Workflow/apiModel';
 import { WorkflowApi } from 'lib/api/ApiModels/Workflow/endpoints';
@@ -19,6 +19,7 @@ const Configutation: React.FC<Props> = (props: Props) => {
   const { loading, error, response, onGet } = useGet<IAlertChannelRes>();
   const { loading: loadingGet, error: getErrorById, response: resGetById, onGet: onGetById } = useGet<IAlertChannel>();
   const { loading: postLoading, error: postError, response: postRes, onPost } = usePost<IAlertChannel, IBaseEntity<string>>();
+  const { loading: patchLoading, error: patchError, response: updateRes, onPut } = usePut<IAlertChannel, IAlertChannel>();
   const [dataRows, setDataRows] = React.useState<IAlertChannel[]>([]);
   const [showServerModal, setShowServerModal] = React.useState<IModal<IAlertChannel>>({ show: false, dataItem: null });
   React.useEffect(() => {
@@ -32,19 +33,39 @@ const Configutation: React.FC<Props> = (props: Props) => {
   }, [postRes]);
 
   React.useEffect(() => {
+    if (updateRes && updateRes.id) {
+      const _items = dataRows && dataRows.length ? dataRows.slice() : [];
+      const _index = _items.findIndex(it => it.id === updateRes.id);
+      if (_index !== -1) {
+        _items.splice(_index, 1, updateRes);
+      } else {
+        _items.push(updateRes);
+      }
+      toast.success('Channel was updated successfully.');
+      setDataRows(_items);
+    }
+  }, [updateRes]);
+
+  React.useEffect(() => {
     if (resGetById) {
       const _items = dataRows.slice();
-      _items.push(resGetById);
-      toast.success('Channel was created');
+      const _index = _items.findIndex(it => it.id === resGetById.id);
+      if (_index !== -1) {
+        _items.splice(_index, 1, resGetById);
+        toast.success('Channel was updated successfully.');
+      } else {
+        _items.push(resGetById);
+        toast.success('Channel was created');
+      }
       setDataRows(_items);
     }
   }, [resGetById]);
 
   React.useEffect(() => {
-    if (postError || getErrorById) {
+    if (postError || getErrorById || patchError) {
       toast.error('Something went wrong. Please try Again!');
     }
-  }, [postError, getErrorById]);
+  }, [postError, getErrorById, patchError]);
 
   React.useEffect(() => {
     if (error && error.message) {
@@ -78,10 +99,16 @@ const Configutation: React.FC<Props> = (props: Props) => {
     onSaveChannel(item);
   };
 
-  const onUpdateChannel = (item: IAlertChannel) => {};
+  const onUpdateChannel = (item: IAlertChannel) => {
+    onUpdateChannelById(item.id, item);
+  };
 
   const onSaveChannel = async (_newChannel: IAlertChannel) => {
     await onPost(WorkflowApi.postChannel(), _newChannel, userContext.accessToken!);
+  };
+
+  const onUpdateChannelById = async (id: string, _data: IAlertChannel) => {
+    await onPut(WorkflowApi.putChannelById(id), _data, userContext.accessToken!);
   };
   return (
     <>
@@ -90,7 +117,7 @@ const Configutation: React.FC<Props> = (props: Props) => {
       ) : (
         <EmailConfiguration onCreateChannel={onCreateChannel} onUpdateChannel={onUpdateChannel} />
       )}
-      {(loading || postLoading || loadingGet) && (
+      {(loading || postLoading || loadingGet || patchLoading) && (
         <AbsLoaderWrapper width="100%" height="calc(100% - 50px)" top="50px">
           <LoadingIndicator margin="auto" />
         </AbsLoaderWrapper>

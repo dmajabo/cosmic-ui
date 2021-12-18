@@ -1,12 +1,12 @@
 import React from 'react';
 import { AlertConfigState, AlertSeverity, IAlertMeta, IAlertMetaDataRes } from 'lib/api/ApiModels/Workflow/apiModel';
-import { useGet, usePatch } from 'lib/api/http/useAxiosHook';
+import { useGet, usePut } from 'lib/api/http/useAxiosHook';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { WorkflowApi } from 'lib/api/ApiModels/Workflow/endpoints';
 import { PAGING_DEFAULT_PAGE_SIZE } from 'lib/hooks/Sessions/model';
 import { AutomationSelectValuesTypes, AUTOMATION_SELECT_VALUES } from 'lib/hooks/Automation/models';
 import { workflowParamBuilder } from 'lib/api/ApiModels/Workflow/paramBuilder';
-import { IBaseEntity, ISelectedListItem } from 'lib/models/general';
+import { ISelectedListItem } from 'lib/models/general';
 import { OKULIS_LOCAL_STORAGE_KEYS } from 'lib/api/http/utils';
 import { getSessionStoragePreferences, StoragePreferenceKeys, updateSessionStoragePreference } from 'lib/helpers/localStorageHelpers';
 import { DataGrid, GridColumnHeaderParams, GridRenderCellParams } from '@mui/x-data-grid';
@@ -31,8 +31,7 @@ const Triggers: React.FC<Props> = (props: Props) => {
   // const { automation } = useAutomationDataContext();
   const userContext = React.useContext<UserContextState>(UserContext);
   const { loading, error, response, onGet } = useGet<IAlertMetaDataRes>();
-  const { loading: loadingGetTriggerById, error: errTriggerById, response: resTriggerById, onGet: onGetTriggerById } = useGet<IAlertMetaDataRes>(); // To do replace by IAlertMeta
-  const { loading: patchLoading, error: patchError, response: updateRes, onPatch } = usePatch<any, IBaseEntity<string>>();
+  const { loading: putLoading, error: putError, response: updateRes, onPut } = usePut<IAlertMeta, IAlertMeta>();
   const [totalCount, setTotalCount] = React.useState<number>(0);
   const [currentPage, setCurrentPage] = React.useState<number>(1);
   const [pageSize, setPageSize] = React.useState<number>(PAGING_DEFAULT_PAGE_SIZE);
@@ -56,10 +55,10 @@ const Triggers: React.FC<Props> = (props: Props) => {
       disableExport: true,
     },
     {
-      id: `loggins${TriggerGridColumns.type.resField}`,
-      field: TriggerGridColumns.type.resField,
-      headerName: TriggerGridColumns.type.label,
-      label: TriggerGridColumns.type.label,
+      id: `loggins${TriggerGridColumns.category.resField}`,
+      field: TriggerGridColumns.category.resField,
+      headerName: TriggerGridColumns.category.label,
+      label: TriggerGridColumns.category.label,
       minWidth: 300,
       disableColumnMenu: true,
       resizable: false,
@@ -92,20 +91,6 @@ const Triggers: React.FC<Props> = (props: Props) => {
           />
         </GridCellWrapper>
       ),
-    },
-    {
-      id: `loggins${TriggerGridColumns.category.resField}`,
-      field: TriggerGridColumns.category.resField,
-      headerName: TriggerGridColumns.category.label,
-      label: TriggerGridColumns.category.label,
-      minWidth: 300,
-      disableColumnMenu: true,
-      resizable: false,
-      editable: false,
-      filterable: false,
-      disableReorder: true,
-      disableExport: true,
-      hide: true,
     },
     {
       id: `loggins${TriggerGridColumns.triggerCount.resField}`,
@@ -217,29 +202,21 @@ const Triggers: React.FC<Props> = (props: Props) => {
 
   React.useEffect(() => {
     if (updateRes && updateRes.id) {
-      onTryLoadAlertMetaDataById(updateRes.id);
+      const _items: IAlertMeta[] = dataRows.slice();
+      const index: number = _items.findIndex(it => it.id === updateRes.id);
+      _items.splice(index, 1, updateRes);
+      const _arr: IAlertMeta[] = getSearchedListData(_items, searchValue);
+      setDataRows(_items);
+      setFilteredData(_arr);
+      toast.success('Trigger was updated successfully.');
     }
   }, [updateRes]);
 
   React.useEffect(() => {
-    if (resTriggerById) {
-      // const _items: IAlertMeta[] = dataRows.slice();
-      // console.log(_items);
-      // debugger
-      // const index: number = _items.findIndex(it => it.id === resTriggerById.id);
-      // _items.splice(index, 1, resTriggerById);
-      const _arr: IAlertMeta[] = getSearchedListData(resTriggerById.alertMetadata, searchValue);
-      setDataRows(resTriggerById.alertMetadata);
-      setFilteredData(_arr);
-      toast.success('Trigger was updated successfully.');
-    }
-  }, [resTriggerById]);
-
-  React.useEffect(() => {
-    if (errTriggerById || patchError) {
+    if (putError) {
       toast.error('Something went wrong. Please try again later.');
     }
-  }, [errTriggerById, patchError]);
+  }, [putError]);
 
   React.useEffect(() => {
     if (error) {
@@ -293,14 +270,14 @@ const Triggers: React.FC<Props> = (props: Props) => {
   const onToogleChange = (e: React.ChangeEvent<HTMLInputElement>, param: GridRenderCellParams) => {
     const { checked } = e.target;
     const _configState = checked ? AlertConfigState.ON : AlertConfigState.OFF;
-    const _obj = {};
-    _obj[TriggerGridColumns.configState.resField] = _configState;
+    const _obj: IAlertMeta = { ...param.row } as IAlertMeta;
+    _obj.configState = _configState;
     onTryUpdateMetaData(param.row.id, _obj);
   };
 
   const onSeverityChange = (v: any, param: GridRenderCellParams) => {
-    const _obj = {};
-    _obj[TriggerGridColumns.severity.resField] = v;
+    const _obj: IAlertMeta = { ...param.row } as IAlertMeta;
+    _obj.severity = v;
     onTryUpdateMetaData(param.row.id, _obj);
   };
 
@@ -309,12 +286,8 @@ const Triggers: React.FC<Props> = (props: Props) => {
     await onGet(WorkflowApi.getAllMetadata(), userContext.accessToken!, _param);
   };
 
-  const onTryLoadAlertMetaDataById = async (id: string) => {
-    await onGetTriggerById(WorkflowApi.getMetadataById(id), userContext.accessToken!);
-  };
-
-  const onTryUpdateMetaData = async (id: string, data: any) => {
-    await onPatch(WorkflowApi.patchMetadata(id), data, userContext.accessToken!);
+  const onTryUpdateMetaData = async (id: string, data: IAlertMeta) => {
+    await onPut(WorkflowApi.putMetadata(id), data, userContext.accessToken!);
   };
 
   return (
@@ -363,7 +336,7 @@ const Triggers: React.FC<Props> = (props: Props) => {
           }}
           pageSize={filteredData ? filteredData.length : 0}
         />
-        {(patchLoading || loadingGetTriggerById) && (
+        {putLoading && (
           <AbsLoaderWrapper width="100%" height="calc(100% - 50px)" top="50px">
             <LoadingIndicator margin="auto" />
           </AbsLoaderWrapper>

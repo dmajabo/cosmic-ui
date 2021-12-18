@@ -17,6 +17,8 @@ import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 import AggregateTable from './AggregateTable';
 import { convertStringToNumber } from 'lib/helpers/general';
 import { useSessionsDataContext } from 'lib/hooks/Sessions/useSessionsDataContext';
+import IconButton from 'app/components/Buttons/IconButton';
+import { refreshIcon } from 'app/components/SVGIcons/refresh';
 
 interface IProps {}
 
@@ -63,6 +65,15 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
     setTotalCount(0);
     setAggregTotalCount(0);
   }, [aggregRes]);
+
+  const onRefresh = () => {
+    const _param = sessionsParamBuilder(sessions.sessionsPageSize, sessions.sessionsCurrentPage, sessions.sessionsPeriod, sessions.sessionsStitch, sessions.sessionsFilter);
+    if (sessions.sessionsStitch) {
+      loadAggregatedData(_param);
+      return;
+    }
+    loadSessionsData(_param);
+  };
 
   const onTryToLoadData = (
     pageSize: number,
@@ -156,6 +167,7 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
             values={SESSIONS_SELECT_VALUES}
             onSelectValue={onChangePeriod}
           />
+          <IconButton styles={{ margin: '0 0 0 20px' }} icon={refreshIcon} title="Reload" onClick={onRefresh} />
         </ActionPart>
       </ActionRowStyles>
       <ElasticFilter
