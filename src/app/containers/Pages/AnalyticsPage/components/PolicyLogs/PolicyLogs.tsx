@@ -215,7 +215,7 @@ export const PolicyLogs: React.FC = () => {
             </Typography>
             <img src={FilterIcon} alt="columns" />
           </Button>
-          <Button aria-describedby={columnsPopoverId} className={classes.otherButton} variant="contained" onClick={handleColmunsClick} disableElevation>
+          <Button aria-describedby={columnsPopoverId} className={classes.policyLogsOtherButton} variant="contained" onClick={handleColmunsClick} disableElevation>
             <Typography className={classes.otherButtonText} noWrap>
               COLUMNS
             </Typography>
