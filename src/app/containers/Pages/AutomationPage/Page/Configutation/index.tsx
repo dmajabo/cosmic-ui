@@ -19,7 +19,7 @@ const Configutation: React.FC<Props> = (props: Props) => {
   const { loading, error, response, onGet } = useGet<IAlertChannelRes>();
   const { loading: loadingGet, error: getErrorById, response: resGetById, onGet: onGetById } = useGet<IAlertChannel>();
   const { loading: postLoading, error: postError, response: postRes, onPost } = usePost<IAlertChannel, IBaseEntity<string>>();
-  const { loading: patchLoading, error: patchError, response: updateRes, onPut } = usePut<IAlertChannel, IAlertChannel>();
+  const { loading: putLoading, error: putError, response: updateRes, onPut } = usePut<IAlertChannel, IAlertChannel>();
   const [dataRows, setDataRows] = React.useState<IAlertChannel[]>([]);
   const [showServerModal, setShowServerModal] = React.useState<IModal<IAlertChannel>>({ show: false, dataItem: null });
   React.useEffect(() => {
@@ -62,10 +62,10 @@ const Configutation: React.FC<Props> = (props: Props) => {
   }, [resGetById]);
 
   React.useEffect(() => {
-    if (postError || getErrorById || patchError) {
+    if (postError || getErrorById || putError) {
       toast.error('Something went wrong. Please try Again!');
     }
-  }, [postError, getErrorById, patchError]);
+  }, [postError, getErrorById, putError]);
 
   React.useEffect(() => {
     if (error && error.message) {
@@ -115,9 +115,12 @@ const Configutation: React.FC<Props> = (props: Props) => {
       {dataRows && dataRows.length ? (
         dataRows.map(it => <Channel key={it.id} item={it} onCreateChannel={onCreateChannel} onUpdateChannel={onUpdateChannel} onAddServer={onAddServer} />)
       ) : (
-        <EmailConfiguration onCreateChannel={onCreateChannel} onUpdateChannel={onUpdateChannel} />
+        <>
+          <EmailConfiguration onCreateChannel={onCreateChannel} onUpdateChannel={onUpdateChannel} />
+          {/* <WebHookConfiguration items={[]} onAddServer={onAddServer} /> */}
+        </>
       )}
-      {(loading || postLoading || loadingGet || patchLoading) && (
+      {(loading || postLoading || loadingGet || putLoading) && (
         <AbsLoaderWrapper width="100%" height="calc(100% - 50px)" top="50px">
           <LoadingIndicator margin="auto" />
         </AbsLoaderWrapper>

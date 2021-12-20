@@ -9,6 +9,8 @@ import { AlertChannelType, IAlertChannel } from 'lib/api/ApiModels/Workflow/apiM
 import { createChannel } from '../../helpers';
 import Tag from 'app/components/Basic/Tag';
 import { jsonClone } from 'lib/helpers/cloneHelper';
+import SecondaryButton from 'app/components/Buttons/SecondaryButton';
+import { closeSmallIcon } from 'app/components/SVGIcons/close';
 
 const emailRegExp = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 interface Props {
@@ -60,6 +62,14 @@ const EmailConfiguration: React.FC<Props> = (props: Props) => {
     props.onUpdateChannel(_obj);
   };
 
+  const onClearAll = () => {
+    const _obj: IAlertChannel = jsonClone(channel);
+    _obj.emailPolicy.receiverEmailIds = [];
+    setChannel(_obj);
+    if (!_obj.id) return;
+    props.onUpdateChannel(_obj);
+  };
+
   if (!channel) return null;
   return (
     <ChannelItemWrapper>
@@ -89,9 +99,22 @@ const EmailConfiguration: React.FC<Props> = (props: Props) => {
             margin: channel && channel.emailPolicy && channel.emailPolicy.receiverEmailIds && channel.emailPolicy.receiverEmailIds.length ? '0 0 20px 0' : '0',
           }}
         />
-        {channel && channel.emailPolicy && channel.emailPolicy.receiverEmailIds && channel.emailPolicy.receiverEmailIds.length
-          ? channel.emailPolicy.receiverEmailIds.map((it, index) => <Tag key={`emailTag${it}`} text={it} index={index} onRemove={onDeleteEmail} />)
-          : null}
+        {channel && channel.emailPolicy && channel.emailPolicy.receiverEmailIds && channel.emailPolicy.receiverEmailIds.length ? (
+          <>
+            {channel.emailPolicy.receiverEmailIds.map((it, index) => (
+              <Tag key={`emailTag${it}`} text={it} index={index} onRemove={onDeleteEmail} bgColor="var(--_pButtonBg)" textColor="var(--_pButtonBg)" />
+            ))}
+            <SecondaryButton
+              iconWidth="10px"
+              iconHeight="10px"
+              styles={{ display: 'inline-flex', alignItems: 'center', height: '30px', padding: '4px 12px' }}
+              withoutBorder
+              label="Clear all"
+              icon={closeSmallIcon}
+              onClick={onClearAll}
+            />
+          </>
+        ) : null}
       </ChannelContent>
     </ChannelItemWrapper>
   );

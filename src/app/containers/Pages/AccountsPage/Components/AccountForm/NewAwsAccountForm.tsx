@@ -180,7 +180,7 @@ const NewAwsAccountForm: React.FC<Props> = (props: Props) => {
                 label="Description"
                 onChange={v => onChangeField(v, 'description')}
                 // styles?: Object;
-                area
+                type="textarea"
               />
             </StepItemFormRow>
             <StepItemFormRow>

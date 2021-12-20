@@ -16,7 +16,7 @@ const ReviewStep: React.FC<Props> = (props: Props) => {
     <GeneralFieldsRow>
       <TextInput required id="automationName" name="automationName" value={props.name} label="Name" onChange={v => onChange(v, 'name')} styles={{ maxWidth: '500px', margin: '0 20px 20px 0' }} />
       <TextInput
-        area
+        type="textarea"
         id="automationDescription"
         name="automationDescription"
         value={props.description}
