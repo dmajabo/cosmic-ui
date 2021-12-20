@@ -1,7 +1,7 @@
 import React from 'react';
 import { useGet, usePut, usePost } from 'lib/api/http/useAxiosHook';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
-import { IAlertChannel, IAlertChannelRes } from 'lib/api/ApiModels/Workflow/apiModel';
+import { AlertChannelType, IAlertChannel, IAlertChannelRes } from 'lib/api/ApiModels/Workflow/apiModel';
 import { WorkflowApi } from 'lib/api/ApiModels/Workflow/endpoints';
 import LoadingIndicator from 'app/components/Loading';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
@@ -12,6 +12,11 @@ import { toast, ToastContainer } from 'react-toastify';
 import ModalComponent from 'app/components/Modal';
 import ServerEditor from './WebHookConfiguration/ServerEditor';
 import Channel from './Channel';
+import { ActionPart, ActionRowStyles } from 'app/containers/Pages/Shared/styles';
+import PrimaryButton from 'app/components/Buttons/PrimaryButton';
+import { addIcon } from 'app/components/SVGIcons/addIcon';
+import NewChannel from './NewChannel';
+import { createChannel } from '../helpers';
 interface Props {}
 
 const Configutation: React.FC<Props> = (props: Props) => {
@@ -22,6 +27,7 @@ const Configutation: React.FC<Props> = (props: Props) => {
   const { loading: putLoading, error: putError, response: updateRes, onPut } = usePut<IAlertChannel, IAlertChannel>();
   const [dataRows, setDataRows] = React.useState<IAlertChannel[]>([]);
   const [showServerModal, setShowServerModal] = React.useState<IModal<IAlertChannel>>({ show: false, dataItem: null });
+  const [showCreateChannel, setShowCreateModal] = React.useState<IModal<IAlertChannel>>({ show: false, dataItem: null });
   React.useEffect(() => {
     onTryLoadAlertChannels();
   }, []);
@@ -79,6 +85,15 @@ const Configutation: React.FC<Props> = (props: Props) => {
     }
   }, [response]);
 
+  const onCreateNewChannel = () => {
+    const _channel: IAlertChannel = createChannel(AlertChannelType.EMAIL);
+    setShowCreateModal({ show: true, dataItem: _channel });
+  };
+
+  const onCloseChannelModal = () => {
+    setShowCreateModal({ show: false, dataItem: null });
+  };
+
   const onAddServer = (_item: IAlertChannel) => {
     setShowServerModal({ show: true, dataItem: _item });
   };
@@ -112,6 +127,11 @@ const Configutation: React.FC<Props> = (props: Props) => {
   };
   return (
     <>
+      <ActionRowStyles>
+        <ActionPart margin="0 0 0 auto">
+          <PrimaryButton height="50px" label="Create Channel" icon={addIcon} onClick={onCreateNewChannel} />
+        </ActionPart>
+      </ActionRowStyles>
       {dataRows && dataRows.length ? (
         dataRows.map(it => <Channel key={it.id} item={it} onCreateChannel={onCreateChannel} onUpdateChannel={onUpdateChannel} onAddServer={onAddServer} />)
       ) : (
@@ -125,9 +145,23 @@ const Configutation: React.FC<Props> = (props: Props) => {
           <LoadingIndicator margin="auto" />
         </AbsLoaderWrapper>
       )}
+      {showCreateChannel && showCreateChannel.show && (
+        <ModalComponent
+          modalStyles={{ maxWidth: '580px', maxHeight: '610px' }}
+          useFadeAnimation
+          id="newChannelModalWindow"
+          open={showCreateChannel && showCreateChannel.show}
+          onClose={onCloseChannelModal}
+          showHeader
+          showCloseButton
+          title="Create Channel"
+        >
+          <NewChannel dataItem={showCreateChannel.dataItem} onClose={onCloseChannelModal} />
+        </ModalComponent>
+      )}
       {showServerModal && showServerModal.show && (
         <ModalComponent
-          modalStyles={{ maxWidth: '580px', maxHeight: '610px', padding: '40px' }}
+          modalStyles={{ maxWidth: '580px', maxHeight: '610px' }}
           useFadeAnimation
           id="addServerModalWindow"
           open={showServerModal && showServerModal.show}

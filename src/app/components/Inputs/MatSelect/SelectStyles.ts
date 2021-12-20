@@ -64,7 +64,7 @@ export const SelectStyles = makeStyles(
         background: 'var(--_primaryButtonBg)',
         padding: '0',
         boxShadow: '0px 15px 50px rgba(132, 141, 163, 0.15) !important',
-        margin: '2px 0 0 0',
+        margin: '8px 0 0 0',
         borderRadius: '6px !important',
         minHeight: '40px !important',
       },

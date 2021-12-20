@@ -116,16 +116,7 @@ const TransitStep: React.FC<Props> = (props: Props) => {
         <SecondaryButton icon={plusIcon} label="Add Edge" onClick={onAddGroup} />
       </FormRow>
       {showCreator && (
-        <ModalComponent
-          showHeader
-          title="Add Edge"
-          showCloseButton
-          modalStyles={{ maxWidth: '800px', maxHeight: '90vh', padding: '40px' }}
-          useFadeAnimation
-          id="sitesModalWindow"
-          open={showCreator}
-          onClose={onClose}
-        >
+        <ModalComponent showHeader title="Add Edge" showCloseButton modalStyles={{ maxWidth: '800px', maxHeight: '90vh' }} useFadeAnimation id="sitesModalWindow" open={showCreator} onClose={onClose}>
           <TransitModalWindow selectedRegion={deployment.regionCode} selectedWedgeIds={deployment.wanGwExtIds} onAddTransits={onAddTransits} />
         </ModalComponent>
       )}

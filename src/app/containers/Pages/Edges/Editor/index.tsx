@@ -178,13 +178,7 @@ const Editor: React.FC<Props> = (props: Props) => {
         )}
       </Wrapper>
       {deleteModalData && deleteModalData.show && (
-        <ModalComponent
-          modalStyles={{ maxWidth: '450px', maxHeight: '520px', padding: '40px' }}
-          useFadeAnimation
-          id="deleteModalWindow"
-          open={deleteModalData && deleteModalData.show}
-          onClose={onCloseDeleteModal}
-        >
+        <ModalComponent modalStyles={{ maxWidth: '450px', maxHeight: '520px' }} useFadeAnimation id="deleteModalWindow" open={deleteModalData && deleteModalData.show} onClose={onCloseDeleteModal}>
           <DeleteGroupComponent data={deleteModalData.dataItem} loading={deleteLoading} onDelete={onDeleteAccept} onClose={onCloseDeleteModal} />
         </ModalComponent>
       )}

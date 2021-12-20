@@ -89,7 +89,7 @@ const SitesStep: React.FC<Props> = (props: Props) => {
           showHeader
           title={showExistingGroups ? 'Add Group' : 'Create Network'}
           showCloseButton
-          modalStyles={{ maxWidth: '800px', maxHeight: '90vh', padding: '40px' }}
+          modalStyles={{ maxWidth: '800px', maxHeight: '90vh' }}
           useFadeAnimation
           id="sitesModalWindow"
           open={showCreator}

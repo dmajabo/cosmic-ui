@@ -1,9 +1,9 @@
+import React from 'react';
 import PrimaryButton from 'app/components/Buttons/PrimaryButton';
 import TextInput from 'app/components/Inputs/TextInput';
 import { ModalContent, ModalFooter } from 'app/containers/Pages/Edges/Editor/Components/styles';
 import { IAlertChannel } from 'lib/api/ApiModels/Workflow/apiModel';
 import { jsonClone } from 'lib/helpers/cloneHelper';
-import React from 'react';
 
 interface Props {
   dataItem: IAlertChannel;
