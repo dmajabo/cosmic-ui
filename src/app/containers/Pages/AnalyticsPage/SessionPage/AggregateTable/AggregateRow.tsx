@@ -39,7 +39,6 @@ const AggregateRow: React.FC<Props> = (props: Props) => {
             );
           }
           if (it.resField === 'vendors') {
-            console.log(props.row[it.resField]);
             return (
               <TableCell key={`tdRow${it.resField}${props.row.session.id}${colIndex}`}>
                 {props.row[it.resField].map((v, i) => (
