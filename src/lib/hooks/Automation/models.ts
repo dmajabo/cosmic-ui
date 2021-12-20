@@ -1,3 +1,4 @@
+import { AUTOMATION_TIME_RANGE_QUERY_TYPES } from 'lib/api/ApiModels/paramBuilders';
 import { ISelectedListItem } from 'lib/models/general';
 import { ITab } from 'lib/models/tabs';
 
@@ -11,16 +12,9 @@ export const AUTOMATIONS_TABS: ITab<AutomationTabTypes>[] = [
   { id: AutomationTabTypes.Configuration, label: 'Configuration', index: 1 },
 ];
 
-export enum AutomationSelectValuesTypes {
-  LAST_HOUR = 'AUTOMATION_QUERY_LAST_HOUR',
-  LAST_DAY = 'AUTOMATION_QUERY_LAST_DAY',
-  LAST_WEEK = 'AUTOMATION_QUERY_LAST_WEEK',
-  LAST_MONTH = 'AUTOMATION_QUERY_LAST_MONTH',
-}
-
-export const AUTOMATION_SELECT_VALUES: ISelectedListItem<AutomationSelectValuesTypes>[] = [
-  { id: AutomationSelectValuesTypes.LAST_HOUR, value: AutomationSelectValuesTypes.LAST_HOUR, label: 'Last hour', data: '-1h' },
-  { id: AutomationSelectValuesTypes.LAST_DAY, value: AutomationSelectValuesTypes.LAST_DAY, label: 'Last day', data: '-24h' },
-  { id: AutomationSelectValuesTypes.LAST_WEEK, value: AutomationSelectValuesTypes.LAST_WEEK, label: 'Last week', data: '-7d' },
-  { id: AutomationSelectValuesTypes.LAST_MONTH, value: AutomationSelectValuesTypes.LAST_MONTH, label: 'Last month', data: '-30d' },
+export const AUTOMATION_SELECT_VALUES: ISelectedListItem<AUTOMATION_TIME_RANGE_QUERY_TYPES>[] = [
+  { id: AUTOMATION_TIME_RANGE_QUERY_TYPES.LAST_HOUR, value: AUTOMATION_TIME_RANGE_QUERY_TYPES.LAST_HOUR, label: 'Last hour', data: '-1h' },
+  { id: AUTOMATION_TIME_RANGE_QUERY_TYPES.LAST_DAY, value: AUTOMATION_TIME_RANGE_QUERY_TYPES.LAST_DAY, label: 'Last day', data: '-24h' },
+  { id: AUTOMATION_TIME_RANGE_QUERY_TYPES.LAST_WEEK, value: AUTOMATION_TIME_RANGE_QUERY_TYPES.LAST_WEEK, label: 'Last week', data: '-7d' },
+  { id: AUTOMATION_TIME_RANGE_QUERY_TYPES.LAST_MONTH, value: AUTOMATION_TIME_RANGE_QUERY_TYPES.LAST_MONTH, label: 'Last month', data: '-30d' },
 ];

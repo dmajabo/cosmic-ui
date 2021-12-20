@@ -8,8 +8,9 @@ import { DeploymentTypes, IWEdgesRes } from 'lib/api/ApiModels/Edges/apiModel';
 import Map from './Map';
 import { useEdgesDataContext } from 'lib/hooks/Edges/useEdgesDataContext';
 import WedgesGridWrapper from '../Components/WedgesGridWrapper';
-import { buildPagingParam, EdgesApi } from 'lib/api/ApiModels/Edges/edpoints';
+import { EdgesApi } from 'lib/api/ApiModels/Edges/edpoints';
 import { INetworkwEdge } from 'lib/models/topology';
+import { paramBuilder } from 'lib/api/ApiModels/paramBuilders';
 interface Props {
   selectedRegion: string[];
   selectedWedgeIds: string[];
@@ -93,7 +94,7 @@ const TransitModalWindow: React.FC<Props> = (props: Props) => {
   };
 
   const onTryLoadWedges = async (pageSize: number, currentPage: number) => {
-    const _param = buildPagingParam(pageSize, currentPage);
+    const _param = paramBuilder(pageSize, currentPage);
     await onGet(EdgesApi.getWedges(), userContext.accessToken!, _param);
   };
 

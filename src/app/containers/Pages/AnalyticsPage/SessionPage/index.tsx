@@ -5,10 +5,9 @@ import { IAllSessionsRes, ISession } from 'lib/api/ApiModels/Sessions/apiModel';
 import { SessionsApi } from 'lib/api/ApiModels/Sessions/endpoints';
 import Table from './Table';
 import Dropdown from 'app/components/Inputs/Dropdown';
-import { SessionsSelectValuesTypes, SessionsTabTypes, SESSIONS_SELECT_VALUES } from 'lib/hooks/Sessions/model';
+import { SessionsTabTypes, SESSIONS_SELECT_VALUES } from 'lib/hooks/Sessions/model';
 import SessionsSwitch from './SessionsSwitch';
 import { ISelectedListItem, ISelectionGridCellValue } from 'lib/models/general';
-import { sessionsParamBuilder } from 'lib/api/ApiModels/Sessions/paramBuilder';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
 import ElasticFilter from 'app/components/Inputs/ElasticFilter';
@@ -19,6 +18,7 @@ import { convertStringToNumber } from 'lib/helpers/general';
 import { useSessionsDataContext } from 'lib/hooks/Sessions/useSessionsDataContext';
 import IconButton from 'app/components/Buttons/IconButton';
 import { refreshIcon } from 'app/components/SVGIcons/refresh';
+import { sessionsParamBuilder, SESSIONS_TIME_RANGE_QUERY_TYPES } from 'lib/api/ApiModels/paramBuilders';
 
 interface IProps {}
 
@@ -78,7 +78,7 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
   const onTryToLoadData = (
     pageSize: number,
     page: number,
-    time: SessionsSelectValuesTypes,
+    time: SESSIONS_TIME_RANGE_QUERY_TYPES,
     stitch: boolean,
     filterValue: (ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> | string)[],
   ) => {
@@ -106,7 +106,7 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
     sessions.onChangeCurrentPage(_page);
   };
 
-  const onChangePeriod = (_value: ISelectedListItem<SessionsSelectValuesTypes>) => {
+  const onChangePeriod = (_value: ISelectedListItem<SESSIONS_TIME_RANGE_QUERY_TYPES>) => {
     sessions.onChangeSelectedPeriod(_value, SessionsTabTypes.Sessions);
   };
 

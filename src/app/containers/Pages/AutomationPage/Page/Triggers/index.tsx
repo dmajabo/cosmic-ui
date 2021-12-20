@@ -4,8 +4,7 @@ import { useGet, usePut } from 'lib/api/http/useAxiosHook';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { WorkflowApi } from 'lib/api/ApiModels/Workflow/endpoints';
 import { PAGING_DEFAULT_PAGE_SIZE } from 'lib/hooks/Sessions/model';
-import { AutomationSelectValuesTypes, AUTOMATION_SELECT_VALUES } from 'lib/hooks/Automation/models';
-import { workflowParamBuilder } from 'lib/api/ApiModels/Workflow/paramBuilder';
+import { AUTOMATION_SELECT_VALUES } from 'lib/hooks/Automation/models';
 import { ISelectedListItem } from 'lib/models/general';
 import { OKULIS_LOCAL_STORAGE_KEYS } from 'lib/api/http/utils';
 import { getSessionStoragePreferences, StoragePreferenceKeys, updateSessionStoragePreference } from 'lib/helpers/localStorageHelpers';
@@ -25,6 +24,7 @@ import MatSelect from 'app/components/Inputs/MatSelect';
 import SeverityOption from '../../Components/SeverityOption/SeverityOption';
 import { GridWrapper } from '../../styles/styles';
 import { toast, ToastContainer } from 'react-toastify';
+import { AUTOMATION_TIME_RANGE_QUERY_TYPES, paramBuilder } from 'lib/api/ApiModels/paramBuilders';
 interface Props {}
 
 const Triggers: React.FC<Props> = (props: Props) => {
@@ -38,7 +38,7 @@ const Triggers: React.FC<Props> = (props: Props) => {
   const [dataRows, setDataRows] = React.useState<IAlertMeta[]>([]);
   const [filteredData, setFilteredData] = React.useState<IAlertMeta[]>([]);
   const [searchValue, setSearchValue] = React.useState<string>(null);
-  const [selectedPeriod, setSelectedPeriod] = React.useState<AutomationSelectValuesTypes>(AUTOMATION_SELECT_VALUES[0].value);
+  const [selectedPeriod, setSelectedPeriod] = React.useState<AUTOMATION_TIME_RANGE_QUERY_TYPES>(AUTOMATION_SELECT_VALUES[0].value);
   const gridStyles = GridStyles();
   const [gridColumns, setGridColumns] = React.useState<IColumn[]>([
     {
@@ -250,7 +250,7 @@ const Triggers: React.FC<Props> = (props: Props) => {
     onTryLoadAlertMetaData(size, currentPage, selectedPeriod);
   };
 
-  const onChangePeriod = (_item: ISelectedListItem<AutomationSelectValuesTypes>) => {
+  const onChangePeriod = (_item: ISelectedListItem<AUTOMATION_TIME_RANGE_QUERY_TYPES>) => {
     setSelectedPeriod(_item.value);
     updateSessionStoragePreference(_item.value, OKULIS_LOCAL_STORAGE_KEYS.OKULIS_PREFERENCE, StoragePreferenceKeys.WORKFLOW_TRIGGERS_TIME_PERIOD);
     onTryLoadAlertMetaData(pageSize, currentPage, _item.value);
@@ -281,8 +281,8 @@ const Triggers: React.FC<Props> = (props: Props) => {
     onTryUpdateMetaData(param.row.id, _obj);
   };
 
-  const onTryLoadAlertMetaData = async (_pageSize: number, _currentPage: number, _period: AutomationSelectValuesTypes) => {
-    const _param = workflowParamBuilder(_pageSize, _currentPage, _period);
+  const onTryLoadAlertMetaData = async (_pageSize: number, _currentPage: number, _period: AUTOMATION_TIME_RANGE_QUERY_TYPES) => {
+    const _param = paramBuilder(_pageSize, _currentPage, _period);
     await onGet(WorkflowApi.getAllMetadata(), userContext.accessToken!, _param);
   };
 

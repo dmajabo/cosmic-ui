@@ -8,19 +8,3 @@ export const EdgesApi = {
   getApps: () => 'topo/api/v1/topology/cloud/apps',
   getWedges: () => 'topo/api/v1/topology/wedges', // => IWEdgesRes
 };
-
-interface IPagingParam {
-  pageSize?: number;
-  pageOffset?: number;
-}
-export const buildPagingParam = (pageSize: number, currentPage: number) => {
-  const _obj: IPagingParam = {};
-  if (pageSize) {
-    _obj.pageSize = pageSize;
-  }
-  if (currentPage > 1) {
-    _obj.pageOffset = currentPage;
-  }
-  if (!Object.keys(_obj).length) return null;
-  return _obj;
-};

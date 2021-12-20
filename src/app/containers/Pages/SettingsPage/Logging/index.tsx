@@ -21,10 +21,10 @@ import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { IAuditLogsRes, INetworkAuditLog } from 'lib/api/ApiModels/Settings/apiModels';
 import { getSearchedList } from 'lib/helpers/listHelper';
 import { convertStringToNumber, parseFieldAsDate } from 'lib/helpers/general';
-import { AuditLogsSelectValuesTypes, AUDIT_LOGS_SELECT_VALUES } from 'lib/hooks/Settings/model';
-import { settingsParamBuilder } from 'lib/api/ApiModels/Settings/paramBuilder';
+import { AUDIT_LOGS_SELECT_VALUES } from 'lib/hooks/Settings/model';
 import { getSessionStoragePreferences, StoragePreferenceKeys, updateSessionStoragePreference } from 'lib/helpers/localStorageHelpers';
 import { OKULIS_LOCAL_STORAGE_KEYS } from 'lib/api/http/utils';
+import { AUDIT_LOGS_TIME_RANGE_QUERY_TYPES, paramBuilder } from 'lib/api/ApiModels/paramBuilders';
 
 interface IProps {}
 
@@ -37,7 +37,7 @@ const Logging: React.FC<IProps> = (props: IProps) => {
   const [dataRows, setDataRows] = React.useState<INetworkAuditLog[]>([]);
   const [filteredData, setFilteredData] = React.useState<INetworkAuditLog[]>([]);
   const [searchValue, setSearchValue] = React.useState<string>(null);
-  const [period, setPeriod] = React.useState<AuditLogsSelectValuesTypes>(AUDIT_LOGS_SELECT_VALUES[0].value);
+  const [period, setPeriod] = React.useState<AUDIT_LOGS_TIME_RANGE_QUERY_TYPES>(AUDIT_LOGS_SELECT_VALUES[0].value);
   const [gridColumns, setGridColumns] = React.useState<IColumn[]>([
     {
       id: `loggins${LoggingGridColumns.timestamp.resField}`,
@@ -265,19 +265,19 @@ const Logging: React.FC<IProps> = (props: IProps) => {
     onTryLoadAuditLogs(size, currentPage, period);
   };
 
-  const onChangePeriod = (_item: ISelectedListItem<AuditLogsSelectValuesTypes>) => {
+  const onChangePeriod = (_item: ISelectedListItem<AUDIT_LOGS_TIME_RANGE_QUERY_TYPES>) => {
     setPeriod(_item.value);
     updateSessionStoragePreference(_item.value, OKULIS_LOCAL_STORAGE_KEYS.OKULIS_PREFERENCE, StoragePreferenceKeys.AUDIT_LOG_TIME_PERIOD);
     onTryLoadAuditLogs(pageSize, currentPage, _item.value);
   };
 
   const onRefresh = async () => {
-    const _param = settingsParamBuilder(pageSize, currentPage, period);
+    const _param = paramBuilder(pageSize, currentPage, period);
     await onGet(SettingsApi.getAuditLogs(), userContext.accessToken!, _param);
   };
 
-  const onTryLoadAuditLogs = async (_pageSize: number, _currentPage: number, _period: AuditLogsSelectValuesTypes) => {
-    const _param = settingsParamBuilder(_pageSize, _currentPage, _period);
+  const onTryLoadAuditLogs = async (_pageSize: number, _currentPage: number, _period: AUDIT_LOGS_TIME_RANGE_QUERY_TYPES) => {
+    const _param = paramBuilder(_pageSize, _currentPage, _period);
     await onGet(SettingsApi.getAuditLogs(), userContext.accessToken!, _param);
   };
 
