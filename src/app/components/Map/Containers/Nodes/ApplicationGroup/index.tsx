@@ -3,7 +3,7 @@ import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { NODES_CONSTANTS } from 'app/components/Map/model';
 import { Label, WrapStyles } from './style';
 import { applicationGroupIcon } from 'app/components/SVGIcons/topologyIcons/applicationGroup';
-import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
+import { ITopologyGroup } from 'lib/api/ApiModels/Topology/apiModels';
 
 interface IProps {
   dataItem: ITopologyGroup;

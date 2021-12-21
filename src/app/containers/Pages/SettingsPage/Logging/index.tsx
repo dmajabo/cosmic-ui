@@ -16,7 +16,6 @@ import LoadingIndicator from 'app/components/Loading';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import { useGet } from 'lib/api/http/useAxiosHook';
 import { PAGING_DEFAULT_PAGE_SIZE } from 'lib/hooks/Sessions/model';
-import { SettingsApi } from 'lib/api/ApiModels/Settings/endpoints';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { IAuditLogsRes, INetworkAuditLog } from 'lib/api/ApiModels/Settings/apiModels';
 import { getSearchedList } from 'lib/helpers/listHelper';
@@ -25,6 +24,7 @@ import { AUDIT_LOGS_SELECT_VALUES } from 'lib/hooks/Settings/model';
 import { getSessionStoragePreferences, StoragePreferenceKeys, updateSessionStoragePreference } from 'lib/helpers/localStorageHelpers';
 import { OKULIS_LOCAL_STORAGE_KEYS } from 'lib/api/http/utils';
 import { AUDIT_LOGS_TIME_RANGE_QUERY_TYPES, paramBuilder } from 'lib/api/ApiModels/paramBuilders';
+import { TelemetryApi } from 'lib/api/ApiModels/Services/telemetry';
 
 interface IProps {}
 
@@ -273,12 +273,12 @@ const Logging: React.FC<IProps> = (props: IProps) => {
 
   const onRefresh = async () => {
     const _param = paramBuilder(pageSize, currentPage, period);
-    await onGet(SettingsApi.getAuditLogs(), userContext.accessToken!, _param);
+    await onGet(TelemetryApi.getAuditLogs(), userContext.accessToken!, _param);
   };
 
   const onTryLoadAuditLogs = async (_pageSize: number, _currentPage: number, _period: AUDIT_LOGS_TIME_RANGE_QUERY_TYPES) => {
     const _param = paramBuilder(_pageSize, _currentPage, _period);
-    await onGet(SettingsApi.getAuditLogs(), userContext.accessToken!, _param);
+    await onGet(TelemetryApi.getAuditLogs(), userContext.accessToken!, _param);
   };
 
   return (

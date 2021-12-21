@@ -1,4 +1,4 @@
-export const WorkflowApi = {
+export const AlertApi = {
   getAllMetadata: () => 'alert/api/v1/alert/metadata', // IAlertMetaDataRes
   getMetadataById: (id: string) => 'alert/api/v1/alert/metadata' + id, // IAlertMetaData
   putMetadata: (id: string) => 'alert/api/v1/alert/metadata/' + id, // res => IAlertMeta

@@ -8,7 +8,7 @@ import ModalComponent from 'app/components/Modal';
 import AppEditor from './AppEditor';
 import { EmptyMessage } from '../Components/styles';
 import { EditGroupItem } from '../../model';
-import { ITopologyGroup, SelectorEvalType } from 'lib/api/ApiModels/Topology/endpoints';
+import { ITopologyGroup, SelectorEvalType } from 'lib/api/ApiModels/Topology/apiModels';
 import { TopologyGroupTypesAsString } from 'lib/models/topology';
 import { useEdgesDataContext } from 'lib/hooks/Edges/useEdgesDataContext';
 import ExistingGroups from '../Components/ExistingGroups';

@@ -6,7 +6,7 @@ import { InputLabel } from 'app/components/Inputs/styles/Label';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { ciscoMerakiLogoIcon } from 'app/components/SVGIcons/topologyIcons/ciscoMerakiLogo';
 import PrimaryButton from 'app/components/Buttons/PrimaryButton';
-import { ITopologyGroup, SelectorEvalType, TopologyGroupApi } from 'lib/api/ApiModels/Topology/endpoints';
+import { ITopologyGroup, SelectorEvalType } from 'lib/api/ApiModels/Topology/apiModels';
 import RadioButton from 'app/components/Inputs/RadioButton';
 import ExpresionWrapper from '../Components/ExpresionWrapper';
 import { ModalContent, ModalFooter, ModalRow } from '../Components/styles';
@@ -20,6 +20,7 @@ import LoadingIndicator from 'app/components/Loading';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import { IBaseEntity, IObject } from 'lib/models/general';
 import { paramBuilder } from 'lib/api/ApiModels/paramBuilders';
+import { PolicyApi } from 'lib/api/ApiModels/Services/policy';
 
 interface Props {
   data: EditGroupItem;
@@ -175,15 +176,15 @@ const NetworkEditor: React.FC<Props> = (props: Props) => {
   };
 
   const onUpdateGroup = async (_data: ITopologyGroup) => {
-    await onUpdate(TopologyGroupApi.postUpdateGroup(_data.id), { group: _data }, userContext.accessToken!);
+    await onUpdate(PolicyApi.postUpdateGroup(_data.id), { group: _data }, userContext.accessToken!);
   };
 
   const onCreateGroup = async (_data: ITopologyGroup) => {
-    await onPost(TopologyGroupApi.postCreateGroup(), { group: _data }, userContext.accessToken!);
+    await onPost(PolicyApi.postCreateGroup(), { group: _data }, userContext.accessToken!);
   };
 
   const onGetGroup = async (id: string) => {
-    await onLoadGroup(TopologyGroupApi.getGroupById(id), userContext.accessToken!);
+    await onLoadGroup(PolicyApi.getGroupById(id), userContext.accessToken!);
   };
 
   const onTryLoadDevices = async (pageSize: number, currentPage: number) => {

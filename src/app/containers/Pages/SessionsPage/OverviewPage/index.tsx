@@ -13,11 +13,11 @@ import { useSessionsDataContext } from 'lib/hooks/Sessions/useSessionsDataContex
 import { SessionsTabTypes, SESSIONS_SELECT_VALUES } from 'lib/hooks/Sessions/model';
 import { ISelectedListItem } from 'lib/models/general';
 import { ISankeyAppDetail, ISankeyDetailRes, ISankeyRes } from 'lib/api/ApiModels/Sessions/apiModel';
-import { SessionsApi } from 'lib/api/ApiModels/Sessions/endpoints';
 import { useGet } from 'lib/api/http/useAxiosHook';
 import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 import GridComponent from './GridComponent';
 import { SESSIONS_TIME_RANGE_QUERY_TYPES } from 'lib/api/ApiModels/paramBuilders';
+import { TelemetryApi } from 'lib/api/ApiModels/Services/telemetry';
 interface IProps {}
 const OverviewPage: React.FC<IProps> = (props: IProps) => {
   const userContext = useContext<UserContextState>(UserContext);
@@ -55,11 +55,11 @@ const OverviewPage: React.FC<IProps> = (props: IProps) => {
 
   const onTryToLoadData = async (timePeriod: SESSIONS_TIME_RANGE_QUERY_TYPES) => {
     const _item = SESSIONS_SELECT_VALUES.find(it => it.id === timePeriod || it.value === timePeriod);
-    await onGet(SessionsApi.getSankeyData(_item.data || '-7d'), userContext.accessToken!);
+    await onGet(TelemetryApi.getSankeyData(_item.data || '-7d'), userContext.accessToken!);
   };
 
   const onTryToLoadDetails = async (netName: string, destName: string, timePeriod: string) => {
-    await onGetDetails(SessionsApi.getAppDetails(netName, destName, timePeriod), userContext.accessToken!);
+    await onGetDetails(TelemetryApi.getAppDetails(netName, destName, timePeriod), userContext.accessToken!);
   };
 
   const onChangePeriod = (_value: ISelectedListItem<SESSIONS_TIME_RANGE_QUERY_TYPES>) => {

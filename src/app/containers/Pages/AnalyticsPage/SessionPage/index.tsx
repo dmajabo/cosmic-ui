@@ -2,7 +2,6 @@ import React, { useContext } from 'react';
 import { ActionPart, ActionRowStyles, ContentWrapper, PageContentWrapper, TableWrapper } from '../../Shared/styles';
 import { useGet } from 'lib/api/http/useAxiosHook';
 import { IAllSessionsRes, ISession } from 'lib/api/ApiModels/Sessions/apiModel';
-import { SessionsApi } from 'lib/api/ApiModels/Sessions/endpoints';
 import Table from './Table';
 import Dropdown from 'app/components/Inputs/Dropdown';
 import { SessionsTabTypes, SESSIONS_SELECT_VALUES } from 'lib/hooks/Sessions/model';
@@ -19,6 +18,7 @@ import { useSessionsDataContext } from 'lib/hooks/Sessions/useSessionsDataContex
 import IconButton from 'app/components/Buttons/IconButton';
 import { refreshIcon } from 'app/components/SVGIcons/refresh';
 import { sessionsParamBuilder, SESSIONS_TIME_RANGE_QUERY_TYPES } from 'lib/api/ApiModels/paramBuilders';
+import { TesseractApi } from 'lib/api/ApiModels/Services/tesseract';
 
 interface IProps {}
 
@@ -91,11 +91,11 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
   };
 
   const loadAggregatedData = async _param => {
-    await onGetAggregatedData(SessionsApi.getAggregatedSessions(), userContext.accessToken!, _param);
+    await onGetAggregatedData(TesseractApi.getAggregatedSessions(), userContext.accessToken!, _param);
   };
 
   const loadSessionsData = async _param => {
-    await onGet(SessionsApi.getAllSessions(), userContext.accessToken!, _param);
+    await onGet(TesseractApi.getAllSessions(), userContext.accessToken!, _param);
   };
 
   const onChangePageSize = (_size: number, page?: number) => {

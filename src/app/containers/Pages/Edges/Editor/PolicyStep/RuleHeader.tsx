@@ -1,6 +1,6 @@
 import React from 'react';
 import { ISegmentRuleP, SegmentRuleAction } from 'lib/api/ApiModels/Edges/apiModel';
-import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
+import { ITopologyGroup } from 'lib/api/ApiModels/Topology/apiModels';
 import { getSelectedItem } from 'lib/helpers/selectionHelper';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { separatorIcon } from 'app/components/SVGIcons/separatorIcon';

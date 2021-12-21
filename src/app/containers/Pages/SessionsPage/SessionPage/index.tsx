@@ -2,7 +2,6 @@ import React, { useContext } from 'react';
 import { ActionPart, ActionRowStyles, ContentWrapper, PageContentWrapper, TableWrapper } from '../../Shared/styles';
 import { useGet } from 'lib/api/http/useAxiosHook';
 import { IAllSessionsRes } from 'lib/api/ApiModels/Sessions/apiModel';
-import { SessionsApi } from 'lib/api/ApiModels/Sessions/endpoints';
 import { useSessionsDataContext } from 'lib/hooks/Sessions/useSessionsDataContext';
 import Table from './Table';
 import Dropdown from 'app/components/Inputs/Dropdown';
@@ -16,6 +15,7 @@ import { FilterOpperatorsList, ISessionsGridField, SessionGridColumnItems } from
 import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 import AggregateTable from './AggregateTable';
 import { sessionsParamBuilder, SESSIONS_TIME_RANGE_QUERY_TYPES } from 'lib/api/ApiModels/paramBuilders';
+import { TesseractApi } from 'lib/api/ApiModels/Services/tesseract';
 
 interface IProps {}
 
@@ -49,7 +49,7 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
     filterValue: (ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> | string)[],
   ) => {
     const _param = sessionsParamBuilder(pageSize, page, time, stitch, filterValue);
-    await onGet(SessionsApi.getAllSessions(), userContext.accessToken!, _param);
+    await onGet(TesseractApi.getAllSessions(), userContext.accessToken!, _param);
   };
 
   const onChangePageSize = (_size: number, page?: number) => {

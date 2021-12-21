@@ -7,7 +7,7 @@ import { FormRow } from '../PolicyStep/styles';
 import { EditGroupItem } from '../../model';
 import ModalComponent from 'app/components/Modal';
 import { EmptyMessage } from '../Components/styles';
-import { ITopologyGroup, SelectorEvalType } from 'lib/api/ApiModels/Topology/endpoints';
+import { ITopologyGroup, SelectorEvalType } from 'lib/api/ApiModels/Topology/apiModels';
 import { TopologyGroupTypesAsString } from 'lib/models/topology';
 import NetworkEditor from './NetworkEditor';
 import { useEdgesDataContext } from 'lib/hooks/Edges/useEdgesDataContext';

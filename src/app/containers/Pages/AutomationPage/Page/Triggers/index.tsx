@@ -2,7 +2,6 @@ import React from 'react';
 import { AlertConfigState, AlertSeverity, IAlertMeta, IAlertMetaDataRes } from 'lib/api/ApiModels/Workflow/apiModel';
 import { useGet, usePut } from 'lib/api/http/useAxiosHook';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
-import { WorkflowApi } from 'lib/api/ApiModels/Workflow/endpoints';
 import { PAGING_DEFAULT_PAGE_SIZE } from 'lib/hooks/Sessions/model';
 import { AUTOMATION_SELECT_VALUES } from 'lib/hooks/Automation/models';
 import { ISelectedListItem } from 'lib/models/general';
@@ -25,6 +24,7 @@ import SeverityOption from '../../Components/SeverityOption/SeverityOption';
 import { GridWrapper } from '../../styles/styles';
 import { toast, ToastContainer } from 'react-toastify';
 import { AUTOMATION_TIME_RANGE_QUERY_TYPES, paramBuilder } from 'lib/api/ApiModels/paramBuilders';
+import { AlertApi } from 'lib/api/ApiModels/Services/alert';
 interface Props {}
 
 const Triggers: React.FC<Props> = (props: Props) => {
@@ -283,11 +283,11 @@ const Triggers: React.FC<Props> = (props: Props) => {
 
   const onTryLoadAlertMetaData = async (_pageSize: number, _currentPage: number, _period: AUTOMATION_TIME_RANGE_QUERY_TYPES) => {
     const _param = paramBuilder(_pageSize, _currentPage, _period);
-    await onGet(WorkflowApi.getAllMetadata(), userContext.accessToken!, _param);
+    await onGet(AlertApi.getAllMetadata(), userContext.accessToken!, _param);
   };
 
   const onTryUpdateMetaData = async (id: string, data: IAlertMeta) => {
-    await onPut(WorkflowApi.putMetadata(id), data, userContext.accessToken!);
+    await onPut(AlertApi.putMetadata(id), data, userContext.accessToken!);
   };
 
   return (

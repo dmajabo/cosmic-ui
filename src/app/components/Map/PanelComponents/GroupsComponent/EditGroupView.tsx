@@ -11,7 +11,7 @@ import PrimaryButton from 'app/components/Buttons/PrimaryButton';
 import SecondaryButton from 'app/components/Buttons/SecondaryButton';
 import { addIcon } from 'app/components/SVGIcons/addIcon';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
-import { ITopologyGroup, SelectorEvalType } from 'lib/api/ApiModels/Topology/endpoints';
+import { ITopologyGroup, SelectorEvalType } from 'lib/api/ApiModels/Topology/apiModels';
 import MatSelect from 'app/components/Inputs/MatSelect';
 import { ValueLabel } from 'app/components/Inputs/MatSelect/styles';
 import { getSelectedItem } from 'lib/helpers/selectionHelper';

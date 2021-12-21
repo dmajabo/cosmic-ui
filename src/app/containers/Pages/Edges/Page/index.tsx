@@ -8,14 +8,14 @@ import { IEdgeP, IEdgesRes, IWEdgesRes } from 'lib/api/ApiModels/Edges/apiModel'
 import Editor from '../Editor';
 import { useBreadCrumbDataContext } from 'lib/hooks/Breadcrumb/useBreadcrumbDataContext';
 import { EdgesBreadCrumbItemsType } from 'lib/hooks/Breadcrumb/models';
-import { AccountsApi } from 'lib/api/ApiModels/Accounts/endpoints';
 import { IAccountsRes, IAwsRegionsRes } from 'lib/api/ApiModels/Accounts/apiModel';
 import { EdgesApi } from 'lib/api/ApiModels/Edges/edpoints';
 import EdgeList from '../EdgeList';
-import { ITopologyGroupsData, TopologyGroupApi } from 'lib/api/ApiModels/Topology/endpoints';
+import { ITopologyGroupsData } from 'lib/api/ApiModels/Topology/apiModels';
 import EmptyPage from 'app/components/Basic/EmptyPage';
 import { StepperText } from 'app/components/Basic/EmptyPage/styles';
 import imgBg from 'app/images/EdgesMap.png';
+import { PolicyApi } from 'lib/api/ApiModels/Services/policy';
 
 interface Props {}
 
@@ -99,15 +99,15 @@ const MainPage: React.FC<Props> = (props: Props) => {
   };
 
   const onTryLoadRegions = async () => {
-    await onGetRegions(AccountsApi.getAllAwsRegions(), userContext.accessToken!);
+    await onGetRegions(PolicyApi.getAllAwsRegions(), userContext.accessToken!);
   };
 
   const onTryLoadAccounts = async () => {
-    await onGetAccounts(AccountsApi.getAccounts(), userContext.accessToken!);
+    await onGetAccounts(PolicyApi.getAccounts(), userContext.accessToken!);
   };
 
   const onTryLoadGroups = async () => {
-    await onGetGroups(TopologyGroupApi.getAllGroups(), userContext.accessToken!);
+    await onGetGroups(PolicyApi.getAllGroups(), userContext.accessToken!);
   };
 
   const onTryLoadWedges = async () => {

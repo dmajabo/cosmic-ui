@@ -97,3 +97,24 @@ export const sessionsParamBuilder = (
   if (!Object.keys(param).length) return null;
   return param;
 };
+
+export interface ITopologyQueryParam {
+  timestamp: number;
+}
+
+export const createTopologyQueryParam = (startTime: Date): ITopologyQueryParam => {
+  if (startTime) {
+    const ms = toTimestamp(startTime);
+    if (!ms) return null;
+    return { timestamp: ms };
+  }
+  return null;
+};
+
+export const toTimestamp = (date: Date): number => {
+  if (!date) {
+    return null;
+  }
+  var datum = new Date(date.toUTCString());
+  return Math.round(datum.getTime() / 1000);
+};

@@ -2,7 +2,7 @@ import React from 'react';
 import { PolicyActionRow } from './styles';
 import { ISegmentRuleP, SegmentTargetT } from 'lib/api/ApiModels/Edges/apiModel';
 import TextInput from 'app/components/Inputs/TextInput';
-import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
+import { ITopologyGroup } from 'lib/api/ApiModels/Topology/apiModels';
 import { deleteIcon } from 'app/components/SVGIcons/delete';
 import RuleSelect from './RuleSelect';
 import { getAllValues, getDifferentSegmentType, getSegmentType, getValues } from './helper';

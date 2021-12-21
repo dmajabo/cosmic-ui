@@ -1,6 +1,6 @@
 import React from 'react';
 import { ContentWrapper, DataField } from './styles';
-import { INetworkVNetwork } from 'lib/api/ApiModels/Topology/endpoints';
+import { INetworkVNetwork } from 'lib/api/ApiModels/Topology/apiModels';
 
 interface IProps {
   dataItem: INetworkVNetwork;

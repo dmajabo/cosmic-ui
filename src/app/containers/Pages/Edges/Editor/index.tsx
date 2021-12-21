@@ -6,7 +6,7 @@ import LoadingIndicator from 'app/components/Loading';
 import FormPanel from './FormPanel';
 import EdgesMap from './EdgesMap';
 import { DeploymentTypes, IEdgeP } from 'lib/api/ApiModels/Edges/apiModel';
-import { ITopologyGroup, TopologyGroupApi } from 'lib/api/ApiModels/Topology/endpoints';
+import { ITopologyGroup } from 'lib/api/ApiModels/Topology/apiModels';
 import { useEdgesDataContext } from 'lib/hooks/Edges/useEdgesDataContext';
 import { IBaseEntity, IModal } from 'lib/models/general';
 import ModalComponent from 'app/components/Modal';
@@ -19,6 +19,7 @@ import DeleteGroupComponent from './Components/DeleteGroupComponent';
 import { EdgesApi } from 'lib/api/ApiModels/Edges/edpoints';
 import { removeUiFields } from './helper';
 import { jsonClone } from 'lib/helpers/cloneHelper';
+import { PolicyApi } from 'lib/api/ApiModels/Services/policy';
 
 interface Props {
   onClose: () => void;
@@ -133,7 +134,7 @@ const Editor: React.FC<Props> = (props: Props) => {
   };
 
   const onTryDeleteGroup = async (id: string) => {
-    await onDeleteGroup(TopologyGroupApi.deleteGroup(id), userContext.accessToken!);
+    await onDeleteGroup(PolicyApi.deleteGroup(id), userContext.accessToken!);
   };
 
   const onSave = async () => {

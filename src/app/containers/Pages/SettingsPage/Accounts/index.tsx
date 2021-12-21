@@ -6,7 +6,6 @@ import AccountForm from './Components/AccountForm/AccountForm';
 import { useAccountsDataContext } from 'lib/hooks/Accounts/useAccountsDataContext';
 import { useDelete, useGet } from 'lib/api/http/useAxiosHook';
 import { AccountVendorTypes, IAccountsRes, IAwsRegionsRes, IAWS_Account, IAZURE_Account, IMeraki_Account } from 'lib/api/ApiModels/Accounts/apiModel';
-import { AccountsApi } from 'lib/api/ApiModels/Accounts/endpoints';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
@@ -16,6 +15,7 @@ import AccountsEmptyPage from './Components/AccountsEmptyPage';
 import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 import PageHeaderRow from './Components/PageHeaderRow';
 import AccountsListItems from './Components/AccountsListItems';
+import { PolicyApi } from 'lib/api/ApiModels/Services/policy';
 interface IProps {}
 
 const Accounts: React.FC<IProps> = (props: IProps) => {
@@ -83,15 +83,15 @@ const Accounts: React.FC<IProps> = (props: IProps) => {
   };
 
   const onTryToLoadData = async () => {
-    await onGet(AccountsApi.getAccounts(), userContext.accessToken!);
+    await onGet(PolicyApi.getAccounts(), userContext.accessToken!);
   };
 
   const onTryLoadRegions = async () => {
-    await onGetRegions(AccountsApi.getAllAwsRegions(), userContext.accessToken!);
+    await onGetRegions(PolicyApi.getAllAwsRegions(), userContext.accessToken!);
   };
 
   const onTryDelete = async (id: string) => {
-    await onDelete(AccountsApi.deleteAccounts(id), userContext.accessToken!);
+    await onDelete(PolicyApi.deleteAccounts(id), userContext.accessToken!);
   };
 
   return (

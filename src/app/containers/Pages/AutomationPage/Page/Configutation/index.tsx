@@ -2,7 +2,6 @@ import React from 'react';
 import { useGet, usePut, usePost, useDelete } from 'lib/api/http/useAxiosHook';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { AlertChannelType, IAlertChannel, IAlertChannelRes } from 'lib/api/ApiModels/Workflow/apiModel';
-import { WorkflowApi } from 'lib/api/ApiModels/Workflow/endpoints';
 import LoadingIndicator from 'app/components/Loading';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import EmailConfiguration from './EmailConfiguration';
@@ -17,6 +16,7 @@ import PrimaryButton from 'app/components/Buttons/PrimaryButton';
 import { addIcon } from 'app/components/SVGIcons/addIcon';
 import NewChannel from './NewChannel';
 import { createChannel } from '../helpers';
+import { AlertApi } from 'lib/api/ApiModels/Services/alert';
 interface Props {}
 
 const Configutation: React.FC<Props> = (props: Props) => {
@@ -112,11 +112,11 @@ const Configutation: React.FC<Props> = (props: Props) => {
   };
 
   const onTryLoadAlertChannels = async () => {
-    await onGet(WorkflowApi.getAllChannels(), userContext.accessToken!);
+    await onGet(AlertApi.getAllChannels(), userContext.accessToken!);
   };
 
   const onTryLoadChannel = async (id: string) => {
-    await onGetById(WorkflowApi.getChannelById(id), userContext.accessToken!);
+    await onGetById(AlertApi.getChannelById(id), userContext.accessToken!);
   };
 
   const onCreateChannel = (item: IAlertChannel) => {
@@ -137,15 +137,15 @@ const Configutation: React.FC<Props> = (props: Props) => {
   };
 
   const onTryDelete = async (id: string) => {
-    await onDelete(WorkflowApi.deleteChannel(id), userContext.accessToken!);
+    await onDelete(AlertApi.deleteChannel(id), userContext.accessToken!);
   };
 
   const onSaveChannel = async (_newChannel: IAlertChannel) => {
-    await onPost(WorkflowApi.postChannel(), _newChannel, userContext.accessToken!);
+    await onPost(AlertApi.postChannel(), _newChannel, userContext.accessToken!);
   };
 
   const onUpdateChannelById = async (id: string, _data: IAlertChannel) => {
-    await onPut(WorkflowApi.putChannelById(id), _data, userContext.accessToken!);
+    await onPut(AlertApi.putChannelById(id), _data, userContext.accessToken!);
   };
   return (
     <>
