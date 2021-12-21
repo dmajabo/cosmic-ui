@@ -8,12 +8,11 @@ export const ActionRow = styled.div`
 export const ContentWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
-  width: 100%;
+  width: calc(100% + 20px);
   min-height: calc(100% - 100px);
   align-items: flex-start;
   justify-content: flex-start;
   align-content: flex-start;
-  padding: 0 20px;
   flex-grow: 1;
 `;
 

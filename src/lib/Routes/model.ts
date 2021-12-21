@@ -5,7 +5,6 @@ import { topologyIcon } from 'app/components/SVGIcons/pagesIcons/topology';
 import { settingsIcon } from 'app/components/SVGIcons/pagesIcons/settings';
 import { analyticsIcon } from 'app/components/SVGIcons/pagesIcons/analytics';
 // import { sessionsIcon } from 'app/components/SVGIcons/pagesIcons/sessions';
-import { accountsIcon } from 'app/components/SVGIcons/pagesIcons/accounts';
 import { edgesIcon } from 'app/components/SVGIcons/pagesIcons/edgesIcon';
 export const ROUTE = {
   base: '/',
@@ -16,7 +15,6 @@ export const ROUTE = {
   dashboard: '/dashboard',
   performanceDashboard: '/performanceDashboard',
   analytics: '/analytics',
-  accounts: '/accounts',
   settings: '/settings',
   workflow: '/workflow',
   signUp: '/sign-up',
@@ -46,6 +44,5 @@ export const APP_PAGES: IPage[] = [
   // { id: 'sessions', path: ROUTE.sessions, pageName: 'Sessions', icon: sessionsIcon, breadcrumb: null },
   { id: 'analytics', path: ROUTE.analytics, pageName: 'Analytics', icon: analyticsIcon, breadcrumb: null },
   { id: 'workflow', path: ROUTE.workflow, pageName: 'Workflow', icon: automationIcon, breadcrumb: BreadCrumbTypes.WORK_FLOW },
-  { id: 'accounts', path: ROUTE.accounts, pageName: 'Accounts', icon: accountsIcon, breadcrumb: null },
   { id: 'settings', path: ROUTE.settings, pageName: 'Settings', icon: settingsIcon, breadcrumb: null },
 ];

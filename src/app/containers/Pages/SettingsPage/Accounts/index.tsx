@@ -10,16 +10,15 @@ import { AccountsApi } from 'lib/api/ApiModels/Accounts/endpoints';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
-import PageHeaderRow from './Components/PageHeaderRow';
-import AccountsListItems from './Components/AccountsListItems';
-import { PageWrapperStyles } from '../Shared/styles';
 import { createNewCiscoMerakiAccount, createNewAwsAccount } from 'lib/api/ApiModels/Accounts/newAccount';
 import { getPreparedAccountsRes } from 'lib/api/ApiModels/Accounts/helpers';
 import AccountsEmptyPage from './Components/AccountsEmptyPage';
 import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
+import PageHeaderRow from './Components/PageHeaderRow';
+import AccountsListItems from './Components/AccountsListItems';
 interface IProps {}
 
-const MainPage: React.FC<IProps> = (props: IProps) => {
+const Accounts: React.FC<IProps> = (props: IProps) => {
   const { accounts } = useAccountsDataContext();
   const userContext = useContext<UserContextState>(UserContext);
   const { response, loading, error, onGet } = useGet<IAccountsRes>();
@@ -97,30 +96,30 @@ const MainPage: React.FC<IProps> = (props: IProps) => {
 
   return (
     <>
-      <PageWrapperStyles>
-        {accounts.dataReadyToShow && accounts.data && accounts.data.length ? <PageHeaderRow onCreateAccount={onCreateAccount} /> : null}
-        {!loading && !error && accounts.dataReadyToShow && (
-          <ContentWrapper>
-            {accounts.data.length ? <AccountsListItems onEditAccount={onEditAccount} onDeleteAccount={onDeleteAccount} /> : null}
-            {!accounts.data.length ? <AccountsEmptyPage onConnect={onCreateAccount} /> : null}
-          </ContentWrapper>
-        )}
-        {!loading && error && error.message && (
-          <ErrorMessage fontSize={40} margin="auto">
-            {error.message}
-          </ErrorMessage>
-        )}
-        {(loading || deleteLoading) && (
-          <AbsLoaderWrapper width="100%" height="100%" pointerEvents="all">
-            <LoadingIndicator margin="auto" />
-          </AbsLoaderWrapper>
-        )}
-      </PageWrapperStyles>
-      <ModalComponent id="accountEditor" open={showModal && showModal.show} onClose={handleClose}>
-        {showModal.show && <AccountForm regions={accounts.regions} isEditMode={showModal.isEditMode} dataItem={showModal.dataItem} onClose={handleClose} />}
-      </ModalComponent>
+      {accounts.dataReadyToShow && accounts.data && accounts.data.length ? <PageHeaderRow onCreateAccount={onCreateAccount} /> : null}
+      {!loading && !error && accounts.dataReadyToShow && (
+        <ContentWrapper>
+          {accounts.data.length ? <AccountsListItems onEditAccount={onEditAccount} onDeleteAccount={onDeleteAccount} /> : null}
+          {!accounts.data.length ? <AccountsEmptyPage onConnect={onCreateAccount} /> : null}
+        </ContentWrapper>
+      )}
+      {!loading && error && error.message && (
+        <ErrorMessage fontSize={40} margin="auto">
+          {error.message}
+        </ErrorMessage>
+      )}
+      {(loading || deleteLoading) && (
+        <AbsLoaderWrapper width="100%" height="100%" pointerEvents="all">
+          <LoadingIndicator margin="auto" />
+        </AbsLoaderWrapper>
+      )}
+      {showModal && showModal.show && (
+        <ModalComponent id="accountEditor" open={showModal && showModal.show} onClose={handleClose}>
+          {showModal.show && <AccountForm regions={accounts.regions} isEditMode={showModal.isEditMode} dataItem={showModal.dataItem} onClose={handleClose} />}
+        </ModalComponent>
+      )}
     </>
   );
 };
 
-export default React.memo(MainPage);
+export default React.memo(Accounts);

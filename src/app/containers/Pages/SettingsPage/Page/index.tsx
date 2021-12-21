@@ -9,6 +9,7 @@ import { useSettingsDataContext } from 'lib/hooks/Settings/useSettingsDataConten
 // import AdminPage from 'app/containers/Pages/SettingsPage/Admin';
 import Logging from '../Logging';
 import Inventory from '../Inventory';
+import Accounts from '../Accounts';
 
 interface IProps {}
 
@@ -59,7 +60,7 @@ const Page: React.FC<IProps> = (props: IProps) => {
         value={settings.selectedTab.index}
         index={SETTINGS_TABS[1].index}
       >
-        <Logging />
+        <Accounts />
       </TabPanel>
       <TabPanel
         styles={{ display: 'flex', flexDirection: 'column', flex: settings.selectedTab.index === SETTINGS_TABS[2].index ? '1 1 100%' : '0' }}
