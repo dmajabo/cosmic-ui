@@ -1,5 +1,5 @@
 import React from 'react';
-import { useGet, usePut, usePost } from 'lib/api/http/useAxiosHook';
+import { useGet, usePut, usePost, useDelete } from 'lib/api/http/useAxiosHook';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { AlertChannelType, IAlertChannel, IAlertChannelRes } from 'lib/api/ApiModels/Workflow/apiModel';
 import { WorkflowApi } from 'lib/api/ApiModels/Workflow/endpoints';
@@ -25,6 +25,7 @@ const Configutation: React.FC<Props> = (props: Props) => {
   const { loading: loadingGet, error: getErrorById, response: resGetById, onGet: onGetById } = useGet<IAlertChannel>();
   const { loading: postLoading, error: postError, response: postRes, onPost } = usePost<IAlertChannel, IBaseEntity<string>>();
   const { loading: putLoading, error: putError, response: updateRes, onPut } = usePut<IAlertChannel, IAlertChannel>();
+  const { loading: deleteLoading, error: deleteError, response: deleteRes, onDelete } = useDelete<IBaseEntity<string>>();
   const [dataRows, setDataRows] = React.useState<IAlertChannel[]>([]);
   const [showServerModal, setShowServerModal] = React.useState<IModal<IAlertChannel>>({ show: false, dataItem: null });
   const [showCreateChannel, setShowCreateModal] = React.useState<IModal<IAlertChannel>>({ show: false, dataItem: null });
@@ -68,10 +69,18 @@ const Configutation: React.FC<Props> = (props: Props) => {
   }, [resGetById]);
 
   React.useEffect(() => {
-    if (postError || getErrorById || putError) {
+    if (deleteRes && deleteRes.id) {
+      const _items = dataRows.filter(it => it.id !== deleteRes.id);
+      toast.success('Channel was deleted successfully.');
+      setDataRows(_items);
+    }
+  }, [deleteRes]);
+
+  React.useEffect(() => {
+    if (postError || getErrorById || putError || deleteError) {
       toast.error('Something went wrong. Please try Again!');
     }
-  }, [postError, getErrorById, putError]);
+  }, [postError, getErrorById, putError, deleteError]);
 
   React.useEffect(() => {
     if (error && error.message) {
@@ -118,6 +127,19 @@ const Configutation: React.FC<Props> = (props: Props) => {
     onUpdateChannelById(item.id, item);
   };
 
+  const onSaveNewChannel = (item: IAlertChannel) => {
+    setShowCreateModal({ show: false, dataItem: null });
+    onSaveChannel(item);
+  };
+
+  const onDeleteChannel = (item: IAlertChannel) => {
+    onTryDelete(item.id);
+  };
+
+  const onTryDelete = async (id: string) => {
+    await onDelete(WorkflowApi.deleteChannel(id), userContext.accessToken!);
+  };
+
   const onSaveChannel = async (_newChannel: IAlertChannel) => {
     await onPost(WorkflowApi.postChannel(), _newChannel, userContext.accessToken!);
   };
@@ -133,14 +155,16 @@ const Configutation: React.FC<Props> = (props: Props) => {
         </ActionPart>
       </ActionRowStyles>
       {dataRows && dataRows.length ? (
-        dataRows.map(it => <Channel key={it.id} item={it} onCreateChannel={onCreateChannel} onUpdateChannel={onUpdateChannel} onAddServer={onAddServer} />)
+        dataRows.map(it => (
+          <Channel key={`channel${it.id}`} item={it} onDeleteChannel={onDeleteChannel} onCreateChannel={onCreateChannel} onUpdateChannel={onUpdateChannel} onAddServer={onAddServer} />
+        ))
       ) : (
         <>
           <EmailConfiguration onCreateChannel={onCreateChannel} onUpdateChannel={onUpdateChannel} />
           {/* <WebHookConfiguration items={[]} onAddServer={onAddServer} /> */}
         </>
       )}
-      {(loading || postLoading || loadingGet || putLoading) && (
+      {(loading || postLoading || loadingGet || putLoading || deleteLoading) && (
         <AbsLoaderWrapper width="100%" height="calc(100% - 50px)" top="50px">
           <LoadingIndicator margin="auto" />
         </AbsLoaderWrapper>
@@ -156,7 +180,7 @@ const Configutation: React.FC<Props> = (props: Props) => {
           showCloseButton
           title="Create Channel"
         >
-          <NewChannel dataItem={showCreateChannel.dataItem} onClose={onCloseChannelModal} />
+          <NewChannel dataItem={showCreateChannel.dataItem} onClose={onCloseChannelModal} onSave={onSaveNewChannel} />
         </ModalComponent>
       )}
       {showServerModal && showServerModal.show && (

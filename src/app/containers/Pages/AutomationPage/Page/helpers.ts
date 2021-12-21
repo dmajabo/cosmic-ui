@@ -4,6 +4,7 @@ export const createChannel = (type: AlertChannelType): IAlertChannel => {
   const _obj: IAlertChannel = {
     id: '',
     name: '',
+    isDefault: false,
     channelType: type,
     emailPolicy: {
       receiverEmailIds: [],

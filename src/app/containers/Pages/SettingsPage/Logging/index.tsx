@@ -44,7 +44,7 @@ const Logging: React.FC<IProps> = (props: IProps) => {
       field: LoggingGridColumns.timestamp.resField,
       headerName: LoggingGridColumns.timestamp.label,
       label: LoggingGridColumns.timestamp.label,
-      minWidth: 220,
+      minWidth: 240,
       disableColumnMenu: true,
       resizable: false,
       editable: false,

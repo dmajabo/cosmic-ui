@@ -8,6 +8,7 @@ import { ValueLabel } from 'app/components/Inputs/MatSelect/styles';
 interface Props {
   dataItem: IAlertChannel;
   onClose: () => void;
+  onSave: (_item: IAlertChannel) => void;
 }
 const NewChannel: React.FC<Props> = (props: Props) => {
   const [editItem, setEditItem] = React.useState<IAlertChannel>(props.dataItem);
@@ -25,7 +26,7 @@ const NewChannel: React.FC<Props> = (props: Props) => {
   };
 
   const onSaveChanges = () => {
-    console.log(editItem);
+    props.onSave(editItem);
   };
 
   return (

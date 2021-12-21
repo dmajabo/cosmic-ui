@@ -55,6 +55,7 @@ export interface IAlertChannel extends IBaseEntity<string> {
   name: string;
   channelType: AlertChannelType;
   emailPolicy: IAlertEmailChannel;
+  isDefault: boolean;
 }
 export interface IAlertChannelRes extends IBaseTotalCount, IBasePages {
   channels: IAlertChannel[];

@@ -31,7 +31,7 @@ const AggregateRow: React.FC<Props> = (props: Props) => {
                 <IconWrapper
                   width="12px"
                   height="12px"
-                  styles={{ verticalAlign: 'middle', transform: open ? 'rotate(-180deg)' : 'rotate(0)', transition: `transform ${DEFAULT_TRANSITION}` }}
+                  styles={{ verticalAlign: 'middle', transform: open ? 'rotate(0)' : 'rotate(-90deg)', transition: `transform ${DEFAULT_TRANSITION}` }}
                   icon={arrowBottomIcon}
                   onClick={() => setOpen(!open)}
                 />

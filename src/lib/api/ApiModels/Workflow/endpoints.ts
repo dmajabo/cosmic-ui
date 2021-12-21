@@ -6,4 +6,5 @@ export const WorkflowApi = {
   getChannelById: (id: string) => 'alert/api/v1/alert/channels/' + id, // IAlertChannel
   postChannel: () => 'alert/api/v1/alert/channels', // req: IAlertChannel => res: IBaseEntity<string>
   putChannelById: (id: string) => 'alert/api/v1/alert/channels/' + id, // req: IAlertChannel => res: IAlertChannel
+  deleteChannel: (id: string) => 'alert/api/v1/alert/channels/' + id,
 };

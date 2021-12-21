@@ -11,12 +11,16 @@ import Tag from 'app/components/Basic/Tag';
 import { jsonClone } from 'lib/helpers/cloneHelper';
 import SecondaryButton from 'app/components/Buttons/SecondaryButton';
 import { closeSmallIcon } from 'app/components/SVGIcons/close';
+import PrimaryButton from 'app/components/Buttons/PrimaryButton';
+import { deleteIcon } from 'app/components/SVGIcons/delete';
 
 const emailRegExp = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 interface Props {
   channel?: IAlertChannel;
+  showDelete?: boolean;
   onCreateChannel: (item: IAlertChannel) => void;
   onUpdateChannel: (item: IAlertChannel) => void;
+  onDeleteChannel?: (item: IAlertChannel) => void;
 }
 
 const EmailConfiguration: React.FC<Props> = (props: Props) => {
@@ -70,15 +74,32 @@ const EmailConfiguration: React.FC<Props> = (props: Props) => {
     props.onUpdateChannel(_obj);
   };
 
+  const onDeleteChannel = () => {
+    if (!props.onDeleteChannel) return;
+    props.onDeleteChannel(props.channel);
+  };
+
   if (!channel) return null;
   return (
     <ChannelItemWrapper>
       <ChannelHeaderRow>
         <IconContainer iconWidth="22px" iconHeight="22px" icon={emailIcon} />
         <LabelsWrapper>
-          <ConfigurationTitle>Default Email Recipients</ConfigurationTitle>
+          <ConfigurationTitle>{channel.name || 'Default Email Recipients'}</ConfigurationTitle>
           <ConfigurationSubTitle>Here you can add email recipients and use them in automation.</ConfigurationSubTitle>
         </LabelsWrapper>
+        {props.showDelete && (
+          <PrimaryButton
+            styles={{ margin: 'auto 0 auto 20px' }}
+            label="Delete"
+            icon={deleteIcon('var(--_pButtonColor)')}
+            onClick={onDeleteChannel}
+            bgColor="var(--_errorColor)"
+            borderColor="var(--_errorColor)"
+            hoverBg="var(--_errorColor)"
+            hoverBorder="var(--_errorColor)"
+          />
+        )}
       </ChannelHeaderRow>
       <ChannelContent>
         <TextInputWithIcon
