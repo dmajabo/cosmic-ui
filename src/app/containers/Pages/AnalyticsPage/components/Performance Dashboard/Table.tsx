@@ -16,6 +16,7 @@ export interface Data {
   readonly destination: string;
   readonly description: string;
   readonly averageQoe: JSX.Element;
+  readonly hits?: JSX.Element;
 }
 
 interface TableProps {
