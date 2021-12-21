@@ -16,6 +16,7 @@ export const ChannelHeaderRow = styled.div`
   width: 100%;
   flex-shrink: 0;
   display: flex;
+  position: relative;
 `;
 
 export const LabelsWrapper = styled.div`

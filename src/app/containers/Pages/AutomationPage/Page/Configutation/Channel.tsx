@@ -16,7 +16,7 @@ const Channel: React.FC<Props> = (props: Props) => {
     return <EmailConfiguration showDelete onDeleteChannel={props.onDeleteChannel} channel={props.item} onCreateChannel={props.onCreateChannel} onUpdateChannel={props.onUpdateChannel} />;
   }
   if (props.item.channelType === AlertChannelType.WEBHOOK) {
-    return <WebHookConfiguration onDeleteChannel={props.onDeleteChannel} channel={props.item} onAddServer={props.onAddServer} />;
+    return <WebHookConfiguration showDelete onDeleteChannel={props.onDeleteChannel} channel={props.item} onAddServer={props.onAddServer} />;
   }
   return null;
 };

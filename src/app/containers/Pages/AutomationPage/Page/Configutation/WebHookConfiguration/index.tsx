@@ -6,11 +6,15 @@ import SecondaryButton from 'app/components/Buttons/SecondaryButton';
 import { plusIcon } from 'app/components/SVGIcons/plusIcon';
 import { AlertChannelType, IAlertChannel } from 'lib/api/ApiModels/Workflow/apiModel';
 import { createChannel } from '../../helpers';
-import PrimaryButton from 'app/components/Buttons/PrimaryButton';
 import { deleteIcon } from 'app/components/SVGIcons/delete';
+import SettingsButton from 'app/components/Buttons/SettingsButton';
+import { PopupContent } from 'app/components/Buttons/SettingsButton/PopupItemStyles';
+import PopupItem from 'app/components/Buttons/SettingsButton/PopupItem';
+// import { editIcon } from 'app/components/SVGIcons/edit';
 
 interface Props {
   channel: IAlertChannel;
+  showDelete?: boolean;
   onAddServer: (_item: IAlertChannel) => void;
   onDeleteChannel?: (item: IAlertChannel) => void;
 }
@@ -40,17 +44,13 @@ const WebHookConfiguration: React.FC<Props> = (props: Props) => {
           </ConfigurationSubTitle>
         </LabelsWrapper>
         <SecondaryButton styles={{ margin: 'auto 0 auto 20px' }} onClick={onClick} label="Add server" icon={plusIcon} />
-        {channel.id && (
-          <PrimaryButton
-            styles={{ margin: 'auto 0 auto 20px' }}
-            label="Delete"
-            icon={deleteIcon('var(--_pButtonColor)')}
-            onClick={onDeleteChannel}
-            bgColor="var(--_errorColor)"
-            borderColor="var(--_errorColor)"
-            hoverBg="var(--_errorColor)"
-            hoverBorder="var(--_errorColor)"
-          />
+        {props.showDelete && (
+          <SettingsButton buttonStyles={{ top: '-40px', right: '-40px' }} id={`settingsAnomalyButton${channel.id}`} width="24px" height="40px" hoverIconColor="var(--_hoverButtonBg)">
+            <PopupContent>
+              {/* <PopupItem label="Edit" icon={editIcon} onClick={onEdit} /> */}
+              <PopupItem color="var(--_errorColor)" label="Delete" icon={deleteIcon()} onClick={onDeleteChannel} />
+            </PopupContent>
+          </SettingsButton>
         )}
       </ChannelHeaderRow>
       {/* {props.items && props.items.length ? <ChannelContent></ChannelContent> : null} */}
