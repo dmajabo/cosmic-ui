@@ -9,6 +9,8 @@ import { LATENCY_HEATMAP_LEGEND } from '../Performance Dashboard/Latency';
 import { PACKET_LOSS_HEATMAP_LEGEND } from '../Performance Dashboard/PacketLoss';
 import { LegendData } from '../Performance Dashboard/Heatmap';
 import { AnomalyBlockTable } from './AnomalyBlockTable';
+import { Row } from 'react-table';
+import { DUMMY_ANOMALY_TABLE_DATA, DUMMY_BAR_CHART_DATA, DUMMY_SESSION_LOGS_DATA, DUMMY_SLA_TEST_DATA, SeverityLevel } from './DummyData';
 
 interface ExperienceTabProps {}
 
@@ -17,124 +19,20 @@ export interface BarChartData {
   readonly value: number;
 }
 
-const DUMMY_BAR_CHART_DATA: BarChartData[] = [
-  {
-    date: 'Nov 10',
-    value: 40,
-  },
-  {
-    date: 'Nov 11',
-    value: 5,
-  },
-  {
-    date: 'Nov 12',
-    value: 38,
-  },
-  {
-    date: 'Nov 13',
-    value: 30,
-  },
-  {
-    date: 'Nov 14',
-    value: 21,
-  },
-  {
-    date: 'Nov 15',
-    value: 7,
-  },
-  {
-    date: 'Nov 16',
-    value: 15,
-  },
-];
-
-const DUMMY_ANOMALY_TABLE_DATA: AnomalyExperienceTableData[] = [
-  {
-    name: 'WAN Link Status Change',
-    severity: 'Low',
-    hits: 10,
-  },
-  {
-    name: 'WAN Link UL Traffic Anomaly',
-    severity: 'Medium',
-    hits: 49,
-  },
-];
-
-const DUMMY_SLA_TEST_DATA: FinalTableData[] = [
-  {
-    hits: 20,
-    id: 'tempvp1 id',
-    name: 'VPC 1',
-    sourceOrg: 'Okulis',
-    sourceNetwork: 'N2358730528KG8',
-    sourceDevice: 'ASFG328965293',
-    description: 'vpc 1',
-    destination: '8.8.8.8',
-    averageQoe: {
-      packetLoss: '5',
-      latency: '16',
-    },
-  },
-];
-
-const DUMMY_SESSION_LOGS_DATA: AnomalySessionLogsData[] = [
-  {
-    hits: 20,
-    time: 'Tue,Nov 14 2021,10:25pm',
-    sessionId: 2937,
-    edgeName: 'Cisco Meraki Office 5',
-    edgeType: 'Device',
-    source: '192.168.1.1',
-    destination: '8.8.8.8',
-    tgwName: 'US-West',
-    tgwRegion: 'US-West',
-    tgwBytesin: 10000,
-    awsAccountId: 100131,
-    awsAction: 'Anny',
-    awsRegion: 'us-west-1',
-    wpcId: 201042,
-    instanceId: 3264,
-    sdwanRuleId: 246,
-    firewallPolicyId: 364,
-    destApp: 'APP-POS 1',
-  },
-  {
-    hits: 20,
-    time: 'Tue,Nov 14 2021,10:25pm',
-    sessionId: 2937,
-    edgeName: 'Cisco Meraki Office 5',
-    edgeType: 'Device',
-    source: '192.168.1.1',
-    destination: '8.8.8.8',
-    tgwName: 'US-West',
-    tgwRegion: 'US-West',
-    tgwBytesin: 10000,
-    awsAccountId: 100131,
-    awsAction: 'Anny',
-    awsRegion: 'us-west-1',
-    wpcId: 201042,
-    instanceId: 3264,
-    sdwanRuleId: 246,
-    firewallPolicyId: 364,
-    destApp: 'APP-POS 1',
-  },
-];
-
-const getSeverityColour = (severity: string | JSX.Element) => {
-  if (severity === 'Normal') {
+const getSeverityColour = (severity: SeverityLevel | JSX.Element) => {
+  if (severity === SeverityLevel.normal) {
     return '#52984E';
   }
-  if (severity === 'Low') {
+  if (severity === SeverityLevel.low) {
     return '#F9BA55';
   }
-  if (severity === 'Medium') {
+  if (severity === SeverityLevel.medium) {
     return '#F69442';
   }
   return '#DC4545';
 };
 
-const slaTestColumns: Column[] = [
+const SLA_TEST_COLUMNS: Column[] = [
   {
     Header: 'HITS',
     accessor: ColumnAccessor.hits,
@@ -165,7 +63,7 @@ const slaTestColumns: Column[] = [
   },
 ];
 
-const sessionLogsColumns: Column[] = [
+const SESSION_LOGS_COLUMNS: Column[] = [
   {
     Header: 'HITS',
     accessor: ColumnAccessor.hits,
@@ -258,7 +156,7 @@ export const ExperienceTab: React.FC<ExperienceTabProps> = () => {
     hits: <div className={classes.hitsCount}>{item.hits}</div>,
   }));
 
-  const experienceSubComponent = React.useCallback(({ row }) => {
+  const experienceSubComponent = React.useCallback((row: Row<object>) => {
     const slaTestTableData: AnomalySlaTestData[] = DUMMY_SLA_TEST_DATA.map(item => {
       const { hits, averageQoe, ...otherItems } = item;
       return {
@@ -290,9 +188,9 @@ export const ExperienceTab: React.FC<ExperienceTabProps> = () => {
     return (
       <div>
         <div className={classes.anomalySubcomponentTitle}>SLA Tests</div>
-        <AnomalySLATestTable columns={slaTestColumns} data={slaTestTableData} />
+        <AnomalySLATestTable columns={SLA_TEST_COLUMNS} data={slaTestTableData} />
         <div className={`${classes.sessionLogs} ${classes.anomalySubcomponentTitle}`}>Session Logs</div>
-        <AnomalyBlockTable columns={sessionLogsColumns} data={sessionLogsTableData} />
+        <AnomalyBlockTable columns={SESSION_LOGS_COLUMNS} data={sessionLogsTableData} />
       </div>
     );
   }, []);

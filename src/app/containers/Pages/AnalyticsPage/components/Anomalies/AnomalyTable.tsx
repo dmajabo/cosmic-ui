@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
-import { useTable, useExpanded, useSortBy } from 'react-table';
+import { useTable, useExpanded, useSortBy, Row } from 'react-table';
 import { AnomalyExperienceTableData, Column, ColumnAccessor } from 'lib/api/http/SharedTypes';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
@@ -46,7 +46,7 @@ const Styles = styled.div`
 
 interface AnomalyTableProps {
   readonly data: AnomalyExperienceTableData[];
-  readonly subComponent: ({ row }: any) => JSX.Element;
+  readonly subComponent: (row: Row<object>) => JSX.Element;
 }
 
 export const AnomalyTable: React.FC<AnomalyTableProps> = ({ data, subComponent }) => {
@@ -126,7 +126,7 @@ export const AnomalyTable: React.FC<AnomalyTableProps> = ({ data, subComponent }
                 {row.isExpanded ? (
                   <tr className={row.isExpanded ? 'expandedRow' : 'notexpandedRow'}>
                     <td className="isexpanded" colSpan={visibleColumns.length}>
-                      {subComponent({ row })}
+                      {subComponent(row)}
                     </td>
                   </tr>
                 ) : null}
