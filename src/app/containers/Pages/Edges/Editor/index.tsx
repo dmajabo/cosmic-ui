@@ -16,10 +16,10 @@ import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import DeleteGroupComponent from './Components/DeleteGroupComponent';
-import { EdgesApi } from 'lib/api/ApiModels/Edges/edpoints';
 import { removeUiFields } from './helper';
 import { jsonClone } from 'lib/helpers/cloneHelper';
 import { PolicyApi } from 'lib/api/ApiModels/Services/policy';
+import { TopoApi } from 'lib/api/ApiModels/Services/topo';
 
 interface Props {
   onClose: () => void;
@@ -142,15 +142,15 @@ const Editor: React.FC<Props> = (props: Props) => {
     if (!_obj.id) {
       delete _obj.id;
       removeUiFields(_obj);
-      await onPost(EdgesApi.postCreateEdge(), { edge_p: _obj }, userContext.accessToken!);
+      await onPost(TopoApi.postCreateEdge(), { edge_p: _obj }, userContext.accessToken!);
       return;
     }
     removeUiFields(_obj);
-    await onPut(EdgesApi.putUpdateEdge(edges.editEdge.id), { edge_p: _obj }, userContext.accessToken!);
+    await onPut(TopoApi.putUpdateEdge(edges.editEdge.id), { edge_p: _obj }, userContext.accessToken!);
   };
 
   const onTryLoadEdge = async (id: string) => {
-    await onGet(EdgesApi.getEdgeById(id), userContext.accessToken!);
+    await onGet(TopoApi.getEdgeById(id), userContext.accessToken!);
   };
 
   if (!edges.editEdge) return null;

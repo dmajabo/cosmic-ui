@@ -14,13 +14,13 @@ import { useGet, usePost, usePut } from 'lib/api/http/useAxiosHook';
 import { IBaseEntity, IObject } from 'lib/models/general';
 import AppsGridWrapper from '../Components/AppsGridWrapper';
 import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
-import { EdgesApi } from 'lib/api/ApiModels/Edges/edpoints';
 import { IVm } from 'lib/models/topology';
 import { IAppsRes } from 'lib/api/ApiModels/Edges/apiModel';
 import LoadingIndicator from 'app/components/Loading';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import { paramBuilder } from 'lib/api/ApiModels/paramBuilders';
 import { PolicyApi } from 'lib/api/ApiModels/Services/policy';
+import { TopoApi } from 'lib/api/ApiModels/Services/topo';
 
 interface Props {
   data: EditGroupItem;
@@ -189,7 +189,7 @@ const AppEditor: React.FC<Props> = (props: Props) => {
 
   const onTryLoadApps = async (pageSize: number, currentPage: number) => {
     const _param = paramBuilder(pageSize, currentPage);
-    await onLoadApps(EdgesApi.getApps(), userContext.accessToken!, _param);
+    await onLoadApps(TopoApi.getApps(), userContext.accessToken!, _param);
   };
 
   return (

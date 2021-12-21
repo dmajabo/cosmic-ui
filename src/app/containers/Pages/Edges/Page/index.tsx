@@ -9,13 +9,13 @@ import Editor from '../Editor';
 import { useBreadCrumbDataContext } from 'lib/hooks/Breadcrumb/useBreadcrumbDataContext';
 import { EdgesBreadCrumbItemsType } from 'lib/hooks/Breadcrumb/models';
 import { IAccountsRes, IAwsRegionsRes } from 'lib/api/ApiModels/Accounts/apiModel';
-import { EdgesApi } from 'lib/api/ApiModels/Edges/edpoints';
 import EdgeList from '../EdgeList';
 import { ITopologyGroupsData } from 'lib/api/ApiModels/Topology/apiModels';
 import EmptyPage from 'app/components/Basic/EmptyPage';
 import { StepperText } from 'app/components/Basic/EmptyPage/styles';
 import imgBg from 'app/images/EdgesMap.png';
 import { PolicyApi } from 'lib/api/ApiModels/Services/policy';
+import { TopoApi } from 'lib/api/ApiModels/Services/topo';
 
 interface Props {}
 
@@ -95,7 +95,7 @@ const MainPage: React.FC<Props> = (props: Props) => {
   }, [breadcrumb.edgesBreadCrumbItems]);
 
   const onTryLoadEdges = async () => {
-    await onGet(EdgesApi.getEdges(), userContext.accessToken!);
+    await onGet(TopoApi.getEdges(), userContext.accessToken!);
   };
 
   const onTryLoadRegions = async () => {
@@ -111,7 +111,7 @@ const MainPage: React.FC<Props> = (props: Props) => {
   };
 
   const onTryLoadWedges = async () => {
-    await onGetWedges(EdgesApi.getWedges(), userContext.accessToken!);
+    await onGetWedges(TopoApi.getWedges(), userContext.accessToken!);
   };
 
   const onOpenEditor = (_item?: IEdgeP) => {
@@ -132,7 +132,7 @@ const MainPage: React.FC<Props> = (props: Props) => {
 
   const onTryDeleteEdge = async (_item: IEdgeP) => {
     setTempItem(_item);
-    await onDeleteEedge(EdgesApi.deleteEdge(_item.id), userContext.accessToken!);
+    await onDeleteEedge(TopoApi.deleteEdge(_item.id), userContext.accessToken!);
   };
 
   if (loading) {

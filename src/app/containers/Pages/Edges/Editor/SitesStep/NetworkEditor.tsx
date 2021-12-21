@@ -12,7 +12,6 @@ import ExpresionWrapper from '../Components/ExpresionWrapper';
 import { ModalContent, ModalFooter, ModalRow } from '../Components/styles';
 import { useGet, usePost, usePut } from 'lib/api/http/useAxiosHook';
 import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
-import { EdgesApi } from 'lib/api/ApiModels/Edges/edpoints';
 import { ISitesRes } from 'lib/api/ApiModels/Edges/apiModel';
 import { IDevice } from 'lib/models/topology';
 import SitesGridWrapper from '../Components/SitesGridWrapper';
@@ -21,6 +20,7 @@ import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import { IBaseEntity, IObject } from 'lib/models/general';
 import { paramBuilder } from 'lib/api/ApiModels/paramBuilders';
 import { PolicyApi } from 'lib/api/ApiModels/Services/policy';
+import { TopoApi } from 'lib/api/ApiModels/Services/topo';
 
 interface Props {
   data: EditGroupItem;
@@ -189,7 +189,7 @@ const NetworkEditor: React.FC<Props> = (props: Props) => {
 
   const onTryLoadDevices = async (pageSize: number, currentPage: number) => {
     const _param = paramBuilder(pageSize, currentPage);
-    await onLoadDevices(EdgesApi.getSites(), userContext.accessToken!, _param);
+    await onLoadDevices(TopoApi.getSites(), userContext.accessToken!, _param);
   };
 
   return (
