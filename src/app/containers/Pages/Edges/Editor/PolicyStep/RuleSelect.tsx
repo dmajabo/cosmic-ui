@@ -1,6 +1,6 @@
 import React from 'react';
 import { ValueLabel } from 'app/components/Inputs/MatSelect/styles';
-import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
+import { ITopologyGroup } from 'lib/api/ApiModels/Topology/apiModels';
 import MatSelect from 'app/components/Inputs/MatSelect';
 import { SegmentTargetT } from 'lib/api/ApiModels/Edges/apiModel';
 

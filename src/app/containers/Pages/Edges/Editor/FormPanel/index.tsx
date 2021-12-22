@@ -14,13 +14,13 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import ExpandedIcon from 'app/components/Basic/ExpandedIcon';
 import SecondaryButton from 'app/components/Buttons/SecondaryButton';
 import accordionStyles from 'app/containers/Pages/AutomationPage/styles/AccordionStyles';
-import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
 import GeneralPreview from './GeneralPreview';
 import TransitPreview from './TransitPreview';
 import GroupPreview from './GroupPreview';
 import PolicyPreview from './PolicyPreview';
 import { useEdgesDataContext } from 'lib/hooks/Edges/useEdgesDataContext';
 import PanelHeader from './PanelHeader';
+import { ITopologyGroup } from 'lib/api/ApiModels/Topology/apiModels';
 
 interface Props {
   onDeleteSitesGroup: (gr: ITopologyGroup, edgeName: string) => void;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { WrapperVms } from './styles';
 import ApplicationGroup from '../ApplicationGroup';
-import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
+import { ITopologyGroup } from 'lib/api/ApiModels/Topology/apiModels';
 
 interface IProps {
   items: ITopologyGroup[];

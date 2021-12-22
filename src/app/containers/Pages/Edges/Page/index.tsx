@@ -8,14 +8,14 @@ import { IEdgeP, IEdgesRes, IWEdgesRes } from 'lib/api/ApiModels/Edges/apiModel'
 import Editor from '../Editor';
 import { useBreadCrumbDataContext } from 'lib/hooks/Breadcrumb/useBreadcrumbDataContext';
 import { EdgesBreadCrumbItemsType } from 'lib/hooks/Breadcrumb/models';
-import { AccountsApi } from 'lib/api/ApiModels/Accounts/endpoints';
 import { IAccountsRes, IAwsRegionsRes } from 'lib/api/ApiModels/Accounts/apiModel';
-import { EdgesApi } from 'lib/api/ApiModels/Edges/edpoints';
 import EdgeList from '../EdgeList';
-import { ITopologyGroupsData, TopologyGroupApi } from 'lib/api/ApiModels/Topology/endpoints';
+import { ITopologyGroupsData } from 'lib/api/ApiModels/Topology/apiModels';
 import EmptyPage from 'app/components/Basic/EmptyPage';
 import { StepperText } from 'app/components/Basic/EmptyPage/styles';
 import imgBg from 'app/images/EdgesMap.png';
+import { PolicyApi } from 'lib/api/ApiModels/Services/policy';
+import { TopoApi } from 'lib/api/ApiModels/Services/topo';
 
 interface Props {}
 
@@ -95,29 +95,29 @@ const MainPage: React.FC<Props> = (props: Props) => {
   }, [breadcrumb.edgesBreadCrumbItems]);
 
   const onTryLoadEdges = async () => {
-    await onGet(EdgesApi.getEdges(), userContext.accessToken!);
+    await onGet(TopoApi.getEdges(), userContext.accessToken!);
   };
 
   const onTryLoadRegions = async () => {
-    await onGetRegions(AccountsApi.getAllAwsRegions(), userContext.accessToken!);
+    await onGetRegions(PolicyApi.getAllAwsRegions(), userContext.accessToken!);
   };
 
   const onTryLoadAccounts = async () => {
-    await onGetAccounts(AccountsApi.getAccounts(), userContext.accessToken!);
+    await onGetAccounts(PolicyApi.getAccounts(), userContext.accessToken!);
   };
 
   const onTryLoadGroups = async () => {
-    await onGetGroups(TopologyGroupApi.getAllGroups(), userContext.accessToken!);
+    await onGetGroups(PolicyApi.getAllGroups(), userContext.accessToken!);
   };
 
   const onTryLoadWedges = async () => {
-    await onGetWedges(EdgesApi.getWedges(), userContext.accessToken!);
+    await onGetWedges(TopoApi.getWedges(), userContext.accessToken!);
   };
 
   const onOpenEditor = (_item?: IEdgeP) => {
     const _bredCrumbState = _item && _item.id ? EdgesBreadCrumbItemsType.EDIT : EdgesBreadCrumbItemsType.CREATE;
-    breadcrumb.onGoToEdges(_bredCrumbState);
     edges.onSetEditEdge(_item || null);
+    breadcrumb.onGoToEdges(_bredCrumbState);
   };
 
   const onCloseEditor = () => {
@@ -132,7 +132,7 @@ const MainPage: React.FC<Props> = (props: Props) => {
 
   const onTryDeleteEdge = async (_item: IEdgeP) => {
     setTempItem(_item);
-    await onDeleteEedge(EdgesApi.deleteEdge(_item.id), userContext.accessToken!);
+    await onDeleteEedge(TopoApi.deleteEdge(_item.id), userContext.accessToken!);
   };
 
   if (loading) {

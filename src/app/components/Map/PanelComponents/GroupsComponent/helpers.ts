@@ -1,4 +1,4 @@
-import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
+import { ITopologyGroup } from 'lib/api/ApiModels/Topology/apiModels';
 import { ISelectedListItem } from 'lib/models/general';
 import { TopologyGroupTypesAsNumber, TopologyGroupTypesAsString } from 'lib/models/topology';
 import { ApplicationsPossibleKeys, BranchNetworksPossibleKeys } from './model';

@@ -19,15 +19,6 @@ export const FormRow = styled.div<RowProps>`
   margin: ${props => props.margin || '0 0 20px 0'};
 `;
 
-export const PolicyItemWrapper = styled.div`
-  width: 100%;
-  padding: 20px;
-  flex-shrink: 0;
-  background: var(--_appBg);
-  border-radius: 6px;
-  margin: 0 0 20px 0;
-`;
-
 export const PolicyName = styled.div`
   font-family: 'DMSans';
   font-style: normal;
@@ -62,11 +53,22 @@ export const PolicyActionRow = styled.div<RowProps>`
   }
 `;
 
-export const SegmentPolicyWrapper = styled.div`
-  width: 100%;
-  background-color: var(--_primaryBg);
-  border-radius: 6px;
-  margin: 0 0 20px 0;
-  padding: 20px;
-  border: 1px solid var(--_borderColor);
+export const AccordionRuleHeader = styled.div`
+  display: flex;
+  width: calc(100% - 24px);
+  flex-shrink: 0;
+  overflow: hidden;
+  margin: 12px 24px 0 0;
+`;
+
+export const RuleLabel = styled.span`
+  display: inline-block;
+  color: var(--_primaryColor);
+  margin: auto 0;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  width: auto;
+  max-width: calc(100% - 32px);
+  flex-shrink: 1;
+  overflow: hidden;
 `;

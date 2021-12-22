@@ -11,10 +11,10 @@ import CheckBox from 'app/components/Inputs/Checkbox/CheckBox';
 import { useGet, usePost, usePut } from 'lib/api/http/useAxiosHook';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
-import { AccountsApi } from 'lib/api/ApiModels/Accounts/endpoints';
 import { useAccountsDataContext } from 'lib/hooks/Accounts/useAccountsDataContext';
 import { IBaseEntity } from 'lib/models/general';
 import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
+import { PolicyApi } from 'lib/api/ApiModels/Services/policy';
 interface Props {
   isEditMode: boolean;
   dataItem: IMeraki_Account;
@@ -95,15 +95,15 @@ const NewCiscoMerakiAccountForm: React.FC<Props> = (props: Props) => {
   };
 
   const onUpdateGroup = async () => {
-    await onUpdate(AccountsApi.putUpdateAccount(dataItem.id), { controller: dataItem }, userContext.accessToken!);
+    await onUpdate(PolicyApi.putUpdateAccount(dataItem.id), { controller: dataItem }, userContext.accessToken!);
   };
 
   const onCreateGroup = async () => {
-    await onPost(AccountsApi.postCreateAccount(), { controller: dataItem }, userContext.accessToken!);
+    await onPost(PolicyApi.postCreateAccount(), { controller: dataItem }, userContext.accessToken!);
   };
 
   const onGetAccountById = async (id: string) => {
-    await onGet(AccountsApi.getAccountsById(id), userContext.accessToken!);
+    await onGet(PolicyApi.getAccountsById(id), userContext.accessToken!);
   };
 
   if (!dataItem) return null;
@@ -132,7 +132,7 @@ const NewCiscoMerakiAccountForm: React.FC<Props> = (props: Props) => {
                 label="Description"
                 onChange={v => onChangeField(v, 'description')}
                 // styles?: Object;
-                area
+                type="textarea"
               />
             </StepItemFormRow>
             <StepItemFormRow>

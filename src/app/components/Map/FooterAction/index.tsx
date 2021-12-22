@@ -9,7 +9,7 @@ import CalendarComponent from 'app/components/Inputs/Calendar';
 import { ITimeMinMaxRange } from 'app/components/Inputs/TimeSlider/helpers';
 // import { getTimeQueryMetricsString } from 'lib/api/ApiModels/Metrics/queryTimeRangeHelper';
 // import { format } from 'date-fns';
-// import { toTimestamp } from 'lib/api/ApiModels/Topology/endpoints';
+// import { toTimestamp } from 'lib/api/ApiModels/Topology/apiModels';
 
 interface IProps {
   show: boolean;

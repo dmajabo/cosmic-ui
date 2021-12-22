@@ -7,14 +7,14 @@ import Search from 'app/components/Inputs/Search';
 import PrimaryButton from 'app/components/Buttons/PrimaryButton';
 import { addIcon } from 'app/components/SVGIcons/addIcon';
 import { ActionPart, ActionRowStyles } from 'app/containers/Pages/Shared/styles';
-import { useAutomationDataContext } from 'lib/hooks/Automation/useAutomationDataContext';
+// import { useAutomationDataContext } from 'lib/hooks/Automation/useAutomationDataContext';
 import { emptyAutomationIcon } from 'app/components/SVGIcons/emptyPages/emptyAutomation';
 interface Props {
   onCreateNew: () => void;
 }
 
 const AutomationTable: React.FC<Props> = (props: Props) => {
-  const { automation } = useAutomationDataContext();
+  // const { automation } = useAutomationDataContext();
   const [data] = React.useState<any>(null);
   const columns: ITableColumn[] = [
     { id: 'automationName', field: 'name', label: 'Name' },
@@ -25,7 +25,7 @@ const AutomationTable: React.FC<Props> = (props: Props) => {
   ];
 
   const handleSearchChange = (_value: string | null) => {
-    automation.onChangeSearchQuery(_value);
+    // automation.onChangeSearchQuery(_value);
   };
 
   const onCreateNew = () => {
@@ -46,7 +46,7 @@ const AutomationTable: React.FC<Props> = (props: Props) => {
     <>
       <ActionRowStyles height="40px">
         <ActionPart width="50%" maxWidth="440px" minWidth="200px" margin="0 auto 0 0">
-          <Search styles={{ width: '100%' }} searchQuery={automation.searchQuery} onChange={handleSearchChange} />
+          <Search styles={{ width: '100%' }} searchQuery={''} onChange={handleSearchChange} />
         </ActionPart>
         <ActionPart width="50%" margin="0 0 0 auto" justifyContent="flex-end">
           <PrimaryButton label="Create new" icon={addIcon} onClick={onCreateNew} />

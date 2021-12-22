@@ -8,11 +8,12 @@ export const ModalWrapper = styled.div`
   height: 90vh;
   max-width: 860px;
   max-height: 800px;
-  padding: 30px;
+  padding: 40px;
   overflow: hidden;
   background: var(--_primaryBg);
   border-radius: 6px;
   z-index: 2;
+  position: relative;
 `;
 
 export const ModalHeader = styled.div`
@@ -20,15 +21,13 @@ export const ModalHeader = styled.div`
   width: 100%;
   height: 40px;
   position: relative;
-  overflow: hidden;
   background: var(--_primaryBg);
   margin-bottom: 12px;
 `;
 
 export const ModalTitle = styled.div`
   text-overflow: ellipsis;
-  width: auto;
-  max-width: calc(100% - 28px);
+  width: 100%;
   line-height: 40px;
   white-space: nowrap;
   overflow: hidden;

@@ -42,8 +42,8 @@ const ColumnFilter: React.FC<IProps> = (props: IProps) => {
     const _dropItem = data[dropItemIndex];
     if (!_dragItem || !_dropItem || _dragItem.id === _dropItem.id) return;
     const _items: any[] = data.slice();
-    _items.splice(dragItemIndex, 1, _dropItem);
-    _items.splice(dropItemIndex, 1, _dragItem);
+    _items.splice(dragItemIndex, 1);
+    _items.splice(dropItemIndex, 0, _dragItem);
     dragRef.current = null;
     props.onChangeOrder(_items);
   };

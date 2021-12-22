@@ -18,14 +18,18 @@ export interface ISegmentRuleP {
   destId: string;
   action: SegmentRuleAction;
 
-  isNew: boolean;
+  // Used only in ui
+  uiId: string;
+  collapsed: boolean;
 }
 
 export interface ISegmentP {
   name: string;
   rules: ISegmentRuleP[];
 
-  isNew?: boolean;
+  // Used only in ui
+  uiId: string;
+  collapsed: boolean;
 }
 
 export enum ValidationFields {
@@ -98,14 +102,10 @@ export interface ISitesRes extends IBaseTotalCount, IBasePages {
 
 export interface IAppsRes extends IBaseTotalCount, IBasePages {
   apps: IVm[];
-  pageSize: number;
-  pageOffset: number;
 }
 
 export interface IWEdgesRes extends IBaseTotalCount, IBasePages {
   wEdges: INetworkwEdge[];
-  pageSize: number;
-  pageOffset: number;
 }
 
 export interface IEdgesRes extends IBaseTotalCount {

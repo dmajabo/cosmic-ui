@@ -19,13 +19,17 @@ export const buildAggregatedData = (data: ISession[], buckets: IBuckets[]): IAgg
 const buildRow = (item: ISession, buckets: IBuckets[]): IAggregateRow => {
   const _buckects: IBuckets[] = buckets && buckets.length ? buckets.filter(it => it.key === item.sessionId) : [];
   const _groupData = getGroupedData(_buckects);
-  const _vendors: IState[] = _groupData.vendors ? Object.keys(_groupData.vendors).map(key => getNestedTableHeader(_groupData.vendors[key])) : [];
+  let _vendors: IState[] = _groupData && _groupData.vendors ? Object.keys(_groupData.vendors).map(key => getNestedTableHeader(_groupData.vendors[key])) : [];
+  if (!_vendors || !_vendors.length) {
+    const _item = getNestedTableHeader(item.deviceVendor);
+    _vendors = [_item];
+  }
   const _row: IAggregateRow = { session: item, data: _groupData.groupData, vendors: _vendors };
   return _row;
 };
 
 const getGroupedData = (data: IBuckets[]) => {
-  if (!data || !data.length) return null;
+  if (!data || !data.length) return { groupData: null, vendors: null };
   const _obj: IGroupedData = {};
   const _vendors: IObject<AccountVendorTypes> = {};
   data.forEach((bucket, i) => {

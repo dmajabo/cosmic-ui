@@ -82,3 +82,11 @@ export const TagsWrapper = styled.div`
   white-space: nowrap;
   margin: auto auto auto 0;
 `;
+
+export const GridWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  flex-grow: 1;
+  position: relative;
+  flex-direction: column;
+`;

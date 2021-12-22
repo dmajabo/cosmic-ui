@@ -10,7 +10,7 @@ import { applicationIcon } from 'app/components/SVGIcons/topologyIcons/applicati
 import { PopupContent } from 'app/components/Buttons/SettingsButton/PopupItemStyles';
 import PopupItem from 'app/components/Buttons/SettingsButton/PopupItem';
 import SettingsButton from 'app/components/Buttons/SettingsButton';
-import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
+import { ITopologyGroup } from 'lib/api/ApiModels/Topology/apiModels';
 
 interface IProps {
   group: ITopologyGroup;

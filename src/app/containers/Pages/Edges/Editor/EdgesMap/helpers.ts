@@ -1,5 +1,5 @@
 import { DeploymentTypes, ISegmentP, SegmentTargetT } from 'lib/api/ApiModels/Edges/apiModel';
-import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
+import { ITopologyGroup } from 'lib/api/ApiModels/Topology/apiModels';
 import { jsonClone } from 'lib/helpers/cloneHelper';
 import { INetworkwEdge, TopologyGroupTypesAsString } from 'lib/models/topology';
 

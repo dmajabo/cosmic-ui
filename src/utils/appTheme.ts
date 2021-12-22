@@ -115,6 +115,8 @@ export const APP_THEME: ITheme = {
     '--_completedStepperNumberTextColor': '#FFFFFF',
     '--_stepperEdgeColor': '#CBD2DC',
     '--_stepperStateCompleteColor': '#52984E',
+    // TAGS
+    '--_tagBg': '#2C82C9',
   },
   dark: {
     '--_primaryBg': 'black',
@@ -218,6 +220,8 @@ export const APP_THEME: ITheme = {
     '--_completedStepperNumberTextColor': '#FFFFFF',
     '--_stepperEdgeColor': '#CBD2DC',
     '--_stepperStateCompleteColor': '#52984E',
+    // TAGS
+    '--_tagBg': '#2C82C9',
   },
 };
 

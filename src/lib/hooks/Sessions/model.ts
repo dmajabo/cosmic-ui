@@ -1,10 +1,7 @@
+import { SESSIONS_TIME_RANGE_QUERY_TYPES } from 'lib/api/ApiModels/paramBuilders';
 import { ISelectedListItem } from 'lib/models/general';
 import { ITab } from 'lib/models/tabs';
 
-export enum StitchTypes {
-  DEFAULT = 'DEFAULT',
-  STITCHED_ONLY = 'STITCHED_ONLY',
-}
 export const PAGING_DEFAULT_PAGE_SIZE: number = 50;
 
 export enum SessionsTabTypes {
@@ -19,16 +16,9 @@ export const SESSIONS_TABS: ITab<SessionsTabTypes>[] = [
   // { id: SessionsTabTypes.Sessions, label: 'Sessions', index: 1 },
 ];
 
-export enum SessionsSelectValuesTypes {
-  LAST_HOUR = 'SESSION_QUERY_LAST_HOUR',
-  LAST_DAY = 'SESSION_QUERY_LAST_DAY',
-  LAST_WEEK = 'SESSION_QUERY_LAST_WEEK',
-  LAST_MONTH = 'SESSION_QUERY_LAST_MONTH',
-}
-
-export const SESSIONS_SELECT_VALUES: ISelectedListItem<SessionsSelectValuesTypes>[] = [
-  { id: SessionsSelectValuesTypes.LAST_HOUR, value: SessionsSelectValuesTypes.LAST_HOUR, label: 'Last hour', data: '-1h' },
-  { id: SessionsSelectValuesTypes.LAST_DAY, value: SessionsSelectValuesTypes.LAST_DAY, label: 'Last day', data: '-24h' },
-  { id: SessionsSelectValuesTypes.LAST_WEEK, value: SessionsSelectValuesTypes.LAST_WEEK, label: 'Last week', data: '-7d' },
-  { id: SessionsSelectValuesTypes.LAST_MONTH, value: SessionsSelectValuesTypes.LAST_MONTH, label: 'Last month', data: '-30d' },
+export const SESSIONS_SELECT_VALUES: ISelectedListItem<SESSIONS_TIME_RANGE_QUERY_TYPES>[] = [
+  { id: SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_HOUR, value: SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_HOUR, label: 'Last hour', data: '-1h' },
+  { id: SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_DAY, value: SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_DAY, label: 'Last day', data: '-24h' },
+  { id: SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_WEEK, value: SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_WEEK, label: 'Last week', data: '-7d' },
+  { id: SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_MONTH, value: SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_MONTH, label: 'Last month', data: '-30d' },
 ];

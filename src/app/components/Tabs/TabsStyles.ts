@@ -26,7 +26,7 @@ export const TabsStyles = makeStyles(
         height: '48px',
         minHeight: '48px',
         minWidth: 130,
-        padding: '0 12px',
+        padding: '0 30px',
         fontStyle: 'normal',
         fontWeight: 700,
         fontSize: '18px',

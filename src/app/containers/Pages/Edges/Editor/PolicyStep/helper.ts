@@ -1,5 +1,5 @@
 import { ISegmentP, ISegmentRuleP, SegmentTargetT } from 'lib/api/ApiModels/Edges/apiModel';
-import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
+import { ITopologyGroup } from 'lib/api/ApiModels/Topology/apiModels';
 import { IObject } from 'lib/models/general';
 import { TopologyGroupTypesAsNumber, TopologyGroupTypesAsString } from 'lib/models/topology';
 import { IPolicyCombination } from '../../model';

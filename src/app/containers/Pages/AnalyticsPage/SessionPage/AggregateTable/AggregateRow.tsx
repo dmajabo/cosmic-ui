@@ -23,12 +23,15 @@ const AggregateRow: React.FC<Props> = (props: Props) => {
         {props.columns.map((it, colIndex) => {
           if (it.hide) return null;
           if (it.resField === 'id') {
+            if (!props.row.data) {
+              return <TableCell key={`tdRow${it.resField}${props.row.session.id}${colIndex}`} />;
+            }
             return (
               <TableCell key={`tdRow${it.resField}${props.row.session.id}${colIndex}`}>
                 <IconWrapper
                   width="12px"
                   height="12px"
-                  styles={{ verticalAlign: 'middle', transform: open ? 'rotate(-180deg)' : 'rotate(0)', transition: `transform ${DEFAULT_TRANSITION}` }}
+                  styles={{ verticalAlign: 'middle', transform: open ? 'rotate(0)' : 'rotate(-90deg)', transition: `transform ${DEFAULT_TRANSITION}` }}
                   icon={arrowBottomIcon}
                   onClick={() => setOpen(!open)}
                 />
@@ -53,9 +56,10 @@ const AggregateRow: React.FC<Props> = (props: Props) => {
       <TableRow className={`nestedRow ${!open ? 'rowCollapsed' : ''}`}>
         <TableCell className="nestedTd" style={open ? null : { paddingBottom: 0, paddingTop: 0, border: 'none' }} colSpan={props.columns.filter(it => !it.hide).length}>
           <Collapse in={open} timeout="auto" easing="linear" unmountOnExit>
-            {Object.keys(props.row.data).map((key, index) => (
-              <VendorTable key={`${props.row.session.id}${key}`} isLast={index === Object.keys(props.row.data).length - 1} label={key} data={props.row.data[key]} />
-            ))}
+            {props.row.data &&
+              Object.keys(props.row.data).map((key, index) => (
+                <VendorTable key={`${props.row.session.id}${key}`} isLast={index === Object.keys(props.row.data).length - 1} label={key} data={props.row.data[key]} />
+              ))}
           </Collapse>
         </TableCell>
       </TableRow>

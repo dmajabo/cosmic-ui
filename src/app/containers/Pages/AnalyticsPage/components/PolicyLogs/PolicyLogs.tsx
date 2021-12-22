@@ -11,6 +11,7 @@ import { AnomalySLATestTable } from '../Anomalies/AnomalySLATestTable';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import { CheckboxData } from '../Metrics Explorer/Dimensions';
 import { Checkbox, FormControlLabel, FormGroup, Popover } from '@mui/material';
+import { DUMMY_POLICY_LOGS_TABLE_DATA } from '../../DummyData';
 
 const REGEX = /[-[\]{}()*+?.,\\^$|#\s]/g;
 
@@ -62,18 +63,7 @@ const TIME_RANGE_OPTIONS: LookbackSelectOption[] = [
   },
 ];
 
-const DUMMY_LOGS_TABLE_DATA: AnomalyPolicyLogsTableData[] = [
-  {
-    hits: 17,
-    time: 'Tue,Nov 14 2021,10:25pm',
-    edge: 'Office 4',
-    user: 'Jesse Roy',
-    operation: 'Policy Change',
-    changes: 'Uplink Configuration (WAN1, WAN2), List Configuration (WAN1, WAN2), List Configuration (WAN1, WAN2), List Configuration (WAN1, WAN2)',
-  },
-];
-
-const logsTableColumns: Column[] = [
+const LOGS_TABLE_COLUMNS: Column[] = [
   {
     Header: 'HITS',
     accessor: ColumnAccessor.hits,
@@ -113,12 +103,14 @@ const dropdownStyle = {
   }),
 };
 
-const initialCheckboxData: CheckboxData = logsTableColumns.reduce((accu, nextValue) => {
+const initialCheckboxData: CheckboxData = LOGS_TABLE_COLUMNS.reduce((accu, nextValue) => {
   accu[nextValue.accessor] = true;
   return accu;
 }, {});
 
 const COLUMNS_POPOVER = 'columns-popover';
+
+const POLICY_LOGS_TABLE_SORTABLE_HEADERS = ['EDGE', 'USER'];
 
 export const PolicyLogs: React.FC = () => {
   const classes = AnalyticsStyles();
@@ -133,10 +125,11 @@ export const PolicyLogs: React.FC = () => {
   const handleColumnsClose = () => setColumnAnchorEl(null);
 
   const isColumnsPopoverOpen = Boolean(columnAnchorEl);
+
   const columnsPopoverId = isColumnsPopoverOpen ? COLUMNS_POPOVER : undefined;
 
   useEffect(() => {
-    const newSelectedColumns = logsTableColumns.filter(item => columnCheckboxData[item.accessor]);
+    const newSelectedColumns = LOGS_TABLE_COLUMNS.filter(item => columnCheckboxData[item.accessor]);
     setSelectedColumns(newSelectedColumns);
   }, [columnCheckboxData]);
 
@@ -152,19 +145,13 @@ export const PolicyLogs: React.FC = () => {
   const requestSearch = (searchValue: string) => {
     setSearchText(searchValue);
     const searchRegex = new RegExp(escapeRegExp(searchValue), 'i');
-    // const filteredRows = filteredTableData.filter((row: any) => {
-    //   return Object.keys(row).some((field: any) => {
-    //     return searchRegex.test(row[field].toString());
-    //   });
-    // });
-    // setFilteredTableData(filteredRows);
   };
 
   const handleSearchTextChange = (event: React.ChangeEvent<HTMLInputElement>) => requestSearch(event.target.value);
 
   const handleTimeRangeChange = (value: LookbackSelectOption) => setTimeRange(value);
 
-  const logsTableData: AnomalyPolicyLogsTableData[] = DUMMY_LOGS_TABLE_DATA.map(item => ({
+  const logsTableData: AnomalyPolicyLogsTableData[] = DUMMY_POLICY_LOGS_TABLE_DATA.map(item => ({
     hits: <div className={classes.hitsCount}>{item.hits}</div>,
     time: item.time,
     edge: (
@@ -232,16 +219,14 @@ export const PolicyLogs: React.FC = () => {
             }}
           >
             <FormGroup className={classes.popoverContainer}>
-              {logsTableColumns
-                .filter(column => column.accessor !== ColumnAccessor.hits)
-                .map(item => (
-                  <FormControlLabel
-                    key={item.accessor}
-                    className={classes.popoverItem}
-                    control={<Checkbox checked={columnCheckboxData[item.accessor]} onChange={handleCheckboxChange} name={item.accessor} />}
-                    label={<span className={classes.popoverText}>{item.Header}</span>}
-                  />
-                ))}
+              {LOGS_TABLE_COLUMNS.filter(column => column.accessor !== ColumnAccessor.hits).map(item => (
+                <FormControlLabel
+                  key={item.accessor}
+                  className={classes.popoverItem}
+                  control={<Checkbox checked={columnCheckboxData[item.accessor]} onChange={handleCheckboxChange} name={item.accessor} />}
+                  label={<span className={classes.popoverText}>{item.Header}</span>}
+                />
+              ))}
             </FormGroup>
           </Popover>
           <span className={classes.anomalyTimeRangeText}>Show:</span>
@@ -249,7 +234,7 @@ export const PolicyLogs: React.FC = () => {
         </div>
       </div>
       <div className={classes.policyLogsTableContainer}>
-        <AnomalySLATestTable columns={selectedColumns} data={logsTableData} sortableHeaders={['EDGE', 'USER']} />
+        <AnomalySLATestTable columns={selectedColumns} data={logsTableData} sortableHeaders={POLICY_LOGS_TABLE_SORTABLE_HEADERS} />
       </div>
     </div>
   );

@@ -2,13 +2,11 @@ import React, { useContext } from 'react';
 import { ActionPart, ActionRowStyles, ContentWrapper, PageContentWrapper, TableWrapper } from '../../Shared/styles';
 import { useGet } from 'lib/api/http/useAxiosHook';
 import { IAllSessionsRes, ISession } from 'lib/api/ApiModels/Sessions/apiModel';
-import { SessionsApi } from 'lib/api/ApiModels/Sessions/endpoints';
 import Table from './Table';
 import Dropdown from 'app/components/Inputs/Dropdown';
-import { SessionsSelectValuesTypes, SessionsTabTypes, SESSIONS_SELECT_VALUES } from 'lib/hooks/Sessions/model';
+import { SessionsTabTypes, SESSIONS_SELECT_VALUES } from 'lib/hooks/Sessions/model';
 import SessionsSwitch from './SessionsSwitch';
 import { ISelectedListItem, ISelectionGridCellValue } from 'lib/models/general';
-import { sessionsParamBuilder } from 'lib/api/ApiModels/Sessions/paramBuilder';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
 import ElasticFilter from 'app/components/Inputs/ElasticFilter';
@@ -17,6 +15,10 @@ import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 import AggregateTable from './AggregateTable';
 import { convertStringToNumber } from 'lib/helpers/general';
 import { useSessionsDataContext } from 'lib/hooks/Sessions/useSessionsDataContext';
+import IconButton from 'app/components/Buttons/IconButton';
+import { refreshIcon } from 'app/components/SVGIcons/refresh';
+import { sessionsParamBuilder, SESSIONS_TIME_RANGE_QUERY_TYPES } from 'lib/api/ApiModels/paramBuilders';
+import { TesseractApi } from 'lib/api/ApiModels/Services/tesseract';
 
 interface IProps {}
 
@@ -64,10 +66,19 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
     setAggregTotalCount(0);
   }, [aggregRes]);
 
+  const onRefresh = () => {
+    const _param = sessionsParamBuilder(sessions.sessionsPageSize, sessions.sessionsCurrentPage, sessions.sessionsPeriod, sessions.sessionsStitch, sessions.sessionsFilter);
+    if (sessions.sessionsStitch) {
+      loadAggregatedData(_param);
+      return;
+    }
+    loadSessionsData(_param);
+  };
+
   const onTryToLoadData = (
     pageSize: number,
     page: number,
-    time: SessionsSelectValuesTypes,
+    time: SESSIONS_TIME_RANGE_QUERY_TYPES,
     stitch: boolean,
     filterValue: (ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> | string)[],
   ) => {
@@ -80,11 +91,11 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
   };
 
   const loadAggregatedData = async _param => {
-    await onGetAggregatedData(SessionsApi.getAggregatedSessions(), userContext.accessToken!, _param);
+    await onGetAggregatedData(TesseractApi.getAggregatedSessions(), userContext.accessToken!, _param);
   };
 
   const loadSessionsData = async _param => {
-    await onGet(SessionsApi.getAllSessions(), userContext.accessToken!, _param);
+    await onGet(TesseractApi.getAllSessions(), userContext.accessToken!, _param);
   };
 
   const onChangePageSize = (_size: number, page?: number) => {
@@ -95,7 +106,7 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
     sessions.onChangeCurrentPage(_page);
   };
 
-  const onChangePeriod = (_value: ISelectedListItem<SessionsSelectValuesTypes>) => {
+  const onChangePeriod = (_value: ISelectedListItem<SESSIONS_TIME_RANGE_QUERY_TYPES>) => {
     sessions.onChangeSelectedPeriod(_value, SessionsTabTypes.Sessions);
   };
 
@@ -156,6 +167,7 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
             values={SESSIONS_SELECT_VALUES}
             onSelectValue={onChangePeriod}
           />
+          <IconButton styles={{ margin: '0 0 0 20px' }} icon={refreshIcon} title="Reload" onClick={onRefresh} />
         </ActionPart>
       </ActionRowStyles>
       <ElasticFilter
