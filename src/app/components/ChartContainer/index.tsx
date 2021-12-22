@@ -2,7 +2,6 @@ import React, { useContext } from 'react';
 import { LineChart } from 'app/containers/Pages/TopologyPage/TopologyMetrics/LineChart';
 import LoadingIndicator from 'app/components/Loading';
 import { GetMetricsResponse, MetricsData } from 'app/containers/Pages/TopologyPage/TopologyMetrics/SharedTypes';
-import { MetricsApi } from 'lib/api/ApiModels/Metrics/endpoints';
 import { MetricsKeyTypes, IMetrickQueryParam } from 'lib/api/ApiModels/Metrics/apiModel';
 import { useGet } from 'lib/api/http/useAxiosHook';
 import { ErrorMessage } from '../Basic/ErrorMessage/ErrorMessage';
@@ -10,6 +9,7 @@ import { AbsLoaderWrapper } from '../Loading/styles';
 import { ChartContainerStyles, ChartTitle, ChartActionBlock, ChartActionLabel, Chart } from './styles';
 import { EmptyText } from '../Basic/NoDataStyles/NoDataStyles';
 import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
+import { TelemetryApi } from 'lib/api/ApiModels/Services/telemetry';
 
 interface Props {
   title: string;
@@ -55,7 +55,7 @@ const ChartContainer: React.FC<Props> = (props: Props) => {
       _param.startTime = params.startTime;
       _param.endTime = params.endTime;
     }
-    await onGet(MetricsApi.getMetricsById(props.id), userContext.accessToken!, _param);
+    await onGet(TelemetryApi.getMetricsById(props.id), userContext.accessToken!, _param);
   };
 
   return (

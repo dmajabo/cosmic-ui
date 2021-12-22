@@ -6,6 +6,7 @@ export enum StoragePreferenceKeys {
   SESSIONS_STITCH = 'sessions_stitch',
   SESSIONS_OVERVIEW_TIME_PERIOD = 'sessions_overview_time_period',
   AUDIT_LOG_TIME_PERIOD = 'audit_log_time_period',
+  WORKFLOW_TRIGGERS_TIME_PERIOD = 'workflow_triggers_time_period',
 }
 
 export const updateSessionStoragePreference = (_value: any, _key: OKULIS_LOCAL_STORAGE_KEYS, _subKey?: StoragePreferenceKeys) => {

@@ -1,4 +1,4 @@
-import { INetworkOrg, INetworkVNetwork, ITopologyGroup, VendorTypes } from 'lib/api/ApiModels/Topology/endpoints';
+import { INetworkOrg, INetworkVNetwork, ITopologyGroup, VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
 import { IVpcSize } from 'lib/helpers/tree';
 import { IBaseEntity, ICollapsed, ICoord, ISelectedListItem, IVisible } from './general';
 export const DEFAULT_GROUP_ID = 'default_group_id';

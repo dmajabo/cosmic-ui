@@ -11,6 +11,8 @@ import Toogle from 'app/components/Inputs/Toogle';
 import ColumnFilter from 'app/components/Basic/ColumnFilter';
 import { IColumn } from 'lib/models/grid';
 import Dropdown from 'app/components/Inputs/Dropdown';
+import IconButton from 'app/components/Buttons/IconButton';
+import { refreshIcon } from 'app/components/SVGIcons/refresh';
 interface Props {
   timeRangeValues?: ISelectedListItem<any>[];
   selectedTimeRangePeriod?: string;
@@ -26,6 +28,8 @@ interface Props {
   onToogleChange?: (value: ISelectedListItem<InventoryOptions>) => void;
   onChangeOrder: (items: IColumn[]) => void;
   onChangePeriod?: (value: ISelectedListItem<any>) => void;
+  onRefresh?: () => void;
+  showReloadButton?: boolean;
   hideEditButton?: boolean;
   showToogle?: boolean;
   hideDelete?: boolean;
@@ -98,6 +102,7 @@ const Header: React.FC<Props> = (props: Props) => {
             />
           )}
         </ActionPart>
+        {props.showReloadButton && <IconButton styles={{ margin: '0 0 0 20px' }} icon={refreshIcon} title="Reload" onClick={props.onRefresh} />}
       </ActionRowStyles>
     </>
   );

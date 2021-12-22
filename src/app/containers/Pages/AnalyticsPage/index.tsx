@@ -3,8 +3,8 @@ import { SessionsProvider, useSessionsActions } from 'lib/hooks/Sessions/useSess
 import React, { useState } from 'react';
 import { AnalyticsStyles } from './AnalyticsStyles';
 import { Anomalies } from './components/Anomalies/Anomalies';
-import { MetricsExplorer } from './components/Metrics Explorer/MetricsExplorer';
-import { PerformanceDashboard } from './components/Performance Dashboard/PerformanceDashboard';
+// import { MetricsExplorer } from './components/Metrics Explorer/MetricsExplorer';
+// import { PerformanceDashboard } from './components/Performance Dashboard/PerformanceDashboard';
 import SessionPage from './SessionPage';
 
 interface TabPanelProps {
@@ -31,10 +31,10 @@ function a11yProps(title: string) {
 
 enum TabName {
   SessionLogs = 'Session Logs',
-  Performance = 'Performance',
+  // Performance = 'Performance',
   Anomalies = 'Anomalies',
   PolicyLogs = 'Policy Logs',
-  MetricsExplorer = 'Metrics Explorer',
+  // MetricsExplorer = 'Metrics Explorer',
 }
 
 const AnalyticsPage: React.FC = () => {
@@ -55,12 +55,12 @@ const AnalyticsPage: React.FC = () => {
               wrapped
               {...a11yProps(TabName.SessionLogs)}
             />
-            <Tab
+            {/* <Tab
               value={TabName.Performance}
               label={<span className={selectedTabName === TabName.Performance ? classes.activeTabLabel : classes.tabLabel}>{TabName.Performance}</span>}
               wrapped
               {...a11yProps(TabName.Performance)}
-            />
+            /> */}
             <Tab
               value={TabName.Anomalies}
               label={<span className={selectedTabName === TabName.Anomalies ? classes.activeTabLabel : classes.tabLabel}>{TabName.Anomalies}</span>}
@@ -73,29 +73,29 @@ const AnalyticsPage: React.FC = () => {
               wrapped
               {...a11yProps(TabName.PolicyLogs)}
             />
-            <Tab
+            {/* <Tab
               value={TabName.MetricsExplorer}
               label={<span className={selectedTabName === TabName.MetricsExplorer ? classes.activeTabLabel : classes.tabLabel}>{TabName.MetricsExplorer}</span>}
               wrapped
               {...a11yProps(TabName.MetricsExplorer)}
-            />
+            /> */}
           </Tabs>
         </div>
         <TabPanel value={selectedTabName} title={TabName.SessionLogs}>
           {selectedTabName === TabName.SessionLogs && <SessionPage />}
         </TabPanel>
-        <TabPanel value={selectedTabName} title={TabName.Performance}>
+        {/* <TabPanel value={selectedTabName} title={TabName.Performance}>
           <PerformanceDashboard />
-        </TabPanel>
+        </TabPanel> */}
         <TabPanel value={selectedTabName} title={TabName.Anomalies}>
           <Anomalies />
         </TabPanel>
         <TabPanel value={selectedTabName} title={TabName.PolicyLogs}>
           {TabName.PolicyLogs}
         </TabPanel>
-        <TabPanel value={selectedTabName} title={TabName.MetricsExplorer}>
+        {/* <TabPanel value={selectedTabName} title={TabName.MetricsExplorer}>
           <MetricsExplorer />
-        </TabPanel>
+        </TabPanel> */}
       </div>
     </SessionsProvider>
   );

@@ -1,11 +1,13 @@
 import React from 'react';
 import { AnalyticsStyles } from '../../AnalyticsStyles';
 import { AnomalyBarChart } from './AnomalyBarChart';
-import { AnomalyExperienceTableData, Column, ColumnAccessor, AnomalyPolicyLogsTableData, AnomalyCostTableData, CostDetailTableData, CostDetailHeader } from 'lib/api/http/SharedTypes';
+import { Column, ColumnAccessor, AnomalyCostTableData, CostDetailTableData, CostDetailHeader } from 'lib/api/http/SharedTypes';
 import { AnomalyTable } from './AnomalyTable';
 import { SeverityIcon } from './SeverityIcon';
 import { AnomalySLATestTable } from './AnomalySLATestTable';
-import { BarChartData } from './ExperienceTab';
+import { getSeverityColour } from './ExperienceTab';
+import { DUMMY_ANOMALY_COST_TABLE_DATA, DUMMY_BAR_CHART_DATA } from './DummyData';
+import { Row } from 'react-table';
 
 interface CostTabProps {}
 
@@ -25,52 +27,6 @@ const anomalyTableColumns: Column[] = [
   {
     Header: 'COST',
     accessor: ColumnAccessor.cost,
-  },
-];
-
-const DUMMY_BAR_CHART_DATA: BarChartData[] = [
-  {
-    date: 'Nov 10',
-    value: 40,
-  },
-  {
-    date: 'Nov 11',
-    value: 5,
-  },
-  {
-    date: 'Nov 12',
-    value: 38,
-  },
-  {
-    date: 'Nov 13',
-    value: 30,
-  },
-  {
-    date: 'Nov 14',
-    value: 21,
-  },
-  {
-    date: 'Nov 15',
-    value: 7,
-  },
-  {
-    date: 'Nov 16',
-    value: 15,
-  },
-];
-
-const DUMMY_ANOMALY_TABLE_DATA: AnomalyCostTableData[] = [
-  {
-    name: 'WAN Link Status Change',
-    severity: 'Low',
-    hits: 10,
-    cost: '$42/week',
-  },
-  {
-    name: 'WAN Link UL Traffic Anomaly',
-    severity: 'Medium',
-    hits: 49,
-    cost: '$6/day',
   },
 ];
 
@@ -101,23 +57,12 @@ const costDetailColumns: Column[] = [
   },
 ];
 
-const getSeverityColour = (severity: string | JSX.Element) => {
-  if (severity === 'Normal') {
-    return '#52984E';
-  }
-  if (severity === 'Low') {
-    return '#F9BA55';
-  }
-  if (severity === 'Medium') {
-    return '#F69442';
-  }
-  return '#DC4545';
-};
+const ANOMALY_COST_DETAIL_TABLE_SORTABLE_HEADERS = ['DATE'];
 
 export const CostTab: React.FC<CostTabProps> = () => {
   const classes = AnalyticsStyles();
 
-  const tableData: AnomalyCostTableData[] = DUMMY_ANOMALY_TABLE_DATA.map(item => ({
+  const tableData: AnomalyCostTableData[] = DUMMY_ANOMALY_COST_TABLE_DATA.map(item => ({
     name: item.name,
     severity: (
       <div>
@@ -129,7 +74,7 @@ export const CostTab: React.FC<CostTabProps> = () => {
     cost: item.cost,
   }));
 
-  const costSubComponent = React.useCallback(({ row }) => {
+  const costSubComponent = React.useCallback((row: Row<object>) => {
     const constDetailHeaderData: CostDetailHeader[] = [
       {
         label: 'Region:',
@@ -164,7 +109,7 @@ export const CostTab: React.FC<CostTabProps> = () => {
             </div>
           ))}
         </div>
-        <AnomalySLATestTable columns={costDetailColumns} data={costDetailData} sortableHeaders={['DATE']} />
+        <AnomalySLATestTable columns={costDetailColumns} data={costDetailData} sortableHeaders={ANOMALY_COST_DETAIL_TABLE_SORTABLE_HEADERS} />
       </div>
     );
   }, []);

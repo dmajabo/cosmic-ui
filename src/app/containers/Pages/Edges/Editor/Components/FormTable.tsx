@@ -14,7 +14,7 @@ import { deleteIcon } from 'app/components/SVGIcons/delete';
 import {
   ITopologyGroup,
   // VendorTypes,
-} from 'lib/api/ApiModels/Topology/endpoints';
+} from 'lib/api/ApiModels/Topology/apiModels';
 
 interface Props {
   data: ITopologyGroup[];

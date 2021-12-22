@@ -1,13 +1,13 @@
 import React, { useContext } from 'react';
 import { IVnetNode } from 'lib/models/topology';
 import { IResourceQueryParam, ControllerKeyTypes, RoutesResKeyEnum, RoutesResourceTypes, IRoutesResData, IRouteResDataItem } from 'lib/api/ApiModels/Metrics/apiModel';
-import { RoutesApi } from 'lib/api/ApiModels/Metrics/endpoints';
 import { getQueryResourceParam } from 'lib/api/ApiModels/Metrics/queryRoutesHelper';
 import { useGet } from 'lib/api/http/useAxiosHook';
 import RouteTableWrapper from './RouteTableWrapper';
-import { toTimestamp } from 'lib/api/ApiModels/Topology/endpoints';
+import { toTimestamp } from 'lib/api/ApiModels/paramBuilders';
 import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
 import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
+import { TopoApi } from 'lib/api/ApiModels/Services/topo';
 interface IProps {
   dataItem: IVnetNode;
 }
@@ -23,7 +23,7 @@ const RoutesTab: React.FC<IProps> = (props: IProps) => {
     if (topology.selectedTime) {
       _param.timestamp = toTimestamp(topology.selectedTime);
     }
-    getDataAsync(RoutesApi.getRoutes(ControllerKeyTypes.RouteTables), _param);
+    getDataAsync(TopoApi.getRoutesByKey(ControllerKeyTypes.RouteTables), _param);
   }, [props.dataItem, topology.selectedTime]);
 
   React.useEffect(() => {

@@ -8,7 +8,7 @@ import ModalComponent from 'app/components/Modal';
 import AppEditor from './AppEditor';
 import { EmptyMessage } from '../Components/styles';
 import { EditGroupItem } from '../../model';
-import { ITopologyGroup, SelectorEvalType } from 'lib/api/ApiModels/Topology/endpoints';
+import { ITopologyGroup, SelectorEvalType } from 'lib/api/ApiModels/Topology/apiModels';
 import { TopologyGroupTypesAsString } from 'lib/models/topology';
 import { useEdgesDataContext } from 'lib/hooks/Edges/useEdgesDataContext';
 import ExistingGroups from '../Components/ExistingGroups';
@@ -85,16 +85,7 @@ const AppsStep: React.FC<Props> = (props: Props) => {
         <SecondaryButton icon={plusIcon} label="Add group" onClick={onAddGroup} />
       </FormRow>
       {showCreator && (
-        <ModalComponent
-          showHeader
-          title="Create App"
-          showCloseButton
-          modalStyles={{ maxWidth: '800px', maxHeight: '90vh', padding: '40px' }}
-          useFadeAnimation
-          id="appsModalWindow"
-          open={showCreator}
-          onClose={onClose}
-        >
+        <ModalComponent showHeader title="Create App" showCloseButton modalStyles={{ maxWidth: '800px', maxHeight: '90vh' }} useFadeAnimation id="appsModalWindow" open={showCreator} onClose={onClose}>
           {showExistingGroups && (
             <ExistingGroups
               selectedItems={props.data}

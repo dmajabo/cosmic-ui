@@ -6,20 +6,19 @@ import AccountForm from './Components/AccountForm/AccountForm';
 import { useAccountsDataContext } from 'lib/hooks/Accounts/useAccountsDataContext';
 import { useDelete, useGet } from 'lib/api/http/useAxiosHook';
 import { AccountVendorTypes, IAccountsRes, IAwsRegionsRes, IAWS_Account, IAZURE_Account, IMeraki_Account } from 'lib/api/ApiModels/Accounts/apiModel';
-import { AccountsApi } from 'lib/api/ApiModels/Accounts/endpoints';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
-import PageHeaderRow from './Components/PageHeaderRow';
-import AccountsListItems from './Components/AccountsListItems';
-import { PageWrapperStyles } from '../Shared/styles';
 import { createNewCiscoMerakiAccount, createNewAwsAccount } from 'lib/api/ApiModels/Accounts/newAccount';
 import { getPreparedAccountsRes } from 'lib/api/ApiModels/Accounts/helpers';
 import AccountsEmptyPage from './Components/AccountsEmptyPage';
 import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
+import PageHeaderRow from './Components/PageHeaderRow';
+import AccountsListItems from './Components/AccountsListItems';
+import { PolicyApi } from 'lib/api/ApiModels/Services/policy';
 interface IProps {}
 
-const MainPage: React.FC<IProps> = (props: IProps) => {
+const Accounts: React.FC<IProps> = (props: IProps) => {
   const { accounts } = useAccountsDataContext();
   const userContext = useContext<UserContextState>(UserContext);
   const { response, loading, error, onGet } = useGet<IAccountsRes>();
@@ -84,43 +83,43 @@ const MainPage: React.FC<IProps> = (props: IProps) => {
   };
 
   const onTryToLoadData = async () => {
-    await onGet(AccountsApi.getAccounts(), userContext.accessToken!);
+    await onGet(PolicyApi.getAccounts(), userContext.accessToken!);
   };
 
   const onTryLoadRegions = async () => {
-    await onGetRegions(AccountsApi.getAllAwsRegions(), userContext.accessToken!);
+    await onGetRegions(PolicyApi.getAllAwsRegions(), userContext.accessToken!);
   };
 
   const onTryDelete = async (id: string) => {
-    await onDelete(AccountsApi.deleteAccounts(id), userContext.accessToken!);
+    await onDelete(PolicyApi.deleteAccounts(id), userContext.accessToken!);
   };
 
   return (
     <>
-      <PageWrapperStyles>
-        {!loading && !error && accounts.data && accounts.data.length ? <PageHeaderRow onCreateAccount={onCreateAccount} /> : null}
-        {!loading && !error && accounts.data && (
-          <ContentWrapper>
-            {accounts.data.length ? <AccountsListItems onEditAccount={onEditAccount} onDeleteAccount={onDeleteAccount} /> : null}
-            {!accounts.data.length ? <AccountsEmptyPage onConnect={onCreateAccount} /> : null}
-          </ContentWrapper>
-        )}
-        {!loading && error && error.message && (
-          <ErrorMessage fontSize={40} margin="auto">
-            {error.message}
-          </ErrorMessage>
-        )}
-        {(loading || deleteLoading) && (
-          <AbsLoaderWrapper width="100%" height="100%" pointerEvents="all">
-            <LoadingIndicator margin="auto" />
-          </AbsLoaderWrapper>
-        )}
-      </PageWrapperStyles>
-      <ModalComponent id="accountEditor" open={showModal && showModal.show} onClose={handleClose}>
-        {showModal.show && <AccountForm regions={accounts.regions} isEditMode={showModal.isEditMode} dataItem={showModal.dataItem} onClose={handleClose} />}
-      </ModalComponent>
+      {accounts.dataReadyToShow && accounts.data && accounts.data.length ? <PageHeaderRow onCreateAccount={onCreateAccount} /> : null}
+      {!loading && !error && accounts.dataReadyToShow && (
+        <ContentWrapper>
+          {accounts.data.length ? <AccountsListItems onEditAccount={onEditAccount} onDeleteAccount={onDeleteAccount} /> : null}
+          {!accounts.data.length ? <AccountsEmptyPage onConnect={onCreateAccount} /> : null}
+        </ContentWrapper>
+      )}
+      {!loading && error && error.message && (
+        <ErrorMessage fontSize={40} margin="auto">
+          {error.message}
+        </ErrorMessage>
+      )}
+      {(loading || deleteLoading) && (
+        <AbsLoaderWrapper width="100%" height="100%" pointerEvents="all">
+          <LoadingIndicator margin="auto" />
+        </AbsLoaderWrapper>
+      )}
+      {showModal && showModal.show && (
+        <ModalComponent id="accountEditor" open={showModal && showModal.show} onClose={handleClose}>
+          {showModal.show && <AccountForm regions={accounts.regions} isEditMode={showModal.isEditMode} dataItem={showModal.dataItem} onClose={handleClose} />}
+        </ModalComponent>
+      )}
     </>
   );
 };
 
-export default React.memo(MainPage);
+export default React.memo(Accounts);

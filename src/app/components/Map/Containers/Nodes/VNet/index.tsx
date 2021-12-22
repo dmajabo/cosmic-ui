@@ -11,7 +11,7 @@ import VNetHeder from './VNetHeder';
 import { ContainerWrapper, MoreButton } from './styles';
 import ApplicationGroupContainer from './ApplicationGroupContainer';
 import TransitionContainer from '../../TransitionContainer';
-import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
+import { ITopologyGroup } from 'lib/api/ApiModels/Topology/apiModels';
 interface IProps {
   dataItem: IVnetNode;
   onClickVpc: (_data: IVPC_PanelDataNode) => void;

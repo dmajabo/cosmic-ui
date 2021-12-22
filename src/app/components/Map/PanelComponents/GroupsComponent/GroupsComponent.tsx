@@ -7,7 +7,7 @@ import EmptyGroupView from './EmptyGroupView';
 import AllGroupView from './AllGroupView';
 import EditGroupView from './EditGroupView';
 import { addIcon } from 'app/components/SVGIcons/addIcon';
-import { ITopologyGroup, TopologyGroupApi } from 'lib/api/ApiModels/Topology/endpoints';
+import { ITopologyGroup } from 'lib/api/ApiModels/Topology/apiModels';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
 import { useGet, usePost, useDelete, usePut } from 'lib/api/http/useAxiosHook';
@@ -15,6 +15,7 @@ import { jsonClone } from 'lib/helpers/cloneHelper';
 import { getMaxCopyValue } from './helpers';
 import SecondaryButton from 'app/components/Buttons/SecondaryButton';
 import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
+import { PolicyApi } from 'lib/api/ApiModels/Services/policy';
 
 interface IProps {}
 
@@ -93,12 +94,11 @@ const GroupsComponent: React.FC<IProps> = (props: IProps) => {
   };
 
   const onUpdateGroup = async (_data: ITopologyGroup) => {
-    await onUpdate(TopologyGroupApi.postUpdateGroup(_data.id), { group: _data }, userContext.accessToken!);
-    // await postUpdateGroupAsync(TopologyGroupApi.postUpdateGroup(_data.id), { groupPol: _data });
+    await onUpdate(PolicyApi.postUpdateGroup(_data.id), { group: _data }, userContext.accessToken!);
   };
 
   const onCreateGroup = async (_data: ITopologyGroup) => {
-    await onPost(TopologyGroupApi.postCreateGroup(), { group: _data }, userContext.accessToken!);
+    await onPost(PolicyApi.postCreateGroup(), { group: _data }, userContext.accessToken!);
   };
 
   const getPanelBarTitle = (_view: TopologyGroupsView, _group: ITopologyGroup | null) => {
@@ -128,11 +128,11 @@ const GroupsComponent: React.FC<IProps> = (props: IProps) => {
   };
 
   const onTryDeleteGroup = async (_group: ITopologyGroup) => {
-    await onDelete(TopologyGroupApi.deleteGroup(_group.id), userContext.accessToken!);
+    await onDelete(PolicyApi.deleteGroup(_group.id), userContext.accessToken!);
   };
 
   const onGetGroup = async (id: string) => {
-    await onGet(TopologyGroupApi.getGroupById(id), userContext.accessToken!);
+    await onGet(PolicyApi.getGroupById(id), userContext.accessToken!);
   };
 
   if (!view) {

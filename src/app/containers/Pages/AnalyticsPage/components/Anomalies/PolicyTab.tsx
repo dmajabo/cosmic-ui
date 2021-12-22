@@ -5,7 +5,9 @@ import { AnomalyExperienceTableData, Column, ColumnAccessor, AnomalyPolicyLogsTa
 import { AnomalyTable } from './AnomalyTable';
 import { SeverityIcon } from './SeverityIcon';
 import { AnomalySLATestTable } from './AnomalySLATestTable';
-import { BarChartData } from './ExperienceTab';
+import { DUMMY_ANOMALY_TABLE_DATA, DUMMY_BAR_CHART_DATA, DUMMY_LOGS_TABLE_DATA } from './DummyData';
+import { getSeverityColour } from './ExperienceTab';
+import { Row } from 'react-table';
 
 interface PolicyTabProps {}
 
@@ -24,62 +26,7 @@ const anomalyTableColumns: Column[] = [
   },
 ];
 
-const DUMMY_BAR_CHART_DATA: BarChartData[] = [
-  {
-    date: 'Nov 10',
-    value: 40,
-  },
-  {
-    date: 'Nov 11',
-    value: 5,
-  },
-  {
-    date: 'Nov 12',
-    value: 38,
-  },
-  {
-    date: 'Nov 13',
-    value: 30,
-  },
-  {
-    date: 'Nov 14',
-    value: 21,
-  },
-  {
-    date: 'Nov 15',
-    value: 7,
-  },
-  {
-    date: 'Nov 16',
-    value: 15,
-  },
-];
-
-const DUMMY_ANOMALY_TABLE_DATA: AnomalyExperienceTableData[] = [
-  {
-    name: 'WAN Link Status Change',
-    severity: 'Low',
-    hits: 10,
-  },
-  {
-    name: 'WAN Link UL Traffic Anomaly',
-    severity: 'Medium',
-    hits: 49,
-  },
-];
-
-const DUMMY_LOGS_TABLE_DATA: AnomalyPolicyLogsTableData[] = [
-  {
-    hits: 17,
-    time: 'Tue,Nov 14 2021,10:25pm',
-    edge: 'Office 4',
-    user: 'Jesse Roy',
-    operation: 'Policy Change',
-    changes: 'Uplink Configuration (WAN1, WAN2), List Configuration (WAN1, WAN2), List Configuration (WAN1, WAN2), List Configuration (WAN1, WAN2)',
-  },
-];
-
-const logsTableColumns: Column[] = [
+const LOGS_TABLE_COLUMNS: Column[] = [
   {
     Header: 'HITS',
     accessor: ColumnAccessor.hits,
@@ -106,18 +53,7 @@ const logsTableColumns: Column[] = [
   },
 ];
 
-const getSeverityColour = (severity: string | JSX.Element) => {
-  if (severity === 'Normal') {
-    return '#52984E';
-  }
-  if (severity === 'Low') {
-    return '#F9BA55';
-  }
-  if (severity === 'Medium') {
-    return '#F69442';
-  }
-  return '#DC4545';
-};
+const LOGS_TABLE_SORTABLE_HEADERS = ['EDGE', 'USER'];
 
 export const PolicyTab: React.FC<PolicyTabProps> = () => {
   const classes = AnalyticsStyles();
@@ -133,7 +69,7 @@ export const PolicyTab: React.FC<PolicyTabProps> = () => {
     hits: <div className={classes.hitsCount}>{item.hits}</div>,
   }));
 
-  const policySubComponent = React.useCallback(({ row }) => {
+  const policySubComponent = React.useCallback((row: Row<object>) => {
     const logsTableData: AnomalyPolicyLogsTableData[] = DUMMY_LOGS_TABLE_DATA.map(item => ({
       hits: <div className={classes.hitsCount}>{item.hits}</div>,
       time: item.time,
@@ -158,13 +94,13 @@ export const PolicyTab: React.FC<PolicyTabProps> = () => {
         </div>
       ),
       operation: item.operation,
-      changes: item.changes,
+      changes: <div className={classes.ellipsisText}>{item.changes}</div>,
     }));
 
     return (
       <div>
         <div className={classes.anomalySubcomponentTitle}>Logs</div>
-        <AnomalySLATestTable columns={logsTableColumns} data={logsTableData} sortableHeaders={['EDGE', 'USER']} />
+        <AnomalySLATestTable columns={LOGS_TABLE_COLUMNS} data={logsTableData} sortableHeaders={LOGS_TABLE_SORTABLE_HEADERS} />
       </div>
     );
   }, []);

@@ -2,7 +2,7 @@ import React from 'react';
 import { AccountVendorTypes, IAwsRegion, IAWS_Account, IAZURE_Account, IMeraki_Account } from 'lib/api/ApiModels/Accounts/apiModel';
 import { jsonClone } from 'lib/helpers/cloneHelper';
 import { IDeploymentP, IEdgeP, ISegmentP } from 'lib/api/ApiModels/Edges/apiModel';
-import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
+import { ITopologyGroup } from 'lib/api/ApiModels/Topology/apiModels';
 import { INetworkwEdge, TopologyGroupTypesAsString } from 'lib/models/topology';
 import { createNewEdge, EdgesStepperItems, EdgesStepperTypes, IEdgeModelValidation, IEdgeStepValidation } from 'app/containers/Pages/Edges/Editor/model';
 import { IStepperItem } from 'app/components/Stepper/model';
@@ -16,6 +16,8 @@ import {
   ValidateTransits,
   ValidatePolicies,
   checkIsSaveEdgePossible,
+  addUiFields,
+  onUpdateCollapseExpandePolicyState,
 } from 'app/containers/Pages/Edges/Editor/helper';
 import { getCartesianValues, getPossibleValues } from 'app/containers/Pages/Edges/Editor/PolicyStep/helper';
 import { IPolicyCombination } from 'app/containers/Pages/Edges/model';
@@ -47,6 +49,9 @@ export interface EdgesContextType {
   onAddPolicy: (policy: ISegmentP) => void;
   onUpdatePolicy: (policy: ISegmentP, policyIndex: number) => void;
   onDeletePolicy: (policyIndex: number) => void;
+
+  onExpandCollapsePolicy: (id: string) => void;
+  onExpandCollapseRule: (polId: string, ruleId: string) => void;
 
   onSetData: (res: IEdgeP[]) => void;
   onSearchChange: (v: string | null) => void;
@@ -97,6 +102,9 @@ export function useEdgesContext(): EdgesContextType {
       setCombinations(_arr);
     } else {
       setCombinations([]);
+    }
+    if (_dataItem) {
+      addUiFields(_item);
     }
     const _steps: IStepperItem<EdgesStepperTypes>[] = jsonClone(EdgesStepperItems);
     const _items: IStepperItem<EdgesStepperTypes>[] = updateSteps(_steps, _vO);
@@ -284,6 +292,7 @@ export function useEdgesContext(): EdgesContextType {
     const _isSaveImPosition: boolean = checkIsSaveEdgePossible(_vO);
 
     const _combinations: IPolicyCombination[] = onBuildPossiblePolicyCombinations(groups, _dataItem);
+    onUpdateCollapseExpandePolicyState(_dataItem, policy.uiId);
     setCombinations(_combinations);
     setSavedisabled(!_isSaveImPosition);
     setEditEdgeValidationResult(_vO);
@@ -301,6 +310,7 @@ export function useEdgesContext(): EdgesContextType {
     const _isSaveImPosition: boolean = checkIsSaveEdgePossible(_vO);
 
     const _combinations: IPolicyCombination[] = onBuildPossiblePolicyCombinations(groups, _dataItem);
+    onUpdateCollapseExpandePolicyState(_dataItem, null);
     setCombinations(_combinations);
     setSavedisabled(!_isSaveImPosition);
     setEditEdgeValidationResult(_vO);
@@ -323,6 +333,32 @@ export function useEdgesContext(): EdgesContextType {
     setEditEdgeValidationResult(_vO);
     setHasChanges(true);
     setSteps(_items);
+    setEditEdge(_dataItem);
+  };
+
+  const onExpandCollapsePolicy = (policyId: string) => {
+    const _dataItem: IEdgeP = { ...editEdge };
+    onUpdateCollapseExpandePolicyState(_dataItem, policyId);
+    setEditEdge(_dataItem);
+  };
+
+  const onExpandCollapseRule = (policyId: string, ruleId: string) => {
+    const _dataItem: IEdgeP = { ...editEdge };
+    _dataItem.segmentPolicy.forEach(policy => {
+      if (policy.uiId === policyId) {
+        policy.collapsed = false;
+        policy.rules.forEach(rule => {
+          if (rule.uiId === ruleId) {
+            const _collapse = rule.collapsed ? false : true;
+            rule.collapsed = _collapse;
+            return;
+          }
+          rule.collapsed = true;
+        });
+        return;
+      }
+      policy.collapsed = true;
+    });
     setEditEdge(_dataItem);
   };
 
@@ -447,6 +483,9 @@ export function useEdgesContext(): EdgesContextType {
     onAddPolicy,
     onUpdatePolicy,
     onDeletePolicy,
+
+    onExpandCollapsePolicy,
+    onExpandCollapseRule,
 
     onSetData,
     onSetGroups,

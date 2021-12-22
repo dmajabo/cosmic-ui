@@ -8,13 +8,14 @@ import { useGet } from 'lib/api/http/useAxiosHook';
 import { ISitesRes } from 'lib/api/ApiModels/Edges/apiModel';
 import { IDevice } from 'lib/models/topology';
 import { PAGING_DEFAULT_PAGE_SIZE } from 'lib/hooks/Sessions/model';
-import { buildPagingParam, EdgesApi } from 'lib/api/ApiModels/Edges/edpoints';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import LoadingIndicator from 'app/components/Loading';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import { InventoryDeviceGridColumns } from './model';
 import { getSearchedList } from 'lib/helpers/listHelper';
 import { IColumn } from 'lib/models/grid';
+import { paramBuilder } from 'lib/api/ApiModels/paramBuilders';
+import { TopoApi } from 'lib/api/ApiModels/Services/topo';
 
 interface Props {
   searchValue: string;
@@ -94,8 +95,8 @@ const InventoryDevices: React.FC<Props> = (props: Props) => {
   };
 
   const onTryLoadDevices = async (pageSize: number, currentPage: number) => {
-    const _param = buildPagingParam(pageSize, currentPage);
-    await onGet(EdgesApi.getSites(), userContext.accessToken!, _param);
+    const _param = paramBuilder(pageSize, currentPage);
+    await onGet(TopoApi.getSites(), userContext.accessToken!, _param);
   };
 
   return (

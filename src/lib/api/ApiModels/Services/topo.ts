@@ -1,4 +1,10 @@
-export const EdgesApi = {
+import { ControllerKeyTypes } from 'lib/api/ApiModels/Metrics/apiModel';
+
+export const TopoApi = {
+  getAllOrganizations: () => 'topo/api/v1/topology/organizations',
+  getRoutesByKey: (key: ControllerKeyTypes) => 'topo/api/v1/topology/' + key,
+  getPolicyByKey: (key: ControllerKeyTypes) => 'topo/api/v1/topology/' + key,
+
   getEdges: () => 'topo/api/v1/topology/cloud/edges', // IEdgesRes
   getEdgeById: (id: string) => 'topo/api/v1/topology/cloud/edges/' + id, // IEdgesP
   deleteEdge: (id: string) => 'topo/api/v1/topology/cloud/edges/' + id,
@@ -7,20 +13,4 @@ export const EdgesApi = {
   getSites: () => 'topo/api/v1/topology/onprem/devices',
   getApps: () => 'topo/api/v1/topology/cloud/apps',
   getWedges: () => 'topo/api/v1/topology/wedges', // => IWEdgesRes
-};
-
-interface IPagingParam {
-  pageSize?: number;
-  pageOffset?: number;
-}
-export const buildPagingParam = (pageSize: number, currentPage: number) => {
-  const _obj: IPagingParam = {};
-  if (pageSize) {
-    _obj.pageSize = pageSize;
-  }
-  if (currentPage > 1) {
-    _obj.pageOffset = currentPage;
-  }
-  if (!Object.keys(_obj).length) return null;
-  return _obj;
 };

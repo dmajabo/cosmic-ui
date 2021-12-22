@@ -1,6 +1,6 @@
 import React from 'react';
 import { PreviewRow, PreviewTag, PreviewTagCount, PreviewText, PreviewWrapper } from './styles';
-import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
+import { ITopologyGroup } from 'lib/api/ApiModels/Topology/apiModels';
 import { useEdgesDataContext } from 'lib/hooks/Edges/useEdgesDataContext';
 interface Props {
   field: string;

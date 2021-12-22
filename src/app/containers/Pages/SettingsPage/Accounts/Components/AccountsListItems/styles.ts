@@ -1,12 +1,14 @@
-import { AccountStatus } from 'lib/api/ApiModels/Accounts/apiModel';
 import styled from 'styled-components';
+import { AccountStatus } from 'lib/api/ApiModels/Accounts/apiModel';
+import { device_L } from 'styles/global-styles';
 
 export const AccountItemWrapper = styled.div`
   font-family: 'DMSans';
   font-style: normal;
-  flex-shrink: 0;
-  width: calc(100% / 4 - 60px / 4);
-  /* max-width: 420px; */
+  width: auto;
+  flex: 1 1 auto;
+  max-width: 500px;
+  min-width: 360px;
   height: 240px;
   margin: 0 20px 20px 0;
   background: var(--_primaryBg);
@@ -18,8 +20,8 @@ export const AccountItemWrapper = styled.div`
   &:hover .visibleOnHover {
     display: inline-block;
   }
-  &:nth-child(4n) {
-    margin-right: 0;
+  @media (max-width: ${device_L - 1 + 'px'}) {
+    max-width: 100%;
   }
 `;
 

@@ -6,7 +6,7 @@ import LoadingIndicator from 'app/components/Loading';
 import FormPanel from './FormPanel';
 import EdgesMap from './EdgesMap';
 import { DeploymentTypes, IEdgeP } from 'lib/api/ApiModels/Edges/apiModel';
-import { ITopologyGroup, TopologyGroupApi } from 'lib/api/ApiModels/Topology/endpoints';
+import { ITopologyGroup } from 'lib/api/ApiModels/Topology/apiModels';
 import { useEdgesDataContext } from 'lib/hooks/Edges/useEdgesDataContext';
 import { IBaseEntity, IModal } from 'lib/models/general';
 import ModalComponent from 'app/components/Modal';
@@ -16,7 +16,10 @@ import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import DeleteGroupComponent from './Components/DeleteGroupComponent';
-import { EdgesApi } from 'lib/api/ApiModels/Edges/edpoints';
+import { removeUiFields } from './helper';
+import { jsonClone } from 'lib/helpers/cloneHelper';
+import { PolicyApi } from 'lib/api/ApiModels/Services/policy';
+import { TopoApi } from 'lib/api/ApiModels/Services/topo';
 
 interface Props {
   onClose: () => void;
@@ -131,21 +134,23 @@ const Editor: React.FC<Props> = (props: Props) => {
   };
 
   const onTryDeleteGroup = async (id: string) => {
-    await onDeleteGroup(TopologyGroupApi.deleteGroup(id), userContext.accessToken!);
+    await onDeleteGroup(PolicyApi.deleteGroup(id), userContext.accessToken!);
   };
 
   const onSave = async () => {
-    if (!edges.editEdge.id) {
-      const _obj: IEdgeP = { ...edges.editEdge };
+    const _obj: IEdgeP = jsonClone(edges.editEdge);
+    if (!_obj.id) {
       delete _obj.id;
-      await onPost(EdgesApi.postCreateEdge(), { edge_p: _obj }, userContext.accessToken!);
+      removeUiFields(_obj);
+      await onPost(TopoApi.postCreateEdge(), { edge_p: _obj }, userContext.accessToken!);
       return;
     }
-    await onPut(EdgesApi.putUpdateEdge(edges.editEdge.id), { edge_p: edges.editEdge }, userContext.accessToken!);
+    removeUiFields(_obj);
+    await onPut(TopoApi.putUpdateEdge(edges.editEdge.id), { edge_p: _obj }, userContext.accessToken!);
   };
 
   const onTryLoadEdge = async (id: string) => {
-    await onGet(EdgesApi.getEdgeById(id), userContext.accessToken!);
+    await onGet(TopoApi.getEdgeById(id), userContext.accessToken!);
   };
 
   if (!edges.editEdge) return null;
@@ -174,13 +179,7 @@ const Editor: React.FC<Props> = (props: Props) => {
         )}
       </Wrapper>
       {deleteModalData && deleteModalData.show && (
-        <ModalComponent
-          modalStyles={{ maxWidth: '450px', maxHeight: '520px', padding: '40px' }}
-          useFadeAnimation
-          id="deleteModalWindow"
-          open={deleteModalData && deleteModalData.show}
-          onClose={onCloseDeleteModal}
-        >
+        <ModalComponent modalStyles={{ maxWidth: '450px', maxHeight: '520px' }} useFadeAnimation id="deleteModalWindow" open={deleteModalData && deleteModalData.show} onClose={onCloseDeleteModal}>
           <DeleteGroupComponent data={deleteModalData.dataItem} loading={deleteLoading} onDelete={onDeleteAccept} onClose={onCloseDeleteModal} />
         </ModalComponent>
       )}

@@ -11,7 +11,7 @@ import { DATA_READY_STATE, IPanelBarLayoutTypes } from 'lib/models/general';
 import PanelBar from 'app/components/Basic/PanelBar';
 import Entities from './PanelComponents/EntitiesComponent/Entities';
 import GroupsComponent from './PanelComponents/GroupsComponent/GroupsComponent';
-import { createTopologyQueryParam, ITopologyDataRes, TopologyGroupApi, TopologyOrganizationApi } from 'lib/api/ApiModels/Topology/endpoints';
+import { ITopologyDataRes } from 'lib/api/ApiModels/Topology/apiModels';
 import VpcPanel from './PanelComponents/NodePanels/VpcPanel';
 import FooterAction from './FooterAction';
 import Graph from './Graph';
@@ -20,6 +20,9 @@ import { useGetChainData } from 'lib/api/http/useAxiosHook';
 import { ErrorMessage } from '../Basic/ErrorMessage/ErrorMessage';
 import DevicePanel from './PanelComponents/NodePanels/DevicePanel';
 import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
+import { PolicyApi } from 'lib/api/ApiModels/Services/policy';
+import { createTopologyQueryParam, ITopologyQueryParam } from 'lib/api/ApiModels/paramBuilders';
+import { TopoApi } from 'lib/api/ApiModels/Services/topo';
 
 interface IProps {}
 
@@ -85,14 +88,14 @@ const Map: React.FC<IProps> = (props: IProps) => {
   const onTryLoadData = async () => {
     topology.onSetIsDataReadyToShow(DATA_READY_STATE.LOADING);
     const _st = topology.selectedTime || null;
-    const param = createTopologyQueryParam(_st);
-    await onGetChainData([TopologyGroupApi.getAllGroups(), TopologyOrganizationApi.getAllOrganizations()], ['groups', 'organizations'], userContext.accessToken!, param);
+    const param: ITopologyQueryParam = createTopologyQueryParam(_st);
+    await onGetChainData([PolicyApi.getAllGroups(), TopoApi.getAllOrganizations()], ['groups', 'organizations'], userContext.accessToken!, param);
   };
 
   const onReloadData = async (startTime: Date | null) => {
     topology.onSetIsDataReadyToShow(DATA_READY_STATE.LOADING);
-    const param = createTopologyQueryParam(startTime);
-    await onGetChainData([TopologyGroupApi.getAllGroups(), TopologyOrganizationApi.getAllOrganizations()], ['groups', 'organizations'], userContext.accessToken!, param);
+    const param: ITopologyQueryParam = createTopologyQueryParam(startTime);
+    await onGetChainData([PolicyApi.getAllGroups(), TopoApi.getAllOrganizations()], ['groups', 'organizations'], userContext.accessToken!, param);
   };
 
   const onOpenNodePanel = (node: IDeviceNode | IWedgeNode, _type: TopologyMetricsPanelTypes) => {

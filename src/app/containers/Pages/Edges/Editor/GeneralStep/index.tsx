@@ -58,7 +58,7 @@ const GeneralStep: React.FC<Props> = (props: Props) => {
   return (
     <>
       <TextInput inputStyles={{ height: '50px' }} styles={{ margin: '0 0 20px 0' }} id="networkName" name="name" value={props.name} label="Name" onChange={onInputChange} required />
-      <TextInput area styles={{ margin: '0 0 20px 0' }} id="description" name="description" value={props.description} label="Description" onChange={onDescriptionChange} />
+      <TextInput type="textarea" styles={{ margin: '0 0 20px 0' }} id="description" name="description" value={props.description} label="Description" onChange={onDescriptionChange} />
       {/* <CustomSlider wrapStyles={{ margin: '0 0 20px 0' }} label="Cost" min={100} max={500} step={50} value={price} values={EdgePriceValues} defaultValue={100} onChange={onSliderChange} /> */}
       <PanelContentLabel>Criteria</PanelContentLabel>
       <CustomAutocomplete
