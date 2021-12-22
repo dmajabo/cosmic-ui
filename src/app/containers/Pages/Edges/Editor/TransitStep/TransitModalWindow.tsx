@@ -8,7 +8,7 @@ import { DeploymentTypes, IWEdgesRes } from 'lib/api/ApiModels/Edges/apiModel';
 import Map from './Map';
 import { useEdgesDataContext } from 'lib/hooks/Edges/useEdgesDataContext';
 import WedgesGridWrapper from '../Components/WedgesGridWrapper';
-import { INetworkwEdge } from 'lib/models/topology';
+import { INetworkwEdge } from 'lib/api/ApiModels/Topology/apiModels';
 import { paramBuilder } from 'lib/api/ApiModels/paramBuilders';
 import { TopoApi } from 'lib/api/ApiModels/Services/topo';
 interface Props {

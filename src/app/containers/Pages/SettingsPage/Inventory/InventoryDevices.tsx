@@ -6,7 +6,6 @@ import { gridAscArrow, gridDescArrow } from 'app/components/SVGIcons/arrows';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { useGet } from 'lib/api/http/useAxiosHook';
 import { ISitesRes } from 'lib/api/ApiModels/Edges/apiModel';
-import { IDevice } from 'lib/models/topology';
 import { PAGING_DEFAULT_PAGE_SIZE } from 'lib/hooks/Sessions/model';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import LoadingIndicator from 'app/components/Loading';
@@ -16,6 +15,7 @@ import { getSearchedList } from 'lib/helpers/listHelper';
 import { IColumn } from 'lib/models/grid';
 import { paramBuilder } from 'lib/api/ApiModels/paramBuilders';
 import { TopoApi } from 'lib/api/ApiModels/Services/topo';
+import { INetworkDevice } from 'lib/api/ApiModels/Topology/apiModels';
 
 interface Props {
   searchValue: string;
@@ -25,8 +25,8 @@ interface Props {
 const InventoryDevices: React.FC<Props> = (props: Props) => {
   const userContext = React.useContext<UserContextState>(UserContext);
   const { loading, error, response, onGet } = useGet<ISitesRes>();
-  const [dataRows, setDataRows] = React.useState<IDevice[]>([]);
-  const [filteredData, setFilteredData] = React.useState<IDevice[]>([]);
+  const [dataRows, setDataRows] = React.useState<INetworkDevice[]>([]);
+  const [filteredData, setFilteredData] = React.useState<INetworkDevice[]>([]);
   const [totalCount, setTotalCount] = React.useState<number>(0);
   const [currentPage, setCurrentPage] = React.useState<number>(1);
   const [pageSize, setPageSize] = React.useState<number>(PAGING_DEFAULT_PAGE_SIZE);
@@ -39,7 +39,7 @@ const InventoryDevices: React.FC<Props> = (props: Props) => {
 
   React.useEffect(() => {
     if (response && response.devices && response.devices.length) {
-      const _arr: IDevice[] = getSearchedList(response.devices, props.searchValue, [
+      const _arr: INetworkDevice[] = getSearchedList(response.devices, props.searchValue, [
         InventoryDeviceGridColumns.name.resField,
         InventoryDeviceGridColumns.extId.resField,
         InventoryDeviceGridColumns.serial.resField,
@@ -62,7 +62,7 @@ const InventoryDevices: React.FC<Props> = (props: Props) => {
 
   React.useEffect(() => {
     if (props.searchValue !== searchValue) {
-      const _items: IDevice[] = getSearchedList(dataRows, props.searchValue, [
+      const _items: INetworkDevice[] = getSearchedList(dataRows, props.searchValue, [
         InventoryDeviceGridColumns.name.resField,
         InventoryDeviceGridColumns.extId.resField,
         InventoryDeviceGridColumns.serial.resField,

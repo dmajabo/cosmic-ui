@@ -6,9 +6,9 @@ import { IAwsRegion } from 'lib/api/ApiModels/Accounts/apiModel';
 import { awsIcon } from 'app/components/SVGIcons/topologyIcons/aws';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { CellContent } from './styles';
-import { INetworkwEdge } from 'lib/models/topology';
 import { DeploymentTypes } from 'lib/api/ApiModels/Edges/apiModel';
 import { wedgeIcon } from 'app/components/SVGIcons/topologyIcons/wedge';
+import { INetworkwEdge } from 'lib/api/ApiModels/Topology/apiModels';
 
 interface Props {
   type: DeploymentTypes;

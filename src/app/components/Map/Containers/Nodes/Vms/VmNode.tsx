@@ -1,13 +1,13 @@
 import React from 'react';
-import { IVm } from 'lib/models/topology';
 import { Label, VmNodeStyles } from './styles';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { vmIcon } from 'app/components/SVGIcons/topologyIcons/vm';
 import { NODES_CONSTANTS } from 'app/components/Map/model';
+import { INetworkVM } from 'lib/api/ApiModels/Topology/apiModels';
 
 interface IProps {
-  dataItem: IVm;
-  onClick: (vm: IVm) => void;
+  dataItem: INetworkVM;
+  onClick: (vm: INetworkVM) => void;
 }
 const VmNode: React.FC<IProps> = (props: IProps) => {
   const onClick = () => {

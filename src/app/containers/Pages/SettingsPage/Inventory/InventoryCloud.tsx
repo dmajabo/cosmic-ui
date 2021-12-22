@@ -12,7 +12,7 @@ import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import LoadingIndicator from 'app/components/Loading';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import { getSearchedList } from 'lib/helpers/listHelper';
-import { INetworkwEdge } from 'lib/models/topology';
+import { INetworkwEdge } from 'lib/api/ApiModels/Topology/apiModels';
 import { IColumn } from 'lib/models/grid';
 import { paramBuilder } from 'lib/api/ApiModels/paramBuilders';
 import { TopoApi } from 'lib/api/ApiModels/Services/topo';

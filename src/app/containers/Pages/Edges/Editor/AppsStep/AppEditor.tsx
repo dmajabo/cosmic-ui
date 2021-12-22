@@ -6,7 +6,7 @@ import { InputLabel } from 'app/components/Inputs/styles/Label';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import PrimaryButton from 'app/components/Buttons/PrimaryButton';
 import { awsIcon } from 'app/components/SVGIcons/topologyIcons/aws';
-import { ITopologyGroup, SelectorEvalType } from 'lib/api/ApiModels/Topology/apiModels';
+import { INetworkVM, ITopologyGroup, SelectorEvalType } from 'lib/api/ApiModels/Topology/apiModels';
 import RadioButton from 'app/components/Inputs/RadioButton';
 import ExpresionWrapper from '../Components/ExpresionWrapper';
 import { ModalContent, ModalFooter, ModalRow } from '../Components/styles';
@@ -14,7 +14,6 @@ import { useGet, usePost, usePut } from 'lib/api/http/useAxiosHook';
 import { IBaseEntity, IObject } from 'lib/models/general';
 import AppsGridWrapper from '../Components/AppsGridWrapper';
 import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
-import { IVm } from 'lib/models/topology';
 import { IAppsRes } from 'lib/api/ApiModels/Edges/apiModel';
 import LoadingIndicator from 'app/components/Loading';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
@@ -36,7 +35,7 @@ const AppEditor: React.FC<Props> = (props: Props) => {
   const { response: postUpdateRes, error: putError, loading: postUpdateLoading, onPut: onUpdate } = usePut<ITopologyGroup, ITopologyGroup>();
   const { loading: loadingDev, error: errorDev, response: responseApps, onGet: onLoadApps } = useGet<IAppsRes>();
   const [exprError, setExprError] = React.useState<string | null>(null);
-  const [devices, setDevices] = React.useState<IVm[]>([]);
+  const [devices, setDevices] = React.useState<INetworkVM[]>([]);
   const [totalCount, setTotalCount] = React.useState<number>(0);
   const [currentPage, setCurrentPage] = React.useState<number>(1);
   const [pageSize, setPageSize] = React.useState<number>(10);
@@ -100,7 +99,7 @@ const AppEditor: React.FC<Props> = (props: Props) => {
     }
   };
 
-  const onSelectRowChange = (item: IVm) => {
+  const onSelectRowChange = (item: INetworkVM) => {
     const _item: ITopologyGroup = { ...dataItem };
     if (_item.evalType !== SelectorEvalType.SPECIFIC) {
       _item.evalType = SelectorEvalType.SPECIFIC;
@@ -130,7 +129,7 @@ const AppEditor: React.FC<Props> = (props: Props) => {
     setDataItem(_item);
   };
 
-  const onSelectAll = (items: IVm[]) => {
+  const onSelectAll = (items: INetworkVM[]) => {
     const _item: ITopologyGroup = { ...dataItem };
     if (_item.evalType !== SelectorEvalType.SPECIFIC) {
       _item.evalType = SelectorEvalType.SPECIFIC;

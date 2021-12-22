@@ -1,6 +1,6 @@
 import React from 'react';
 import * as d3 from 'd3';
-import { ITransform } from 'app/components/Map/model';
+import { ITransform } from 'lib/models/general';
 
 const EdgeZoomRange = { min: 0.1, max: 50 };
 interface IProps {

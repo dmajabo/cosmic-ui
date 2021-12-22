@@ -1,7 +1,7 @@
 import { DeploymentTypes, ISegmentP, SegmentTargetT } from 'lib/api/ApiModels/Edges/apiModel';
-import { ITopologyGroup } from 'lib/api/ApiModels/Topology/apiModels';
+import { INetworkwEdge, ITopologyGroup } from 'lib/api/ApiModels/Topology/apiModels';
 import { jsonClone } from 'lib/helpers/cloneHelper';
-import { INetworkwEdge, TopologyGroupTypesAsString } from 'lib/models/topology';
+import { TopologyGroupTypesAsString } from 'lib/models/topology';
 
 export const EDGE_MAP_CONSTANTS = {
   svg: 'edgeMap',

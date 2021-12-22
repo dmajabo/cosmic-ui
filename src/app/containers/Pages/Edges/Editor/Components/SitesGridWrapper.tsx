@@ -1,5 +1,4 @@
 import React from 'react';
-import { IDevice } from 'lib/models/topology';
 import { GridWrapper, ModalLabel, ModalRow } from './styles';
 import { DataGrid, GridColDef, GridColumnHeaderParams, GridRowParams, GridSelectionModel } from '@mui/x-data-grid';
 import SimpleCheckbox from 'app/components/Inputs/Checkbox/SimpleCheckbox';
@@ -12,15 +11,16 @@ import SecondaryButtonWithPopup from 'app/components/Buttons/SecondaryButton/Sec
 import PopupContainer from 'app/components/PopupContainer';
 import { PopupTitle, OverflowContainer, FilteredColumnItem, FilteredColumnLabel } from 'app/components/PopupContainer/styles';
 import { filterIcon } from 'app/components/SVGIcons/filter';
+import { INetworkDevice } from 'lib/api/ApiModels/Topology/apiModels';
 
 interface Props {
-  data: IDevice[];
+  data: INetworkDevice[];
   totalCount: number;
   selectedIds: string[];
   pageSize: number;
   currentPage: number;
-  onSelectChange: (item: IDevice) => void;
-  onSelectAll: (item: IDevice[]) => void;
+  onSelectChange: (item: INetworkDevice) => void;
+  onSelectAll: (item: INetworkDevice[]) => void;
   onChangeCurrentPage: (_page: number) => void;
   onChangePageSize: (size: number, page?: number) => void;
   loading: boolean;
@@ -162,7 +162,7 @@ const SitesGridWrapper: React.FC<Props> = (props: Props) => {
   };
 
   const onRowClick = (params: GridRowParams) => {
-    props.onSelectChange(params.row as IDevice);
+    props.onSelectChange(params.row as INetworkDevice);
   };
 
   const onColumnHeaderClick = (params: GridColumnHeaderParams) => {

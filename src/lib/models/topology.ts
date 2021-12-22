@@ -1,6 +1,6 @@
-import { INetworkOrg, INetworkVNetwork, ITopologyGroup, VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
+import { INetworkDevice, INetworkOrg, INetworkVM, INetworkVNetwork, INetworkwEdge, ITopologyGroup, VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
 import { IVpcSize } from 'lib/helpers/tree';
-import { IBaseEntity, ICollapsed, ICoord, ISelectedListItem, IVisible } from './general';
+import { ICollapsed, ICoord, ISelectedListItem, IVisible } from './general';
 export const DEFAULT_GROUP_ID = 'default_group_id';
 export const DEFAULT_RACK_RADIUS = 150;
 
@@ -56,97 +56,8 @@ export interface IMappedNode extends IVisible {
   uiId: string;
 }
 
-export interface IConnectedTo extends IBaseEntity<string> {
-  name: string;
-  sourceIp: string;
-  peerIp: string;
-  peerId: string;
-  status: ILinkStatus;
-  statusMessage: string;
-  connectedTo: IConnectedTo;
-}
-
-export interface ILinkState extends IBaseEntity<string> {
-  name: string;
-  sourceIp: string;
-  peerIp: string;
-  peerId: string;
-  status: ILinkStatus;
-  statusMessage: string;
-  connectedTo: IConnectedTo;
-}
-
-export interface IVpnLinks extends IBaseEntity<string> {
-  name: string;
-  description: string;
-  extId: string;
-  connectionId: string;
-  linkStates: ILinkState[];
-  privateSubnets: any[];
-}
-
-export interface IVnetwork extends IBaseEntity<string> {
-  name: string;
-  description: string;
-  extId: string;
-  endpoints: any[];
-  vms: IVm[];
-  cidrs: any[];
-  subnets: any[];
-  securityGroups: any[];
-  routeTables: any[];
-  loadBalancers: any[];
-}
-
-export interface IDevice extends IBaseEntity<string> {
-  name: string;
-  description: string;
-  extId: string;
-  type: string;
-  serial: string;
-  model: string;
-  networkId: string;
-  vnetworks: IVnetwork[];
-  publicIp: string;
-  privateIp: string;
-  vpnlinks: IVpnLinks[];
-  selectorGroup: string;
-}
-
-export interface IDeviceNode extends IDevice, IMappedNode, ICoord {
+export interface IDeviceNode extends INetworkDevice, IMappedNode, ICoord {
   scaleFactor: number;
-}
-
-export interface INic extends IBaseEntity<string> {
-  name: string;
-  description: string;
-  extId: string;
-  exttype: string;
-  virtual: boolean;
-  vmkey: string;
-  privateIp: string;
-  publicIp: string;
-  securityGroups: any[];
-}
-
-export interface ITag extends IBaseEntity<string> {
-  key: string;
-  value: string;
-}
-export interface IVm extends IBaseEntity<string> {
-  name: string;
-  description: string;
-  extId: string;
-  vmkey: string;
-  nic: INic[];
-  selectorGroup: string;
-  securityGroups: [];
-
-  subnet: any;
-  dimensions: any;
-  tags: ITag;
-
-  uiId?: string;
 }
 
 export interface IVnetNode extends INetworkVNetwork, IMappedNode, ICoord {
@@ -154,58 +65,18 @@ export interface IVnetNode extends INetworkVNetwork, IMappedNode, ICoord {
   applicationGroups: ITopologyGroup[];
 }
 
-export interface IVpn extends IBaseEntity<string> {
-  name: string;
-  description: string;
-  extId: string;
-  connectionId: string;
-  linkStates: ILinkState[];
-  privateSubnets: any[];
-}
-
-export interface INetworkLink extends IBaseEntity<string> {
-  name: string;
-  description: string;
-  extId: string;
-  peerType: string; // enum peerType
-  peerExtId: string;
-  vnet: INetworkVNetwork;
-}
-
-export interface IIp {}
-
-export interface INetworkTag extends IBaseEntity<string> {
-  key: string;
-  value: string;
-}
-
-export interface IWedge extends IBaseEntity<string> {
-  name: string;
-  description: string;
-  extId: string;
-  vnetkey: string;
-  phys: any[];
-  vpns: IVpn[];
-  networkLinks: INetworkLink[];
-  ips: IIp[];
-}
-
-export interface INetworkwEdge extends IWedge {
-  tags: INetworkTag[];
-}
-
-export interface IWedgeNode extends IWedge, IMappedNode, ICoord {}
+export interface IWedgeNode extends INetworkwEdge, IMappedNode, ICoord {}
 
 export interface IVPC_PanelDataNode {
   group?: ITopologyGroup;
-  vm?: IVm;
+  vm?: INetworkVM;
   vnet: IVnetNode;
 }
 
 export interface IApplication_Group extends ITopologyGroup {
   expanded: boolean;
   disabled: boolean;
-  items: IVm[];
+  items: INetworkVM[];
 }
 
 export interface INetworkGroupNode extends ITopologyGroup, IVisible, ICoord, ICollapsed {

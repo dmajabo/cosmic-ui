@@ -8,10 +8,7 @@ import {
   IWedgeNode,
   TopologyGroupTypesAsNumber,
   TopologyGroupTypesAsString,
-  IDevice,
-  IWedge,
   TOPOLOGY_NODE_TYPES,
-  IVm,
   DEFAULT_GROUP_ID,
   DEFAULT_RACK_RADIUS,
 } from 'lib/models/topology';
@@ -20,14 +17,14 @@ import * as d3 from 'd3';
 import { NODES_CONSTANTS } from 'app/components/Map/model';
 import { STANDART_DISPLAY_RESOLUTION } from 'lib/models/general';
 import uuid from 'react-uuid';
-import { INetworkOrg, ITopologyGroup, VendorTypes, ITopologyMapData, SelectorEvalType, INetworkVNetwork } from 'lib/api/ApiModels/Topology/apiModels';
+import { INetworkOrg, ITopologyGroup, VendorTypes, ITopologyMapData, SelectorEvalType, INetworkVNetwork, INetworkwEdge, INetworkVM, INetworkDevice } from 'lib/api/ApiModels/Topology/apiModels';
 // import { jsonClone } from './cloneHelper';
 
-const createDeviceNode = (org: INetworkOrg, orgIndex: number, node: IDevice, index: number): IDeviceNode => {
+const createDeviceNode = (org: INetworkOrg, orgIndex: number, node: INetworkDevice, index: number): IDeviceNode => {
   return { ...node, uiId: uuid(), vendorType: org.vendorType, visible: true, childIndex: index, orgIndex: orgIndex, orgId: org.id, x: 0, y: 0, scaleFactor: 1, nodeType: TOPOLOGY_NODE_TYPES.DEVICE };
 };
 
-const createWedgeNode = (org: INetworkOrg, orgIndex: number, node: IWedge, index: number): IWedgeNode => {
+const createWedgeNode = (org: INetworkOrg, orgIndex: number, node: INetworkwEdge, index: number): IWedgeNode => {
   return { ...node, uiId: uuid(), vendorType: org.vendorType, visible: true, childIndex: index, orgIndex: orgIndex, orgId: org.id, x: 0, y: 0, nodeType: TOPOLOGY_NODE_TYPES.WEDGE };
 };
 
@@ -69,7 +66,7 @@ export const createGroupNode = (_item: ITopologyGroup, vendorType: VendorTypes, 
   return { ..._item, uiId: uuid(), vendorType: vendorType, visible: true, collapsed: true, groupIndex: index, x: 0, y: 0, devices: [], links: [], r: 0, nodeType: TOPOLOGY_NODE_TYPES.NETWORK_GROUP };
 };
 
-// export const createTestVMs = (_item: IVm, id: string) => {
+// export const createTestVMs = (_item: INetworkVM, id: string) => {
 //   return { ..._item, id: id };
 // };
 export const prepareNodesData = (_data: ITopologyMapData, _groups: ITopologyGroup[]): ITopologyPreparedMapData => {
@@ -92,7 +89,7 @@ export const prepareNodesData = (_data: ITopologyMapData, _groups: ITopologyGrou
       org.vnets.forEach((v, index) => {
         // if (v.vms && v.vms.length) {
         //   for (let i = 0; i < 50; i++) {
-        //     const _vm: IVm = createTestVMs(v.vms[v.vms.length - 1], `vm${v.vms.length + i}`);
+        //     const _vm: INetworkVM = createTestVMs(v.vms[v.vms.length - 1], `vm${v.vms.length + i}`);
         //     v.vms.push(_vm);
         //   }
         // }
@@ -310,7 +307,7 @@ export const getVPCContainerSize = (node: INetworkVNetwork, _arr: ITopologyGroup
     const _r = Math.sqrt(Math.pow(NODES_CONSTANTS.VNet.width, 2) + Math.pow(NODES_CONSTANTS.VNet.height, 2));
     return { r: _r, width: NODES_CONSTANTS.VNet.width, height: NODES_CONSTANTS.VNet.height, cols: 3, rows: 2, showMore: false };
   }
-  const _vms: IVm[] = node.vms.filter(it => !it.selectorGroup);
+  const _vms: INetworkVM[] = node.vms.filter(it => !it.selectorGroup);
   const groupsHeight = _arr.length * (NODES_CONSTANTS.APP_GROUP.height + NODES_CONSTANTS.APP_GROUP.spaceY) + 4;
   const rows = Math.ceil(_vms.length / 3);
   const vmRowH = (NODES_CONSTANTS.VM.height + NODES_CONSTANTS.VM.spaceY * 2) * rows;

@@ -19,11 +19,11 @@ import {
   TOPOLOGY_LINKS_TYPES,
   // TOPOLOGY_NODE_TYPES,
 } from 'lib/models/topology';
-import { DATA_READY_STATE, ISelectedListItem, ITimeTypes, TIME_PERIOD } from 'lib/models/general';
+import { DATA_READY_STATE, IPosition, ISelectedListItem, ITimeTypes, TIME_PERIOD } from 'lib/models/general';
 import { jsonClone } from 'lib/helpers/cloneHelper';
 import { EntityTypes, IEntity } from 'lib/models/entites';
 import { ITopologyDataRes, ITopologyGroup, ITopologyGroupsData, ITopologyMapData } from 'lib/api/ApiModels/Topology/apiModels';
-import { IPosition, NODES_CONSTANTS } from 'app/components/Map/model';
+import { NODES_CONSTANTS } from 'app/components/Map/model';
 import { ITimeMinMaxRange } from 'app/components/Inputs/TimeSlider/helpers';
 import { onUpdateLinkPos, onUpdateTargetLink, reCreateDeviceLinks } from 'lib/helpers/links';
 import { updateDataByEntity, updateEntity } from 'lib/helpers/entityHelper';

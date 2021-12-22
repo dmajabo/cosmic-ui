@@ -1,10 +1,11 @@
 import React from 'react';
 import { IDeviceNode } from 'lib/models/topology';
-import { IPosition, NODES_CONSTANTS } from 'app/components/Map/model';
+import { NODES_CONSTANTS } from 'app/components/Map/model';
 import { useDrag } from 'app/components/Map/hooks/useDrag';
 import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
 import TransitionContainer from '../../TransitionContainer';
 import TextName from '../../Shared/TextName';
+import { IPosition } from 'lib/models/general';
 // import { IPopupDisplay } from 'lib/models/general';
 // import NodeTooltipPortal from 'components/Basic/NodeTooltipPortal';
 // import DevicePopup from '../../Popups/DevicePopup';

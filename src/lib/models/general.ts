@@ -40,6 +40,32 @@ export interface ICoord {
   y: number;
 }
 
+export interface IPosition {
+  x: number;
+  y: number;
+}
+
+export interface ISpace {
+  spaceX: number;
+  spaceY: number;
+}
+
+export interface ITransform {
+  k: number;
+  x: number;
+  y: number;
+}
+
+export interface ISize {
+  width: number;
+  height: number;
+}
+
+export const ZoomRange = {
+  max: 100,
+  min: 0.01,
+};
+
 export interface IRotateCoord {
   x: number;
   y: number;

@@ -2,8 +2,8 @@ import React from 'react';
 import { AccountVendorTypes, IAwsRegion, IAWS_Account, IAZURE_Account, IMeraki_Account } from 'lib/api/ApiModels/Accounts/apiModel';
 import { jsonClone } from 'lib/helpers/cloneHelper';
 import { IDeploymentP, IEdgeP, ISegmentP } from 'lib/api/ApiModels/Edges/apiModel';
-import { ITopologyGroup } from 'lib/api/ApiModels/Topology/apiModels';
-import { INetworkwEdge, TopologyGroupTypesAsString } from 'lib/models/topology';
+import { INetworkwEdge, ITopologyGroup } from 'lib/api/ApiModels/Topology/apiModels';
+import { TopologyGroupTypesAsString } from 'lib/models/topology';
 import { createNewEdge, EdgesStepperItems, EdgesStepperTypes, IEdgeModelValidation, IEdgeStepValidation } from 'app/containers/Pages/Edges/Editor/model';
 import { IStepperItem } from 'app/components/Stepper/model';
 import {

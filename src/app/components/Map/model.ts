@@ -1,3 +1,4 @@
+import { ISize, ISpace } from 'lib/models/general';
 import { TOPOLOGY_NODE_TYPES } from 'lib/models/topology';
 
 export const TOPOLOGY_IDS = {
@@ -11,33 +12,8 @@ export const TOPOLOGY_IDS = {
   Organization_FILTER: 'organization_filter',
 };
 
-export const ZoomRange = {
-  max: 100,
-  min: 0.01,
-};
-
 export interface INode<T> {
   type: T;
-}
-export interface IPosition {
-  x: number;
-  y: number;
-}
-
-export interface ITransform {
-  k: number;
-  x: number;
-  y: number;
-}
-
-export interface ISize {
-  width: number;
-  height: number;
-}
-
-interface ISpace {
-  spaceX: number;
-  spaceY: number;
 }
 
 interface IVNetNode extends INode<TOPOLOGY_NODE_TYPES>, ISize, ISpace {

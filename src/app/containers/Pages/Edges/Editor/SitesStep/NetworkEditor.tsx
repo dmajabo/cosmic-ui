@@ -6,14 +6,13 @@ import { InputLabel } from 'app/components/Inputs/styles/Label';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { ciscoMerakiLogoIcon } from 'app/components/SVGIcons/topologyIcons/ciscoMerakiLogo';
 import PrimaryButton from 'app/components/Buttons/PrimaryButton';
-import { ITopologyGroup, SelectorEvalType } from 'lib/api/ApiModels/Topology/apiModels';
+import { INetworkDevice, ITopologyGroup, SelectorEvalType } from 'lib/api/ApiModels/Topology/apiModels';
 import RadioButton from 'app/components/Inputs/RadioButton';
 import ExpresionWrapper from '../Components/ExpresionWrapper';
 import { ModalContent, ModalFooter, ModalRow } from '../Components/styles';
 import { useGet, usePost, usePut } from 'lib/api/http/useAxiosHook';
 import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 import { ISitesRes } from 'lib/api/ApiModels/Edges/apiModel';
-import { IDevice } from 'lib/models/topology';
 import SitesGridWrapper from '../Components/SitesGridWrapper';
 import LoadingIndicator from 'app/components/Loading';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
@@ -36,7 +35,7 @@ const NetworkEditor: React.FC<Props> = (props: Props) => {
   const { response: postUpdateRes, error: putError, loading: postUpdateLoading, onPut: onUpdate } = usePut<ITopologyGroup, ITopologyGroup>();
   const { loading: loadingDev, error: errorDev, response: responseDev, onGet: onLoadDevices } = useGet<ISitesRes>();
   const [exprError, setExprError] = React.useState<string | null>(null);
-  const [devices, setDevices] = React.useState<IDevice[]>([]);
+  const [devices, setDevices] = React.useState<INetworkDevice[]>([]);
   const [totalCount, setTotalCount] = React.useState<number>(0);
   const [currentPage, setCurrentPage] = React.useState<number>(1);
   const [pageSize, setPageSize] = React.useState<number>(10);
@@ -115,7 +114,7 @@ const NetworkEditor: React.FC<Props> = (props: Props) => {
     setDataItem(_item);
   };
 
-  const onSelectRowChange = (item: IDevice) => {
+  const onSelectRowChange = (item: INetworkDevice) => {
     const _item: ITopologyGroup = { ...dataItem };
     if (_item.evalType !== SelectorEvalType.SPECIFIC) {
       _item.evalType = SelectorEvalType.SPECIFIC;
@@ -130,7 +129,7 @@ const NetworkEditor: React.FC<Props> = (props: Props) => {
     setDataItem(_item);
   };
 
-  const onSelectAll = (items: IDevice[]) => {
+  const onSelectAll = (items: INetworkDevice[]) => {
     const _item: ITopologyGroup = { ...dataItem };
     if (_item.evalType !== SelectorEvalType.SPECIFIC) {
       _item.evalType = SelectorEvalType.SPECIFIC;

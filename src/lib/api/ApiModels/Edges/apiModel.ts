@@ -1,4 +1,4 @@
-import { IDevice, INetworkwEdge, IVm } from 'lib/models/topology';
+import { INetworkDevice, INetworkVM, INetworkwEdge } from 'lib/api/ApiModels/Topology/apiModels';
 import { IBasePages, IBaseTotalCount } from 'lib/api/ApiModels/generalApiModel';
 
 export enum SegmentTargetT {
@@ -97,11 +97,11 @@ export interface IEdgeP {
 }
 
 export interface ISitesRes extends IBaseTotalCount, IBasePages {
-  devices: IDevice[];
+  devices: INetworkDevice[];
 }
 
 export interface IAppsRes extends IBaseTotalCount, IBasePages {
-  apps: IVm[];
+  apps: INetworkVM[];
 }
 
 export interface IWEdgesRes extends IBaseTotalCount, IBasePages {

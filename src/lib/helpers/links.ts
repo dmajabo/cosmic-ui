@@ -1,4 +1,5 @@
-import { IPosition, ISize, NODES_CONSTANTS } from 'app/components/Map/model';
+import { NODES_CONSTANTS } from 'app/components/Map/model';
+import { IPosition, ISize } from 'lib/models/general';
 import { ILink, TOPOLOGY_LINKS_TYPES, IConnectionToLink, INetworkGroupNode, IWedgeNode, IVnetNode, IDeviceNode, TOPOLOGY_NODE_TYPES } from 'lib/models/topology';
 import { jsonClone } from './cloneHelper';
 

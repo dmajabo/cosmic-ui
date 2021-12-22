@@ -1,5 +1,5 @@
 import React from 'react';
-import { INetworkwEdge } from 'lib/models/topology';
+import { INetworkwEdge } from 'lib/api/ApiModels/Topology/apiModels';
 import { GridWrapper } from './styles';
 import { DataGrid, GridColDef, GridColumnHeaderParams, GridRenderCellParams, GridRowParams, GridSelectionModel } from '@mui/x-data-grid';
 import SimpleCheckbox from 'app/components/Inputs/Checkbox/SimpleCheckbox';

@@ -1,6 +1,6 @@
 import React from 'react';
-import { IVPC_PanelDataNode, IVm, IVnetNode } from 'lib/models/topology';
-import { IPosition, NODES_CONSTANTS } from 'app/components/Map/model';
+import { IVPC_PanelDataNode, IVnetNode } from 'lib/models/topology';
+import { NODES_CONSTANTS } from 'app/components/Map/model';
 import VmsContainer from './VmsContainer';
 import { useDrag } from 'app/components/Map/hooks/useDrag';
 // import NodeTooltipPortal from 'components/Basic/NodeTooltipPortal';
@@ -11,7 +11,8 @@ import VNetHeder from './VNetHeder';
 import { ContainerWrapper, MoreButton } from './styles';
 import ApplicationGroupContainer from './ApplicationGroupContainer';
 import TransitionContainer from '../../TransitionContainer';
-import { ITopologyGroup } from 'lib/api/ApiModels/Topology/apiModels';
+import { INetworkVM, ITopologyGroup } from 'lib/api/ApiModels/Topology/apiModels';
+import { IPosition } from 'lib/models/general';
 interface IProps {
   dataItem: IVnetNode;
   onClickVpc: (_data: IVPC_PanelDataNode) => void;
@@ -69,7 +70,7 @@ const VNetNode: React.FC<IProps> = (props: IProps) => {
   //   setShowPopup({ show: false, x: 0, y: 0 });
   // };
 
-  const onClickVm = (vm: IVm) => {
+  const onClickVm = (vm: INetworkVM) => {
     props.onClickVpc({ vm: vm, group: null, vnet: { ...props.dataItem } });
   };
 

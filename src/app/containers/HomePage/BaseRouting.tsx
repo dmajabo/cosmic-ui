@@ -2,6 +2,7 @@ import { ROUTE } from 'lib/Routes/model';
 import { Switch, Route, Redirect, useRouteMatch } from 'react-router-dom';
 import AnalyticsPage from 'app/containers/Pages/AnalyticsPage';
 import DashboardPage from 'app/containers/Pages/DashboardPage';
+// import Dashboard from 'app/containers/Pages/DashboardPage/newDashboard';
 import TopologyPage from 'app/containers/Pages/TopologyPage';
 import SettingsPage from 'app/containers/Pages/SettingsPage';
 // import SessionsPage from 'app/containers/Pages/SessionsPage';
