@@ -1,13 +1,13 @@
 import React, { useContext } from 'react';
 import { IVm } from 'lib/models/topology';
 import { IResourceQueryParam, ControllerKeyTypes, SecurityGroupsResourceTypes, IPolicyRes, IVmRule, PolicyResKeyEnum, PolicyTableKeyEnum } from 'lib/api/ApiModels/Metrics/apiModel';
-import { PolicyApi } from 'lib/api/ApiModels/Metrics/endpoints';
 import PolicyTable from './PolicyTable';
 import { useGet } from 'lib/api/http/useAxiosHook';
 import { getQueryResourceParam } from 'lib/api/ApiModels/Metrics/queryRoutesHelper';
-import { toTimestamp } from 'lib/api/ApiModels/Topology/endpoints';
+import { toTimestamp } from 'lib/api/ApiModels/paramBuilders';
 import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
 import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
+import { TopoApi } from 'lib/api/ApiModels/Services/topo';
 
 interface IProps {
   dataItem: IVm;
@@ -24,7 +24,7 @@ const PolicyTab: React.FC<IProps> = (props: IProps) => {
     if (topology.selectedTime) {
       _param.timestamp = toTimestamp(topology.selectedTime);
     }
-    getDataAsync(PolicyApi.getPolicy(ControllerKeyTypes.SecurityGroups), _param);
+    getDataAsync(TopoApi.getPolicyByKey(ControllerKeyTypes.SecurityGroups), _param);
   }, [props.dataItem, topology.selectedTime]);
 
   React.useEffect(() => {

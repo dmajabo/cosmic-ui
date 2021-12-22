@@ -4,8 +4,7 @@ import { topologyIcon } from 'app/components/SVGIcons/pagesIcons/topology';
 // import { performanceDashboard } from 'app/components/SVGIcons/pagesIcons/performanceDashboard';
 import { settingsIcon } from 'app/components/SVGIcons/pagesIcons/settings';
 import { analyticsIcon } from 'app/components/SVGIcons/pagesIcons/analytics';
-import { sessionsIcon } from 'app/components/SVGIcons/pagesIcons/sessions';
-import { accountsIcon } from 'app/components/SVGIcons/pagesIcons/accounts';
+// import { sessionsIcon } from 'app/components/SVGIcons/pagesIcons/sessions';
 import { edgesIcon } from 'app/components/SVGIcons/pagesIcons/edgesIcon';
 export const ROUTE = {
   base: '/',
@@ -16,16 +15,15 @@ export const ROUTE = {
   dashboard: '/dashboard',
   performanceDashboard: '/performanceDashboard',
   analytics: '/analytics',
-  accounts: '/accounts',
   settings: '/settings',
-  automation: '/automation',
+  workflow: '/workflow',
   signUp: '/sign-up',
-  sessions: '/sessions',
+  // sessions: '/sessions',
   notFound: '*',
 };
 
 export enum BreadCrumbTypes {
-  AUTOMATIONS = 'automations',
+  WORK_FLOW = 'workflow',
   NETWORKS = 'networks',
   TRANSIT = 'transit',
 }
@@ -43,9 +41,8 @@ export const APP_PAGES: IPage[] = [
   { id: 'topology', path: ROUTE.topology, pageName: 'Topology', icon: topologyIcon, breadcrumb: null },
   { id: 'transit', path: ROUTE.transit, pageName: 'Transit', icon: edgesIcon, breadcrumb: BreadCrumbTypes.TRANSIT },
   // { id: 'performanceDashboard', path: ROUTE.performanceDashboard, pageName: 'Performance Dashboard', icon: performanceDashboard, breadcrumb: null },
-  { id: 'sessions', path: ROUTE.sessions, pageName: 'Sessions', icon: sessionsIcon, breadcrumb: null },
+  // { id: 'sessions', path: ROUTE.sessions, pageName: 'Sessions', icon: sessionsIcon, breadcrumb: null },
   { id: 'analytics', path: ROUTE.analytics, pageName: 'Analytics', icon: analyticsIcon, breadcrumb: null },
-  { id: 'automation', path: ROUTE.automation, pageName: 'Automation', icon: automationIcon, breadcrumb: BreadCrumbTypes.AUTOMATIONS },
-  { id: 'accounts', path: ROUTE.accounts, pageName: 'Accounts', icon: accountsIcon, breadcrumb: null },
+  { id: 'workflow', path: ROUTE.workflow, pageName: 'Workflow', icon: automationIcon, breadcrumb: BreadCrumbTypes.WORK_FLOW },
   { id: 'settings', path: ROUTE.settings, pageName: 'Settings', icon: settingsIcon, breadcrumb: null },
 ];

@@ -19,7 +19,7 @@ import {
 } from './helpers';
 import EdgeNode from './EdgeNode';
 import { useEdgeZoom } from './useEdgeZoom';
-import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
+import { ITopologyGroup } from 'lib/api/ApiModels/Topology/apiModels';
 import { useEdgesDataContext } from 'lib/hooks/Edges/useEdgesDataContext';
 import { DeploymentTypes, ISegmentP } from 'lib/api/ApiModels/Edges/apiModel';
 import EdgeLink from './EdgeLink';

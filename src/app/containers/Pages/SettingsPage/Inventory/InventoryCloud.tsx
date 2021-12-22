@@ -11,10 +11,11 @@ import { useGet } from 'lib/api/http/useAxiosHook';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import LoadingIndicator from 'app/components/Loading';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
-import { buildPagingParam, EdgesApi } from 'lib/api/ApiModels/Edges/edpoints';
 import { getSearchedList } from 'lib/helpers/listHelper';
 import { INetworkwEdge } from 'lib/models/topology';
 import { IColumn } from 'lib/models/grid';
+import { paramBuilder } from 'lib/api/ApiModels/paramBuilders';
+import { TopoApi } from 'lib/api/ApiModels/Services/topo';
 
 interface Props {
   searchValue: string;
@@ -84,8 +85,8 @@ const InventoryCloud: React.FC<Props> = (props: Props) => {
   };
 
   const onTryLoadWedges = async (pageSize: number, currentPage: number) => {
-    const _param = buildPagingParam(pageSize, currentPage);
-    await onGet(EdgesApi.getWedges(), userContext.accessToken!, _param);
+    const _param = paramBuilder(pageSize, currentPage);
+    await onGet(TopoApi.getWedges(), userContext.accessToken!, _param);
   };
 
   return (

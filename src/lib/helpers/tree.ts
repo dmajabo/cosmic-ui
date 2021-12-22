@@ -20,7 +20,7 @@ import * as d3 from 'd3';
 import { NODES_CONSTANTS } from 'app/components/Map/model';
 import { STANDART_DISPLAY_RESOLUTION } from 'lib/models/general';
 import uuid from 'react-uuid';
-import { INetworkOrg, ITopologyGroup, VendorTypes, ITopologyMapData, SelectorEvalType, INetworkVNetwork } from 'lib/api/ApiModels/Topology/endpoints';
+import { INetworkOrg, ITopologyGroup, VendorTypes, ITopologyMapData, SelectorEvalType, INetworkVNetwork } from 'lib/api/ApiModels/Topology/apiModels';
 // import { jsonClone } from './cloneHelper';
 
 const createDeviceNode = (org: INetworkOrg, orgIndex: number, node: IDevice, index: number): IDeviceNode => {

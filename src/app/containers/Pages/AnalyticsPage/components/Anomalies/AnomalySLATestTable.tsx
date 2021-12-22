@@ -63,11 +63,7 @@ export const AnomalySLATestTable: React.FC<AnomalySLATestTableProps> = ({ data, 
             return (
               <tr {...row.getRowProps()}>
                 {row.cells.map(cell => {
-                  return (
-                    <td className={cell.column.Header === 'CHANGES' ? classes.ellipsisText : ''} {...cell.getCellProps()}>
-                      {cell.render('Cell')}
-                    </td>
-                  );
+                  return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>;
                 })}
               </tr>
             );

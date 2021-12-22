@@ -2,20 +2,20 @@ import React, { useContext } from 'react';
 import { ActionPart, ActionRowStyles, ContentWrapper, PageContentWrapper, TableWrapper } from '../../Shared/styles';
 import { useGet } from 'lib/api/http/useAxiosHook';
 import { IAllSessionsRes } from 'lib/api/ApiModels/Sessions/apiModel';
-import { SessionsApi } from 'lib/api/ApiModels/Sessions/endpoints';
 import { useSessionsDataContext } from 'lib/hooks/Sessions/useSessionsDataContext';
 import Table from './Table';
 import Dropdown from 'app/components/Inputs/Dropdown';
-import { SessionsSelectValuesTypes, SessionsTabTypes, SESSIONS_SELECT_VALUES } from 'lib/hooks/Sessions/model';
+import { SessionsTabTypes, SESSIONS_SELECT_VALUES } from 'lib/hooks/Sessions/model';
 import SessionsSwitch from '../Components/SessionsSwitch';
 import { ISelectedListItem, ISelectionGridCellValue } from 'lib/models/general';
-import { sessionsParamBuilder } from 'lib/api/ApiModels/Sessions/paramBuilder';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
 import ElasticFilter from 'app/components/Inputs/ElasticFilter';
 import { FilterOpperatorsList, ISessionsGridField, SessionGridColumnItems } from './models';
 import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 import AggregateTable from './AggregateTable';
+import { sessionsParamBuilder, SESSIONS_TIME_RANGE_QUERY_TYPES } from 'lib/api/ApiModels/paramBuilders';
+import { TesseractApi } from 'lib/api/ApiModels/Services/tesseract';
 
 interface IProps {}
 
@@ -44,12 +44,12 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
   const onTryToLoadData = async (
     pageSize: number,
     page: number,
-    time: SessionsSelectValuesTypes,
+    time: SESSIONS_TIME_RANGE_QUERY_TYPES,
     stitch: boolean,
     filterValue: (ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> | string)[],
   ) => {
     const _param = sessionsParamBuilder(pageSize, page, time, stitch, filterValue);
-    await onGet(SessionsApi.getAllSessions(), userContext.accessToken!, _param);
+    await onGet(TesseractApi.getAllSessions(), userContext.accessToken!, _param);
   };
 
   const onChangePageSize = (_size: number, page?: number) => {
@@ -60,7 +60,7 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
     sessions.onChangeCurrentPage(_page);
   };
 
-  const onChangePeriod = (_value: ISelectedListItem<SessionsSelectValuesTypes>) => {
+  const onChangePeriod = (_value: ISelectedListItem<SESSIONS_TIME_RANGE_QUERY_TYPES>) => {
     sessions.onChangeSelectedPeriod(_value, SessionsTabTypes.Sessions);
   };
 

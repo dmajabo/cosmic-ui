@@ -33,7 +33,7 @@ const AboutComponent: React.FC<Props> = (props: Props) => {
           <a href={`mailto:${APP_GENERAL_CONST.feedback}`}>{APP_GENERAL_CONST.feedback}</a>
         </ItemLink>
       </ItemContainer>
-      <ItemContainer>
+      <ItemContainer style={{ margin: '0' }}>
         <ItemTitle>Version:</ItemTitle>
         <ItemValue>
           {version} {latestSuccessTime ? `(${latestSuccessTime})` : null}

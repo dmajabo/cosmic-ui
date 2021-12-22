@@ -1,3 +1,5 @@
+import { SeverityLevel } from 'app/containers/Pages/AnalyticsPage/components/Anomalies/DummyData';
+
 interface Device {
   readonly id: string;
   readonly name: string;
@@ -347,7 +349,7 @@ export interface MetricsExplorerTableData {
 
 export interface AnomalyExperienceTableData {
   readonly name: string;
-  readonly severity: string | JSX.Element;
+  readonly severity: SeverityLevel | JSX.Element;
   readonly hits: number | JSX.Element;
 }
 

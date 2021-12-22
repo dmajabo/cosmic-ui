@@ -2,7 +2,7 @@ import React from 'react';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { ciscoMerakiLogoIcon } from 'app/components/SVGIcons/topologyIcons/ciscoMerakiLogo';
 import PrimaryButton from 'app/components/Buttons/PrimaryButton';
-import { ITopologyGroup, ITopologyGroupsData, TopologyGroupApi } from 'lib/api/ApiModels/Topology/endpoints';
+import { ITopologyGroup, ITopologyGroupsData } from 'lib/api/ApiModels/Topology/apiModels';
 import { GridWrapper, ModalContent, ModalFooter, ModalLabel, ModalRow } from '../Components/styles';
 import { useGet } from 'lib/api/http/useAxiosHook';
 import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
@@ -23,6 +23,7 @@ import PopupItem from 'app/components/Buttons/SettingsButton/PopupItem';
 import { editIcon } from 'app/components/SVGIcons/edit';
 import { deleteIcon } from 'app/components/SVGIcons/delete';
 import { awsIcon } from 'app/components/SVGIcons/topologyIcons/aws';
+import { PolicyApi } from 'lib/api/ApiModels/Services/policy';
 
 interface Props {
   selectedItems: string[];
@@ -179,7 +180,7 @@ const ExistingGroups: React.FC<Props> = (props: Props) => {
   };
 
   const onTryLoadGroups = async () => {
-    await onGet(TopologyGroupApi.getAllGroups(), userContext.accessToken!);
+    await onGet(PolicyApi.getAllGroups(), userContext.accessToken!);
   };
 
   return (

@@ -1,5 +1,5 @@
 import { SegmentRuleAction } from 'lib/api/ApiModels/Edges/apiModel';
-import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
+import { ITopologyGroup } from 'lib/api/ApiModels/Topology/apiModels';
 
 export interface EditGroupItem {
   group: ITopologyGroup;

@@ -7,7 +7,7 @@ import { FormRow } from '../PolicyStep/styles';
 import { EditGroupItem } from '../../model';
 import ModalComponent from 'app/components/Modal';
 import { EmptyMessage } from '../Components/styles';
-import { ITopologyGroup, SelectorEvalType } from 'lib/api/ApiModels/Topology/endpoints';
+import { ITopologyGroup, SelectorEvalType } from 'lib/api/ApiModels/Topology/apiModels';
 import { TopologyGroupTypesAsString } from 'lib/models/topology';
 import NetworkEditor from './NetworkEditor';
 import { useEdgesDataContext } from 'lib/hooks/Edges/useEdgesDataContext';
@@ -89,7 +89,7 @@ const SitesStep: React.FC<Props> = (props: Props) => {
           showHeader
           title={showExistingGroups ? 'Add Group' : 'Create Network'}
           showCloseButton
-          modalStyles={{ maxWidth: '800px', maxHeight: '90vh', padding: '40px' }}
+          modalStyles={{ maxWidth: '800px', maxHeight: '90vh' }}
           useFadeAnimation
           id="sitesModalWindow"
           open={showCreator}

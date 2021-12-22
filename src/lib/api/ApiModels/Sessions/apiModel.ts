@@ -19,6 +19,7 @@ export interface ISession extends IBaseEntity<string> {
   natSourcePort: number;
   natDestIp: string;
   natDestPort: number;
+  stitched: boolean;
   deviceName: string;
   deviceExtId: string;
   device: string;

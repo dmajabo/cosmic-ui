@@ -1,5 +1,6 @@
+import uuid from 'react-uuid';
 import { IStepperItem, StepperItemStateType } from 'app/components/Stepper/model';
-import { DeploymentTypes, IDeploymentP, IEdgeP, ISegmentRuleP, SegmentRuleAction, NwServiceT, NwServicesVendor, INwServicesP, ISegmentP } from 'lib/api/ApiModels/Edges/apiModel';
+import { DeploymentTypes, IDeploymentP, ISegmentRuleP, SegmentRuleAction, NwServiceT, NwServicesVendor, INwServicesP, ISegmentP, IEdgeP } from 'lib/api/ApiModels/Edges/apiModel';
 import { jsonClone } from 'lib/helpers/cloneHelper';
 import { EdgesStepperTypes, IEdgeModelValidation, IEdgeStepValidation } from './model';
 
@@ -119,7 +120,7 @@ const onValidateDeployment = (data: IDeploymentP, index: number): string | null 
   for (let i = 0; i < data.nwServicesPolicy.length; i++) {
     const error = onValidateNwServicePolicyIsInvalid(data.nwServicesPolicy[i], i);
     if (error) {
-      nwError = `"Edge ${index + 1}" containe invalid nwServicesPolicy. Vendor in nwServicesPolicy ${i + 1} is required.`;
+      nwError = `"Edge ${index + 1}" contain invalid nwServicesPolicy. Vendor in nwServicesPolicy ${i + 1} is required.`;
       break;
     }
   }
@@ -165,7 +166,7 @@ const onValidatePolicy = (data: ISegmentP, index: number): string => {
     return `Name field in "Policy ${index + 1}" is required.`;
   }
   if (!data.rules || !data.rules.length) {
-    return `Policy "${data.name}" should containe one or more valid rule.`;
+    return `Policy "${data.name}" should contain one or more valid rule.`;
   }
   let nwError = null;
   for (let i = 0; i < data.rules.length; i++) {
@@ -183,16 +184,16 @@ const onValidatePolicy = (data: ISegmentP, index: number): string => {
 
 const onValidateRule = (data: ISegmentRuleP, name: string, ruleIndex: number): string => {
   if (!data.name) {
-    return `"Policy ${name}" should containe valid "Rule ${ruleIndex + 1}". Name is required.`;
+    return `"Policy ${name}" should contain valid "Rule ${ruleIndex + 1}". Name is required.`;
   }
   if (!data.action) {
-    return `"Policy ${name}" should containe valid "Rule ${data.name}". Action is required.`;
+    return `"Policy ${name}" should contain valid "Rule ${data.name}". Action is required.`;
   }
   if (!data.sourceId) {
-    return `"Policy ${name}" should containe valid "Rule ${data.name}". Source is required.`;
+    return `"Policy ${name}" should contain valid "Rule ${data.name}". Source is required.`;
   }
   if (!data.destId) {
-    return `"Policy ${name}" should containe valid "Rule ${data.name}". Destionation is required.`;
+    return `"Policy ${name}" should contain valid "Rule ${data.name}". Destionation is required.`;
   }
   return null;
 };
@@ -235,7 +236,10 @@ export const createNewSegmentP = (): ISegmentP => {
   const _obj: ISegmentP = {
     name: '',
     rules: [],
-    isNew: true,
+
+    // Used only in ui
+    uiId: uuid(),
+    collapsed: true,
   };
   return _obj;
 };
@@ -247,7 +251,10 @@ export const createNewRulePolicy = (): ISegmentRuleP => ({
   destType: null,
   destId: '',
   action: SegmentRuleAction.ALLOW,
-  isNew: true,
+
+  // Used only in ui
+  uiId: uuid(),
+  collapsed: true,
 });
 
 export const createNewDeploymentPolicy = (): IDeploymentP => ({
@@ -262,3 +269,66 @@ export const createNewDeploymentPolicy = (): IDeploymentP => ({
     },
   ],
 });
+
+export const onUpdateCollapseExpandePolicyState = (item: IEdgeP, policyId: string) => {
+  if (!item || !item.segmentPolicy || !item.segmentPolicy.length) return;
+  item.segmentPolicy.forEach(policy => {
+    if (policy.uiId === policyId) {
+      const _collapse = policy.collapsed ? false : true;
+      policy.collapsed = _collapse;
+      return;
+    }
+    policy.collapsed = true;
+  });
+};
+
+export const onUpdateCollapseExpandeRuleState = (item: ISegmentP, ruleId: string) => {
+  if (!item || !item.rules || !item.rules.length) return;
+  item.rules.forEach(rule => {
+    if (rule.uiId === ruleId) {
+      rule.collapsed = false;
+      return;
+    }
+    rule.collapsed = true;
+  });
+};
+
+export const removeUiFields = (_item: IEdgeP) => {
+  const { segmentPolicy } = _item;
+  if (!segmentPolicy || !segmentPolicy.length) return;
+  segmentPolicy.forEach(policy => {
+    if (policy.uiId) {
+      delete policy.uiId;
+    }
+    if (policy.collapsed) {
+      delete policy.collapsed;
+    }
+    if (!policy.rules || !policy.rules.length) return;
+    policy.rules.forEach(rule => {
+      if (rule.uiId) {
+        delete rule.uiId;
+      }
+      if (rule.collapsed) {
+        delete rule.collapsed;
+      }
+    });
+  });
+};
+
+export const addUiFields = (_item: IEdgeP) => {
+  if (!_item) return;
+  const { segmentPolicy } = _item;
+  if (!segmentPolicy || !segmentPolicy.length) return;
+  segmentPolicy.forEach(policy => {
+    updateItemFields(policy);
+    if (!policy.rules || !policy.rules.length) return;
+    policy.rules.forEach(rule => {
+      updateItemFields(rule);
+    });
+  });
+};
+
+const updateItemFields = dataItem => {
+  dataItem['uiId'] = uuid();
+  dataItem['collapsed'] = true;
+};

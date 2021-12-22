@@ -52,7 +52,7 @@ const ModalComponent: React.FC<Props> = ({ open, id, children, onClose, useFadeA
               {showHeader && (
                 <ModalHeader>
                   <ModalTitle>{title}</ModalTitle>
-                  {showCloseButton && <IconWrapper styles={{ margin: '0 0 auto auto' }} onClick={onClose} icon={closeIcon} />}
+                  {showCloseButton && <IconWrapper styles={{ position: 'absolute', top: '-20px', right: '-20px', zIndex: 1 }} onClick={onClose} icon={closeIcon} />}
                 </ModalHeader>
               )}
               {children}
@@ -65,7 +65,7 @@ const ModalComponent: React.FC<Props> = ({ open, id, children, onClose, useFadeA
               {showHeader && (
                 <ModalHeader>
                   <ModalTitle>{title}</ModalTitle>
-                  {showCloseButton && <IconWrapper styles={{ margin: '0 0 auto auto' }} onClick={onClose} icon={closeIcon} />}
+                  {showCloseButton && <IconWrapper styles={{ position: 'absolute', top: '-20px', right: '-20px', zIndex: 1 }} onClick={onClose} icon={closeIcon} />}
                 </ModalHeader>
               )}
               {children}
@@ -77,7 +77,7 @@ const ModalComponent: React.FC<Props> = ({ open, id, children, onClose, useFadeA
             {showHeader && (
               <ModalHeader>
                 <ModalTitle>{title}</ModalTitle>
-                {showCloseButton && <IconWrapper styles={{ margin: '0 0 auto auto' }} onClick={onClose} icon={closeIcon} />}
+                {showCloseButton && <IconWrapper styles={{ position: 'absolute', top: '-20px', right: '-20px', zIndex: 1 }} onClick={onClose} icon={closeIcon} />}
               </ModalHeader>
             )}
             {children}

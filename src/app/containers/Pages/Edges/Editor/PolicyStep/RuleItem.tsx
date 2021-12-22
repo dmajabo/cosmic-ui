@@ -1,15 +1,12 @@
 import React from 'react';
-import { PolicyActionRow, PolicyItemWrapper, PolicyName } from './styles';
+import { PolicyActionRow } from './styles';
 import { ISegmentRuleP, SegmentTargetT } from 'lib/api/ApiModels/Edges/apiModel';
 import TextInput from 'app/components/Inputs/TextInput';
-import { ITopologyGroup } from 'lib/api/ApiModels/Topology/endpoints';
-import IconWrapper from 'app/components/Buttons/IconWrapper';
+import { ITopologyGroup } from 'lib/api/ApiModels/Topology/apiModels';
 import { deleteIcon } from 'app/components/SVGIcons/delete';
 import RuleSelect from './RuleSelect';
 import { getAllValues, getDifferentSegmentType, getSegmentType, getValues } from './helper';
 import { IFieldValuePair } from 'lib/models/general';
-import Collapse from '@mui/material/Collapse';
-import { arrowBottomIcon } from 'app/components/SVGIcons/arrows';
 import PrimaryButton from 'app/components/Buttons/PrimaryButton';
 import { getSelectedItem } from 'lib/helpers/selectionHelper';
 import { IPolicyCombination } from '../../model';
@@ -25,7 +22,6 @@ interface Props {
 }
 
 const RuleItem: React.FC<Props> = (props: Props) => {
-  const [expanded, setExpanded] = React.useState(props.item.isNew);
   const [selectedSource, setSelectedSource] = React.useState<ITopologyGroup>(null);
   const [selectedDest, setSelectedDest] = React.useState<ITopologyGroup>(null);
   const [possibleSources, setPossibleSource] = React.useState<ITopologyGroup[]>([]);
@@ -104,76 +100,48 @@ const RuleItem: React.FC<Props> = (props: Props) => {
     props.onDeleteRule(props.index);
   };
 
-  const onExpandCollapse = () => {
-    setExpanded(!expanded);
-  };
-
   return (
-    <PolicyItemWrapper>
-      <PolicyActionRow style={{ cursor: 'pointer' }} onClick={onExpandCollapse}>
-        <PolicyName>{props.item.name || `Rule ${props.index + 1}`}</PolicyName>
-        <IconWrapper classes={expanded ? 'arrowTop' : 'arrow'} icon={arrowBottomIcon} styles={{ margin: 'auto 0 auto auto' }} />
-        {/* <IconWrapper classes="visibleOnHover" onClick={onDelete} styles={{ margin: '0 0 0 auto' }} width="20px" height="20px" icon={deleteIcon()} /> */}
+    <>
+      <PolicyActionRow margin="0 0 20px 0">
+        <TextInput id={`${props.index}name`} name="policyName" value={props.item.name} label="Name" onChange={onInputChange} styles={{ minHeight: '60px' }} inputStyles={{ height: '40px' }} required />
       </PolicyActionRow>
-      <Collapse in={expanded} timeout="auto">
-        <PolicyActionRow margin="20px 0">
-          <TextInput
-            id={`${props.index}name`}
-            name="policyName"
-            value={props.item.name}
-            label="Name"
-            onChange={onInputChange}
-            styles={{ minHeight: '60px' }}
-            inputStyles={{ height: '40px' }}
-            required
-          />
-        </PolicyActionRow>
-        <PolicyActionRow>
-          <RuleSelect
-            field="source"
-            type={props.item.sourceType}
-            possibleValues={possibleSources}
-            selectedValue={selectedSource}
-            label="Source"
-            id={`${props.index}source`}
-            onChange={onSourceChange}
-          />
-          <RuleSelect
-            field="destination"
-            type={props.item.destType}
-            possibleValues={possibleDests}
-            selectedValue={selectedDest}
-            label="Destination"
-            id={`${props.index}destination`}
-            onChange={onDestinationChange}
-          />
-        </PolicyActionRow>
-        <PolicyActionRow>
-          <TextInput
-            id={`${props.index}action`}
-            name="action"
-            value="Allow" //{props.item.action}
-            label="Action"
-            onChange={v => {}}
-            readOnlyField
-            styles={{ width: 'calc(50% - 5px)', minHeight: '60px' }}
-            labelStyles={{ display: 'inline-block', verticalAlign: 'middle' }}
-            inputStyles={{ height: '40px' }}
-            required
-          />
-          <PrimaryButton
-            styles={{ margin: 'auto 0px 0px auto', height: '40px' }}
-            label="DELETE RULE"
-            icon={deleteIcon('var(--_pButtonColor)')}
-            onClick={onDelete}
-            bgColor="var(--_errorColor)"
-            borderColor="var(--_errorColor)"
-            hoverBg="var(--_errorColor)"
-            hoverBorder="var(--_errorColor)"
-          />
-        </PolicyActionRow>
-      </Collapse>
-    </PolicyItemWrapper>
+      <PolicyActionRow>
+        <RuleSelect field="source" type={props.item.sourceType} possibleValues={possibleSources} selectedValue={selectedSource} label="Source" id={`${props.index}source`} onChange={onSourceChange} />
+        <RuleSelect
+          field="destination"
+          type={props.item.destType}
+          possibleValues={possibleDests}
+          selectedValue={selectedDest}
+          label="Destination"
+          id={`${props.index}destination`}
+          onChange={onDestinationChange}
+        />
+      </PolicyActionRow>
+      <PolicyActionRow>
+        <TextInput
+          id={`${props.index}action`}
+          name="action"
+          value="Allow" //{props.item.action}
+          label="Action"
+          onChange={v => {}}
+          readOnlyField
+          styles={{ width: 'calc(50% - 5px)', minHeight: '60px' }}
+          labelStyles={{ display: 'inline-block', verticalAlign: 'middle' }}
+          inputStyles={{ height: '40px' }}
+          required
+        />
+        <PrimaryButton
+          styles={{ margin: 'auto 0px 0px auto', height: '40px' }}
+          label="DELETE RULE"
+          icon={deleteIcon('var(--_pButtonColor)')}
+          onClick={onDelete}
+          bgColor="var(--_errorColor)"
+          borderColor="var(--_errorColor)"
+          hoverBg="var(--_errorColor)"
+          hoverBorder="var(--_errorColor)"
+        />
+      </PolicyActionRow>
+    </>
   );
 };
 export default React.memo(RuleItem);
