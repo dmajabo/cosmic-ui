@@ -1,4 +1,4 @@
-import { SeverityLevel } from 'app/containers/Pages/AnalyticsPage/components/Anomalies/DummyData';
+import { SeverityLevel } from './utils';
 
 interface Device {
   readonly id: string;
