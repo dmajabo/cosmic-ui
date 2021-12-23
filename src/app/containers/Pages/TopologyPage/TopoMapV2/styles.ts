@@ -57,6 +57,18 @@ export const MapContainer = styled.div`
 export const StyledMap = styled.svg`
   width: 100%;
   height: 100%;
+  .topologyNode {
+    opacity: 1;
+    transition: opacity 0.2s linear;
+  }
+  .topologyNode.unhoverNode {
+    opacity: 0.5;
+    transition: opacity 0.2s linear;
+  }
+  .topologyNode.hoverNode {
+    opacity: 1;
+    transition: opacity 0.2s linear;
+  }
 `;
 
 export const ZoomButtonsWrapper = styled.div`

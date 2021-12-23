@@ -55,6 +55,9 @@ export interface TopologyV2ContextType {
   onUpdateNetworkGroupNode: (_item: INetworkGroupNode, _pos: IPosition, isDrag: boolean, isExpand: boolean) => void;
   onSelectEntity: (entity: IEntity, selected: boolean) => void;
   onSetIsDataReadyToShow: (_state: DATA_READY_STATE) => void;
+
+  onCollapseExpandNode: (node: ITopoNode, state: boolean) => void;
+  onUpdateNodeCoord: (node: ITopoNode, _pos: IPosition) => void;
 }
 export function useTopologyV2Context(): TopologyV2ContextType {
   const [dataReadyToShow, setDataReadyToShow] = React.useState<DATA_READY_STATE>(DATA_READY_STATE.EMPTY);
@@ -69,8 +72,8 @@ export function useTopologyV2Context(): TopologyV2ContextType {
   const [entityTypes, setEntityTypes] = React.useState<IEntity[]>(jsonClone(EntityTypes));
   const [searchQuery, setSearchQuery] = React.useState<string | null>(null);
   const [selectedType, setSelectedType] = React.useState<string | null>(null);
-  const linksRef = React.useRef(links);
-  const nodesRef = React.useRef(nodes);
+  const linksRef = React.useRef<ILink[]>(links);
+  const nodesRef = React.useRef<ITopoNode[]>(nodes);
   const groupsRef = React.useRef(originGroupsData);
   const onSetData = (res: ITopologyDataRes) => {
     if (!res) {
@@ -325,6 +328,23 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     setDataReadyToShow(_state);
   };
 
+  const onCollapseExpandNode = (node: ITopoNode, state: boolean) => {
+    const _data: ITopoNode[] = nodesRef.current.slice();
+    const index = _data.findIndex(it => it.id === node.id);
+    _data[index].collapsed = state;
+    setNodes(_data);
+    nodesRef.current = _data;
+  };
+
+  const onUpdateNodeCoord = (node: ITopoNode, _position: IPosition) => {
+    const _data: ITopoNode[] = nodesRef.current.slice();
+    const index = _data.findIndex(it => it.id === node.id);
+    _data[index].x = _position.x;
+    _data[index].y = _position.y;
+    setNodes(_data);
+    nodesRef.current = _data;
+  };
+
   return {
     dataReadyToShow,
     selectedPeriod,
@@ -353,5 +373,8 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     onUpdateTimeRange,
     onChangeSelectedDay,
     onSetIsDataReadyToShow,
+
+    onCollapseExpandNode,
+    onUpdateNodeCoord,
   };
 }

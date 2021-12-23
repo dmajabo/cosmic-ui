@@ -9,6 +9,7 @@ import { useZoom } from '../hooks/useZoom';
 import NodeWrapper from '../Containers/Nodes/NodeWrapper';
 import DefsComponent from '../Containers/Shared/DefsComponent';
 import HeadeerAction from '../HeadeerAction';
+import { STANDART_DISPLAY_RESOLUTION_V2 } from 'lib/models/general';
 
 interface Props {
   isFullScreen: boolean;
@@ -61,7 +62,7 @@ const Graph: React.FC<Props> = (props: Props) => {
         id={TOPOLOGY_IDS.SVG}
         width="100%"
         height="100%"
-        viewBox="0 0 1830 706"
+        viewBox={`0 0 ${STANDART_DISPLAY_RESOLUTION_V2.width} ${STANDART_DISPLAY_RESOLUTION_V2.height}`}
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         xmlnsXlink="http://www.w3.org/1999/xlink"

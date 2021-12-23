@@ -31,6 +31,11 @@ export const STANDART_DISPLAY_RESOLUTION = {
   height: 800,
 };
 
+export const STANDART_DISPLAY_RESOLUTION_V2 = {
+  width: 1830,
+  height: 706,
+};
+
 export interface IBaseEntity<T> {
   id: T;
 }
@@ -66,6 +71,25 @@ export interface ITransform {
 export interface ISize {
   width: number;
   height: number;
+}
+
+export interface IMinSize {
+  minWidth: number;
+  minHeight: number;
+  minOffsetX: number;
+  minOffsetY: number;
+}
+
+export enum CollapseExpandState {
+  COLLAPSE = 'collapse',
+  EXPAND = 'expand',
+}
+export interface ICollapsed {
+  collapsed: boolean;
+}
+
+export interface IVisible {
+  visible: boolean;
 }
 
 export const ZoomRange = {
@@ -119,14 +143,6 @@ export const TIME_PERIOD: ISelectedListItem<ITimeTypes>[] = [
 export enum IPanelBarLayoutTypes {
   VERTICAL = 'vertical',
   HORIZONTAL = 'horizontal',
-}
-
-export interface ICollapsed {
-  collapsed: boolean;
-}
-
-export interface IVisible {
-  visible: boolean;
 }
 
 export interface IObject<T> {

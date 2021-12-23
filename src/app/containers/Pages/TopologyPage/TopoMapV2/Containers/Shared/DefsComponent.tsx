@@ -63,14 +63,7 @@ const DefsComponent: React.FC<{}> = () => {
           fill="white"
         />
       </svg>
-      <svg
-        id={NODES_CONSTANTS.REGION.type}
-        width={NODES_CONSTANTS.REGION.iconWidth}
-        height={NODES_CONSTANTS.REGION.iconHeight}
-        viewBox={`0 0 ${NODES_CONSTANTS.REGION.iconWidth} ${NODES_CONSTANTS.REGION.iconHeight}`}
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
+      <svg id={NODES_CONSTANTS.REGION.type} viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M7.02057 14.8516H5.76489C5.43549 14.8516 5.13812 15.0477 5.00781 15.3497L1.53174 23.4437L9.78699 19.2274C8.79877 17.86 7.82102 16.3518 7.02057 14.8516Z" fill="white" />
         <path
           d="M22.9917 15.3497C22.8616 15.0477 22.5641 14.8516 22.2349 14.8516H20.9792C19.4676 17.6842 17.2654 20.6115 15.8644 22.222C14.8792 23.3521 13.1194 23.3508 12.1356 22.222C12.035 22.1064 11.5097 21.4982 10.7862 20.563L9.29785 21.3235L14.9277 26.9424L25.5952 21.4121L22.9917 15.3497Z"
@@ -90,14 +83,7 @@ const DefsComponent: React.FC<{}> = () => {
           fill="white"
         />
       </svg>
-      <svg
-        id={NODES_CONSTANTS.ACCOUNT.type}
-        width={NODES_CONSTANTS.ACCOUNT.iconWidth}
-        height={NODES_CONSTANTS.ACCOUNT.iconHeight}
-        viewBox={`0 0 ${NODES_CONSTANTS.ACCOUNT.iconWidth} ${NODES_CONSTANTS.ACCOUNT.iconHeight}`}
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
+      <svg id={NODES_CONSTANTS.ACCOUNT.type} viewBox="-2 0 32 21" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path
           fillRule="evenodd"
           clipRule="evenodd"
@@ -105,14 +91,7 @@ const DefsComponent: React.FC<{}> = () => {
           fill="white"
         />
       </svg>
-      <svg
-        id={NODES_CONSTANTS.DATA_CENTER.type}
-        width={NODES_CONSTANTS.DATA_CENTER.iconWidth}
-        height={NODES_CONSTANTS.DATA_CENTER.iconHeight}
-        viewBox={`0 0 ${NODES_CONSTANTS.DATA_CENTER.iconWidth} ${NODES_CONSTANTS.DATA_CENTER.iconHeight}`}
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
+      <svg id={NODES_CONSTANTS.DATA_CENTER.type} viewBox="0 0 18 29" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path
           fillRule="evenodd"
           clipRule="evenodd"
@@ -120,14 +99,7 @@ const DefsComponent: React.FC<{}> = () => {
           fill="#222F43"
         />
       </svg>
-      <svg
-        id={NODES_CONSTANTS.SITES.type}
-        width={NODES_CONSTANTS.SITES.iconWidth}
-        height={NODES_CONSTANTS.SITES.iconHeight}
-        viewBox={`0 0 ${NODES_CONSTANTS.SITES.iconWidth} ${NODES_CONSTANTS.SITES.iconHeight}`}
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
+      <svg id={NODES_CONSTANTS.SITES.type} viewBox="0 0 34 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path
           d="M21.3821 9.74005C21.3344 9.71911 20.9738 9.51439 20.4381 9.51439C19.7129 9.51439 19.2104 9.99479 19.2104 10.6433C19.2104 11.2732 19.6908 11.7728 20.4381 11.7728C20.9656 11.7728 21.3326 11.5744 21.3821 11.5483V12.6859C21.2407 12.7231 20.8569 12.8359 20.3596 12.8359C19.0964 12.8359 17.9907 12.0089 17.9907 10.6433C17.9907 9.38003 18.9922 8.45354 20.3596 8.45354C20.8848 8.45354 21.2745 8.57567 21.3821 8.60592V9.74005Z"
           fill="white"

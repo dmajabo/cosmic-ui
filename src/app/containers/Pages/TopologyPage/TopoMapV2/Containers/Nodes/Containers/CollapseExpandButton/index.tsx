@@ -11,7 +11,7 @@ interface Props {
 const CollapseExpandButton: React.FC<Props> = ({ id, x, y, isCollapse, onClick }) => {
   if (isCollapse) {
     return (
-      <g opacity="0" transform={`translate(${x}, ${y})`} onClick={onClick} id={`${id}expand`}>
+      <g opacity="0" transform={`translate(${x}, ${y})`} onClick={onClick} id={id}>
         <circle cx="15" cy="15" r="15" fill="#3A5277" pointerEvents="all" />
         <circle cx="15" cy="15" r="14" stroke="white" strokeWidth="2.5" pointerEvents="all" />
         <g transform="translate(9, 9)">
@@ -25,7 +25,7 @@ const CollapseExpandButton: React.FC<Props> = ({ id, x, y, isCollapse, onClick }
     );
   }
   return (
-    <g opacity="0" transform={`translate(${x}, ${y})`} onClick={onClick} id={`${id}collapse`}>
+    <g opacity="0" transform={`translate(${x}, ${y})`} onClick={onClick} id={id}>
       <circle cx="15" cy="15" r="15" fill="#3A5277" pointerEvents="all" />
       <circle cx="15" cy="15" r="14" stroke="white" strokeWidth="2.5" pointerEvents="all" />
       <g transform="translate(9, 9)">

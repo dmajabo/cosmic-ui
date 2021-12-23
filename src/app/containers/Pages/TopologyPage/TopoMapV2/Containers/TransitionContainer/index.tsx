@@ -4,6 +4,8 @@ import { TransitionGContainer } from './styles';
 
 interface Props {
   stateIn: boolean;
+  origin?: string;
+  transform?: string;
   children: React.ReactNode;
 }
 const TransitionContainer: React.FC<Props> = (props: Props) => {
@@ -11,7 +13,11 @@ const TransitionContainer: React.FC<Props> = (props: Props) => {
   // return <g>{props.children}</g>;
   return (
     <Transition mountOnEnter unmountOnExit timeout={100} in={props.stateIn}>
-      {state => <TransitionGContainer className={state}>{props.children}</TransitionGContainer>}
+      {state => (
+        <TransitionGContainer origin={props.origin} transformStyle={props.transform} className={state}>
+          {props.children}
+        </TransitionGContainer>
+      )}
     </Transition>
   );
 };

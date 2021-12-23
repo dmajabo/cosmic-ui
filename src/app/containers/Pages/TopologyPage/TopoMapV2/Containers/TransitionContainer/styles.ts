@@ -1,9 +1,13 @@
 import styled from 'styled-components';
 
-export const TransitionGContainer = styled.g`
+interface Props {
+  transformStyle?: string;
+  origin?: string;
+}
+export const TransitionGContainer = styled.g<Props>`
   opacity: 0;
-  transform-origin: center center;
-  transform: scale(0);
+  transform-origin: ${props => props.origin || 'center center'};
+  transform: ${props => props.transformStyle || 'scale(0)'};
   transition: all 0.2s ease-in-out;
   &.enter,
   &.entered {
@@ -13,6 +17,6 @@ export const TransitionGContainer = styled.g`
   &.exit,
   &.exited {
     opacity: 0;
-    transform: scale(0);
+    transform: ${props => props.transformStyle || 'scale(0)'};
   }
 `;

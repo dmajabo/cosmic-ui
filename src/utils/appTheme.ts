@@ -117,6 +117,7 @@ export const APP_THEME: ITheme = {
 
     // TOPO V2
     '--_regionBg': '#459FC3',
+    '--_regionExpandedBg': '#E9EEF9',
     '--_accountBg': '#232F3D',
     '--_dataCenterBg': '#95A6C0',
     '--_sitesCiscoBg': '#7AC142',
@@ -224,6 +225,7 @@ export const APP_THEME: ITheme = {
     '--_tagBg': '#2C82C9',
     // TOPO V2
     '--_regionBg': '#459FC3',
+    '--_regionExpandedBg': '#E9EEF9',
     '--_accountBg': '#232F3D',
     '--_dataCenterBg': '#95A6C0',
     '--_sitesCiscoBg': '#7AC142',

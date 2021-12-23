@@ -1,54 +1,52 @@
-import { INetworkDevice, INetworkOrg, INetworkVNetwork, INetworkwEdge, ITopologyGroup, ITopologyMapData, SelectorEvalType, VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
-import { generateLinks } from 'lib/helpers/links';
-import { getVPCContainerSize, IVpcSize, setUpGroupsCoord, setUpVnetCoord } from 'lib/helpers/tree';
-import { DEFAULT_GROUP_ID, IDeviceNode, ILink, INetworkGroupNode, IVnetNode, IWedgeNode, TopologyGroupTypesAsNumber, TopologyGroupTypesAsString, TOPOLOGY_NODE_TYPES } from 'lib/models/topology';
-import * as d3 from 'd3';
+import { ITopologyGroup, ITopologyMapData, VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
+import { setUpGroupsCoord } from 'lib/helpers/tree';
+import { INetworkGroupNode, TOPOLOGY_NODE_TYPES } from 'lib/models/topology';
 import uuid from 'react-uuid';
 import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
-import { STANDART_DISPLAY_RESOLUTION } from 'lib/models/general';
+import { STANDART_DISPLAY_RESOLUTION_V2 } from 'lib/models/general';
 import { ITopoNode, ITopologyPreparedMapDataV2, TopoNodeTypes } from './models';
 
-const createDeviceNode = (org: INetworkOrg, orgIndex: number, node: INetworkDevice, index: number): IDeviceNode => {
-  return { ...node, uiId: uuid(), vendorType: org.vendorType, visible: true, childIndex: index, orgIndex: orgIndex, orgId: org.id, x: 0, y: 0, scaleFactor: 1, nodeType: TOPOLOGY_NODE_TYPES.DEVICE };
-};
+// const createDeviceNode = (org: INetworkOrg, orgIndex: number, node: INetworkDevice, index: number): IDeviceNode => {
+//   return { ...node, uiId: uuid(), vendorType: org.vendorType, visible: true, childIndex: index, orgIndex: orgIndex, orgId: org.id, x: 0, y: 0, scaleFactor: 1, nodeType: TOPOLOGY_NODE_TYPES.DEVICE };
+// };
 
-const createWedgeNode = (org: INetworkOrg, orgIndex: number, node: INetworkwEdge, index: number): IWedgeNode => {
-  return { ...node, uiId: uuid(), vendorType: org.vendorType, visible: true, childIndex: index, orgIndex: orgIndex, orgId: org.id, x: 0, y: 0, nodeType: TOPOLOGY_NODE_TYPES.WEDGE };
-};
+// const createWedgeNode = (org: INetworkOrg, orgIndex: number, node: INetworkwEdge, index: number): IWedgeNode => {
+//   return { ...node, uiId: uuid(), vendorType: org.vendorType, visible: true, childIndex: index, orgIndex: orgIndex, orgId: org.id, x: 0, y: 0, nodeType: TOPOLOGY_NODE_TYPES.WEDGE };
+// };
 
-const createVnetNode = (org: INetworkOrg, orgIndex: number, node: INetworkVNetwork, index: number, groups: ITopologyGroup[]): IVnetNode => {
-  const _uniqueGroupsSet: Set<ITopologyGroup> = new Set();
-  node.vms.forEach(vm => {
-    vm.uiId = uuid();
-    if (vm.selectorGroup) {
-      const gr = groups.find(it => it.name === vm.selectorGroup || it.id === vm.selectorGroup);
-      if (gr) {
-        _uniqueGroupsSet.add(gr);
-        // for (let i = 0; i < 20; i++) {
-        //   const _gr: ITopologyGroup = jsonClone(gr);
-        //   _gr.id = `testGr${i}`;
-        //   _uniqueGroupsSet.add(_gr);
-        // }
-      }
-    }
-  });
-  const _arr: ITopologyGroup[] = Array.from(_uniqueGroupsSet);
-  const _size: IVpcSize = getVPCContainerSize(node, _arr);
-  return {
-    ...node,
-    applicationGroups: _arr,
-    visible: true,
-    childIndex: index,
-    orgIndex: orgIndex,
-    orgId: org.id,
-    x: 0,
-    y: 0,
-    uiId: uuid(),
-    vendorType: org.vendorType,
-    nodeType: TOPOLOGY_NODE_TYPES.VNET,
-    nodeSize: _size,
-  };
-};
+// const createVnetNode = (org: INetworkOrg, orgIndex: number, node: INetworkVNetwork, index: number, groups: ITopologyGroup[]): IVnetNode => {
+//   const _uniqueGroupsSet: Set<ITopologyGroup> = new Set();
+//   node.vms.forEach(vm => {
+//     vm.uiId = uuid();
+//     if (vm.selectorGroup) {
+//       const gr = groups.find(it => it.name === vm.selectorGroup || it.id === vm.selectorGroup);
+//       if (gr) {
+//         _uniqueGroupsSet.add(gr);
+//         // for (let i = 0; i < 20; i++) {
+//         //   const _gr: ITopologyGroup = jsonClone(gr);
+//         //   _gr.id = `testGr${i}`;
+//         //   _uniqueGroupsSet.add(_gr);
+//         // }
+//       }
+//     }
+//   });
+//   const _arr: ITopologyGroup[] = Array.from(_uniqueGroupsSet);
+//   const _size: IVpcSize = getVPCContainerSize(node, _arr);
+//   return {
+//     ...node,
+//     applicationGroups: _arr,
+//     visible: true,
+//     childIndex: index,
+//     orgIndex: orgIndex,
+//     orgId: org.id,
+//     x: 0,
+//     y: 0,
+//     uiId: uuid(),
+//     vendorType: org.vendorType,
+//     nodeType: TOPOLOGY_NODE_TYPES.VNET,
+//     nodeSize: _size,
+//   };
+// };
 
 export const createGroupNode = (_item: ITopologyGroup, vendorType: VendorTypes, index: number): INetworkGroupNode => {
   return { ..._item, uiId: uuid(), vendorType: vendorType, visible: true, collapsed: true, groupIndex: index, x: 0, y: 0, devices: [], links: [], r: 0, nodeType: TOPOLOGY_NODE_TYPES.NETWORK_GROUP };
@@ -63,8 +61,6 @@ export const createTopology = (_data: ITopologyMapData, _groups: ITopologyGroup[
   const accounts: ITopoNode[] = [];
   const dataCenters: ITopoNode[] = [];
   const sites: ITopoNode[] = [];
-  let wedges: IWedgeNode[] = [];
-  let vnets: IVnetNode[] = [];
   // let devices: IDeviceNode[] = [];
   let topologyGroups: INetworkGroupNode[] = [];
   // const devicesInGroup: IDeviceNode[] = [];
@@ -156,36 +152,92 @@ export const createTopology = (_data: ITopologyMapData, _groups: ITopologyGroup[
   // }
   setUpGroupsCoord(topologyGroups);
   // setUpVnetCoord(vnets, 0);
-  setUpWedgesCoord(wedges);
-  const _nodes: ITopoNode[] = [...regions, ...accounts, ...dataCenters, ...sites];
+  // setUpWedgesCoord(wedges);
+
   // const links: ILink[] = generateLinks(nodes, wedges, vnets, topologyGroups);
+  setTopLevelCoord(regions, accounts, dataCenters, sites);
+  const _nodes: ITopoNode[] = [...regions, ...accounts, ...dataCenters, ...sites];
   return { nodes: _nodes, links: [] };
 };
 
-export const setUpWedgesCoord = (items: IWedgeNode[]) => {
-  if (!items || !items.length) return;
-  // const _root = hierarchy({ id: null, children: items });
-  // const _tree = tree()
-  //   .nodeSize([NODES_CONSTANTS.WEDGE.r, NODES_CONSTANTS.WEDGE.r + NODES_CONSTANTS.WEDGE.textHeight])
-  //   .size([STANDART_DISPLAY_RESOLUTION.height - 100, STANDART_DISPLAY_RESOLUTION.width / 2]);
-  // _tree(_root);
-  // if (items.length <= 8) {
-  //   _root.children.forEach((child, i) => {
-  //     items[i].x = child.y;
-  //     items[i].y = child.x;
-  //   });
-  //   return;
-  // }
-  // _root.children.forEach((child, index) => {
-  //   const d = NODES_CONSTANTS.WEDGE.r * 2;
-  //   let x = child.y;
-  //   const y = child.x - d;
-  //   if (index === 0) {
-  //     x -= d;
-  //   } else {
-  //     x = index % 2 === 0 ? x - d : x + d;
-  //   }
-  //   items[index].x = x;
-  //   items[index].y = y;
-  // });
+const getSectorHeight = (a: ITopoNode[], b: ITopoNode[], c: ITopoNode[], d: ITopoNode[]): number => {
+  let count = 0;
+  if (a && a.length) {
+    count += 1;
+  }
+  if (b && b.length) {
+    count += 1;
+  }
+  if ((c && c.length) || (d && d.length)) {
+    count += 1;
+  }
+  if (count <= 1) return STANDART_DISPLAY_RESOLUTION_V2.height;
+  return STANDART_DISPLAY_RESOLUTION_V2.height / count;
+};
+
+const getRowWidth = (count: number, w: number, spaceX: number): number => {
+  const rw = count * (w + spaceX * 2) - spaceX;
+  return rw;
+};
+
+const getPosXInRow = (centerX: number, rw: number, index: number, width: number, spaceX: number): number => {
+  const pos = centerX - rw / 2 + index * (width + spaceX * 2);
+  return pos;
+};
+
+const getPosY = (offsetY: number, sectorHeight: number, height: number): number => {
+  return offsetY + sectorHeight / 2 - height / 2;
+};
+
+export const setTopLevelCoord = (regions: ITopoNode[], accounts: ITopoNode[], dataCenters: ITopoNode[], sites: ITopoNode[]) => {
+  const sectorHeight = getSectorHeight(regions, accounts, dataCenters, sites);
+  const centerX = STANDART_DISPLAY_RESOLUTION_V2.width / 2;
+  let offsetY = 0;
+  if (regions && regions.length) {
+    const _rFWidth = getRowWidth(regions.length, NODES_CONSTANTS.REGION.collapse.width, NODES_CONSTANTS.REGION.collapse.spaceX);
+    regions.forEach((r, i) => {
+      r.x = getPosXInRow(centerX, _rFWidth, i, NODES_CONSTANTS.REGION.collapse.width, NODES_CONSTANTS.REGION.collapse.spaceX);
+      r.y = getPosY(offsetY, sectorHeight, NODES_CONSTANTS.REGION.collapse.height);
+    });
+    offsetY += sectorHeight;
+  }
+  if (accounts && accounts.length) {
+    const _rFWidth = getRowWidth(accounts.length, NODES_CONSTANTS.ACCOUNT.collapse.width, NODES_CONSTANTS.ACCOUNT.collapse.spaceX);
+    accounts.forEach((a, i) => {
+      a.x = getPosXInRow(centerX, _rFWidth, i, NODES_CONSTANTS.ACCOUNT.collapse.width, NODES_CONSTANTS.ACCOUNT.collapse.spaceX);
+      a.y = getPosY(offsetY, sectorHeight, NODES_CONSTANTS.REGION.collapse.height);
+    });
+    offsetY += sectorHeight;
+  }
+  let fNodes: ITopoNode[] = [];
+  let _rDCWidth = 0;
+  let _rSWidth = 0;
+  if (dataCenters && dataCenters.length) {
+    _rDCWidth = getRowWidth(dataCenters.length, NODES_CONSTANTS.DATA_CENTER.collapse.width, NODES_CONSTANTS.DATA_CENTER.collapse.spaceX);
+    fNodes = [].concat(dataCenters);
+  }
+  if (sites && sites.length) {
+    _rSWidth = getRowWidth(sites.length, NODES_CONSTANTS.SITES.collapse.width, NODES_CONSTANTS.SITES.collapse.spaceX);
+    fNodes = fNodes.concat(sites);
+  }
+  if (fNodes && fNodes.length) {
+    const _fW = _rSWidth + _rDCWidth;
+    fNodes.forEach((n, i) => {
+      let width = 0;
+      let spaceX = 0;
+      let height = 0;
+      if (n.type === NODES_CONSTANTS.DATA_CENTER.type) {
+        width = NODES_CONSTANTS.DATA_CENTER.collapse.width;
+        spaceX = NODES_CONSTANTS.DATA_CENTER.collapse.spaceX;
+        height = NODES_CONSTANTS.DATA_CENTER.collapse.height;
+      }
+      if (n.type === NODES_CONSTANTS.SITES.type) {
+        width = NODES_CONSTANTS.SITES.collapse.width;
+        spaceX = NODES_CONSTANTS.SITES.collapse.spaceX;
+        height = NODES_CONSTANTS.SITES.collapse.height;
+      }
+      n.x = getPosXInRow(centerX, _fW, i, width, spaceX);
+      n.y = getPosY(offsetY, sectorHeight, height);
+    });
+  }
 };

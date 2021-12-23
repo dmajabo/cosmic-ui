@@ -1,12 +1,12 @@
 import React from 'react';
-import { ITextStyle } from '../../../../model';
+import { ICollapseLabelStyle } from '../../../../model';
 
 interface Props {
   label: string;
-  stylesObj: ITextStyle;
+  stylesObj: ICollapseLabelStyle;
 }
 
-const NodeName: React.FC<Props> = ({ label, stylesObj }) => {
+const NodeCollapsedName: React.FC<Props> = ({ label, stylesObj }) => {
   return (
     <text fill={stylesObj.fill} x={stylesObj.x} y={stylesObj.y} textAnchor={stylesObj.textAnchor} fontWeight="500" fontSize={stylesObj.fontSize} fontFamily="DMSans">
       {label}
@@ -14,4 +14,4 @@ const NodeName: React.FC<Props> = ({ label, stylesObj }) => {
   );
 };
 
-export default React.memo(NodeName);
+export default React.memo(NodeCollapsedName);
