@@ -10,7 +10,8 @@ import { PACKET_LOSS_HEATMAP_LEGEND } from '../Performance Dashboard/PacketLoss'
 import { LegendData } from '../Performance Dashboard/Heatmap';
 import { AnomalyBlockTable } from './AnomalyBlockTable';
 import { Row } from 'react-table';
-import { DUMMY_ANOMALY_TABLE_DATA, DUMMY_BAR_CHART_DATA, DUMMY_SESSION_LOGS_DATA, DUMMY_SLA_TEST_DATA, SeverityLevel } from './DummyData';
+import { DUMMY_ANOMALY_TABLE_DATA, DUMMY_BAR_CHART_DATA, DUMMY_SESSION_LOGS_DATA, DUMMY_SLA_TEST_DATA } from './DummyData';
+import { getSeverityColour } from 'lib/api/http/utils';
 
 interface ExperienceTabProps {}
 
@@ -18,19 +19,6 @@ export interface BarChartData {
   readonly date: string;
   readonly value: number;
 }
-
-export const getSeverityColour = (severity: SeverityLevel | JSX.Element) => {
-  if (severity === SeverityLevel.normal) {
-    return '#52984E';
-  }
-  if (severity === SeverityLevel.low) {
-    return '#F9BA55';
-  }
-  if (severity === SeverityLevel.medium) {
-    return '#F69442';
-  }
-  return '#DC4545';
-};
 
 const SLA_TEST_COLUMNS: Column[] = [
   {
