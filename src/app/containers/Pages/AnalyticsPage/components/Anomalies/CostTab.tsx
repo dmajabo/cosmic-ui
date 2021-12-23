@@ -5,9 +5,9 @@ import { Column, ColumnAccessor, AnomalyCostTableData, CostDetailTableData, Cost
 import { AnomalyTable } from './AnomalyTable';
 import { SeverityIcon } from './SeverityIcon';
 import { AnomalySLATestTable } from './AnomalySLATestTable';
-import { getSeverityColour } from './ExperienceTab';
 import { DUMMY_ANOMALY_COST_TABLE_DATA, DUMMY_BAR_CHART_DATA } from '../../DummyData';
 import { Row } from 'react-table';
+import { getSeverityColour } from 'lib/api/http/utils';
 
 interface CostTabProps {}
 

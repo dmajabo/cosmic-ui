@@ -51,3 +51,23 @@ export const getToBase64 = (data: any) => {
 
 const toBase64 = str => window.btoa(unescape(encodeURIComponent(str)));
 const fromBase64 = str => decodeURIComponent(escape(window.atob(str)));
+
+export enum SeverityLevel {
+  normal = 'Normal',
+  low = 'Low',
+  medium = 'Medium',
+  high = 'High',
+}
+
+export const getSeverityColour = (severity: SeverityLevel | JSX.Element) => {
+  if (severity === SeverityLevel.normal) {
+    return '#52984E';
+  }
+  if (severity === SeverityLevel.low) {
+    return '#F9BA55';
+  }
+  if (severity === SeverityLevel.medium) {
+    return '#F69442';
+  }
+  return '#DC4545';
+};
