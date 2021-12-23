@@ -1,11 +1,11 @@
 import React from 'react';
 import { IWedgeNode } from 'lib/models/topology';
 import { useDrag } from 'app/containers/Pages/TopologyPage/TopoMapV2/hooks/useDrag';
-import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
 import TransitionContainer from '../../TransitionContainer';
 import TextName from '../../Shared/TextName';
 import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
 import { IPosition } from 'lib/models/general';
+import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 // import NodeTooltipPortal from 'components/Basic/NodeTooltipPortal';
 // import WedgePopup from '../../Popups/WedgePopup';
 // import { IPopupDisplay } from 'lib/models/general';
@@ -15,7 +15,7 @@ interface IProps {
   onClick: (vm: IWedgeNode) => void;
 }
 const WEdgeNode: React.FC<IProps> = (props: IProps) => {
-  const { topology } = useTopologyDataContext();
+  const { topology } = useTopologyV2DataContext();
   const { onUpdate, onUnsubscribeDrag } = useDrag(
     {
       id: `${NODES_CONSTANTS.WEDGE.type}${props.dataItem.uiId}`,

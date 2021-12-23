@@ -1,7 +1,7 @@
 import React from 'react';
 import OverflowContainer from 'app/components/Basic/OverflowContainer/styles';
 import { IDeviceNode } from 'lib/models/topology';
-// import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
+// import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 import MetricsTab from './MetricsTab';
 import { PanelHeader, PanelTabWrapper, PanelTitle } from '../../styles';
 import { PanelContent } from 'app/components/Basic/PanelBar/styles';

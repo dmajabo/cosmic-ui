@@ -7,7 +7,7 @@ import { useDrag } from 'app/containers/Pages/TopologyPage/TopoMapV2/hooks/useDr
 // import NodeTooltipPortal from 'components/Basic/NodeTooltipPortal';
 // import VnetPopup from '../../Popups/VnetPopup';
 // import { IPopupDisplay } from 'lib/models/general';
-import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
+import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 import VNetHeder from './VNetHeder';
 import { ContainerWrapper, MoreButton } from './styles';
 import ApplicationGroupContainer from './ApplicationGroupContainer';
@@ -18,7 +18,7 @@ interface IProps {
   onClickVpc: (_data: IVPC_PanelDataNode) => void;
 }
 const VNetNode: React.FC<IProps> = (props: IProps) => {
-  const { topology } = useTopologyDataContext();
+  const { topology } = useTopologyV2DataContext();
   const { onUpdate, onUnsubscribeDrag } = useDrag(
     {
       id: `${NODES_CONSTANTS.VNet.type}${props.dataItem.uiId}`,

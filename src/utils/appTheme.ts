@@ -114,6 +114,12 @@ export const APP_THEME: ITheme = {
     '--_stepperStateCompleteColor': '#52984E',
     // TAGS
     '--_tagBg': '#2C82C9',
+
+    // TOPO V2
+    '--_regionBg': '#459FC3',
+    '--_accountBg': '#232F3D',
+    '--_dataCenterBg': '#95A6C0',
+    '--_sitesCiscoBg': '#7AC142',
   },
   dark: {
     '--_primaryBg': 'black',
@@ -216,6 +222,11 @@ export const APP_THEME: ITheme = {
     '--_stepperStateCompleteColor': '#52984E',
     // TAGS
     '--_tagBg': '#2C82C9',
+    // TOPO V2
+    '--_regionBg': '#459FC3',
+    '--_accountBg': '#232F3D',
+    '--_dataCenterBg': '#95A6C0',
+    '--_sitesCiscoBg': '#7AC142',
   },
 };
 

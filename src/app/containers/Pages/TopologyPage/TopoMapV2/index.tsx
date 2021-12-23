@@ -1,7 +1,5 @@
 import React, { useContext } from 'react';
-import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
 import { ContainerWithFooter, ContainerWithMetrics, ContainerWithPanel, MapContainer } from './styles';
-import HeadeerAction from './HeadeerAction';
 import { IDeviceNode, IPanelBar, TopologyMetricsPanelTypes, TopologyPanelTypes, IWedgeNode, IVPC_PanelDataNode } from 'lib/models/topology';
 import LoadingIndicator from 'app/components/Loading';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
@@ -21,11 +19,12 @@ import { PolicyApi } from 'lib/api/ApiModels/Services/policy';
 import { createTopologyQueryParam, ITopologyQueryParam } from 'lib/api/ApiModels/paramBuilders';
 import { TopoApi } from 'lib/api/ApiModels/Services/topo';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
+import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 
 interface IProps {}
 
 const TopoMapV2: React.FC<IProps> = (props: IProps) => {
-  const { topology } = useTopologyDataContext();
+  const { topology } = useTopologyV2DataContext();
   const userContext = useContext<UserContextState>(UserContext);
   const { response, loading, error, onGetChainData } = useGetChainData<ITopologyDataRes>();
   const [showPanelBar, setShowPanelBar] = React.useState<IPanelBar<TopologyPanelTypes>>({ show: false, type: null });
@@ -40,13 +39,13 @@ const TopoMapV2: React.FC<IProps> = (props: IProps) => {
 
   React.useEffect(() => {
     if (response !== null) {
-      topology?.onSetData(response);
+      topology.onSetData(response);
     }
   }, [response]);
 
   React.useEffect(() => {
     if (error) {
-      topology?.onSetIsDataReadyToShow(DATA_READY_STATE.ERROR);
+      topology.onSetIsDataReadyToShow(DATA_READY_STATE.ERROR);
     }
   }, [error]);
 
@@ -141,10 +140,15 @@ const TopoMapV2: React.FC<IProps> = (props: IProps) => {
           <ContainerWithMetrics className={!showFooter ? 'withPanel' : ''}>
             <MapContainer>
               {topology.originData && (
-                <>
-                  <HeadeerAction onShowPanel={onOpenPanel} onRefresh={onTryLoadData} />
-                  <Graph isFullScreen={isFullScreen} onOpenFullScreen={onOpenFullScreen} onClickVpc={onOpenVpcPanel} onClickDevice={onOpenNodePanel} onClickWedge={onOpenNodePanel} />
-                </>
+                <Graph
+                  isFullScreen={isFullScreen}
+                  onOpenPanel={onOpenPanel}
+                  onReload={onTryLoadData}
+                  onOpenFullScreen={onOpenFullScreen}
+                  onClickVpc={onOpenVpcPanel}
+                  onClickDevice={onOpenNodePanel}
+                  onClickWedge={onOpenNodePanel}
+                />
               )}
               {(loading || topology.dataReadyToShow === DATA_READY_STATE.LOADING) && (
                 <AbsLoaderWrapper>

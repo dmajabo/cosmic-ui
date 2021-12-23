@@ -2,7 +2,7 @@ import React from 'react';
 import { IDeviceNode } from 'lib/models/topology';
 import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
 import { useDrag } from 'app/containers/Pages/TopologyPage/TopoMapV2/hooks/useDrag';
-import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
+import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 import TransitionContainer from '../../TransitionContainer';
 import TextName from '../../Shared/TextName';
 import { IPosition } from 'lib/models/general';
@@ -16,7 +16,7 @@ interface IProps {
   onClickDevice: (dev: IDeviceNode) => void;
 }
 const DeviceNode: React.FC<IProps> = (props: IProps) => {
-  const { topology } = useTopologyDataContext();
+  const { topology } = useTopologyV2DataContext();
   // const [showPopup, setShowPopup] = React.useState<IPopupDisplay>({ show: false, x: 0, y: 0 });
   const { onUpdate, onUnsubscribeDrag } = useDrag(
     {

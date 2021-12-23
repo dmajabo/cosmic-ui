@@ -1,39 +1,45 @@
 import React from 'react';
-import { IDeviceNode, IVnetNode, IWedgeNode, INetworkGroupNode, TOPOLOGY_NODE_TYPES, IVPC_PanelDataNode } from 'lib/models/topology';
-import Device from '../Device';
-import WEdgeNode from '../WEdge';
-import VNetNode from '../VNet';
-import GroupNode from '../GroupNode';
+import { IDeviceNode, IWedgeNode, IVPC_PanelDataNode } from 'lib/models/topology';
+import { ITopoNode, TopoNodeTypes } from 'lib/hooks/Topology/models';
+import RegionNode from './RegionNode';
+import AccountNode from './AccountNode';
+import DataCenter from './DataCenter';
+import SitesNode from './SitesNode';
+
 interface Props {
-  dataItem: IDeviceNode | IVnetNode | IWedgeNode | INetworkGroupNode;
+  dataItem: ITopoNode;
   onClickDevice: (_node: IDeviceNode) => void;
   onClickWedge: (_node: IWedgeNode) => void;
   onClickVpc: (_data: IVPC_PanelDataNode) => void;
 }
 
 const NodesWrapper: React.FC<Props> = (props: Props) => {
-  const onClickVpc = (_data: IVPC_PanelDataNode) => {
-    props.onClickVpc(_data);
-  };
-  const onClickDevice = (dev: IDeviceNode) => {
-    props.onClickDevice(dev);
-  };
-  const onClickWedge = (wedge: IWedgeNode) => {
-    props.onClickWedge(wedge);
-  };
+  // const onClickVpc = (_data: IVPC_PanelDataNode) => {
+  //   props.onClickVpc(_data);
+  // };
+  // const onClickDevice = (dev: IDeviceNode) => {
+  //   props.onClickDevice(dev);
+  // };
+  // const onClickWedge = (wedge: IWedgeNode) => {
+  //   props.onClickWedge(wedge);
+  // };
 
-  if (props.dataItem.nodeType === TOPOLOGY_NODE_TYPES.DEVICE) {
-    return <Device dataItem={props.dataItem as IDeviceNode} onClickDevice={onClickDevice} />;
+  if (props.dataItem.type === TopoNodeTypes.ACCOUNT) {
+    return <AccountNode dataItem={props.dataItem} />;
   }
-  if (props.dataItem.nodeType === TOPOLOGY_NODE_TYPES.WEDGE) {
-    return <WEdgeNode dataItem={props.dataItem as IWedgeNode} onClick={onClickWedge} />;
+
+  if (props.dataItem.type === TopoNodeTypes.REGION) {
+    return <RegionNode dataItem={props.dataItem} />;
   }
-  if (props.dataItem.nodeType === TOPOLOGY_NODE_TYPES.VNET) {
-    return <VNetNode dataItem={props.dataItem as IVnetNode} onClickVpc={onClickVpc} />;
+
+  if (props.dataItem.type === TopoNodeTypes.DATA_CENTER) {
+    return <DataCenter dataItem={props.dataItem} />;
   }
-  if (props.dataItem.nodeType === TOPOLOGY_NODE_TYPES.NETWORK_GROUP) {
-    return <GroupNode dataItem={props.dataItem as INetworkGroupNode} onClickDevice={onClickDevice} />;
+
+  if (props.dataItem.type === TopoNodeTypes.SITES) {
+    return <SitesNode dataItem={props.dataItem} />;
   }
+
   return null;
 };
 

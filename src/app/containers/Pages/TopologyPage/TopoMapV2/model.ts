@@ -1,4 +1,5 @@
-import { ISize, ISpace } from 'lib/models/general';
+import { TopoNodeTypes } from 'lib/hooks/Topology/models';
+import { IIconSize, ISize, ISpace } from 'lib/models/general';
 import { TOPOLOGY_NODE_TYPES } from 'lib/models/topology';
 
 export const TOPOLOGY_IDS = {
@@ -60,6 +61,60 @@ export interface IVnetAppGroup extends INode<TOPOLOGY_NODE_TYPES>, ISize, ISpace
 
 export interface IOrganizationNode extends INode<TOPOLOGY_NODE_TYPES>, ISize, ISpace {}
 
+export interface ICounterStyle {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  fill: string;
+  color: string;
+  fontSize: string;
+  lineHeight: string;
+  br: number;
+  cWidth: string;
+  cMinWidth: string;
+}
+
+export interface ITextStyle {
+  x: number;
+  y: number;
+  fill: string;
+  fontSize: number;
+  textAnchor: string;
+}
+
+export interface ICollapseExpand extends ISize {
+  r: number;
+}
+
+export interface IRegionNode extends INode<TopoNodeTypes>, ISize, ISpace, IIconSize {
+  bgColor: string;
+  borderRadius: number;
+  countStyles: ICounterStyle;
+  labelStyles: ITextStyle;
+}
+
+export interface IAccountNode extends INode<TopoNodeTypes>, ISize, ISpace, IIconSize {
+  bgColor: string;
+  borderRadius: number;
+  countStyles: ICounterStyle;
+  labelStyles: ITextStyle;
+}
+
+export interface IDataCenterNode extends INode<TopoNodeTypes>, ISize, ISpace, IIconSize {
+  bgColor: string;
+  borderRadius: number;
+  countStyles: ICounterStyle;
+  labelStyles: ITextStyle;
+}
+
+export interface ISitesNode extends INode<TopoNodeTypes>, ISize, ISpace, IIconSize {
+  bgColor: string;
+  borderRadius: number;
+  countStyles: ICounterStyle;
+  labelStyles: ITextStyle;
+}
+
 export interface INodes_Types {
   Organization: IOrganizationNode;
   Devisec: IDeviceNode;
@@ -68,6 +123,12 @@ export interface INodes_Types {
   WEDGE: IWEDGENode;
   NETWORK_GROUP: INetworkGroupNode;
   APP_GROUP: IVnetAppGroup;
+
+  REGION: IRegionNode;
+  ACCOUNT: IAccountNode;
+  DATA_CENTER: IDataCenterNode;
+  SITES: ISitesNode;
+  COLLAPSE_EXPAND: ICollapseExpand;
 }
 
 export const NODES_CONSTANTS: INodes_Types = {
@@ -144,5 +205,142 @@ export const NODES_CONSTANTS: INodes_Types = {
     fontSize: 11,
     textWidth: 75,
     textHeight: 40,
+  },
+  REGION: {
+    type: TopoNodeTypes.REGION,
+    width: 62,
+    height: 62,
+    iconWidth: 28,
+    iconHeight: 28,
+    iconOffsetX: 18, // 62 / 2 - 28 / 2
+    iconOffsetY: 18, // 62 / 2 - 28 / 2
+    spaceX: 50,
+    spaceY: 175,
+    bgColor: 'var(--_regionBg)',
+    borderRadius: 6,
+    countStyles: {
+      x: 4,
+      y: -8,
+      width: 54,
+      height: 16,
+      br: 8,
+      fill: 'var(--_pButtonBg)',
+      color: 'var(--_primaryBg)',
+      fontSize: '10px',
+      lineHeight: '11px',
+      cWidth: 'auto',
+      cMinWidth: '100%',
+    },
+    labelStyles: {
+      x: 31,
+      y: 84,
+      textAnchor: 'middle',
+      fill: 'var(--_primaryColor)',
+      fontSize: 12,
+    },
+  },
+  ACCOUNT: {
+    type: TopoNodeTypes.ACCOUNT,
+    width: 62,
+    height: 62,
+    iconWidth: 28,
+    iconHeight: 17,
+    iconOffsetX: 18, // 62 / 2 - 28 / 2
+    iconOffsetY: 22.5, // 62 / 2 - 17 / 2
+    spaceX: 50,
+    spaceY: 175,
+    bgColor: 'var(--_accountBg)',
+    borderRadius: 6,
+    countStyles: {
+      x: 4,
+      y: -8,
+      width: 54,
+      height: 16,
+      br: 8,
+      fill: 'var(--_pButtonBg)',
+      color: 'var(--_primaryBg)',
+      fontSize: '10px',
+      lineHeight: '11px',
+      cWidth: 'auto',
+      cMinWidth: '100%',
+    },
+    labelStyles: {
+      x: 31,
+      y: 84,
+      textAnchor: 'middle',
+      fill: 'var(--_primaryColor)',
+      fontSize: 12,
+    },
+  },
+  DATA_CENTER: {
+    type: TopoNodeTypes.DATA_CENTER,
+    width: 62,
+    height: 62,
+    iconWidth: 18,
+    iconHeight: 29,
+    iconOffsetX: 22, // 62 / 2 - 18 / 2
+    iconOffsetY: 16.5, // 62 / 2 - 29 / 2
+    spaceX: 50,
+    spaceY: 175,
+    bgColor: 'var(--_dataCenterBg)',
+    borderRadius: 6,
+    countStyles: {
+      x: 4,
+      y: -8,
+      width: 54,
+      height: 16,
+      br: 8,
+      fill: 'var(--_pButtonBg)',
+      color: 'var(--_primaryBg)',
+      fontSize: '10px',
+      lineHeight: '11px',
+      cWidth: 'auto',
+      cMinWidth: '100%',
+    },
+    labelStyles: {
+      x: 31,
+      y: 84,
+      textAnchor: 'middle',
+      fill: 'var(--_primaryColor)',
+      fontSize: 12,
+    },
+  },
+  SITES: {
+    type: TopoNodeTypes.SITES,
+    width: 62,
+    height: 62,
+    iconWidth: 34,
+    iconHeight: 24,
+    iconOffsetX: 14, // 62 / 2 - 34 / 2
+    iconOffsetY: 19, // 62 / 2 - 24 / 2
+    spaceX: 50,
+    spaceY: 175,
+    bgColor: 'var(--_sitesCiscoBg)',
+    borderRadius: 6,
+    countStyles: {
+      x: 4,
+      y: -8,
+      width: 54,
+      height: 16,
+      br: 8,
+      fill: 'var(--_pButtonBg)',
+      color: 'var(--_primaryBg)',
+      fontSize: '10px',
+      lineHeight: '11px',
+      cWidth: 'auto',
+      cMinWidth: '100%',
+    },
+    labelStyles: {
+      x: 31,
+      y: 84,
+      textAnchor: 'middle',
+      fill: 'var(--_primaryColor)',
+      fontSize: 12,
+    },
+  },
+  COLLAPSE_EXPAND: {
+    width: 30,
+    height: 30,
+    r: 15,
   },
 };

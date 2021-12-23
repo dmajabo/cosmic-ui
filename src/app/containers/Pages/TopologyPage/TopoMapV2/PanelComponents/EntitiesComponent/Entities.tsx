@@ -2,13 +2,13 @@ import React from 'react';
 import { PanelBarContent, PanelHeader, PanelTitle } from '../styles';
 import EntitiesItem from './EntitiesItem';
 import OverflowContainer from 'app/components/Basic/OverflowContainer/styles';
-import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
+import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 import { IEntity } from 'lib/models/entites';
 
 interface IProps {}
 
 const Entities: React.FC<IProps> = (props: IProps) => {
-  const { topology } = useTopologyDataContext();
+  const { topology } = useTopologyV2DataContext();
 
   const onEntityChange = (_item: IEntity, _selected: boolean) => {
     topology.onSelectEntity(_item, _selected);

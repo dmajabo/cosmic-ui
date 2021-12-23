@@ -43,6 +43,7 @@ export const ContainerWithMetrics = styled.div`
 
 export const MapContainer = styled.div`
   display: flex;
+  flex-direction: column;
   position: relative;
   width: auto;
   max-width: 100%;

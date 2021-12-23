@@ -1,6 +1,6 @@
 import React from 'react';
 import { SliderWrapper, Wrapper } from './styles';
-import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
+import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 import { IPanelBarLayoutTypes, ISelectedListItem, ITimeTypes, TIME_PERIOD } from 'lib/models/general';
 import Toogle from 'app/components/Inputs/Toogle';
 import { PanelWrapperStyles } from 'app/components/Basic/PanelBar/styles';
@@ -18,7 +18,7 @@ interface IProps {
 }
 
 const FooterAction: React.FC<IProps> = (props: IProps) => {
-  const { topology } = useTopologyDataContext();
+  const { topology } = useTopologyV2DataContext();
   const [selectedPeriod, setSelectedPeriod] = React.useState<ISelectedListItem<ITimeTypes> | null>(null);
   const [selectedTime, setSelectedTime] = React.useState<Date | null>(null);
   React.useEffect(() => {

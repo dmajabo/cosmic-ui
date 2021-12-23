@@ -50,6 +50,13 @@ export interface ISpace {
   spaceY: number;
 }
 
+export interface IIconSize {
+  iconWidth: number;
+  iconHeight: number;
+  iconOffsetX: number;
+  iconOffsetY: number;
+}
+
 export interface ITransform {
   k: number;
   x: number;

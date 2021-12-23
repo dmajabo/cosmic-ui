@@ -5,7 +5,7 @@ import { getQueryResourceParam } from 'lib/api/ApiModels/Metrics/queryRoutesHelp
 import { useGet } from 'lib/api/http/useAxiosHook';
 import RouteTableWrapper from './RouteTableWrapper';
 import { toTimestamp } from 'lib/api/ApiModels/paramBuilders';
-import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
+import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 import { TopoApi } from 'lib/api/ApiModels/Services/topo';
 interface IProps {
@@ -13,7 +13,7 @@ interface IProps {
 }
 
 const RoutesTab: React.FC<IProps> = (props: IProps) => {
-  const { topology } = useTopologyDataContext();
+  const { topology } = useTopologyV2DataContext();
   const userContext = useContext<UserContextState>(UserContext);
   const { response, loading, error, onGet } = useGet<IRoutesResData>();
   const [data, setData] = React.useState<IRouteResDataItem[]>([]);

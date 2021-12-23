@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { PanelBarContent, PanelHeader, PanelTitle } from '../styles';
 import OverflowContainer from 'app/components/Basic/OverflowContainer/styles';
-import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
+import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 import { TopologyGroupsView } from './model';
 import EmptyGroupView from './EmptyGroupView';
 import AllGroupView from './AllGroupView';
@@ -20,7 +20,7 @@ import { PolicyApi } from 'lib/api/ApiModels/Services/policy';
 interface IProps {}
 
 const GroupsComponent: React.FC<IProps> = (props: IProps) => {
-  const { topology } = useTopologyDataContext();
+  const { topology } = useTopologyV2DataContext();
   const userContext = useContext<UserContextState>(UserContext);
   const [groups, setGroups] = React.useState([]);
   const [view, setView] = React.useState<TopologyGroupsView | null>(null);

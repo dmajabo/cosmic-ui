@@ -6,7 +6,7 @@ import { useDrag } from 'app/containers/Pages/TopologyPage/TopoMapV2/hooks/useDr
 import { Transition } from 'react-transition-group';
 import GroupDevicesContainer from './GroupDevicesContainer';
 import * as d3 from 'd3';
-import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
+import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 import TransitionContainer from '../../TransitionContainer';
 import TextName from '../../Shared/TextName';
 import { IPosition } from 'lib/models/general';
@@ -15,7 +15,7 @@ interface IProps {
   onClickDevice: (dev: IDeviceNode) => void;
 }
 const GroupNode: React.FC<IProps> = (props: IProps) => {
-  const { topology } = useTopologyDataContext();
+  const { topology } = useTopologyV2DataContext();
   const { onUpdate, onUnsubscribeDrag } = useDrag(
     {
       id: `${NODES_CONSTANTS.NETWORK_GROUP.type}${props.dataItem.uiId}`,

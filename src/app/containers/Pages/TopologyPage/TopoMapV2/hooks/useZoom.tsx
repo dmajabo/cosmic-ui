@@ -10,8 +10,9 @@ interface IProps {
 export function useZoom(props: IProps) {
   const [svgId] = React.useState<string>(props.svgId);
   const [rootId] = React.useState<string>(props.rootId);
-  const [transformStyle, setTransformStyle] = React.useState<string>('translate(0, 0) scale(0)');
+  const [transformStyle, setTransformStyle] = React.useState<string>('translate(0, 0) scale(1)');
   const [transform, setTransform] = React.useState<ITransform>({ k: 1, x: 0, y: 0 });
+  const [zoomValue, setZoomValue] = React.useState<number>(100);
   const [lock, setTooglelock] = React.useState<boolean>(false);
   // const [isUpdated, setIsUpdated] = React.useState<boolean>(false);
   const zoom = d3
@@ -44,8 +45,15 @@ export function useZoom(props: IProps) {
     const k = prepareDataValue(data.k, 1, ZoomRange.min, ZoomRange.max);
     const x = prepareDataValue(data.x, 0);
     const y = prepareDataValue(data.y, 0);
-    setTransform(data);
+    setZoomValue(convertScale(k));
     setTransformStyle(`translate(${x}, ${y}) scale(${k})`);
+    setTransform(data);
+  };
+
+  const convertScale = (k: number): number => {
+    if (!k || k === 0) return 0;
+    const scale = k * 100;
+    return Number(scale.toFixed(0));
   };
 
   const onUnsubscribe = () => {
@@ -126,6 +134,7 @@ export function useZoom(props: IProps) {
       return;
     }
     const { x, y, k } = event.transform;
+    setZoomValue(convertScale(k));
     setTransformStyle(`translate(${x}, ${y}) scale(${k})`);
     setTransform({ x, y, k });
   };
@@ -180,6 +189,7 @@ export function useZoom(props: IProps) {
   };
 
   return {
+    zoomValue,
     transform,
     transformStyle,
     lock,
