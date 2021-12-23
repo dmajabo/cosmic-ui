@@ -20,18 +20,18 @@ export const AnalyticsStyles = makeStyles(
         width: '100%',
         paddingTop: 10,
         paddingBottom: 10,
-        backgroundColor: '#F3F6FC',
+        backgroundColor: 'var(--_appBg)',
         zIndex: 3,
       },
       tabLabel: {
         textTransform: 'none',
-        color: '#848DA3',
+        color: 'var(--_tabHeaderTextColor)',
         fontSize: 18,
         fontWeight: 700,
       },
       activeTabLabel: {
         textTransform: 'none',
-        color: '#05143A',
+        color: 'var(--_tabHeaderActiveTextColor)',
         fontSize: 18,
         fontWeight: 700,
       },
@@ -70,7 +70,7 @@ export const AnalyticsStyles = makeStyles(
       rightContainerTitle: {
         fontSize: 22,
         fontWeight: 700,
-        color: 'var(--_primaryColor)',
+        color: 'var(--_primaryTextColor)',
         padding: '30px 0px',
         position: 'sticky',
         zIndex: 2,
@@ -134,7 +134,7 @@ export const AnalyticsStyles = makeStyles(
         left: '50%',
         transform: 'translate(-50%, -50%)',
         padding: 30,
-        backgroundColor: 'white',
+        backgroundColor: 'var(--_primaryBg)',
         width: '70%',
         height: '93%',
         outline: 'none',
@@ -158,6 +158,7 @@ export const AnalyticsStyles = makeStyles(
       popupTitle: {
         fontSize: 22,
         fontWeight: 700,
+        color: 'var(--_primaryTextColor)',
       },
       searchBar: {
         marginLeft: 30,
@@ -236,6 +237,7 @@ export const AnalyticsStyles = makeStyles(
         fontSize: 16,
         fontWeight: 700,
         marginRight: 15,
+        color: 'var(--_primaryTextColor)',
       },
       selectedDimensionCount: {
         backgroundColor: '#437FEC',
@@ -253,6 +255,7 @@ export const AnalyticsStyles = makeStyles(
       buttonText: {
         fontSize: 12,
         fontWeight: 700,
+        color: 'var(--_primaryTextColor)',
       },
       saveButton: {
         color: 'white',
@@ -305,12 +308,13 @@ export const AnalyticsStyles = makeStyles(
       leftContainerTitle: {
         fontSize: 22,
         fontWeight: 700,
-        color: '#05143A',
+        color: 'var(--_primaryTextColor)',
       },
       metricsChartTitleContainer: {
         display: 'flex',
         justifyContent: 'space-between',
         paddingTop: 20,
+        backgroundColor: 'var(--_primaryBg)',
       },
       otherButton: {
         backgroundColor: 'white',
@@ -333,6 +337,7 @@ export const AnalyticsStyles = makeStyles(
         color: '#848DA3',
         fontSize: 14,
         paddingBottom: 10,
+        backgroundColor: 'var(--_primaryBg)',
       },
       fixedPosition: {
         position: 'sticky',
@@ -459,19 +464,19 @@ export const AnalyticsStyles = makeStyles(
       },
       anomalyContainer: {
         width: '100%',
-        backgroundColor: 'white',
+        backgroundColor: 'var(--_primaryBg)',
         borderRadius: 6,
         padding: 30,
         marginTop: 20,
       },
       anomalyTabContainer: {
-        backgroundColor: '#F3F6FC',
+        backgroundColor: 'var(--_tabContainerBg)',
         padding: 5,
         borderRadius: 6,
       },
       anomalyTimeRangeText: {
         fontSize: 14,
-        color: '#848DA3',
+        color: 'var(--_tabHeaderTextColor)',
         paddingRight: 20,
       },
       inlineSelect: {
@@ -486,7 +491,7 @@ export const AnalyticsStyles = makeStyles(
         marginTop: 40,
       },
       anomalyTableTitle: {
-        color: '#05143A',
+        color: 'var(--_primaryTextColor)',
         fontSize: 20,
         fontWeight: 700,
         marginRight: 15,
@@ -559,6 +564,34 @@ export const AnalyticsStyles = makeStyles(
       costDetailValue: {
         color: '#9ea5b7',
         marginLeft: 5,
+      },
+      policyLogsContainer: {
+        marginTop: 40,
+      },
+      policyLogsSearchBar: {
+        height: 50,
+        border: 'none',
+        padding: 15,
+        width: 500,
+      },
+      policyLogsOtherButton: {
+        backgroundColor: 'white',
+        marginRight: 20,
+        height: 50,
+      },
+      policyLogsTableContainer: {
+        marginTop: 20,
+      },
+      policyLogsDetailsText: {
+        color: '#437FEC',
+        fontSize: 12,
+        fontWeight: 700,
+      },
+      policyLogsArrowRight: {
+        color: '#437FEC',
+      },
+      policyLogsViewDetailsButton: {
+        cursor: 'pointer',
       },
     }),
   {

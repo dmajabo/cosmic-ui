@@ -5,7 +5,8 @@ import { AnomalyExperienceTableData, Column, ColumnAccessor, AnomalyPolicyLogsTa
 import { AnomalyTable } from './AnomalyTable';
 import { SeverityIcon } from './SeverityIcon';
 import { AnomalySLATestTable } from './AnomalySLATestTable';
-import { DUMMY_ANOMALY_TABLE_DATA, DUMMY_BAR_CHART_DATA, DUMMY_LOGS_TABLE_DATA } from './DummyData';
+import { DUMMY_ANOMALY_TABLE_DATA, DUMMY_BAR_CHART_DATA, DUMMY_LOGS_TABLE_DATA } from '../../DummyData';
+
 import { Row } from 'react-table';
 import { getSeverityColour } from 'lib/api/http/utils';
 

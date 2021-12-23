@@ -1,6 +1,6 @@
-import { AnomalyExperienceTableData, AnomalyCostTableData, AnomalyPolicyLogsTableData, AnomalySessionLogsData, FinalTableData } from 'lib/api/http/SharedTypes';
+import { AnomalyCostTableData, AnomalyExperienceTableData, AnomalyPolicyLogsTableData, AnomalySessionLogsData, FinalTableData } from 'lib/api/http/SharedTypes';
 import { SeverityLevel } from 'lib/api/http/utils';
-import { BarChartData } from './ExperienceTab';
+import { BarChartData } from './components/Anomalies/ExperienceTab';
 
 //TODO: Delete File when api is integrated
 export const DUMMY_BAR_CHART_DATA: BarChartData[] = [
@@ -130,5 +130,16 @@ export const DUMMY_ANOMALY_COST_TABLE_DATA: AnomalyCostTableData[] = [
     severity: SeverityLevel.medium,
     hits: 49,
     cost: '$6/day',
+  },
+];
+
+export const DUMMY_POLICY_LOGS_TABLE_DATA: AnomalyPolicyLogsTableData[] = [
+  {
+    hits: 17,
+    time: 'Tue,Nov 14 2021,10:25pm',
+    edge: 'Office 4',
+    user: 'Jesse Roy',
+    operation: 'Policy Change',
+    changes: 'Uplink Configuration (WAN1, WAN2), List Configuration (WAN1, WAN2), List Configuration (WAN1, WAN2), List Configuration (WAN1, WAN2)',
   },
 ];

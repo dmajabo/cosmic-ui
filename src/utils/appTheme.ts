@@ -19,11 +19,14 @@ export const APP_THEME: ITheme = {
     '--_sidebarGradient': 'linear-gradient(90deg, #437FEC 0%, rgba(67, 127, 236, 0) 100%)',
     '--_defaultIconColor': '#3A5277',
     '--_interfaceBg': '#F3F6FC',
+    '--_tabContainerBg': '#F3F6FC',
 
     // Text Color
-    '--_primaryTextColor': '#FFFFFF',
+    '--_primaryTextColor': 'black',
     '--_secondaryTextColor': '#CECECE',
     '--_disabledTextColor': '#848DA3',
+    '--_tabHeaderTextColor': '#848DA3',
+    '--_tabHeaderActiveTextColor': 'black',
     // Buttons
     '--_primaryButtonBg': '#FFFFFF',
     '--_primaryButtonBorder': '#CBD2DC',
@@ -123,11 +126,14 @@ export const APP_THEME: ITheme = {
     '--_sidebarGradient': 'linear-gradient(90deg, #437FEC 0%, rgba(67, 127, 236, 0) 100%)',
     '--_defaultIconColor': '#3A5277',
     '--_interfaceBg': '#F3F6FC',
+    '--_tabContainerBg': 'black',
 
     // Text Color
     '--_primaryTextColor': '#FFFFFF',
     '--_secondaryTextColor': '#CECECE',
     '--_disabledTextColor': '#848DA3',
+    '--_tabHeaderTextColor': '#848DA3',
+    '--_tabHeaderActiveTextColor': 'black',
     // Buttons
     '--_primaryButtonBg': '#FFFFFF',
     '--_primaryButtonBorder': '#CBD2DC',

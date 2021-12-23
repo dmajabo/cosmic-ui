@@ -10,7 +10,7 @@ import { PACKET_LOSS_HEATMAP_LEGEND } from '../Performance Dashboard/PacketLoss'
 import { LegendData } from '../Performance Dashboard/Heatmap';
 import { AnomalyBlockTable } from './AnomalyBlockTable';
 import { Row } from 'react-table';
-import { DUMMY_ANOMALY_TABLE_DATA, DUMMY_BAR_CHART_DATA, DUMMY_SESSION_LOGS_DATA, DUMMY_SLA_TEST_DATA } from './DummyData';
+import { DUMMY_ANOMALY_TABLE_DATA, DUMMY_BAR_CHART_DATA, DUMMY_SESSION_LOGS_DATA, DUMMY_SLA_TEST_DATA } from '../../DummyData';
 import { getSeverityColour } from 'lib/api/http/utils';
 
 interface ExperienceTabProps {}

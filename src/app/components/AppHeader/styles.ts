@@ -38,7 +38,7 @@ export const PageName = styled.div`
   width: auto;
   font-weight: bold;
   font-size: 30px;
-  color: #05143a;
+  color: var(--_primaryTextColor);
   text-transform: capitalize;
 `;
 
@@ -67,7 +67,7 @@ export const UserName = styled.div`
   width: 100%;
   font-weight: 700;
   font-size: 16px;
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
 `;
 export const UserRole = styled.div`
   width: 100%;
