@@ -10,7 +10,8 @@ import { PACKET_LOSS_HEATMAP_LEGEND } from '../Performance Dashboard/PacketLoss'
 import { LegendData } from '../Performance Dashboard/Heatmap';
 import { AnomalyBlockTable } from './AnomalyBlockTable';
 import { Row } from 'react-table';
-import { DUMMY_ANOMALY_TABLE_DATA, DUMMY_BAR_CHART_DATA, DUMMY_SESSION_LOGS_DATA, DUMMY_SLA_TEST_DATA, SeverityLevel } from './DummyData';
+import { DUMMY_ANOMALY_TABLE_DATA, DUMMY_BAR_CHART_DATA, DUMMY_SESSION_LOGS_DATA, DUMMY_SLA_TEST_DATA } from './DummyData';
+import { getSeverityColour } from 'lib/api/http/utils';
 
 interface ExperienceTabProps {}
 
@@ -18,19 +19,6 @@ export interface BarChartData {
   readonly date: string;
   readonly value: number;
 }
-
-const getSeverityColour = (severity: SeverityLevel | JSX.Element) => {
-  if (severity === SeverityLevel.normal) {
-    return '#52984E';
-  }
-  if (severity === SeverityLevel.low) {
-    return '#F9BA55';
-  }
-  if (severity === SeverityLevel.medium) {
-    return '#F69442';
-  }
-  return '#DC4545';
-};
 
 const SLA_TEST_COLUMNS: Column[] = [
   {
@@ -71,6 +59,7 @@ const SESSION_LOGS_COLUMNS: Column[] = [
   {
     Header: 'TIME',
     accessor: ColumnAccessor.time,
+    width: 250,
   },
   {
     Header: 'SESSION ID',
@@ -91,6 +80,7 @@ const SESSION_LOGS_COLUMNS: Column[] = [
   {
     Header: 'DESTINATION IP',
     accessor: ColumnAccessor.destination,
+    width: 200,
   },
   {
     Header: 'TGW NAME',
@@ -127,10 +117,12 @@ const SESSION_LOGS_COLUMNS: Column[] = [
   {
     Header: 'SDWAN RULE ID',
     accessor: ColumnAccessor.sdwanRuleId,
+    width: 200,
   },
   {
     Header: 'FIREWALL POLICY ID',
     accessor: ColumnAccessor.firewallPolicyId,
+    width: 200,
   },
   {
     Header: 'DESTINATION APPLICATION',
@@ -139,6 +131,10 @@ const SESSION_LOGS_COLUMNS: Column[] = [
 ];
 
 const RED_COLOUR = '#DC4545';
+
+const SLA_TEST_TABLE_SORTABLE_HEADERS = ['NAME'];
+
+const SESSION_LOGS_TABLE_SORTABLE_HEADERS = ['SESSION ID', 'SOURCE IP', 'DESTINATION IP', 'SDWAN RULE ID', 'FIREWALL POLICY ID'];
 
 const getColor = (legendData: LegendData[], data: number) => legendData.find(item => data >= item.low && data <= item.high)?.color || RED_COLOUR;
 
@@ -188,9 +184,9 @@ export const ExperienceTab: React.FC<ExperienceTabProps> = () => {
     return (
       <div>
         <div className={classes.anomalySubcomponentTitle}>SLA Tests</div>
-        <AnomalySLATestTable columns={SLA_TEST_COLUMNS} data={slaTestTableData} />
+        <AnomalySLATestTable columns={SLA_TEST_COLUMNS} data={slaTestTableData} sortableHeaders={SLA_TEST_TABLE_SORTABLE_HEADERS} />
         <div className={`${classes.sessionLogs} ${classes.anomalySubcomponentTitle}`}>Session Logs</div>
-        <AnomalyBlockTable columns={SESSION_LOGS_COLUMNS} data={sessionLogsTableData} />
+        <AnomalyBlockTable columns={SESSION_LOGS_COLUMNS} data={sessionLogsTableData} sortableHeaders={SESSION_LOGS_TABLE_SORTABLE_HEADERS} />
       </div>
     );
   }, []);

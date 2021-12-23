@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useTable, useSortBy } from 'react-table';
-import { AnomalySlaTestData, Column } from 'lib/api/http/SharedTypes';
+import { AnomalyPolicyLogsTableData, AnomalySlaTestData, Column } from 'lib/api/http/SharedTypes';
 import { AnalyticsStyles } from '../../AnalyticsStyles';
 import SortIcon from '../../icons/performance dashboard/sort.svg';
 
@@ -26,10 +26,11 @@ const Styles = styled.div`
 
 interface AnomalySLATestTableProps {
   readonly columns: Column[];
-  readonly data: AnomalySlaTestData[];
+  readonly data: AnomalySlaTestData[] | AnomalyPolicyLogsTableData[];
+  readonly sortableHeaders: string[];
 }
 
-export const AnomalySLATestTable: React.FC<AnomalySLATestTableProps> = ({ data, columns }) => {
+export const AnomalySLATestTable: React.FC<AnomalySLATestTableProps> = ({ data, columns, sortableHeaders }) => {
   const classes = AnalyticsStyles();
 
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable(
@@ -49,7 +50,7 @@ export const AnomalySLATestTable: React.FC<AnomalySLATestTableProps> = ({ data, 
                 <th {...column.getHeaderProps(column.getSortByToggleProps())}>
                   <div className={classes.tableHeaderText}>
                     {column.render('Header')}
-                    <span className={classes.sortIcon}>{column.Header === 'NAME' ? <img src={SortIcon} alt="sort by name" /> : <span />}</span>
+                    <span className={classes.sortIcon}>{sortableHeaders.includes(column.Header.toString()) ? <img src={SortIcon} alt="sort by name" /> : <span />}</span>
                   </div>
                 </th>
               ))}

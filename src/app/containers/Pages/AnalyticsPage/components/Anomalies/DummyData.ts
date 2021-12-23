@@ -1,12 +1,6 @@
-import { AnomalyExperienceTableData, AnomalySessionLogsData, FinalTableData } from 'lib/api/http/SharedTypes';
+import { AnomalyExperienceTableData, AnomalyPolicyLogsTableData, AnomalySessionLogsData, FinalTableData } from 'lib/api/http/SharedTypes';
+import { SeverityLevel } from 'lib/api/http/utils';
 import { BarChartData } from './ExperienceTab';
-
-export enum SeverityLevel {
-  normal = 'Normal',
-  low = 'Low',
-  medium = 'Medium',
-  high = 'High',
-}
 
 //TODO: Delete File when api is integrated
 export const DUMMY_BAR_CHART_DATA: BarChartData[] = [
@@ -110,5 +104,16 @@ export const DUMMY_SESSION_LOGS_DATA: AnomalySessionLogsData[] = [
     sdwanRuleId: 246,
     firewallPolicyId: 364,
     destApp: 'APP-POS 1',
+  },
+];
+
+export const DUMMY_LOGS_TABLE_DATA: AnomalyPolicyLogsTableData[] = [
+  {
+    hits: 17,
+    time: 'Tue,Nov 14 2021,10:25pm',
+    edge: 'Office 4',
+    user: 'Jesse Roy',
+    operation: 'Policy Change',
+    changes: 'Uplink Configuration (WAN1, WAN2), List Configuration (WAN1, WAN2), List Configuration (WAN1, WAN2), List Configuration (WAN1, WAN2)',
   },
 ];
