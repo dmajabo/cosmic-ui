@@ -6,6 +6,7 @@ import { LookbackLabel, LookbackSelectOption, LookbackValue } from '../Metrics E
 import Select from 'react-select';
 import { ExperienceTab } from './ExperienceTab';
 import { PolicyTab } from './PolicyTab';
+import { CostTab } from './CostTab';
 
 interface TabPanelProps {
   readonly name: string;
@@ -137,7 +138,7 @@ export const Anomalies: React.FC = () => {
         <PolicyTab />
       </TabPanel>
       <TabPanel value={tab} name={AnomalyTabValue.Cost}>
-        {AnomalyTabValue.Cost}
+        <CostTab />
       </TabPanel>
     </div>
   );

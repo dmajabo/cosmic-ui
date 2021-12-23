@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useTable, useSortBy } from 'react-table';
-import { AnomalyPolicyLogsTableData, AnomalySlaTestData, Column } from 'lib/api/http/SharedTypes';
+import { AnomalyPolicyLogsTableData, AnomalySlaTestData, Column, CostDetailTableData } from 'lib/api/http/SharedTypes';
 import { AnalyticsStyles } from '../../AnalyticsStyles';
 import SortIcon from '../../icons/performance dashboard/sort.svg';
 
@@ -26,7 +26,7 @@ const Styles = styled.div`
 
 interface AnomalySLATestTableProps {
   readonly columns: Column[];
-  readonly data: AnomalySlaTestData[] | AnomalyPolicyLogsTableData[];
+  readonly data: AnomalySlaTestData[] | AnomalyPolicyLogsTableData[] | CostDetailTableData[];
   readonly sortableHeaders: string[];
 }
 

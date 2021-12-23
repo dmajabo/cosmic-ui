@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import { useTable, useExpanded, useSortBy, Row } from 'react-table';
-import { AnomalyExperienceTableData, Column, ColumnAccessor } from 'lib/api/http/SharedTypes';
+import { AnomalyCostTableData, AnomalyExperienceTableData, Column, ColumnAccessor } from 'lib/api/http/SharedTypes';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import { AnalyticsStyles } from '../../AnalyticsStyles';
@@ -45,27 +45,17 @@ const Styles = styled.div`
 `;
 
 interface AnomalyTableProps {
-  readonly data: AnomalyExperienceTableData[];
+  readonly inputColumns: Column[];
+  readonly data: AnomalyExperienceTableData[] | AnomalyCostTableData[];
   readonly subComponent: (row: Row<object>) => JSX.Element;
 }
 
-export const AnomalyTable: React.FC<AnomalyTableProps> = ({ data, subComponent }) => {
+export const AnomalyTable: React.FC<AnomalyTableProps> = ({ inputColumns, data, subComponent }) => {
   const classes = AnalyticsStyles();
 
   const columns: Column[] = useMemo(
     () => [
-      {
-        Header: 'NAME',
-        accessor: ColumnAccessor.name,
-      },
-      {
-        Header: 'SEVERITY',
-        accessor: ColumnAccessor.severity,
-      },
-      {
-        Header: 'HITS',
-        accessor: ColumnAccessor.hits,
-      },
+      ...inputColumns,
       {
         Header: 'DETAILS',
         id: 'expander',

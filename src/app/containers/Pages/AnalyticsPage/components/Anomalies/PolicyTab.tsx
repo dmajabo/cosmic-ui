@@ -11,6 +11,21 @@ import { getSeverityColour } from 'lib/api/http/utils';
 
 interface PolicyTabProps {}
 
+const anomalyTableColumns: Column[] = [
+  {
+    Header: 'NAME',
+    accessor: ColumnAccessor.name,
+  },
+  {
+    Header: 'SEVERITY',
+    accessor: ColumnAccessor.severity,
+  },
+  {
+    Header: 'HITS',
+    accessor: ColumnAccessor.hits,
+  },
+];
+
 const LOGS_TABLE_COLUMNS: Column[] = [
   {
     Header: 'HITS',
@@ -102,7 +117,7 @@ export const PolicyTab: React.FC<PolicyTabProps> = () => {
           <span className={classes.anomalyTableTitle}>Triggers</span>
           <span className={classes.anomalyCount}>7</span>
         </div>
-        <AnomalyTable data={tableData} subComponent={policySubComponent} />
+        <AnomalyTable inputColumns={anomalyTableColumns} data={tableData} subComponent={policySubComponent} />
       </div>
     </div>
   );

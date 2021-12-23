@@ -1,4 +1,4 @@
-import { AnomalyExperienceTableData, AnomalyPolicyLogsTableData, AnomalySessionLogsData, FinalTableData } from 'lib/api/http/SharedTypes';
+import { AnomalyExperienceTableData, AnomalyCostTableData, AnomalyPolicyLogsTableData, AnomalySessionLogsData, FinalTableData } from 'lib/api/http/SharedTypes';
 import { SeverityLevel } from 'lib/api/http/utils';
 import { BarChartData } from './ExperienceTab';
 
@@ -115,5 +115,20 @@ export const DUMMY_LOGS_TABLE_DATA: AnomalyPolicyLogsTableData[] = [
     user: 'Jesse Roy',
     operation: 'Policy Change',
     changes: 'Uplink Configuration (WAN1, WAN2), List Configuration (WAN1, WAN2), List Configuration (WAN1, WAN2), List Configuration (WAN1, WAN2)',
+  },
+];
+
+export const DUMMY_ANOMALY_COST_TABLE_DATA: AnomalyCostTableData[] = [
+  {
+    name: 'WAN Link Status Change',
+    severity: SeverityLevel.low,
+    hits: 10,
+    cost: '$42/week',
+  },
+  {
+    name: 'WAN Link UL Traffic Anomaly',
+    severity: SeverityLevel.medium,
+    hits: 49,
+    cost: '$6/day',
   },
 ];

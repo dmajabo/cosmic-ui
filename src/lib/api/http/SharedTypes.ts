@@ -216,6 +216,13 @@ export enum ColumnAccessor {
   user = 'user',
   operation = 'operation',
   changes = 'changes',
+  cost = 'cost',
+  date = 'date',
+  vpcAttachments = 'vpcAttachments',
+  vpnAttachments = 'vpnAttachments',
+  peeringAttachments = 'peeringAttachments',
+  dataProcessed = 'dataProcessed',
+  totalCost = 'totalCost',
   //TODO: change below enum params when api is integrated
   interfaceSource = 'interfaceSource',
   interfaceDestination = 'interfaceDestination',
@@ -393,4 +400,25 @@ export interface AnomalyPolicyLogsTableData {
   readonly user: string | JSX.Element;
   readonly operation: string;
   readonly changes: string | JSX.Element;
+}
+
+export interface AnomalyCostTableData {
+  readonly name: string;
+  readonly severity: SeverityLevel | JSX.Element;
+  readonly hits: number | JSX.Element;
+  readonly cost: string;
+}
+
+export interface CostDetailTableData {
+  readonly date: string;
+  readonly vpcAttachments: string;
+  readonly vpnAttachments: string;
+  readonly peeringAttachments: string;
+  readonly dataProcessed: string;
+  readonly totalCost: string;
+}
+
+export interface CostDetailHeader {
+  readonly label: string;
+  readonly value: string;
 }
