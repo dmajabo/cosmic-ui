@@ -3,7 +3,7 @@ import { IExpandLabelStyle } from '../../../../model';
 
 interface Props {
   name: string;
-  strBtnLabel: string;
+  strBtnLabel?: string;
   nodeWidth: number;
   markerWidth: number;
   height: number;
@@ -44,17 +44,19 @@ const NodeExpandedName: React.FC<Props> = (props: Props) => {
         >
           {props.name}
         </span>
-        <span
-          style={{
-            display: 'inline-block',
-            flexShrink: 0,
-            margin: 'auto 0 auto auto',
-            fontSize: props.stylesObj.strBtnFontSize + 'px',
-            color: props.stylesObj.strBtnColor,
-          }}
-        >
-          {props.strBtnLabel}
-        </span>
+        {props.strBtnLabel && (
+          <span
+            style={{
+              display: 'inline-block',
+              flexShrink: 0,
+              margin: 'auto 0 auto auto',
+              fontSize: props.stylesObj.strBtnFontSize + 'px',
+              color: props.stylesObj.strBtnColor,
+            }}
+          >
+            {props.strBtnLabel}
+          </span>
+        )}
       </div>
     </foreignObject>
   );

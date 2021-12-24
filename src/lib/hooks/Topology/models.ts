@@ -1,10 +1,11 @@
-import { IBaseEntity, ICollapsed, ICoord, IVisible } from 'lib/models/general';
+import { IBaseEntity, ICollapsed, ICoord, ISize, IVisible } from 'lib/models/general';
 
-export interface ITopoNode extends ICoord, ICollapsed, IVisible, IBaseEntity<string> {
+export interface ITopoNode<T> extends ISize, ICoord, ICollapsed, IVisible, IBaseEntity<string> {
   name: string;
   uiId: string;
   orgId: string;
   type: TopoNodeTypes;
+  children: T[];
 }
 
 export enum TopoNodeTypes {
@@ -12,9 +13,11 @@ export enum TopoNodeTypes {
   REGION = 'region',
   DATA_CENTER = 'data_center',
   SITES = 'sites',
+
+  WEDGE = 'wedge',
 }
 
 export interface ITopologyPreparedMapDataV2 {
-  nodes: ITopoNode[];
+  nodes: ITopoNode<any>[];
   links: any[];
 }

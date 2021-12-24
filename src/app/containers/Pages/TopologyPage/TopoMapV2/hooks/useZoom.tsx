@@ -90,14 +90,11 @@ export function useZoom(props: IProps) {
     const root = d3.select(`#${rootId}`);
     const svgSize = document.getElementById(svgId).getBoundingClientRect();
     const rootSize = root.node().getBBox();
-    const devWidth = rootSize.width;
-    const devHeight = rootSize.height;
-    const scale = getScaleSizeHelper(svgSize, devWidth, devHeight);
-    const centerX = svgSize.width / 2 - devWidth / 2 - rootSize.x;
-    const centerY = svgSize.height / 2 - devHeight / 2 - rootSize.y;
-    svg.call(zoom.transform, d3.zoomIdentity.translate(centerX, centerY).scale(scale));
-    // zoom.scaleTo(root, scale);
-    // zoom.translateTo(root, );
+    const scale = getScaleSizeHelper(svgSize, rootSize.width, rootSize.height);
+    zoom.translateTo(svg, svgSize.width / 2, svgSize.height / 2);
+    if (scale !== transform.k) {
+      zoom.scaleTo(svg, Number(scale.toFixed(4)));
+    }
   };
 
   const getScaleSizeHelper = (svg, width, height) => {
@@ -105,7 +102,7 @@ export function useZoom(props: IProps) {
     const scaleY = Math.min(1, svg.height / height);
     let k = Math.min(scaleX, scaleY);
     k = checkMinMaxScale(k);
-    return k;
+    return Number(k.toFixed(4));
   };
 
   const checkMinMaxScale = scale => {
@@ -121,12 +118,10 @@ export function useZoom(props: IProps) {
     const g = d3.select(`#${rootId}`);
     const { x, y, k } = event.transform;
     if (!event.sourceEvent) {
-      g.transition().attr('transform', `translate(${x}, ${y}) scale(${k.toFixed(4)})`);
+      g.transition().attr('transform', `translate(${x}, ${y}) scale(${k})`);
       return;
     }
-    g.transition()
-      .duration(0)
-      .attr('transform', `translate(${x}, ${y}) scale(${k.toFixed(4)})`);
+    g.transition().duration(0).attr('transform', `translate(${x}, ${y}) scale(${k})`);
   };
 
   const zoomEnd = event => {

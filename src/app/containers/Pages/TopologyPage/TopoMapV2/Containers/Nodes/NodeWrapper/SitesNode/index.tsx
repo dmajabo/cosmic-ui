@@ -8,7 +8,7 @@ import SitesCollapsedNode from './SitesCollapsedNode';
 import { onHoverNode, onUnHoverNode } from '../../../../Graph/helper';
 import SitesExpandNode from './SitesExpandNode';
 interface Props {
-  dataItem: ITopoNode;
+  dataItem: ITopoNode<any>;
 }
 
 const SitesNode: React.FC<Props> = (props: Props) => {

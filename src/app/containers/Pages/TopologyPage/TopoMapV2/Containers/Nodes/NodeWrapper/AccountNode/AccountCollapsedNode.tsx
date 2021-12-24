@@ -10,6 +10,7 @@ import NodeCollapsedName from '../../Containers/NodeName/NodeCollapsedName';
 interface Props {
   id: string;
   name: string;
+  childrenCount: number;
   show: boolean;
   onExpand: () => void;
 }
@@ -50,7 +51,7 @@ const AccountCollapsedNode: React.FC<Props> = (props: Props) => {
             x={NODES_CONSTANTS.ACCOUNT.collapse.iconOffsetX}
             y={NODES_CONSTANTS.ACCOUNT.collapse.iconOffsetY}
           />
-          <NodeCounter label={`${12} VPC`} stylesObj={NODES_CONSTANTS.ACCOUNT.countStyles} />
+          <NodeCounter label={`${props.childrenCount} TGW`} stylesObj={NODES_CONSTANTS.ACCOUNT.countStyles} />
           <CollapseExpandButton
             id={`${props.id}${CollapseExpandState.EXPAND}`}
             isCollapse

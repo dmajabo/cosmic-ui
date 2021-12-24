@@ -50,12 +50,12 @@ const DefsComponent: React.FC<{}> = () => {
         />
       </svg>
 
-      <linearGradient id={NODES_CONSTANTS.WEDGE.lineGradientId} x1="25" y1="75" x2="75" y2="25" gradientUnits="userSpaceOnUse">
+      <linearGradient id={NODES_CONSTANTS.NETWORK_WEDGE.lineGradientId} x1="25" y1="75" x2="75" y2="25" gradientUnits="userSpaceOnUse">
         <stop stopColor="#4D27A8" />
         <stop offset="1" stopColor="#A166FF" />
       </linearGradient>
-      <svg id={NODES_CONSTANTS.WEDGE.id} width={NODES_CONSTANTS.WEDGE.r * 2} height={NODES_CONSTANTS.WEDGE.r * 2} viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M0 25C0 11.1929 11.1929 0 25 0C38.8071 0 50 11.1929 50 25C50 38.8071 38.8071 50 25 50C11.1929 50 0 38.8071 0 25Z" fill={`url(#${NODES_CONSTANTS.WEDGE.lineGradientId})`} />
+      <svg id={NODES_CONSTANTS.NETWORK_WEDGE.type} width={NODES_CONSTANTS.WEDGE.r * 2} height={NODES_CONSTANTS.WEDGE.r * 2} viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0 25C0 11.1929 11.1929 0 25 0C38.8071 0 50 11.1929 50 25C50 38.8071 38.8071 50 25 50C11.1929 50 0 38.8071 0 25Z" fill={`url(#${NODES_CONSTANTS.NETWORK_WEDGE.lineGradientId})`} />
         <path
           fillRule="evenodd"
           clipRule="evenodd"

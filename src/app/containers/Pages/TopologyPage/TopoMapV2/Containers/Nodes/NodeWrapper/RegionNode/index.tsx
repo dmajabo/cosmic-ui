@@ -10,7 +10,7 @@ import RegionExpandNode from './RegionExpandNode';
 import { onHoverNode, onUnHoverNode } from '../../../../Graph/helper';
 
 interface Props {
-  dataItem: ITopoNode;
+  dataItem: ITopoNode<any>;
 }
 
 const RegionNode: React.FC<Props> = (props: Props) => {

@@ -87,6 +87,11 @@ export interface IExpandLabelStyle extends ICollapseLabelStyle {
   strBtnColor: string;
   strBtnFontSize: number;
 }
+
+export interface ILabelHtmlStyles extends ISize, ICollapseLabelStyle {
+  textAlign: string;
+}
+
 export interface ICollapseExpandBtn extends ISize {
   r: number;
 }
@@ -105,6 +110,7 @@ export interface IExpandedStyles extends IMinSize, ISpace {
   marker: IMarker;
   bgColor: string;
   borderRadius: number;
+  contentPadding: number;
 }
 export interface ICollapseExpandState {
   collapse: ICollapseStyles;
@@ -119,6 +125,7 @@ export interface IRegionNode extends INode<TopoNodeTypes>, ICollapseExpandState 
 
 export interface IAccountNode extends INode<TopoNodeTypes>, ICollapseExpandState {
   iconId: string;
+  headerHeight: number;
   countStyles: ICounterStyle;
   labelCollapsedStyles: ICollapseLabelStyle;
   labelExpandedStyles: IExpandLabelStyle;
@@ -138,6 +145,15 @@ export interface ISitesNode extends INode<TopoNodeTypes>, ICollapseExpandState {
   labelExpandedStyles: IExpandLabelStyle;
 }
 
+export interface INetworkWEdgeNode extends INode<TopoNodeTypes>, ICollapseExpandState {
+  iconId: string;
+  lineGradientId: string;
+  countStyles: ICounterStyle;
+  labelCollapsedStyles: ICollapseLabelStyle;
+  labelExpandedStyles: IExpandLabelStyle;
+  labelHtmlStyles: ILabelHtmlStyles;
+}
+
 export interface INodes_Types {
   Organization: IOrganizationNode;
   Devisec: IDeviceNode;
@@ -151,6 +167,7 @@ export interface INodes_Types {
   ACCOUNT: IAccountNode;
   DATA_CENTER: IDataCenterNode;
   SITES: ISitesNode;
+  NETWORK_WEDGE: INetworkWEdgeNode;
   COLLAPSE_EXPAND: ICollapseExpandBtn;
 }
 
@@ -264,6 +281,7 @@ export const NODES_CONSTANTS: INodes_Types = {
       minOffsetY: -194, // 62 - 256
       bgColor: 'var(--_regionExpandedBg)',
       borderRadius: 6,
+      contentPadding: 20,
     },
     countStyles: {
       x: 4,
@@ -298,7 +316,7 @@ export const NODES_CONSTANTS: INodes_Types = {
   ACCOUNT: {
     type: TopoNodeTypes.ACCOUNT,
     iconId: TopoNodeTypes.ACCOUNT,
-
+    headerHeight: 30,
     countStyles: {
       x: 4,
       y: -8,
@@ -344,6 +362,7 @@ export const NODES_CONSTANTS: INodes_Types = {
       minOffsetY: -33, // 31 - 128 / 2
       bgColor: 'var(--_regionExpandedBg)',
       borderRadius: 6,
+      contentPadding: 20,
     },
     labelCollapsedStyles: {
       x: 31,
@@ -397,6 +416,7 @@ export const NODES_CONSTANTS: INodes_Types = {
       minOffsetY: 0, // 31 - 128 / 2
       bgColor: 'var(--_regionExpandedBg)',
       borderRadius: 6,
+      contentPadding: 20,
     },
     countStyles: {
       x: 4,
@@ -463,6 +483,7 @@ export const NODES_CONSTANTS: INodes_Types = {
       minOffsetY: 0, // 31 - 128 / 2
       bgColor: 'var(--_regionExpandedBg)',
       borderRadius: 6,
+      contentPadding: 20,
     },
     countStyles: {
       x: 4,
@@ -492,6 +513,37 @@ export const NODES_CONSTANTS: INodes_Types = {
       textAnchor: 'unset',
       fill: 'var(--_primaryColor)',
       fontSize: 12,
+    },
+  },
+  NETWORK_WEDGE: {
+    type: TopoNodeTypes.WEDGE,
+    iconId: TopoNodeTypes.WEDGE,
+    lineGradientId: 'wedgeLineGradientSvg',
+    collapse: {
+      spaceX: 20,
+      spaceY: 0,
+      width: 50,
+      height: 50,
+      iconWidth: 26,
+      iconHeight: 26,
+      iconOffsetX: 12, // 50 / 2 - 26 / 2
+      iconOffsetY: 12, // 50 / 2 - 26 / 2
+      bgColor: 'transparent',
+      borderRadius: 6,
+    },
+    expanded: null,
+    countStyles: null,
+    labelCollapsedStyles: null,
+    labelExpandedStyles: null,
+    labelHtmlStyles: {
+      x: -5,
+      y: 54,
+      width: 60,
+      height: 18,
+      textAnchor: 'unset',
+      textAlign: 'center',
+      fill: 'var(--_primaryColor)',
+      fontSize: 10,
     },
   },
   COLLAPSE_EXPAND: {

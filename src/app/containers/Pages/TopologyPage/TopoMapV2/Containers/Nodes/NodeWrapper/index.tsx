@@ -7,7 +7,7 @@ import DataCenter from './DataCenter';
 import SitesNode from './SitesNode';
 
 interface Props {
-  dataItem: ITopoNode;
+  dataItem: ITopoNode<any>;
   onClickDevice: (_node: IDeviceNode) => void;
   onClickWedge: (_node: IWedgeNode) => void;
   onClickVpc: (_data: IVPC_PanelDataNode) => void;

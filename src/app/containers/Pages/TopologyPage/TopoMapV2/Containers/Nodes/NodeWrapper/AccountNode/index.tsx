@@ -7,8 +7,10 @@ import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataCont
 import AccountCollapsedNode from './AccountCollapsedNode';
 import { onHoverNode, onUnHoverNode } from '../../../../Graph/helper';
 import AccountExpandNode from './AccountExpandNode';
+import { IWedgeNode } from 'lib/models/topology';
+
 interface Props {
-  dataItem: ITopoNode;
+  dataItem: ITopoNode<IWedgeNode>;
 }
 
 const AccountNode: React.FC<Props> = (props: Props) => {
@@ -81,8 +83,8 @@ const AccountNode: React.FC<Props> = (props: Props) => {
       transform={`translate(${pos.x}, ${pos.y})`}
       data-type={NODES_CONSTANTS.ACCOUNT.type}
     >
-      <AccountCollapsedNode id={props.dataItem.id} name={props.dataItem.name} show={props.dataItem.collapsed} onExpand={onExpand} />
-      <AccountExpandNode id={props.dataItem.id} name={props.dataItem.name} show={!props.dataItem.collapsed} onCollapse={onCollapse} />
+      <AccountCollapsedNode id={props.dataItem.id} name={props.dataItem.name} childrenCount={props.dataItem.children.length} show={props.dataItem.collapsed} onExpand={onExpand} />
+      <AccountExpandNode dataItem={props.dataItem} show={!props.dataItem.collapsed} onCollapse={onCollapse} />
     </g>
   );
 };
