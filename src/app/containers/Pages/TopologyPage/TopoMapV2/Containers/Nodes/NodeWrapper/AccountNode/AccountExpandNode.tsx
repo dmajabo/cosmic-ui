@@ -6,13 +6,13 @@ import CollapseExpandButton from '../../Containers/CollapseExpandButton';
 import * as d3 from 'd3';
 import NodeMarker from '../../Containers/NodeMarker';
 import NodeExpandedName from '../../Containers/NodeName/NodeExpandedName';
-import { ITopoNode } from 'lib/hooks/Topology/models';
-import { IWedgeNode } from 'lib/models/topology';
+import { DirectionType, ITGWNode, ITopoNode } from 'lib/hooks/Topology/models';
 import ExpandNodeContent from './ExpandNodeContent';
-import { DirectionType, getExpandedAccountSize, getExpandedPosition } from '../helper';
+import { getExpandedAccountSize } from '../helper';
+import { getExpandedPosition } from 'lib/hooks/Topology/helper';
 
 interface Props {
-  dataItem: ITopoNode<IWedgeNode>;
+  dataItem: ITopoNode<ITGWNode>;
   show: boolean;
   onCollapse: () => void;
 }

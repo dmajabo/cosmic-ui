@@ -1,11 +1,11 @@
 import React from 'react';
 import { PanelHeader, PanelTitle, SubPanelTitle } from '../../styles';
 import OverflowContainer from 'app/components/Basic/OverflowContainer/styles';
-import { IWedgeNode } from 'lib/models/topology';
 import RoutesTab from './RoutesTab';
+import { ITGWNode } from 'lib/hooks/Topology/models';
 
 interface IProps {
-  dataItem: IWedgeNode;
+  dataItem: ITGWNode;
 }
 
 const WedgePanel: React.FC<IProps> = (props: IProps) => {

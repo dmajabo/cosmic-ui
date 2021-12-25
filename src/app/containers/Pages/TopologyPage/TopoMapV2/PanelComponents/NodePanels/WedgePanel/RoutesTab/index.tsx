@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-import { IWedgeNode } from 'lib/models/topology';
 import { IResourceQueryParam, ControllerKeyTypes, RoutesResKeyEnum, RoutesResourceTypes, IRoutesResData, IRouteResDataItem } from 'lib/api/ApiModels/Metrics/apiModel';
 import { getQueryResourceParam } from 'lib/api/ApiModels/Metrics/queryRoutesHelper';
 import { useGet } from 'lib/api/http/useAxiosHook';
@@ -8,8 +7,9 @@ import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataCont
 import { toTimestamp } from 'lib/api/ApiModels/paramBuilders';
 import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 import { TopoApi } from 'lib/api/ApiModels/Services/topo';
+import { ITGWNode } from 'lib/hooks/Topology/models';
 interface IProps {
-  dataItem: IWedgeNode;
+  dataItem: ITGWNode;
 }
 
 const RoutesTab: React.FC<IProps> = (props: IProps) => {

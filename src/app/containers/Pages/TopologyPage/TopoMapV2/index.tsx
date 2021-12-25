@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { ContainerWithFooter, ContainerWithMetrics, ContainerWithPanel, MapContainer } from './styles';
-import { IDeviceNode, IPanelBar, TopologyMetricsPanelTypes, TopologyPanelTypes, IWedgeNode, IVPC_PanelDataNode } from 'lib/models/topology';
+import { IDeviceNode, IPanelBar, TopologyMetricsPanelTypes, TopologyPanelTypes, IVPC_PanelDataNode } from 'lib/models/topology';
 import LoadingIndicator from 'app/components/Loading';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import { DATA_READY_STATE, IPanelBarLayoutTypes } from 'lib/models/general';
@@ -20,6 +20,7 @@ import { createTopologyQueryParam, ITopologyQueryParam } from 'lib/api/ApiModels
 import { TopoApi } from 'lib/api/ApiModels/Services/topo';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
+import { ITGWNode } from 'lib/hooks/Topology/models';
 
 interface IProps {}
 
@@ -95,7 +96,7 @@ const TopoMapV2: React.FC<IProps> = (props: IProps) => {
     await onGetChainData([PolicyApi.getAllGroups(), TopoApi.getAllOrganizations()], ['groups', 'organizations'], userContext.accessToken!, param);
   };
 
-  const onOpenNodePanel = (node: IDeviceNode | IWedgeNode, _type: TopologyMetricsPanelTypes) => {
+  const onOpenNodePanel = (node: IDeviceNode | ITGWNode, _type: TopologyMetricsPanelTypes) => {
     const _objPanel = { ...showPanelRef.current, show: false };
     setShowPanelBar(_objPanel);
     showPanelRef.current = _objPanel;

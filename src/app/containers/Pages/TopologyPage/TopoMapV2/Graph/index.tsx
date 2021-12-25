@@ -3,13 +3,14 @@ import GContainer from '../Containers/GContainer/GContainer';
 import TopologyLink from '../Containers/Links/TopologyLink';
 import { TOPOLOGY_IDS } from '../model';
 import { StyledMap } from '../styles';
-import { IVPC_PanelDataNode, IDeviceNode, IWedgeNode, TopologyMetricsPanelTypes, TopologyPanelTypes } from 'lib/models/topology';
+import { IVPC_PanelDataNode, IDeviceNode, TopologyMetricsPanelTypes, TopologyPanelTypes } from 'lib/models/topology';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 import { useZoom } from '../hooks/useZoom';
 import NodeWrapper from '../Containers/Nodes/NodeWrapper';
 import DefsComponent from '../Containers/Shared/DefsComponent';
 import HeadeerAction from '../HeadeerAction';
 import { STANDART_DISPLAY_RESOLUTION_V2 } from 'lib/models/general';
+import { ITGWNode } from 'lib/hooks/Topology/models';
 
 interface Props {
   isFullScreen: boolean;
@@ -18,7 +19,7 @@ interface Props {
   onOpenFullScreen: () => void;
   onClickVpc: (_data: IVPC_PanelDataNode) => void;
   onClickDevice: (dev: IDeviceNode, _type: TopologyMetricsPanelTypes) => void;
-  onClickWedge: (wedge: IWedgeNode, _type: TopologyMetricsPanelTypes) => void;
+  onClickWedge: (wedge: ITGWNode, _type: TopologyMetricsPanelTypes) => void;
 }
 
 const Graph: React.FC<Props> = (props: Props) => {
@@ -38,7 +39,7 @@ const Graph: React.FC<Props> = (props: Props) => {
   const onClickDevice = (dev: IDeviceNode) => {
     props.onClickDevice(dev, TopologyMetricsPanelTypes.Device);
   };
-  const onClickWedge = (wedge: IWedgeNode) => {
+  const onClickWedge = (wedge: ITGWNode) => {
     props.onClickWedge(wedge, TopologyMetricsPanelTypes.Wedge);
   };
 

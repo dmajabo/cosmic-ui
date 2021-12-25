@@ -1,69 +1,59 @@
-import { INetworkOrg, INetworkwEdge, ITopologyGroup, ITopologyMapData, VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
+import { INetworkOrg, INetworkVNetwork, INetworkwEdge, ITopologyGroup, ITopologyMapData, VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
 import { setUpGroupsCoord } from 'lib/helpers/tree';
-import { INetworkGroupNode, IWedgeNode, TOPOLOGY_NODE_TYPES } from 'lib/models/topology';
+import { INetworkGroupNode, TOPOLOGY_NODE_TYPES } from 'lib/models/topology';
 import uuid from 'react-uuid';
-import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
-import { STANDART_DISPLAY_RESOLUTION_V2 } from 'lib/models/general';
-import { ITopoNode, ITopologyPreparedMapDataV2, TopoNodeTypes } from './models';
+import { ICollapseStyles, NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
+import { IPosition, STANDART_DISPLAY_RESOLUTION_V2 } from 'lib/models/general';
+import { ITopoNode, ITopologyPreparedMapDataV2, TopoNodeTypes, DirectionType, ITGWNode, INetworkVNetNode, VPCS_IN_ROW } from './models';
 
 // const createDeviceNode = (org: INetworkOrg, orgIndex: number, node: INetworkDevice, index: number): IDeviceNode => {
 //   return { ...node, uiId: uuid(), vendorType: org.vendorType, visible: true, childIndex: index, orgIndex: orgIndex, orgId: org.id, x: 0, y: 0, scaleFactor: 1, nodeType: TOPOLOGY_NODE_TYPES.DEVICE };
 // };
 
-const createWedgeNode = (org: INetworkOrg, orgIndex: number, node: INetworkwEdge, index: number): IWedgeNode => {
+const createWedgeNode = (org: INetworkOrg, orgIndex: number, node: INetworkwEdge, index: number): ITGWNode => {
   const _x = index === 0 ? 0 : (NODES_CONSTANTS.NETWORK_WEDGE.collapse.width + NODES_CONSTANTS.NETWORK_WEDGE.collapse.spaceX) * index;
   return { ...node, uiId: uuid(), vendorType: org.vendorType, visible: true, childIndex: index, orgIndex: orgIndex, orgId: org.id, x: _x, y: 0, nodeType: TOPOLOGY_NODE_TYPES.WEDGE };
 };
 
-// const createVnetNode = (org: INetworkOrg, orgIndex: number, node: INetworkVNetwork, index: number, groups: ITopologyGroup[]): IVnetNode => {
-//   const _uniqueGroupsSet: Set<ITopologyGroup> = new Set();
-//   node.vms.forEach(vm => {
-//     vm.uiId = uuid();
-//     if (vm.selectorGroup) {
-//       const gr = groups.find(it => it.name === vm.selectorGroup || it.id === vm.selectorGroup);
-//       if (gr) {
-//         _uniqueGroupsSet.add(gr);
-//         // for (let i = 0; i < 20; i++) {
-//         //   const _gr: ITopologyGroup = jsonClone(gr);
-//         //   _gr.id = `testGr${i}`;
-//         //   _uniqueGroupsSet.add(_gr);
-//         // }
-//       }
-//     }
-//   });
-//   const _arr: ITopologyGroup[] = Array.from(_uniqueGroupsSet);
-//   const _size: IVpcSize = getVPCContainerSize(node, _arr);
-//   return {
-//     ...node,
-//     applicationGroups: _arr,
-//     visible: true,
-//     childIndex: index,
-//     orgIndex: orgIndex,
-//     orgId: org.id,
-//     x: 0,
-//     y: 0,
-//     uiId: uuid(),
-//     vendorType: org.vendorType,
-//     nodeType: TOPOLOGY_NODE_TYPES.VNET,
-//     nodeSize: _size,
-//   };
-// };
+const createVPCNode = (org: INetworkOrg, orgIndex: number, node: INetworkVNetwork, index: number): INetworkVNetNode => {
+  return {
+    ...node,
+    visible: true,
+    childIndex: index,
+    orgIndex: orgIndex,
+    orgId: org.id,
+    x: 0,
+    y: 0,
+    uiId: uuid(),
+    vendorType: org.vendorType,
+    nodeType: TOPOLOGY_NODE_TYPES.VNET,
+  };
+};
 
 export const createGroupNode = (_item: ITopologyGroup, vendorType: VendorTypes, index: number): INetworkGroupNode => {
   return { ..._item, uiId: uuid(), vendorType: vendorType, visible: true, collapsed: true, groupIndex: index, x: 0, y: 0, devices: [], links: [], r: 0, nodeType: TOPOLOGY_NODE_TYPES.NETWORK_GROUP };
 };
 
-const createTopoNode = (_orgId: string, _type: TopoNodeTypes, _id: string, _name: string, w: number, h: number): ITopoNode<any> => {
-  return { id: _id, name: _name, uiId: uuid(), type: _type, orgId: _orgId, width: w, height: h, x: 0, y: 0, visible: true, collapsed: true, children: [] };
-};
-
-const createAccountTopoNode = (_orgId: string, _type: TopoNodeTypes, _id: string, _name: string, w: number, h: number): ITopoNode<IWedgeNode> => {
-  return { id: _id, name: _name, uiId: uuid(), type: _type, orgId: _orgId, width: w, height: h, x: 0, y: 0, visible: true, collapsed: true, children: [] };
+const createTopoNode = (_orgId: string, _type: TopoNodeTypes, _id: string, _name: string, _collapsed: boolean, _w: number, _h: number): ITopoNode<any> => {
+  return {
+    id: _id,
+    name: _name,
+    uiId: uuid(),
+    type: _type,
+    orgId: _orgId,
+    width: _w,
+    height: _h,
+    x: 0,
+    y: 0,
+    visible: true,
+    collapsed: _collapsed,
+    children: [],
+  };
 };
 
 export const createTopology = (_data: ITopologyMapData, _groups: ITopologyGroup[]): ITopologyPreparedMapDataV2 => {
-  const regions: ITopoNode<any>[] = [];
-  const accounts: ITopoNode<IWedgeNode>[] = [];
+  const regions: ITopoNode<INetworkVNetNode>[] = [];
+  const accounts: ITopoNode<ITGWNode>[] = [];
   // const dataCenters: ITopoNode<any>[] = [];
   const sites: ITopoNode<any>[] = [];
   // let devices: IDeviceNode[] = [];
@@ -71,64 +61,64 @@ export const createTopology = (_data: ITopologyMapData, _groups: ITopologyGroup[
   // const devicesInGroup: IDeviceNode[] = [];
   // let createDefGroup = false;
   for (let i = 0; i < 1; i++) {
-    const _objR: ITopoNode<any> = createTopoNode(
+    const _c = i % 2 === 0 ? false : true;
+    const _objR: ITopoNode<INetworkVNetNode> = createTopoNode(
       _data.organizations[0].id,
       TopoNodeTypes.REGION,
       `${TopoNodeTypes.REGION}${i}`,
       `${TopoNodeTypes.REGION}${i}`,
+      _c,
       NODES_CONSTANTS.REGION.collapse.width,
       NODES_CONSTANTS.REGION.collapse.height,
     );
-    const _objA: ITopoNode<IWedgeNode> = createAccountTopoNode(
+    regions.push(_objR);
+  }
+  for (let i = 0; i < 1; i++) {
+    const _c = i % 2 === 0 ? false : true;
+    const _objA: ITopoNode<ITGWNode> = createTopoNode(
       _data.organizations[0].id,
       TopoNodeTypes.ACCOUNT,
       `${TopoNodeTypes.ACCOUNT}${i}`,
       `${TopoNodeTypes.ACCOUNT}${i}`,
+      _c,
       NODES_CONSTANTS.ACCOUNT.collapse.width,
       NODES_CONSTANTS.ACCOUNT.collapse.height,
     );
-    // const _objD: ITopoNode<any> = createTopoNode(
-    //   _data.organizations[0].id,
-    //   TopoNodeTypes.DATA_CENTER,
-    //   `${TopoNodeTypes.DATA_CENTER}${i}`,
-    //   `${TopoNodeTypes.DATA_CENTER}${i}`,
-    //   NODES_CONSTANTS.DATA_CENTER.collapse.width,
-    //   NODES_CONSTANTS.DATA_CENTER.collapse.height,
-    // );
+    accounts.push(_objA);
+  }
+  for (let i = 0; i < 1; i++) {
     const _objS: ITopoNode<any> = createTopoNode(
       _data.organizations[0].id,
       TopoNodeTypes.SITES,
       `${TopoNodeTypes.SITES}${i}`,
       `${TopoNodeTypes.SITES}${i}`,
+      false,
       NODES_CONSTANTS.SITES.collapse.width,
       NODES_CONSTANTS.SITES.collapse.height,
     );
     // dataCenters.push(_objD);
-    regions.push(_objR);
-    accounts.push(_objA);
     sites.push(_objS);
   }
 
   _data.organizations.forEach((org, orgI) => {
     if (org.wedges && org.wedges.length) {
       org.wedges.forEach((w, index) => {
-        const _wNode: IWedgeNode = createWedgeNode(org, orgI, w, index);
+        const _wNode: ITGWNode = createWedgeNode(org, orgI, w, index);
         accounts[0].children.push(_wNode);
       });
     }
-    // if (org.vnets && org.vnets.length && org.vendorType !== 'MERAKI') {
-    //   org.vnets.forEach((v, index) => {
-    //     // if (v.vms && v.vms.length) {
-    //     //   for (let i = 0; i < 50; i++) {
-    //     //     const _vm: INetworkVM = createTestVMs(v.vms[v.vms.length - 1], `vm${v.vms.length + i}`);
-    //     //     v.vms.push(_vm);
-    //     //   }
-    //     // }
-    //     const obj: IVnetNode = createVnetNode(org, i, v, index, _groups);
-    //     nodes.push(obj);
-    //     vnets.push(obj);
-    //   });
-    // }
+    if (org.vnets && org.vnets.length && org.vendorType !== 'MERAKI') {
+      org.vnets.forEach((v, index) => {
+        // if (v.vms && v.vms.length) {
+        //   for (let i = 0; i < 50; i++) {
+        //     const _vm: INetworkVM = createTestVMs(v.vms[v.vms.length - 1], `vm${v.vms.length + i}`);
+        //     v.vms.push(_vm);
+        //   }
+        // }
+        const obj: INetworkVNetNode = createVPCNode(org, orgI, v, index);
+        regions[0].children.push(obj);
+      });
+    }
     // if (org.devices && org.devices.length) {
     //   org.devices.forEach((d, index) => {
     //     const obj: IDeviceNode = createDeviceNode(org, i, d, index);
@@ -222,20 +212,12 @@ const getPosY = (offsetY: number, sectorHeight: number, height: number): number 
   return offsetY + sectorHeight / 2 - height / 2;
 };
 
-const getWedgesWidth = (count: number): number => {
-  return count * (NODES_CONSTANTS.NETWORK_WEDGE.collapse.width + NODES_CONSTANTS.NETWORK_WEDGE.collapse.spaceX) - NODES_CONSTANTS.NETWORK_WEDGE.collapse.spaceX;
-};
-
-export const setTopLevelCoord = (regions: ITopoNode<any>[], accounts: ITopoNode<IWedgeNode>[], sites: ITopoNode<any>[], dataCenters?: ITopoNode<any>[]) => {
+export const setTopLevelCoord = (regions: ITopoNode<INetworkVNetNode>[], accounts: ITopoNode<ITGWNode>[], sites: ITopoNode<any>[], dataCenters?: ITopoNode<any>[]) => {
   const sectorHeight = getSectorHeight(regions, accounts, dataCenters, sites);
   const centerX = STANDART_DISPLAY_RESOLUTION_V2.width / 2;
   let offsetY = 0;
   if (regions && regions.length) {
-    const _rFWidth = getRowWidth(regions.length, NODES_CONSTANTS.REGION.collapse.width, NODES_CONSTANTS.REGION.collapse.spaceX);
-    regions.forEach((r, i) => {
-      r.x = getPosXInRow(centerX, _rFWidth, i, NODES_CONSTANTS.REGION.collapse.width, NODES_CONSTANTS.REGION.collapse.spaceX);
-      r.y = getPosY(offsetY, sectorHeight, NODES_CONSTANTS.REGION.collapse.height);
-    });
+    updateRegionItems(regions, offsetY, sectorHeight);
     offsetY += sectorHeight;
   }
   if (accounts && accounts.length) {
@@ -275,24 +257,126 @@ export const setTopLevelCoord = (regions: ITopoNode<any>[], accounts: ITopoNode<
   }
 };
 
-export const updateAccountItems = (items: ITopoNode<IWedgeNode>[], offsetY: number, sectorHeight: number) => {
+export const updateRegionItems = (items: ITopoNode<INetworkVNetNode>[], offsetY: number, sectorHeight: number) => {
   if (!items || !items.length) return;
   let offsetX = 0;
   items.forEach((a, i) => {
-    const _w = a.collapsed ? NODES_CONSTANTS.ACCOUNT.collapse.width : getWedgesWidth(a.children.length);
-    const _h = a.collapsed ? NODES_CONSTANTS.ACCOUNT.collapse.height : NODES_CONSTANTS.ACCOUNT.expanded.minHeight;
-    a.width = _w;
-    a.x = offsetX;
-    a.y = getPosY(offsetY, sectorHeight, _h);
-    offsetX = i !== items.length - 1 ? _w + NODES_CONSTANTS.NETWORK_WEDGE.collapse.spaceX : _w;
+    if (!a.children || !a.children.length) {
+      a.collapsed = true;
+    }
+    if (a.children && a.children.length) {
+      setUpVnetsCoord(a.children);
+    }
+    a.y = getPosY(offsetY, sectorHeight, a.height);
+    if (a.collapsed) {
+      a.x = offsetX;
+      offsetX = i !== items.length - 1 ? a.x + a.width + NODES_CONSTANTS.REGION.collapse.spaceX : a.x + a.width;
+      return;
+    }
+    const _st = offsetX;
+    const fw = getVnetsWidth(a.children.length);
+    a.x = _st + fw / 2;
+    offsetX = i !== items.length - 1 ? _st + fw + NODES_CONSTANTS.REGION.expanded.spaceX + NODES_CONSTANTS.REGION.collapse.width : _st + fw;
   });
   centeredInRow(items, offsetX);
 };
 
-export const centeredInRow = (items: ITopoNode<any>[], rowWidth: number) => {
+export const updateAccountItems = (items: ITopoNode<ITGWNode>[], offsetY: number, sectorHeight: number) => {
+  if (!items || !items.length) return;
+  let offsetX = 0;
+  items.forEach((a, i) => {
+    if (!a.children || !a.children.length) {
+      a.collapsed = true;
+    }
+    a.y = getPosY(offsetY, sectorHeight, a.height);
+    if (a.collapsed) {
+      a.x = offsetX;
+      offsetX = i !== items.length - 1 ? a.x + a.width + NODES_CONSTANTS.ACCOUNT.collapse.spaceX : a.x + a.width;
+      return;
+    }
+    const _st = offsetX;
+    const fw = getWedgesWidth(a.children.length);
+    a.x = _st + fw / 2;
+    offsetX = i !== items.length - 1 ? _st + fw + NODES_CONSTANTS.ACCOUNT.expanded.spaceX + NODES_CONSTANTS.ACCOUNT.collapse.width : _st + fw;
+  });
+  centeredInRow(items, offsetX);
+};
+
+const getWedgesWidth = (count: number): number => {
+  if (!count || count === 0) {
+    return NODES_CONSTANTS.ACCOUNT.expanded.minWidth;
+  }
+  return (
+    count * (NODES_CONSTANTS.NETWORK_WEDGE.collapse.width + NODES_CONSTANTS.NETWORK_WEDGE.collapse.spaceX) +
+    NODES_CONSTANTS.ACCOUNT.expanded.contentPadding * 2 -
+    NODES_CONSTANTS.NETWORK_WEDGE.collapse.spaceX
+  );
+};
+
+export const getBeautifulCount = (_count: number): number => {
+  return Math.min(VPCS_IN_ROW, Math.floor(Math.sqrt(_count)) * 2);
+};
+
+const getVnetsWidth = (count: number): number => {
+  if (!count || count === 0) {
+    return NODES_CONSTANTS.REGION.expanded.minWidth;
+  }
+  const _maxInRow = getBeautifulCount(count);
+  return (
+    _maxInRow * (NODES_CONSTANTS.NETWORK_VNET.collapse.width + NODES_CONSTANTS.NETWORK_VNET.collapse.spaceX) +
+    NODES_CONSTANTS.REGION.expanded.contentPadding * 2 -
+    NODES_CONSTANTS.NETWORK_VNET.collapse.spaceX
+  );
+};
+
+const setUpVnetsCoord = (items: INetworkVNetNode[]) => {
+  const _maxInRow = getBeautifulCount(items.length);
+  let currentRow = 0;
+  let currentIndex = 0;
+  items.forEach((it, i) => {
+    if (i !== 0 && i % _maxInRow === 0) {
+      currentIndex = 0;
+      currentRow++;
+    }
+    const _x = currentIndex === 0 ? 0 : (NODES_CONSTANTS.NETWORK_VNET.collapse.r * 2 + NODES_CONSTANTS.NETWORK_VNET.collapse.spaceX) * currentIndex;
+    it.x = _x;
+    it.y = currentRow === 0 ? 0 : currentRow * (NODES_CONSTANTS.NETWORK_VNET.collapse.r * 2 + NODES_CONSTANTS.NETWORK_VNET.collapse.spaceY);
+    currentIndex++;
+  });
+};
+
+const centeredInRow = (items: ITopoNode<any>[], rowWidth: number) => {
   const centerSvgX = STANDART_DISPLAY_RESOLUTION_V2.width / 2;
   items.forEach(it => {
     const _x = it.x;
     it.x = centerSvgX + _x - rowWidth / 2;
   });
+};
+
+export const getExpandedPosition = (direction: DirectionType, expandedWidth: number, expandedHeight: number, collapse: ICollapseStyles): IPosition => {
+  if (direction === DirectionType.CENTER) return getExpandedToCenter(expandedWidth, expandedHeight, collapse);
+  if (direction === DirectionType.TOP) return getExpandedToTop(expandedWidth, expandedHeight, collapse);
+  if (direction === DirectionType.BOTTOM) return getExpandedToBottom(expandedWidth, collapse);
+  return { x: 0, y: 0 };
+};
+
+export const getExpandedToCenter = (expandedWidth: number, expandedHeight: number, collapse: ICollapseStyles): IPosition => {
+  const _centerX = collapse.width / 2;
+  const _centerY = collapse.height / 2;
+  const _x = expandedWidth / 2 - _centerX;
+  const _y = expandedHeight / 2 - _centerY;
+  return { x: -_x, y: -_y };
+};
+
+export const getExpandedToTop = (expandedWidth: number, expandedHeight: number, collapse: ICollapseStyles): IPosition => {
+  const _centerX = collapse.width / 2;
+  const _x = expandedWidth / 2 - _centerX;
+  const _y = collapse.height - expandedHeight;
+  return { x: -_x, y: _y };
+};
+
+export const getExpandedToBottom = (expandedWidth: number, collapse: ICollapseStyles): IPosition => {
+  const _centerX = collapse.width / 2;
+  const _x = _centerX - expandedWidth / 2;
+  return { x: _x, y: 0 };
 };

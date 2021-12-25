@@ -10,6 +10,7 @@ import NodeCollapsedName from '../../Containers/NodeName/NodeCollapsedName';
 interface Props {
   id: string;
   name: string;
+  childrenCount: number;
   show: boolean;
   onExpand: () => void;
 }
@@ -50,14 +51,18 @@ const RegionCollapsedNode: React.FC<Props> = (props: Props) => {
             x={NODES_CONSTANTS.REGION.collapse.iconOffsetX}
             y={NODES_CONSTANTS.REGION.collapse.iconOffsetY}
           />
-          <NodeCounter label={`${12} VPC`} stylesObj={NODES_CONSTANTS.REGION.countStyles} />
-          <CollapseExpandButton
-            id={`${props.id}${CollapseExpandState.EXPAND}`}
-            isCollapse
-            onClick={onExpand}
-            x={NODES_CONSTANTS.REGION.collapse.width - NODES_CONSTANTS.COLLAPSE_EXPAND.r}
-            y={NODES_CONSTANTS.REGION.collapse.height / 2 - NODES_CONSTANTS.COLLAPSE_EXPAND.r}
-          />
+          {props.childrenCount && props.childrenCount > 0 && (
+            <>
+              <NodeCounter label={`${props.childrenCount} VPC`} stylesObj={NODES_CONSTANTS.REGION.countStyles} />
+              <CollapseExpandButton
+                id={`${props.id}${CollapseExpandState.EXPAND}`}
+                isCollapse
+                onClick={onExpand}
+                x={NODES_CONSTANTS.REGION.collapse.width - NODES_CONSTANTS.COLLAPSE_EXPAND.r}
+                y={NODES_CONSTANTS.REGION.collapse.height / 2 - NODES_CONSTANTS.COLLAPSE_EXPAND.r}
+              />
+            </>
+          )}
         </g>
         <NodeCollapsedName label={props.name} stylesObj={NODES_CONSTANTS.REGION.labelCollapsedStyles} />
       </>

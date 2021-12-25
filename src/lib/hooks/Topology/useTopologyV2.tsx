@@ -1,30 +1,14 @@
 import * as React from 'react';
 import {
-  createGroupNode,
-  // getVPCContainerSize,
-  // createPreparedData,
-  setUpGroupsCoord,
-} from 'lib/helpers/tree';
-import {
   ILink,
-  TopologyGroupTypesAsNumber,
-  TopologyGroupTypesAsString,
-  INetworkGroupNode,
-  IWedgeNode,
-  IDeviceNode,
-  IVnetNode,
-  TOPOLOGY_NODE_TYPES,
-  TOPOLOGY_LINKS_TYPES,
   // TOPOLOGY_NODE_TYPES,
 } from 'lib/models/topology';
 import { DATA_READY_STATE, IPosition, ISelectedListItem, ITimeTypes, TIME_PERIOD } from 'lib/models/general';
 import { jsonClone } from 'lib/helpers/cloneHelper';
 import { EntityTypes, IEntity } from 'lib/models/entites';
 import { ITopologyDataRes, ITopologyGroup, ITopologyGroupsData, ITopologyMapData } from 'lib/api/ApiModels/Topology/apiModels';
-import { NODES_CONSTANTS } from 'app/components/Map/model';
 import { ITimeMinMaxRange } from 'app/components/Inputs/TimeSlider/helpers';
-import { onUpdateLinkPos, onUpdateTargetLink, reCreateDeviceLinks } from 'lib/helpers/links';
-import { updateDataByEntity, updateEntity } from 'lib/helpers/entityHelper';
+import { updateEntity } from 'lib/helpers/entityHelper';
 import { createTopology } from './helper';
 import { ITopologyPreparedMapDataV2, ITopoNode } from './models';
 
@@ -49,10 +33,6 @@ export interface TopologyV2ContextType {
   onDeleteGroup: (_group: ITopologyGroup) => void;
   onFilterQueryChange: (value: string | null) => void;
   onSetSelectedType: (_value: string | number | null) => void;
-  onUpdateDeviceCoord: (_item: IDeviceNode, _pos: IPosition) => void;
-  onUpdateWedgeCoord: (_item: IWedgeNode, _pos: IPosition) => void;
-  onUpdateVnetNode: (_item: IVnetNode, _pos: IPosition) => void;
-  onUpdateNetworkGroupNode: (_item: INetworkGroupNode, _pos: IPosition, isDrag: boolean, isExpand: boolean) => void;
   onSelectEntity: (entity: IEntity, selected: boolean) => void;
   onSetIsDataReadyToShow: (_state: DATA_READY_STATE) => void;
 
@@ -124,68 +104,6 @@ export function useTopologyV2Context(): TopologyV2ContextType {
 
   const onSetSelectedType = (_value: string | null) => {
     setSelectedType(_value);
-  };
-
-  const onUpdateDeviceCoord = (_item: IDeviceNode, _position: IPosition) => {
-    const _data: any[] = jsonClone(nodesRef.current);
-    const index = _data.findIndex(it => it.id === _item.id);
-    _data[index].x = _position.x;
-    _data[index].y = _position.y;
-    const _sourceObj = NODES_CONSTANTS.Devisec;
-    const _lData = onUpdateTargetLink(linksRef.current, _item.uiId, _position, _sourceObj.width / 2, _sourceObj.height / 2);
-    setLinks(_lData);
-    setNodes(_data);
-    nodesRef.current = _data;
-    linksRef.current = _lData;
-  };
-  const onUpdateWedgeCoord = (_item: IWedgeNode, _position: IPosition) => {
-    const _data: any[] = jsonClone(nodesRef.current);
-    const index = _data.findIndex(it => it.uiId === _item.uiId);
-    _data[index].x = _position.x;
-    _data[index].y = _position.y;
-    const _sourceObj = NODES_CONSTANTS.WEDGE;
-    const _lData = onUpdateTargetLink(linksRef.current, _item.uiId, _position, _sourceObj.r, _sourceObj.r);
-    setLinks(_lData);
-    setNodes(_data);
-    nodesRef.current = _data;
-    linksRef.current = _lData;
-  };
-
-  const onUpdateVnetNode = (_item: IVnetNode, _position: IPosition) => {
-    const _data: any[] = jsonClone(nodesRef.current);
-    const index = _data.findIndex(it => it.uiId === _item.uiId);
-    _data[index].x = _position.x;
-    _data[index].y = _position.y;
-    const _sourceObj = _data[index].nodeSize;
-    const _lData = onUpdateTargetLink(linksRef.current, _data[index].uiId, _position, _sourceObj.width / 2, _sourceObj.height / 2);
-    setLinks(_lData);
-    setNodes(_data);
-    linksRef.current = _lData;
-    nodesRef.current = _data;
-  };
-
-  const onUpdateNetworkGroupNode = (_item: INetworkGroupNode, _position: IPosition, isDrag: boolean, isExpand: boolean) => {
-    const _data: any[] = jsonClone(nodesRef.current);
-    const index = _data.findIndex(it => it.uiId === _item.uiId);
-    if (isDrag && _position) {
-      _data[index].x = _position.x;
-      _data[index].y = _position.y;
-      const _sourceObj = NODES_CONSTANTS.NETWORK_GROUP;
-      const _lData = onUpdateTargetLink(linksRef.current, _item.uiId, _position, _sourceObj.r, _sourceObj.r);
-      setLinks(_lData);
-      linksRef.current = _lData;
-    }
-    if (isExpand) {
-      _data[index].collapsed = !_item.collapsed;
-      const _nodes = _data.filter(it => it.nodeType === TOPOLOGY_NODE_TYPES.NETWORK_GROUP);
-      setUpGroupsCoord(_nodes);
-      const _sourceObj = NODES_CONSTANTS.NETWORK_GROUP;
-      const _lData = onUpdateLinkPos(linksRef.current, _nodes, _sourceObj.r, _sourceObj.r, TOPOLOGY_LINKS_TYPES.NETWORK_BRENCH_LINK);
-      setLinks(_lData);
-      linksRef.current = _lData;
-    }
-    setNodes(_data);
-    nodesRef.current = _data;
   };
 
   const onUpdateGroups = (_group: ITopologyGroup) => {
@@ -267,7 +185,7 @@ export function useTopologyV2Context(): TopologyV2ContextType {
   const onDeleteGroup = (_group: ITopologyGroup) => {
     // let _nodes: ITopoNode[] = jsonClone(nodesRef.current);
     // const _groups: ITopologyGroup[] = groupsRef.current.filter(it => it.id !== _group.id);
-    // // let _data: (IWedgeNode | IVnetNode | IDeviceNode | INetworkGroupNode)[] = _nodes.findIndex(it => it.id === _group.id);
+    // // let _data: (ITGWNode | IVnetNode | IDeviceNode | INetworkGroupNode)[] = _nodes.findIndex(it => it.id === _group.id);
     // if (_group.type === TopologyGroupTypesAsNumber.BRANCH_NETWORKS || _group.type === TopologyGroupTypesAsString.BRANCH_NETWORKS) {
     //   const _nodeIndex: number = _nodes.findIndex(it => it.id === _group.id);
     //   if (_nodeIndex === -1) {
@@ -361,10 +279,6 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     onSetData,
     onFilterQueryChange,
     onSetSelectedType,
-    onUpdateDeviceCoord,
-    onUpdateWedgeCoord,
-    onUpdateVnetNode,
-    onUpdateNetworkGroupNode,
     onSelectEntity,
     onUpdateGroups,
     onDeleteGroup,

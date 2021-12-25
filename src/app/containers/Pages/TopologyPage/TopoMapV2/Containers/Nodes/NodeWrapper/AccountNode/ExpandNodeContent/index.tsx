@@ -1,10 +1,10 @@
 import React from 'react';
-import { IWedgeNode } from 'lib/models/topology';
 import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
 import NetworkWEdgeNode from '../../NetworkWEdgeNode';
+import { ITGWNode } from 'lib/hooks/Topology/models';
 
 interface Props {
-  items: IWedgeNode[];
+  items: ITGWNode[];
   width: number;
   height: number;
 }

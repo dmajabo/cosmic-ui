@@ -51,14 +51,18 @@ const AccountCollapsedNode: React.FC<Props> = (props: Props) => {
             x={NODES_CONSTANTS.ACCOUNT.collapse.iconOffsetX}
             y={NODES_CONSTANTS.ACCOUNT.collapse.iconOffsetY}
           />
-          <NodeCounter label={`${props.childrenCount} TGW`} stylesObj={NODES_CONSTANTS.ACCOUNT.countStyles} />
-          <CollapseExpandButton
-            id={`${props.id}${CollapseExpandState.EXPAND}`}
-            isCollapse
-            onClick={onExpand}
-            x={NODES_CONSTANTS.ACCOUNT.collapse.width - NODES_CONSTANTS.COLLAPSE_EXPAND.r}
-            y={NODES_CONSTANTS.ACCOUNT.collapse.height / 2 - NODES_CONSTANTS.COLLAPSE_EXPAND.r}
-          />
+          {props.childrenCount && props.childrenCount > 0 && (
+            <>
+              <NodeCounter label={`${props.childrenCount} TGW`} stylesObj={NODES_CONSTANTS.ACCOUNT.countStyles} />
+              <CollapseExpandButton
+                id={`${props.id}${CollapseExpandState.EXPAND}`}
+                isCollapse
+                onClick={onExpand}
+                x={NODES_CONSTANTS.ACCOUNT.collapse.width - NODES_CONSTANTS.COLLAPSE_EXPAND.r}
+                y={NODES_CONSTANTS.ACCOUNT.collapse.height / 2 - NODES_CONSTANTS.COLLAPSE_EXPAND.r}
+              />
+            </>
+          )}
         </g>
         <NodeCollapsedName label={props.name} stylesObj={NODES_CONSTANTS.ACCOUNT.labelCollapsedStyles} />
       </>

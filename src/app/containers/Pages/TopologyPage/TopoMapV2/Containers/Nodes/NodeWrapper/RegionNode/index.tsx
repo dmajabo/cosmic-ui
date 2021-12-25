@@ -83,8 +83,8 @@ const RegionNode: React.FC<Props> = (props: Props) => {
       transform={`translate(${pos.x}, ${pos.y})`}
       data-type={NODES_CONSTANTS.REGION.type}
     >
-      <RegionCollapsedNode id={props.dataItem.id} name={props.dataItem.name} show={props.dataItem.collapsed} onExpand={onExpand} />
-      <RegionExpandNode id={props.dataItem.id} name={props.dataItem.name} show={!props.dataItem.collapsed} onCollapse={onCollapse} />
+      <RegionCollapsedNode id={props.dataItem.id} name={props.dataItem.name} childrenCount={props.dataItem.children.length} show={props.dataItem.collapsed} onExpand={onExpand} />
+      <RegionExpandNode dataItem={props.dataItem} show={!props.dataItem.collapsed} onCollapse={onCollapse} />
     </g>
   );
 };

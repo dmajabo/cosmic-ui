@@ -1,5 +1,5 @@
 import React from 'react';
-import { ITopoNode } from 'lib/hooks/Topology/models';
+import { ITGWNode, ITopoNode } from 'lib/hooks/Topology/models';
 import { IPosition } from 'lib/models/general';
 import { useDrag } from 'app/containers/Pages/TopologyPage/TopoMapV2/hooks/useDrag';
 import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
@@ -7,10 +7,9 @@ import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataCont
 import AccountCollapsedNode from './AccountCollapsedNode';
 import { onHoverNode, onUnHoverNode } from '../../../../Graph/helper';
 import AccountExpandNode from './AccountExpandNode';
-import { IWedgeNode } from 'lib/models/topology';
 
 interface Props {
-  dataItem: ITopoNode<IWedgeNode>;
+  dataItem: ITopoNode<ITGWNode>;
 }
 
 const AccountNode: React.FC<Props> = (props: Props) => {

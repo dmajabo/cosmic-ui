@@ -1,20 +1,20 @@
 import React from 'react';
 import { NODES_CONSTANTS } from '../../../../model';
-import { ITGWNode } from 'lib/hooks/Topology/models';
+import { INetworkVNetNode } from 'lib/hooks/Topology/models';
 
 interface Props {
-  item: ITGWNode;
+  item: INetworkVNetNode;
 }
 
-const NetworkWEdgeNode: React.FC<Props> = (props: Props) => {
+const NetworkVnetNode: React.FC<Props> = (props: Props) => {
   return (
     <g transform={`translate(${props.item.x}, ${props.item.y})`}>
-      <use href={`#${NODES_CONSTANTS.NETWORK_WEDGE.type}`} width={NODES_CONSTANTS.NETWORK_WEDGE.collapse.width} height={NODES_CONSTANTS.NETWORK_WEDGE.collapse.height} x={0} y={0} />
+      <use href={`#${NODES_CONSTANTS.NETWORK_VNET.type}`} width={NODES_CONSTANTS.NETWORK_VNET.collapse.width} height={NODES_CONSTANTS.NETWORK_VNET.collapse.height} x={0} y={0} />
       <foreignObject
-        width={NODES_CONSTANTS.NETWORK_WEDGE.labelHtmlStyles.width}
-        height={NODES_CONSTANTS.NETWORK_WEDGE.labelHtmlStyles.height}
-        x={NODES_CONSTANTS.NETWORK_WEDGE.labelHtmlStyles.x}
-        y={NODES_CONSTANTS.NETWORK_WEDGE.labelHtmlStyles.y}
+        width={NODES_CONSTANTS.NETWORK_VNET.labelHtmlStyles.width}
+        height={NODES_CONSTANTS.NETWORK_VNET.labelHtmlStyles.height}
+        x={NODES_CONSTANTS.NETWORK_VNET.labelHtmlStyles.x}
+        y={NODES_CONSTANTS.NETWORK_VNET.labelHtmlStyles.y}
       >
         <div
           style={{
@@ -29,8 +29,8 @@ const NetworkWEdgeNode: React.FC<Props> = (props: Props) => {
               display: 'inline-block',
               maxWidth: '100%',
               margin: 'auto',
-              color: NODES_CONSTANTS.NETWORK_WEDGE.labelHtmlStyles.fill,
-              fontSize: NODES_CONSTANTS.NETWORK_WEDGE.labelHtmlStyles.fontSize + 'px',
+              color: NODES_CONSTANTS.NETWORK_VNET.labelHtmlStyles.fill,
+              fontSize: NODES_CONSTANTS.NETWORK_VNET.labelHtmlStyles.fontSize + 'px',
               textAlign: 'center',
               textOverflow: 'ellipsis',
               whiteSpace: 'nowrap',
@@ -46,4 +46,4 @@ const NetworkWEdgeNode: React.FC<Props> = (props: Props) => {
   );
 };
 
-export default React.memo(NetworkWEdgeNode);
+export default React.memo(NetworkVnetNode);
