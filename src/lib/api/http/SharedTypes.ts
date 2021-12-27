@@ -124,6 +124,7 @@ export interface SLATest {
   readonly interface: string;
   readonly description: string;
   readonly metrics?: AvgSlaTestMetrics;
+  readonly hits?: number;
 }
 
 export interface GetSLATestResponse {
@@ -358,6 +359,7 @@ export interface AnomalyExperienceTableData {
   readonly name: string;
   readonly severity: SeverityLevel | JSX.Element;
   readonly hits: number | JSX.Element;
+  readonly slaTests?: SLATest[];
 }
 
 export interface AnomalySlaTestData {
@@ -421,4 +423,40 @@ export interface CostDetailTableData {
 export interface CostDetailHeader {
   readonly label: string;
   readonly value: string;
+}
+
+export interface AlertMetadata {
+  readonly id: string;
+  readonly name: string;
+  readonly type: string;
+  readonly category: string;
+  readonly severity: string;
+  readonly configState: string;
+  readonly metaDescString: string;
+  readonly channelIds: string[];
+  readonly triggerCount: number;
+  readonly slaTests?: SLATest[];
+}
+
+export interface GetAlertMetadataResponse {
+  readonly alertMetadata: AlertMetadata[];
+  readonly totalCount: number;
+  readonly pageSize: number;
+  readonly pageOffset: number;
+}
+
+interface ExperienceAnomalies {
+  readonly time: string;
+  readonly type: string;
+  readonly category: string;
+  readonly device: string;
+  readonly destination: string;
+  readonly value: number;
+  readonly anomaly: boolean;
+}
+
+export interface GetExperienceAnomaliesResponse {
+  readonly count: number;
+  readonly anomalies: ExperienceAnomalies[];
+  readonly name: string;
 }

@@ -11,4 +11,6 @@ export const PolicyApi = {
   postCreateGroup: () => 'policy/api/v1/policy/selector/groups',
   postUpdateGroup: (id: string) => `policy/api/v1/policy/selector/groups/${id}`,
   deleteGroup: (id: string) => `policy/api/v1/policy/selector/groups/${id}`,
+
+  getAlSlaTests: () => '/policy/api/v1/policy/performance/sla-tests',
 };
