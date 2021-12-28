@@ -8,8 +8,24 @@ interface Props {
 
 const NetworkVnetNode: React.FC<Props> = (props: Props) => {
   return (
-    <g transform={`translate(${props.item.x}, ${props.item.y})`}>
-      <use href={`#${NODES_CONSTANTS.NETWORK_VNET.type}`} width={NODES_CONSTANTS.NETWORK_VNET.collapse.width} height={NODES_CONSTANTS.NETWORK_VNET.collapse.height} x={0} y={0} />
+    <g transform={`translate(${props.item.x}, ${props.item.y})`} id={`vpsCollapsed${props.item.id}`}>
+      <circle
+        r={NODES_CONSTANTS.NETWORK_VNET.collapse.r - 1}
+        cx={NODES_CONSTANTS.NETWORK_VNET.collapse.r}
+        cy={NODES_CONSTANTS.NETWORK_VNET.collapse.r}
+        fill="var(--_primaryBg)"
+        stroke="var(--_primaryBg)"
+        strokeWidth="1"
+        className="vpcCollapsedBg"
+      />
+      <use
+        className="vpsBgIcon"
+        href={`#${NODES_CONSTANTS.NETWORK_VNET.type}`}
+        width={NODES_CONSTANTS.NETWORK_VNET.collapse.iconWidth}
+        height={NODES_CONSTANTS.NETWORK_VNET.collapse.iconHeight}
+        x={0}
+        y={0}
+      />
       <foreignObject
         width={NODES_CONSTANTS.NETWORK_VNET.labelHtmlStyles.width}
         height={NODES_CONSTANTS.NETWORK_VNET.labelHtmlStyles.height}

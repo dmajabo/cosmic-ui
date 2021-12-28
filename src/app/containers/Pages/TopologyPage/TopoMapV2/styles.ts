@@ -60,4 +60,24 @@ export const StyledMap = styled.svg`
     opacity: 1;
     transition: opacity 0.2s linear;
   }
+  .peerConnectionNodeWrapperHover {
+    .peerConnectionNode {
+      fill: var(--_highlightColor);
+      transition: fill 0.2s linear;
+    }
+    .peerConnectionNodeIcon {
+      color: var(--_primaryBg);
+      transition: color 0.2s linear;
+    }
+    .peerConnectionLink {
+      stroke: var(--_highlightColor);
+      transition: stroke 0.2s linear;
+    }
+  }
+  .vpsHoverStroke {
+    .vpcCollapsedBg {
+      stroke: var(--_highlightColor);
+      transition: stroke 0.2s linear;
+    }
+  }
 `;

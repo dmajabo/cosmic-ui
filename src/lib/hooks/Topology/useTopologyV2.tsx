@@ -8,11 +8,12 @@ import {
 import { DATA_READY_STATE, IPosition, ISelectedListItem, ITimeTypes, TIME_PERIOD } from 'lib/models/general';
 import { jsonClone } from 'lib/helpers/cloneHelper';
 import { EntityTypes, IEntity } from 'lib/models/entites';
-import { ITopologyDataRes, ITopologyGroup, ITopologyGroupsData, ITopologyMapData, SeverityTypes } from 'lib/api/ApiModels/Topology/apiModels';
+import { ITopologyDataRes, ITopologyGroup, ITopologyGroupsData, ITopologyMapData } from 'lib/api/ApiModels/Topology/apiModels';
 import { ITimeMinMaxRange } from 'app/components/Inputs/TimeSlider/helpers';
 import { updateEntity } from 'lib/helpers/entityHelper';
 import { createTopology, updateRegionHeight } from './helper';
 import { FilterEntityOptions, FilterEntityTypes, FilterSeverityOptions, ITopologyPreparedMapDataV2, ITopoNode, TopoFilterTypes } from './models';
+import { AlertSeverity } from 'lib/api/ApiModels/Workflow/apiModel';
 
 export interface TopologyV2ContextType {
   dataReadyToShow: DATA_READY_STATE;
@@ -79,17 +80,17 @@ export function useTopologyV2Context(): TopologyV2ContextType {
   });
   const [severity, setSeverity] = React.useState<FilterSeverityOptions>({
     low: {
-      type: SeverityTypes.NORMAL,
-      selected: true,
-      label: 'Normal',
-    },
-    normal: {
-      type: SeverityTypes.LOW,
+      type: AlertSeverity.LOW,
       selected: true,
       label: 'Low',
     },
+    medium: {
+      type: AlertSeverity.MEDIUM,
+      selected: true,
+      label: 'Medium',
+    },
     high: {
-      type: SeverityTypes.HIGH,
+      type: AlertSeverity.HIGH,
       selected: true,
       label: 'High',
     },
@@ -322,7 +323,7 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     setTopoPanel(_obj);
   };
 
-  const onSelectFilterOption = (groupType: TopoFilterTypes, type: FilterEntityTypes | SeverityTypes, selected: boolean) => {
+  const onSelectFilterOption = (groupType: TopoFilterTypes, type: FilterEntityTypes | AlertSeverity, selected: boolean) => {
     if (groupType === TopoFilterTypes.Entities) {
       const _obj: FilterEntityOptions = { ...entities };
       _obj[type].selected = selected;

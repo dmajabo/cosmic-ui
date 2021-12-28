@@ -1,4 +1,5 @@
-import { INetworkDevice, INetworkVNetwork, INetworkVNetworkPeeringConnection, INetworkwEdge, SeverityTypes } from 'lib/api/ApiModels/Topology/apiModels';
+import { INetworkDevice, INetworkVNetwork, INetworkVNetworkPeeringConnection, INetworkwEdge } from 'lib/api/ApiModels/Topology/apiModels';
+import { AlertSeverity } from 'lib/api/ApiModels/Workflow/apiModel';
 import { IBaseEntity, ICollapsed, ICoord, IFilterOption, ISize, IVisible } from 'lib/models/general';
 import { IMappedNode } from 'lib/models/topology';
 
@@ -74,7 +75,7 @@ export interface FilterEntityOptions {
 }
 
 export interface FilterSeverityOptions {
-  low: IFilterOption<SeverityTypes>;
-  normal: IFilterOption<SeverityTypes>;
-  high: IFilterOption<SeverityTypes>;
+  low: IFilterOption<AlertSeverity>;
+  medium: IFilterOption<AlertSeverity>;
+  high: IFilterOption<AlertSeverity>;
 }

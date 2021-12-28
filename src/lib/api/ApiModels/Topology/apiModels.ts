@@ -11,12 +11,6 @@ export enum VendorTypes {
   AWS = 'AWS',
 }
 
-export enum SeverityTypes {
-  LOW = 'low',
-  NORMAL = 'normal',
-  HIGH = 'high',
-}
-
 export interface ITopologyGroup {
   id?: string;
   name: string | null;

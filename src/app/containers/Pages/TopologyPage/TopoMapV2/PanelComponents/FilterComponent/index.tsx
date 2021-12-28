@@ -25,11 +25,11 @@ const FilterComponent: React.FC<IProps> = (props: IProps) => {
       </PanelHeader>
       <OverflowContainer>
         <PanelContent>
-          <FilterGroup maxGroupHeight="260px" defaultOpen label="Health Severity" styles={{ margin: '0 0 5px 0' }}>
-            <FilterSeverityGroup type={TopoFilterTypes.Severity} data={topology.severity} onClick={onSelectFilterOption} />
-          </FilterGroup>
           <FilterGroup maxGroupHeight="260px" defaultOpen label="Entities" styles={{ margin: '0 0 5px 0' }}>
             <FilterEntityGroup type={TopoFilterTypes.Entities} data={topology.entities} onClick={onSelectFilterOption} />
+          </FilterGroup>
+          <FilterGroup maxGroupHeight="260px" defaultOpen label="Health Severity" styles={{ margin: '0 0 5px 0' }}>
+            <FilterSeverityGroup type={TopoFilterTypes.Severity} data={topology.severity} onClick={onSelectFilterOption} />
           </FilterGroup>
         </PanelContent>
       </OverflowContainer>
