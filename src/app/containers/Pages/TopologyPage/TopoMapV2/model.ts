@@ -98,6 +98,7 @@ export interface IDataCenterNode extends INode<TopoNodeTypes>, ICollapseExpandSt
 
 export interface ISitesNode extends INode<TopoNodeTypes>, ICollapseExpandState {
   iconId: string;
+  headerHeight: number;
   countStyles: ICounterStyle;
   labelCollapsedStyles: ICollapseLabelStyle;
   labelExpandedStyles: IExpandLabelStyle;
@@ -120,6 +121,22 @@ export interface INetworkVNetworkNode extends INode<TopoNodeTypes>, ICollapseExp
   labelHtmlStyles: ILabelHtmlStyles;
 }
 
+export interface IPeeringConnectionNode extends INode<TopoNodeTypes>, ICollapseExpandState {
+  iconId: string;
+  countStyles: ICounterStyle;
+  labelCollapsedStyles: ICollapseLabelStyle;
+  labelExpandedStyles: IExpandLabelStyle;
+  labelHtmlStyles: ILabelHtmlStyles;
+}
+
+export interface IDeviceNode extends INode<TopoNodeTypes>, ICollapseExpandState {
+  iconId: string;
+  countStyles: ICounterStyle;
+  labelCollapsedStyles: ICollapseLabelStyle;
+  labelExpandedStyles: IExpandLabelStyle;
+  labelHtmlStyles: ILabelHtmlStyles;
+}
+
 export interface INodes_Types {
   // TOP LEVEL
   REGION: IRegionNode;
@@ -130,6 +147,8 @@ export interface INodes_Types {
   // SECOND LEVEL
   NETWORK_WEDGE: INetworkWEdgeNode;
   NETWORK_VNET: INetworkVNetworkNode;
+  DEVICE: IDeviceNode;
+  PEERING_CONNECTION: IPeeringConnectionNode;
   // GENERAL
   COLLAPSE_EXPAND: ICollapseExpandBtn;
 }
@@ -341,6 +360,7 @@ export const NODES_CONSTANTS: INodes_Types = {
   SITES: {
     type: TopoNodeTypes.SITES,
     iconId: TopoNodeTypes.SITES,
+    headerHeight: 30,
     collapse: {
       spaceX: 40,
       spaceY: 175,
@@ -442,7 +462,7 @@ export const NODES_CONSTANTS: INodes_Types = {
     iconId: TopoNodeTypes.VNET,
     collapse: {
       spaceX: 15,
-      spaceY: 42,
+      spaceY: 30,
       width: 30,
       height: 30,
       r: 15,
@@ -466,6 +486,58 @@ export const NODES_CONSTANTS: INodes_Types = {
       textAlign: 'center',
       fill: 'var(--_primaryColor)',
       fontSize: 10,
+    },
+  },
+  PEERING_CONNECTION: {
+    type: TopoNodeTypes.PEERING_CONNECTION,
+    iconId: TopoNodeTypes.PEERING_CONNECTION,
+    collapse: {
+      spaceX: 10,
+      spaceY: 10,
+      width: 30,
+      height: 30,
+      r: 15,
+      iconWidth: 20,
+      iconHeight: 20,
+      iconOffsetX: 5, // 30 / 2 - 20 / 2
+      iconOffsetY: 5, // 30 / 2 - 20 / 2
+      bgColor: 'var(--_primaryBg)',
+      borderRadius: 6,
+    },
+    expanded: null,
+    countStyles: null,
+    labelCollapsedStyles: null,
+    labelExpandedStyles: null,
+    labelHtmlStyles: null,
+  },
+  DEVICE: {
+    type: TopoNodeTypes.DEVICE,
+    iconId: TopoNodeTypes.DEVICE,
+    collapse: {
+      spaceX: 13,
+      spaceY: 32,
+      width: 26,
+      height: 30,
+      iconWidth: 17,
+      iconHeight: 12,
+      iconOffsetX: 4.5, // 26 / 2 - 17 / 2
+      iconOffsetY: 9, // 30 / 2 - 12 / 2
+      bgColor: 'transparent',
+      borderRadius: 6,
+    },
+    expanded: null,
+    countStyles: null,
+    labelCollapsedStyles: null,
+    labelExpandedStyles: null,
+    labelHtmlStyles: {
+      x: -5,
+      y: 34,
+      width: 40,
+      height: 12,
+      textAnchor: 'unset',
+      textAlign: 'center',
+      fill: 'var(--_primaryColor)',
+      fontSize: 8,
     },
   },
   COLLAPSE_EXPAND: {

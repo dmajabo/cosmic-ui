@@ -82,7 +82,7 @@ const SitesNode: React.FC<Props> = (props: Props) => {
       data-type={NODES_CONSTANTS.SITES.type}
     >
       <SitesCollapsedNode id={props.dataItem.id} name={props.dataItem.name} show={props.dataItem.collapsed} onExpand={onExpand} />
-      <SitesExpandNode id={props.dataItem.id} name={props.dataItem.name} show={!props.dataItem.collapsed} onCollapse={onCollapse} />
+      <SitesExpandNode dataItem={props.dataItem} show={!props.dataItem.collapsed} onCollapse={onCollapse} />
     </g>
   );
 };

@@ -1,7 +1,7 @@
-import { APP_HEADER_HEIGHT, DEFAULT_TRANSITION } from 'lib/constants/general';
+import { APP_HEADER_HEIGHT } from 'lib/constants/general';
 import styled from 'styled-components';
 
-export const ContainerWithPanel = styled.div`
+export const TopoContainer = styled.div`
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
@@ -14,7 +14,7 @@ export const ContainerWithPanel = styled.div`
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 1001;
+    z-index: 10001;
     max-height: 100vh;
   }
 `;
@@ -22,36 +22,27 @@ export const ContainerWithPanel = styled.div`
 export const ContainerWithFooter = styled.div`
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
+  width: auto;
   max-width: 100%;
   height: 100%;
+  flex-grow: 1;
   overflow: hidden;
 `;
 
 export const ContainerWithMetrics = styled.div`
   display: flex;
   width: 100%;
-  height: calc(100% - 80px);
+  height: calc(100% - 70px);
   flex-shrink: 1;
   flex-grow: 1;
-  &.withPanel {
-    height: 100%;
-  }
-  transition-property: height;
-  transition: ${DEFAULT_TRANSITION};
 `;
 
 export const MapContainer = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
-  width: auto;
-  max-width: 100%;
+  width: 100%;
   height: 100%;
-  flex: 1 1 100%;
-  transition-property: width;
-  transition: ${DEFAULT_TRANSITION};
-  padding: 0;
 `;
 
 export const StyledMap = styled.svg`
@@ -69,12 +60,4 @@ export const StyledMap = styled.svg`
     opacity: 1;
     transition: opacity 0.2s linear;
   }
-`;
-
-export const ZoomButtonsWrapper = styled.div`
-  position: absolute;
-  bottom: 30px;
-  right: 30px;
-  display: flex;
-  flex-direction: column;
 `;

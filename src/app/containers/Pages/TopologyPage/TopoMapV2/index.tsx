@@ -1,26 +1,21 @@
 import React, { useContext } from 'react';
-import { ContainerWithFooter, ContainerWithMetrics, ContainerWithPanel, MapContainer } from './styles';
-import { IDeviceNode, IPanelBar, TopologyMetricsPanelTypes, TopologyPanelTypes, IVPC_PanelDataNode } from 'lib/models/topology';
+import { ContainerWithFooter, TopoContainer, MapContainer } from './styles';
 import LoadingIndicator from 'app/components/Loading';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
-import { DATA_READY_STATE, IPanelBarLayoutTypes } from 'lib/models/general';
-import PanelBar from 'app/components/Basic/PanelBar';
-import Entities from './PanelComponents/EntitiesComponent/Entities';
-import GroupsComponent from './PanelComponents/GroupsComponent/GroupsComponent';
+import { DATA_READY_STATE } from 'lib/models/general';
+// import PanelBar from 'app/components/Basic/PanelBar';
+// import Entities from './PanelComponents/EntitiesComponent/Entities';
+// import GroupsComponent from './PanelComponents/GroupsComponent/GroupsComponent';
 import { ITopologyDataRes } from 'lib/api/ApiModels/Topology/apiModels';
-import VpcPanel from './PanelComponents/NodePanels/VpcPanel';
 import FooterAction from './FooterAction';
 import Graph from './Graph';
-import WedgePanel from './PanelComponents/NodePanels/WedgePanel';
 import { useGetChainData } from 'lib/api/http/useAxiosHook';
-import DevicePanel from './PanelComponents/NodePanels/DevicePanel';
 import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 import { PolicyApi } from 'lib/api/ApiModels/Services/policy';
 import { createTopologyQueryParam, ITopologyQueryParam } from 'lib/api/ApiModels/paramBuilders';
 import { TopoApi } from 'lib/api/ApiModels/Services/topo';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
-import { ITGWNode } from 'lib/hooks/Topology/models';
 
 interface IProps {}
 
@@ -28,12 +23,7 @@ const TopoMapV2: React.FC<IProps> = (props: IProps) => {
   const { topology } = useTopologyV2DataContext();
   const userContext = useContext<UserContextState>(UserContext);
   const { response, loading, error, onGetChainData } = useGetChainData<ITopologyDataRes>();
-  const [showPanelBar, setShowPanelBar] = React.useState<IPanelBar<TopologyPanelTypes>>({ show: false, type: null });
-  const [showMetricksBar, setShowMetricks] = React.useState<IPanelBar<TopologyMetricsPanelTypes>>({ show: false, type: null });
-  const [showFooter, setShowFooter] = React.useState<boolean>(true);
   const [isFullScreen, setIsFullScreen] = React.useState<boolean>(false);
-  const showPanelRef = React.useRef(showPanelBar);
-  const showMetrickRef = React.useRef(showMetricksBar);
   React.useEffect(() => {
     onTryLoadData();
   }, []);
@@ -50,37 +40,8 @@ const TopoMapV2: React.FC<IProps> = (props: IProps) => {
     }
   }, [error]);
 
-  const onOpenPanel = (_panel: TopologyPanelTypes) => {
-    const _objPanel = { type: _panel, show: true };
-    const _objMetrick = { ...showMetrickRef.current, show: false };
-    setShowFooter(false);
-    setShowMetricks(_objMetrick);
-    setShowPanelBar(_objPanel);
-    showMetrickRef.current = _objMetrick;
-    showPanelRef.current = _objPanel;
-  };
-
-  const onHidePanel = () => {
-    const _objPanel = { show: false, type: null };
-    setShowPanelBar(_objPanel);
-    setShowFooter(true);
-    showPanelRef.current = _objPanel;
-    // setTimeout(() => {
-    //   const _objPanel = { show: false, type: null };
-    //   setShowPanelBar(_objPanel);
-    //   showPanelRef.current = _objPanel;
-    // }, 800);
-  };
-
-  const onHideMetrics = () => {
-    const _objMetrick = { show: false, type: null };
-    setShowMetricks(_objMetrick);
-    showMetrickRef.current = _objMetrick;
-    // setTimeout(() => {
-    //   const _objMetrick = { show: false, type: null };
-    //   setShowMetricks(_objMetrick);
-    //   showMetrickRef.current = _objMetrick;
-    // }, 800);
+  const onOpenFullScreen = () => {
+    setIsFullScreen(!isFullScreen);
   };
 
   const onTryLoadData = async () => {
@@ -96,88 +57,32 @@ const TopoMapV2: React.FC<IProps> = (props: IProps) => {
     await onGetChainData([PolicyApi.getAllGroups(), TopoApi.getAllOrganizations()], ['groups', 'organizations'], userContext.accessToken!, param);
   };
 
-  const onOpenNodePanel = (node: IDeviceNode | ITGWNode, _type: TopologyMetricsPanelTypes) => {
-    const _objPanel = { ...showPanelRef.current, show: false };
-    setShowPanelBar(_objPanel);
-    showPanelRef.current = _objPanel;
-    setShowFooter(true);
-    if (node && showMetricksBar && showMetricksBar.dataItem && node.uiId === showMetricksBar.dataItem.uiId) {
-      return;
-    }
-    const _objMetrick = { type: _type, show: true, dataItem: node };
-    setShowMetricks(_objMetrick);
-    showMetrickRef.current = _objMetrick;
-  };
-
-  const onOpenVpcPanel = (node: IVPC_PanelDataNode) => {
-    const _objPanel = { show: false, type: null };
-    setShowPanelBar(_objPanel);
-    showPanelRef.current = _objPanel;
-    setShowFooter(true);
-    if (node && showMetricksBar && showMetricksBar.dataItem && showMetricksBar.dataItem.vnet && node.vnet && node.vnet.uiId === showMetricksBar.dataItem.vnet.uiId) {
-      if (!showMetricksBar.dataItem.group && node.vnet && !showMetricksBar.dataItem.vm && !node.group && !node.vm && node.vnet.uiId === showMetricksBar.dataItem.vnet.uiId) {
-        return;
-      }
-      if (showMetricksBar.dataItem.group && node.group && node.group.id === showMetricksBar.dataItem.group.id) {
-        return;
-      }
-      if (showMetricksBar.dataItem.vm && node.vm && node.vm.uiId === showMetricksBar.dataItem.vm.uiId) {
-        return;
-      }
-    }
-    const _objMetrick = { type: TopologyMetricsPanelTypes.VPC, show: true, dataItem: node };
-    setShowMetricks(_objMetrick);
-    showMetrickRef.current = _objMetrick;
-  };
-
-  const onOpenFullScreen = () => {
-    setIsFullScreen(!isFullScreen);
-  };
-
   return (
     <>
-      <ContainerWithPanel className={isFullScreen ? 'fullscreen' : ''}>
+      <TopoContainer className={isFullScreen ? 'fullscreen' : ''}>
         <ContainerWithFooter>
-          <ContainerWithMetrics className={!showFooter ? 'withPanel' : ''}>
-            <MapContainer>
-              {topology.originData && (
-                <Graph
-                  isFullScreen={isFullScreen}
-                  onOpenPanel={onOpenPanel}
-                  onReload={onTryLoadData}
-                  onOpenFullScreen={onOpenFullScreen}
-                  onClickVpc={onOpenVpcPanel}
-                  onClickDevice={onOpenNodePanel}
-                  onClickWedge={onOpenNodePanel}
-                />
-              )}
-              {(loading || topology.dataReadyToShow === DATA_READY_STATE.LOADING) && (
-                <AbsLoaderWrapper>
-                  <LoadingIndicator margin="auto" />
-                </AbsLoaderWrapper>
-              )}
-              {(error || topology.dataReadyToShow === DATA_READY_STATE.ERROR) && (
-                <AbsLoaderWrapper width="100%" height="100%">
-                  <ErrorMessage fontSize={28} margin="auto">
-                    {error && error.message ? error.message : 'Something went wrong. Please refresh page'}
-                  </ErrorMessage>
-                </AbsLoaderWrapper>
-              )}
-            </MapContainer>
-            <PanelBar show={showMetricksBar.show} onHidePanel={onHideMetrics} type={IPanelBarLayoutTypes.VERTICAL}>
-              {/* {showMetricksBar.type === TopologyMetricsPanelTypes.APPLICATION_GROUP && <ApplicationGroupPanel dataItem={showMetricksBar.dataItem} />} */}
-              {showMetricksBar.type === TopologyMetricsPanelTypes.VPC && <VpcPanel dataItem={showMetricksBar.dataItem} />}
-              {showMetricksBar.type === TopologyMetricsPanelTypes.Device && <DevicePanel dataItem={showMetricksBar.dataItem} />}
-              {showMetricksBar.type === TopologyMetricsPanelTypes.Wedge && <WedgePanel dataItem={showMetricksBar.dataItem} />}
-            </PanelBar>
-          </ContainerWithMetrics>
-          {topology.originData && <FooterAction onTryLoadData={onReloadData} isMetricks={showMetricksBar && showMetricksBar.show} show={showFooter} />}
+          <MapContainer>
+            {topology.originData && <Graph isFullScreen={isFullScreen} onReload={onTryLoadData} onOpenFullScreen={onOpenFullScreen} />}
+            {(loading || topology.dataReadyToShow === DATA_READY_STATE.LOADING) && (
+              <AbsLoaderWrapper>
+                <LoadingIndicator margin="auto" />
+              </AbsLoaderWrapper>
+            )}
+            {(error || topology.dataReadyToShow === DATA_READY_STATE.ERROR) && (
+              <AbsLoaderWrapper width="100%" height="100%">
+                <ErrorMessage fontSize={28} margin="auto">
+                  {error && error.message ? error.message : 'Something went wrong. Please refresh page'}
+                </ErrorMessage>
+              </AbsLoaderWrapper>
+            )}
+          </MapContainer>
+          {topology.originData && <FooterAction show onTryLoadData={onReloadData} isMetricks={topology.topoPanel && topology.topoPanel.show} />}
         </ContainerWithFooter>
-        <PanelBar show={showPanelBar.show} onHidePanel={onHidePanel} type={IPanelBarLayoutTypes.VERTICAL}>
+        {/* <PanelBar show={showPanelBar.show} onHidePanel={onHidePanel} type={IPanelBarLayoutTypes.VERTICAL}>
           {showPanelBar.type === TopologyPanelTypes.ENTITIES && <Entities />}
           {showPanelBar.type === TopologyPanelTypes.GROUPS && <GroupsComponent />}
-        </PanelBar>
-      </ContainerWithPanel>
+        </PanelBar> */}
+      </TopoContainer>
     </>
   );
 };

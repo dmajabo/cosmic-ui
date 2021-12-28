@@ -12,9 +12,7 @@ export interface ITopologyPreparedMapData {
 export enum TopologyPanelTypes {
   ENTITIES = 'entities',
   GROUPS = 'groups',
-}
-
-export enum TopologyMetricsPanelTypes {
+  FILTERS = 'filters',
   VPC = 'Vpc',
   Device = ' device',
   Wedge = 'wedge',
@@ -97,6 +95,7 @@ export enum TOPOLOGY_NODE_TYPES {
   WEDGE = 'wedge',
   NETWORK_GROUP = 'network_group',
   APPLICATION_GROUP = 'application_group',
+  PEERING_CONNECTIONS = 'peering_connections',
 }
 
 export enum ENTITY_NODE_TYPES {

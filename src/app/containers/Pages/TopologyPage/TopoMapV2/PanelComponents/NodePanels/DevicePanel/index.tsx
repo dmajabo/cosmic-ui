@@ -4,7 +4,6 @@ import { IDeviceNode } from 'lib/models/topology';
 // import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 import MetricsTab from './MetricsTab';
 import { PanelHeader, PanelTabWrapper, PanelTitle } from '../../styles';
-import { PanelContent } from 'app/components/Basic/PanelBar/styles';
 import { Tabs, Tab } from '@material-ui/core';
 import { TabComponentProps } from 'app/components/Tabs/TabComponentProps';
 import TabPanel from 'app/components/Tabs/TabPanel';
@@ -55,9 +54,6 @@ const DevicePanel: React.FC<IProps> = (props: IProps) => {
       <PanelHeader direction="column" align="unset">
         <PanelTitle>{props.dataItem.name ? props.dataItem.name : props.dataItem.extId}</PanelTitle>
       </PanelHeader>
-      <OverflowContainer>
-        <PanelContent></PanelContent>
-      </OverflowContainer>
       <OverflowContainer>
         <TabPanel value={value} index={0}>
           <MetricsTab dataItem={props.dataItem} />

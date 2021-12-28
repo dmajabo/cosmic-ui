@@ -1,6 +1,7 @@
 import React from 'react';
 import * as d3 from 'd3';
-import { ITransform, ZoomRange } from 'lib/models/general';
+import { ISize, ITransform, ZoomRange } from 'lib/models/general';
+import { ITopoNode } from 'lib/hooks/Topology/models';
 
 interface IProps {
   svgId: string;
@@ -85,16 +86,14 @@ export function useZoom(props: IProps) {
     zoom.scaleTo(svg, _k);
   };
 
-  const onCentered = () => {
+  const onCentered = (nodes: ITopoNode<any>[]) => {
     const svg = d3.select(`#${svgId}`);
-    const root = d3.select(`#${rootId}`);
     const svgSize = document.getElementById(svgId).getBoundingClientRect();
-    const rootSize = root.node().getBBox();
+    const rootSize = getMapSize(nodes);
     const scale = getScaleSizeHelper(svgSize, rootSize.width, rootSize.height);
-    zoom.translateTo(svg, svgSize.width / 2, svgSize.height / 2);
-    if (scale !== transform.k) {
-      zoom.scaleTo(svg, Number(scale.toFixed(4)));
-    }
+    const centerX = svgSize.width / 2 - (rootSize.width / 2) * scale;
+    const centerY = svgSize.height / 2 - (rootSize.height / 2) * scale;
+    svg.call(zoom.transform, d3.zoomIdentity.translate(centerX, centerY).scale(scale));
   };
 
   const getScaleSizeHelper = (svg, width, height) => {
@@ -181,6 +180,30 @@ export function useZoom(props: IProps) {
       return max;
     }
     return value;
+  };
+
+  const getMapSize = (nodes: ITopoNode<any>[]): ISize => {
+    let left = 0;
+    let right = 0;
+    let top = 0;
+    let bottom = 0;
+    nodes.forEach(node => {
+      if (node.x < left) {
+        left = node.x;
+      }
+      const nodeW = node.collapsed ? node.collapsedSize.width : node.expandedSize.width;
+      const nodeH = node.collapsed ? node.collapsedSize.height : node.expandedSize.height;
+      if (node.x + nodeW > right) {
+        right = node.x + nodeW;
+      }
+      if (node.y < top) {
+        top = node.y;
+      }
+      if (node.y + nodeH > bottom) {
+        bottom = node.y + nodeH;
+      }
+    });
+    return { width: right - left, height: bottom - top };
   };
 
   return {

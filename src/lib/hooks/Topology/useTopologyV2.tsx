@@ -1,19 +1,22 @@
 import * as React from 'react';
 import {
   ILink,
+  IPanelBar,
+  TopologyPanelTypes,
   // TOPOLOGY_NODE_TYPES,
 } from 'lib/models/topology';
 import { DATA_READY_STATE, IPosition, ISelectedListItem, ITimeTypes, TIME_PERIOD } from 'lib/models/general';
 import { jsonClone } from 'lib/helpers/cloneHelper';
 import { EntityTypes, IEntity } from 'lib/models/entites';
-import { ITopologyDataRes, ITopologyGroup, ITopologyGroupsData, ITopologyMapData } from 'lib/api/ApiModels/Topology/apiModels';
+import { ITopologyDataRes, ITopologyGroup, ITopologyGroupsData, ITopologyMapData, SeverityTypes } from 'lib/api/ApiModels/Topology/apiModels';
 import { ITimeMinMaxRange } from 'app/components/Inputs/TimeSlider/helpers';
 import { updateEntity } from 'lib/helpers/entityHelper';
-import { createTopology } from './helper';
-import { ITopologyPreparedMapDataV2, ITopoNode } from './models';
+import { createTopology, updateRegionHeight } from './helper';
+import { FilterEntityOptions, FilterEntityTypes, FilterSeverityOptions, ITopologyPreparedMapDataV2, ITopoNode, TopoFilterTypes } from './models';
 
 export interface TopologyV2ContextType {
   dataReadyToShow: DATA_READY_STATE;
+  topoPanel: IPanelBar<TopologyPanelTypes>;
   selectedPeriod: ISelectedListItem<ITimeTypes>;
   selectedTime: Date | null;
   timeRange: ITimeMinMaxRange | null;
@@ -24,6 +27,7 @@ export interface TopologyV2ContextType {
   links: ILink[];
   nodes: any[];
   entityTypes: IEntity[];
+  onToogleTopoPanel: (_panel: TopologyPanelTypes, show: boolean, dataItem?: any) => void;
   onChangeTime: (_value: Date | null) => void;
   onUpdateTimeRange: (_range: ITimeMinMaxRange) => void;
   onChangeSelectedDay: (_value: Date | null) => void;
@@ -38,14 +42,58 @@ export interface TopologyV2ContextType {
 
   onCollapseExpandNode: (node: ITopoNode<any>, state: boolean) => void;
   onUpdateNodeCoord: (node: ITopoNode<any>, _pos: IPosition) => void;
+
+  entities: FilterEntityOptions;
+  severity: FilterSeverityOptions;
+  onSelectFilterOption: (groupType: TopoFilterTypes, type: FilterEntityTypes, _selected: boolean) => void;
 }
 export function useTopologyV2Context(): TopologyV2ContextType {
   const [dataReadyToShow, setDataReadyToShow] = React.useState<DATA_READY_STATE>(DATA_READY_STATE.EMPTY);
+  const [topoPanel, setTopoPanel] = React.useState<IPanelBar<TopologyPanelTypes>>({ show: false, type: null });
   const [originData, setOriginData] = React.useState<ITopologyMapData | null>(null);
   const [originGroupsData, setOriginGroupsData] = React.useState<ITopologyGroup[] | null>(null);
   const [nodes, setNodes] = React.useState<ITopoNode<any>[] | null>([]);
   const [links, setLinks] = React.useState<ILink[] | null>([]);
 
+  const [entities, setEntities] = React.useState<FilterEntityOptions>({
+    sites: {
+      type: FilterEntityTypes.SITES,
+      selected: true,
+      label: 'Sites',
+    },
+    transit: {
+      type: FilterEntityTypes.TRANSIT,
+      selected: true,
+      label: 'Transit',
+    },
+    vpc: {
+      type: FilterEntityTypes.VPC,
+      selected: true,
+      label: 'VPCs',
+    },
+    peer_connections: {
+      type: FilterEntityTypes.PEERING_CONNECTIONS,
+      selected: true,
+      label: 'Peering Connections',
+    },
+  });
+  const [severity, setSeverity] = React.useState<FilterSeverityOptions>({
+    low: {
+      type: SeverityTypes.NORMAL,
+      selected: true,
+      label: 'Normal',
+    },
+    normal: {
+      type: SeverityTypes.LOW,
+      selected: true,
+      label: 'Low',
+    },
+    high: {
+      type: SeverityTypes.HIGH,
+      selected: true,
+      label: 'High',
+    },
+  });
   const [selectedPeriod, setSelectedPeriod] = React.useState<ISelectedListItem<ITimeTypes>>(TIME_PERIOD[0]);
   const [selectedTime, setSelectedTime] = React.useState<Date | null>(null);
   const [timeRange, setTimeRange] = React.useState<ITimeMinMaxRange | null>(null);
@@ -69,7 +117,7 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     const _orgObj: ITopologyMapData = res.organizations ? jsonClone(res.organizations) : null;
     const _groupsObj: ITopologyGroupsData = res.groups ? jsonClone(res.groups) : [];
     groupsRef.current = _groupsObj.groups;
-    const _data: ITopologyPreparedMapDataV2 = createTopology(_orgObj, groupsRef.current);
+    const _data: ITopologyPreparedMapDataV2 = createTopology(entities.peer_connections.selected, _orgObj, groupsRef.current);
     if (_data.links) {
       setLinks(_data.links);
       linksRef.current = _data.links;
@@ -263,8 +311,39 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     nodesRef.current = _data;
   };
 
+  const onToogleTopoPanel = (_panel: TopologyPanelTypes, _show: boolean, _dataItem?: any) => {
+    const _obj: IPanelBar<TopologyPanelTypes> = {
+      show: _show,
+      type: _panel,
+    };
+    if (_dataItem) {
+      _obj.dataItem = _dataItem;
+    }
+    setTopoPanel(_obj);
+  };
+
+  const onSelectFilterOption = (groupType: TopoFilterTypes, type: FilterEntityTypes | SeverityTypes, selected: boolean) => {
+    if (groupType === TopoFilterTypes.Entities) {
+      const _obj: FilterEntityOptions = { ...entities };
+      _obj[type].selected = selected;
+      if (type === FilterEntityTypes.PEERING_CONNECTIONS) {
+        const _nodes = updateRegionHeight(nodes, _obj[type].selected);
+        setNodes(_nodes);
+      }
+      setEntities(_obj);
+      return;
+    }
+    if (groupType === TopoFilterTypes.Severity) {
+      const _obj: FilterSeverityOptions = { ...severity };
+      _obj[type].selected = selected;
+      setSeverity(_obj);
+      return;
+    }
+  };
+
   return {
     dataReadyToShow,
+    topoPanel,
     selectedPeriod,
     selectedTime,
     timeRange,
@@ -275,6 +354,8 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     searchQuery,
     selectedType,
     entityTypes,
+
+    onToogleTopoPanel,
 
     onSetData,
     onFilterQueryChange,
@@ -290,5 +371,9 @@ export function useTopologyV2Context(): TopologyV2ContextType {
 
     onCollapseExpandNode,
     onUpdateNodeCoord,
+
+    entities,
+    severity,
+    onSelectFilterOption,
   };
 }

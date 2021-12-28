@@ -4,7 +4,7 @@ import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
 // import mockdataDevices from 'utils/dataDevices.json';
 import { ContainerWithFooter, ContainerWithMetrics, ContainerWithPanel, MapContainer } from './styles';
 import HeadeerAction from './HeadeerAction';
-import { IDeviceNode, IPanelBar, TopologyMetricsPanelTypes, TopologyPanelTypes, IWedgeNode, IVPC_PanelDataNode } from 'lib/models/topology';
+import { IDeviceNode, IPanelBar, TopologyPanelTypes, IWedgeNode, IVPC_PanelDataNode } from 'lib/models/topology';
 import LoadingIndicator from 'app/components/Loading';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import { DATA_READY_STATE, IPanelBarLayoutTypes } from 'lib/models/general';
@@ -31,7 +31,7 @@ const Map: React.FC<IProps> = (props: IProps) => {
   const userContext = useContext<UserContextState>(UserContext);
   const { response, loading, error, onGetChainData } = useGetChainData<ITopologyDataRes>();
   const [showPanelBar, setShowPanelBar] = React.useState<IPanelBar<TopologyPanelTypes>>({ show: false, type: null });
-  const [showMetricksBar, setShowMetricks] = React.useState<IPanelBar<TopologyMetricsPanelTypes>>({ show: false, type: null });
+  const [showMetricksBar, setShowMetricks] = React.useState<IPanelBar<TopologyPanelTypes>>({ show: false, type: null });
   const [showFooter, setShowFooter] = React.useState<boolean>(true);
   const [isFullScreen, setIsFullScreen] = React.useState<boolean>(false);
   const showPanelRef = React.useRef(showPanelBar);
@@ -98,7 +98,7 @@ const Map: React.FC<IProps> = (props: IProps) => {
     await onGetChainData([PolicyApi.getAllGroups(), TopoApi.getAllOrganizations()], ['groups', 'organizations'], userContext.accessToken!, param);
   };
 
-  const onOpenNodePanel = (node: IDeviceNode | IWedgeNode, _type: TopologyMetricsPanelTypes) => {
+  const onOpenNodePanel = (node: IDeviceNode | IWedgeNode, _type: TopologyPanelTypes) => {
     const _objPanel = { ...showPanelRef.current, show: false };
     setShowPanelBar(_objPanel);
     showPanelRef.current = _objPanel;
@@ -127,7 +127,7 @@ const Map: React.FC<IProps> = (props: IProps) => {
         return;
       }
     }
-    const _objMetrick = { type: TopologyMetricsPanelTypes.VPC, show: true, dataItem: node };
+    const _objMetrick = { type: TopologyPanelTypes.VPC, show: true, dataItem: node };
     setShowMetricks(_objMetrick);
     showMetrickRef.current = _objMetrick;
   };
@@ -162,10 +162,10 @@ const Map: React.FC<IProps> = (props: IProps) => {
               )}
             </MapContainer>
             <PanelBar show={showMetricksBar.show} onHidePanel={onHideMetrics} type={IPanelBarLayoutTypes.VERTICAL}>
-              {/* {showMetricksBar.type === TopologyMetricsPanelTypes.APPLICATION_GROUP && <ApplicationGroupPanel dataItem={showMetricksBar.dataItem} />} */}
-              {showMetricksBar.type === TopologyMetricsPanelTypes.VPC && <VpcPanel dataItem={showMetricksBar.dataItem} />}
-              {showMetricksBar.type === TopologyMetricsPanelTypes.Device && <DevicePanel dataItem={showMetricksBar.dataItem} />}
-              {showMetricksBar.type === TopologyMetricsPanelTypes.Wedge && <WedgePanel dataItem={showMetricksBar.dataItem} />}
+              {/* {showMetricksBar.type === TopologyPanelTypes.APPLICATION_GROUP && <ApplicationGroupPanel dataItem={showMetricksBar.dataItem} />} */}
+              {showMetricksBar.type === TopologyPanelTypes.VPC && <VpcPanel dataItem={showMetricksBar.dataItem} />}
+              {showMetricksBar.type === TopologyPanelTypes.Device && <DevicePanel dataItem={showMetricksBar.dataItem} />}
+              {showMetricksBar.type === TopologyPanelTypes.Wedge && <WedgePanel dataItem={showMetricksBar.dataItem} />}
             </PanelBar>
           </ContainerWithMetrics>
           {topology.originData && <FooterAction onTryLoadData={onReloadData} isMetricks={showMetricksBar && showMetricksBar.show} show={showFooter} />}

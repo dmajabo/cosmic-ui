@@ -158,3 +158,10 @@ export interface IFieldValuePair<V> {
   field: string;
   value: V;
 }
+
+export interface IFilterOption<T> {
+  type: T;
+  selected: boolean;
+  label: string;
+  hide?: boolean;
+}
