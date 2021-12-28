@@ -228,30 +228,32 @@ export const ExperienceTab: React.FC<ExperienceTabProps> = ({ timeRange }) => {
   }, [organizationResponse]);
 
   useEffect(() => {
-    const promises = alertMetadata.map(item => apiClient.getExperienceAnomalies(item.name, timeRange));
-    Promise.all(promises).then(experienceAnomalyResponses => {
-      const newAlertMetaData: AlertMetadata[] = alertMetadata.map(item => {
-        const selectedAnomalyResponse = experienceAnomalyResponses.find(anomaly => anomaly.name === item.name);
-        const uniqueDestinations = uniqBy(selectedAnomalyResponse.anomalies, 'destination').map(anomaly => anomaly.destination);
-        const filteredSlaTests = slaTests.filter(test => uniqueDestinations.includes(test.destination));
-        const filteredSlaTestswithCount = filteredSlaTests.map(test => {
-          const testAnomalyCount = selectedAnomalyResponse.anomalies.filter(anomaly => anomaly.destination === test.destination);
+    if (!isEmpty(alertMetadata) && !isEmpty(slaTests)) {
+      const promises = alertMetadata.map(item => apiClient.getExperienceAnomalies(item.name, timeRange));
+      Promise.all(promises).then(experienceAnomalyResponses => {
+        const newAlertMetaData: AlertMetadata[] = alertMetadata.map(item => {
+          const selectedAnomalyResponse = experienceAnomalyResponses.find(anomaly => anomaly.name === item.name);
+          const uniqueDestinations = uniqBy(selectedAnomalyResponse.anomalies, 'destination').map(anomaly => anomaly.destination);
+          const filteredSlaTests = slaTests.filter(test => uniqueDestinations.includes(test.destination));
+          const filteredSlaTestswithCount = filteredSlaTests.map(test => {
+            const testAnomalyCount = selectedAnomalyResponse.anomalies.filter(anomaly => anomaly.destination === test.destination);
+            return {
+              ...test,
+              hits: testAnomalyCount.length,
+            };
+          });
+
+          const { triggerCount, ...otherItems } = item;
+
           return {
-            ...test,
-            hits: testAnomalyCount.length,
+            ...otherItems,
+            slaTests: filteredSlaTestswithCount,
+            triggerCount: Number(selectedAnomalyResponse.count),
           };
         });
-
-        const { triggerCount, ...otherItems } = item;
-
-        return {
-          ...otherItems,
-          slaTests: filteredSlaTestswithCount,
-          triggerCount: Number(selectedAnomalyResponse.count),
-        };
+        setTableAlertMetadata(newAlertMetaData);
       });
-      setTableAlertMetadata(newAlertMetaData);
-    });
+    }
   }, [alertMetadata, timeRange, slaTests]);
 
   const tableData: AnomalyExperienceTableData[] = tableAlertMetadata.map(item => ({
