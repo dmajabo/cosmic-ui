@@ -24,8 +24,7 @@ const Graph: React.FC<Props> = (props: Props) => {
   const { zoomValue, onZoomInit, onZoomIn, onZoomOut, onCentered, onUnsubscribe } = useZoom({ svgId: TOPOLOGY_IDS.SVG, rootId: TOPOLOGY_IDS.G_ROOT });
 
   React.useEffect(() => {
-    onZoomInit({ k: 1, x: 0, y: 0 });
-    onCentered(topology.nodes);
+    onZoomInit(topology.nodes);
     return () => {
       onUnsubscribe();
     };

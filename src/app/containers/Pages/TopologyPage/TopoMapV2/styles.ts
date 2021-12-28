@@ -42,7 +42,7 @@ export const MapContainer = styled.div`
   flex-direction: column;
   position: relative;
   width: 100%;
-  height: 100%;
+  height: calc(100% - 80px);
 `;
 
 export const StyledMap = styled.svg`

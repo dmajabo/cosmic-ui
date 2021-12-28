@@ -124,17 +124,18 @@ export const updateRegionItems = (items: ITopoNode<INetworkVNetNode>[], showPeer
   if (!items || !items.length) return 0;
   let offsetX = 0;
   let maxNodeHeight = 0;
+  const minRegWidth = NODES_CONSTANTS.REGION.expanded.minWidth - NODES_CONSTANTS.REGION.expanded.contentPadding * 2;
   items.forEach((a, i) => {
     if (!a.children || !a.children.length) {
       a.collapsed = true;
     }
     if (a.children && a.children.length) {
-      const count = setUpChildCoord(a.children, VPCS_IN_ROW, NODES_CONSTANTS.NETWORK_VNET.collapse);
+      const count = setUpChildCoord(a.children, VPCS_IN_ROW, minRegWidth, NODES_CONSTANTS.NETWORK_VNET.collapse);
       a.childrenRows = count;
     }
     if (a.peerConnections && a.peerConnections.length) {
       const _maxCount = a.childrenRows.childrenCount === VPCS_IN_ROW ? PEER_CONNECTIONS_IN_ROW : Math.max(2, a.childrenRows.childrenCount - 2);
-      const count = setUpChildCoord(a.peerConnections, _maxCount, NODES_CONSTANTS.PEERING_CONNECTION.collapse);
+      const count = setUpChildCoord(a.peerConnections, _maxCount, minRegWidth, NODES_CONSTANTS.PEERING_CONNECTION.collapse);
       a.peerConnectionsRows = count;
     }
     a.y = 0;
@@ -153,8 +154,8 @@ export const updateRegionItems = (items: ITopoNode<INetworkVNetNode>[], showPeer
     const childrenHeight = calculateRowsHeight(a.childrenRows.rows, NODES_CONSTANTS.NETWORK_VNET.collapse);
     const _height = calculateTotalNodeHeight(peerH + childrenHeight, NODES_CONSTANTS.REGION.headerHeight, NODES_CONSTANTS.REGION.expanded.contentPadding);
     a.x = offsetX;
-    a.expandedSize.width = _width;
-    a.expandedSize.height = _height;
+    a.expandedSize.width = Math.max(NODES_CONSTANTS.REGION.expanded.minWidth, _width);
+    a.expandedSize.height = Math.max(NODES_CONSTANTS.REGION.expanded.minHeight, _height);
     maxNodeHeight = Math.max(maxNodeHeight, _height);
     offsetX = i !== items.length - 1 ? offsetX + _width + NODES_CONSTANTS.REGION.expanded.spaceX : offsetX + _width;
   });
@@ -175,7 +176,7 @@ export const updateRegionHeight = (nodes: ITopoNode<any>[], showPeerConnection: 
 };
 
 export const getBeautifulRowsCount = (_count: number, maxInRow: number): number => {
-  if (_count <= 6) return 6;
+  if (_count <= 6) return _count;
   if (_count <= maxInRow) return Math.max(4, Math.ceil(_count / 1.75));
   return Math.min(maxInRow, Math.floor(Math.sqrt(_count)) * 2);
 };
@@ -200,13 +201,14 @@ export const updateSitesItems = (items: ITopoNode<INetworkDevice>[], offsetY: nu
   if (!items || !items.length) return 0;
   let offsetX = 0;
   let maxNodeHeight = 0;
+  const minSitesWidth = NODES_CONSTANTS.SITES.expanded.minWidth - NODES_CONSTANTS.SITES.expanded.contentPadding * 2;
   items.forEach((a, i) => {
     if (!a.children || !a.children.length) {
       a.collapsed = true;
     }
     if (a.children && a.children.length) {
       const max = Math.min(6, Math.floor(Math.sqrt(a.children.length)));
-      const count = setUpChildCoord(a.children, max, NODES_CONSTANTS.DEVICE.collapse);
+      const count = setUpChildCoord(a.children, max, minSitesWidth, NODES_CONSTANTS.DEVICE.collapse);
       a.childrenRows = count;
     }
     a.y = offsetY;
@@ -217,11 +219,13 @@ export const updateSitesItems = (items: ITopoNode<INetworkDevice>[], offsetY: nu
       return;
     }
     const _width = calculateItemsRowWidth(a.childrenRows.childrenCount, NODES_CONSTANTS.SITES.expanded, NODES_CONSTANTS.DEVICE.collapse);
+    const _childrenHeight = calculateRowsHeight(a.childrenRows.rows, NODES_CONSTANTS.DEVICE.collapse);
+    const totalHeight = calculateTotalNodeHeight(_childrenHeight, NODES_CONSTANTS.SITES.headerHeight, NODES_CONSTANTS.SITES.expanded.contentPadding);
     a.x = offsetX;
-    a.expandedSize.width = _width;
-    a.expandedSize.height = calculateRowsHeight(a.childrenRows.rows, NODES_CONSTANTS.DEVICE.collapse);
+    a.expandedSize.width = Math.max(NODES_CONSTANTS.SITES.expanded.minWidth, _width);
+    a.expandedSize.height = Math.max(NODES_CONSTANTS.SITES.expanded.minHeight, totalHeight);
     maxNodeHeight = Math.max(maxNodeHeight, a.expandedSize.height);
-    offsetX = i !== items.length - 1 ? offsetX + _width + NODES_CONSTANTS.REGION.expanded.spaceX : offsetX + _width;
+    offsetX = i !== items.length - 1 ? offsetX + _width + NODES_CONSTANTS.SITES.expanded.spaceX : offsetX + _width;
   });
   // centeredInRow(items, offsetX);
   return maxNodeHeight;
@@ -253,13 +257,13 @@ export const updateAccountItems = (items: ITopoNode<ITGWNode>[], offsetY: number
   return maxNodeHeight + NODES_CONSTANTS.ACCOUNT.expanded.spaceY;
 };
 
-const setUpChildCoord = (items: any[], maxCount: number, styleObj: ICollapseStyles): IChildrenCount => {
+const setUpChildCoord = (items: any[], maxCount: number, minTopLevelWidth: number, styleObj: ICollapseStyles): IChildrenCount => {
   const _maxInRow = getBeautifulRowsCount(items.length, maxCount);
   const _arr = getChunksFromArray(items, _maxInRow);
   const w = styleObj.r ? styleObj.r * 2 : styleObj.width;
   const h = styleObj.r ? styleObj.r * 2 : styleObj.height;
   _arr.forEach((subArray, rowIndex) => {
-    const offsetX = getStartChildRowOffsetX(_maxInRow, subArray.length, styleObj.width, styleObj.spaceX);
+    const offsetX = getStartChildRowOffsetX(_maxInRow, subArray.length, styleObj.width, styleObj.spaceX, minTopLevelWidth);
     subArray.forEach((it, index) => {
       it.x = index === 0 ? offsetX : offsetX + (w + styleObj.spaceX) * index;
       it.y = rowIndex === 0 ? 0 : (h + styleObj.spaceY) * rowIndex;
@@ -268,11 +272,10 @@ const setUpChildCoord = (items: any[], maxCount: number, styleObj: ICollapseStyl
   return { rows: _arr.length, childrenCount: _maxInRow };
 };
 
-const getStartChildRowOffsetX = (maxInRow: number, itemsInRow: number, itemWidth: number, itemSpace: number): number => {
-  if (maxInRow === itemsInRow) return 0;
-  const maxWidth = maxInRow * (itemWidth + itemSpace) - itemSpace;
+const getStartChildRowOffsetX = (maxInRow: number, itemsInRow: number, itemWidth: number, itemSpace: number, minTopLevelWidth: number): number => {
+  const maxWidth = Math.max(minTopLevelWidth, maxInRow * (itemWidth + itemSpace) - itemSpace);
   const totalInRow = itemsInRow * (itemWidth + itemSpace) - itemSpace;
-  return maxWidth / 2 - totalInRow / 2;
+  return Math.max(0, maxWidth / 2 - totalInRow / 2);
 };
 
 export const getExpandedPosition = (direction: DirectionType, expandedWidth: number, expandedHeight: number, collapse: ICollapseStyles): IPosition => {
