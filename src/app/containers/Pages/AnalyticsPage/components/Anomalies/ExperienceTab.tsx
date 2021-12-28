@@ -24,17 +24,15 @@ import { PACKET_LOSS_HEATMAP_LEGEND } from '../Performance Dashboard/PacketLoss'
 import { LegendData } from '../Performance Dashboard/Heatmap';
 import { AnomalyBlockTable } from './AnomalyBlockTable';
 import { Row } from 'react-table';
-import { DUMMY_BAR_CHART_DATA, DUMMY_SESSION_LOGS_DATA, DUMMY_SLA_TEST_DATA } from '../../DummyData';
-import { getAPIEndpoint, getSeverityColour, SeverityLevel } from 'lib/api/http/utils';
+import { DUMMY_BAR_CHART_DATA, DUMMY_SESSION_LOGS_DATA } from '../../DummyData';
+import { getSeverityColour, SeverityLevel } from 'lib/api/http/utils';
 import { useGet } from 'lib/api/http/useAxiosHook';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { AlertApi } from 'lib/api/ApiModels/Services/alert';
 import LoadingIndicator from 'app/components/Loading';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
-import { PolicyApi } from 'lib/api/ApiModels/Services/policy';
 import { AnomalyTimeRangeValue } from './Anomalies';
 import { createApiClient } from 'lib/api/http/apiClient';
-import produce from 'immer';
 import uniqBy from 'lodash/uniqBy';
 import { isEmpty } from 'lodash';
 import { TopoApi } from 'lib/api/ApiModels/Services/topo';
@@ -206,8 +204,8 @@ export const ExperienceTab: React.FC<ExperienceTabProps> = ({ timeRange }) => {
   };
 
   useEffect(() => {
-    getExperienceTableAlertMetadata(getAPIEndpoint(AlertApi.getAllMetadata()), userContext.accessToken!);
-    getOrganizations(getAPIEndpoint(TopoApi.getAllOrganizations()), userContext.accessToken!);
+    getExperienceTableAlertMetadata(AlertApi.getAllMetadata(), userContext.accessToken!);
+    getOrganizations(TopoApi.getAllOrganizations(), userContext.accessToken!);
     getSLATests();
   }, []);
 
@@ -332,7 +330,7 @@ export const ExperienceTab: React.FC<ExperienceTabProps> = ({ timeRange }) => {
           <span className={classes.anomalyTableTitle}>Triggers</span>
           <span className={classes.anomalyCount}>{alertMetadata.length}</span>
         </div>
-        {alertLoading && isEmpty(tableAlertMetadata) ? (
+        {alertLoading && isEmpty(tableData) ? (
           <LoadingIndicator />
         ) : alertError ? (
           <ErrorMessage fontSize={28} margin="auto">

@@ -71,8 +71,3 @@ export const getSeverityColour = (severity: SeverityLevel | JSX.Element) => {
   }
   return '#DC4545';
 };
-
-export const getAPIEndpoint = (path: string) => {
-  const BASE_URL = process.env.REACT_APP_API_ENDPOINT_PRODUCTION;
-  return BASE_URL + '/' + path;
-};
