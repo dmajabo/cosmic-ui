@@ -1,6 +1,6 @@
 import { INetworkDevice, ITopologyGroup, ITopologyMapData } from 'lib/api/ApiModels/Topology/apiModels';
 import { ICollapseStyles, IExpandedStyles, NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
-import { IPosition } from 'lib/models/general';
+import { IPosition, ISize } from 'lib/models/general';
 import {
   ITopoNode,
   ITopologyPreparedMapDataV2,
@@ -106,22 +106,26 @@ export const updateTopLevelItems = (
   dataCenters?: ITopoNode<any>[],
 ) => {
   let offsetY = 0;
+  let regionSizes: ISize = { width: 0, height: 0 };
+  let accountSizes: ISize = { width: 0, height: 0 };
+  let sitesSizes: ISize = { width: 0, height: 0 };
   if (regions && regions.length) {
-    const _newY = updateRegionItems(regions, showPeerConnection);
-    offsetY += _newY;
+    regionSizes = updateRegionItems(regions, showPeerConnection);
+    offsetY = offsetY + regionSizes.height + NODES_CONSTANTS.REGION.expanded.spaceY;
   }
   if (accounts && accounts.length) {
-    const _newY = updateAccountItems(accounts, offsetY);
-    offsetY += _newY;
+    accountSizes = updateAccountItems(accounts, offsetY);
+    offsetY = offsetY + accountSizes.height + NODES_CONSTANTS.ACCOUNT.expanded.spaceY;
   }
   if (sites && sites.length) {
-    const _newY = updateSitesItems(sites, offsetY);
-    offsetY += _newY;
+    sitesSizes = updateSitesItems(sites, offsetY);
+    offsetY += sitesSizes.height;
   }
+  centeredTopLevelNodes(regions, accounts, sites, regionSizes, accountSizes, sitesSizes);
 };
 
-export const updateRegionItems = (items: ITopoNode<INetworkVNetNode>[], showPeerConnection: boolean): number => {
-  if (!items || !items.length) return 0;
+export const updateRegionItems = (items: ITopoNode<INetworkVNetNode>[], showPeerConnection: boolean): ISize => {
+  if (!items || !items.length) return { width: 0, height: 0 };
   let offsetX = 0;
   let maxNodeHeight = 0;
   const minRegWidth = NODES_CONSTANTS.REGION.expanded.minWidth - NODES_CONSTANTS.REGION.expanded.contentPadding * 2;
@@ -157,10 +161,9 @@ export const updateRegionItems = (items: ITopoNode<INetworkVNetNode>[], showPeer
     a.expandedSize.width = Math.max(NODES_CONSTANTS.REGION.expanded.minWidth, _width);
     a.expandedSize.height = Math.max(NODES_CONSTANTS.REGION.expanded.minHeight, _height);
     maxNodeHeight = Math.max(maxNodeHeight, _height);
-    offsetX = i !== items.length - 1 ? offsetX + _width + NODES_CONSTANTS.REGION.expanded.spaceX : offsetX + _width;
+    offsetX = i !== items.length - 1 ? offsetX + a.expandedSize.width + NODES_CONSTANTS.REGION.expanded.spaceX : offsetX + a.expandedSize.width;
   });
-  return maxNodeHeight + NODES_CONSTANTS.REGION.expanded.spaceY;
-  // centeredInRow(items, offsetX);
+  return { width: offsetX, height: maxNodeHeight };
 };
 
 export const updateRegionHeight = (nodes: ITopoNode<any>[], showPeerConnection: boolean): ITopoNode<any>[] => {
@@ -197,8 +200,8 @@ const calculateRowsHeight = (_count: number, chStyles: ICollapseStyles): number 
   return height;
 };
 
-export const updateSitesItems = (items: ITopoNode<INetworkDevice>[], offsetY: number): number => {
-  if (!items || !items.length) return 0;
+export const updateSitesItems = (items: ITopoNode<INetworkDevice>[], offsetY: number): ISize => {
+  if (!items || !items.length) return { width: 0, height: 0 };
   let offsetX = 0;
   let maxNodeHeight = 0;
   const minSitesWidth = NODES_CONSTANTS.SITES.expanded.minWidth - NODES_CONSTANTS.SITES.expanded.contentPadding * 2;
@@ -225,14 +228,13 @@ export const updateSitesItems = (items: ITopoNode<INetworkDevice>[], offsetY: nu
     a.expandedSize.width = Math.max(NODES_CONSTANTS.SITES.expanded.minWidth, _width);
     a.expandedSize.height = Math.max(NODES_CONSTANTS.SITES.expanded.minHeight, totalHeight);
     maxNodeHeight = Math.max(maxNodeHeight, a.expandedSize.height);
-    offsetX = i !== items.length - 1 ? offsetX + _width + NODES_CONSTANTS.SITES.expanded.spaceX : offsetX + _width;
+    offsetX = i !== items.length - 1 ? offsetX + a.expandedSize.width + NODES_CONSTANTS.SITES.expanded.spaceX : offsetX + a.expandedSize.width;
   });
-  // centeredInRow(items, offsetX);
-  return maxNodeHeight;
+  return { width: offsetX, height: maxNodeHeight };
 };
 
-export const updateAccountItems = (items: ITopoNode<ITGWNode>[], offsetY: number): number => {
-  if (!items || !items.length) return 0;
+export const updateAccountItems = (items: ITopoNode<ITGWNode>[], offsetY: number): ISize => {
+  if (!items || !items.length) return { width: 0, height: 0 };
   let offsetX = 0;
   let maxNodeHeight = 0;
   items.forEach((a, i) => {
@@ -248,13 +250,12 @@ export const updateAccountItems = (items: ITopoNode<ITGWNode>[], offsetY: number
     }
     a.x = offsetX;
     const _width = calculateItemsRowWidth(a.children.length, NODES_CONSTANTS.ACCOUNT.expanded, NODES_CONSTANTS.NETWORK_WEDGE.collapse);
-    a.expandedSize.width = _width;
+    a.expandedSize.width = Math.max(NODES_CONSTANTS.ACCOUNT.expanded.minWidth, _width);
     a.expandedSize.height = NODES_CONSTANTS.ACCOUNT.expanded.minHeight;
     maxNodeHeight = Math.max(maxNodeHeight, a.expandedSize.height);
-    offsetX = i !== items.length - 1 ? offsetX + _width + NODES_CONSTANTS.ACCOUNT.expanded.spaceX : offsetX + _width;
+    offsetX = i !== items.length - 1 ? offsetX + a.expandedSize.width + NODES_CONSTANTS.ACCOUNT.expanded.spaceX : offsetX + a.expandedSize.width;
   });
-  // centeredInRow(items, offsetX);
-  return maxNodeHeight + NODES_CONSTANTS.ACCOUNT.expanded.spaceY;
+  return { width: offsetX, height: maxNodeHeight };
 };
 
 const setUpChildCoord = (items: any[], maxCount: number, minTopLevelWidth: number, styleObj: ICollapseStyles): IChildrenCount => {
@@ -276,6 +277,26 @@ const getStartChildRowOffsetX = (maxInRow: number, itemsInRow: number, itemWidth
   const maxWidth = Math.max(minTopLevelWidth, maxInRow * (itemWidth + itemSpace) - itemSpace);
   const totalInRow = itemsInRow * (itemWidth + itemSpace) - itemSpace;
   return Math.max(0, maxWidth / 2 - totalInRow / 2);
+};
+
+const centeredTopLevelNodes = (regions: ITopoNode<any>[], accounts: ITopoNode<any>[], sites: ITopoNode<any>[], regionSize: ISize, accountSize: ISize, sitesSize: ISize) => {
+  const maxRowWidth = Math.max(regionSize.width, accountSize.width, sitesSize.width);
+  centeredItemsInRow(regions, regionSize, maxRowWidth);
+  centeredItemsInRow(accounts, accountSize, maxRowWidth);
+  centeredItemsInRow(sites, sitesSize, maxRowWidth);
+};
+
+const centeredItemsInRow = (items: ITopoNode<any>[], size: ISize, maxWidth: number) => {
+  const hw = maxWidth / 2;
+  items.forEach(it => {
+    if (size.width !== maxWidth) {
+      it.x = it.x + hw - size.width / 2;
+    }
+    const itemh = it.collapsed ? it.collapsedSize.height : it.expandedSize.height;
+    if (itemh < size.height) {
+      it.y = it.y + size.height / 2 - itemh / 2;
+    }
+  });
 };
 
 export const getExpandedPosition = (direction: DirectionType, expandedWidth: number, expandedHeight: number, collapse: ICollapseStyles): IPosition => {

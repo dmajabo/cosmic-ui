@@ -57,16 +57,16 @@ const RegionExpandNode: React.FC<Props> = (props: Props) => {
               stylesObj={NODES_CONSTANTS.REGION.labelExpandedStyles}
             />
           </g>
-          {props.showPeeringConnections && (
+          {props.showPeeringConnections && props.dataItem.peerConnections && props.dataItem.peerConnections.length ? (
             <ExpandNodeContent offsetY={NODES_CONSTANTS.REGION.headerHeight} width={props.dataItem.expandedSize.width}>
               {props.dataItem.peerConnections.map((it, index) => (
                 <PeerConnectionNode key={`${it.uiId}peerConnection`} item={it} dataItem={props.dataItem} />
               ))}
             </ExpandNodeContent>
-          )}
+          ) : null}
           <ExpandNodeContent
             offsetY={
-              props.showPeeringConnections
+              props.showPeeringConnections && props.dataItem.peerConnections && props.dataItem.peerConnections.length
                 ? NODES_CONSTANTS.REGION.headerHeight + props.dataItem.peerConnectionsRows.rows * (NODES_CONSTANTS.PEERING_CONNECTION.collapse.r * 2) + 20
                 : NODES_CONSTANTS.REGION.headerHeight
             }
