@@ -224,6 +224,7 @@ export enum ColumnAccessor {
   peeringAttachments = 'peeringAttachments',
   dataProcessed = 'dataProcessed',
   totalCost = 'totalCost',
+  value = 'value',
   //TODO: change below enum params when api is integrated
   interfaceSource = 'interfaceSource',
   interfaceDestination = 'interfaceDestination',
@@ -445,7 +446,7 @@ export interface GetAlertMetadataResponse {
   readonly pageOffset: number;
 }
 
-interface ExperienceAnomalies {
+export interface ExperienceAnomalies {
   readonly time: string;
   readonly type: string;
   readonly category: string;
@@ -459,4 +460,14 @@ export interface GetExperienceAnomaliesResponse {
   readonly count: number;
   readonly anomalies: ExperienceAnomalies[];
   readonly name: string;
+}
+
+export interface HitsTableData {
+  readonly name: string;
+  readonly time: string;
+  readonly sourceOrg: string;
+  readonly sourceNetwork: string;
+  readonly sourceDevice: string;
+  readonly destination: string;
+  readonly value: string;
 }
