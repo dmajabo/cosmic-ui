@@ -98,6 +98,14 @@ const TimeSlider: React.FC<Props> = (props: Props) => {
   const [defaultValue] = React.useState<number>(new Date(Date.now()).getTime());
 
   React.useEffect(() => {
+    const interval = setInterval(() => {
+      console.log('Check config');
+      onSetConfig(props.currentPeriod, props.selectedCalendarDay);
+    }, 900000); // every 15min
+    return () => clearInterval(interval);
+  }, []);
+
+  React.useEffect(() => {
     onSetConfig(props.currentPeriod, props.selectedCalendarDay);
   }, [props.currentPeriod]);
 

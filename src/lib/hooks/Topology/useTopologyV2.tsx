@@ -12,7 +12,7 @@ import { ITopologyDataRes, ITopologyGroup, ITopologyGroupsData, ITopologyMapData
 import { ITimeMinMaxRange } from 'app/components/Inputs/TimeSlider/helpers';
 import { updateEntity } from 'lib/helpers/entityHelper';
 import { createTopology, updateRegionHeight } from './helper';
-import { FilterEntityOptions, FilterEntityTypes, FilterSeverityOptions, ITopologyPreparedMapDataV2, ITopoNode, TopoFilterTypes } from './models';
+import { FilterEntityOptions, FilterEntityTypes, FilterSeverityOptions, ITopologyPreparedMapDataV2, ITopoNode, TopoFilterTypes, TopoNodeTypes } from './models';
 import { AlertSeverity } from 'lib/api/ApiModels/Workflow/apiModel';
 
 export interface TopologyV2ContextType {
@@ -329,6 +329,30 @@ export function useTopologyV2Context(): TopologyV2ContextType {
       _obj[type].selected = selected;
       if (type === FilterEntityTypes.PEERING_CONNECTIONS) {
         const _nodes = updateRegionHeight(nodes, _obj[type].selected);
+        setNodes(_nodes);
+      }
+      if (type === FilterEntityTypes.SITES) {
+        const _nodes = nodes.slice();
+        _nodes.forEach(it => {
+          if (it.type !== TopoNodeTypes.SITES) return;
+          it.visible = _obj[type].selected;
+        });
+        setNodes(_nodes);
+      }
+      if (type === FilterEntityTypes.TRANSIT) {
+        const _nodes = nodes.slice();
+        _nodes.forEach(it => {
+          if (it.type !== TopoNodeTypes.ACCOUNT) return;
+          it.visible = _obj[type].selected;
+        });
+        setNodes(_nodes);
+      }
+      if (type === FilterEntityTypes.VPC) {
+        const _nodes = nodes.slice();
+        _nodes.forEach(it => {
+          if (it.type !== TopoNodeTypes.REGION) return;
+          it.visible = _obj[type].selected;
+        });
         setNodes(_nodes);
       }
       setEntities(_obj);

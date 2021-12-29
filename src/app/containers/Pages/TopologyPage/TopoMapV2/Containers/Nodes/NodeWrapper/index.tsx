@@ -14,29 +14,19 @@ interface Props {
 }
 
 const NodesWrapper: React.FC<Props> = (props: Props) => {
-  // const onClickVpc = (_data: IVPC_PanelDataNode) => {
-  //   props.onClickVpc(_data);
-  // };
-  // const onClickDevice = (dev: IDeviceNode) => {
-  //   props.onClickDevice(dev);
-  // };
-  // const onClickWedge = (wedge: ITGWNode) => {
-  //   props.onClickWedge(wedge);
-  // };
-
-  if (props.dataItem.type === TopoNodeTypes.ACCOUNT) {
+  if (props.dataItem.type === TopoNodeTypes.ACCOUNT && props.dataItem.visible) {
     return <AccountNode dataItem={props.dataItem} />;
   }
 
-  if (props.dataItem.type === TopoNodeTypes.REGION) {
+  if (props.dataItem.type === TopoNodeTypes.REGION && props.dataItem.visible) {
     return <RegionNode dataItem={props.dataItem} />;
   }
 
-  if (props.dataItem.type === TopoNodeTypes.DATA_CENTER) {
+  if (props.dataItem.type === TopoNodeTypes.DATA_CENTER && props.dataItem.visible) {
     return <DataCenter dataItem={props.dataItem} />;
   }
 
-  if (props.dataItem.type === TopoNodeTypes.SITES) {
+  if (props.dataItem.type === TopoNodeTypes.SITES && props.dataItem.visible) {
     return <SitesNode dataItem={props.dataItem} />;
   }
 
