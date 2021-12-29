@@ -18,12 +18,12 @@ interface Props {
 
 const SitesExpandNode: React.FC<Props> = (props: Props) => {
   const showExpandCollapseBtn = () => {
-    const _node = d3.select(`#${props.dataItem.id}${CollapseExpandState.COLLAPSE}`);
+    const _node = d3.select(`#sites${props.dataItem.id}${CollapseExpandState.COLLAPSE}`);
     _node.transition().delay(300).attr('opacity', 1);
   };
 
   const hideExpandCollapseBtn = () => {
-    const _node = d3.select(`#${props.dataItem.id}${CollapseExpandState.COLLAPSE}`);
+    const _node = d3.select(`#sites${props.dataItem.id}${CollapseExpandState.COLLAPSE}`);
     _node.transition().attr('opacity', 0);
   };
 
@@ -62,7 +62,7 @@ const SitesExpandNode: React.FC<Props> = (props: Props) => {
             </g>
           </g>
           <CollapseExpandButton
-            id={`${props.dataItem.id}${CollapseExpandState.COLLAPSE}`}
+            id={`sites${props.dataItem.id}${CollapseExpandState.COLLAPSE}`}
             onClick={onCollapse}
             x={NODES_CONSTANTS.SITES.expanded.minWidth - NODES_CONSTANTS.COLLAPSE_EXPAND.r}
             y={NODES_CONSTANTS.SITES.expanded.minHeight / 2 - NODES_CONSTANTS.COLLAPSE_EXPAND.r}

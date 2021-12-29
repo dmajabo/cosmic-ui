@@ -79,17 +79,17 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     },
   });
   const [severity, setSeverity] = React.useState<FilterSeverityOptions>({
-    low: {
+    LOW: {
       type: AlertSeverity.LOW,
       selected: true,
       label: 'Low',
     },
-    medium: {
+    MEDIUM: {
       type: AlertSeverity.MEDIUM,
       selected: true,
       label: 'Medium',
     },
-    high: {
+    HIGH: {
       type: AlertSeverity.HIGH,
       selected: true,
       label: 'High',

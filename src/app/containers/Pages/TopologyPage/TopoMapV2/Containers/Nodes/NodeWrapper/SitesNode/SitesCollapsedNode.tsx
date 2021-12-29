@@ -11,17 +11,18 @@ interface Props {
   id: string;
   name: string;
   show: boolean;
+  childrenCount: number;
   onExpand: () => void;
 }
 
 const SitesCollapsedNode: React.FC<Props> = (props: Props) => {
   const showExpandBtn = () => {
-    const _node = d3.select(`#${props.id}${CollapseExpandState.EXPAND}`);
+    const _node = d3.select(`#sites${props.id}${CollapseExpandState.EXPAND}`);
     _node.transition().delay(300).attr('opacity', 1);
   };
 
   const hideExpandBtn = () => {
-    const _node = d3.select(`#${props.id}${CollapseExpandState.EXPAND}`);
+    const _node = d3.select(`#sites${props.id}${CollapseExpandState.EXPAND}`);
     _node.transition().attr('opacity', 0);
   };
 
@@ -50,14 +51,18 @@ const SitesCollapsedNode: React.FC<Props> = (props: Props) => {
             x={NODES_CONSTANTS.SITES.collapse.iconOffsetX}
             y={NODES_CONSTANTS.SITES.collapse.iconOffsetY}
           />
-          <NodeCounter label={`${12} VPC`} stylesObj={NODES_CONSTANTS.SITES.countStyles} />
-          <CollapseExpandButton
-            id={`${props.id}${CollapseExpandState.EXPAND}`}
-            isCollapse
-            onClick={onExpand}
-            x={NODES_CONSTANTS.SITES.collapse.width - NODES_CONSTANTS.COLLAPSE_EXPAND.r}
-            y={NODES_CONSTANTS.SITES.collapse.height / 2 - NODES_CONSTANTS.COLLAPSE_EXPAND.r}
-          />
+          {props.childrenCount && props.childrenCount > 0 && (
+            <>
+              <NodeCounter label={`${props.childrenCount} Dev`} stylesObj={NODES_CONSTANTS.SITES.countStyles} />
+              <CollapseExpandButton
+                id={`sites${props.id}${CollapseExpandState.EXPAND}`}
+                isCollapse
+                onClick={onExpand}
+                x={NODES_CONSTANTS.SITES.collapse.width - NODES_CONSTANTS.COLLAPSE_EXPAND.r}
+                y={NODES_CONSTANTS.SITES.collapse.height / 2 - NODES_CONSTANTS.COLLAPSE_EXPAND.r}
+              />
+            </>
+          )}
         </g>
         <NodeCollapsedName label={props.name} stylesObj={NODES_CONSTANTS.SITES.labelCollapsedStyles} />
       </>

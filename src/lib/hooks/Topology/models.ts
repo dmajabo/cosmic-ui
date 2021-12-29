@@ -43,6 +43,7 @@ export interface IChildrenCount {
   childrenCount: number;
 }
 export interface ITopoNode<T> extends ICoord, ICollapsed, IVisible, IBaseEntity<string> {
+  dataItem: any;
   id: string;
   name: string;
   uiId: string;
@@ -81,7 +82,7 @@ export interface FilterEntityOptions {
 }
 
 export interface FilterSeverityOptions {
-  low: IFilterOption<AlertSeverity>;
-  medium: IFilterOption<AlertSeverity>;
-  high: IFilterOption<AlertSeverity>;
+  LOW: IFilterOption<AlertSeverity>;
+  MEDIUM: IFilterOption<AlertSeverity>;
+  HIGH: IFilterOption<AlertSeverity>;
 }

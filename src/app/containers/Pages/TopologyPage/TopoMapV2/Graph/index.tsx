@@ -52,7 +52,6 @@ const Graph: React.FC<Props> = (props: Props) => {
       <ContainerWithMetrics>
         <Map />
         <PanelBar show={topology.topoPanel.show} onHidePanel={onHidePanel} type={IPanelBarLayoutTypes.VERTICAL}>
-          {/* {showMetricksBar.type === TopologyPanelTypes.APPLICATION_GROUP && <ApplicationGroupPanel dataItem={showMetricksBar.dataItem} />} */}
           {topology.topoPanel.type === TopologyPanelTypes.FILTERS && <FilterComponent />}
           {topology.topoPanel.type === TopologyPanelTypes.VPC && <VpcPanel dataItem={topology.topoPanel.dataItem} />}
           {topology.topoPanel.type === TopologyPanelTypes.Device && <DevicePanel dataItem={topology.topoPanel.dataItem} />}

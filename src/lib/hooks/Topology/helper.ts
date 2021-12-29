@@ -1,4 +1,4 @@
-import { INetworkDevice, ITopologyGroup, ITopologyMapData } from 'lib/api/ApiModels/Topology/apiModels';
+import { INetworkDevice, ITopologyGroup, ITopologyMapData, SelectorEvalType } from 'lib/api/ApiModels/Topology/apiModels';
 import { ICollapseStyles, IExpandedStyles, NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
 import { IPosition, ISize } from 'lib/models/general';
 import {
@@ -16,14 +16,18 @@ import {
 } from './models';
 import { createDeviceNode, createPeerConnectionNode, createTopoNode, createVPCNode, createWedgeNode } from './helpers/buildNodeHelpers';
 import { getChunksFromArray } from 'lib/helpers/arrayHelper';
+import { DEFAULT_GROUP_ID, TopologyGroupTypesAsNumber, TopologyGroupTypesAsString } from 'lib/models/topology';
 
 export const createTopology = (showPeerConnection: boolean, _data: ITopologyMapData, _groups: ITopologyGroup[]): ITopologyPreparedMapDataV2 => {
   const regions: ITopoNode<INetworkVNetNode>[] = [];
   const accounts: ITopoNode<ITGWNode>[] = [];
   // const dataCenters: ITopoNode<any>[] = [];
   const sites: ITopoNode<IDeviceNode>[] = [];
+  const devicesInGroup: IDeviceNode[] = [];
+  const devicesInDefaultGroup: IDeviceNode[] = [];
   for (let i = 0; i < 1; i++) {
     const _objR: ITopoNode<INetworkVNetNode> = createTopoNode(
+      null,
       _data.organizations[0].id,
       TopoNodeTypes.REGION,
       `${TopoNodeTypes.REGION}${i}`,
@@ -39,6 +43,7 @@ export const createTopology = (showPeerConnection: boolean, _data: ITopologyMapD
   }
   for (let i = 0; i < 1; i++) {
     const _objA: ITopoNode<ITGWNode> = createTopoNode(
+      null,
       _data.organizations[0].id,
       TopoNodeTypes.ACCOUNT,
       `${TopoNodeTypes.ACCOUNT}${i}`,
@@ -51,12 +56,14 @@ export const createTopology = (showPeerConnection: boolean, _data: ITopologyMapD
     );
     accounts.push(_objA);
   }
-  for (let i = 0; i < 1; i++) {
+  const sitesGroups = _groups.filter(group => group.type === TopologyGroupTypesAsString.BRANCH_NETWORKS || group.type === TopologyGroupTypesAsNumber.BRANCH_NETWORKS);
+  for (let i = 0; i < sitesGroups.length; i++) {
     const _objS: ITopoNode<IDeviceNode> = createTopoNode(
+      sitesGroups[i],
       _data.organizations[0].id,
       TopoNodeTypes.SITES,
-      `${TopoNodeTypes.SITES}${i}`,
-      `${TopoNodeTypes.SITES}${i}`,
+      sitesGroups[i].id,
+      sitesGroups[i].name,
       false,
       0,
       0,
@@ -88,10 +95,58 @@ export const createTopology = (showPeerConnection: boolean, _data: ITopologyMapD
     if (org.devices && org.devices.length) {
       org.devices.forEach((d, index) => {
         const obj: IDeviceNode = createDeviceNode(org, orgI, d, index);
-        sites[0].children.push(obj);
+        if (d.selectorGroup) {
+          if (d.selectorGroup === DEFAULT_GROUP_ID) {
+            devicesInDefaultGroup.push(obj);
+            return;
+          }
+          devicesInGroup.push(obj);
+          return;
+        }
+        devicesInDefaultGroup.push(obj);
       });
     }
   });
+
+  if (devicesInDefaultGroup && devicesInDefaultGroup.length) {
+    const _objS: ITopoNode<IDeviceNode> = createTopoNode(
+      {
+        id: DEFAULT_GROUP_ID,
+        name: 'Default',
+        type: TopologyGroupTypesAsString.BRANCH_NETWORKS,
+        expr: null,
+        evalType: SelectorEvalType.EXPR,
+        extIds: [],
+      },
+      null,
+      TopoNodeTypes.SITES,
+      DEFAULT_GROUP_ID,
+      'Default',
+      false,
+      0,
+      0,
+      NODES_CONSTANTS.SITES.collapse.width,
+      NODES_CONSTANTS.SITES.collapse.height,
+    );
+    _objS.children = devicesInDefaultGroup;
+    sites.unshift(_objS);
+  }
+
+  if (sitesGroups && sitesGroups.length && devicesInGroup && devicesInGroup.length) {
+    sitesGroups.forEach((gr, index) => {
+      const _siteIndex = sites.findIndex(it => it.id === gr.id || it.name === gr.name);
+      if (_siteIndex !== -1) {
+        const _devs = devicesInGroup.filter(it => it.selectorGroup === gr.name || it.selectorGroup === gr.id);
+        sites[_siteIndex].children = _devs;
+      }
+    });
+  }
+  if (devicesInGroup && devicesInGroup.length) {
+    const _siteIndex = sites.findIndex(it => it.id === DEFAULT_GROUP_ID);
+    if (_siteIndex !== -1) {
+      sites[_siteIndex].children.concat(devicesInGroup);
+    }
+  }
   // const links: ILink[] = generateLinks(nodes, wedges, vnets, topologyGroups);
   updateTopLevelItems(showPeerConnection, regions, accounts, sites);
   const _nodes: ITopoNode<any>[] = [...regions, ...accounts, ...sites];

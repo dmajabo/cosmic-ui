@@ -5,6 +5,7 @@ import { ITGWNode, INetworkVNetNode, TopoNodeTypes, ITopoNode, IDeviceNode, INet
 import uuid from 'react-uuid';
 
 export const createTopoNode = (
+  _dataItem: any,
   _orgId: string,
   _type: TopoNodeTypes,
   _id: string,
@@ -17,6 +18,7 @@ export const createTopoNode = (
   peerConnection?: boolean,
 ): ITopoNode<any> => {
   const _obj: ITopoNode<any> = {
+    dataItem: _dataItem,
     id: _id,
     name: _name,
     uiId: uuid(),

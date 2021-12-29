@@ -17,12 +17,12 @@ interface Props {
 
 const RegionCollapsedNode: React.FC<Props> = (props: Props) => {
   const showExpandBtn = () => {
-    const _node = d3.select(`#${props.id}${CollapseExpandState.EXPAND}`);
+    const _node = d3.select(`#region${props.id}${CollapseExpandState.EXPAND}`);
     _node.transition().delay(300).attr('opacity', 1);
   };
 
   const hideExpandBtn = () => {
-    const _node = d3.select(`#${props.id}${CollapseExpandState.EXPAND}`);
+    const _node = d3.select(`#region${props.id}${CollapseExpandState.EXPAND}`);
     _node.transition().attr('opacity', 0);
   };
 
@@ -55,7 +55,7 @@ const RegionCollapsedNode: React.FC<Props> = (props: Props) => {
             <>
               <NodeCounter label={`${props.childrenCount} VPC`} stylesObj={NODES_CONSTANTS.REGION.countStyles} />
               <CollapseExpandButton
-                id={`${props.id}${CollapseExpandState.EXPAND}`}
+                id={`region${props.id}${CollapseExpandState.EXPAND}`}
                 isCollapse
                 onClick={onExpand}
                 x={NODES_CONSTANTS.REGION.collapse.width - NODES_CONSTANTS.COLLAPSE_EXPAND.r}

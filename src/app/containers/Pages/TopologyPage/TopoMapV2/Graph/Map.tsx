@@ -25,7 +25,6 @@ const Map: React.FC<Props> = (props: Props) => {
   const onClickWedge = (wedge: ITGWNode) => {
     topology.onToogleTopoPanel(TopologyPanelTypes.Wedge, true, wedge);
   };
-
   return (
     <>
       {resizeListener}

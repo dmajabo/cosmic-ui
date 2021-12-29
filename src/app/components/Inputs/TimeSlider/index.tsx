@@ -101,7 +101,7 @@ const TimeSlider: React.FC<Props> = (props: Props) => {
     const interval = setInterval(() => {
       console.log('Check config');
       onSetConfig(props.currentPeriod, props.selectedCalendarDay);
-    }, 900000); // every 15min
+    }, 60000); // every 1min
     return () => clearInterval(interval);
   }, []);
 
