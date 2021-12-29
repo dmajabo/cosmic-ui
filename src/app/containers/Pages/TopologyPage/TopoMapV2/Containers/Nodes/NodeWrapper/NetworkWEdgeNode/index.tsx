@@ -4,12 +4,23 @@ import { ITGWNode } from 'lib/hooks/Topology/models';
 
 interface Props {
   item: ITGWNode;
+  onClick: (item: ITGWNode) => void;
 }
 
 const NetworkWEdgeNode: React.FC<Props> = (props: Props) => {
+  const onClick = () => {
+    props.onClick(props.item);
+  };
   return (
-    <g transform={`translate(${props.item.x}, ${props.item.y})`}>
-      <use href={`#${NODES_CONSTANTS.NETWORK_WEDGE.type}`} width={NODES_CONSTANTS.NETWORK_WEDGE.collapse.width} height={NODES_CONSTANTS.NETWORK_WEDGE.collapse.height} x={0} y={0} />
+    <g transform={`translate(${props.item.x}, ${props.item.y})`} onClick={onClick}>
+      <use
+        pointerEvents="all"
+        href={`#${NODES_CONSTANTS.NETWORK_WEDGE.type}`}
+        width={NODES_CONSTANTS.NETWORK_WEDGE.collapse.width}
+        height={NODES_CONSTANTS.NETWORK_WEDGE.collapse.height}
+        x={0}
+        y={0}
+      />
       <foreignObject
         width={NODES_CONSTANTS.NETWORK_WEDGE.labelHtmlStyles.width}
         height={NODES_CONSTANTS.NETWORK_WEDGE.labelHtmlStyles.height}

@@ -7,6 +7,7 @@ import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataCont
 import AccountCollapsedNode from './AccountCollapsedNode';
 import { onHoverNode, onUnHoverNode } from '../../../../Graph/helper';
 import AccountExpandNode from './AccountExpandNode';
+import { TopologyPanelTypes } from 'lib/models/topology';
 
 interface Props {
   dataItem: ITopoNode<ITGWNode>;
@@ -64,6 +65,10 @@ const AccountNode: React.FC<Props> = (props: Props) => {
     topology.onCollapseExpandNode(props.dataItem, true);
   };
 
+  const onTgwClick = (item: ITGWNode) => {
+    topology.onToogleTopoPanel(TopologyPanelTypes.Wedge, true, item);
+  };
+
   const onMouseEnter = () => {
     onHoverNode(`${NODES_CONSTANTS.ACCOUNT.type}${props.dataItem.uiId}`);
   };
@@ -83,7 +88,7 @@ const AccountNode: React.FC<Props> = (props: Props) => {
       data-type={NODES_CONSTANTS.ACCOUNT.type}
     >
       <AccountCollapsedNode id={props.dataItem.id} name={props.dataItem.name} childrenCount={props.dataItem.children.length} show={props.dataItem.collapsed} onExpand={onExpand} />
-      <AccountExpandNode dataItem={props.dataItem} show={!props.dataItem.collapsed} onCollapse={onCollapse} />
+      <AccountExpandNode dataItem={props.dataItem} show={!props.dataItem.collapsed} onCollapse={onCollapse} onTgwClick={onTgwClick} />
     </g>
   );
 };

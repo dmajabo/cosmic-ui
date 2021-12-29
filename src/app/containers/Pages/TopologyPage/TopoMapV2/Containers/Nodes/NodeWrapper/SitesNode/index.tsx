@@ -1,5 +1,4 @@
 import React from 'react';
-import { ITopoNode } from 'lib/hooks/Topology/models';
 import { IPosition } from 'lib/models/general';
 import { useDrag } from 'app/containers/Pages/TopologyPage/TopoMapV2/hooks/useDrag';
 import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
@@ -7,8 +6,11 @@ import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataCont
 import SitesCollapsedNode from './SitesCollapsedNode';
 import { onHoverNode, onUnHoverNode } from '../../../../Graph/helper';
 import SitesExpandNode from './SitesExpandNode';
+import { TopologyPanelTypes } from 'lib/models/topology';
+import { IDeviceNode, ITopoNode } from 'lib/hooks/Topology/models';
+
 interface Props {
-  dataItem: ITopoNode<any>;
+  dataItem: ITopoNode<IDeviceNode>;
 }
 
 const SitesNode: React.FC<Props> = (props: Props) => {
@@ -63,6 +65,10 @@ const SitesNode: React.FC<Props> = (props: Props) => {
     topology.onCollapseExpandNode(props.dataItem, true);
   };
 
+  const onDeviceClick = (item: IDeviceNode) => {
+    topology.onToogleTopoPanel(TopologyPanelTypes.Device, true, item);
+  };
+
   const onMouseEnter = () => {
     onHoverNode(`${NODES_CONSTANTS.SITES.type}${props.dataItem.uiId}`);
   };
@@ -82,7 +88,7 @@ const SitesNode: React.FC<Props> = (props: Props) => {
       data-type={NODES_CONSTANTS.SITES.type}
     >
       <SitesCollapsedNode id={props.dataItem.id} name={props.dataItem.name} show={props.dataItem.collapsed} onExpand={onExpand} />
-      <SitesExpandNode dataItem={props.dataItem} show={!props.dataItem.collapsed} onCollapse={onCollapse} />
+      <SitesExpandNode dataItem={props.dataItem} show={!props.dataItem.collapsed} onCollapse={onCollapse} onDeviceClick={onDeviceClick} />
     </g>
   );
 };

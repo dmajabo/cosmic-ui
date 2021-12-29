@@ -1,14 +1,18 @@
 import React from 'react';
 import { NODES_CONSTANTS } from '../../../../model';
-import { INetworkVNetNode } from 'lib/hooks/Topology/models';
+import { INetworkVNetNode, IVPC_PanelDataNode_V2 } from 'lib/hooks/Topology/models';
 
 interface Props {
   item: INetworkVNetNode;
+  onClick: (item: IVPC_PanelDataNode_V2) => void;
 }
 
 const NetworkVnetNode: React.FC<Props> = (props: Props) => {
+  const onClick = () => {
+    props.onClick({ vm: null, group: null, vnet: { ...props.item } });
+  };
   return (
-    <g transform={`translate(${props.item.x}, ${props.item.y})`} id={`vpsCollapsed${props.item.id}`}>
+    <g transform={`translate(${props.item.x}, ${props.item.y})`} id={`vpsCollapsed${props.item.id}`} onClick={onClick}>
       <circle
         r={NODES_CONSTANTS.NETWORK_VNET.collapse.r - 1}
         cx={NODES_CONSTANTS.NETWORK_VNET.collapse.r}

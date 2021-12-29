@@ -13,6 +13,7 @@ interface Props {
   dataItem: ITopoNode<ITGWNode>;
   show: boolean;
   onCollapse: () => void;
+  onTgwClick: (item: ITGWNode) => void;
 }
 
 const AccountExpandNode: React.FC<Props> = (props: Props) => {
@@ -53,7 +54,12 @@ const AccountExpandNode: React.FC<Props> = (props: Props) => {
               stylesObj={NODES_CONSTANTS.ACCOUNT.labelExpandedStyles}
             />
           </g>
-          <ExpandNodeContent items={props.dataItem.children} width={props.dataItem.expandedSize.width} height={props.dataItem.expandedSize.height - NODES_CONSTANTS.ACCOUNT.headerHeight} />
+          <ExpandNodeContent
+            items={props.dataItem.children}
+            width={props.dataItem.expandedSize.width}
+            height={props.dataItem.expandedSize.height - NODES_CONSTANTS.ACCOUNT.headerHeight}
+            onClick={props.onTgwClick}
+          />
           <CollapseExpandButton
             id={`${props.dataItem.id}${CollapseExpandState.COLLAPSE}`}
             onClick={onCollapse}

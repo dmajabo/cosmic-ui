@@ -7,6 +7,7 @@ interface Props {
   items: ITGWNode[];
   width: number;
   height: number;
+  onClick: (item: ITGWNode) => void;
 }
 
 const ExpandNodeContent: React.FC<Props> = (props: Props) => {
@@ -14,7 +15,7 @@ const ExpandNodeContent: React.FC<Props> = (props: Props) => {
     <g transform={`translate(0, ${NODES_CONSTANTS.ACCOUNT.headerHeight})`}>
       <g transform={`translate(${NODES_CONSTANTS.ACCOUNT.expanded.contentPadding}, ${NODES_CONSTANTS.ACCOUNT.expanded.contentPadding})`}>
         {props.items.map((it, index) => (
-          <NetworkWEdgeNode key={`${it.uiId}wedge`} item={it} />
+          <NetworkWEdgeNode key={`${it.uiId}wedge`} item={it} onClick={props.onClick} />
         ))}
       </g>
     </g>

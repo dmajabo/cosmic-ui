@@ -1,5 +1,5 @@
 import React from 'react';
-import { ITopoNode } from 'lib/hooks/Topology/models';
+import { INetworkVNetNode, ITopoNode, IVPC_PanelDataNode_V2 } from 'lib/hooks/Topology/models';
 import { IPosition } from 'lib/models/general';
 import { useDrag } from 'app/containers/Pages/TopologyPage/TopoMapV2/hooks/useDrag';
 import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
@@ -8,9 +8,10 @@ import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataCont
 import RegionCollapsedNode from './RegionCollapsedNode';
 import RegionExpandNode from './RegionExpandNode';
 import { onHoverNode, onUnHoverNode } from '../../../../Graph/helper';
+import { TopologyPanelTypes } from 'lib/models/topology';
 
 interface Props {
-  dataItem: ITopoNode<any>;
+  dataItem: ITopoNode<INetworkVNetNode>;
 }
 
 const RegionNode: React.FC<Props> = (props: Props) => {
@@ -61,6 +62,10 @@ const RegionNode: React.FC<Props> = (props: Props) => {
     topology.onCollapseExpandNode(props.dataItem, false);
   };
 
+  const onVpcClick = (item: IVPC_PanelDataNode_V2) => {
+    topology.onToogleTopoPanel(TopologyPanelTypes.VPC, true, item);
+  };
+
   const onCollapse = () => {
     topology.onCollapseExpandNode(props.dataItem, true);
   };
@@ -84,7 +89,13 @@ const RegionNode: React.FC<Props> = (props: Props) => {
       data-type={NODES_CONSTANTS.REGION.type}
     >
       <RegionCollapsedNode id={props.dataItem.id} name={props.dataItem.name} childrenCount={props.dataItem.children.length} show={props.dataItem.collapsed} onExpand={onExpand} />
-      <RegionExpandNode showPeeringConnections={topology.entities.peer_connections.selected} dataItem={props.dataItem} show={!props.dataItem.collapsed} onCollapse={onCollapse} />
+      <RegionExpandNode
+        showPeeringConnections={topology.entities.peer_connections.selected}
+        dataItem={props.dataItem}
+        show={!props.dataItem.collapsed}
+        onCollapse={onCollapse}
+        onVpcClick={onVpcClick}
+      />
     </g>
   );
 };

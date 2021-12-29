@@ -1,4 +1,4 @@
-import { INetworkDevice, INetworkVNetwork, INetworkVNetworkPeeringConnection, INetworkwEdge } from 'lib/api/ApiModels/Topology/apiModels';
+import { INetworkDevice, INetworkVM, INetworkVNetwork, INetworkVNetworkPeeringConnection, INetworkwEdge, ITopologyGroup } from 'lib/api/ApiModels/Topology/apiModels';
 import { AlertSeverity } from 'lib/api/ApiModels/Workflow/apiModel';
 import { IBaseEntity, ICollapsed, ICoord, IFilterOption, ISize, IVisible } from 'lib/models/general';
 import { IMappedNode } from 'lib/models/topology';
@@ -29,6 +29,12 @@ export interface IDeviceNode extends INetworkDevice, IMappedNode, ICoord {}
 export interface INetworkVNetworkPeeringConnectionNode extends INetworkVNetworkPeeringConnection, IMappedNode, ICoord {}
 
 export interface INetworkVNetNode extends INetworkVNetwork, IMappedNode, ICoord {}
+
+export interface IVPC_PanelDataNode_V2 {
+  group?: ITopologyGroup;
+  vm?: INetworkVM;
+  vnet: INetworkVNetNode;
+}
 
 export interface ITGWNode extends INetworkwEdge, IMappedNode, ICoord {}
 

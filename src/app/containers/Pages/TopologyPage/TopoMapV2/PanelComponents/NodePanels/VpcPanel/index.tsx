@@ -75,7 +75,7 @@ const VpcPanel: React.FC<IProps> = (props: IProps) => {
         {selectedVm && <IconButton styles={{ margin: '0 12px 0 0', width: '40px', height: '40px' }} icon={returnArrow} title="Back" onClick={onReturn} />}
         {selectedVm && <PanelTitle maxWidth="calc(100% - 32px)">{selectedVm.name ? selectedVm.name : selectedVm.extId}</PanelTitle>}
         {!selectedVm && (
-          <PanelTitle margin="0 0 0 8px" maxWidth="calc(100% - 32px)">
+          <PanelTitle margin="0" maxWidth="calc(100% - 32px)">
             {props.dataItem.vnet.name ? props.dataItem.vnet.name : props.dataItem.vnet.extId}
           </PanelTitle>
         )}
@@ -101,11 +101,11 @@ const VpcPanel: React.FC<IProps> = (props: IProps) => {
         </PanelTabWrapper>
       )}
       <OverflowContainer>
-        {!selectedVm && listItems && listItems.length && (
+        {!selectedVm ? (
           <PanelBarContent>
             <List dataItems={listItems} onSelectVm={onSelectVm} />
           </PanelBarContent>
-        )}
+        ) : null}
         {selectedVm && (
           <>
             <TabPanel value={value} index={0}>

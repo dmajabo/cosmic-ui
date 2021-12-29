@@ -13,6 +13,7 @@ interface Props {
   dataItem: ITopoNode<IDeviceNode>;
   show: boolean;
   onCollapse: () => void;
+  onDeviceClick: (item: IDeviceNode) => void;
 }
 
 const SitesExpandNode: React.FC<Props> = (props: Props) => {
@@ -56,7 +57,7 @@ const SitesExpandNode: React.FC<Props> = (props: Props) => {
           <g transform={`translate(0, ${NODES_CONSTANTS.SITES.headerHeight})`}>
             <g transform={`translate(${NODES_CONSTANTS.SITES.expanded.contentPadding}, ${NODES_CONSTANTS.SITES.expanded.contentPadding})`}>
               {props.dataItem.children.map((it, index) => (
-                <DeviceNode key={`${it.uiId}device`} item={it} />
+                <DeviceNode key={`${it.uiId}device`} item={it} onClick={props.onDeviceClick} />
               ))}
             </g>
           </g>
