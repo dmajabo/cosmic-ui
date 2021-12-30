@@ -7,11 +7,11 @@ import {
   AnomalySlaTestData,
   Column,
   ColumnAccessor,
-  ExperienceAnomalies,
   GetAlertMetadataResponse,
   GetExperienceAnomaliesResponse,
-  GetOrganizationResponse,
+  ExperienceAnomalies,
   HitsTableData,
+  GetOrganizationResponse,
   Organization,
   SLATest,
 } from 'lib/api/http/SharedTypes';
@@ -35,6 +35,7 @@ import { countBy, isEmpty } from 'lodash';
 import { TopoApi } from 'lib/api/ApiModels/Services/topo';
 import { GetDevicesString, GetSelectedOrganization } from '../Performance Dashboard/filterFunctions';
 import { DateTime } from 'luxon';
+import { VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
 
 interface ExperienceTabProps {
   readonly timeRange: AnomalyTimeRangeValue;
@@ -159,23 +160,29 @@ export const ExperienceTab: React.FC<ExperienceTabProps> = ({ timeRange }) => {
     const response = await apiClient.getSLATests();
     if (isEmpty(response)) {
       setSlaTests([]);
+      setIsBarChartLoading(false);
     } else {
       setSlaTests(response.slaTests);
     }
+  };
+
+  const getFilteredSlaTestswithCount = (uniqueDestinations: string[], selectedAnomalyResponse: GetExperienceAnomaliesResponse) => {
+    const filteredSlaTests = slaTests.filter(test => uniqueDestinations.includes(test.destination));
+    const filteredSlaTestswithCount = filteredSlaTests.map(test => {
+      const testAnomalyCount = selectedAnomalyResponse.anomalies.filter(anomaly => anomaly.destination === test.destination);
+      return {
+        ...test,
+        hits: testAnomalyCount.length,
+      };
+    });
+    return filteredSlaTestswithCount;
   };
 
   const getTableAlertMetadata = (experienceAnomalyResponses: GetExperienceAnomaliesResponse[]): AlertMetadata[] =>
     alertMetadata.map(item => {
       const selectedAnomalyResponse = experienceAnomalyResponses.find(anomaly => anomaly.name === item.name);
       const uniqueDestinations = uniqBy(selectedAnomalyResponse.anomalies, 'destination').map(anomaly => anomaly.destination);
-      const filteredSlaTests = slaTests.filter(test => uniqueDestinations.includes(test.destination));
-      const filteredSlaTestswithCount = filteredSlaTests.map(test => {
-        const testAnomalyCount = selectedAnomalyResponse.anomalies.filter(anomaly => anomaly.destination === test.destination);
-        return {
-          ...test,
-          hits: testAnomalyCount.length,
-        };
-      });
+      const filteredSlaTestswithCount = getFilteredSlaTestswithCount(uniqueDestinations, selectedAnomalyResponse);
 
       const { triggerCount, ...otherItems } = item;
 
@@ -186,9 +193,9 @@ export const ExperienceTab: React.FC<ExperienceTabProps> = ({ timeRange }) => {
       };
     });
 
-  const getSlaTestTableData = (selectedAnomalyMetadata: AlertMetadata): AnomalySlaTestData[] =>
+  const getSlaTestTableData = (selectedAnomalyMetadata: AlertMetadata) =>
     selectedAnomalyMetadata.slaTests.map(item => {
-      const merakiOrganisations = organizations.filter(organization => organization.vendorType === 'MERAKI');
+      const merakiOrganisations = organizations.filter(organization => organization.vendorType === VendorTypes.MERAKI);
       const selectedOrganization = GetSelectedOrganization(merakiOrganisations, item.sourceOrgId);
       const allDevices: string = GetDevicesString(selectedOrganization, item.sourceNwExtId);
       return {
@@ -222,31 +229,19 @@ export const ExperienceTab: React.FC<ExperienceTabProps> = ({ timeRange }) => {
     getSLATests();
   }, []);
 
-  useEffect(() => {
-    if (experienceTabAlertResponse && experienceTabAlertResponse.alertMetadata && experienceTabAlertResponse.alertMetadata.length) {
-      setAlertMetadata(experienceTabAlertResponse.alertMetadata);
-    } else {
-      setAlertMetadata([]);
-    }
-  }, [experienceTabAlertResponse, timeRange]);
+  useEffect(() => setAlertMetadata(experienceTabAlertResponse?.alertMetadata || []), [experienceTabAlertResponse, timeRange]);
 
-  useEffect(() => {
-    if (organizationResponse && organizationResponse.organizations && organizationResponse.organizations.length) {
-      setOrganizations(organizationResponse.organizations);
-    } else {
-      setOrganizations([]);
-    }
-  }, [organizationResponse]);
+  useEffect(() => setOrganizations(organizationResponse?.organizations || []), [organizationResponse]);
 
   useEffect(() => {
     if (!isEmpty(alertMetadata) && !isEmpty(slaTests)) {
       const promises = alertMetadata.map(item => apiClient.getExperienceAnomalies(item.name, timeRange));
       Promise.all(promises)
-        .then(experienceAnomalyResponses => {
+        .then(async experienceAnomalyResponses => {
           const allAnomalies = experienceAnomalyResponses.reduce((acc, nextValue) => acc.concat(nextValue.anomalies), []);
           setAllExperienceAnomalies(allAnomalies);
 
-          const newAlertMetaData: AlertMetadata[] = getTableAlertMetadata(experienceAnomalyResponses);
+          const newAlertMetaData: AlertMetadata[] = await getTableAlertMetadata(experienceAnomalyResponses);
           setTableAlertMetadata(newAlertMetaData);
         })
         .catch(() => setIsBarChartLoading(false));
@@ -267,6 +262,12 @@ export const ExperienceTab: React.FC<ExperienceTabProps> = ({ timeRange }) => {
       setIsBarChartLoading(false);
     }
   }, [allExperienceAnomalies, timeRange]);
+
+  useEffect(() => {
+    if (alertError) {
+      setIsBarChartLoading(false);
+    }
+  }, [alertError]);
 
   const tableData: AnomalyExperienceTableData[] = tableAlertMetadata.map(item => ({
     name: item.name,
@@ -302,7 +303,13 @@ export const ExperienceTab: React.FC<ExperienceTabProps> = ({ timeRange }) => {
         };
       });
 
-      return (
+      return isEmpty(slaTests) ? (
+        <div className={classes.barChartPlaceholder}>
+          <ErrorMessage fontSize={28} margin="auto">
+            Something went wrong. Please refresh page
+          </ErrorMessage>
+        </div>
+      ) : (
         <div>
           <div className={classes.anomalySubcomponentTitle}>SLA Tests</div>
           <AnomalySLATestTable columns={SLA_TEST_COLUMNS} data={slaTestTableData} sortableHeaders={SLA_TEST_TABLE_SORTABLE_HEADERS} />
@@ -334,9 +341,9 @@ export const ExperienceTab: React.FC<ExperienceTabProps> = ({ timeRange }) => {
           <span className={classes.anomalyTableTitle}>Triggers</span>
           <span className={classes.anomalyCount}>{alertMetadata.length}</span>
         </div>
-        {alertLoading || isEmpty(tableData) ? (
+        {alertLoading || isBarChartLoading ? (
           <LoadingIndicator />
-        ) : alertError ? (
+        ) : alertError || isEmpty(slaTests) ? (
           <ErrorMessage fontSize={28} margin="auto">
             Something went wrong. Please refresh page
           </ErrorMessage>

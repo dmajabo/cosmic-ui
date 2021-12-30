@@ -28,6 +28,8 @@ const Styles = styled.div`
   }
 `;
 
+const PAGE_SIZE_OPTIONS = [10, 100, 1000];
+
 interface AnomalySLATestTableProps {
   readonly columns: Column[];
   readonly data: AnomalySlaTestData[] | AnomalyPolicyLogsTableData[] | CostDetailTableData[] | HitsTableData[];
@@ -60,6 +62,15 @@ export const AnomalySLATestTable: React.FC<AnomalySLATestTableProps> = ({ data, 
     useSortBy,
     usePagination,
   );
+
+  const gotoInitialPage = () => gotoPage(0);
+
+  const gotoCurrentPage = () => gotoPage(Number(pageIndex));
+
+  const gotoNextPageofCurrent = () => gotoPage(Number(pageIndex + 1));
+
+  const gotoLastPage = () => gotoPage(pageCount - 1);
+
   return (
     <Styles>
       <table {...getTableProps()}>
@@ -93,24 +104,24 @@ export const AnomalySLATestTable: React.FC<AnomalySLATestTableProps> = ({ data, 
       <div className="pagination">
         <div className={classes.flexContainer}>
           <div>
-            <button className={classes.paginationButton} onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
+            <button className={classes.paginationButton} onClick={gotoInitialPage} disabled={!canPreviousPage}>
               <Typography className={classes.paginationText}>{'<<'}</Typography>
             </button>
-            <button className={classes.paginationButton} onClick={() => previousPage()} disabled={!canPreviousPage}>
+            <button className={classes.paginationButton} onClick={previousPage} disabled={!canPreviousPage}>
               <Typography className={classes.paginationText}>{'<'}</Typography>
             </button>
-            <button className={classes.paginationButton} onClick={() => gotoPage(Number(pageIndex))}>
+            <button className={classes.paginationButton} onClick={gotoCurrentPage}>
               <Typography className={classes.activePaginationText}>{Number(pageIndex + 1)}</Typography>
             </button>
             {canNextPage ? (
-              <button className={classes.paginationButton} onClick={() => gotoPage(Number(pageIndex + 1))}>
+              <button className={classes.paginationButton} onClick={gotoNextPageofCurrent}>
                 <Typography className={classes.paginationText}>{Number(pageIndex + 2)}</Typography>
               </button>
             ) : null}
-            <button className={classes.paginationButton} onClick={() => nextPage()} disabled={!canNextPage}>
+            <button className={classes.paginationButton} onClick={nextPage} disabled={!canNextPage}>
               <Typography className={classes.paginationText}>{'>'}</Typography>
             </button>
-            <button className={classes.paginationButton} onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
+            <button className={classes.paginationButton} onClick={gotoLastPage} disabled={!canNextPage}>
               <Typography className={classes.paginationText}>{'>>'}</Typography>
             </button>
           </div>
@@ -123,7 +134,7 @@ export const AnomalySLATestTable: React.FC<AnomalySLATestTableProps> = ({ data, 
                 setPageSize(Number(e.target.value));
               }}
             >
-              {[10, 100, 1000].map(pageSize => (
+              {PAGE_SIZE_OPTIONS.map(pageSize => (
                 <option key={pageSize} value={pageSize}>
                   {pageSize}
                 </option>
