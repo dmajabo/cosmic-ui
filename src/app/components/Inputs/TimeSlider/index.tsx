@@ -122,8 +122,9 @@ const TimeSlider: React.FC<Props> = (props: Props) => {
     const _selected = _obj.selected || _obj.max;
     const _values: ITimeValue[] = getTicks(props.currentPeriod, _domain, _selected);
     const _visibleItems = _values.map(it => ({ ...it, label: <span className={it.highlight ? 'highLight' : ''}>{it.label}</span> }));
+    console.log(_visibleItems);
     setSelected(_selected);
-    setValues([..._visibleItems]);
+    setValues(_visibleItems);
     setConfig(_obj);
     if (config && (_obj.min !== config.min || _obj.max !== config.max)) {
       const _range: ITimeMinMaxRange = getMinMaxSliderRange(_obj.min, _obj.max);
