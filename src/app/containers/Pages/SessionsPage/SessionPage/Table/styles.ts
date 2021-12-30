@@ -23,7 +23,7 @@ export const GridLabel = styled.span`
   font-weight: 700;
   font-size: 22px;
   line-height: 29px;
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
   margin-right: 16px;
 `;
 
@@ -36,5 +36,5 @@ export const GridCount = styled.span`
   font-weight: 500;
   font-size: 14px;
   line-height: 18px;
-  color: var(--_primaryButtonBg);
+  color: var(--_primaryWhiteColor);
 `;

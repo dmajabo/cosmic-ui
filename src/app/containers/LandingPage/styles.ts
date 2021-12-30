@@ -7,7 +7,7 @@ export const Wrapper = styled.div`
   position: relative;
   width: 100vw;
   height: 100vh;
-  background: var(--_primaryColor);
+  background: var(--_primaryTextColor);
 `;
 
 export const Img = styled.img`
@@ -23,7 +23,7 @@ export const Content = styled.div`
   margin: auto;
   display: flex;
   flex-direction: column;
-  color: var(--_primaryTextColor);
+  color: var(--_primaryWhiteColor);
   width: 60vw;
   z-index: 1;
   ${LogoWrapper} {
@@ -174,15 +174,15 @@ export const SignInButton = styled.button`
   letter-spacing: unset;
   background: transparent;
   border: 1px solid;
-  color: var(--_primaryButtonBg);
+  color: var(--_primaryWhiteColor);
   border-color: var(--_hoverButtonBg);
   padding: 5px 56px 5px 36px;
   &:hover {
-    color: var(--_hoverButtonColor);
+    color: var(--_primaryWhiteColor);
     background: var(--_hoverButtonBg);
     ${SignInIcon} {
       .inheritFill {
-        fill: var(--_hoverButtonColor);
+        fill: var(--_primaryWhiteColor);
       }
     }
   }

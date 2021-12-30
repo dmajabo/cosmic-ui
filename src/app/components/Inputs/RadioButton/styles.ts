@@ -23,7 +23,7 @@ export const Input = styled.input`
   top: 0;
   height: 0;
   &:checked + span {
-    color: var(--_primaryColor);
+    color: var(--_primaryTextColor);
   }
 `;
 

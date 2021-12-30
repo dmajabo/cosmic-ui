@@ -20,7 +20,7 @@ export const Label = styled.span<Props>`
   font-weight: 500;
   line-height: 24px;
   margin: ${props => props.margin || 0};
-  color: ${props => (!props.active ? 'var(--_disabledTextColor)' : 'var(--_primaryColor)')};
+  color: ${props => (!props.active ? 'var(--_disabledTextColor)' : 'var(--_primaryTextColor)')};
 `;
 
 export const SwitchStylesCb = styled.input`
@@ -52,7 +52,7 @@ export const SwitchStylesSwitch = styled.span`
     height: 14px;
     border-radius: 50%;
     transition: transform 0.3s ease;
-    background: var(--_thumbBg);
+    background: var(--_primaryWhiteColor);
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   }
 `;

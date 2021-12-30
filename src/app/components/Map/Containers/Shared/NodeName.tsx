@@ -10,7 +10,7 @@ const NameStyles = styled.div`
   font-weight: 500;
   text-align: center;
   pointer-events: none;
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
 `;
 
 const LabelBeforeStyles = styled.div`

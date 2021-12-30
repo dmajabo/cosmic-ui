@@ -22,7 +22,7 @@ export const ItemTitle = styled.div`
   font-size: 18px;
   line-height: 21px;
   letter-spacing: 0;
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
 `;
 
 export const ItemLink = styled.div`

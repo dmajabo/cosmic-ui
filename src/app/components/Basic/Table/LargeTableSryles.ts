@@ -68,7 +68,7 @@ export const TableContainer = styled.div<TableProps>`
     td:not(.nestedTd) {
       background: transparent;
       border: none;
-      color: var(--_primaryColor);
+      color: var(--_primaryTextColor);
       border-bottom: 1px solid;
       border-top: 1px solid;
       border-color: var(--_rowBorder);

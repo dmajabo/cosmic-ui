@@ -49,7 +49,7 @@ export const GridStyles = makeStyles(
           fontWeight: 'normal',
           fontSize: '16px',
           lineHeight: '21px',
-          color: 'var(--_primaryColor)',
+          color: 'var(--_primaryTextColor)',
           borderBottomColor: 'var(--_rowBorder)',
         },
         '& .MuiDataGrid-columnHeaderTitleContainer': {
@@ -112,7 +112,7 @@ export const GridStyles = makeStyles(
           fontSize: '16px',
           lineHeight: '21px',
           padding: '0 20px',
-          color: 'var(--_primaryColor)',
+          color: 'var(--_primaryTextColor)',
           border: 'none',
         },
         '& .MuiDataGrid-columnHeaderTitleContainer': {
@@ -166,7 +166,7 @@ export const GridStyles = makeStyles(
           fontWeight: 'normal',
           fontSize: '16px',
           lineHeight: '21px',
-          color: 'var(--_primaryColor)',
+          color: 'var(--_primaryTextColor)',
           borderBottomColor: 'var(--_rowBorder)',
         },
         '& .MuiDataGrid-cell:first-child': {

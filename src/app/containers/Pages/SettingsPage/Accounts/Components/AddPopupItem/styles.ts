@@ -12,7 +12,7 @@ export const PopupItemWrapper = styled.div`
   font-weight: normal;
   font-size: 14px;
   line-height: 18px;
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
   cursor: pointer;
   &:hover {
     background: var(--_vmBg);

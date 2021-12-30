@@ -26,7 +26,7 @@ export const EntityItemLabel = styled.div<Props>`
   font-style: normal;
   font-weight: 500;
   font-size: 16px;
-  color: ${props => (props.disabled ? 'var(--_disabledTextColor)' : 'var(--_primaryColor)')};
+  color: ${props => (props.disabled ? 'var(--_disabledTextColor)' : 'var(--_primaryTextColor)')};
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

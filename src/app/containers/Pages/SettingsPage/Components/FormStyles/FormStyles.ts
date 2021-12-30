@@ -26,7 +26,7 @@ export const FormTitle = styled.div`
   font-weight: bold;
   font-size: 22px;
   line-height: 29px;
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
 `;
 
 export const FormStyles = styled.form`

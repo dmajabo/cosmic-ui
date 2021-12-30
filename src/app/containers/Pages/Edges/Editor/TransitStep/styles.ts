@@ -60,7 +60,7 @@ export const MarkerRegion = styled.div`
   font-weight: bold;
   font-size: 14px;
   line-height: 18px;
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
   white-space: nowrap;
   overflow: hidden;
 `;
@@ -90,7 +90,7 @@ export const SelectdLabel = styled.span`
   font-weight: bold;
   font-size: 16px;
   line-height: 21px;
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
   margin-right: 12px;
 `;
 

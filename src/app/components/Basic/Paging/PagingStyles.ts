@@ -27,7 +27,7 @@ export const PagingStyles = makeStyles(
           height: '100%',
           color: 'var(--_disabledTextColor)',
           '&:hover:not(.Mui-disabled)': {
-            color: 'var(--_primaryColor)',
+            color: 'var(--_primaryTextColor)',
           },
           '& .MuiTouchRipple-root': {
             display: 'none',
@@ -48,7 +48,7 @@ export const PagingStyles = makeStyles(
         },
         '& .MuiButtonBase-root.Mui-selected': {
           background: 'transparent',
-          color: 'var(--_primaryColor)',
+          color: 'var(--_primaryTextColor)',
         },
       },
     }),

@@ -12,7 +12,7 @@ export const TableHeaderStyles = styled.div`
   display: flex;
   margin-bottom: 8px;
   text-transform: capitalize;
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
   font-size: 14px;
   font-weight: 500;
 `;
@@ -45,7 +45,7 @@ export const CaptionContent = styled.div`
     margin-right: 4px;
   }
   .highlightText {
-    color: var(--_primaryColor);
+    color: var(--_primaryTextColor);
     text-transform: none;
   }
 `;

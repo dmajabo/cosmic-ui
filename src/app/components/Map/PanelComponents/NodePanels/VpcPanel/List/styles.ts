@@ -21,7 +21,7 @@ export const VmWrapStyles = styled.div`
   padding: 15px 20px;
   align-items: center;
   flex-shrink: 0;
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
   cursor: pointer;
   .inheritFill {
     fill: var(--_defaultIconColor);
@@ -29,9 +29,9 @@ export const VmWrapStyles = styled.div`
 
   &:hover {
     background: var(--_hoverButtonBg);
-    color: var(--_hoverButtonColor);
+    color: var(--_primaryWhiteColor);
     .inheritFill {
-      fill: var(--_hoverButtonColor);
+      fill: var(--_primaryWhiteColor);
     }
   }
 `;
@@ -51,13 +51,13 @@ export const GroupWrapper = styled.div`
     margin: 0 auto 4px auto;
     max-width: calc(100% - 40px);
     .inheritFill {
-      fill: var(--_primaryColor);
+      fill: var(--_primaryTextColor);
     }
     &:hover {
       background: var(--_hoverButtonBg);
-      color: var(--_hoverButtonColor);
+      color: var(--_primaryWhiteColor);
       .inheritFill {
-        fill: var(--_hoverButtonColor);
+        fill: var(--_primaryWhiteColor);
       }
     }
   }
@@ -74,7 +74,7 @@ export const GroupWrapStyles = styled.div`
   margin: 0 0 12px 0;
   align-items: center;
   flex-shrink: 0;
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
   cursor: pointer;
   ${Label} {
     max-width: calc(100% - 52px);
@@ -94,9 +94,9 @@ export const GroupWrapStyles = styled.div`
 
   &:hover {
     background: var(--_hoverButtonBg);
-    color: var(--_hoverButtonColor);
+    color: var(--_primaryWhiteColor);
     .inheritFill {
-      fill: var(--_hoverButtonColor);
+      fill: var(--_primaryWhiteColor);
     }
   }
 `;

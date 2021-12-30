@@ -8,7 +8,7 @@ const accordionStyles = makeStyles(
         background: 'var(--_chartBg) !important',
         boxShadow: 'none !important',
         fontFamily: 'DMSans !important',
-        color: 'var(--_primaryColor) !important',
+        color: 'var(--_primaryTextColor) !important',
         border: '1px solid var(--_borderColor) !important',
         borderRadius: '6px !important',
         '&.Mui-expanded': {
@@ -75,7 +75,7 @@ const accordionStyles = makeStyles(
         background: 'var(--_primaryBg) !important',
         boxShadow: 'none !important',
         fontFamily: 'DMSans !important',
-        color: 'var(--_primaryColor) !important',
+        color: 'var(--_primaryTextColor) !important',
         border: '1px solid var(--_borderColor) !important',
         borderRadius: '6px !important',
         '&.Mui-expanded': {
@@ -93,7 +93,7 @@ const accordionStyles = makeStyles(
         background: 'var(--_appBg) !important',
         boxShadow: 'none !important',
         fontFamily: 'DMSans !important',
-        color: 'var(--_primaryColor) !important',
+        color: 'var(--_primaryTextColor) !important',
         border: '1px solid var(--_appBg) !important',
         borderRadius: '6px !important',
         '&.Mui-expanded': {

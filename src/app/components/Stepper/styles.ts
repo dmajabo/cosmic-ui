@@ -12,7 +12,7 @@ export const StepperWrappper = styled.div`
 export const Title = styled.div`
   font-style: normal;
   font-weight: bold;
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
   margin-bottom: 20px;
   flex-shrink: 0;
   font-size: 22px;
@@ -30,19 +30,19 @@ export const getNumberStyles = (props: StepItemWrapperProps) => {
   if (props.selected || props.highlighted) {
     return css`
       background: var(--_selectedStepperBgColor);
-      color: var(--_selectedStepperNumberTextColor);
+      color: var(--_primaryWhiteColor);
     `;
   }
   if (props.state === StepperItemStateType.COMPLETE) {
     return css`
       background: var(--_completedStepperBgColor);
-      color: var(--_completedStepperNumberTextColor);
+      color: var(--_primaryWhiteColor);
     `;
   }
   if (props.state === StepperItemStateType.WARNING) {
     return css`
       background: var(--_errorColor);
-      color: var(--_completedStepperNumberTextColor);
+      color: var(--_primaryWhiteColor);
     `;
   }
   return css`

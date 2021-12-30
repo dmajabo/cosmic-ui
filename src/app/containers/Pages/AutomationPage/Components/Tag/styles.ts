@@ -17,7 +17,7 @@ const tagStyles = css`
   font-weight: 500;
   font-size: 14px;
   line-height: 18px;
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
   &:last-child {
     margin-right: 0;
   }

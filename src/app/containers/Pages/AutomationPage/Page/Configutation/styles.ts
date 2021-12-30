@@ -33,7 +33,7 @@ export const ConfigurationTitle = styled.div`
   font-weight: bold;
   font-size: 22px;
   line-height: 29px;
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
   margin-bottom: 3px;
   text-overflow: ellipsis;
   white-space: nowrap;

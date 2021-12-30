@@ -15,7 +15,7 @@ export const RightBlock = styled.div`
   position: fixed;
   width: 30.52083333333333vw;
   height: 100vh;
-  background: var(--_primaryColor);
+  background: var(--_primaryTextColor);
   flex-shrink: 0;
   padding: 1.041666666666667vw;
   ${LogoWrapper} {

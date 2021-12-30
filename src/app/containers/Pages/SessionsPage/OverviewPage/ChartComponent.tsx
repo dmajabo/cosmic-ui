@@ -42,7 +42,7 @@ const ChartComponent: React.FC<IProps> = (props: IProps) => {
           </ErrorMessage>
         )}
         {emptyMessage && (
-          <ErrorMessage color="var(--_primaryColor)" fontSize={20} margin="auto">
+          <ErrorMessage color="var(--_primaryTextColor)" fontSize={20} margin="auto">
             {emptyMessage}
           </ErrorMessage>
         )}

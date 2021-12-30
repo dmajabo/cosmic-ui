@@ -25,7 +25,7 @@ export interface IProps {
 const HtmlTooltip = withStyles(() => ({
   tooltip: {
     backgroundColor: 'var(--_primaryBg)',
-    color: 'var(--_primaryColor)',
+    color: 'var(--_primaryTextColor)',
     maxWidth: 220,
     fontSize: 12,
     border: '1px solid',

@@ -38,7 +38,7 @@ export const TabsStyles = makeStyles(
         borderBottomColor: 'rgba(132, 141, 163, 0.1)',
       },
       tabSelected: {
-        color: 'var(--_primaryColor)',
+        color: 'var(--_primaryTextColor)',
       },
     }),
   {

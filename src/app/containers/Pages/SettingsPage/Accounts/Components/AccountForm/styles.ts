@@ -6,7 +6,7 @@ export const Title = styled.div`
   font-weight: bold;
   font-size: 22px;
   line-height: 29px;
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
   margin: auto;
   width: auto;
   max-width: 100%;
@@ -46,7 +46,7 @@ export const StepItemLabel = styled.span`
   font-weight: 700;
   font-size: 18px;
   line-height: 23px;
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
   margin: auto 0;
 `;
 

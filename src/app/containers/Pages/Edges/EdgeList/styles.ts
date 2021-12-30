@@ -30,7 +30,7 @@ export const EdgeNameWrapper = styled.div`
   font-weight: bold;
   font-size: 26px;
   line-height: 34px;
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
   width: 100%;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -104,7 +104,7 @@ export const ItemLabel = styled.span<SpanProps>`
   font-weight: ${props => props.fontWeight || '500'};
   font-size: ${props => props.fontSize || '16px'};
   line-height: ${props => props.fontSize || '21px'};
-  color: ${props => props.color || 'var(--_primaryColor)'};
+  color: ${props => props.color || 'var(--_primaryTextColor)'};
   margin: ${props => props.margin || '0 12px 0 0'};
 `;
 
@@ -113,7 +113,7 @@ export const ItemValue = styled.span<SpanProps>`
   font-weight: ${props => props.fontSize || 'normal'};
   font-size: ${props => props.fontWeight || '16px'};
   line-height: ${props => props.fontSize || '21px'};
-  color: ${props => props.color || 'var(--_primaryColor)'};
+  color: ${props => props.color || 'var(--_primaryTextColor)'};
 `;
 
 export const StatusCircle = styled.span`

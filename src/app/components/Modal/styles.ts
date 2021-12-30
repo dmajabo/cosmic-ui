@@ -31,7 +31,7 @@ export const ModalTitle = styled.div`
   line-height: 40px;
   white-space: nowrap;
   overflow: hidden;
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
   font-weight: 700;
   font-size: 24px;
 `;

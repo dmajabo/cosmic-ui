@@ -32,7 +32,7 @@ export const TableStyles = makeStyles(
       tableCell: {
         background: 'transparent',
         border: 'none',
-        color: 'var(--_primaryColor)',
+        color: 'var(--_primaryTextColor)',
         borderBottom: '1px solid var(--_rowBorder)',
         padding: '10px 12px',
         fontWeight: 500,

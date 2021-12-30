@@ -49,7 +49,7 @@ export const GroupName = styled.span`
   line-height: 16px;
   height: 18px;
   text-align: center;
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
   flex-shrink: 0;
 `;
 
@@ -70,7 +70,7 @@ export const Office = styled.div`
   font-size: 12px;
   line-height: 16px;
   text-align: center;
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
   text-overflow: ellipsis;
   white-space: nowrap;
   width: 100%;

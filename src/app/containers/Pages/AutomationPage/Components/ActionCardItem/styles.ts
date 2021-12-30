@@ -22,7 +22,7 @@ export const Label = styled.div`
   font-style: normal;
   font-weight: bold;
   font-size: 18px;
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
   max-width: 100%;
   white-space: normal;
   margin: auto auto auto 0;

@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 export const TempMessage = styled.div`
   margin: auto;
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
   font-size: 2.197916666666667vw;
 `;
 

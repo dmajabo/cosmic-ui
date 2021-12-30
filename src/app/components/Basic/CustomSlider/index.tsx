@@ -8,7 +8,7 @@ import { Required } from 'app/components/Inputs/FormTextInput/styles';
 
 const SliderStyles = withStyles({
   root: {
-    color: 'var(--_primaryColor)',
+    color: 'var(--_primaryTextColor)',
     height: 40,
     padding: '12px 0px 20px 0px',
     boxSizing: 'border-box',
@@ -68,7 +68,7 @@ const SliderStyles = withStyles({
     transform: 'unset',
   },
   markActive: {
-    color: 'var(--_primaryColor)',
+    color: 'var(--_primaryTextColor)',
   },
 })(Slider);
 

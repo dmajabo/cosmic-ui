@@ -60,7 +60,7 @@ export const PanelLabel = styled.div`
   font-weight: bold;
   font-size: 22px;
   line-height: 29px;
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
   margin: 0 12px 0 0;
 `;
 

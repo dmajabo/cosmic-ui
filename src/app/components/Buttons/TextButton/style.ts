@@ -13,8 +13,8 @@ export const TextButtonStyles = styled.button<Props>`
   height: ${props => props.height || '60px'};
   border: none;
   border-radius: 6px;
-  background: ${props => props.bgColor || 'var(--_primaryButtonBg)'};
-  color: ${props => props.textColor || 'var(--_primaryColor)'};
+  background: ${props => props.bgColor || 'var(--_primaryWhiteColor)'};
+  color: ${props => props.textColor || 'var(--_primaryTextColor)'};
   outline: none;
   padding: 0;
   text-align: center;

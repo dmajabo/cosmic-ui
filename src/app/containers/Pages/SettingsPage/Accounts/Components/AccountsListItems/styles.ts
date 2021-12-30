@@ -40,7 +40,7 @@ export const AccountItemTitle = styled.span`
   font-weight: bold;
   font-size: 22px;
   line-height: 29px;
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;

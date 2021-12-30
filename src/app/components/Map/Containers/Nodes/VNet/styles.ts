@@ -98,7 +98,7 @@ export const MoreButton = styled.div`
   color: var(--_disabledTextColor);
   flex-shrink: 0;
   span:hover {
-    color: var(--_primaryColor);
+    color: var(--_primaryTextColor);
     cursor: pointer;
   }
 `;

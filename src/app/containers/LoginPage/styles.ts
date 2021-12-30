@@ -5,7 +5,7 @@ export const Wrapper = styled.div`
   display: flex;
   width: 100vw;
   height: 100vh;
-  background: var(--_primaryColor);
+  background: var(--_primaryTextColor);
 `;
 
 export const Form = styled.form`
@@ -48,7 +48,7 @@ export const Submit = styled.button`
   letter-spacing: unset;
   background: transparent;
   border: 1px solid;
-  color: var(--_primaryButtonBg);
+  color: var(--_primaryWhiteColor);
   border-color: var(--_hoverButtonBg);
   padding: 5px 56px;
   margin: 40px 0 20px auto;

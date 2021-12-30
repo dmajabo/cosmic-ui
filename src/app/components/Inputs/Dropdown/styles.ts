@@ -22,12 +22,12 @@ export const DropdownWrapper = styled.div<Props>`
 export const SelectWrapper = styled.div`
   width: 100%;
   height: 100%;
-  background: var(--_primaryButtonBg);
+  background: var(--_primaryWhiteColor);
   border-radius: 6px;
   outline: 0;
   padding: 8px 24px 8px 16px;
   border: 1px solid;
-  border-color: var(--_primaryButtonBg);
+  border-color: var(--_primaryWhiteColor);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -56,7 +56,7 @@ export const DisplayValueStyles = styled.div`
   font-weight: inherit;
   font-size: inherit;
   &.filled {
-    color: var(--_primaryColor);
+    color: var(--_primaryTextColor);
   }
 `;
 
@@ -85,7 +85,7 @@ export const ListWrapper = styled.div<ListProps>`
   overflow-y: auto;
   border: none;
   border-radius: 6px;
-  background: var(--_primaryButtonBg);
+  background: var(--_primaryWhiteColor);
   padding: 8px 0;
   box-shadow: 0px 15px 50px rgba(132, 141, 163, 0.15);
 `;
@@ -107,7 +107,7 @@ export const DropdownItemWrapper = styled.div<IDropdownItemProps>`
   overflow: hidden;
   cursor: pointer;
   font-size: 14px;
-  color: ${props => (props.active ? 'var(--_hoverButtonBg)' : 'var(--_primaryColor)')};
+  color: ${props => (props.active ? 'var(--_hoverButtonBg)' : 'var(--_primaryTextColor)')};
   background: ${props => (props.active ? 'var(--_vmBg)' : 'var(--_primaryBg)')};
   margin: ${props => props.margin || '0'};
   &:hover {

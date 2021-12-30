@@ -26,7 +26,7 @@ export const MapTitle = styled.div`
   font-weight: bold;
   font-size: 22px;
   line-height: 29px;
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
 `;
 
 export const FooterLabel = styled.div`
@@ -38,7 +38,7 @@ export const FooterLabel = styled.div`
   font-size: 14px;
   line-height: 18px;
   text-align: center;
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
 `;
 
 export const SvgStyles = styled.svg`
@@ -75,6 +75,6 @@ export const ExpandCollapseButton = styled.button`
   line-height: 16px;
   letter-spacing: 0.1em;
   text-align: center;
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
   cursor: pointer;
 `;

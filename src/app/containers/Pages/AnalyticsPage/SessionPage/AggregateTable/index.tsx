@@ -79,7 +79,7 @@ const AggregateTable: React.FC<Props> = (props: Props) => {
             ) : (
               <TableRow>
                 <TableCell className="errorCell" colSpan={aggregatedColumns.length}>
-                  <ErrorMessage color="var(--_primaryColor)" margin="48px auto">
+                  <ErrorMessage color="var(--_primaryTextColor)" margin="48px auto">
                     No data
                   </ErrorMessage>
                 </TableCell>

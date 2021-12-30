@@ -6,7 +6,7 @@ export const StepTitle = styled.div`
   font-weight: bold;
   font-size: 18px;
   line-height: 23px;
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
   flex-shrink: 0;
   margin: auto 12px auto 0;
   width: 30%;

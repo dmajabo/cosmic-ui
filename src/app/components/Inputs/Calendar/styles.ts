@@ -37,8 +37,8 @@ export const DisplayedDay = styled.div`
   height: 100%;
   font-size: 14px;
   line-height: 15px;
-  color: var(--_primaryColor);
-  background: var(--_primaryButtonBg);
+  color: var(--_primaryTextColor);
+  background: var(--_primaryWhiteColor);
   border: 1px solid;
   border-color: var(--_primaryButtonBorder);
   border-radius: 6px;

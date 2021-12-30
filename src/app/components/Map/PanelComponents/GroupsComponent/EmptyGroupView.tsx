@@ -14,7 +14,7 @@ const EmptyGroupView: React.FC<IProps> = (props: IProps) => {
 
   return (
     <Wrapper>
-      <Label margin="0 auto 12px auto" color="var(--_primaryColor)">
+      <Label margin="0 auto 12px auto" color="var(--_primaryTextColor)">
         There is no groups yet
       </Label>
       <Label fontWeight="normal" margin="0 auto 40px auto" fontSize="14px" color="var(--_disabledTextColor)">

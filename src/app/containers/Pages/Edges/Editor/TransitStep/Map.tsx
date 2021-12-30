@@ -136,7 +136,7 @@ const Map: React.FC<Props> = (props: Props) => {
                   styles={{ margin: '0 6px 0 0' }}
                   bgColor="var(--_tableBg)"
                   opacity="1"
-                  textColor="var(--_primaryColor)"
+                  textColor="var(--_primaryTextColor)"
                   subTextColor="var(--_disabledTextColor)"
                   index={index}
                   key={`selectedTag${it.id}`}

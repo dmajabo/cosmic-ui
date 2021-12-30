@@ -55,7 +55,7 @@ export const DisplayValueStyles = styled.span`
   text-align: left;
   flex-shrink: 0;
   &.filled {
-    color: var(--_primaryColor);
+    color: var(--_primaryTextColor);
   }
 `;
 

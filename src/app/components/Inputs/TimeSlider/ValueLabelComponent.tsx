@@ -4,7 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 
 const TooltipStyles = withStyles({
   tooltip: {
-    color: 'var(--_primaryColor)',
+    color: 'var(--_primaryTextColor)',
     fontSize: 12,
     fontFamily: 'DMSans',
     borderRadius: 6,

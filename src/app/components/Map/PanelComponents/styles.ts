@@ -40,7 +40,7 @@ export const PanelTitle = styled.div<TitleProps>`
   font-style: normal;
   font-weight: 700;
   font-size: 22px;
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

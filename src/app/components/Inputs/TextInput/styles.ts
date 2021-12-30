@@ -15,12 +15,12 @@ interface Props {
 
 const InputStyles = css`
   width: 100%;
-  background: var(--_primaryButtonBg);
+  background: var(--_primaryWhiteColor);
   border-radius: 6px;
   outline: 0;
   border: 1px solid;
   border-color: var(--_defaultInputBorder);
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
@@ -54,7 +54,7 @@ export const TagsWrapper = styled.div`
   width: 100%;
   height: auto;
   min-height: 40px;
-  background: var(--_primaryButtonBg);
+  background: var(--_primaryWhiteColor);
   border-radius: 6px;
   outline: 0;
   border: 1px solid;

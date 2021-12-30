@@ -22,7 +22,7 @@ export const Label = styled.div<Props>`
   font-style: normal;
   font-weight: ${props => props.fontWeight || '500'};
   font-size: ${props => props.fontSize || '16px'};
-  color: ${props => props.color || 'var(--_primaryColor)'};
+  color: ${props => props.color || 'var(--_primaryTextColor)'};
   margin: ${props => props.margin || '0'};
   text-align: center;
 `;

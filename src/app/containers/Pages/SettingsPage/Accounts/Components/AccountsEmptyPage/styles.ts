@@ -21,7 +21,7 @@ export const Title = styled.div`
   font-size: 40px;
   line-height: 52px;
   text-align: center;
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
 `;
 
 export const CardsWrapper = styled.div`

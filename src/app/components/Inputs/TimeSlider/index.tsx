@@ -9,7 +9,7 @@ import { differenceInCalendarDays, differenceInMinutes, format, isThisHour, isTo
 
 const SliderStyles = withStyles({
   root: {
-    color: 'var(--_primaryColor)',
+    color: 'var(--_primaryTextColor)',
     height: 40,
     padding: '10px 0px 15px 0px',
     boxSizing: 'border-box',
@@ -78,7 +78,7 @@ const SliderStyles = withStyles({
     bottom: '0',
     '& .highLight': {
       fontWeight: '700',
-      color: 'var(--_primaryColor)',
+      color: 'var(--_primaryTextColor)',
     },
   },
 })(Slider);

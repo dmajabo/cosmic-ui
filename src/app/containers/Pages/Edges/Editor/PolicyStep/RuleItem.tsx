@@ -133,7 +133,7 @@ const RuleItem: React.FC<Props> = (props: Props) => {
         <PrimaryButton
           styles={{ margin: 'auto 0px 0px auto', height: '40px' }}
           label="DELETE RULE"
-          icon={deleteIcon('var(--_pButtonColor)')}
+          icon={deleteIcon('var(--_primaryWhiteColor)')}
           onClick={onDelete}
           bgColor="var(--_errorColor)"
           borderColor="var(--_errorColor)"
