@@ -214,7 +214,7 @@ export const StyledListLink = styled.div`
   &.active {
     color: var(--_primaryTextColor);
     svg .routeIcon {
-      fill: var(--_primaryTextColor);
+      fill: var(--_primaryBg);
     }
     ${HighlightBorder} {
       opacity: 1;

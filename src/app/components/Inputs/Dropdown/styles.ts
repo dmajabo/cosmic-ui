@@ -108,7 +108,7 @@ export const DropdownItemWrapper = styled.div<IDropdownItemProps>`
   cursor: pointer;
   font-size: 14px;
   color: ${props => (props.active ? 'var(--_hoverButtonBg)' : 'var(--_primaryColor)')};
-  background: ${props => (props.active ? 'var(--_vmBg)' : 'var(--_primaryTextColor)')};
+  background: ${props => (props.active ? 'var(--_vmBg)' : 'var(--_primaryBg)')};
   margin: ${props => props.margin || '0'};
   &:hover {
     color: var(--_hoverButtonBg);
