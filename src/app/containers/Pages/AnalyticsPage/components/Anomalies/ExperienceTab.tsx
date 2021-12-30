@@ -8,11 +8,9 @@ import {
   AnomalySlaTestData,
   Column,
   ColumnAccessor,
-  FinalTableData,
   GetAlertMetadataResponse,
   GetExperienceAnomaliesResponse,
   GetOrganizationResponse,
-  GetSLATestResponse,
   Organization,
   SLATest,
 } from 'lib/api/http/SharedTypes';
@@ -37,6 +35,7 @@ import uniqBy from 'lodash/uniqBy';
 import { isEmpty } from 'lodash';
 import { TopoApi } from 'lib/api/ApiModels/Services/topo';
 import { GetDevicesString, GetSelectedOrganization } from '../Performance Dashboard/filterFunctions';
+import { VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
 
 interface ExperienceTabProps {
   readonly timeRange: AnomalyTimeRangeValue;
@@ -196,12 +195,65 @@ export const ExperienceTab: React.FC<ExperienceTabProps> = ({ timeRange }) => {
 
   const getSLATests = async () => {
     const response = await apiClient.getSLATests();
-    if (isEmpty(response)) {
-      setSlaTests([]);
-    } else {
-      setSlaTests(response.slaTests);
-    }
+    setSlaTests(response?.slaTests || []);
   };
+
+  const getFilteredSlaTestswithCount = (uniqueDestinations: string[], selectedAnomalyResponse: GetExperienceAnomaliesResponse) => {
+    const filteredSlaTests = slaTests.filter(test => uniqueDestinations.includes(test.destination));
+    const filteredSlaTestswithCount = filteredSlaTests.map(test => {
+      const testAnomalyCount = selectedAnomalyResponse.anomalies.filter(anomaly => anomaly.destination === test.destination);
+      return {
+        ...test,
+        hits: testAnomalyCount.length,
+      };
+    });
+    return filteredSlaTestswithCount;
+  };
+
+  const getTableAlertMetadata = (experienceAnomalyResponses: GetExperienceAnomaliesResponse[]): AlertMetadata[] =>
+    alertMetadata.map(item => {
+      const selectedAnomalyResponse = experienceAnomalyResponses.find(anomaly => anomaly.name === item.name);
+      const uniqueDestinations = uniqBy(selectedAnomalyResponse.anomalies, 'destination').map(anomaly => anomaly.destination);
+      const filteredSlaTestswithCount = getFilteredSlaTestswithCount(uniqueDestinations, selectedAnomalyResponse);
+
+      const { triggerCount, ...otherItems } = item;
+
+      return {
+        ...otherItems,
+        slaTests: filteredSlaTestswithCount,
+        triggerCount: Number(selectedAnomalyResponse.count),
+      };
+    });
+
+  const getSlaTestTableData = (selectedAnomalyMetadata: AlertMetadata) =>
+    selectedAnomalyMetadata.slaTests.map(item => {
+      const merakiOrganisations = organizations.filter(organization => organization.vendorType === VendorTypes.MERAKI);
+      const selectedOrganization = GetSelectedOrganization(merakiOrganisations, item.sourceOrgId);
+      const allDevices: string = GetDevicesString(selectedOrganization, item.sourceNwExtId);
+      return {
+        hits: <div className={classes.hitsCount}>{item.hits}</div>,
+        averageQoe: (
+          <div className={classes.averageQoeText}>
+            <span>Packet Loss:</span>
+            <span style={{ color: getColor(PACKET_LOSS_HEATMAP_LEGEND, Number(item.metrics.avgPacketLoss)) }} className={classes.qoeValueText}>{`${
+              isNaN(Number(item.metrics.avgPacketLoss)) ? '-' : Number(item.metrics.avgPacketLoss)
+            }%`}</span>
+            <span>Latency:</span>
+            <span style={{ color: getColor(LATENCY_HEATMAP_LEGEND, Number(item.metrics.avgLatency)) }} className={classes.qoeValueText}>{`${
+              isNaN(Number(item.metrics.avgLatency)) ? '-' : Number(item.metrics.avgLatency).toFixed(2)
+            }ms`}</span>
+          </div>
+        ),
+        id: item.testId,
+        name: item.name,
+        sourceOrg: selectedOrganization.name,
+        sourceNetwork: item.sourceNwExtId,
+        sourceDevice: allDevices,
+        destination: item.destination,
+        interface: item.interface,
+        description: item.description,
+      };
+    });
 
   useEffect(() => {
     getExperienceTableAlertMetadata(AlertApi.getAllMetadata(), userContext.accessToken!);
@@ -209,46 +261,15 @@ export const ExperienceTab: React.FC<ExperienceTabProps> = ({ timeRange }) => {
     getSLATests();
   }, []);
 
-  useEffect(() => {
-    if (experienceTabAlertResponse && experienceTabAlertResponse.alertMetadata && experienceTabAlertResponse.alertMetadata.length) {
-      setAlertMetadata(experienceTabAlertResponse.alertMetadata);
-    } else {
-      setAlertMetadata([]);
-    }
-  }, [experienceTabAlertResponse, timeRange]);
+  useEffect(() => setAlertMetadata(experienceTabAlertResponse?.alertMetadata || []), [experienceTabAlertResponse, timeRange]);
 
-  useEffect(() => {
-    if (organizationResponse && organizationResponse.organizations && organizationResponse.organizations.length) {
-      setOrganizations(organizationResponse.organizations);
-    } else {
-      setOrganizations([]);
-    }
-  }, [organizationResponse]);
+  useEffect(() => setOrganizations(organizationResponse?.organizations || []), [organizationResponse]);
 
   useEffect(() => {
     if (!isEmpty(alertMetadata) && !isEmpty(slaTests)) {
       const promises = alertMetadata.map(item => apiClient.getExperienceAnomalies(item.name, timeRange));
-      Promise.all(promises).then(experienceAnomalyResponses => {
-        const newAlertMetaData: AlertMetadata[] = alertMetadata.map(item => {
-          const selectedAnomalyResponse = experienceAnomalyResponses.find(anomaly => anomaly.name === item.name);
-          const uniqueDestinations = uniqBy(selectedAnomalyResponse.anomalies, 'destination').map(anomaly => anomaly.destination);
-          const filteredSlaTests = slaTests.filter(test => uniqueDestinations.includes(test.destination));
-          const filteredSlaTestswithCount = filteredSlaTests.map(test => {
-            const testAnomalyCount = selectedAnomalyResponse.anomalies.filter(anomaly => anomaly.destination === test.destination);
-            return {
-              ...test,
-              hits: testAnomalyCount.length,
-            };
-          });
-
-          const { triggerCount, ...otherItems } = item;
-
-          return {
-            ...otherItems,
-            slaTests: filteredSlaTestswithCount,
-            triggerCount: Number(selectedAnomalyResponse.count),
-          };
-        });
+      Promise.all(promises).then(async experienceAnomalyResponses => {
+        const newAlertMetaData: AlertMetadata[] = await getTableAlertMetadata(experienceAnomalyResponses);
         setTableAlertMetadata(newAlertMetaData);
       });
     }
@@ -269,34 +290,7 @@ export const ExperienceTab: React.FC<ExperienceTabProps> = ({ timeRange }) => {
   const experienceSubComponent = React.useCallback(
     (row: Row<object>) => {
       const selectedAnomalyMetadata = tableAlertMetadata.find(item => item.name === row.values.name);
-      const slaTestTableData: AnomalySlaTestData[] = selectedAnomalyMetadata.slaTests.map(item => {
-        const merakiOrganisations = organizations.filter(organization => organization.vendorType === 'MERAKI');
-        const selectedOrganization = GetSelectedOrganization(merakiOrganisations, item.sourceOrgId);
-        const allDevices: string = GetDevicesString(selectedOrganization, item.sourceNwExtId);
-        return {
-          hits: <div className={classes.hitsCount}>{item.hits}</div>,
-          averageQoe: (
-            <div className={classes.averageQoeText}>
-              <span>Packet Loss:</span>
-              <span style={{ color: getColor(PACKET_LOSS_HEATMAP_LEGEND, Number(item.metrics.avgPacketLoss)) }} className={classes.qoeValueText}>{`${
-                isNaN(Number(item.metrics.avgPacketLoss)) ? '-' : Number(item.metrics.avgPacketLoss)
-              }%`}</span>
-              <span>Latency:</span>
-              <span style={{ color: getColor(LATENCY_HEATMAP_LEGEND, Number(item.metrics.avgLatency)) }} className={classes.qoeValueText}>{`${
-                isNaN(Number(item.metrics.avgLatency)) ? '-' : Number(item.metrics.avgLatency).toFixed(2)
-              }ms`}</span>
-            </div>
-          ),
-          id: item.testId,
-          name: item.name,
-          sourceOrg: selectedOrganization.name,
-          sourceNetwork: item.sourceNwExtId,
-          sourceDevice: allDevices,
-          destination: item.destination,
-          interface: item.interface,
-          description: item.description,
-        };
-      });
+      const slaTestTableData: AnomalySlaTestData[] = getSlaTestTableData(selectedAnomalyMetadata);
 
       const sessionLogsTableData: AnomalySessionLogsData[] = DUMMY_SESSION_LOGS_DATA.map(item => {
         const { hits, ...otherItems } = item;
