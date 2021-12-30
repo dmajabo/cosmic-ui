@@ -1,6 +1,6 @@
 import React from 'react';
 import { AlertConfigState, AlertSeverity, IAlertMeta, IAlertMetaDataRes } from 'lib/api/ApiModels/Workflow/apiModel';
-import { useGet, usePut } from 'lib/api/http/useAxiosHook';
+import { useGet, usePost, usePut } from 'lib/api/http/useAxiosHook';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { PAGING_DEFAULT_PAGE_SIZE } from 'lib/hooks/Sessions/model';
 import { AUTOMATION_SELECT_VALUES } from 'lib/hooks/Automation/models';
@@ -31,7 +31,7 @@ const Triggers: React.FC<Props> = (props: Props) => {
   // const { automation } = useAutomationDataContext();
   const userContext = React.useContext<UserContextState>(UserContext);
   const { loading, error, response, onGet } = useGet<IAlertMetaDataRes>();
-  const { loading: putLoading, error: putError, response: updateRes, onPut } = usePut<IAlertMeta, IAlertMeta>();
+  const { loading: putLoading, error: putError, response: updateRes, onPost } = usePost<IAlertMeta, IAlertMeta>();
   const [totalCount, setTotalCount] = React.useState<number>(0);
   const [currentPage, setCurrentPage] = React.useState<number>(1);
   const [pageSize, setPageSize] = React.useState<number>(PAGING_DEFAULT_PAGE_SIZE);
@@ -272,13 +272,13 @@ const Triggers: React.FC<Props> = (props: Props) => {
     const _configState = checked ? AlertConfigState.ON : AlertConfigState.OFF;
     const _obj: IAlertMeta = { ...param.row } as IAlertMeta;
     _obj.configState = _configState;
-    onTryUpdateMetaData(param.row.id, _obj);
+    onTryUpdateMetaData(_obj);
   };
 
   const onSeverityChange = (v: any, param: GridRenderCellParams) => {
     const _obj: IAlertMeta = { ...param.row } as IAlertMeta;
     _obj.severity = v;
-    onTryUpdateMetaData(param.row.id, _obj);
+    onTryUpdateMetaData(_obj);
   };
 
   const onTryLoadAlertMetaData = async (_pageSize: number, _currentPage: number, _period: AUTOMATION_TIME_RANGE_QUERY_TYPES) => {
@@ -286,8 +286,8 @@ const Triggers: React.FC<Props> = (props: Props) => {
     await onGet(AlertApi.getAllMetadata(), userContext.accessToken!, _param);
   };
 
-  const onTryUpdateMetaData = async (id: string, data: IAlertMeta) => {
-    await onPut(AlertApi.putMetadata(id), data, userContext.accessToken!);
+  const onTryUpdateMetaData = async (data: IAlertMeta) => {
+    await onPost(AlertApi.postMetadata(), data, userContext.accessToken!);
   };
 
   return (

@@ -4,13 +4,16 @@ import { Tabs, Tab, Typography, Button } from '@material-ui/core';
 import FilterIcon from '../../icons/performance dashboard/filter.svg';
 import { LookbackLabel, LookbackSelectOption, LookbackValue } from '../Metrics Explorer/LookbackTimeTab';
 import Select from 'react-select';
+import { ExperienceTab } from './ExperienceTab';
+import { PolicyTab } from './PolicyTab';
+import { CostTab } from './CostTab';
 
 interface TabPanelProps {
   readonly name: string;
   readonly value: string;
 }
 
-enum AnomalyTabValue {
+export enum AnomalyTabValue {
   Experience = 'Experience',
   Policy = 'Policy',
   Cost = 'Cost',
@@ -116,15 +119,6 @@ export const Anomalies: React.FC = () => {
               {...a11yProps(AnomalyTabValue.Cost)}
             />
           </Tabs>
-          <TabPanel value={tab} name={AnomalyTabValue.Experience}>
-            {AnomalyTabValue.Experience}
-          </TabPanel>
-          <TabPanel value={tab} name={AnomalyTabValue.Policy}>
-            {AnomalyTabValue.Policy}
-          </TabPanel>
-          <TabPanel value={tab} name={AnomalyTabValue.Cost}>
-            {AnomalyTabValue.Cost}
-          </TabPanel>
         </div>
         <div>
           <Button className={classes.otherButton} variant="contained" disableElevation>
@@ -137,6 +131,15 @@ export const Anomalies: React.FC = () => {
           <Select className={classes.inlineSelect} label="Single select" value={timeRange} options={TIME_RANGE_OPTIONS} onChange={handleTimeRangeChange} />
         </div>
       </div>
+      <TabPanel value={tab} name={AnomalyTabValue.Experience}>
+        <ExperienceTab />
+      </TabPanel>
+      <TabPanel value={tab} name={AnomalyTabValue.Policy}>
+        <PolicyTab />
+      </TabPanel>
+      <TabPanel value={tab} name={AnomalyTabValue.Cost}>
+        <CostTab />
+      </TabPanel>
     </div>
   );
 };
