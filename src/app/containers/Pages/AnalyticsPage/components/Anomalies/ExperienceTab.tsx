@@ -4,12 +4,13 @@ import { AnomalyBarChart } from './AnomalyBarChart';
 import {
   AlertMetadata,
   AnomalyExperienceTableData,
-  AnomalySessionLogsData,
   AnomalySlaTestData,
   Column,
   ColumnAccessor,
   GetAlertMetadataResponse,
   GetExperienceAnomaliesResponse,
+  ExperienceAnomalies,
+  HitsTableData,
   GetOrganizationResponse,
   Organization,
   SLATest,
@@ -20,9 +21,7 @@ import { AnomalySLATestTable } from './AnomalySLATestTable';
 import { LATENCY_HEATMAP_LEGEND } from '../Performance Dashboard/Latency';
 import { PACKET_LOSS_HEATMAP_LEGEND } from '../Performance Dashboard/PacketLoss';
 import { LegendData } from '../Performance Dashboard/Heatmap';
-import { AnomalyBlockTable } from './AnomalyBlockTable';
 import { Row } from 'react-table';
-import { DUMMY_BAR_CHART_DATA, DUMMY_SESSION_LOGS_DATA } from '../../DummyData';
 import { getSeverityColour, SeverityLevel } from 'lib/api/http/utils';
 import { useGet } from 'lib/api/http/useAxiosHook';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
@@ -32,9 +31,10 @@ import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import { AnomalyTimeRangeValue } from './Anomalies';
 import { createApiClient } from 'lib/api/http/apiClient';
 import uniqBy from 'lodash/uniqBy';
-import { isEmpty } from 'lodash';
+import { countBy, isEmpty } from 'lodash';
 import { TopoApi } from 'lib/api/ApiModels/Services/topo';
 import { GetDevicesString, GetSelectedOrganization } from '../Performance Dashboard/filterFunctions';
+import { DateTime } from 'luxon';
 import { VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
 
 interface ExperienceTabProps {
@@ -59,6 +59,12 @@ const anomalyTableColumns: Column[] = [
 export interface BarChartData {
   readonly date: string;
   readonly value: number;
+}
+
+enum AnomalySuffix {
+  ANOMALY_PACKETLOSS = '%',
+  ANOMALY_LATENCY = 'ms',
+  ANOMALY_GOODPUT = 'mbps',
 }
 
 const SLA_TEST_COLUMNS: Column[] = [
@@ -92,90 +98,44 @@ const SLA_TEST_COLUMNS: Column[] = [
   },
 ];
 
-const SESSION_LOGS_COLUMNS: Column[] = [
+const HITS_TABLE_COLUMNS: Column[] = [
   {
-    Header: 'HITS',
-    accessor: ColumnAccessor.hits,
+    Header: 'NAME',
+    accessor: ColumnAccessor.name,
   },
   {
     Header: 'TIME',
     accessor: ColumnAccessor.time,
-    width: 250,
   },
   {
-    Header: 'SESSION ID',
-    accessor: ColumnAccessor.sessionId,
+    Header: 'SOURCE ORGANIZATION',
+    accessor: ColumnAccessor.sourceOrg,
   },
   {
-    Header: 'EDGE NAME',
-    accessor: ColumnAccessor.edgeName,
+    Header: 'SOURCE NETWORK',
+    accessor: ColumnAccessor.sourceNetwork,
   },
   {
-    Header: 'EDGE TYPE',
-    accessor: ColumnAccessor.edgeType,
+    Header: 'SOURCE DEVICE',
+    accessor: ColumnAccessor.sourceDevice,
   },
   {
-    Header: 'SOURCE IP',
-    accessor: ColumnAccessor.source,
-  },
-  {
-    Header: 'DESTINATION IP',
+    Header: 'DESTINATION',
     accessor: ColumnAccessor.destination,
-    width: 200,
   },
   {
-    Header: 'TGW NAME',
-    accessor: ColumnAccessor.tgwName,
-  },
-  {
-    Header: 'TGW REGION',
-    accessor: ColumnAccessor.tgwRegion,
-  },
-  {
-    Header: 'TGW-BYTESIN',
-    accessor: ColumnAccessor.tgwBytesin,
-  },
-  {
-    Header: 'AWS-ACCOUNT-ID',
-    accessor: ColumnAccessor.awsAccountId,
-  },
-  {
-    Header: 'AWS-ACTION',
-    accessor: ColumnAccessor.awsAction,
-  },
-  {
-    Header: 'AWS-REGION',
-    accessor: ColumnAccessor.awsRegion,
-  },
-  {
-    Header: 'WPC-ID',
-    accessor: ColumnAccessor.wpcId,
-  },
-  {
-    Header: 'INSTANCE-ID',
-    accessor: ColumnAccessor.instanceId,
-  },
-  {
-    Header: 'SDWAN RULE ID',
-    accessor: ColumnAccessor.sdwanRuleId,
-    width: 200,
-  },
-  {
-    Header: 'FIREWALL POLICY ID',
-    accessor: ColumnAccessor.firewallPolicyId,
-    width: 200,
-  },
-  {
-    Header: 'DESTINATION APPLICATION',
-    accessor: ColumnAccessor.destApp,
+    Header: 'VALUE',
+    accessor: ColumnAccessor.value,
   },
 ];
 
 const RED_COLOUR = '#DC4545';
 
+const OLD_TIME_FORMAT: string = 'yyyy-MM-dd HH:mm:ss ZZZ z';
+
 const SLA_TEST_TABLE_SORTABLE_HEADERS = ['NAME'];
 
-const SESSION_LOGS_TABLE_SORTABLE_HEADERS = ['SESSION ID', 'SOURCE IP', 'DESTINATION IP', 'SDWAN RULE ID', 'FIREWALL POLICY ID'];
+const HITS_TABLE_SORTABLE_HEADERS = ['VALUE', 'DESTINATION', 'NAME'];
 
 const getColor = (legendData: LegendData[], data: number) => legendData.find(item => data >= item.low && data <= item.high)?.color || RED_COLOUR;
 
@@ -189,13 +149,21 @@ export const ExperienceTab: React.FC<ExperienceTabProps> = ({ timeRange }) => {
   const [slaTests, setSlaTests] = useState<SLATest[]>([]);
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [tableAlertMetadata, setTableAlertMetadata] = useState<AlertMetadata[]>([]);
+  const [allExperienceAnomalies, setAllExperienceAnomalies] = useState<ExperienceAnomalies[]>([]);
+  const [barChartData, setBarChartData] = useState<BarChartData[]>([]);
+  const [isBarChartLoading, setIsBarChartLoading] = useState<boolean>(true);
 
   const { response: experienceTabAlertResponse, loading: alertLoading, error: alertError, onGet: getExperienceTableAlertMetadata } = useGet<GetAlertMetadataResponse>();
   const { response: organizationResponse, onGet: getOrganizations } = useGet<GetOrganizationResponse>();
 
   const getSLATests = async () => {
     const response = await apiClient.getSLATests();
-    setSlaTests(response?.slaTests || []);
+    if (isEmpty(response)) {
+      setSlaTests([]);
+      setIsBarChartLoading(false);
+    } else {
+      setSlaTests(response.slaTests);
+    }
   };
 
   const getFilteredSlaTestswithCount = (uniqueDestinations: string[], selectedAnomalyResponse: GetExperienceAnomaliesResponse) => {
@@ -268,12 +236,38 @@ export const ExperienceTab: React.FC<ExperienceTabProps> = ({ timeRange }) => {
   useEffect(() => {
     if (!isEmpty(alertMetadata) && !isEmpty(slaTests)) {
       const promises = alertMetadata.map(item => apiClient.getExperienceAnomalies(item.name, timeRange));
-      Promise.all(promises).then(async experienceAnomalyResponses => {
-        const newAlertMetaData: AlertMetadata[] = await getTableAlertMetadata(experienceAnomalyResponses);
-        setTableAlertMetadata(newAlertMetaData);
-      });
+      Promise.all(promises)
+        .then(async experienceAnomalyResponses => {
+          const allAnomalies = experienceAnomalyResponses.reduce((acc, nextValue) => acc.concat(nextValue.anomalies), []);
+          setAllExperienceAnomalies(allAnomalies);
+
+          const newAlertMetaData: AlertMetadata[] = await getTableAlertMetadata(experienceAnomalyResponses);
+          setTableAlertMetadata(newAlertMetaData);
+        })
+        .catch(() => setIsBarChartLoading(false));
     }
   }, [alertMetadata, timeRange, slaTests]);
+
+  useEffect(() => {
+    if (isEmpty(allExperienceAnomalies)) {
+      setBarChartData([]);
+    } else {
+      const luxonDateAnomalyData = allExperienceAnomalies.map(anomaly => DateTime.fromFormat(anomaly.time, OLD_TIME_FORMAT).toFormat('MMM dd'));
+      const dateCount = countBy(luxonDateAnomalyData);
+      const barChartData: BarChartData[] = Object.keys(dateCount).map(item => ({
+        date: item,
+        value: dateCount[item],
+      }));
+      setBarChartData(barChartData);
+      setIsBarChartLoading(false);
+    }
+  }, [allExperienceAnomalies, timeRange]);
+
+  useEffect(() => {
+    if (alertError) {
+      setIsBarChartLoading(false);
+    }
+  }, [alertError]);
 
   const tableData: AnomalyExperienceTableData[] = tableAlertMetadata.map(item => ({
     name: item.name,
@@ -290,22 +284,37 @@ export const ExperienceTab: React.FC<ExperienceTabProps> = ({ timeRange }) => {
   const experienceSubComponent = React.useCallback(
     (row: Row<object>) => {
       const selectedAnomalyMetadata = tableAlertMetadata.find(item => item.name === row.values.name);
+
       const slaTestTableData: AnomalySlaTestData[] = getSlaTestTableData(selectedAnomalyMetadata);
 
-      const sessionLogsTableData: AnomalySessionLogsData[] = DUMMY_SESSION_LOGS_DATA.map(item => {
-        const { hits, ...otherItems } = item;
+      const selectedTriggerAnomalies: ExperienceAnomalies[] = allExperienceAnomalies.filter(anomaly => anomaly.type === row.values.name);
+
+      const hitsTableData: HitsTableData[] = selectedTriggerAnomalies.map(anomaly => {
+        const slaTest: AnomalySlaTestData = slaTestTableData.find(test => test.destination === anomaly.destination && test.sourceDevice === anomaly.device);
+
         return {
-          hits: <div className={classes.hitsCount}>{hits}</div>,
-          ...otherItems,
+          name: slaTest.name,
+          time: DateTime.fromFormat(anomaly.time, OLD_TIME_FORMAT).toFormat('EEE,MMM dd yyyy,hh:mm a'),
+          sourceOrg: slaTest.sourceOrg,
+          sourceNetwork: slaTest.sourceNetwork,
+          sourceDevice: slaTest.sourceDevice,
+          destination: anomaly.destination,
+          value: `${anomaly.value}${AnomalySuffix[row.values.name]}`,
         };
       });
 
-      return (
+      return isEmpty(slaTests) ? (
+        <div className={classes.barChartPlaceholder}>
+          <ErrorMessage fontSize={28} margin="auto">
+            Something went wrong. Please refresh page
+          </ErrorMessage>
+        </div>
+      ) : (
         <div>
           <div className={classes.anomalySubcomponentTitle}>SLA Tests</div>
           <AnomalySLATestTable columns={SLA_TEST_COLUMNS} data={slaTestTableData} sortableHeaders={SLA_TEST_TABLE_SORTABLE_HEADERS} />
-          <div className={`${classes.sessionLogs} ${classes.anomalySubcomponentTitle}`}>Session Logs</div>
-          <AnomalyBlockTable columns={SESSION_LOGS_COLUMNS} data={sessionLogsTableData} sortableHeaders={SESSION_LOGS_TABLE_SORTABLE_HEADERS} />
+          <div className={`${classes.sessionLogs} ${classes.anomalySubcomponentTitle}`}>Hits</div>
+          <AnomalySLATestTable columns={HITS_TABLE_COLUMNS} data={hitsTableData} sortableHeaders={HITS_TABLE_SORTABLE_HEADERS} />
         </div>
       );
     },
@@ -314,19 +323,27 @@ export const ExperienceTab: React.FC<ExperienceTabProps> = ({ timeRange }) => {
 
   return (
     <div className={classes.anomalyTabPanelContainer}>
-      <AnomalyBarChart
-        inputData={DUMMY_BAR_CHART_DATA}
-        xAxisText={`${DUMMY_BAR_CHART_DATA[0].date} to ${DUMMY_BAR_CHART_DATA[DUMMY_BAR_CHART_DATA.length - 1].date} (1 day interval)`}
-        yAxisText="hits"
-      />
+      {isBarChartLoading ? (
+        <div className={classes.barChartPlaceholder}>
+          <LoadingIndicator />
+        </div>
+      ) : isEmpty(barChartData) ? (
+        <div className={classes.barChartPlaceholder}>
+          <ErrorMessage fontSize={28} margin="auto">
+            Something went wrong. Please refresh page
+          </ErrorMessage>
+        </div>
+      ) : (
+        <AnomalyBarChart inputData={barChartData} xAxisText={`${barChartData[0].date} to ${barChartData[barChartData.length - 1].date} (1 day interval)`} yAxisText="hits" />
+      )}
       <div className={classes.anomalyTableContainer}>
         <div className={classes.anomalyExperienceTableTitle}>
           <span className={classes.anomalyTableTitle}>Triggers</span>
           <span className={classes.anomalyCount}>{alertMetadata.length}</span>
         </div>
-        {alertLoading && isEmpty(tableData) ? (
+        {alertLoading || isBarChartLoading ? (
           <LoadingIndicator />
-        ) : alertError ? (
+        ) : alertError || isEmpty(slaTests) ? (
           <ErrorMessage fontSize={28} margin="auto">
             Something went wrong. Please refresh page
           </ErrorMessage>
