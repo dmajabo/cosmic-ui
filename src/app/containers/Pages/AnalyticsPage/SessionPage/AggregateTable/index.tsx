@@ -31,6 +31,9 @@ const AggregateTable: React.FC<Props> = (props: Props) => {
     { ...SessionGridColumns.destIp, hide: false },
     { ...SessionGridColumns.destPort, hide: false },
     { ...SessionGridColumns.vendorsColumn, hide: false },
+    { ...SessionGridColumns.bytes, hide: false },
+    { ...SessionGridColumns.packets, hide: false },
+    { ...SessionGridColumns.action, hide: false },
   ]);
   React.useEffect(() => {
     const _data: IAggregateRow[] = buildAggregatedData(props.sessions, props.buckets);
