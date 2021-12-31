@@ -120,6 +120,7 @@ export const CostTab: React.FC<CostTabProps> = () => {
         inputData={DUMMY_BAR_CHART_DATA}
         xAxisText={`${DUMMY_BAR_CHART_DATA[0].date} to ${DUMMY_BAR_CHART_DATA[DUMMY_BAR_CHART_DATA.length - 1].date} (1 day interval)`}
         yAxisText="hits"
+        handleSelectedBarChartPointsChange={(array: string[]) => {}}
       />
       <div className={classes.anomalyTableContainer}>
         <div className={classes.anomalyExperienceTableTitle}>

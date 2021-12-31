@@ -18,8 +18,6 @@ import {
 import { AnomalyTable } from './AnomalyTable';
 import { SeverityIcon } from './SeverityIcon';
 import { AnomalySLATestTable } from './AnomalySLATestTable';
-import { LATENCY_HEATMAP_LEGEND } from '../Performance Dashboard/Latency';
-import { PACKET_LOSS_HEATMAP_LEGEND } from '../Performance Dashboard/PacketLoss';
 import { LegendData } from '../Performance Dashboard/Heatmap';
 import { Row } from 'react-table';
 import { getSeverityColour, SeverityLevel } from 'lib/api/http/utils';
@@ -30,7 +28,6 @@ import LoadingIndicator from 'app/components/Loading';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import { AnomalyTimeRangeValue } from './Anomalies';
 import { createApiClient } from 'lib/api/http/apiClient';
-import uniqBy from 'lodash/uniqBy';
 import { countBy, isEmpty } from 'lodash';
 import { TopoApi } from 'lib/api/ApiModels/Services/topo';
 import { GetDevicesString, GetSelectedOrganization } from '../Performance Dashboard/filterFunctions';
@@ -67,37 +64,6 @@ enum AnomalySuffix {
   ANOMALY_GOODPUT = 'mbps',
 }
 
-const SLA_TEST_COLUMNS: Column[] = [
-  {
-    Header: 'HITS',
-    accessor: ColumnAccessor.hits,
-  },
-  {
-    Header: 'NAME',
-    accessor: ColumnAccessor.name,
-  },
-  {
-    Header: 'SOURCE ORGANIZATION',
-    accessor: ColumnAccessor.sourceOrg,
-  },
-  {
-    Header: 'SOURCE NETWORK',
-    accessor: ColumnAccessor.sourceNetwork,
-  },
-  {
-    Header: 'SOURCE DEVICE',
-    accessor: ColumnAccessor.sourceDevice,
-  },
-  {
-    Header: 'DESTINATION',
-    accessor: ColumnAccessor.destination,
-  },
-  {
-    Header: 'AVERAGE QOE',
-    accessor: ColumnAccessor.averageQoe,
-  },
-];
-
 const HITS_TABLE_COLUMNS: Column[] = [
   {
     Header: 'NAME',
@@ -133,8 +99,6 @@ const RED_COLOUR = '#DC4545';
 
 const OLD_TIME_FORMAT: string = 'yyyy-MM-dd HH:mm:ss ZZZ z';
 
-const SLA_TEST_TABLE_SORTABLE_HEADERS = ['NAME'];
-
 const HITS_TABLE_SORTABLE_HEADERS = ['VALUE', 'DESTINATION', 'NAME'];
 
 const getColor = (legendData: LegendData[], data: number) => legendData.find(item => data >= item.low && data <= item.high)?.color || RED_COLOUR;
@@ -152,6 +116,7 @@ export const ExperienceTab: React.FC<ExperienceTabProps> = ({ timeRange }) => {
   const [allExperienceAnomalies, setAllExperienceAnomalies] = useState<ExperienceAnomalies[]>([]);
   const [barChartData, setBarChartData] = useState<BarChartData[]>([]);
   const [isBarChartLoading, setIsBarChartLoading] = useState<boolean>(true);
+  const [selectedBarChartPoints, setSelectedBarChartPoints] = useState<string[]>([]);
 
   const { response: experienceTabAlertResponse, loading: alertLoading, error: alertError, onGet: getExperienceTableAlertMetadata } = useGet<GetAlertMetadataResponse>();
   const { response: organizationResponse, onGet: getOrganizations } = useGet<GetOrganizationResponse>();
@@ -160,58 +125,30 @@ export const ExperienceTab: React.FC<ExperienceTabProps> = ({ timeRange }) => {
     const response = await apiClient.getSLATests();
     if (isEmpty(response)) {
       setSlaTests([]);
-      setIsBarChartLoading(false);
     } else {
       setSlaTests(response.slaTests);
     }
   };
 
-  const getFilteredSlaTestswithCount = (uniqueDestinations: string[], selectedAnomalyResponse: GetExperienceAnomaliesResponse) => {
-    const filteredSlaTests = slaTests.filter(test => uniqueDestinations.includes(test.destination));
-    const filteredSlaTestswithCount = filteredSlaTests.map(test => {
-      const testAnomalyCount = selectedAnomalyResponse.anomalies.filter(anomaly => anomaly.destination === test.destination);
-      return {
-        ...test,
-        hits: testAnomalyCount.length,
-      };
-    });
-    return filteredSlaTestswithCount;
-  };
-
   const getTableAlertMetadata = (experienceAnomalyResponses: GetExperienceAnomaliesResponse[]): AlertMetadata[] =>
     alertMetadata.map(item => {
       const selectedAnomalyResponse = experienceAnomalyResponses.find(anomaly => anomaly.name === item.name);
-      const uniqueDestinations = uniqBy(selectedAnomalyResponse.anomalies, 'destination').map(anomaly => anomaly.destination);
-      const filteredSlaTestswithCount = getFilteredSlaTestswithCount(uniqueDestinations, selectedAnomalyResponse);
 
       const { triggerCount, ...otherItems } = item;
 
       return {
         ...otherItems,
-        slaTests: filteredSlaTestswithCount,
+        anomalies: selectedAnomalyResponse.anomalies,
         triggerCount: Number(selectedAnomalyResponse.count),
       };
     });
 
-  const getSlaTestTableData = (selectedAnomalyMetadata: AlertMetadata) =>
-    selectedAnomalyMetadata.slaTests.map(item => {
-      const merakiOrganisations = organizations.filter(organization => organization.vendorType === VendorTypes.MERAKI);
+  const getSlaTestTableData = (): AnomalySlaTestData[] => {
+    const merakiOrganisations = organizations.filter(organization => organization.vendorType === VendorTypes.MERAKI);
+    return slaTests.map(item => {
       const selectedOrganization = GetSelectedOrganization(merakiOrganisations, item.sourceOrgId);
       const allDevices: string = GetDevicesString(selectedOrganization, item.sourceNwExtId);
       return {
-        hits: <div className={classes.hitsCount}>{item.hits}</div>,
-        averageQoe: (
-          <div className={classes.averageQoeText}>
-            <span>Packet Loss:</span>
-            <span style={{ color: getColor(PACKET_LOSS_HEATMAP_LEGEND, Number(item.metrics.avgPacketLoss)) }} className={classes.qoeValueText}>{`${
-              isNaN(Number(item.metrics.avgPacketLoss)) ? '-' : Number(item.metrics.avgPacketLoss)
-            }%`}</span>
-            <span>Latency:</span>
-            <span style={{ color: getColor(LATENCY_HEATMAP_LEGEND, Number(item.metrics.avgLatency)) }} className={classes.qoeValueText}>{`${
-              isNaN(Number(item.metrics.avgLatency)) ? '-' : Number(item.metrics.avgLatency).toFixed(2)
-            }ms`}</span>
-          </div>
-        ),
         id: item.testId,
         name: item.name,
         sourceOrg: selectedOrganization.name,
@@ -219,9 +156,11 @@ export const ExperienceTab: React.FC<ExperienceTabProps> = ({ timeRange }) => {
         sourceDevice: allDevices,
         destination: item.destination,
         interface: item.interface,
-        description: item.description,
       };
     });
+  };
+
+  const handleSelectedBarChartPointsChange = (selectedPoints: string[]) => setSelectedBarChartPoints(selectedPoints);
 
   useEffect(() => {
     getExperienceTableAlertMetadata(AlertApi.getAllMetadata(), userContext.accessToken!);
@@ -234,7 +173,7 @@ export const ExperienceTab: React.FC<ExperienceTabProps> = ({ timeRange }) => {
   useEffect(() => setOrganizations(organizationResponse?.organizations || []), [organizationResponse]);
 
   useEffect(() => {
-    if (!isEmpty(alertMetadata) && !isEmpty(slaTests)) {
+    if (!isEmpty(alertMetadata)) {
       const promises = alertMetadata.map(item => apiClient.getExperienceAnomalies(item.name, timeRange));
       Promise.all(promises)
         .then(async experienceAnomalyResponses => {
@@ -246,7 +185,7 @@ export const ExperienceTab: React.FC<ExperienceTabProps> = ({ timeRange }) => {
         })
         .catch(() => setIsBarChartLoading(false));
     }
-  }, [alertMetadata, timeRange, slaTests]);
+  }, [alertMetadata, timeRange]);
 
   useEffect(() => {
     if (isEmpty(allExperienceAnomalies)) {
@@ -269,6 +208,24 @@ export const ExperienceTab: React.FC<ExperienceTabProps> = ({ timeRange }) => {
     }
   }, [alertError]);
 
+  useEffect(() => {
+    const filteredTableAlertMetadata: AlertMetadata[] = alertMetadata.map(item => {
+      const triggerSpecificAnomalies = allExperienceAnomalies.filter(anomaly => anomaly.type === item.name);
+      const filteredAnomalies = isEmpty(selectedBarChartPoints)
+        ? triggerSpecificAnomalies
+        : triggerSpecificAnomalies.filter(anomaly => selectedBarChartPoints.includes(DateTime.fromFormat(anomaly.time, OLD_TIME_FORMAT).toFormat('MMM dd')));
+
+      const { triggerCount, ...otherItems } = item;
+
+      return {
+        ...otherItems,
+        anomalies: filteredAnomalies,
+        triggerCount: filteredAnomalies.length,
+      };
+    });
+    setTableAlertMetadata(filteredTableAlertMetadata);
+  }, [selectedBarChartPoints]);
+
   const tableData: AnomalyExperienceTableData[] = tableAlertMetadata.map(item => ({
     name: item.name,
     severity: (
@@ -278,32 +235,29 @@ export const ExperienceTab: React.FC<ExperienceTabProps> = ({ timeRange }) => {
       </div>
     ),
     hits: <div className={classes.hitsCount}>{item.triggerCount}</div>,
-    slaTests: item.slaTests,
   }));
 
   const experienceSubComponent = React.useCallback(
     (row: Row<object>) => {
-      const selectedAnomalyMetadata = tableAlertMetadata.find(item => item.name === row.values.name);
+      const slaTestTableData: AnomalySlaTestData[] = getSlaTestTableData();
 
-      const slaTestTableData: AnomalySlaTestData[] = getSlaTestTableData(selectedAnomalyMetadata);
+      const selectedTriggerAnomaly = tableAlertMetadata.find(item => item.name === row.values.name);
 
-      const selectedTriggerAnomalies: ExperienceAnomalies[] = allExperienceAnomalies.filter(anomaly => anomaly.type === row.values.name);
-
-      const hitsTableData: HitsTableData[] = selectedTriggerAnomalies.map(anomaly => {
+      const hitsTableData: HitsTableData[] = selectedTriggerAnomaly.anomalies?.map(anomaly => {
         const slaTest: AnomalySlaTestData = slaTestTableData.find(test => test.destination === anomaly.destination && test.sourceDevice === anomaly.device);
 
         return {
-          name: slaTest.name,
+          name: slaTest?.name,
           time: DateTime.fromFormat(anomaly.time, OLD_TIME_FORMAT).toFormat('EEE,MMM dd yyyy,hh:mm a'),
-          sourceOrg: slaTest.sourceOrg,
-          sourceNetwork: slaTest.sourceNetwork,
-          sourceDevice: slaTest.sourceDevice,
+          sourceOrg: slaTest?.sourceOrg,
+          sourceNetwork: slaTest?.sourceNetwork,
+          sourceDevice: slaTest?.sourceDevice,
           destination: anomaly.destination,
           value: `${anomaly.value}${AnomalySuffix[row.values.name]}`,
         };
       });
 
-      return isEmpty(slaTests) ? (
+      return isEmpty(slaTestTableData) ? (
         <div className={classes.barChartPlaceholder}>
           <ErrorMessage fontSize={28} margin="auto">
             Something went wrong. Please refresh page
@@ -311,8 +265,6 @@ export const ExperienceTab: React.FC<ExperienceTabProps> = ({ timeRange }) => {
         </div>
       ) : (
         <div>
-          <div className={classes.anomalySubcomponentTitle}>SLA Tests</div>
-          <AnomalySLATestTable columns={SLA_TEST_COLUMNS} data={slaTestTableData} sortableHeaders={SLA_TEST_TABLE_SORTABLE_HEADERS} />
           <div className={`${classes.sessionLogs} ${classes.anomalySubcomponentTitle}`}>Hits</div>
           <AnomalySLATestTable columns={HITS_TABLE_COLUMNS} data={hitsTableData} sortableHeaders={HITS_TABLE_SORTABLE_HEADERS} />
         </div>
@@ -334,7 +286,12 @@ export const ExperienceTab: React.FC<ExperienceTabProps> = ({ timeRange }) => {
           </ErrorMessage>
         </div>
       ) : (
-        <AnomalyBarChart inputData={barChartData} xAxisText={`${barChartData[0].date} to ${barChartData[barChartData.length - 1].date} (1 day interval)`} yAxisText="hits" />
+        <AnomalyBarChart
+          inputData={barChartData}
+          xAxisText={`${barChartData[0].date} to ${barChartData[barChartData.length - 1].date} (1 day interval)`}
+          yAxisText="hits"
+          handleSelectedBarChartPointsChange={handleSelectedBarChartPointsChange}
+        />
       )}
       <div className={classes.anomalyTableContainer}>
         <div className={classes.anomalyExperienceTableTitle}>
@@ -343,7 +300,7 @@ export const ExperienceTab: React.FC<ExperienceTabProps> = ({ timeRange }) => {
         </div>
         {alertLoading || isBarChartLoading ? (
           <LoadingIndicator />
-        ) : alertError || isEmpty(slaTests) ? (
+        ) : alertError ? (
           <ErrorMessage fontSize={28} margin="auto">
             Something went wrong. Please refresh page
           </ErrorMessage>

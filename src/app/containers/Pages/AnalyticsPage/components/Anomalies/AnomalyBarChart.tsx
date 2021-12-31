@@ -2,14 +2,14 @@ import React, { useEffect, useState } from 'react';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import { BarChartData } from './ExperienceTab';
-
 interface AnomalyBarChartProps {
   readonly inputData: BarChartData[];
   readonly xAxisText: string;
   readonly yAxisText: string;
+  readonly handleSelectedBarChartPointsChange: (selectedPoints: string[]) => void;
 }
 
-const barChartOptions = (xAxisText: string, yAxisText: string, barChartData: number[], categories: string[]) => ({
+const barChartOptions = (xAxisText: string, yAxisText: string, barChartData: number[], categories: string[], handleSelectedBarChartPointsChange: (selectedPoints: string[]) => void) => ({
   chart: {
     type: 'column',
     backgroundColor: '#FBFCFE',
@@ -42,6 +42,23 @@ const barChartOptions = (xAxisText: string, yAxisText: string, barChartData: num
       maxPointWidth: 40,
       borderRadius: 6,
     },
+    series: {
+      allowPointSelect: true,
+      point: {
+        events: {
+          select: function (this: any) {
+            const selectedPoints = this.series.chart.getSelectedPoints();
+            const selectedDates: string[] = selectedPoints.map(item => item.category);
+            handleSelectedBarChartPointsChange(selectedDates);
+          },
+          unselect: function (this: any) {
+            const selectedPoints = this.series.chart.getSelectedPoints();
+            const selectedDates: string[] = selectedPoints.map(item => item.category);
+            handleSelectedBarChartPointsChange(selectedDates);
+          },
+        },
+      },
+    },
   },
   colors: ['#2C82C9'],
   legend: {
@@ -55,7 +72,7 @@ const barChartOptions = (xAxisText: string, yAxisText: string, barChartData: num
   },
 });
 
-export const AnomalyBarChart: React.FC<AnomalyBarChartProps> = ({ inputData, xAxisText, yAxisText }) => {
+export const AnomalyBarChart: React.FC<AnomalyBarChartProps> = ({ inputData, xAxisText, yAxisText, handleSelectedBarChartPointsChange }) => {
   const [categories, setCategories] = useState<string[]>([]);
   const [barChartData, setBarChartData] = useState<number[]>([]);
 
@@ -66,5 +83,5 @@ export const AnomalyBarChart: React.FC<AnomalyBarChartProps> = ({ inputData, xAx
     setCategories(chartCategories);
   }, [inputData]);
 
-  return <HighchartsReact highcharts={Highcharts} options={barChartOptions(xAxisText, yAxisText, barChartData, categories)} />;
+  return <HighchartsReact highcharts={Highcharts} options={barChartOptions(xAxisText, yAxisText, barChartData, categories, handleSelectedBarChartPointsChange)} />;
 };
