@@ -4,7 +4,7 @@ import { ExpresionArea, ExpresionPopup, ExpresionPopupItem, ExpresionWrapper, Hi
 import { ISelectedListItem } from 'lib/models/general';
 import { buildExpresion, getValues, onValidationExpr } from './helpers';
 import { TopologyGroupTypesAsNumber, TopologyGroupTypesAsString } from 'lib/models/topology';
-import { ClickAwayListener } from '@material-ui/core';
+import { ClickAwayListener } from '@mui/material';
 import { DEBOUNCE_TIME } from 'lib/constants/general';
 import useDebounce from 'lib/hooks/useDebounce';
 import getCaretCoordinates from 'textarea-caret';

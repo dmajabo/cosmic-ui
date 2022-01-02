@@ -2,7 +2,7 @@ import React from 'react';
 import { PanelBarContent, PanelHeader, PanelTabWrapper, PanelTitle } from '../../styles';
 import OverflowContainer from 'app/components/Basic/OverflowContainer/styles';
 import { IVPC_PanelDataNode, IVm, IApplication_Group, IVnetNode } from 'lib/models/topology';
-import { Tab, Tabs } from '@material-ui/core';
+import { Tab, Tabs } from '@mui/material';
 import { TabsStyles } from 'app/components/Tabs/TabsStyles';
 import { TabComponentProps } from 'app/components/Tabs/TabComponentProps';
 import TabPanel from 'app/components/Tabs/TabPanel';

@@ -19,7 +19,7 @@ import { DimensionOptions, Dimensions } from './Dimensions';
 import { DataSource, DataSourceOptions } from './DataSource';
 import { MetricsChart } from './MetricsChart';
 import { ColumnAccessor, MetricsExplorerTableData } from 'lib/api/http/SharedTypes';
-import { Tab, Tabs } from '@material-ui/core';
+import { Tab, Tabs } from '@mui/material';
 import { LookbackLabel, LookbackSelectOption, LookbackTimeTab, LookbackValue } from './LookbackTimeTab';
 import { CustomTimeRangeLabel, CustomTimeRangeSelectOption, CustomTimeTab } from './CustomTimeTab';
 import { DataUnitDropdown, DataUnitLabel, DataUnitValue, DataUnitSelectOption } from './DataUnitDropdown';

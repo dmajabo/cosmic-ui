@@ -1,6 +1,6 @@
 import React from 'react';
-import Slider, { Mark } from '@material-ui/core/Slider';
-import { withStyles } from '@material-ui/core/styles';
+import { Slider, Mark } from '@mui/material';
+import { withStyles } from '@mui/styles';
 import ValueLabelComponent from './ValueLabelComponent';
 import { SliderWrapper } from './styles';
 import { InputLabel } from 'app/components/Inputs/styles/Label';
@@ -110,13 +110,13 @@ const CustomSlider: React.FC<Props> = ({ label, min, max, step, value, values, d
       setSelected(value);
     }
   }, [value]);
-  const onChangeSelected = (event: React.ChangeEvent<{}>, _value: number) => {
-    setSelected(_value);
+  const onChangeSelected = (event: Event, value: number, activeThumb: number) => {
+    setSelected(value);
   };
 
-  const onChangeCommited = (event: React.ChangeEvent<{}>, _value: number) => {
-    if (!event || _value === undefined || _value === null) return;
-    onChange(_value);
+  const onChangeCommited = (event: React.SyntheticEvent | Event, value: number) => {
+    if (!event || value === undefined || value === null) return;
+    onChange(value);
   };
 
   if (!values || !values.length) return null;
@@ -135,7 +135,9 @@ const CustomSlider: React.FC<Props> = ({ label, min, max, step, value, values, d
         step={step}
         max={max}
         valueLabelDisplay="auto"
-        ValueLabelComponent={ValueLabelComponent}
+        components={{
+          ValueLabel: ValueLabelComponent,
+        }}
         marks={displayedValues}
         onChange={onChangeSelected}
         onChangeCommitted={onChangeCommited}

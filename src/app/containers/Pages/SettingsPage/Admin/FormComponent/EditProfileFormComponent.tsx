@@ -7,7 +7,7 @@ import IconWrapper from 'app/components/Buttons/IconWrapper';
 import SecondaryButton from 'app/components/Buttons/SecondaryButton';
 import PrimaryButton from 'app/components/Buttons/PrimaryButton';
 import { AdminFormProfileDataFields, DEFAULT_ACCESS_PERMISION } from '../model';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import { TableStyles } from 'app/components/Basic/Table/TableStyles';
 import RadioButton from 'app/components/Inputs/RadioButton';
 import { ACCESS_SECTIONS_PERMISION_VALUE, IProfile } from 'lib/api/ApiModels/Settings/apiModels';

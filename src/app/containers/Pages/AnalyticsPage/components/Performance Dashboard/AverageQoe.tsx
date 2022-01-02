@@ -1,5 +1,5 @@
-import { IconButton, Menu, MenuItem, Typography } from '@material-ui/core';
-import { MoreVert } from '@material-ui/icons';
+import { IconButton, Menu, MenuItem, Typography } from '@mui/material';
+import { MoreVert } from '@mui/icons-material';
 import React, { useState } from 'react';
 import { PerformanceDashboardStyles } from './PerformanceDashboardStyles';
 import { LegendData } from './Heatmap';

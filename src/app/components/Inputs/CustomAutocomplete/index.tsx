@@ -1,8 +1,7 @@
 import React from 'react';
-import { Autocomplete } from '@mui/material';
+import { Autocomplete, TextField } from '@mui/material';
 import { DropdownItemLabel, DropdownItemWrapper, OptionStyles } from 'app/components/Inputs/Dropdown/styles';
 import SimpleCheckbox from 'app/components/Inputs/Checkbox/SimpleCheckbox';
-import TextField from '@mui/material/TextField';
 import useDebounce from 'lib/hooks/useDebounce';
 import TagItem from './TagItem';
 import { AutoCompleteStyles } from './AutoCompleteStyles';

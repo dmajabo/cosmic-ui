@@ -1,7 +1,7 @@
 import React from 'react';
 import { Required } from '../FormTextInput/styles';
 import { InputLabel } from '../styles/Label';
-import MenuItem from '@material-ui/core/MenuItem';
+import { MenuItem } from '@mui/material';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { arrowBottomIcon } from 'app/components/SVGIcons/arrows';
 import IconWrapper from 'app/components/Buttons/IconWrapper';

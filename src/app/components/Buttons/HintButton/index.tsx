@@ -1,10 +1,9 @@
 import React from 'react';
 import IconWrapper from '../IconWrapper';
-import Tooltip from '@material-ui/core/Tooltip';
-import { withStyles } from '@material-ui/core/styles';
+import { Tooltip, ClickAwayListener, Fade } from '@mui/material';
+import { withStyles } from '@mui/styles';
 import { TooltipPlacement } from 'lib/models/general';
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
-import Fade from '@material-ui/core/Fade';
+
 export interface IProps {
   icon: JSX.Element;
   title?: JSX.Element | string;
@@ -70,7 +69,6 @@ const HintButton: React.FC<IProps> = (props: IProps) => {
         TransitionComponent={Fade}
         enterDelay={500}
         leaveDelay={200}
-        interactive
         PopperProps={{
           disablePortal: true,
         }}

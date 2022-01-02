@@ -1,9 +1,9 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles } from '@mui/styles';
 import { ITimeConfig, ITimeValue } from './models';
 import { ITimeTypes } from 'lib/models/general';
 import { getDomain, getMinMaxSliderRange, getSliderValuesConfig, getTicks, ITimeMinMaxRange } from './helpers';
-import Slider from '@material-ui/core/Slider';
+import { Slider } from '@mui/material';
 import ValueLabelComponent from './ValueLabelComponent';
 import { differenceInCalendarDays, differenceInMinutes, format, isThisHour, isToday } from 'date-fns';
 
@@ -127,12 +127,12 @@ const TimeSlider: React.FC<Props> = (props: Props) => {
     }
   };
 
-  const handleChange = (event: React.ChangeEvent<{}>, value: number) => {
+  const handleChange = (event: Event, value: number, activeThumb: number) => {
     if (!event || !props.currentPeriod) return;
     setSelected(value);
   };
 
-  const onChangeCommited = (event: React.ChangeEvent<{}>, value: number) => {
+  const onChangeCommited = (event: React.SyntheticEvent | Event, value: number) => {
     if (!event || !value || differenceInMinutes(value, props.selectedCalendarDay) === 0) return;
     let _d = new Date(value);
     if (isToday(value) && isThisHour(value)) {
@@ -153,7 +153,9 @@ const TimeSlider: React.FC<Props> = (props: Props) => {
       step={config.step}
       max={config.max}
       valueLabelDisplay="auto"
-      ValueLabelComponent={ValueLabelComponent}
+      components={{
+        ValueLabel: ValueLabelComponent,
+      }}
       marks={values}
       onChange={handleChange}
       onChangeCommitted={onChangeCommited}

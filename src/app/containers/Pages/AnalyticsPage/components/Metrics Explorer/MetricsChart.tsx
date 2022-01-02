@@ -1,7 +1,7 @@
 import React from 'react';
 import { AnalyticsStyles } from '../../AnalyticsStyles';
 import { DimensionOptions } from './Dimensions';
-import { Button, Typography } from '@material-ui/core';
+import { Button, Typography } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import { getDimensionCount } from './MetricsExplorer';
 import { MetricsTable } from './MetricsTable';

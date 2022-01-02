@@ -1,6 +1,6 @@
 import React from 'react';
 import { ElasticFilterWrapper, ElasticLabel, ElasticValueWrapper, IconsWrapper, PopupWrapper, SearchFieldInput } from './styles';
-import { ClickAwayListener } from '@material-ui/core';
+import { ClickAwayListener } from '@mui/material';
 import { ISelectionGridCellValue } from 'lib/models/general';
 import Popup from './Popup';
 import Tags from './Tags';

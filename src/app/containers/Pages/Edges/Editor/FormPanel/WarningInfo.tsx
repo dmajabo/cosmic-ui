@@ -1,8 +1,7 @@
 import React from 'react';
-import Tooltip from '@material-ui/core/Tooltip';
-import { withStyles } from '@material-ui/core/styles';
+import { Tooltip, Fade } from '@mui/material';
+import { withStyles } from '@mui/styles';
 import { TooltipPlacement } from 'lib/models/general';
-import Fade from '@material-ui/core/Fade';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { InfoError, InfoErrorWrapper } from './styles';
 import { warningInfo } from 'app/components/SVGIcons/warningInfo';
@@ -47,7 +46,6 @@ const WarningInfo: React.FC<Props> = (props: Props) => {
       TransitionComponent={Fade}
       enterDelay={500}
       leaveDelay={200}
-      interactive
       PopperProps={{
         disablePortal: true,
       }}

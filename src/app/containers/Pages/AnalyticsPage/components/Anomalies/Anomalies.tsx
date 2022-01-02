@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { AnalyticsStyles } from '../../AnalyticsStyles';
-import { Tabs, Tab, Typography, Button } from '@material-ui/core';
+import { Tabs, Tab, Typography, Button } from '@mui/material';
 import FilterIcon from '../../icons/performance dashboard/filter.svg';
 import { LookbackLabel, LookbackSelectOption, LookbackValue } from '../Metrics Explorer/LookbackTimeTab';
 import Select from 'react-select';

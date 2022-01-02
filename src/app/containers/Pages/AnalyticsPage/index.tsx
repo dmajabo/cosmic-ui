@@ -1,4 +1,4 @@
-import { Tab, Tabs } from '@material-ui/core';
+import { Tab, Tabs } from '@mui/material';
 import { SessionsProvider, useSessionsActions } from 'lib/hooks/Sessions/useSessionsDataContext';
 import React, { useState } from 'react';
 import { AnalyticsStyles } from './AnalyticsStyles';
