@@ -92,17 +92,16 @@ const CustomSlider: React.FC<Props> = ({ label, min, max, step, value, values, d
   const [displayedValues, setDisplayedValues] = React.useState<Mark[]>([]);
 
   React.useEffect(() => {
-    setDisplayedValues([
-      ...values.map((it, index) => {
-        if (index === 0) {
-          return { ...it, label: <span className="slider-mark text-left">{it.label}</span> };
-        }
-        if (index === values.length - 1) {
-          return { ...it, label: <span className="slider-mark text-right">{it.label}</span> };
-        }
-        return { ...it, label: <span className="slider-mark">{it.label}</span> };
-      }),
-    ]);
+    const _marks = values.map((it, index) => {
+      if (index === 0) {
+        return { ...it, label: <span className="slider-mark text-left">{it.label}</span> };
+      }
+      if (index === values.length - 1) {
+        return { ...it, label: <span className="slider-mark text-right">{it.label}</span> };
+      }
+      return { ...it, label: <span className="slider-mark">{it.label}</span> };
+    });
+    setDisplayedValues(_marks);
   }, [values]);
 
   React.useEffect(() => {

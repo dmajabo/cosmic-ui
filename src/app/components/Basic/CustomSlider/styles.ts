@@ -6,6 +6,13 @@ export const SliderWrapper = styled.div`
   .slider-mark {
     text-align: center;
     margin-left: -50%;
+    color: var(--_disabledTextColor);
+    font-size: 11px;
+    font-style: normal;
+    font-family: 'DMSans';
+    font-weight: normal;
+    line-height: normal;
+    letter-spacing: normal;
   }
   .text-left {
     text-align: left;
