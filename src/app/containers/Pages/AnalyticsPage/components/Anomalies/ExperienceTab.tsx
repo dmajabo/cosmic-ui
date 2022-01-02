@@ -1,7 +1,7 @@
 import React from 'react';
 import { AnalyticsStyles } from '../../AnalyticsStyles';
 import { AnomalyBarChart } from './AnomalyBarChart';
-import { AnomalyExperienceTableData, AnomalySessionLogsData, AnomalySlaTestData, Column, ColumnAccessor, FinalTableData } from 'lib/api/http/SharedTypes';
+import { AnomalyExperienceTableData, AnomalySessionLogsData, AnomalySlaTestData, Column, ColumnAccessor } from 'lib/api/http/SharedTypes';
 import { AnomalyTable } from './AnomalyTable';
 import { SeverityIcon } from './SeverityIcon';
 import { AnomalySLATestTable } from './AnomalySLATestTable';

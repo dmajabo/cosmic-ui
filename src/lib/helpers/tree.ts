@@ -1,4 +1,3 @@
-import { hierarchy, tree, pack, packEnclose } from 'd3-hierarchy';
 import {
   IDeviceNode,
   ILink,
@@ -223,10 +222,10 @@ const createpackLayout = (group: INetworkGroupNode) => {
   const _cX = NODES_CONSTANTS.NETWORK_GROUP.r;
   const _cY = NODES_CONSTANTS.NETWORK_GROUP.r;
   const r = Math.sqrt(Math.pow(NODES_CONSTANTS.Devisec.width, 2) + Math.pow(NODES_CONSTANTS.Devisec.height, 2)) / 2;
-  const _pack = pack().radius(d => r);
-  const _root = hierarchy(group, d => d.devices);
+  const _pack = d3.pack().radius(d => r);
+  const _root = d3.hierarchy(group, d => d.devices);
   _pack(_root);
-  const size = packEnclose(_root.children);
+  const size = d3.packEnclose(_root.children);
   const _r = getPackRadius(size.r);
   const scale = Math.max(0.1, Math.min(1, _r / size.r));
   if (_root.children && _root.children.length > 0) {
@@ -248,8 +247,9 @@ const getPackRadius = (r: number): number => {
 
 export const setUpWedgesCoord = (items: IWedgeNode[]) => {
   if (!items || !items.length) return;
-  const _root = hierarchy({ id: null, children: items });
-  const _tree = tree()
+  const _root = d3.hierarchy({ id: null, children: items });
+  const _tree = d3
+    .tree()
     .nodeSize([NODES_CONSTANTS.WEDGE.r, NODES_CONSTANTS.WEDGE.r + NODES_CONSTANTS.WEDGE.textHeight])
     .size([STANDART_DISPLAY_RESOLUTION.height - 100, STANDART_DISPLAY_RESOLUTION.width / 2]);
   _tree(_root);

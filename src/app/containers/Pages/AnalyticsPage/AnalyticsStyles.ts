@@ -1,5 +1,4 @@
 import { Theme, createStyles, makeStyles } from '@material-ui/core';
-import { borderRadius } from 'react-select/src/theme';
 import { APP_HEADER_HEIGHT } from 'lib/constants/general';
 import DragIcon from './icons/metrics explorer/drag.svg';
 

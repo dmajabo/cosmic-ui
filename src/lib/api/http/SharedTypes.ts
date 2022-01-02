@@ -251,10 +251,10 @@ export interface Column {
   readonly Cell?: ({ row }: { row: any }) => JSX.Element;
 }
 
-interface HeatMapMetric {
-  readonly deviceName: string;
-  readonly value: string;
-}
+// interface HeatMapMetric {
+//   readonly deviceName: string;
+//   readonly value: string;
+// }
 
 export interface HeatMapData {
   readonly testId: string;

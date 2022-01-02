@@ -185,7 +185,9 @@ const AppsGridWrapper: React.FC<Props> = (props: Props) => {
                 <LoadingIndicator margin="auto" />
               </AbsLoaderWrapper>
             ),
-            Checkbox: React.forwardRef(({ checked, onChange, indeterminate }, ref) => <SimpleCheckbox ref={ref} isChecked={checked} toggleCheckboxChange={onChange} indeterminate={indeterminate} />),
+            BaseCheckbox: React.forwardRef(({ checked, onChange, indeterminate }, ref) => (
+              <SimpleCheckbox ref={ref} isChecked={checked} toggleCheckboxChange={onChange} indeterminate={indeterminate} />
+            )),
           }}
         />
       </GridWrapper>
