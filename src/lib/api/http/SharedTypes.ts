@@ -434,6 +434,9 @@ export interface AlertMetadata {
   readonly channelIds: string[];
   readonly triggerCount: number;
   readonly anomalies?: ExperienceAnomalies[];
+  readonly goodputThreshold?: number;
+  readonly latencyThreshold?: number;
+  readonly packetlossThreshold?: number;
 }
 
 export interface GetAlertMetadataResponse {
@@ -457,6 +460,9 @@ export interface GetExperienceAnomaliesResponse {
   readonly count: number;
   readonly anomalies: ExperienceAnomalies[];
   readonly name: string;
+  readonly goodputThreshold: number;
+  readonly latencyThreshold: number;
+  readonly packetlossThreshold: number;
 }
 
 export interface HitsTableData {
@@ -466,5 +472,5 @@ export interface HitsTableData {
   readonly sourceNetwork: string;
   readonly sourceDevice: string;
   readonly destination: string;
-  readonly value: string;
+  readonly value: JSX.Element;
 }

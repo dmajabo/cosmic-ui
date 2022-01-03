@@ -627,6 +627,7 @@ export const AnalyticsStyles = makeStyles(
         display: 'flex',
         alignItems: 'center',
       },
+      redText: { color: 'red', paddingRight: 5 },
     }),
   {
     index: 1,

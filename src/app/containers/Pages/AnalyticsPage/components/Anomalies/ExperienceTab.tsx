@@ -63,6 +63,12 @@ enum AnomalySuffix {
   ANOMALY_GOODPUT = 'mbps',
 }
 
+enum AnomalyType {
+  packetLoss = 'ANOMALY_PACKETLOSS',
+  latency = 'ANOMALY_LATENCY',
+  goodput = 'ANOMALY_GOODPUT',
+}
+
 const HITS_TABLE_COLUMNS: Column[] = [
   {
     Header: 'NAME',
@@ -139,6 +145,9 @@ export const ExperienceTab: React.FC<ExperienceTabProps> = ({ timeRange }) => {
         ...otherItems,
         anomalies: selectedAnomalyResponse.anomalies,
         triggerCount: Number(selectedAnomalyResponse.count),
+        packetlossThreshold: selectedAnomalyResponse.packetlossThreshold,
+        latencyThreshold: selectedAnomalyResponse.latencyThreshold,
+        goodputThreshold: selectedAnomalyResponse.goodputThreshold,
       };
     });
 
@@ -252,7 +261,18 @@ export const ExperienceTab: React.FC<ExperienceTabProps> = ({ timeRange }) => {
           sourceNetwork: slaTest?.sourceNetwork,
           sourceDevice: slaTest?.sourceDevice,
           destination: anomaly.destination,
-          value: `${anomaly.value}${AnomalySuffix[row.values.name]}`,
+          value: (
+            <div>
+              <span className={classes.redText}>{`Anomalous Value: ${anomaly.value}${AnomalySuffix[row.values.name]}`}</span>
+              <span>{`Threshold Value: ${
+                row.values.name === AnomalyType.packetLoss
+                  ? selectedTriggerAnomaly.packetlossThreshold
+                  : row.values.name === AnomalyType.latency
+                  ? selectedTriggerAnomaly.latencyThreshold
+                  : selectedTriggerAnomaly.goodputThreshold
+              }${AnomalySuffix[row.values.name]}`}</span>
+            </div>
+          ),
         };
       });
 
