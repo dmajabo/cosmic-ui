@@ -6,7 +6,7 @@ import { CreateSLATestRequest, Organization, SLATest, UpdateSLATestRequest } fro
 import CloseIcon from '../../icons/performance dashboard/close.svg';
 import { GetSelectedOrganization } from './filterFunctions';
 import CreatableSelect from 'react-select/creatable';
-import { isEmpty } from 'lodash';
+import isEmpty from 'lodash/isEmpty';
 
 interface CreateSLATestProps {
   readonly addSlaTest?: Function;

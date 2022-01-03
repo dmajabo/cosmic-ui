@@ -364,15 +364,12 @@ export interface AnomalyExperienceTableData {
 }
 
 export interface AnomalySlaTestData {
-  readonly hits: number | JSX.Element;
   readonly id: string;
   readonly name: string;
   readonly sourceOrg: string;
   readonly sourceNetwork: string;
   readonly sourceDevice: string;
   readonly destination: string;
-  readonly description: string;
-  readonly averageQoe: JSX.Element;
 }
 
 export interface AnomalySessionLogsData {
@@ -436,7 +433,10 @@ export interface AlertMetadata {
   readonly metaDescString: string;
   readonly channelIds: string[];
   readonly triggerCount: number;
-  readonly slaTests?: SLATest[];
+  readonly anomalies?: ExperienceAnomalies[];
+  readonly goodputThreshold?: number;
+  readonly latencyThreshold?: number;
+  readonly packetlossThreshold?: number;
 }
 
 export interface GetAlertMetadataResponse {
@@ -460,6 +460,9 @@ export interface GetExperienceAnomaliesResponse {
   readonly count: number;
   readonly anomalies: ExperienceAnomalies[];
   readonly name: string;
+  readonly goodputThreshold: number;
+  readonly latencyThreshold: number;
+  readonly packetlossThreshold: number;
 }
 
 export interface HitsTableData {
@@ -469,5 +472,5 @@ export interface HitsTableData {
   readonly sourceNetwork: string;
   readonly sourceDevice: string;
   readonly destination: string;
-  readonly value: string;
+  readonly value: JSX.Element;
 }

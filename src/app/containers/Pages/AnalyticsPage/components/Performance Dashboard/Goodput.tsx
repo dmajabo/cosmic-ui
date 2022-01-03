@@ -6,7 +6,7 @@ import { MetricsLineChart } from './MetricsLineChart';
 import InfoIcon from '../../icons/performance dashboard/info.svg';
 import { MetricKeyValue, TestIdToName } from './PacketLoss';
 import { Data } from './Table';
-import { isEmpty } from 'lodash';
+import isEmpty from 'lodash/isEmpty';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import LoadingIndicator from 'app/components/Loading';
 import { HeatMapData } from 'lib/api/http/SharedTypes';

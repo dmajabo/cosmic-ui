@@ -1,6 +1,8 @@
 import { Button, FormControlLabel, Typography } from '@mui/material';
 import { Column, ColumnAccessor, MetricsExplorerTableData } from 'lib/api/http/SharedTypes';
-import { isEqual, sortBy, uniqWith } from 'lodash';
+import isEqual from 'lodash/isEqual';
+import sortBy from 'lodash/sortBy';
+import uniqWith from 'lodash/uniqWith';
 import React, { useEffect, useState } from 'react';
 import { AnalyticsStyles } from '../../AnalyticsStyles';
 import ColumnsIcon from '../../icons/metrics explorer/columns.svg';
