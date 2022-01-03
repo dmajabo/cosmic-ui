@@ -6,6 +6,8 @@ import Select from 'react-select';
 import { ExperienceTab } from './ExperienceTab';
 import { PolicyTab } from './PolicyTab';
 import { CostTab } from './CostTab';
+import SecondaryButton from 'app/components/Buttons/SecondaryButton';
+import noop from 'lodash/noop';
 
 interface TabPanelProps {
   readonly name: string;
@@ -115,12 +117,15 @@ export const Anomalies: React.FC = () => {
           </Tabs>
         </div>
         <div>
-          <Button className={classes.otherButton} variant="contained" disableElevation>
-            <Typography className={classes.otherButtonText} noWrap>
-              FILTER
-            </Typography>
-            <img src={FilterIcon} alt="columns" />
-          </Button>
+          <SecondaryButton
+            label={
+              <>
+                <span className={classes.otherButtonText}>FILTER</span>
+                <img src={FilterIcon} alt="columns" />
+              </>
+            }
+            onClick={noop}
+          />
           <span className={classes.anomalyTimeRangeText}>Show:</span>
           <Select className={classes.inlineSelect} label="Single select" value={timeRange} options={TIME_RANGE_OPTIONS} onChange={handleTimeRangeChange} />
         </div>

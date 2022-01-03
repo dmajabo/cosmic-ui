@@ -478,6 +478,7 @@ export const AnalyticsStyles = makeStyles(
         fontSize: 14,
         color: 'var(--_tabHeaderTextColor)',
         paddingRight: 20,
+        paddingLeft: 10,
       },
       inlineSelect: {
         display: 'inline-block',
