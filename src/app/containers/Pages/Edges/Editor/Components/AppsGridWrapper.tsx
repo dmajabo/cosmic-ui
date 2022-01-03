@@ -118,7 +118,7 @@ const AppsGridWrapper: React.FC<Props> = (props: Props) => {
     <>
       <ModalRow margin="0 0 10px 0" align="center">
         <ModalLabel>Apps</ModalLabel>
-        <SecondaryButtonWithPopup styles={{ padding: '0', width: '40px' }} wrapStyles={{ margin: '0 0 0 auto' }} icon={filterIcon} direction="rtl">
+        <SecondaryButtonWithPopup styles={{ padding: '0', width: '50px' }} wrapStyles={{ margin: '0 0 0 auto' }} icon={filterIcon} direction="rtl">
           <PopupContainer
             styles={{
               overflow: 'hidden',
