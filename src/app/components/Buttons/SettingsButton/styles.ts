@@ -19,7 +19,7 @@ export const ButtonStyles = styled(Button as any)<IButtonProps>`
     background: transparent;
     border-color: transparent;
     .inheritFill {
-      fill: ${props => props.hoverIconColor || 'var(--_hoverButtonColor)'};
+      fill: ${props => props.hoverIconColor || 'var(--_primaryWhiteColor)'};
     }
   }
 `;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Required } from '../FormTextInput/styles';
 import { InputLabel } from '../styles/Label';
-import MenuItem from '@material-ui/core/MenuItem';
+import { MenuItem } from '@mui/material';
 import useDebounce from 'lib/hooks/useDebounce';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { arrowBottomIcon } from 'app/components/SVGIcons/arrows';
@@ -23,6 +23,8 @@ interface Props {
   styles?: Object;
   selectClaassName?: string;
   optionCheckMark?: boolean;
+  labelStyles?: Object;
+  selectStyles?: Object;
 }
 
 const MatMultipleSelect: React.FC<Props> = (props: Props) => {
@@ -95,8 +97,10 @@ const MatMultipleSelect: React.FC<Props> = (props: Props) => {
         id={props.id + '_select'}
         value={textValue}
         onChange={handleChange}
+        classes={{ outlined: classes.outlined, select: classes.select }}
         MenuProps={{ classes: { paper: classes.menuRoot, list: classes.menuList } }}
         className={props.selectClaassName}
+        style={props.selectStyles}
       >
         {props.options.map((option, index) => {
           if (typeof option === 'string' || typeof option === 'number') {

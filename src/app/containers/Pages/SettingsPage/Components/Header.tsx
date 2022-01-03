@@ -82,7 +82,7 @@ const Header: React.FC<Props> = (props: Props) => {
           {!props.hideDelete && props.selectedItems && props.selectedItems.length ? (
             <PrimaryButton
               label="Delete"
-              icon={deleteIcon('var(--_pButtonColor)')}
+              icon={deleteIcon('var(--_primaryWhiteColor)')}
               onClick={props.onMassDelete}
               bgColor="var(--_errorColor)"
               borderColor="var(--_errorColor)"

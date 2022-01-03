@@ -23,7 +23,7 @@ export const ModalLabel = styled.div`
   font-weight: bold;
   font-size: 16px;
   line-height: 21px;
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
 `;
 
 export const ModalContent = styled.div`
@@ -88,6 +88,6 @@ export const DialogText = styled.div<TextProps>`
   font-size: ${props => props.fontSize || '22px'};
   line-height: ${props => props.lineHeight || '29px'};
   text-align: center;
-  color: ${props => props.color || 'var(--_primaryColor)'};
+  color: ${props => props.color || 'var(--_primaryTextColor)'};
   margin: ${props => props.margin || '0'};
 `;

@@ -26,7 +26,7 @@ export const OptionLabel = styled.span`
   font-weight: normal;
   font-size: 16px;
   line-height: 21px;
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;

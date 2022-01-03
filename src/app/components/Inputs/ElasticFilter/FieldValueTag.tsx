@@ -25,7 +25,7 @@ const FieldValueTag: React.FC<Props> = ({ item, index, onRemoveTag, onSelectTag 
     <TagItem>
       <TagBg />
       <TextWrapper onClick={onSelect}>
-        <TagItemLabel color="var(--_primaryColor)">{item.field.label}:</TagItemLabel>
+        <TagItemLabel color="var(--_primaryTextColor)">{item.field.label}:</TagItemLabel>
         <TagItemLabel padding="0 0 0 4px">{item.value.label}</TagItemLabel>
       </TextWrapper>
       <IconWrapper styles={{ margin: 'auto 0 auto 8px', zIndex: 1 }} width="10px" height="10px" icon={closeSmallIcon} onClick={onRemove} />

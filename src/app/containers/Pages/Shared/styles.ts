@@ -110,7 +110,7 @@ export const ChartLabel = styled.div`
   font-weight: bold;
   font-size: 22px;
   margin-bottom: 25px;
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
 `;
 
 export const TableWrapper = styled.div`

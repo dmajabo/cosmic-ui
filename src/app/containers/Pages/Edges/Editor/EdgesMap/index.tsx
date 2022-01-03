@@ -137,7 +137,7 @@ const EdgesMap: React.FC<Props> = (props: Props) => {
             <rect x={SVG_EDGES_STYLES.mapColumn * 2} y="-5000" width={SVG_EDGES_STYLES.mapColumn} height="10000" fill="var(--_tableBg)" />
 
             <g id={EDGE_MAP_CONSTANTS.rootScaleContainer}>
-              <g id={EDGE_MAP_CONSTANTS.links}>{links && links.links && links.links.map(it => <EdgeLink key={`linksKey${it.id}`} dataItem={it} />)}</g>
+              <g id={EDGE_MAP_CONSTANTS.links}>{links && links.links && links.links.map(it => <EdgeLink key={`linksKey${it.uuid}`} dataItem={it} />)}</g>
               <g id={EDGE_MAP_CONSTANTS.sites}>
                 {sites && sites.nodes && sites.nodes.map(it => <EdgeNode type={EdgeNodeType.SITES} key={`sitesNodeKey${it.nodeId}`} dataItem={it} onExpandCollapse={onExpandCollapseSites} />)}
               </g>

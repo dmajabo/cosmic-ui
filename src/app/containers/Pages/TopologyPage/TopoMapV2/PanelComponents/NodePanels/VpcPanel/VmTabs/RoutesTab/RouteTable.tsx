@@ -1,7 +1,7 @@
 import React from 'react';
 import { CaptionRow, CaptionContent, TableWrapperStyles } from 'app/components/Basic/Table/styles';
 import { IRouteResDataItem, IRouteState } from 'lib/api/ApiModels/Metrics/apiModel';
-import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
+import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
 import { EmptyDataStyles, EmptyText } from 'app/components/Basic/NoDataStyles/NoDataStyles';
 import { TableStyles } from 'app/components/Basic/Table/TableStyles';
 import IconWrapper from 'app/components/Buttons/IconWrapper';

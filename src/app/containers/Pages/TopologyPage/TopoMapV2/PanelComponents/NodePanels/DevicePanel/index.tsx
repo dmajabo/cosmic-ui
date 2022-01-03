@@ -4,7 +4,7 @@ import { IDeviceNode } from 'lib/models/topology';
 // import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 import MetricsTab from './MetricsTab';
 import { PanelHeader, PanelTabWrapper, PanelTitle } from '../../styles';
-import { Tabs, Tab } from '@material-ui/core';
+import { Tabs, Tab } from '@mui/material';
 import { TabComponentProps } from 'app/components/Tabs/TabComponentProps';
 import TabPanel from 'app/components/Tabs/TabPanel';
 import { TabsStyles } from 'app/components/Tabs/TabsStyles';

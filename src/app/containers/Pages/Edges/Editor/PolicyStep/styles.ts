@@ -25,7 +25,7 @@ export const PolicyName = styled.div`
   font-weight: bold;
   font-size: 16px;
   line-height: 21px;
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
   width: auto;
   max-width: calc(100% - 32px);
   text-overflow: ellipsis;
@@ -63,7 +63,7 @@ export const AccordionRuleHeader = styled.div`
 
 export const RuleLabel = styled.span`
   display: inline-block;
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
   margin: auto 0;
   white-space: nowrap;
   text-overflow: ellipsis;

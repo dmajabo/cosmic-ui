@@ -1,7 +1,7 @@
 import React from 'react';
 import { TableWrapperStyles } from 'app/components/Basic/Table/styles';
 import { TableStyles } from 'app/components/Basic/Table/TableStyles';
-import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
+import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
 import { IAwsRegion } from 'lib/api/ApiModels/Accounts/apiModel';
 import { awsIcon } from 'app/components/SVGIcons/topologyIcons/aws';
 import IconWrapper from 'app/components/Buttons/IconWrapper';

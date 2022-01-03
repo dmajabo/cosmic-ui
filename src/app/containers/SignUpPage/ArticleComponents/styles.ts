@@ -7,7 +7,7 @@ export const Wrapper = styled.div`
   height: 100%;
   text-align: left;
   font-style: normal;
-  color: var(--_primaryTextColor);
+  color: var(--_primaryWhiteColor);
   line-height: 1.34;
 `;
 

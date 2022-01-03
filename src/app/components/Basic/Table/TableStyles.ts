@@ -1,4 +1,5 @@
-import { Theme, createStyles, makeStyles } from '@material-ui/core';
+import { Theme } from '@mui/material';
+import { createStyles, makeStyles } from '@mui/styles';
 
 export const TableStyles = makeStyles(
   (theme: Theme) =>
@@ -32,7 +33,7 @@ export const TableStyles = makeStyles(
       tableCell: {
         background: 'transparent',
         border: 'none',
-        color: 'var(--_primaryColor)',
+        color: 'var(--_primaryTextColor)',
         borderBottom: '1px solid var(--_rowBorder)',
         padding: '10px 12px',
         fontWeight: 500,

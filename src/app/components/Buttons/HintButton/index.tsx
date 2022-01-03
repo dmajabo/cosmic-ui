@@ -1,10 +1,9 @@
 import React from 'react';
 import IconWrapper from '../IconWrapper';
-import Tooltip from '@material-ui/core/Tooltip';
-import { withStyles } from '@material-ui/core/styles';
+import { Tooltip, ClickAwayListener, Fade } from '@mui/material';
+import { withStyles } from '@mui/styles';
 import { TooltipPlacement } from 'lib/models/general';
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
-import Fade from '@material-ui/core/Fade';
+
 export interface IProps {
   icon: JSX.Element;
   title?: JSX.Element | string;
@@ -22,23 +21,28 @@ export interface IProps {
   iconStyles?: object;
 }
 
-const HtmlTooltip = withStyles(() => ({
+export const HtmlTooltip = withStyles(() => ({
   tooltip: {
-    backgroundColor: 'var(--_primaryBg)',
-    color: 'var(--_primaryColor)',
-    maxWidth: 220,
-    fontSize: 12,
-    border: '1px solid',
-    borderColor: 'var(--_disabledButtonBg)',
-    padding: '2px 8px',
-    margin: '8px 0 0 0',
-    whiteSpace: 'normal',
+    '&.MuiTooltip-tooltip': {
+      backgroundColor: 'var(--_primaryBg)',
+      color: 'var(--_primaryTextColor)',
+      maxWidth: 220,
+      fontSize: 12,
+      border: '1px solid',
+      borderColor: 'var(--_disabledButtonBg)',
+      padding: '2px 8px',
+      margin: '8px 0 0 0',
+      whiteSpace: 'normal',
+    },
   },
   arrow: {
-    color: 'var(--_disabledButtonBg)',
-    width: '16px',
-    height: '8px',
-    marginLeft: '8px',
+    '&.MuiTooltip-arrow': {
+      color: 'var(--_disabledButtonBg)',
+      width: '16px',
+      height: '8px',
+      marginLeft: '6px',
+      transform: 'none !important',
+    },
   },
 }))(Tooltip);
 
@@ -70,7 +74,6 @@ const HintButton: React.FC<IProps> = (props: IProps) => {
         TransitionComponent={Fade}
         enterDelay={500}
         leaveDelay={200}
-        interactive
         PopperProps={{
           disablePortal: true,
         }}

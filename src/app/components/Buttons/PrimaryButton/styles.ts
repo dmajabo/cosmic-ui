@@ -15,7 +15,7 @@ interface BProps {
 }
 
 export const PrimaryButtonStyles = styled.button<BProps>`
-  color: ${props => props.color || 'var(--_pButtonColor)'};
+  color: ${props => props.color || 'var(--_primaryWhiteColor)'};
   background: ${props => props.bgColor || 'var(--_pButtonBg)'};
   font-family: 'DMSans', sans-serif;
   width: ${props => props.width || 'auto'};
@@ -34,7 +34,7 @@ export const PrimaryButtonStyles = styled.button<BProps>`
   .inheritFill {
     transition-property: fill;
     transition: 0.2s linear;
-    fill: ${props => props.color || 'var(--_pButtonColor)'};
+    fill: ${props => props.color || 'var(--_primaryWhiteColor)'};
   }
   &:disabled {
     cursor: default;
@@ -55,11 +55,11 @@ export const PrimaryButtonStyles = styled.button<BProps>`
     }
   }
   &:hover:not(:disabled) {
-    color: ${props => props.hoverColor || 'var(--_pHoverButtonColor)'};
+    color: ${props => props.hoverColor || 'var(--_primaryWhiteColor)'};
     background: ${props => props.hoverBg || 'var(--_pHoverButtonBg)'};
     border-color: ${props => props.hoverBorder || 'var(--_pHoverButtonBorder)'};
     .inheritFill {
-      fill: ${props => props.hoverColor || 'var(--_pHoverButtonColor)'};
+      fill: ${props => props.hoverColor || 'var(--_primaryWhiteColor)'};
     }
   }
 `;

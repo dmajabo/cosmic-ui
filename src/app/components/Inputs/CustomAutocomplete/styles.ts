@@ -16,7 +16,7 @@ export const AutoCompleteWrapper = styled.div`
     min-height: 50px;
   }
   & .MuiOutlinedInput-root {
-    color: var(--_primaryColor);
+    color: var(--_primaryTextColor);
     font-size: 14px;
     font-family: inherit;
     font-weight: 500;
@@ -74,7 +74,7 @@ export const TagItemWrapper = styled.div`
 `;
 
 export const Tag = styled.span`
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
   font-size: 11px;
   line-height: 10px;
   font-style: normal;

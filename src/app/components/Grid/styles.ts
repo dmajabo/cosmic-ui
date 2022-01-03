@@ -13,7 +13,7 @@ interface ICellProps {
   cursor?: 'pointer' | 'default';
 }
 export const GridCellLabel = styled.span<ICellProps>`
-  color: ${props => props.color || 'var(--_primaryColor)'};
+  color: ${props => props.color || 'var(--_primaryTextColor)'};
   max-width: 100%;
   display: inline-block;
   font-family: 'DMSans';
@@ -30,7 +30,7 @@ interface ICellProps {
   cursor?: 'pointer' | 'default';
 }
 export const GridCellStatusCircle = styled.span<ICellProps>`
-  background: ${props => props.color || 'var(--_primaryColor)'};
+  background: ${props => props.color || 'var(--_primaryTextColor)'};
   display: inline-block;
   width: 12px;
   height: 12px;

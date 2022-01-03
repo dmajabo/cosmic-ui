@@ -6,7 +6,7 @@ export const Button = styled.button`
   height: 50px;
   outline: 0;
   padding: 0;
-  background: var(--_primaryButtonBg);
+  background: var(--_primaryWhiteColor);
   border: 1px solid;
   border-color: var(--_primaryButtonBorder);
   border-radius: 6px;
@@ -16,7 +16,7 @@ export const Button = styled.button`
     background: var(--_hoverButtonBg);
     border-color: var(--_hoverButtonBg);
     .inheritFill {
-      fill: var(--_hoverButtonColor);
+      fill: var(--_primaryWhiteColor);
     }
   }
   &:disabled {

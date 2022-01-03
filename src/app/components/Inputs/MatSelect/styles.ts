@@ -12,7 +12,7 @@ export const TextInputWrapper = styled.div`
     line-height: normal;
     border-radius: 6px;
     width: 100%;
-    color: var(--_primaryColor);
+    color: var(--_primaryTextColor);
     background: var(--_primaryBg);
     border: 1px solid var(--_defaultInputBorder) !important;
     box-sizing: border-box;
@@ -56,7 +56,7 @@ export const TextInputWrapper = styled.div`
     padding-left: 16px !important;
     min-height: 38px !important;
     box-sizing: border-box !important;
-    color: var(--_primaryColor) !important;
+    color: var(--_primaryTextColor) !important;
     font-size: 14px !important;
     font-family: 'DMSans' !important;
     font-weight: 500 !important;

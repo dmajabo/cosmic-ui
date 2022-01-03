@@ -34,7 +34,7 @@ const ModalComponent: React.FC<Props> = ({ open, id, children, onClose, useFadeA
       BackdropProps={{
         timeout: 300,
         sx: {
-          background: 'var(--_primaryColor)',
+          background: 'var(--_primaryTextColor)',
           opacity: '0.5 !important',
           zIndex: 1,
         },

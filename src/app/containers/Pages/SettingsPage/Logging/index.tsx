@@ -318,7 +318,7 @@ const Logging: React.FC<IProps> = (props: IProps) => {
           ColumnSortedDescendingIcon: () => <>{gridDescArrow}</>,
           NoRowsOverlay: () => (
             <AbsLoaderWrapper width="100%" height="100%">
-              <ErrorMessage color="var(--_primaryColor)" margin="auto">
+              <ErrorMessage color="var(--_primaryTextColor)" margin="auto">
                 No data
               </ErrorMessage>
             </AbsLoaderWrapper>

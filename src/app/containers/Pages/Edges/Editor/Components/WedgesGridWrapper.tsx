@@ -118,7 +118,7 @@ const WedgesGridWrapper: React.FC<Props> = (props: Props) => {
           components={{
             NoRowsOverlay: () => (
               <AbsLoaderWrapper width="100%" height="100%">
-                <ErrorMessage color="var(--_primaryColor)" margin="auto">
+                <ErrorMessage color="var(--_primaryTextColor)" margin="auto">
                   No data
                 </ErrorMessage>
               </AbsLoaderWrapper>
@@ -129,7 +129,9 @@ const WedgesGridWrapper: React.FC<Props> = (props: Props) => {
                 <LoadingIndicator margin="auto" />
               </AbsLoaderWrapper>
             ),
-            Checkbox: React.forwardRef(({ checked, onChange, indeterminate }, ref) => <SimpleCheckbox ref={ref} isChecked={checked} toggleCheckboxChange={onChange} indeterminate={indeterminate} />),
+            BaseCheckbox: React.forwardRef(({ checked, onChange, indeterminate }, ref) => (
+              <SimpleCheckbox ref={ref} isChecked={checked} toggleCheckboxChange={onChange} indeterminate={indeterminate} />
+            )),
           }}
         />
       </GridWrapper>

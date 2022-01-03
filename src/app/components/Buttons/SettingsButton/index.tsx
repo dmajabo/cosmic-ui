@@ -2,7 +2,7 @@ import { settingsDotsIcon } from 'app/components/SVGIcons/settingsDots';
 import React from 'react';
 import IconWrapper from '../IconWrapper';
 import { ButtonStyles } from './styles';
-import Popover from '@material-ui/core/Popover';
+import { Popover } from '@mui/material';
 
 interface Props {
   id: string;

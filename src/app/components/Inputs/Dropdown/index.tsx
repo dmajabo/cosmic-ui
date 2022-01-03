@@ -5,7 +5,7 @@ import { ISelectedListItem } from 'lib/models/general';
 import DropdownItem from './DropdownItem';
 import { arrowBottomIcon } from 'app/components/SVGIcons/arrows';
 import { InputLabel } from '../styles/Label';
-import { ClickAwayListener } from '@material-ui/core';
+import { ClickAwayListener } from '@mui/material';
 import DisplayValue from './DisplayValue';
 import { Required } from '../FormTextInput/styles';
 

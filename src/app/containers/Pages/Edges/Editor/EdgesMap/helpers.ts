@@ -2,7 +2,7 @@ import { DeploymentTypes, ISegmentP, SegmentTargetT } from 'lib/api/ApiModels/Ed
 import { INetworkwEdge, ITopologyGroup } from 'lib/api/ApiModels/Topology/apiModels';
 import { jsonClone } from 'lib/helpers/cloneHelper';
 import { TopologyGroupTypesAsString } from 'lib/models/topology';
-
+import uuid from 'react-uuid';
 export const EDGE_MAP_CONSTANTS = {
   svg: 'edgeMap',
   root: 'edgeMapRoot',
@@ -99,6 +99,7 @@ export interface ITransitionObject {
 
 export interface IEdgeLink {
   id: string;
+  uuid: string;
   sourceType: SegmentTargetT;
   source: ISvgEdgeGroup;
   destination: ISvgEdgeGroup;
@@ -136,6 +137,7 @@ export const buildLinks = (sources: INodesObject, destinations: INodesObject, tr
     policy.rules.forEach((rule, ruleIndex) => {
       const link: IEdgeLink = {
         id: `${idPrefix}${index}${ruleIndex}`,
+        uuid: uuid(),
         sourceType: null,
         source: null,
         destination: null,

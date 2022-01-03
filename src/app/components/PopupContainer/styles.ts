@@ -36,7 +36,7 @@ export const PopupTitle = styled.div`
   font-size: 16px;
   line-height: 21px;
   height: 22px;
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
   margin-bottom: 12px;
 `;
 
@@ -74,7 +74,7 @@ export const FilteredColumnLabel = styled.div`
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
   display: inline-block;
   white-space: nowrap;
   overflow: hidden;

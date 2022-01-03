@@ -54,7 +54,7 @@ export const DisplayValueStyles = styled.span`
   text-align: left;
   vertical-align: bottom;
   &.filled {
-    color: var(--_primaryColor);
+    color: var(--_primaryTextColor);
   }
 `;
 

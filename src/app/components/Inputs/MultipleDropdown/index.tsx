@@ -1,7 +1,7 @@
 import React from 'react';
 import Search from 'app/components/Inputs/Search';
 import { List, Popup, ValueWrapper, Wrapper } from './styles';
-import ClickAwayListener from '@mui/material/ClickAwayListener';
+import { ClickAwayListener } from '@mui/material';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { arrowBottomIcon } from 'app/components/SVGIcons/arrows';
 import ListItem from './ListItem';

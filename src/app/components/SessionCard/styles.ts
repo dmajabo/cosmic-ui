@@ -34,7 +34,7 @@ export const Label = styled.div`
   font-weight: 700;
   font-style: normal;
   font-size: 16px;
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -51,5 +51,5 @@ export const ValueStyles = styled.div<ValueProps>`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: ${props => props.color || 'var(--_primaryColor)'};
+  color: ${props => props.color || 'var(--_primaryTextColor)'};
 `;

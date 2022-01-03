@@ -28,7 +28,7 @@ export const GroupField = styled.div<IField>`
   font-weight: ${props => (props.primary ? '500' : 'normal')};
   font-size: ${props => (props.primary ? '16px' : '13px')};
   line-height: ${props => (props.primary ? '26px' : '17px')};
-  color: ${props => (!props.primary ? 'var(--_disabledTextColor)' : 'var(--_primaryColor)')};
+  color: ${props => (!props.primary ? 'var(--_disabledTextColor)' : 'var(--_primaryTextColor)')};
   white-space: nowrap;
   max-width: 100%;
   overflow: hidden;

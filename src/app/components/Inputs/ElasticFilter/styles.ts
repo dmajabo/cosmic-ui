@@ -17,7 +17,7 @@ export const ElasticLabel = styled.div`
   font-weight: bold;
   font-size: 22px;
   line-height: 29px;
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
   margin-bottom: 20px;
   flex-shrink: 0;
 `;
@@ -41,7 +41,7 @@ export const ElasticValueWrapper = styled.div`
   align-items: center;
   width: 100%;
   height: 100%;
-  background: var(--_primaryButtonBg);
+  background: var(--_primaryWhiteColor);
   border: 1px solid;
   border-color: var(--_primaryButtonBorder);
   border-radius: 6px;
@@ -65,7 +65,7 @@ export const ListItemsWrapper = styled.div<ListProps>`
   left: ${props => props.left || '0'};
   min-width: ${props => props.minWidth || 'unset'};
   padding: 6px 0;
-  background: var(--_primaryButtonBg);
+  background: var(--_primaryWhiteColor);
   box-shadow: 0px 15px 50px rgba(132, 141, 163, 0.15);
   border-radius: 6px;
   width: 100%;
@@ -91,8 +91,8 @@ export const ListItem = styled.div<ListItemProps>`
   font-weight: 500;
   font-size: 14px;
   line-height: 23px;
-  color: var(--_primaryColor);
-  background: ${props => (props.selected ? 'var(--_vmBg)' : 'var(--_primaryButtonBg)')};
+  color: var(--_primaryTextColor);
+  background: ${props => (props.selected ? 'var(--_vmBg)' : 'var(--_primaryWhiteColor)')};
   cursor: ${props => (props.selected ? 'default' : 'pointer')};
   &:hover {
     background: var(--_vmBg);
@@ -103,7 +103,7 @@ export const DisplayField = styled.span`
   font-weight: 500;
   font-size: 14px;
   line-height: 23px;
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
   flex-shrink: 0;
   display: inline-block;
   margin: auto 8px auto 0;
@@ -165,7 +165,7 @@ interface LabelProps {
 }
 export const TagItemLabel = styled.span<LabelProps>`
   display: inline-block;
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
   font-size: ${props => props.fontSize || '14px'};
   line-height: ${props => props.lineHeight || '24px'};
   padding: ${props => props.padding || '0'};

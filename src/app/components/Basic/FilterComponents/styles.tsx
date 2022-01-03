@@ -84,7 +84,7 @@ export const GroupItemLabel = styled.div`
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
 `;
 
 interface CircleProps {
@@ -96,6 +96,6 @@ export const GroupItemCircle = styled.div<CircleProps>`
   height: 12px;
   border: none;
   border-radius: 50%;
-  background: ${props => props.color || 'var(--_primaryColor)'};
+  background: ${props => props.color || 'var(--_primaryTextColor)'};
   margin: 0 12px 0 0;
 `;

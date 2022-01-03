@@ -39,7 +39,7 @@ interface PreviewTextProps {
 export const PreviewText = styled.span<PreviewTextProps>`
   display: inline-block;
   margin: ${props => props.margin || '0'};
-  color: ${props => props.color || 'var(--_primaryColor)'};
+  color: ${props => props.color || 'var(--_primaryTextColor)'};
   max-width: 100%;
   &.label {
     flex-shrink: 0;
@@ -56,7 +56,7 @@ export const PreviewTagCount = styled.span`
   background: var(--_selectedStepperBgColor);
   border-radius: 20px;
   padding: 2px 11px;
-  color: var(--_primaryTextColor);
+  color: var(--_primaryWhiteColor);
   font-family: 'DMSans';
   font-style: normal;
   font-weight: 500;
@@ -93,7 +93,7 @@ export const PanelTitle = styled.div`
   font-style: normal;
   font-weight: 700;
   font-size: 22px;
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -127,7 +127,7 @@ export const PanelContentLabel = styled.div`
   font-weight: bold;
   font-size: 16px;
   line-height: 21px;
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
   margin: 0 0 20px 0;
 `;
 

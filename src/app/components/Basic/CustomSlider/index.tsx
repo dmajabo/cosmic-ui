@@ -1,6 +1,6 @@
 import React from 'react';
-import Slider, { Mark } from '@material-ui/core/Slider';
-import { withStyles } from '@material-ui/core/styles';
+import { Slider, Mark } from '@mui/material';
+import { withStyles } from '@mui/styles';
 import ValueLabelComponent from './ValueLabelComponent';
 import { SliderWrapper } from './styles';
 import { InputLabel } from 'app/components/Inputs/styles/Label';
@@ -8,7 +8,7 @@ import { Required } from 'app/components/Inputs/FormTextInput/styles';
 
 const SliderStyles = withStyles({
   root: {
-    color: 'var(--_primaryColor)',
+    color: 'var(--_primaryTextColor)',
     height: 40,
     padding: '12px 0px 20px 0px',
     boxSizing: 'border-box',
@@ -68,7 +68,7 @@ const SliderStyles = withStyles({
     transform: 'unset',
   },
   markActive: {
-    color: 'var(--_primaryColor)',
+    color: 'var(--_primaryTextColor)',
   },
 })(Slider);
 
@@ -92,17 +92,16 @@ const CustomSlider: React.FC<Props> = ({ label, min, max, step, value, values, d
   const [displayedValues, setDisplayedValues] = React.useState<Mark[]>([]);
 
   React.useEffect(() => {
-    setDisplayedValues([
-      ...values.map((it, index) => {
-        if (index === 0) {
-          return { ...it, label: <span className="slider-mark text-left">{it.label}</span> };
-        }
-        if (index === values.length - 1) {
-          return { ...it, label: <span className="slider-mark text-right">{it.label}</span> };
-        }
-        return { ...it, label: <span className="slider-mark">{it.label}</span> };
-      }),
-    ]);
+    const _marks = values.map((it, index) => {
+      if (index === 0) {
+        return { ...it, label: <span className="slider-mark text-left">{it.label}</span> };
+      }
+      if (index === values.length - 1) {
+        return { ...it, label: <span className="slider-mark text-right">{it.label}</span> };
+      }
+      return { ...it, label: <span className="slider-mark">{it.label}</span> };
+    });
+    setDisplayedValues(_marks);
   }, [values]);
 
   React.useEffect(() => {
@@ -110,13 +109,13 @@ const CustomSlider: React.FC<Props> = ({ label, min, max, step, value, values, d
       setSelected(value);
     }
   }, [value]);
-  const onChangeSelected = (event: React.ChangeEvent<{}>, _value: number) => {
-    setSelected(_value);
+  const onChangeSelected = (event: Event, value: number, activeThumb: number) => {
+    setSelected(value);
   };
 
-  const onChangeCommited = (event: React.ChangeEvent<{}>, _value: number) => {
-    if (!event || _value === undefined || _value === null) return;
-    onChange(_value);
+  const onChangeCommited = (event: React.SyntheticEvent | Event, value: number) => {
+    if (!event || value === undefined || value === null) return;
+    onChange(value);
   };
 
   if (!values || !values.length) return null;
@@ -135,7 +134,9 @@ const CustomSlider: React.FC<Props> = ({ label, min, max, step, value, values, d
         step={step}
         max={max}
         valueLabelDisplay="auto"
-        ValueLabelComponent={ValueLabelComponent}
+        components={{
+          ValueLabel: ValueLabelComponent,
+        }}
         marks={displayedValues}
         onChange={onChangeSelected}
         onChangeCommitted={onChangeCommited}

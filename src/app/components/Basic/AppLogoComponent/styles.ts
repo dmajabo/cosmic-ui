@@ -5,7 +5,7 @@ export const LogoWrapper = styled.div`
   flex-shrink: 0;
   margin: 0 auto;
   align-items: center;
-  color: var(--_primaryTextColor);
+  color: var(--_primaryWhiteColor);
   svg {
     width: 100%;
     height: 100%;

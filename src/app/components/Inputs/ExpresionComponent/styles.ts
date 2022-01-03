@@ -19,7 +19,7 @@ export const ExpresionArea = styled.textarea`
   background-color: transparent;
   line-height: 24px;
   &:focus:not(:disabled) {
-    color: var(--_primaryColor);
+    color: var(--_primaryTextColor);
   }
   &:disabled {
     opacity: 0.5;
@@ -36,10 +36,10 @@ export const ExpresionWrapper = styled.div`
   min-height: 220px;
   &.focused:not(.error) {
     ${InputLabel} {
-      color: var(--_primaryColor);
+      color: var(--_primaryTextColor);
     }
     ${ExpresionArea} {
-      color: var(--_primaryColor);
+      color: var(--_primaryTextColor);
     }
   }
   &.error {
@@ -108,7 +108,7 @@ export const ExpresionInputStyles = styled.input`
   width: 100%;
   background: transparent;
   color: transparent;
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
   padding: 5px 12px;
   border: none;
 `;
@@ -145,7 +145,7 @@ export const ExpresionPopupItem = styled.div`
   font-weight: 500;
   font-size: 14px;
   line-height: 23px;
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -161,5 +161,5 @@ export const HintMessage = styled.div`
   white-space: normal;
   font-size: 12px;
   text-transform: none;
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
 `;

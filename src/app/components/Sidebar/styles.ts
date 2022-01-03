@@ -38,7 +38,7 @@ interface WrapSidebarProps {
   isOpen?: boolean;
 }
 export const WrapSidebar = styled.div<WrapSidebarProps>`
-  background-color: var(--_primaryColor);
+  background-color: var(--_primaryTextColor);
   position: fixed;
   transition: width ${DEFAULT_TRANSITION};
   width: ${props => (props.isOpen ? sideBarOpenWidth : sideBarCloseWidth)};
@@ -99,7 +99,7 @@ export const LogoLabel = styled.span`
   display: inline-block;
   flex-shrink: 0;
   margin: 0 0 0 10px;
-  color: var(--_primaryTextColor);
+  color: var(--_primaryWhiteColor);
   font-size: 30px;
   line-height: 48px;
   font-style: normal;
@@ -139,7 +139,7 @@ export const Demo = styled.div<WrapSidebarProps>`
   height: 55px;
   padding: 10px 17px;
   overflow: hidden;
-  color: var(--_primaryTextColor);
+  color: var(--_primaryWhiteColor);
   width: ${props => (props.isOpen ? '160px' : '65px')};
   transition-property: width;
   transition: ${DEFAULT_TRANSITION};
@@ -212,7 +212,7 @@ export const StyledListLink = styled.div`
 
   &:hover,
   &.active {
-    color: var(--_primaryTextColor);
+    color: var(--_primaryWhiteColor);
     svg .routeIcon {
       fill: var(--_primaryBg);
     }

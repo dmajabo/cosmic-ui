@@ -1,5 +1,5 @@
 import React from 'react';
-import Breadcrumbs from '@mui/material/Breadcrumbs';
+import { Breadcrumbs } from '@mui/material';
 import IconWrapper from '../Buttons/IconWrapper';
 import { separatorIcon } from '../SVGIcons/separatorIcon';
 import BreadCrumbItem from './BreadCrumbItem';

@@ -11,7 +11,7 @@ const H2Label = styled.h2<HProps>`
   line-height: 29px;
   margin: ${props => props.margin || '0'};
   padding: 0;
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
 `;
 
 export default H2Label;

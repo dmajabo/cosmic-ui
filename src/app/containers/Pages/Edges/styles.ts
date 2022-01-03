@@ -27,7 +27,7 @@ export const StepperText = styled.div<TextProps>`
   font-weight: ${props => (props.highLight ? '700' : 'normal')};
   font-size: ${props => (props.highLight ? '22px' : '16px')};
   line-height: ${props => (props.highLight ? '29px' : 'normal')};
-  color: ${props => (props.highLight ? 'var(--_primaryColor)' : 'var(--_disabledTextColor)')};
+  color: ${props => (props.highLight ? 'var(--_primaryTextColor)' : 'var(--_disabledTextColor)')};
   opacity: ${props => (props.highLight ? '1' : '0.8')};
 `;
 

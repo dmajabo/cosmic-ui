@@ -1,5 +1,5 @@
-import { Backdrop, Button, Tab, Tabs, Typography } from '@material-ui/core';
-import { Add as AddIcon } from '@material-ui/icons';
+import { Backdrop, Button, Tab, Tabs, Typography } from '@mui/material';
+import { Add as AddIcon } from '@mui/icons-material';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { PerformanceDashboardStyles } from './PerformanceDashboardStyles';
 import ColumnsIcon from '../../icons/performance dashboard/columns.svg';

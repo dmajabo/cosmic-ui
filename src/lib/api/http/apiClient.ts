@@ -15,6 +15,7 @@ import {
   GetControllerListResponse,
   PostPolicyControllerRequest,
   PostPolicyControllerResponse,
+  GetExperienceAnomaliesResponse,
 } from './SharedTypes';
 
 const BASE_URL = process.env.REACT_APP_API_ENDPOINT_PRODUCTION;
@@ -37,6 +38,7 @@ interface ApiClient {
   readonly getControllerList: () => Promise<GetControllerListResponse>;
   readonly updatePolicyController: (edgeId: string, request: PostPolicyControllerRequest) => Promise<PostPolicyControllerResponse>;
   readonly getHeatmapGoodput: (sourceNw: string, destination: string, startTime: string, testId: string) => Promise<HeatMapResponse>;
+  readonly getExperienceAnomalies: (name: string, timeRange: string) => Promise<GetExperienceAnomaliesResponse>;
 }
 
 const PATHS = Object.freeze({
@@ -57,6 +59,7 @@ const PATHS = Object.freeze({
   GET_CONTROLLER_LIST: '/policy/api/v1/policy/controllers',
   UPDATE_POLICY_CONTROLLER: (edgeId: string) => `/policy/api/v1/policy/controllers/${edgeId}`,
   GOODPUT_LATENCY: (sourceNw: string, destination: string) => `/telemetry/api/v1/metrics/source_nw/${sourceNw}/device/destination/${destination}/avggoodput`,
+  GET_EXPERIENCE_ANOMALIES: (name: string, timeRange: string) => `telemetry/api/v1/anomalyhistory/type/${name}/range/${timeRange}`,
 });
 
 export const createApiClient = (token: string): ApiClient => {
@@ -320,6 +323,19 @@ export const createApiClient = (token: string): ApiClient => {
     }
   }
 
+  async function getExperienceAnomalies(name: string, timeRange: string): Promise<GetExperienceAnomaliesResponse> {
+    try {
+      const response = await axios.get<GetExperienceAnomaliesResponse>(PATHS.GET_EXPERIENCE_ANOMALIES(name, timeRange), config);
+      return { ...response.data, name: name };
+    } catch (error) {
+      return {
+        count: 0,
+        anomalies: [],
+        name: '',
+      };
+    }
+  }
+
   return {
     getOrganizations,
     getSLATests,
@@ -338,5 +354,6 @@ export const createApiClient = (token: string): ApiClient => {
     getControllerList,
     updatePolicyController,
     getHeatmapGoodput,
+    getExperienceAnomalies,
   };
 };

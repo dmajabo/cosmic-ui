@@ -21,7 +21,7 @@ export const Label = styled.div`
   font-style: normal;
   font-weight: 500;
   font-size: 10px;
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
   max-width: calc(100% - 17px);
   margin: auto 0 auto 4px;
   overflow: hidden;

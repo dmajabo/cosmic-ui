@@ -37,12 +37,12 @@ export const DUMMY_BAR_CHART_DATA: BarChartData[] = [
 export const DUMMY_ANOMALY_TABLE_DATA: AnomalyExperienceTableData[] = [
   {
     name: 'WAN Link Status Change',
-    severity: SeverityLevel.low,
+    severity: SeverityLevel.LOW,
     hits: 10,
   },
   {
     name: 'WAN Link UL Traffic Anomaly',
-    severity: SeverityLevel.medium,
+    severity: SeverityLevel.MEDIUM,
     hits: 49,
   },
 ];
@@ -121,13 +121,13 @@ export const DUMMY_LOGS_TABLE_DATA: AnomalyPolicyLogsTableData[] = [
 export const DUMMY_ANOMALY_COST_TABLE_DATA: AnomalyCostTableData[] = [
   {
     name: 'WAN Link Status Change',
-    severity: SeverityLevel.low,
+    severity: SeverityLevel.LOW,
     hits: 10,
     cost: '$42/week',
   },
   {
     name: 'WAN Link UL Traffic Anomaly',
-    severity: SeverityLevel.medium,
+    severity: SeverityLevel.MEDIUM,
     hits: 49,
     cost: '$6/day',
   },

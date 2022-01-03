@@ -26,7 +26,7 @@ export const StitchStyles = styled.span`
   font-size: 18px;
   line-height: 24px;
   margin: auto 2px auto 0;
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
 `;
 
 export const StitchTmStyles = styled.span`
@@ -36,5 +36,5 @@ export const StitchTmStyles = styled.span`
   font-size: 10px;
   line-height: 13px;
   margin: 5px 0 auto 0;
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
 `;

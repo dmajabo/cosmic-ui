@@ -1,5 +1,5 @@
 import React from 'react';
-import Pagination from '@mui/material/Pagination';
+import { Pagination } from '@mui/material';
 import { PagingWrapper, SelectLabel, SelectWrapper } from './styles';
 import DisplayRange from './DisplayRange';
 import Dropdown from 'app/components/Inputs/Dropdown';

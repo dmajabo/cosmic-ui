@@ -1,5 +1,5 @@
-import { Theme, createStyles, makeStyles } from '@material-ui/core';
-import { borderRadius } from 'react-select/src/theme';
+import { Theme } from '@mui/material';
+import { createStyles, makeStyles } from '@mui/styles';
 import { APP_HEADER_HEIGHT } from 'lib/constants/general';
 import DragIcon from './icons/metrics explorer/drag.svg';
 
@@ -592,6 +592,40 @@ export const AnalyticsStyles = makeStyles(
       },
       policyLogsViewDetailsButton: {
         cursor: 'pointer',
+      },
+      flexContainer: {
+        display: 'flex',
+        justifyContent: 'space-between',
+      },
+      paginationText: {
+        fontSize: 16,
+        fontWeight: 500,
+        color: 'black',
+      },
+      activePaginationText: {
+        fontSize: 16,
+        fontWeight: 500,
+        color: 'black',
+      },
+      paginationButton: {
+        border: 'none',
+        cursor: 'pointer',
+      },
+      paginationSelect: {
+        width: 60,
+        height: 35,
+        border: '1px solid #CBD2DC',
+        borderRadius: 6,
+        marginLeft: 10,
+        marginRight: 10,
+      },
+      barChartPlaceholder: {
+        border: '1px solid #CBD2DC',
+        backgroundColor: '#FBFCFE',
+        borderRadius: 6,
+        height: 270,
+        display: 'flex',
+        alignItems: 'center',
       },
     }),
   {

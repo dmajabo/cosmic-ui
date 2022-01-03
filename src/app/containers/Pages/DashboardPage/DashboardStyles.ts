@@ -1,4 +1,5 @@
-import { Theme, createStyles, makeStyles } from '@material-ui/core';
+import { Theme } from '@mui/material';
+import { createStyles, makeStyles } from '@mui/styles';
 
 export const DashboardStyles = makeStyles(
   (theme: Theme) =>
@@ -11,10 +12,12 @@ export const DashboardStyles = makeStyles(
         alignItems: 'center',
       },
       network: {
-        color: 'black',
-        display: 'inline',
-        fontSize: 22,
-        fontWeight: 700,
+        '&.MuiTypography-root': {
+          color: 'black',
+          display: 'inline',
+          fontSize: 22,
+          fontWeight: 700,
+        },
       },
       widgetButton: {
         marginLeft: 20,

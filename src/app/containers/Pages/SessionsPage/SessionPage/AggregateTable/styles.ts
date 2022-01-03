@@ -20,7 +20,7 @@ export const VendorLabel = styled.span`
   font-weight: bold;
   font-size: 16px;
   line-height: 21px;
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
 `;
 
 export const VendorTdWrapper = styled.span`

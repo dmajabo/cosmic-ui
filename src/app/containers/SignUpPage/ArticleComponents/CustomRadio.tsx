@@ -4,7 +4,7 @@ import Radio, { RadioProps } from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
-import { Option } from '..';
+import { IOption } from '..';
 
 const BpIcon = styled('span')(({ theme }) => ({
   borderRadius: '50%',
@@ -54,9 +54,9 @@ const BpRadio: React.FC<RadioProps> = props => {
 };
 
 interface CustomRadioProps {
-  readonly radioOptions: Option[];
+  readonly radioOptions: IOption[];
   readonly setRadioValue: (value: string) => void;
-  readonly defaultValue: Option;
+  readonly defaultValue: IOption;
 }
 
 export const CustomRadio: React.FC<CustomRadioProps> = ({ radioOptions, setRadioValue, defaultValue }) => {

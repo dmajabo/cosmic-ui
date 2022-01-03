@@ -84,7 +84,7 @@ const GridComponent: React.FC<IProps> = (props: IProps) => {
         components={{
           NoRowsOverlay: () => (
             <AbsLoaderWrapper width="100%" height="calc(100% - 50px)" top="50px">
-              <ErrorMessage color="var(--_primaryColor)" margin="auto">
+              <ErrorMessage color="var(--_primaryTextColor)" margin="auto">
                 No data
               </ErrorMessage>
             </AbsLoaderWrapper>

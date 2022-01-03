@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
+import { Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
 import AggregateRow from './AggregateRow';
 import { IBuckets, ISession } from 'lib/api/ApiModels/Sessions/apiModel';
 import { IAggregateRow } from './models';
@@ -31,6 +31,9 @@ const AggregateTable: React.FC<Props> = (props: Props) => {
     { ...SessionGridColumns.destIp, hide: false },
     { ...SessionGridColumns.destPort, hide: false },
     { ...SessionGridColumns.vendorsColumn, hide: false },
+    { ...SessionGridColumns.bytes, hide: false },
+    { ...SessionGridColumns.packets, hide: false },
+    { ...SessionGridColumns.action, hide: false },
   ]);
   React.useEffect(() => {
     const _data: IAggregateRow[] = buildAggregatedData(props.sessions, props.buckets);
@@ -79,7 +82,7 @@ const AggregateTable: React.FC<Props> = (props: Props) => {
             ) : (
               <TableRow>
                 <TableCell className="errorCell" colSpan={aggregatedColumns.length}>
-                  <ErrorMessage color="var(--_primaryColor)" margin="48px auto">
+                  <ErrorMessage color="var(--_primaryTextColor)" margin="48px auto">
                     No data
                   </ErrorMessage>
                 </TableCell>

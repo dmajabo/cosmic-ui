@@ -2,7 +2,7 @@ import React from 'react';
 import IconWrapper from '../IconWrapper';
 import { Label } from '../styles/styles';
 import { SecondaryButtonWrapper, SecondaryButtonStyles } from './styles';
-import { ClickAwayListener } from '@material-ui/core';
+import { ClickAwayListener } from '@mui/material';
 
 interface IProps {
   label?: JSX.Element | string;

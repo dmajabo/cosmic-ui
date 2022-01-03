@@ -11,7 +11,7 @@ export const ChartWrapContainer = styled.div`
   .applicationNode {
     font-size: 12px;
     font-weight: 500;
-    fill: var(--_primaryColor);
+    fill: var(--_primaryTextColor);
     font-style: normal;
     font-family: 'DMSans';
   }

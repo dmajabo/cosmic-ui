@@ -40,7 +40,7 @@ export interface StepData {
   readonly content: JSX.Element;
 }
 
-export interface Option {
+export interface IOption {
   readonly value: string;
   readonly label: string;
 }
@@ -60,7 +60,7 @@ enum PolicyVendor {
   Meraki = 'CISCO_MERAKI',
 }
 
-const FlowLog_Options: Option[] = [
+const FlowLog_Options: IOption[] = [
   {
     value: FlowLogToggle.enabled,
     label: 'Yes',
@@ -89,7 +89,7 @@ const AddEdges: React.FC = () => {
   const [progress, setProgress] = useState<number>(50);
   const [connectLocation, setConnectLocation] = useState<string>('');
   const [isAppReadyToUse, setIsAppReadyToUse] = useState<boolean>(false);
-  const [awsRegionsOptions, setAwsRegionsOptions] = useState<Option[]>([]);
+  const [awsRegionsOptions, setAwsRegionsOptions] = useState<IOption[]>([]);
   const [policyControllers, setPolicyControllers] = useState<PolicyController[]>([]);
   const [isEdgesConnected, setIsEdgesConnected] = useState<boolean>(false);
   const [isUpdateForm, setIsUpdateForm] = useState<boolean>(false);
@@ -178,7 +178,7 @@ const AddEdges: React.FC = () => {
   useEffect(() => {
     const getAwsRegions = async () => {
       const responseData = await apiClient.getAwsRegions();
-      const awsRegionsOptions: Option[] = responseData.awsRegions.map(item => ({
+      const awsRegionsOptions: IOption[] = responseData.awsRegions.map(item => ({
         label: item.name,
         value: item.code,
       }));

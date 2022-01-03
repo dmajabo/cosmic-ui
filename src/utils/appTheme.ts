@@ -13,7 +13,6 @@ export enum Themes {
 export const APP_THEME: ITheme = {
   light: {
     '--_primaryBg': '#FFFFFF',
-    '--_primaryColor': '#05143A',
     '--_appBg': '#F3F6FC', //'#CBD2DC',
     '--_sidebarBorder': '#437FEC',
     '--_sidebarGradient': 'linear-gradient(90deg, #437FEC 0%, rgba(67, 127, 236, 0) 100%)',
@@ -22,37 +21,31 @@ export const APP_THEME: ITheme = {
     '--_tabContainerBg': '#F3F6FC',
 
     // Text Color
-    '--_primaryTextColor': 'black',
+    '--_primaryWhiteColor': '#FFFFFF',
+    '--_primaryTextColor': '#05143A',
     '--_secondaryTextColor': '#CECECE',
     '--_disabledTextColor': '#848DA3',
     '--_tabHeaderTextColor': '#848DA3',
     '--_tabHeaderActiveTextColor': 'black',
     // Buttons
-    '--_primaryButtonBg': '#FFFFFF',
     '--_primaryButtonBorder': '#CBD2DC',
     '--_hoverButtonBg': '#437FEC',
-    '--_hoverButtonColor': '#FFFFFF',
     '--_disabledButtonBg': '#E5E8ED',
     '--_disabledButtonColor': '#62707F',
 
     '--_pButtonBg': '#437FEC',
     '--_pButtonBorder': '#437FEC',
-    '--_pButtonColor': '#FFFFFF',
     '--_pHoverButtonBg': '#2969DC',
     '--_pHoverButtonBorder': '#2969DC',
-    '--_pHoverButtonColor': '#FFFFFF',
     '--_pDisabledButtonBg': '#E5E8ED',
     '--_pDisabledButtonBorder': '#E5E8ED',
     '--_pDisabledButtonColor': '#848DA3',
 
-    '--_sButtonBg': '#FFFFFF',
     '--_sButtonBorder': '#CBD2DC',
     '--_sButtonColor': '#05143A',
     '--_sIconColor': '#3A5277',
-    '--_sHoverButtonBg': '#FFFFFF',
     '--_sHoverButtonBorder': '#437FEC',
     '--_sHoverButtonColor': '#437FEC',
-    '--_sDisabledButtonBg': '#FFFFFF',
     '--_sDisabledButtonBorder': '#F2F3F5',
     '--_sDisabledButtonColor': '#848DA3',
 
@@ -102,17 +95,14 @@ export const APP_THEME: ITheme = {
     // SWITCH
     '--_offBg': '#DEE3EE',
     '--_onBg': '#1565C0',
-    '--_thumbBg': '#FFFFFF',
     // STEPPER
     '--_defStepperBgColor': '#F3F6FC',
     '--_defStepperLabelColor': '#848DA3',
     '--_defStepperNumberTextColor': '#848DA3',
     '--_selectedStepperBgColor': '#437FEC',
     '--_selectedStepperLabelColor': '#05143A',
-    '--_selectedStepperNumberTextColor': '#FFFFFF',
     '--_completedStepperBgColor': '#52984E',
     '--_completedStepperLabelColor': '#05143A',
-    '--_completedStepperNumberTextColor': '#FFFFFF',
     '--_stepperEdgeColor': '#CBD2DC',
     '--_stepperStateCompleteColor': '#52984E',
     // TAGS
@@ -127,7 +117,6 @@ export const APP_THEME: ITheme = {
   },
   dark: {
     '--_primaryBg': 'black',
-    '--_primaryColor': '#05143A',
     '--_appBg': '#F3F6FC', //'#CBD2DC',
     '--_sidebarBorder': '#437FEC',
     '--_sidebarGradient': 'linear-gradient(90deg, #437FEC 0%, rgba(67, 127, 236, 0) 100%)',
@@ -136,36 +125,30 @@ export const APP_THEME: ITheme = {
     '--_tabContainerBg': 'black',
 
     // Text Color
-    '--_primaryTextColor': '#FFFFFF',
+    '--_primaryWhiteColor': '#FFFFFF',
+    '--_primaryTextColor': '#05143A',
     '--_secondaryTextColor': '#CECECE',
     '--_disabledTextColor': '#848DA3',
     '--_tabHeaderTextColor': '#848DA3',
     '--_tabHeaderActiveTextColor': 'black',
     // Buttons
-    '--_primaryButtonBg': '#FFFFFF',
     '--_primaryButtonBorder': '#CBD2DC',
     '--_hoverButtonBg': '#437FEC',
-    '--_hoverButtonColor': '#FFFFFF',
     '--_disabledButtonBg': '#E5E8ED',
     '--_disabledButtonColor': '#62707F',
 
     '--_pButtonBg': '#437FEC',
     '--_pButtonBorder': '#437FEC',
-    '--_pButtonColor': '#FFFFFF',
     '--_pHoverButtonBg': '#2969DC',
     '--_pHoverButtonBorder': '#2969DC',
-    '--_pHoverButtonColor': '#FFFFFF',
     '--_pDisabledButtonBg': '#E5E8ED',
     '--_pDisabledButtonBorder': '#E5E8ED',
     '--_pDisabledButtonColor': '#848DA3',
 
-    '--_sButtonBg': '#FFFFFF',
     '--_sButtonBorder': '#CBD2DC',
     '--_sButtonColor': '#05143A',
-    '--_sHoverButtonBg': '#FFFFFF',
     '--_sHoverButtonBorder': '#437FEC',
     '--_sHoverButtonColor': '#437FEC',
-    '--_sDisabledButtonBg': '#FFFFFF',
     '--_sDisabledButtonBorder': '#F2F3F5',
     '--_sDisabledButtonColor': '#848DA3',
 
@@ -214,17 +197,14 @@ export const APP_THEME: ITheme = {
     // SWITCH
     '--_offBg': '#DEE3EE',
     '--_onBg': '#1565C0',
-    '--_thumbBg': '#FFFFFF',
     // STEPPER
     '--_defStepperBgColor': '#F3F6FC',
     '--_defStepperLabelColor': '#848DA3',
     '--_defStepperNumberTextColor': '#848DA3',
     '--_selectedStepperBgColor': '#437FEC',
     '--_selectedStepperLabelColor': '#05143A',
-    '--_selectedStepperNumberTextColor': '#FFFFFF',
     '--_completedStepperBgColor': '#52984E',
     '--_completedStepperLabelColor': '#05143A',
-    '--_completedStepperNumberTextColor': '#FFFFFF',
     '--_stepperEdgeColor': '#CBD2DC',
     '--_stepperStateCompleteColor': '#52984E',
     // TAGS

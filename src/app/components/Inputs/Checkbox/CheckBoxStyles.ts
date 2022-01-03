@@ -74,7 +74,7 @@ export const Checkbox = styled.div<CheckboxProps>`
     }
   }
   ${Input}:checked ~ * {
-    color: var(--_primaryColor);
+    color: var(--_primaryTextColor);
   }
   ${Input}:checked ~ ${Overlay} {
     border-color: transparent;
@@ -97,5 +97,5 @@ export const Label = styled.span<Props>`
   display: inline-block;
   white-space: nowrap;
   pointer-events: none;
-  color: ${props => (props.isChecked ? 'var(--_primaryColor)' : 'var(--_disabledTextColor)')};
+  color: ${props => (props.isChecked ? 'var(--_primaryTextColor)' : 'var(--_disabledTextColor)')};
 `;

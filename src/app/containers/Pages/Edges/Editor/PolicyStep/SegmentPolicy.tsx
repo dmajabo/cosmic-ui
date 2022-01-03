@@ -108,7 +108,7 @@ const SegmentPolicy: React.FC<Props> = (props: Props) => {
         <PrimaryButton
           styles={{ margin: '0 auto 0 0' }}
           label="DELETE POLICY"
-          icon={deleteIcon('var(--_pButtonColor)')}
+          icon={deleteIcon('var(--_primaryWhiteColor)')}
           onClick={onDeletePolicy}
           bgColor="var(--_errorColor)"
           borderColor="var(--_errorColor)"

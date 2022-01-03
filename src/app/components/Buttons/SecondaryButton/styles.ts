@@ -9,11 +9,11 @@ interface BProps {
 export const SecondaryButtonStyles = styled.button<BProps>`
   font-family: 'DMSans', sans-serif;
   color: var(--_sButtonColor);
-  background: var(--_sButtonBg);
+  background: var(--_primaryWhiteColor);
   width: ${props => props.width || 'auto'};
   height: ${props => props.height || '50px'};
   border: 1px solid;
-  border-color: ${props => (props.withoutBorder ? 'var(--_sButtonBg)' : 'var(--_sButtonBorder)')};
+  border-color: ${props => (props.withoutBorder ? 'var(--_primaryWhiteColor)' : 'var(--_sButtonBorder)')};
   transition-property: color, background, border-color;
   transition: 0.2s linear;
   border-radius: 6px;
@@ -33,8 +33,8 @@ export const SecondaryButtonStyles = styled.button<BProps>`
   }
   &:disabled {
     color: var(--_sDisabledButtonColor);
-    background: var(--_sDisabledButtonBg);
-    border-color: ${props => (props.withoutBorder ? 'var(--_sDisabledButtonBg)' : 'var(--_sDisabledButtonBorder)')};
+    background: var(--_primaryWhiteColor);
+    border-color: ${props => (props.withoutBorder ? 'var(--_primaryWhiteColor)' : 'var(--_sDisabledButtonBorder)')};
     cursor: default;
     .inheritFill {
       fill: var(--_sDisabledButtonColor);
@@ -43,8 +43,8 @@ export const SecondaryButtonStyles = styled.button<BProps>`
   &.active,
   &:hover:not(:disabled) {
     color: var(--_sHoverButtonColor);
-    background: var(--_sHoverButtonBg);
-    border-color: ${props => (props.withoutBorder ? 'var(--_sHoverButtonBg)' : 'var(--_sHoverButtonBorder)')};
+    background: var(--_primaryWhiteColor);
+    border-color: ${props => (props.withoutBorder ? 'var(--_primaryWhiteColor)' : 'var(--_sHoverButtonBorder)')};
     .inheritFill {
       fill: var(--_sHoverButtonColor);
     }

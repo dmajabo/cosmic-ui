@@ -8,7 +8,7 @@ export const BreadcrumbsWrapper = styled.div`
   & .MuiBreadcrumbs-root {
     font-family: 'DMSans';
     line-height: normal;
-    color: var(--_primaryColor);
+    color: var(--_primaryTextColor);
   }
 `;
 
@@ -23,5 +23,5 @@ export const BreadCrumbItemStyle = styled.span<Props>`
   line-height: 16px;
   text-align: right;
   cursor: ${props => (props.highlight ? 'pointer' : 'default')};
-  color: ${props => (props.highlight ? 'var(--_primaryColor)' : 'var(--_disabledTextColor)')};
+  color: ${props => (props.highlight ? 'var(--_primaryTextColor)' : 'var(--_disabledTextColor)')};
 `;

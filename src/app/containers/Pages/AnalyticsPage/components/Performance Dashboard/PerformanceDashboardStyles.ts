@@ -1,4 +1,5 @@
-import { Theme, createStyles, makeStyles } from '@material-ui/core';
+import { Theme } from '@mui/material';
+import { createStyles, makeStyles } from '@mui/styles';
 
 export const PerformanceDashboardStyles = makeStyles(
   (theme: Theme) =>

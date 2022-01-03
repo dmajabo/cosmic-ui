@@ -58,5 +58,5 @@ export const DetailsCell = styled.div<RowCellProps>`
   font-style: normal;
   font-size: 16px;
   line-height: 21px;
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
 `;
