@@ -1,5 +1,5 @@
 import { IStepperItem, StepperItemStateType } from 'app/components/Stepper/model';
-import { Mark } from '@material-ui/core/Slider';
+import { Mark } from '@mui/material';
 import { ISelectedListItem } from 'lib/models/general';
 import { poloAltoIcon } from 'app/components/SVGIcons/edges/poloAlto';
 import { ConnectionPKeysMap, IEdgeP, NwServicesVendor } from 'lib/api/ApiModels/Edges/apiModel';

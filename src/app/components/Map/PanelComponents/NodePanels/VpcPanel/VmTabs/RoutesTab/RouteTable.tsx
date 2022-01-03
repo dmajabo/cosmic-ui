@@ -1,7 +1,7 @@
 import React from 'react';
 import { CaptionRow, CaptionContent, TableWrapperStyles } from 'app/components/Basic/Table/styles';
 import { IRouteResDataItem, IRouteState } from 'lib/api/ApiModels/Metrics/apiModel';
-import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
+import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
 import { EmptyDataStyles, EmptyText } from 'app/components/Basic/NoDataStyles/NoDataStyles';
 import { TableStyles } from 'app/components/Basic/Table/TableStyles';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
@@ -53,7 +53,7 @@ const RouteTable: React.FC<Props> = (props: Props) => {
                   <TableRow hover tabIndex={-1} key={`tableRow${props.data.extId}${rowIndex}`} className={classes.row}>
                     <TableCell className={classes.tableCell}>{row.destinationCidr ? row.destinationCidr.name : null}</TableCell>
                     <TableCell className={classes.tableCell}>{row.target}</TableCell>
-                    <TableCell className={`${classes.tableCell} ${row.state === IRouteState.Active ? classes.tableCellStatusActive : ''}`}>
+                    <TableCell className={`${classes.tableCell} ${row.state === IRouteState.Active ? 'cellStatusActive' : ''}`}>
                       {row.state === IRouteState.Active && <IconWrapper width="16px" height="16px" icon={successIcon} styles={{ marginRight: ' 10px' }} />}
                       {row.state}
                     </TableCell>

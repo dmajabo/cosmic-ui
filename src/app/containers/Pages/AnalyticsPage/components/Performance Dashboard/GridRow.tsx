@@ -1,4 +1,4 @@
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import React from 'react';
 import { PerformanceDashboardStyles } from './PerformanceDashboardStyles';
 import { HeatmapMetrics, LegendData } from './Heatmap';

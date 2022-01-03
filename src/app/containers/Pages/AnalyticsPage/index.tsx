@@ -1,4 +1,4 @@
-import { Tab, Tabs } from '@material-ui/core';
+import { Tab, Tabs } from '@mui/material';
 import { SessionsProvider, useSessionsActions } from 'lib/hooks/Sessions/useSessionsDataContext';
 import React, { useState } from 'react';
 import { AnalyticsStyles } from './AnalyticsStyles';
@@ -89,10 +89,10 @@ const AnalyticsPage: React.FC = () => {
           <PerformanceDashboard />
         </TabPanel> */}
         <TabPanel value={selectedTabName} title={TabName.Anomalies}>
-          <Anomalies />
+          {selectedTabName === TabName.Anomalies && <Anomalies />}
         </TabPanel>
         <TabPanel value={selectedTabName} title={TabName.PolicyLogs}>
-          <PolicyLogs />
+          {selectedTabName === TabName.PolicyLogs && <PolicyLogs />}
         </TabPanel>
         {/* <TabPanel value={selectedTabName} title={TabName.MetricsExplorer}>
           <MetricsExplorer />

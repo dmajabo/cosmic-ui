@@ -1,6 +1,6 @@
 import React from 'react';
-import { Typography, IconButton, Card, CardHeader, Menu, MenuItem } from '@material-ui/core';
-import { MoreVert as MoreVertIcon } from '@material-ui/icons';
+import { Typography, IconButton, Card, CardHeader, Menu, MenuItem } from '@mui/material';
+import { MoreVert as MoreVertIcon } from '@mui/icons-material';
 import { DashboardStyles } from '../DashboardStyles';
 
 interface Legend {

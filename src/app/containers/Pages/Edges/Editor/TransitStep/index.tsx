@@ -84,6 +84,7 @@ const TransitStep: React.FC<Props> = (props: Props) => {
         disabled={!edges.awsAccounts || !edges.awsAccounts.length}
         onChange={onAccountChange}
         styles={{ height: '72px', minHeight: '72px', margin: '0 0 20px 0' }}
+        selectStyles={{ height: '50px', width: '100%' }}
         selectClaassName="withLabel"
         required
       />

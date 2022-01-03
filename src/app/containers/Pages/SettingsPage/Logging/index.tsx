@@ -116,7 +116,7 @@ const Logging: React.FC<IProps> = (props: IProps) => {
       field: LoggingGridColumns.respStatusCode.resField,
       headerName: LoggingGridColumns.respStatusCode.label,
       label: LoggingGridColumns.respStatusCode.label,
-      width: 120,
+      width: 160,
       disableColumnMenu: true,
       resizable: false,
       editable: false,

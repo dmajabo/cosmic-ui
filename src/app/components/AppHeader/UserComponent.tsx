@@ -3,7 +3,7 @@ import { User, UserName, UserRole, UserWrapper } from './styles';
 import ImgComponent from 'app/components/Basic/ImgComponent';
 import PopupContainer from 'app/components/PopupContainer';
 import { PopupLinkItem } from 'app/components/PopupContainer/styles';
-import { ClickAwayListener } from '@material-ui/core';
+import { ClickAwayListener } from '@mui/material';
 import { useAuth0 } from '@auth0/auth0-react';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { UserRole as UserRoleData } from 'lib/api/ApiModels/Account/account';

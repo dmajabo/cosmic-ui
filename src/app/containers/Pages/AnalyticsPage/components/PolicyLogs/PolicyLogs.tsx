@@ -1,4 +1,4 @@
-import { Button, Typography } from '@material-ui/core';
+import { Button, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
 import { AnalyticsStyles } from '../../AnalyticsStyles';
@@ -13,7 +13,7 @@ import { CheckboxData } from '../Metrics Explorer/Dimensions';
 import { Checkbox, FormControlLabel, FormGroup, Popover } from '@mui/material';
 import { DUMMY_POLICY_LOGS_TABLE_DATA } from '../../DummyData';
 
-const REGEX = /[-[\]{}()*+?.,\\^$|#\s]/g;
+// const REGEX = /[-[\]{}()*+?.,\\^$|#\s]/g;
 
 const INITIAL_ANOMALY_TIME_RANGE_VALUE: LookbackSelectOption = {
   label: LookbackLabel.oneWeek,
@@ -140,11 +140,11 @@ export const PolicyLogs: React.FC = () => {
     });
 
   //adds \ before every special character of string to use in regular expression
-  const escapeRegExp = (value: string) => value.replace(REGEX, '\\$&');
+  // const escapeRegExp = (value: string) => value.replace(REGEX, '\\$&');
 
   const requestSearch = (searchValue: string) => {
     setSearchText(searchValue);
-    const searchRegex = new RegExp(escapeRegExp(searchValue), 'i');
+    // const searchRegex = new RegExp(escapeRegExp(searchValue), 'i');
   };
 
   const handleSearchTextChange = (event: React.ChangeEvent<HTMLInputElement>) => requestSearch(event.target.value);

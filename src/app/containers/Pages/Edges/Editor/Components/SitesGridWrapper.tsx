@@ -182,7 +182,7 @@ const SitesGridWrapper: React.FC<Props> = (props: Props) => {
     <>
       <ModalRow margin="0 0 10px 0" align="center">
         <ModalLabel>Sites</ModalLabel>
-        <SecondaryButtonWithPopup styles={{ padding: '0', width: '40px' }} wrapStyles={{ margin: '0 0 0 auto' }} icon={filterIcon} direction="rtl">
+        <SecondaryButtonWithPopup styles={{ padding: '0', width: '50px' }} wrapStyles={{ margin: '0 0 0 auto' }} icon={filterIcon} direction="rtl">
           <PopupContainer
             styles={{
               overflow: 'hidden',
@@ -249,7 +249,9 @@ const SitesGridWrapper: React.FC<Props> = (props: Props) => {
                 <LoadingIndicator margin="auto" />
               </AbsLoaderWrapper>
             ),
-            Checkbox: React.forwardRef(({ checked, onChange, indeterminate }, ref) => <SimpleCheckbox ref={ref} isChecked={checked} toggleCheckboxChange={onChange} indeterminate={indeterminate} />),
+            BaseCheckbox: React.forwardRef(({ checked, onChange, indeterminate }, ref) => (
+              <SimpleCheckbox ref={ref} isChecked={checked} toggleCheckboxChange={onChange} indeterminate={indeterminate} />
+            )),
           }}
         />
       </GridWrapper>

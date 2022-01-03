@@ -2,8 +2,8 @@ import React from 'react';
 import { DashboardStyles } from '../DashboardStyles';
 import { NetworkValueTrend } from '../enum/NetworkValueTrend';
 import { FormattedNumber, IntlProvider } from 'react-intl';
-import { Typography, CardContent } from '@material-ui/core';
-import { ArrowUpward as ArrowUpwardIcon, ArrowDownward as ArrowDownwardIcon } from '@material-ui/icons';
+import { Typography, CardContent } from '@mui/material';
+import { ArrowUpward as ArrowUpwardIcon, ArrowDownward as ArrowDownwardIcon } from '@mui/icons-material';
 /* eslint-disable react/style-prop-object */
 interface NetworkTileProps {
   readonly value: number;

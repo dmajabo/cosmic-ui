@@ -1,6 +1,5 @@
 import React from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
-import TablePagination from '@mui/material/TablePagination';
+import { TablePagination, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import { TableStyles } from 'app/components/Basic/Table/TableStyles';
 import { ITableColumn } from './model';
 import { ErrorMessage } from '../ErrorMessage/ErrorMessage';

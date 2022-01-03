@@ -1,5 +1,5 @@
 import React from 'react';
-import { Tab, Tabs } from '@material-ui/core';
+import { Tab, Tabs } from '@mui/material';
 import { TabsStyles } from 'app/components/Tabs/TabsStyles';
 import { TabComponentProps } from 'app/components/Tabs/TabComponentProps';
 import { SESSIONS_TABS } from 'lib/hooks/Sessions/model';

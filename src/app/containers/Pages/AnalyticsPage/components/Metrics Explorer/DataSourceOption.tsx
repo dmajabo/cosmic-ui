@@ -1,5 +1,4 @@
-import { FormControlLabel } from '@material-ui/core';
-import { Checkbox } from '@mui/material';
+import { Checkbox, FormControlLabel } from '@mui/material';
 import React, { useState } from 'react';
 import { AnalyticsStyles } from '../../AnalyticsStyles';
 import { DataSourceOptions } from './DataSource';

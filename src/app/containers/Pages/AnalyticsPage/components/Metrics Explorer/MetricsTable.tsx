@@ -1,4 +1,4 @@
-import { Button, FormControlLabel, Typography } from '@material-ui/core';
+import { Button, FormControlLabel, Typography } from '@mui/material';
 import { Column, ColumnAccessor, MetricsExplorerTableData } from 'lib/api/http/SharedTypes';
 import isEqual from 'lodash/isEqual';
 import sortBy from 'lodash/sortBy';

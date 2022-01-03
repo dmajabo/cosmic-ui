@@ -1,5 +1,5 @@
-import { Button, FormControl, MenuItem, Typography, Select, CardContent } from '@material-ui/core';
-import { Add as AddIcon } from '@material-ui/icons';
+import { Button, FormControl, MenuItem, Typography, Select, CardContent, SelectChangeEvent } from '@mui/material';
+import { Add as AddIcon } from '@mui/icons-material';
 import React, { ReactNode } from 'react';
 import { useState } from 'react';
 import { CardTitle } from './enum/CardTitle';
@@ -142,7 +142,7 @@ const DashboardPage: React.FC<IProps> = (props: IProps) => {
 
   const [networkDetailDuration, setNetwokDetailDuration] = React.useState<string>('');
 
-  const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => setNetwokDetailDuration(event.target.value as string);
+  const handleChange = (event: SelectChangeEvent<any>, child?: object) => setNetwokDetailDuration(event.target.value as string);
 
   const [widgets, setWidgets] = useState<Widget[]>(defaultWidgets);
   const [layouts, setLayouts] = useState({});
@@ -177,7 +177,7 @@ const DashboardPage: React.FC<IProps> = (props: IProps) => {
             Show:
           </Typography>
           <FormControl variant="outlined" className={classes.formControl}>
-            <Select labelId="show dropdown" id="dropdown" classes={{ root: classes.dropdown }} value={networkDetailDuration} onChange={handleChange} label="show">
+            <Select labelId="show dropdown" id="dropdown" classes={{ select: classes.dropdown }} value={networkDetailDuration} onChange={handleChange} label="show">
               <MenuItem value={0}>
                 <em>None</em>
               </MenuItem>

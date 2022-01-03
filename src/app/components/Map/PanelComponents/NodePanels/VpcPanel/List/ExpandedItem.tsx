@@ -5,22 +5,9 @@ import IconWrapper from 'app/components/Buttons/IconWrapper';
 import Collapse from '@mui/material/Collapse';
 import { applicationGroupIcon } from 'app/components/SVGIcons/topologyIcons/applicationGroup';
 import VmItem from './VmItem';
-import { Theme, createStyles, makeStyles } from '@material-ui/core';
 import { arrowBottomIcon } from 'app/components/SVGIcons/arrows';
+import { CollapseStyles } from './CollapseStyle';
 
-export const CollapseStyles = makeStyles(
-  (theme: Theme) =>
-    createStyles({
-      root: {
-        width: '100%',
-        fontFamily: 'DMSans',
-        borderRadius: 6,
-      },
-    }),
-  {
-    index: 1,
-  },
-);
 interface Props {
   dataItem: IApplication_Group;
   onClickVm: (_item: IVm) => void;

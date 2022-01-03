@@ -25,7 +25,7 @@ export const SliderWrapper = styled.div`
     position: absolute;
     top: 0;
     width: 50px;
-    height: 26px;
+    height: 30px;
     background: var(--_primaryBg);
   }
   &:after {

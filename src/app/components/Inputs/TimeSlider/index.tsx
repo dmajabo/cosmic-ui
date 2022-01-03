@@ -1,30 +1,30 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles } from '@mui/styles';
 import { ITimeConfig, ITimeValue } from './models';
 import { ITimeTypes } from 'lib/models/general';
 import { getDomain, getMinMaxSliderRange, getSliderValuesConfig, getTicks, ITimeMinMaxRange } from './helpers';
-import Slider from '@material-ui/core/Slider';
+import { Slider } from '@mui/material';
 import ValueLabelComponent from './ValueLabelComponent';
 import { differenceInCalendarDays, differenceInMinutes, format, isThisHour, isToday } from 'date-fns';
 
 const SliderStyles = withStyles({
   root: {
-    color: 'var(--_primaryTextColor)',
-    height: 40,
-    padding: '10px 0px 15px 0px',
-    boxSizing: 'border-box',
-    margin: 0,
+    '&.MuiSlider-root': {
+      color: 'var(--_primaryTextColor)',
+      height: 40,
+      padding: '10px 0px 20px 0px',
+      boxSizing: 'border-box',
+      margin: 0,
+    },
+    '& *': {
+      fontFamily: 'DMSans !important',
+    },
     '&.MuiSlider-root.Mui-disabled': {
       opacity: 0.5,
     },
-  },
-  thumb: {
-    '&:focus, &:hover, &$active': {
-      boxShadow: 'none !important',
-    },
-    '&.MuiSlider-thumb': {
+    '& .MuiSlider-thumb': {
       display: 'inline-flex',
-      top: 'calc(50% - 20px)',
+      top: 'calc(50% - 17px)',
       marginTop: 0,
       marginLeft: -12,
       height: 24,
@@ -34,51 +34,74 @@ const SliderStyles = withStyles({
       borderRadius: '50%',
       boxShadow: '0px 4px 15px rgba(5, 20, 58, 0.15) !important',
       zIndex: 1,
+      transform: 'none',
+      '&:focus, &:hover, &:active': {
+        boxShadow: 'none !important',
+      },
+      '&:after': {
+        display: 'none',
+      },
     },
-    '&:after': {
+    '& .MuiSlider-track': {
+      height: 10,
+      borderRadius: 20,
+      paddingRight: '50px',
+      top: '10px',
+      boxSizing: 'content-box',
+      transform: 'none',
+      border: 'none',
+      background:
+        'linear-gradient(90deg, rgba(67, 127, 236, 0) calc(100% - 100px), rgba(67, 127, 236, 0.2) calc(100% - 75px), #437FEC calc(100% - 50px), rgba(67, 127, 236, 0.2) calc(100% - 25px), rgba(67, 127, 236, 0) 100%)',
+    },
+    '& .MuiSlider-rail': {
+      height: 10,
+      borderRadius: 20,
+      backgroundColor: 'var(--_vmBg)',
+      position: 'relative',
+      top: '0',
+      transform: 'none',
+    },
+    '& .MuiSlider-mark': {
       display: 'none',
     },
-  },
-  active: {},
-  track: {
-    height: 10,
-    borderRadius: 20,
-    paddingRight: '50px',
-    top: '7px',
-    boxSizing: 'content-box',
-    background:
-      'linear-gradient(90deg, rgba(67, 127, 236, 0) calc(100% - 100px), rgba(67, 127, 236, 0.2) calc(100% - 75px), #437FEC calc(100% - 50px), rgba(67, 127, 236, 0.2) calc(100% - 25px), rgba(67, 127, 236, 0) 100%)',
-  },
-  rail: {
-    height: 10,
-    borderRadius: 20,
-    backgroundColor: 'var(--_vmBg)',
-    position: 'relative',
-    top: '-3px',
-  },
-  mark: {
-    backgroundColor: 'var(--_primaryButtonBorder)',
-    height: 16,
-    width: 1,
-    marginTop: -16,
-  },
-  markActive: {
-    opacity: 1,
-    backgroundColor: 'var(--_primaryButtonBorder)',
-  },
-  markLabel: {
-    fontStyle: 'normal',
-    fontWeight: 'normal',
-    fontSize: 11,
-    lineHeight: 'normal',
-    color: 'var(--_disabledTextColor)',
-    fontFamily: 'DMSans',
-    letterSpacing: 'normal',
-    top: 'unset',
-    bottom: '0',
-    '& .highLight': {
-      fontWeight: '700',
-      color: 'var(--_primaryTextColor)',
+    '& .MuiSlider-markActive': {
+      display: 'none',
+    },
+    '& .MuiSlider-markLabel': {
+      transform: 'none',
+      position: 'absolute',
+      whiteSpace: 'nowrap',
+      top: '32px',
+      color: 'var(--_disabledTextColor)',
+      fontSize: '11px',
+      fontStyle: 'normal',
+      fontFamily: 'DMSans',
+      fontWeight: 'normal',
+      lineHeight: 'normal',
+      letterSpacing: 'normal',
+      '& .sliderMarkBorder': {
+        position: 'absolute',
+        top: '-25px',
+        background: 'var(--_borderColor)',
+        width: '1px',
+        height: '16px',
+        '&.activeBorder': {
+          width: '2px',
+          top: '-30px',
+          height: '26px',
+        },
+        '&.lastBorder': {
+          left: '-2px',
+        },
+      },
+      '& .sliderMarkText': {
+        textAlign: 'center',
+        marginLeft: '-50%',
+      },
+      '& .highLight': {
+        fontWeight: '700',
+        color: 'var(--_primaryTextColor)',
+      },
     },
   },
 })(Slider);
@@ -113,9 +136,17 @@ const TimeSlider: React.FC<Props> = (props: Props) => {
     _obj.domain = _domain;
     const _selected = _obj.selected || _obj.max;
     const _values: ITimeValue[] = getTicks(props.currentPeriod, _domain, _selected);
-    const _visibleItems = _values.map(it => ({ ...it, label: <span className={it.highlight ? 'highLight' : ''}>{it.label}</span> }));
+    const _visibleItems = _values.map((it, index) => ({
+      ...it,
+      label: (
+        <>
+          <span className={`sliderMarkBorder${it.highlight || index === _values.length - 1 ? ' activeBorder' : ''}${index === _values.length - 1 ? ' lastBorder' : ''}`} />
+          <span className={`sliderMarkText${it.highlight || index === _values.length - 1 ? ' highLight' : ''}`}>{it.label}</span>
+        </>
+      ),
+    }));
     setSelected(_selected);
-    setValues([..._visibleItems]);
+    setValues(_visibleItems);
     setConfig(_obj);
     if (config && (_obj.min !== config.min || _obj.max !== config.max)) {
       const _range: ITimeMinMaxRange = getMinMaxSliderRange(_obj.min, _obj.max);
@@ -127,12 +158,12 @@ const TimeSlider: React.FC<Props> = (props: Props) => {
     }
   };
 
-  const handleChange = (event: React.ChangeEvent<{}>, value: number) => {
+  const handleChange = (event: Event, value: number, activeThumb: number) => {
     if (!event || !props.currentPeriod) return;
     setSelected(value);
   };
 
-  const onChangeCommited = (event: React.ChangeEvent<{}>, value: number) => {
+  const onChangeCommited = (event: React.SyntheticEvent | Event, value: number) => {
     if (!event || !value || differenceInMinutes(value, props.selectedCalendarDay) === 0) return;
     let _d = new Date(value);
     if (isToday(value) && isThisHour(value)) {
@@ -146,14 +177,15 @@ const TimeSlider: React.FC<Props> = (props: Props) => {
   }
   return (
     <SliderStyles
-      classes={{ markLabel: 'slider-label', mark: 'slider-mark' }}
       value={selected}
       defaultValue={defaultValue}
       min={config.min}
       step={config.step}
       max={config.max}
       valueLabelDisplay="auto"
-      ValueLabelComponent={ValueLabelComponent}
+      components={{
+        ValueLabel: ValueLabelComponent,
+      }}
       marks={values}
       onChange={handleChange}
       onChangeCommitted={onChangeCommited}

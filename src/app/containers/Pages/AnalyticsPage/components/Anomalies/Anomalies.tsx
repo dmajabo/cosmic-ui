@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { AnalyticsStyles } from '../../AnalyticsStyles';
-import { Tabs, Tab, Typography, Button } from '@material-ui/core';
+import { Tabs, Tab, Typography, Button } from '@mui/material';
 import FilterIcon from '../../icons/performance dashboard/filter.svg';
 import Select from 'react-select';
 import { ExperienceTab } from './ExperienceTab';
@@ -90,7 +90,7 @@ export const Anomalies: React.FC = () => {
     <div className={classes.anomalyContainer}>
       <div className={classes.tabTitleContainer}>
         <div>
-          <Tabs classes={{ root: classes.anomalyTabContainer, indicator: classes.indicator }} value={tab} onChange={handleTabChange} indicatorColor="primary">
+          <Tabs classes={{ root: classes.anomalyTabContainer, indicator: classes.indicator }} value={tab} onChange={handleTabChange}>
             <Tab
               classes={{ selected: classes.selectedTab }}
               value={AnomalyTabValue.Experience}

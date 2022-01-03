@@ -1,5 +1,5 @@
 import React from 'react';
-import Collapse from '@mui/material/Collapse';
+import { Collapse } from '@mui/material';
 import { BoxWrapper, GroupHeader, GroupItemsWrapper, GroupLabel } from './styles';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { arrowBottomIcon } from 'app/components/SVGIcons/arrows';

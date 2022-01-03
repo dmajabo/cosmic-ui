@@ -1,4 +1,4 @@
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import React, { useContext, useEffect, useState } from 'react';
 import { createApiClient } from 'lib/api/http/apiClient';
 import { PerformanceDashboardStyles } from './PerformanceDashboardStyles';

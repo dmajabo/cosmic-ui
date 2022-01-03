@@ -1,6 +1,6 @@
 import React from 'react';
 import { AlertConfigState, AlertSeverity, IAlertMeta, IAlertMetaDataRes } from 'lib/api/ApiModels/Workflow/apiModel';
-import { useGet, usePost, usePut } from 'lib/api/http/useAxiosHook';
+import { useGet, usePost } from 'lib/api/http/useAxiosHook';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { PAGING_DEFAULT_PAGE_SIZE } from 'lib/hooks/Sessions/model';
 import { AUTOMATION_SELECT_VALUES } from 'lib/hooks/Automation/models';
@@ -87,6 +87,7 @@ const Triggers: React.FC<Props> = (props: Props) => {
             options={[AlertSeverity.LOW, AlertSeverity.MEDIUM, AlertSeverity.HIGH]}
             onChange={v => onSeverityChange(v, param)}
             styles={{ maxWidth: '160px' }}
+            selectStyles={{ height: '38px', width: '100%' }}
             renderValue={(v: string) => <SeverityOption value={v as AlertSeverity} />}
           />
         </GridCellWrapper>

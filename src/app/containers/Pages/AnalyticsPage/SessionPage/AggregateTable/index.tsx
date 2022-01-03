@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
+import { Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
 import AggregateRow from './AggregateRow';
 import { IBuckets, ISession } from 'lib/api/ApiModels/Sessions/apiModel';
 import { IAggregateRow } from './models';
