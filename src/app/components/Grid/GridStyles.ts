@@ -5,11 +5,13 @@ export const GridStyles = makeStyles(
   (theme: Theme) =>
     createStyles({
       container: {
-        width: '100%',
-        background: 'transparent',
-        minHeight: 200,
-        position: 'relative',
-        border: 'none',
+        '&.MuiDataGrid-root': {
+          width: '100%',
+          background: 'transparent',
+          minHeight: 200,
+          position: 'relative',
+          border: 'none',
+        },
         '&.MuiDataGrid-root .MuiDataGrid-overlay': {
           background: 'transparent',
         },
@@ -28,6 +30,28 @@ export const GridStyles = makeStyles(
         '& .MuiDataGrid-columnHeaderWrapper': {
           height: '100%',
         },
+        '& .MuiDataGrid-columnHeaders': {
+          borderBottom: '1px solid var(--_rowBorder)',
+          '& .MuiDataGrid-columnHeadersInner': {
+            height: '100%',
+          },
+          '& .MuiDataGrid-columnHeader': {
+            outline: 'none !important',
+            background: 'transparent',
+            height: '100%',
+          },
+          '& .MuiDataGrid-columnSeparator': {
+            display: 'none',
+          },
+          '& .MuiDataGrid-iconButtonContainer': {
+            '& .MuiIconButton-root:hover': {
+              background: 'transparent',
+            },
+            '& .MuiTouchRipple-root': {
+              display: 'none',
+            },
+          },
+        },
         '& .MuiDataGrid-columnsContainer': {
           background: 'var(--_appBg)',
           height: 50,
@@ -42,9 +66,6 @@ export const GridStyles = makeStyles(
             background: 'transparent',
           },
         },
-        '& .MuiDataGrid-columnSeparator': {
-          display: 'none',
-        },
         '& .MuiDataGrid-cell': {
           outline: 'none !important',
           fontWeight: 'normal',
@@ -56,13 +77,18 @@ export const GridStyles = makeStyles(
         '& .MuiDataGrid-columnHeaderTitleContainer': {
           padding: 0,
         },
+        '& .MuiDataGrid-virtualScrollerContent': {
+          minHeight: '200px',
+        },
       },
       nestedGrid: {
-        width: '100%',
-        background: 'transparent',
-        minHeight: 0,
-        position: 'relative',
-        border: 'none',
+        '&.MuiDataGrid-root': {
+          width: '100%',
+          background: 'transparent',
+          minHeight: 0,
+          position: 'relative',
+          border: 'none',
+        },
         '& .MuiDataGrid-main': {
           paddingBottom: '20px',
         },
@@ -85,9 +111,28 @@ export const GridStyles = makeStyles(
           height: 40,
           border: 'none',
         },
-        '& .MuiDataGrid-columnHeader': {
-          outline: 'none !important',
-          padding: '0 20px !important',
+        '& .MuiDataGrid-columnHeaders': {
+          borderBottom: '1px solid var(--_rowBorder)',
+          '& .MuiDataGrid-columnHeadersInner': {
+            height: '100%',
+          },
+          '& .MuiDataGrid-columnHeader': {
+            outline: 'none !important',
+            background: 'transparent',
+            height: '100%',
+            padding: '0 20px !important',
+          },
+          '& .MuiDataGrid-columnSeparator': {
+            display: 'none',
+          },
+          '& .MuiDataGrid-iconButtonContainer': {
+            '& .MuiIconButton-root:hover': {
+              background: 'transparent',
+            },
+            '& .MuiTouchRipple-root': {
+              display: 'none',
+            },
+          },
         },
         '& .MuiDataGrid-row': {
           height: 50,
@@ -104,9 +149,6 @@ export const GridStyles = makeStyles(
             background: 'var(--_primaryBg)',
           },
         },
-        '& .MuiDataGrid-columnSeparator': {
-          display: 'none',
-        },
         '& .MuiDataGrid-cell': {
           outline: 'none !important',
           fontWeight: 'normal',
@@ -121,14 +163,39 @@ export const GridStyles = makeStyles(
         },
       },
       borderedRow: {
-        width: '100%',
-        background: 'transparent',
-        minHeight: 200,
-        position: 'relative',
-        border: 'none',
+        '&.MuiDataGrid-root': {
+          width: '100%',
+          background: 'transparent',
+          minHeight: 200,
+          position: 'relative',
+          border: 'none',
+        },
         '& .MuiDataGrid-main': {
           fontFamily: 'DMSans',
           borderRadius: '6px 6px 0px 0px',
+        },
+        '& .MuiDataGrid-columnHeaders': {
+          borderBottom: '1px solid var(--_rowBorder)',
+          height: '50px',
+          '& .MuiDataGrid-columnHeadersInner': {
+            height: '100%',
+          },
+          '& .MuiDataGrid-columnHeader': {
+            outline: 'none !important',
+            background: 'transparent',
+            height: '100%',
+          },
+          '& .MuiDataGrid-columnSeparator': {
+            display: 'none',
+          },
+          '& .MuiDataGrid-iconButtonContainer': {
+            '& .MuiIconButton-root:hover': {
+              background: 'transparent',
+            },
+            '& .MuiTouchRipple-root': {
+              display: 'none',
+            },
+          },
         },
         '& .MuiDataGrid-columnHeaderTitle': {
           fontWeight: 700,
@@ -143,9 +210,7 @@ export const GridStyles = makeStyles(
           height: 50,
           borderBottom: '1px solid var(--_rowBorder)',
         },
-        '& .MuiDataGrid-columnHeader': {
-          outline: 'none !important',
-        },
+
         '& .MuiDataGrid-row': {
           height: 50,
           background: 'var(--_primaryBg)',
@@ -159,9 +224,7 @@ export const GridStyles = makeStyles(
             background: 'var(--_primaryBg)',
           },
         },
-        '& .MuiDataGrid-columnSeparator': {
-          display: 'none',
-        },
+
         '& .MuiDataGrid-cell': {
           outline: 'none !important',
           fontWeight: 'normal',
@@ -178,6 +241,9 @@ export const GridStyles = makeStyles(
         },
         '& .MuiDataGrid-columnHeaderTitleContainer': {
           padding: 0,
+        },
+        '& .MuiDataGrid-virtualScrollerContent': {
+          minHeight: '200px',
         },
       },
     }),
