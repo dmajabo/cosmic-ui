@@ -41,7 +41,7 @@ enum TabName {
 const AnalyticsPage: React.FC = () => {
   const classes = AnalyticsStyles();
   const sessionsActions = useSessionsActions();
-  const [selectedTabName, setSelectedTabName] = useState<TabName>(TabName.PolicyLogs);
+  const [selectedTabName, setSelectedTabName] = useState<TabName>(TabName.Anomalies);
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: TabName) => setSelectedTabName(newValue);
 

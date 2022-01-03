@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { AnalyticsStyles } from '../../AnalyticsStyles';
 import { Tabs, Tab, Typography, Button } from '@mui/material';
 import FilterIcon from '../../icons/performance dashboard/filter.svg';
-import { LookbackLabel, LookbackSelectOption, LookbackValue } from '../Metrics Explorer/LookbackTimeTab';
 import Select from 'react-select';
 import { ExperienceTab } from './ExperienceTab';
 import { PolicyTab } from './PolicyTab';
@@ -34,51 +33,46 @@ function a11yProps(name: AnomalyTabValue) {
   };
 }
 
-const INITIAL_ANOMALY_TIME_RANGE_VALUE: LookbackSelectOption = {
-  label: LookbackLabel.oneWeek,
-  value: LookbackValue.oneWeek,
+export enum AnomalyTimeRangeLabel {
+  lastHour = 'Last 1 hour',
+  lastDay = 'Last 1 day',
+  lastWeek = 'Last 7 days',
+  lastMonth = 'Last 30 days',
+}
+
+export enum AnomalyTimeRangeValue {
+  lastHour = 'ANOMALY_QUERY_LAST_HOUR',
+  lastDay = 'ANOMALY_QUERY_LAST_DAY',
+  lastWeek = 'ANOMALY_QUERY_LAST_WEEK',
+  lastMonth = 'ANOMALY_QUERY_LAST_MONTH',
+}
+
+export interface AnomalySelectOption {
+  readonly label: AnomalyTimeRangeLabel;
+  readonly value: AnomalyTimeRangeValue;
+}
+
+const INITIAL_ANOMALY_TIME_RANGE_VALUE: AnomalySelectOption = {
+  label: AnomalyTimeRangeLabel.lastWeek,
+  value: AnomalyTimeRangeValue.lastWeek,
 };
 
-const TIME_RANGE_OPTIONS: LookbackSelectOption[] = [
+const TIME_RANGE_OPTIONS: AnomalySelectOption[] = [
   {
-    label: LookbackLabel.fiveMinutes,
-    value: LookbackValue.fiveMinutes,
+    label: AnomalyTimeRangeLabel.lastHour,
+    value: AnomalyTimeRangeValue.lastHour,
   },
   {
-    label: LookbackLabel.fifteenMinutes,
-    value: LookbackValue.fifteenMinutes,
+    label: AnomalyTimeRangeLabel.lastDay,
+    value: AnomalyTimeRangeValue.lastDay,
   },
   {
-    label: LookbackLabel.thirtyMinutes,
-    value: LookbackValue.thirtyMinutes,
+    label: AnomalyTimeRangeLabel.lastWeek,
+    value: AnomalyTimeRangeValue.lastWeek,
   },
   {
-    label: LookbackLabel.oneHour,
-    value: LookbackValue.oneHour,
-  },
-  {
-    label: LookbackLabel.sixHours,
-    value: LookbackValue.sixHours,
-  },
-  {
-    label: LookbackLabel.twelveHours,
-    value: LookbackValue.twelveHours,
-  },
-  {
-    label: LookbackLabel.twentyFourHours,
-    value: LookbackValue.twentyFourHours,
-  },
-  {
-    label: LookbackLabel.oneDay,
-    value: LookbackValue.oneDay,
-  },
-  {
-    label: LookbackLabel.oneWeek,
-    value: LookbackValue.oneWeek,
-  },
-  {
-    label: LookbackLabel.oneMonth,
-    value: LookbackValue.oneMonth,
+    label: AnomalyTimeRangeLabel.lastMonth,
+    value: AnomalyTimeRangeValue.lastMonth,
   },
 ];
 
@@ -86,11 +80,11 @@ export const Anomalies: React.FC = () => {
   const classes = AnalyticsStyles();
 
   const [tab, setTab] = useState<AnomalyTabValue>(AnomalyTabValue.Experience);
-  const [timeRange, setTimeRange] = useState<LookbackSelectOption>(INITIAL_ANOMALY_TIME_RANGE_VALUE);
+  const [timeRange, setTimeRange] = useState<AnomalySelectOption>(INITIAL_ANOMALY_TIME_RANGE_VALUE);
 
   const handleTabChange = (event, newValue: AnomalyTabValue) => setTab(newValue);
 
-  const handleTimeRangeChange = (value: LookbackSelectOption) => setTimeRange(value);
+  const handleTimeRangeChange = (value: AnomalySelectOption) => setTimeRange(value);
 
   return (
     <div className={classes.anomalyContainer}>
@@ -132,7 +126,7 @@ export const Anomalies: React.FC = () => {
         </div>
       </div>
       <TabPanel value={tab} name={AnomalyTabValue.Experience}>
-        <ExperienceTab />
+        <ExperienceTab timeRange={timeRange.value} />
       </TabPanel>
       <TabPanel value={tab} name={AnomalyTabValue.Policy}>
         <PolicyTab />

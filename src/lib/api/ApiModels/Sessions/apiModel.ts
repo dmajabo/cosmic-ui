@@ -24,6 +24,19 @@ export interface ISession extends IBaseEntity<string> {
   deviceExtId: string;
   device: string;
   deviceVendor: AccountVendorTypes;
+  readonly bytes: number;
+  readonly packets: number;
+  readonly action: string;
+  readonly tcpFlags: number;
+  readonly trafficType: string;
+  readonly vnetworkExtId: string;
+  readonly vnetworkName: string;
+  readonly subnetExtId: string;
+  readonly subnetName: string;
+  readonly vmExtId: string;
+  readonly vmName: string;
+  readonly region: string;
+  readonly azId: string;
 }
 
 export interface IBuckets {
