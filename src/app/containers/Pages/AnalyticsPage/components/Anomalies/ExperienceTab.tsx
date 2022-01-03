@@ -28,7 +28,7 @@ import LoadingIndicator from 'app/components/Loading';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import { AnomalyTimeRangeValue } from './Anomalies';
 import { createApiClient } from 'lib/api/http/apiClient';
-import { countBy, isEmpty } from 'lodash';
+import { countBy, isEmpty, sortBy } from 'lodash';
 import { TopoApi } from 'lib/api/ApiModels/Services/topo';
 import { GetDevicesString, GetSelectedOrganization } from '../Performance Dashboard/filterFunctions';
 import { DateTime } from 'luxon';
@@ -193,11 +193,16 @@ export const ExperienceTab: React.FC<ExperienceTabProps> = ({ timeRange }) => {
     } else {
       const luxonDateAnomalyData = allExperienceAnomalies.map(anomaly => DateTime.fromFormat(anomaly.time, OLD_TIME_FORMAT).toFormat('MMM dd'));
       const dateCount = countBy(luxonDateAnomalyData);
-      const barChartData: BarChartData[] = Object.keys(dateCount).map(item => ({
-        date: item,
+      const barChartData = Object.keys(dateCount).map(item => ({
+        date: DateTime.fromFormat(item, 'MMM dd').toMillis(),
         value: dateCount[item],
       }));
-      setBarChartData(barChartData);
+      const sortedBarChartData = sortBy(barChartData, 'date');
+      const finalBarChartData: BarChartData[] = sortedBarChartData.map(item => ({
+        date: DateTime.fromMillis(item.date).toFormat('MMM dd'),
+        value: item.value,
+      }));
+      setBarChartData(finalBarChartData);
       setIsBarChartLoading(false);
     }
   }, [allExperienceAnomalies, timeRange]);
