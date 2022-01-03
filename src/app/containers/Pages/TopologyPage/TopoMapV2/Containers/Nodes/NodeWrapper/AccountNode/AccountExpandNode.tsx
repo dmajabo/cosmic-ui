@@ -10,7 +10,7 @@ import { ITGWNode, ITopoNode } from 'lib/hooks/Topology/models';
 import ExpandNodeContent from './ExpandNodeContent';
 
 interface Props {
-  dataItem: ITopoNode<ITGWNode>;
+  dataItem: ITopoNode<any, ITGWNode>;
   show: boolean;
   onCollapse: () => void;
   onTgwClick: (item: ITGWNode) => void;

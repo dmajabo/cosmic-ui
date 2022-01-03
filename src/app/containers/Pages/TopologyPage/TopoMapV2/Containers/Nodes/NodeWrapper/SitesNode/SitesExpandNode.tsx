@@ -8,9 +8,10 @@ import NodeMarker from '../../Containers/NodeMarker';
 import NodeExpandedName from '../../Containers/NodeName/NodeExpandedName';
 import { IDeviceNode, ITopoNode } from 'lib/hooks/Topology/models';
 import DeviceNode from '../DeviceNode';
+import { ITopologyGroup } from 'lib/api/ApiModels/Topology/apiModels';
 
 interface Props {
-  dataItem: ITopoNode<IDeviceNode>;
+  dataItem: ITopoNode<ITopologyGroup, IDeviceNode>;
   show: boolean;
   onCollapse: () => void;
   onDeviceClick: (item: IDeviceNode) => void;

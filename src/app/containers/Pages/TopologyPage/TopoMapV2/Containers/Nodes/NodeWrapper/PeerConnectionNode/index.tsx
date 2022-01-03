@@ -7,7 +7,7 @@ import * as d3 from 'd3';
 
 interface Props {
   item: INetworkVNetworkPeeringConnectionNode;
-  dataItem: ITopoNode<INetworkVNetNode>;
+  dataItem: ITopoNode<any, INetworkVNetNode>;
 }
 
 const PeerConnectionNode: React.FC<Props> = (props: Props) => {

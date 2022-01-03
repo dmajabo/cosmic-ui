@@ -4,7 +4,7 @@ export interface IPeerLink {
   from: INetworkVNetNode;
   to: INetworkVNetworkPeeringConnectionNode;
 }
-export const buildPeerLinks = (item: INetworkVNetworkPeeringConnectionNode, dataItem: ITopoNode<INetworkVNetNode>): IPeerLink[] => {
+export const buildPeerLinks = (item: INetworkVNetworkPeeringConnectionNode, dataItem: ITopoNode<any, INetworkVNetNode>): IPeerLink[] => {
   const _from = dataItem.children.find(it => it.id === item.requesterVnetwork.id);
   const _to = dataItem.children.find(it => it.id === item.accepterVnetwork.id);
   return [

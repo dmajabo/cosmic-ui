@@ -11,7 +11,7 @@ import { onHoverNode, onUnHoverNode } from '../../../../Graph/helper';
 import { TopologyPanelTypes } from 'lib/models/topology';
 
 interface Props {
-  dataItem: ITopoNode<INetworkVNetNode>;
+  dataItem: ITopoNode<any, INetworkVNetNode>;
 }
 
 const RegionNode: React.FC<Props> = (props: Props) => {

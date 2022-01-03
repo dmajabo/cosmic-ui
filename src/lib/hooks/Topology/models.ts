@@ -42,8 +42,8 @@ export interface IChildrenCount {
   rows: number;
   childrenCount: number;
 }
-export interface ITopoNode<T> extends ICoord, ICollapsed, IVisible, IBaseEntity<string> {
-  dataItem: any;
+export interface ITopoNode<P, C> extends ICoord, ICollapsed, IVisible, IBaseEntity<string> {
+  dataItem: P;
   id: string;
   name: string;
   uiId: string;
@@ -51,14 +51,14 @@ export interface ITopoNode<T> extends ICoord, ICollapsed, IVisible, IBaseEntity<
   type: TopoNodeTypes;
   expandedSize: ISize;
   collapsedSize: ISize;
-  children: T[];
+  children: C[];
   childrenRows: IChildrenCount;
   peerConnections: INetworkVNetworkPeeringConnectionNode[];
   peerConnectionsRows: IChildrenCount;
 }
 
 export interface ITopologyPreparedMapDataV2 {
-  nodes: ITopoNode<any>[];
+  nodes: ITopoNode<any, any>[];
   links: any[];
 }
 

@@ -13,7 +13,7 @@ const Attachment: React.FC<IProps> = ({ id, label, icon, pos, iconClass }) => {
     <GAttachement id={id} className="networkAttached" transform={`translate(${pos.x}, ${pos.y}) rotate(${pos.angle})`}>
       <rect y="-7.5" stroke="var(--_defaultLinkFill)" strokeWidth="1" fill="var(--_primaryBg)" width="85" height="16" rx="4" ry="4" />
       <g className={iconClass}>{icon}</g>
-      <text className="attachmentLabel" textAnchor="start" fontSize="6" fill="var(--_primaryColor)" fontWeight="500">
+      <text className="attachmentLabel" textAnchor="start" fontSize="6" fill="var(--_primaryTextColor)" fontWeight="500">
         {label}
       </text>
     </GAttachement>

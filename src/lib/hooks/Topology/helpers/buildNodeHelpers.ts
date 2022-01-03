@@ -4,8 +4,8 @@ import { TOPOLOGY_NODE_TYPES } from 'lib/models/topology';
 import { ITGWNode, INetworkVNetNode, TopoNodeTypes, ITopoNode, IDeviceNode, INetworkVNetworkPeeringConnectionNode } from '../models';
 import uuid from 'react-uuid';
 
-export const createTopoNode = (
-  _dataItem: any,
+export const createTopoNode = <P, C>(
+  _dataItem: P,
   _orgId: string,
   _type: TopoNodeTypes,
   _id: string,
@@ -16,8 +16,8 @@ export const createTopoNode = (
   _cw: number,
   _ch: number,
   peerConnection?: boolean,
-): ITopoNode<any> => {
-  const _obj: ITopoNode<any> = {
+): ITopoNode<P, C> => {
+  const _obj: ITopoNode<P, C> = {
     dataItem: _dataItem,
     id: _id,
     name: _name,

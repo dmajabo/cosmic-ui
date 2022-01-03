@@ -8,7 +8,7 @@ import DataCenterCollapsedNode from './DataCenterCollapsedNode';
 import { onHoverNode, onUnHoverNode } from '../../../../Graph/helper';
 import DataCenterExpandNode from './DataCenterExpandNode';
 interface Props {
-  dataItem: ITopoNode<any>;
+  dataItem: ITopoNode<any, any>;
 }
 
 const DataCenter: React.FC<Props> = (props: Props) => {

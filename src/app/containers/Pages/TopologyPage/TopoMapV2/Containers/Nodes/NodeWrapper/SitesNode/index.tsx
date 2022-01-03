@@ -8,9 +8,10 @@ import { onHoverNode, onUnHoverNode } from '../../../../Graph/helper';
 import SitesExpandNode from './SitesExpandNode';
 import { TopologyPanelTypes } from 'lib/models/topology';
 import { IDeviceNode, ITopoNode } from 'lib/hooks/Topology/models';
+import { ITopologyGroup } from 'lib/api/ApiModels/Topology/apiModels';
 
 interface Props {
-  dataItem: ITopoNode<IDeviceNode>;
+  dataItem: ITopoNode<ITopologyGroup, IDeviceNode>;
 }
 
 const SitesNode: React.FC<Props> = (props: Props) => {
@@ -87,7 +88,7 @@ const SitesNode: React.FC<Props> = (props: Props) => {
       transform={`translate(${pos.x}, ${pos.y})`}
       data-type={NODES_CONSTANTS.SITES.type}
     >
-      <SitesCollapsedNode id={props.dataItem.id} name={props.dataItem.name} childrenCount={props.dataItem.children.length} show={props.dataItem.collapsed} onExpand={onExpand} />
+      <SitesCollapsedNode dataItem={props.dataItem.dataItem} childrenCount={props.dataItem.children.length} show={props.dataItem.collapsed} onExpand={onExpand} />
       <SitesExpandNode dataItem={props.dataItem} show={!props.dataItem.collapsed} onCollapse={onCollapse} onDeviceClick={onDeviceClick} />
     </g>
   );

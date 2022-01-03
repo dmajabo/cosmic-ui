@@ -22,7 +22,7 @@ export function useZoom(props: IProps) {
     .on('zoom', e => zoomed(e))
     .on('end', e => zoomEnd(e));
 
-  const onZoomInit = (nodes: ITopoNode<any>[]) => {
+  const onZoomInit = (nodes: ITopoNode<any, any>[]) => {
     const svg = d3.select(`#${svgId}`);
     svg.call(zoom);
     svg.on('click.zoom', null).on('dblclick.zoom', null);
@@ -64,7 +64,7 @@ export function useZoom(props: IProps) {
     zoom.scaleTo(svg, _k);
   };
 
-  const onCentered = (nodes: ITopoNode<any>[], _disabledTransition?: boolean) => {
+  const onCentered = (nodes: ITopoNode<any, any>[], _disabledTransition?: boolean) => {
     const svg = d3.select(`#${svgId}`);
     const svgSize = document.getElementById(svgId).getBoundingClientRect();
     const rootSize = getMapSize(nodes);
@@ -123,7 +123,7 @@ export function useZoom(props: IProps) {
     setTransform({ x, y, k });
   };
 
-  const getMapSize = (nodes: ITopoNode<any>[]): ISize => {
+  const getMapSize = (nodes: ITopoNode<any, any>[]): ISize => {
     let left = 0;
     let right = 0;
     let top = 0;

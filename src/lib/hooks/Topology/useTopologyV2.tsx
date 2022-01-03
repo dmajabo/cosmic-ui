@@ -41,8 +41,8 @@ export interface TopologyV2ContextType {
   onSelectEntity: (entity: IEntity, selected: boolean) => void;
   onSetIsDataReadyToShow: (_state: DATA_READY_STATE) => void;
 
-  onCollapseExpandNode: (node: ITopoNode<any>, state: boolean) => void;
-  onUpdateNodeCoord: (node: ITopoNode<any>, _pos: IPosition) => void;
+  onCollapseExpandNode: (node: ITopoNode<any, any>, state: boolean) => void;
+  onUpdateNodeCoord: (node: ITopoNode<any, any>, _pos: IPosition) => void;
 
   entities: FilterEntityOptions;
   severity: FilterSeverityOptions;
@@ -53,7 +53,7 @@ export function useTopologyV2Context(): TopologyV2ContextType {
   const [topoPanel, setTopoPanel] = React.useState<IPanelBar<TopologyPanelTypes>>({ show: false, type: null });
   const [originData, setOriginData] = React.useState<ITopologyMapData | null>(null);
   const [originGroupsData, setOriginGroupsData] = React.useState<ITopologyGroup[] | null>(null);
-  const [nodes, setNodes] = React.useState<ITopoNode<any>[] | null>([]);
+  const [nodes, setNodes] = React.useState<ITopoNode<any, any>[] | null>([]);
   const [links, setLinks] = React.useState<ILink[] | null>([]);
 
   const [entities, setEntities] = React.useState<FilterEntityOptions>({
@@ -102,7 +102,7 @@ export function useTopologyV2Context(): TopologyV2ContextType {
   const [searchQuery, setSearchQuery] = React.useState<string | null>(null);
   const [selectedType, setSelectedType] = React.useState<string | null>(null);
   const linksRef = React.useRef<ILink[]>(links);
-  const nodesRef = React.useRef<ITopoNode<any>[]>(nodes);
+  const nodesRef = React.useRef<ITopoNode<any, any>[]>(nodes);
   const groupsRef = React.useRef(originGroupsData);
   const onSetData = (res: ITopologyDataRes) => {
     if (!res) {
@@ -139,7 +139,7 @@ export function useTopologyV2Context(): TopologyV2ContextType {
   const onSelectEntity = (_entity: IEntity, _selected: boolean) => {
     if (!nodesRef.current) return;
     const _arr: IEntity[] = jsonClone(entityTypes);
-    const _nodes: ITopoNode<any>[] = jsonClone(nodesRef.current);
+    const _nodes: ITopoNode<any, any>[] = jsonClone(nodesRef.current);
     const _links: ILink[] = jsonClone(linksRef.current);
     const index: number = _arr.findIndex(it => it.id === _entity.id);
     updateEntity(_arr, index, _selected);
@@ -295,16 +295,16 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     setDataReadyToShow(_state);
   };
 
-  const onCollapseExpandNode = (node: ITopoNode<any>, state: boolean) => {
-    const _data: ITopoNode<any>[] = nodesRef.current.slice();
+  const onCollapseExpandNode = (node: ITopoNode<any, any>, state: boolean) => {
+    const _data: ITopoNode<any, any>[] = nodesRef.current.slice();
     const index = _data.findIndex(it => it.id === node.id);
     _data[index].collapsed = state;
     setNodes(_data);
     nodesRef.current = _data;
   };
 
-  const onUpdateNodeCoord = (node: ITopoNode<any>, _position: IPosition) => {
-    const _data: ITopoNode<any>[] = nodesRef.current.slice();
+  const onUpdateNodeCoord = (node: ITopoNode<any, any>, _position: IPosition) => {
+    const _data: ITopoNode<any, any>[] = nodesRef.current.slice();
     const index = _data.findIndex(it => it.id === node.id);
     _data[index].x = _position.x;
     _data[index].y = _position.y;

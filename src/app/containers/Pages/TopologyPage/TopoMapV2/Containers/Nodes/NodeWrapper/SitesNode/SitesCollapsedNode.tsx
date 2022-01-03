@@ -6,10 +6,10 @@ import NodeCounter from '../../Containers/NodeCounter';
 import CollapseExpandButton from '../../Containers/CollapseExpandButton';
 import * as d3 from 'd3';
 import NodeCollapsedName from '../../Containers/NodeName/NodeCollapsedName';
+import { ITopologyGroup } from 'lib/api/ApiModels/Topology/apiModels';
 
 interface Props {
-  id: string;
-  name: string;
+  dataItem: ITopologyGroup;
   show: boolean;
   childrenCount: number;
   onExpand: () => void;
@@ -17,12 +17,12 @@ interface Props {
 
 const SitesCollapsedNode: React.FC<Props> = (props: Props) => {
   const showExpandBtn = () => {
-    const _node = d3.select(`#sites${props.id}${CollapseExpandState.EXPAND}`);
+    const _node = d3.select(`#sites${props.dataItem.id}${CollapseExpandState.EXPAND}`);
     _node.transition().delay(300).attr('opacity', 1);
   };
 
   const hideExpandBtn = () => {
-    const _node = d3.select(`#sites${props.id}${CollapseExpandState.EXPAND}`);
+    const _node = d3.select(`#sites${props.dataItem.id}${CollapseExpandState.EXPAND}`);
     _node.transition().attr('opacity', 0);
   };
 
@@ -55,7 +55,7 @@ const SitesCollapsedNode: React.FC<Props> = (props: Props) => {
             <>
               <NodeCounter label={`${props.childrenCount} Dev`} stylesObj={NODES_CONSTANTS.SITES.countStyles} />
               <CollapseExpandButton
-                id={`sites${props.id}${CollapseExpandState.EXPAND}`}
+                id={`sites${props.dataItem.id}${CollapseExpandState.EXPAND}`}
                 isCollapse
                 onClick={onExpand}
                 x={NODES_CONSTANTS.SITES.collapse.width - NODES_CONSTANTS.COLLAPSE_EXPAND.r}
@@ -64,7 +64,7 @@ const SitesCollapsedNode: React.FC<Props> = (props: Props) => {
             </>
           )}
         </g>
-        <NodeCollapsedName label={props.name} stylesObj={NODES_CONSTANTS.SITES.labelCollapsedStyles} />
+        <NodeCollapsedName label={props.dataItem.name} stylesObj={NODES_CONSTANTS.SITES.labelCollapsedStyles} />
       </>
     </TransitionContainer>
   );

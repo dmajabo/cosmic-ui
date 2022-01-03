@@ -20,7 +20,7 @@ interface IProps {
   isFullScreen: boolean;
   onZoomIn: () => void;
   onZoomOut: () => void;
-  onCentered: (nodes: ITopoNode<any>[]) => void;
+  onCentered: (nodes: ITopoNode<any, any>[]) => void;
   onOpenFullScreen: () => void;
   onRefresh: () => void;
 }

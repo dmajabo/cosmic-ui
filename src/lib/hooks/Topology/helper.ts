@@ -1,4 +1,4 @@
-import { INetworkDevice, ITopologyGroup, ITopologyMapData, SelectorEvalType } from 'lib/api/ApiModels/Topology/apiModels';
+import { ITopologyGroup, ITopologyMapData, SelectorEvalType } from 'lib/api/ApiModels/Topology/apiModels';
 import { ICollapseStyles, IExpandedStyles, NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
 import { IPosition, ISize } from 'lib/models/general';
 import {
@@ -19,14 +19,14 @@ import { getChunksFromArray } from 'lib/helpers/arrayHelper';
 import { DEFAULT_GROUP_ID, TopologyGroupTypesAsNumber, TopologyGroupTypesAsString } from 'lib/models/topology';
 
 export const createTopology = (showPeerConnection: boolean, _data: ITopologyMapData, _groups: ITopologyGroup[]): ITopologyPreparedMapDataV2 => {
-  const regions: ITopoNode<INetworkVNetNode>[] = [];
-  const accounts: ITopoNode<ITGWNode>[] = [];
+  const regions: ITopoNode<any, INetworkVNetNode>[] = [];
+  const accounts: ITopoNode<any, ITGWNode>[] = [];
   // const dataCenters: ITopoNode<any>[] = [];
-  const sites: ITopoNode<IDeviceNode>[] = [];
+  const sites: ITopoNode<ITopologyGroup, IDeviceNode>[] = [];
   const devicesInGroup: IDeviceNode[] = [];
   const devicesInDefaultGroup: IDeviceNode[] = [];
   for (let i = 0; i < 1; i++) {
-    const _objR: ITopoNode<INetworkVNetNode> = createTopoNode(
+    const _objR: ITopoNode<any, INetworkVNetNode> = createTopoNode(
       null,
       _data.organizations[0].id,
       TopoNodeTypes.REGION,
@@ -42,7 +42,7 @@ export const createTopology = (showPeerConnection: boolean, _data: ITopologyMapD
     regions.push(_objR);
   }
   for (let i = 0; i < 1; i++) {
-    const _objA: ITopoNode<ITGWNode> = createTopoNode(
+    const _objA: ITopoNode<any, ITGWNode> = createTopoNode(
       null,
       _data.organizations[0].id,
       TopoNodeTypes.ACCOUNT,
@@ -58,7 +58,7 @@ export const createTopology = (showPeerConnection: boolean, _data: ITopologyMapD
   }
   const sitesGroups = _groups.filter(group => group.type === TopologyGroupTypesAsString.BRANCH_NETWORKS || group.type === TopologyGroupTypesAsNumber.BRANCH_NETWORKS);
   for (let i = 0; i < sitesGroups.length; i++) {
-    const _objS: ITopoNode<IDeviceNode> = createTopoNode(
+    const _objS: ITopoNode<ITopologyGroup, IDeviceNode> = createTopoNode(
       sitesGroups[i],
       _data.organizations[0].id,
       TopoNodeTypes.SITES,
@@ -109,7 +109,7 @@ export const createTopology = (showPeerConnection: boolean, _data: ITopologyMapD
   });
 
   if (devicesInDefaultGroup && devicesInDefaultGroup.length) {
-    const _objS: ITopoNode<IDeviceNode> = createTopoNode(
+    const _objS: ITopoNode<ITopologyGroup, IDeviceNode> = createTopoNode(
       {
         id: DEFAULT_GROUP_ID,
         name: 'Default',
@@ -149,16 +149,15 @@ export const createTopology = (showPeerConnection: boolean, _data: ITopologyMapD
   }
   // const links: ILink[] = generateLinks(nodes, wedges, vnets, topologyGroups);
   updateTopLevelItems(showPeerConnection, regions, accounts, sites);
-  const _nodes: ITopoNode<any>[] = [...regions, ...accounts, ...sites];
+  const _nodes: ITopoNode<any, any>[] = [...regions, ...accounts, ...sites];
   return { nodes: _nodes, links: [] };
 };
 
 export const updateTopLevelItems = (
   showPeerConnection: boolean,
-  regions: ITopoNode<INetworkVNetNode>[],
-  accounts: ITopoNode<ITGWNode>[],
-  sites: ITopoNode<IDeviceNode>[],
-  dataCenters?: ITopoNode<any>[],
+  regions: ITopoNode<any, INetworkVNetNode>[],
+  accounts: ITopoNode<any, ITGWNode>[],
+  sites: ITopoNode<ITopologyGroup, IDeviceNode>[],
 ) => {
   let offsetY = 0;
   let regionSizes: ISize = { width: 0, height: 0 };
@@ -179,7 +178,7 @@ export const updateTopLevelItems = (
   centeredTopLevelNodes(regions, accounts, sites, regionSizes, accountSizes, sitesSizes);
 };
 
-export const updateRegionItems = (items: ITopoNode<INetworkVNetNode>[], showPeerConnection: boolean): ISize => {
+export const updateRegionItems = (items: ITopoNode<any, INetworkVNetNode>[], showPeerConnection: boolean): ISize => {
   if (!items || !items.length) return { width: 0, height: 0 };
   let offsetX = 0;
   let maxNodeHeight = 0;
@@ -221,8 +220,8 @@ export const updateRegionItems = (items: ITopoNode<INetworkVNetNode>[], showPeer
   return { width: offsetX, height: maxNodeHeight };
 };
 
-export const updateRegionHeight = (nodes: ITopoNode<any>[], showPeerConnection: boolean): ITopoNode<any>[] => {
-  const _nodes: ITopoNode<any>[] = nodes.slice();
+export const updateRegionHeight = (nodes: ITopoNode<any, any>[], showPeerConnection: boolean): ITopoNode<any, any>[] => {
+  const _nodes: ITopoNode<any, any>[] = nodes.slice();
   _nodes.forEach(node => {
     if (node.type !== TopoNodeTypes.REGION) return;
     const peerHeight = !showPeerConnection ? 0 : calculateRowsHeight(node.peerConnectionsRows.rows, NODES_CONSTANTS.PEERING_CONNECTION.collapse);
@@ -255,7 +254,7 @@ const calculateRowsHeight = (_count: number, chStyles: ICollapseStyles): number 
   return height;
 };
 
-export const updateSitesItems = (items: ITopoNode<INetworkDevice>[], offsetY: number): ISize => {
+export const updateSitesItems = (items: ITopoNode<ITopologyGroup, IDeviceNode>[], offsetY: number): ISize => {
   if (!items || !items.length) return { width: 0, height: 0 };
   let offsetX = 0;
   let maxNodeHeight = 0;
@@ -288,7 +287,7 @@ export const updateSitesItems = (items: ITopoNode<INetworkDevice>[], offsetY: nu
   return { width: offsetX, height: maxNodeHeight };
 };
 
-export const updateAccountItems = (items: ITopoNode<ITGWNode>[], offsetY: number): ISize => {
+export const updateAccountItems = (items: ITopoNode<any, ITGWNode>[], offsetY: number): ISize => {
   if (!items || !items.length) return { width: 0, height: 0 };
   let offsetX = 0;
   let maxNodeHeight = 0;
@@ -334,14 +333,21 @@ const getStartChildRowOffsetX = (maxInRow: number, itemsInRow: number, itemWidth
   return Math.max(0, maxWidth / 2 - totalInRow / 2);
 };
 
-const centeredTopLevelNodes = (regions: ITopoNode<any>[], accounts: ITopoNode<any>[], sites: ITopoNode<any>[], regionSize: ISize, accountSize: ISize, sitesSize: ISize) => {
+const centeredTopLevelNodes = (
+  regions: ITopoNode<any, any>[],
+  accounts: ITopoNode<any, any>[],
+  sites: ITopoNode<ITopologyGroup, IDeviceNode>[],
+  regionSize: ISize,
+  accountSize: ISize,
+  sitesSize: ISize,
+) => {
   const maxRowWidth = Math.max(regionSize.width, accountSize.width, sitesSize.width);
   centeredItemsInRow(regions, regionSize, maxRowWidth);
   centeredItemsInRow(accounts, accountSize, maxRowWidth);
   centeredItemsInRow(sites, sitesSize, maxRowWidth);
 };
 
-const centeredItemsInRow = (items: ITopoNode<any>[], size: ISize, maxWidth: number) => {
+const centeredItemsInRow = (items: ITopoNode<any, any>[], size: ISize, maxWidth: number) => {
   const hw = maxWidth / 2;
   items.forEach(it => {
     if (size.width !== maxWidth) {

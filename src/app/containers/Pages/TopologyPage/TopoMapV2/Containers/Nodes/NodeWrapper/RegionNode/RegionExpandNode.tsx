@@ -12,7 +12,7 @@ import NetworkVnetNode from '../NetworkVnetNode';
 import PeerConnectionNode from '../PeerConnectionNode';
 
 interface Props {
-  dataItem: ITopoNode<INetworkVNetNode>;
+  dataItem: ITopoNode<any, INetworkVNetNode>;
   showPeeringConnections: boolean;
   show: boolean;
   onCollapse: () => void;

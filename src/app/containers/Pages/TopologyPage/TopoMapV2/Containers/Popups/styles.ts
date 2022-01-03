@@ -21,7 +21,7 @@ export const ContentWrapper = styled.div`
   max-height: 300px;
   border-radius: 6px;
   background: var(--_primaryBg);
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
   position: relative;
   margin: -50px 0 0 24px;
   transform: scale(0);

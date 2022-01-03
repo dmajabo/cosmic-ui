@@ -10,7 +10,7 @@ import AccountExpandNode from './AccountExpandNode';
 import { TopologyPanelTypes } from 'lib/models/topology';
 
 interface Props {
-  dataItem: ITopoNode<ITGWNode>;
+  dataItem: ITopoNode<any, ITGWNode>;
 }
 
 const AccountNode: React.FC<Props> = (props: Props) => {

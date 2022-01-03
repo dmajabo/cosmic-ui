@@ -36,5 +36,5 @@ export const ZoomValue = styled.span`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: var(--_primaryColor);
+  color: var(--_primaryTextColor);
 `;

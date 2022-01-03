@@ -30,7 +30,7 @@ const TextName: React.FC<Props> = (props: Props) => {
   };
   if (!displayedName) return null;
   return (
-    <text x={props.x || 0} y={props.y || 0} fontSize={props.fontSize || 8} fontWeight={props.fontWeight || 500} textAnchor="middle" fill={props.color || 'var(--_primaryColor)'}>
+    <text x={props.x || 0} y={props.y || 0} fontSize={props.fontSize || 8} fontWeight={props.fontWeight || 500} textAnchor="middle" fill={props.color || 'var(--_primaryTextColor)'}>
       {displayedName}
       {!props.hideTitle && <title>{props.name}</title>}
     </text>
