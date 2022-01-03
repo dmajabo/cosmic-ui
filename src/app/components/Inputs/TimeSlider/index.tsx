@@ -153,7 +153,6 @@ const TimeSlider: React.FC<Props> = (props: Props) => {
         </>
       ),
     }));
-    console.log(_visibleItems);
     setSelected(_selected);
     setValues(_visibleItems);
     setConfig(_obj);
