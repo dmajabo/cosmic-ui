@@ -5,7 +5,7 @@ import { HeatMapData } from 'lib/api/http/SharedTypes';
 import { GridRow } from './GridRow';
 import LegendBox from './LegendBox';
 import { TestIdToName } from './PacketLoss';
-import { uniq } from 'lodash';
+import uniq from 'lodash/uniq';
 
 interface HeatmapProps {
   readonly data: HeatMapData[];

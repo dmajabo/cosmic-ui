@@ -12,7 +12,7 @@ import { CircularProgressWithLabel } from './ArticleComponents/CircularProgressW
 import { ConnectSourceForm } from './ArticleComponents/ConnectSourceForm';
 import ReactSelect, { components } from 'react-select';
 import { CustomRadio } from './ArticleComponents/CustomRadio';
-import { isEmpty } from 'lodash';
+import isEmpty from 'lodash/isEmpty';
 import { IntlProvider } from 'react-intl';
 import { Redirect, useHistory } from 'react-router';
 import { ROUTE } from 'lib/Routes/model';

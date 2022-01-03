@@ -8,7 +8,7 @@ import LoadingIndicator from 'app/components/Loading';
 import { Data } from './Table';
 import Heatmap, { LegendData } from './Heatmap';
 import { HeatMapData } from 'lib/api/http/SharedTypes';
-import { isEmpty } from 'lodash';
+import isEmpty from 'lodash/isEmpty';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 
 interface PacketLossProps {
