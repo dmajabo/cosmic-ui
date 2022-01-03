@@ -71,7 +71,7 @@ const SliderStyles = withStyles({
       transform: 'none',
       position: 'absolute',
       whiteSpace: 'nowrap',
-      top: '30px',
+      top: '32px',
       color: 'var(--_disabledTextColor)',
       fontSize: '11px',
       fontStyle: 'normal',
@@ -81,14 +81,14 @@ const SliderStyles = withStyles({
       letterSpacing: 'normal',
       '& .sliderMarkBorder': {
         position: 'absolute',
-        top: '-23px',
-        background: 'var(--_disabledTextColor)',
+        top: '-25px',
+        background: 'var(--_borderColor)',
         width: '1px',
         height: '16px',
         '&.activeBorder': {
           width: '2px',
-          top: '-25px',
-          height: '20px',
+          top: '-30px',
+          height: '26px',
         },
         '&.lastBorder': {
           left: '-2px',

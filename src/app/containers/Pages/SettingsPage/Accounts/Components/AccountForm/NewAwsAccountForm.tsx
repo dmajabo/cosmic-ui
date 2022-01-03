@@ -224,6 +224,7 @@ const NewAwsAccountForm: React.FC<Props> = (props: Props) => {
                 options={props.regions}
                 onChange={onRegionsChange}
                 styles={{ height: '72px', minHeight: '72px', margin: '0 0 20px 0' }}
+                selectStyles={{ height: '50px', width: '100%' }}
                 selectClaassName="withLabel"
                 required
                 optionCheckMark
@@ -246,9 +247,14 @@ const NewAwsAccountForm: React.FC<Props> = (props: Props) => {
                       if (v === AwsLogStorageType.S3) return <>S3</>;
                       return null;
                     }}
+                    renderOption={(v: AwsLogStorageType) => {
+                      if (v === AwsLogStorageType.CLOUD_WATCH) return <>Cloud Watch</>;
+                      if (v === AwsLogStorageType.S3) return <>S3</>;
+                      return null;
+                    }}
                     required
                     styles={{ height: '72px', minHeight: '72px' }}
-                    selectStyles={{ height: '50px' }}
+                    selectStyles={{ height: '50px', width: '100%' }}
                   />
                 </StepItemFormRow>
                 <StepItemFormRow margin="0">

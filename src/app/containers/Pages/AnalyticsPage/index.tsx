@@ -89,10 +89,10 @@ const AnalyticsPage: React.FC = () => {
           <PerformanceDashboard />
         </TabPanel> */}
         <TabPanel value={selectedTabName} title={TabName.Anomalies}>
-          <Anomalies />
+          {selectedTabName === TabName.Anomalies && <Anomalies />}
         </TabPanel>
         <TabPanel value={selectedTabName} title={TabName.PolicyLogs}>
-          <PolicyLogs />
+          {selectedTabName === TabName.PolicyLogs && <PolicyLogs />}
         </TabPanel>
         {/* <TabPanel value={selectedTabName} title={TabName.MetricsExplorer}>
           <MetricsExplorer />

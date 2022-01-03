@@ -21,23 +21,28 @@ export interface IProps {
   iconStyles?: object;
 }
 
-const HtmlTooltip = withStyles(() => ({
+export const HtmlTooltip = withStyles(() => ({
   tooltip: {
-    backgroundColor: 'var(--_primaryBg)',
-    color: 'var(--_primaryTextColor)',
-    maxWidth: 220,
-    fontSize: 12,
-    border: '1px solid',
-    borderColor: 'var(--_disabledButtonBg)',
-    padding: '2px 8px',
-    margin: '8px 0 0 0',
-    whiteSpace: 'normal',
+    '&.MuiTooltip-tooltip': {
+      backgroundColor: 'var(--_primaryBg)',
+      color: 'var(--_primaryTextColor)',
+      maxWidth: 220,
+      fontSize: 12,
+      border: '1px solid',
+      borderColor: 'var(--_disabledButtonBg)',
+      padding: '2px 8px',
+      margin: '8px 0 0 0',
+      whiteSpace: 'normal',
+    },
   },
   arrow: {
-    color: 'var(--_disabledButtonBg)',
-    width: '16px',
-    height: '8px',
-    marginLeft: '8px',
+    '&.MuiTooltip-arrow': {
+      color: 'var(--_disabledButtonBg)',
+      width: '16px',
+      height: '8px',
+      marginLeft: '6px',
+      transform: 'none !important',
+    },
   },
 }))(Tooltip);
 

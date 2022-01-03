@@ -12,10 +12,12 @@ export const DashboardStyles = makeStyles(
         alignItems: 'center',
       },
       network: {
-        color: 'black',
-        display: 'inline',
-        fontSize: 22,
-        fontWeight: 700,
+        '&.MuiTypography-root': {
+          color: 'black',
+          display: 'inline',
+          fontSize: 22,
+          fontWeight: 700,
+        },
       },
       widgetButton: {
         marginLeft: 20,

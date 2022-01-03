@@ -50,7 +50,7 @@ const NewChannel: React.FC<Props> = (props: Props) => {
           onChange={onChangeType}
           required
           styles={{ height: '72px', minHeight: '72px', margin: '0 0 20px 0' }}
-          selectStyles={{ height: '50px' }}
+          selectStyles={{ height: '50px', width: '100%' }}
           // selectStyles?: Object;
           // selectClaassName?: string;
           renderValue={(v: AlertChannelType) => {

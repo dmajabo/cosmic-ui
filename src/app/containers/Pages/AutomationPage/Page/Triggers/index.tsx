@@ -87,6 +87,7 @@ const Triggers: React.FC<Props> = (props: Props) => {
             options={[AlertSeverity.LOW, AlertSeverity.MEDIUM, AlertSeverity.HIGH]}
             onChange={v => onSeverityChange(v, param)}
             styles={{ maxWidth: '160px' }}
+            selectStyles={{ height: '38px', width: '100%' }}
             renderValue={(v: string) => <SeverityOption value={v as AlertSeverity} />}
           />
         </GridCellWrapper>

@@ -96,6 +96,7 @@ const MatSelect: React.FC<Props> = (props: Props) => {
         id={props.id + '_select'}
         value={textValue}
         onChange={handleChange}
+        classes={{ outlined: classes.outlined, select: classes.select }}
         MenuProps={{ classes: { paper: classes.menuRoot, list: classes.menuList } }}
         className={props.selectClaassName}
         disabled={props.disabled || props.readOnly}
