@@ -18,7 +18,6 @@ import {
 import { AnomalyTable } from './AnomalyTable';
 import { SeverityIcon } from './SeverityIcon';
 import { AnomalySLATestTable } from './AnomalySLATestTable';
-import { LegendData } from '../Performance Dashboard/Heatmap';
 import { Row } from 'react-table';
 import { getSeverityColour, SeverityLevel } from 'lib/api/http/utils';
 import { useGet } from 'lib/api/http/useAxiosHook';
@@ -28,7 +27,7 @@ import LoadingIndicator from 'app/components/Loading';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import { AnomalyTimeRangeValue } from './Anomalies';
 import { createApiClient } from 'lib/api/http/apiClient';
-import { countBy, isEmpty, sortBy } from 'lodash';
+import { countBy, isEmpty } from 'lodash';
 import { TopoApi } from 'lib/api/ApiModels/Services/topo';
 import { GetDevicesString, GetSelectedOrganization } from '../Performance Dashboard/filterFunctions';
 import { DateTime } from 'luxon';
@@ -95,13 +94,13 @@ const HITS_TABLE_COLUMNS: Column[] = [
   },
 ];
 
-const RED_COLOUR = '#DC4545';
-
-const OLD_TIME_FORMAT: string = 'yyyy-MM-dd HH:mm:ss ZZZ z';
-
 const HITS_TABLE_SORTABLE_HEADERS = ['VALUE', 'DESTINATION', 'NAME'];
 
-const getColor = (legendData: LegendData[], data: number) => legendData.find(item => data >= item.low && data <= item.high)?.color || RED_COLOUR;
+const HITS_TABLE_TIME_FORMAT = 'EEE,MMM dd yyyy,hh:mm a';
+
+const BAR_CHART_TIME_FORMAT = 'MMM dd';
+
+const getSQLTimeFormat = (time: string) => time.replace('+0000 UTC', '');
 
 export const ExperienceTab: React.FC<ExperienceTabProps> = ({ timeRange }) => {
   const classes = AnalyticsStyles();
@@ -191,18 +190,13 @@ export const ExperienceTab: React.FC<ExperienceTabProps> = ({ timeRange }) => {
     if (isEmpty(allExperienceAnomalies)) {
       setBarChartData([]);
     } else {
-      const luxonDateAnomalyData = allExperienceAnomalies.map(anomaly => DateTime.fromFormat(anomaly.time, OLD_TIME_FORMAT).toFormat('MMM dd'));
+      const luxonDateAnomalyData = allExperienceAnomalies.map(anomaly => DateTime.fromSQL(getSQLTimeFormat(anomaly.time)).toFormat(BAR_CHART_TIME_FORMAT));
       const dateCount = countBy(luxonDateAnomalyData);
       const barChartData = Object.keys(dateCount).map(item => ({
-        date: DateTime.fromFormat(item, 'MMM dd').toMillis(),
+        date: item,
         value: dateCount[item],
       }));
-      const sortedBarChartData = sortBy(barChartData, 'date');
-      const finalBarChartData: BarChartData[] = sortedBarChartData.map(item => ({
-        date: DateTime.fromMillis(item.date).toFormat('MMM dd'),
-        value: item.value,
-      }));
-      setBarChartData(finalBarChartData);
+      setBarChartData(barChartData);
       setIsBarChartLoading(false);
     }
   }, [allExperienceAnomalies, timeRange]);
@@ -218,7 +212,7 @@ export const ExperienceTab: React.FC<ExperienceTabProps> = ({ timeRange }) => {
       const triggerSpecificAnomalies = allExperienceAnomalies.filter(anomaly => anomaly.type === item.name);
       const filteredAnomalies = isEmpty(selectedBarChartPoints)
         ? triggerSpecificAnomalies
-        : triggerSpecificAnomalies.filter(anomaly => selectedBarChartPoints.includes(DateTime.fromFormat(anomaly.time, OLD_TIME_FORMAT).toFormat('MMM dd')));
+        : triggerSpecificAnomalies.filter(anomaly => selectedBarChartPoints.includes(DateTime.fromSQL(getSQLTimeFormat(anomaly.time)).toFormat(BAR_CHART_TIME_FORMAT)));
 
       const { triggerCount, ...otherItems } = item;
 
@@ -253,7 +247,7 @@ export const ExperienceTab: React.FC<ExperienceTabProps> = ({ timeRange }) => {
 
         return {
           name: slaTest?.name,
-          time: DateTime.fromFormat(anomaly.time, OLD_TIME_FORMAT).toFormat('EEE,MMM dd yyyy,hh:mm a'),
+          time: DateTime.fromSQL(getSQLTimeFormat(anomaly.time)).toFormat(HITS_TABLE_TIME_FORMAT),
           sourceOrg: slaTest?.sourceOrg,
           sourceNetwork: slaTest?.sourceNetwork,
           sourceDevice: slaTest?.sourceDevice,

@@ -46,14 +46,12 @@ const barChartOptions = (xAxisText: string, yAxisText: string, barChartData: num
       allowPointSelect: true,
       point: {
         events: {
-          select: function (this: any) {
-            const selectedPoints = this.series.chart.getSelectedPoints();
-            const selectedDates: string[] = selectedPoints.map(item => item.category);
+          select: function (this: Highcharts.Point) {
+            const selectedDates: string[] = this.series.chart.getSelectedPoints().map(item => item.category);
             handleSelectedBarChartPointsChange(selectedDates);
           },
-          unselect: function (this: any) {
-            const selectedPoints = this.series.chart.getSelectedPoints();
-            const selectedDates: string[] = selectedPoints.map(item => item.category);
+          unselect: function (this: Highcharts.Point) {
+            const selectedDates: string[] = this.series.chart.getSelectedPoints().map(item => item.category);
             handleSelectedBarChartPointsChange(selectedDates);
           },
         },
