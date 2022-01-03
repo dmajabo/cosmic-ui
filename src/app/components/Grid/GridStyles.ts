@@ -5,11 +5,13 @@ export const GridStyles = makeStyles(
   (theme: Theme) =>
     createStyles({
       container: {
-        width: '100%',
-        background: 'transparent',
-        minHeight: 200,
-        position: 'relative',
-        border: 'none',
+        '&.MuiDataGrid-root': {
+          width: '100%',
+          background: 'transparent',
+          minHeight: 200,
+          position: 'relative',
+          border: 'none',
+        },
         '&.MuiDataGrid-root .MuiDataGrid-overlay': {
           background: 'transparent',
         },
@@ -56,13 +58,18 @@ export const GridStyles = makeStyles(
         '& .MuiDataGrid-columnHeaderTitleContainer': {
           padding: 0,
         },
+        '& .MuiDataGrid-virtualScrollerContent': {
+          minHeight: '200px',
+        },
       },
       nestedGrid: {
-        width: '100%',
-        background: 'transparent',
-        minHeight: 0,
-        position: 'relative',
-        border: 'none',
+        '&.MuiDataGrid-root': {
+          width: '100%',
+          background: 'transparent',
+          minHeight: 0,
+          position: 'relative',
+          border: 'none',
+        },
         '& .MuiDataGrid-main': {
           paddingBottom: '20px',
         },
@@ -121,11 +128,13 @@ export const GridStyles = makeStyles(
         },
       },
       borderedRow: {
-        width: '100%',
-        background: 'transparent',
-        minHeight: 200,
-        position: 'relative',
-        border: 'none',
+        '&.MuiDataGrid-root': {
+          width: '100%',
+          background: 'transparent',
+          minHeight: 200,
+          position: 'relative',
+          border: 'none',
+        },
         '& .MuiDataGrid-main': {
           fontFamily: 'DMSans',
           borderRadius: '6px 6px 0px 0px',
@@ -178,6 +187,9 @@ export const GridStyles = makeStyles(
         },
         '& .MuiDataGrid-columnHeaderTitleContainer': {
           padding: 0,
+        },
+        '& .MuiDataGrid-virtualScrollerContent': {
+          minHeight: '200px',
         },
       },
     }),
