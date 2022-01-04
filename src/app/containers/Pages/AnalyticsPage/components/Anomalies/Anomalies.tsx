@@ -90,7 +90,7 @@ export const Anomalies: React.FC = () => {
     <div className={classes.anomalyContainer}>
       <div className={classes.tabTitleContainer}>
         <div>
-          <Tabs classes={{ root: classes.anomalyTabContainer, indicator: classes.indicator }} value={tab} onChange={handleTabChange} indicatorColor="primary">
+          <Tabs classes={{ root: classes.anomalyTabContainer, indicator: classes.indicator }} value={tab} onChange={handleTabChange}>
             <Tab
               classes={{ selected: classes.selectedTab }}
               value={AnomalyTabValue.Experience}

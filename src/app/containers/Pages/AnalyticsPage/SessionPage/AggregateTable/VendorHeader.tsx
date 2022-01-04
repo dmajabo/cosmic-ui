@@ -2,7 +2,7 @@ import React from 'react';
 import { VendorHeaderStyles, VendorLabel } from './styles';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { AccountVendorTypes } from 'lib/api/ApiModels/Accounts/apiModel';
-import { getNestedTableHeader } from './helper';
+import { getVendorObject } from './helper';
 import { IState } from './models';
 
 interface Props {
@@ -12,7 +12,7 @@ const VendorHeader: React.FC<Props> = (props: Props) => {
   const [data, setData] = React.useState<IState>(null);
   React.useEffect(() => {
     if (!props.label) return;
-    const _obj = getNestedTableHeader(props.label);
+    const _obj = getVendorObject(props.label);
     setData(_obj);
   }, [props.label]);
 

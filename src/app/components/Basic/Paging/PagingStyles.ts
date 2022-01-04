@@ -37,7 +37,7 @@ export const PagingStyles = makeStyles(
         '& .MuiPaginationItem-root': {
           fontWeight: 500,
           fontSize: '16px',
-          lineHeight: '0',
+          lineHeight: '40px',
           letterSpacing: '0.1px',
           color: 'var(--_disabledTextColor)',
           '&.Mui-selected:hover': {

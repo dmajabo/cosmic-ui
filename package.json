@@ -55,7 +55,7 @@
     "jest-styled-components": "7.0.8",
     "lint-staged": "12.1.4",
     "lodash": "4.17.21",
-    "luxon": "2.2.0",
+    "luxon": "2.3.0",
     "mapbox-gl": "2.6.1",
     "moment": "2.29.1",
     "node-plop": "0.30.0",

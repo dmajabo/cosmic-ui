@@ -1,5 +1,5 @@
 import { Organization } from 'lib/api/http/SharedTypes';
-import { isEmpty } from 'lodash';
+import isEmpty from 'lodash/isEmpty';
 
 export const GetSelectedOrganization = (organizations: Organization[], orgId: string) => {
   const selectedOrganization = organizations.find(organization => organization.extId === orgId);

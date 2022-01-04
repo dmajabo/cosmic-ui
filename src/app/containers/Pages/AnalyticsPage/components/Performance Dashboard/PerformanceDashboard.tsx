@@ -5,7 +5,7 @@ import { CreateSLATestRequest, FinalTableData, Organization, UpdateSLATestReques
 import LoadingIndicator from 'app/components/Loading';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { isEmpty } from 'lodash';
+import isEmpty from 'lodash/isEmpty';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { createApiClient } from 'lib/api/http/apiClient';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';

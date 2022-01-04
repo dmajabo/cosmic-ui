@@ -86,7 +86,7 @@ const ColumnFilter: React.FC<IProps> = (props: IProps) => {
                 onDragStart={handleDrag}
                 onDrop={handleDrop}
               >
-                <SimpleCheckbox wrapStyles={{ marginRight: '12px' }} isChecked={!col.hide} />
+                <SimpleCheckbox wrapStyles={{ marginRight: '12px', pointerEvents: 'none' }} isChecked={!col.hide} />
                 <FilteredColumnLabel>{col.label}</FilteredColumnLabel>
                 {props.draggable && <IconWrapper width="16px" height="16px" styles={{ position: 'absolute', top: 'calc(50% - 8px)', right: '6px', cursor: 'grab' }} icon={dragIcon} />}
               </FilteredColumnItem>

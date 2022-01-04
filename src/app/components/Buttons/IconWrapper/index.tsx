@@ -5,9 +5,9 @@ interface IProps {
   width?: string;
   height?: string;
   styles?: Object;
-  icon: JSX.Element | string;
+  icon?: JSX.Element | string;
   isIconasStrign?: boolean;
-  customIcon?: boolean;
+  customIcon?: any;
   title?: string;
   onClick?: (e: any) => void;
   disabled?: boolean;

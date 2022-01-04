@@ -332,6 +332,9 @@ export const createApiClient = (token: string): ApiClient => {
         count: 0,
         anomalies: [],
         name: '',
+        packetlossThreshold: null,
+        latencyThreshold: null,
+        goodputThreshold: null,
       };
     }
   }

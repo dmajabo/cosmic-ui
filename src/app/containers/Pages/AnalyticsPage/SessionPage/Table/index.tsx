@@ -1,5 +1,5 @@
 import React from 'react';
-import { DataGrid, GridValueFormatterParams } from '@mui/x-data-grid';
+import { DataGrid, GridRenderCellParams, GridValueFormatterParams } from '@mui/x-data-grid';
 import { ISession } from 'lib/api/ApiModels/Sessions/apiModel';
 import { GridStyles } from 'app/components/Grid/GridStyles';
 import TableHeader from './TableHeader';
@@ -13,6 +13,9 @@ import { IColumn } from 'lib/models/grid';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import LoadingIndicator from 'app/components/Loading';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
+import { getVendorObject } from '../AggregateTable/helper';
+import { VendorTdWrapper } from '../AggregateTable/styles';
+import IconWrapper from 'app/components/Buttons/IconWrapper';
 interface Props {
   data: ISession[];
   logCount: number;
@@ -38,15 +41,6 @@ const Table: React.FC<Props> = (props: Props) => {
       flex: 0.25,
       resizable: false,
       valueFormatter: (params: GridValueFormatterParams) => parseFieldAsDate(params.value, `EEE',' LLL d',' yyyy HH:mm aa`),
-    },
-    {
-      id: `sessions${SessionGridColumns.sessionId.resField}`,
-      field: SessionGridColumns.sessionId.resField,
-      headerName: SessionGridColumns.sessionId.label,
-      label: SessionGridColumns.sessionId.label,
-      minWidth: 370,
-      flex: 0.5,
-      resizable: false,
     },
     {
       id: `sessions${SessionGridColumns.flowId.resField}`,
@@ -102,6 +96,7 @@ const Table: React.FC<Props> = (props: Props) => {
       minWidth: 200,
       flex: 0.5,
       resizable: false,
+      hide: true,
     },
     {
       id: `sessions${SessionGridColumns.natSourcePort.resField}`,
@@ -111,6 +106,7 @@ const Table: React.FC<Props> = (props: Props) => {
       minWidth: 200,
       flex: 0.5,
       resizable: false,
+      hide: true,
     },
     {
       id: `sessions${SessionGridColumns.natDestIp.resField}`,
@@ -185,10 +181,14 @@ const Table: React.FC<Props> = (props: Props) => {
       minWidth: 200,
       flex: 0.5,
       resizable: false,
-      valueFormatter: (params: GridValueFormatterParams) => {
-        if (params.value === AccountVendorTypes.AMAZON_AWS) return 'AMAZON AWS';
-        if (params.value === AccountVendorTypes.CISCO_MERAKI) return 'CISCO MERAKI';
-        return params.value;
+      renderCell: (param: GridRenderCellParams) => {
+        const _obj = getVendorObject(param.value as AccountVendorTypes);
+        return (
+          <VendorTdWrapper>
+            {_obj.icon && <IconWrapper customIcon={_obj.icon} width="20px" height="20px" styles={{ margin: '0 8px 0 0' }} />}
+            <span>{_obj.label}</span>
+          </VendorTdWrapper>
+        );
       },
     },
     {
