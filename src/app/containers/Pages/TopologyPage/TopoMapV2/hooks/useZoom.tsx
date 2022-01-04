@@ -2,7 +2,7 @@ import React from 'react';
 import * as d3 from 'd3';
 import { ISize, ITransform, ZoomRange } from 'lib/models/general';
 import { ITopoNode } from 'lib/hooks/Topology/models';
-
+import { STANDART_DISPLAY_RESOLUTION_V2 } from 'lib/models/general';
 interface IProps {
   svgId: string;
   rootId: string;
@@ -66,20 +66,20 @@ export function useZoom(props: IProps) {
 
   const onCentered = (nodes: ITopoNode<any, any>[], _disabledTransition?: boolean) => {
     const svg = d3.select(`#${svgId}`);
-    const svgSize = document.getElementById(svgId).getBoundingClientRect();
+    // const svgSize = document.getElementById(svgId).getBoundingClientRect();
     const rootSize = getMapSize(nodes);
-    const scale = getScaleSizeHelper(svgSize, rootSize.width, rootSize.height);
-    const centerX = svgSize.width / 2 - (rootSize.width / 2) * scale;
-    const centerY = svgSize.height / 2 - (rootSize.height / 2) * scale;
+    const scale = getScaleSizeHelper(rootSize.width, rootSize.height);
+    const centerX = STANDART_DISPLAY_RESOLUTION_V2.width / 2 - (rootSize.width * scale) / 2;
+    const centerY = STANDART_DISPLAY_RESOLUTION_V2.height / 2 - (rootSize.height * scale) / 2;
     if (_disabledTransition) {
       disabledTransition = _disabledTransition;
     }
     svg.call(zoom.transform, d3.zoomIdentity.translate(centerX, centerY).scale(scale));
   };
 
-  const getScaleSizeHelper = (svg, width, height) => {
-    const scaleX = Math.min(1, (svg.width - 80) / width);
-    const scaleY = Math.min(1, (svg.height - 80) / height);
+  const getScaleSizeHelper = (width, height) => {
+    const scaleX = Math.min(1, (STANDART_DISPLAY_RESOLUTION_V2.width - 80) / width);
+    const scaleY = Math.min(1, (STANDART_DISPLAY_RESOLUTION_V2.height - 80) / height);
     let k = Math.min(scaleX, scaleY);
     k = checkMinMaxScale(k);
     return Number(k.toFixed(4));
@@ -128,12 +128,19 @@ export function useZoom(props: IProps) {
     let right = 0;
     let top = 0;
     let bottom = 0;
-    nodes.forEach(node => {
+    nodes.forEach((node, i) => {
+      const nodeW = node.collapsed ? node.collapsedSize.width : node.expandedSize.width;
+      const nodeH = node.collapsed ? node.collapsedSize.height : node.expandedSize.height;
+      if (i === 0) {
+        left = node.x;
+        right = node.x + nodeW;
+        top = node.y;
+        bottom = node.y + nodeH;
+        return;
+      }
       if (node.x < left) {
         left = node.x;
       }
-      const nodeW = node.collapsed ? node.collapsedSize.width : node.expandedSize.width;
-      const nodeH = node.collapsed ? node.collapsedSize.height : node.expandedSize.height;
       if (node.x + nodeW > right) {
         right = node.x + nodeW;
       }

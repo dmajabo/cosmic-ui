@@ -12,6 +12,7 @@ import NetworkVnetNode from '../NetworkVnetNode';
 import PeerConnectionNode from '../PeerConnectionNode';
 
 interface Props {
+  parentId: string;
   dataItem: ITopoNode<any, INetworkVNetNode>;
   showPeeringConnections: boolean;
   show: boolean;
@@ -61,7 +62,7 @@ const RegionExpandNode: React.FC<Props> = (props: Props) => {
           {props.showPeeringConnections && props.dataItem.peerConnections && props.dataItem.peerConnections.length ? (
             <ExpandNodeContent offsetY={NODES_CONSTANTS.REGION.headerHeight} width={props.dataItem.expandedSize.width}>
               {props.dataItem.peerConnections.map((it, index) => (
-                <PeerConnectionNode key={`${it.uiId}peerConnection`} item={it} dataItem={props.dataItem} />
+                <PeerConnectionNode key={`${it.uiId}peerConnection`} parentId={props.parentId} item={it} dataItem={props.dataItem} />
               ))}
             </ExpandNodeContent>
           ) : null}
@@ -74,7 +75,7 @@ const RegionExpandNode: React.FC<Props> = (props: Props) => {
             width={props.dataItem.expandedSize.width}
           >
             {props.dataItem.children.map((it, index) => (
-              <NetworkVnetNode key={`${it.uiId}vnet`} item={it} onClick={props.onVpcClick} />
+              <NetworkVnetNode key={`${it.uiId}vnet`} region={props.dataItem} item={it} onClick={props.onVpcClick} />
             ))}
           </ExpandNodeContent>
           <CollapseExpandButton

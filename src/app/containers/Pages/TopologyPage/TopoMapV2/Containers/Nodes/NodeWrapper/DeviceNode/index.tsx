@@ -1,33 +1,30 @@
 import React from 'react';
 import { NODES_CONSTANTS } from '../../../../model';
-import { IDeviceNode } from 'lib/hooks/Topology/models';
+import { IDeviceNode, ITopoNode } from 'lib/hooks/Topology/models';
+import { ITopologyGroup } from 'lib/api/ApiModels/Topology/apiModels';
+import { buildLink, IDeviceLink } from './helper';
+import DeviceLink from './DeviceLink';
 
-// import { buildPeerLinks, IPeerLink } from './helper';
 interface Props {
-  // item: INetworkVNetworkPeeringConnectionNode;
+  parent: ITopoNode<ITopologyGroup, IDeviceNode>;
   item: IDeviceNode;
   onClick: (item: IDeviceNode) => void;
 }
 
 const DeviceNode: React.FC<Props> = (props: Props) => {
-  // const [links, setLinks] = React.useState<IPeerLink[]>([]);
-  // const [vpsOffsetY, setVpcOffsetY] = React.useState<number>(0);
+  const [link, setLink] = React.useState<IDeviceLink>(null);
 
-  // React.useEffect(() => {
-  //   const _links = buildPeerLinks(props.item, props.dataItem);
-  //   const _offsetY = props.dataItem.peerConnectionsRows.rows * (NODES_CONSTANTS.DEVICE.collapse.r * 2) + 20;
-  //   setVpcOffsetY(_offsetY);
-  //   setLinks(_links);
-  // }, []);
+  React.useEffect(() => {
+    const _link = buildLink(props.item, props.parent);
+    setLink(_link);
+  }, []);
 
   const onClick = () => {
     props.onClick(props.item);
   };
   return (
     <>
-      {/* {links.map(it => (
-        <PeerConnectionLink key={`${it.from.id}${it.to.id}peerLink`} from={it.from} to={it.to} offsetY={vpsOffsetY} />
-      ))} */}
+      {link && <DeviceLink key={`${link.from.id}${link.to.id}devLink`} data={link} />}
       <g transform={`translate(${props.item.x}, ${props.item.y})`} onClick={onClick}>
         <use pointerEvents="all" href={`#bg${NODES_CONSTANTS.DEVICE.type}`} width={NODES_CONSTANTS.DEVICE.collapse.width} height={NODES_CONSTANTS.DEVICE.collapse.height} />
         <use

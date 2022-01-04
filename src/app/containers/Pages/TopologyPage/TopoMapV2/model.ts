@@ -131,6 +131,7 @@ export interface IPeeringConnectionNode extends INode<TopoNodeTypes>, ICollapseE
 
 export interface IDeviceNode extends INode<TopoNodeTypes>, ICollapseExpandState {
   iconId: string;
+  groupLinkIconId: string;
   countStyles: ICounterStyle;
   labelCollapsedStyles: ICollapseLabelStyle;
   labelExpandedStyles: IExpandLabelStyle;
@@ -474,7 +475,19 @@ export const NODES_CONSTANTS: INodes_Types = {
       borderRadius: 6,
     },
     expanded: null,
-    countStyles: null,
+    countStyles: {
+      x: 8,
+      y: 25,
+      width: 16,
+      height: 10,
+      br: 8,
+      fill: 'var(--_pButtonBg)',
+      color: 'var(--_primaryBg)',
+      fontSize: '6px',
+      lineHeight: '10px',
+      cWidth: 'auto',
+      cMinWidth: '100%',
+    },
     labelCollapsedStyles: null,
     labelExpandedStyles: null,
     labelHtmlStyles: {
@@ -513,6 +526,7 @@ export const NODES_CONSTANTS: INodes_Types = {
   DEVICE: {
     type: TopoNodeTypes.DEVICE,
     iconId: TopoNodeTypes.DEVICE,
+    groupLinkIconId: TopoNodeTypes.DEVICE_GROUP_LINK,
     collapse: {
       spaceX: 13,
       spaceY: 32,

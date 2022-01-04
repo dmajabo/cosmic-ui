@@ -82,6 +82,12 @@ const GlobalStyle = createGlobalStyle`
       box-shadow: 0px 20px 30px rgb(5 20 58 / 10%) !important;
     }
   }
+  .textOverflowEllips {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    width: 100%;
+  }
 `;
 
 export default GlobalStyle;

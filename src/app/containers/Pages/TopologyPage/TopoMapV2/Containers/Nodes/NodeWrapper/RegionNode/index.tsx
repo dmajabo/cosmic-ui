@@ -90,6 +90,7 @@ const RegionNode: React.FC<Props> = (props: Props) => {
     >
       <RegionCollapsedNode id={props.dataItem.id} name={props.dataItem.name} childrenCount={props.dataItem.children.length} show={props.dataItem.collapsed} onExpand={onExpand} />
       <RegionExpandNode
+        parentId={`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`}
         showPeeringConnections={topology.entities.peer_connections.selected}
         dataItem={props.dataItem}
         show={!props.dataItem.collapsed}

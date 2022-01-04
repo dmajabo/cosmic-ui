@@ -12,6 +12,7 @@ import VpcPanel from '../PanelComponents/NodePanels/VpcPanel';
 import DevicePanel from '../PanelComponents/NodePanels/DevicePanel';
 import WedgePanel from '../PanelComponents/NodePanels/WedgePanel';
 import Map from './Map';
+import GroupsComponent from '../PanelComponents/GroupsComponent/GroupsComponent';
 
 interface Props {
   isFullScreen: boolean;
@@ -53,6 +54,7 @@ const Graph: React.FC<Props> = (props: Props) => {
         <Map />
         <PanelBar show={topology.topoPanel.show} onHidePanel={onHidePanel} type={IPanelBarLayoutTypes.VERTICAL}>
           {topology.topoPanel.type === TopologyPanelTypes.FILTERS && <FilterComponent />}
+          {topology.topoPanel.type === TopologyPanelTypes.GROUPS && <GroupsComponent />}
           {topology.topoPanel.type === TopologyPanelTypes.VPC && <VpcPanel dataItem={topology.topoPanel.dataItem} />}
           {topology.topoPanel.type === TopologyPanelTypes.Device && <DevicePanel dataItem={topology.topoPanel.dataItem} />}
           {topology.topoPanel.type === TopologyPanelTypes.Wedge && <WedgePanel dataItem={topology.topoPanel.dataItem} />}

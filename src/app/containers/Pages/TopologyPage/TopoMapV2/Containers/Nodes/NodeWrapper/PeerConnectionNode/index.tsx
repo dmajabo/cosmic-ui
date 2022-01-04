@@ -8,6 +8,7 @@ import * as d3 from 'd3';
 interface Props {
   item: INetworkVNetworkPeeringConnectionNode;
   dataItem: ITopoNode<any, INetworkVNetNode>;
+  parentId: string;
 }
 
 const PeerConnectionNode: React.FC<Props> = (props: Props) => {
@@ -24,15 +25,25 @@ const PeerConnectionNode: React.FC<Props> = (props: Props) => {
 
   const onMouseEnter = () => {
     const _node = d3.select(nodeRef.current);
-    _node.classed('peerConnectionNodeWrapperHover', true);
+    const _parentG = d3.select(`#${props.parentId}`);
+    const _peerChildren = _parentG.selectAll('.peerConnectionNodeWrapper');
+    const _vnetChildren = _parentG.selectAll('.vnetNodeWrapper');
+    _vnetChildren.attr('opacity', 0.5);
+    _peerChildren.attr('opacity', 0.5);
+    _node.attr('opacity', 1).classed('peerConnectionNodeWrapperHover', true);
     links.forEach(link => {
       const _vps = d3.select(`#vpsCollapsed${link.from.id}`);
-      _vps.classed('vpsHoverStroke', true);
+      _vps.attr('opacity', 1).classed('vpsHoverStroke', true);
     });
   };
 
   const onMouseLeave = () => {
     const _node = d3.select(nodeRef.current);
+    const _parentG = d3.select(`#${props.parentId}`);
+    const _peerChildren = _parentG.selectAll('.peerConnectionNodeWrapper');
+    const _vnetChildren = _parentG.selectAll('.vnetNodeWrapper');
+    _vnetChildren.attr('opacity', 1);
+    _peerChildren.attr('opacity', 1);
     _node.classed('peerConnectionNodeWrapperHover', null);
     links.forEach(link => {
       const _vps = d3.select(`#vpsCollapsed${link.from.id}`);

@@ -16,6 +16,7 @@ export enum TopoNodeTypes {
   VNET = 'vnet',
   DEVICE = 'device',
   PEERING_CONNECTION = 'peerConnection',
+  DEVICE_GROUP_LINK = 'devGroupLink',
 }
 
 export enum DirectionType {
@@ -42,9 +43,29 @@ export interface IChildrenCount {
   rows: number;
   childrenCount: number;
 }
+
+export enum TopoLinkTypes {
+  NetworkNetworkLink = 'NetworkNetworkLink',
+  VPNLink = 'vpnLink',
+}
+
+interface ITopoLinkNode<P, C> {
+  parent: P;
+  child: C;
+}
+export interface ITopoLink<PP, P, PC, C, L> extends IVisible, IBaseEntity<string> {
+  type: TopoLinkTypes;
+  fromNode: ITopoLinkNode<PP, P>;
+  toNode: ITopoLinkNode<PC, C>;
+  data: L;
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+}
+
 export interface ITopoNode<P, C> extends ICoord, ICollapsed, IVisible, IBaseEntity<string> {
   dataItem: P;
-  id: string;
   name: string;
   uiId: string;
   orgId: string;
@@ -59,7 +80,7 @@ export interface ITopoNode<P, C> extends ICoord, ICollapsed, IVisible, IBaseEnti
 
 export interface ITopologyPreparedMapDataV2 {
   nodes: ITopoNode<any, any>[];
-  links: any[];
+  links: ITopoLink<any, any, any, any, any>[];
 }
 
 export enum TopoFilterTypes {

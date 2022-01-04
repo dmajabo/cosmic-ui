@@ -1,6 +1,5 @@
 import * as React from 'react';
 import {
-  ILink,
   IPanelBar,
   TopologyPanelTypes,
   // TOPOLOGY_NODE_TYPES,
@@ -12,7 +11,7 @@ import { ITopologyDataRes, ITopologyGroup, ITopologyGroupsData, ITopologyMapData
 import { ITimeMinMaxRange } from 'app/components/Inputs/TimeSlider/helpers';
 import { updateEntity } from 'lib/helpers/entityHelper';
 import { createTopology, updateRegionHeight } from './helper';
-import { FilterEntityOptions, FilterEntityTypes, FilterSeverityOptions, ITopologyPreparedMapDataV2, ITopoNode, TopoFilterTypes, TopoNodeTypes } from './models';
+import { FilterEntityOptions, FilterEntityTypes, FilterSeverityOptions, ITopoLink, ITopologyPreparedMapDataV2, ITopoNode, TopoFilterTypes, TopoNodeTypes } from './models';
 import { AlertSeverity } from 'lib/api/ApiModels/Workflow/apiModel';
 
 export interface TopologyV2ContextType {
@@ -25,7 +24,7 @@ export interface TopologyV2ContextType {
   originGroupsData: ITopologyGroup[] | null;
   searchQuery: string | null;
   selectedType: string | null;
-  links: ILink[];
+  links: ITopoLink<any, any, any, any, any>[];
   nodes: any[];
   entityTypes: IEntity[];
   onToogleTopoPanel: (_panel: TopologyPanelTypes, show: boolean, dataItem?: any) => void;
@@ -54,7 +53,7 @@ export function useTopologyV2Context(): TopologyV2ContextType {
   const [originData, setOriginData] = React.useState<ITopologyMapData | null>(null);
   const [originGroupsData, setOriginGroupsData] = React.useState<ITopologyGroup[] | null>(null);
   const [nodes, setNodes] = React.useState<ITopoNode<any, any>[] | null>([]);
-  const [links, setLinks] = React.useState<ILink[] | null>([]);
+  const [links, setLinks] = React.useState<ITopoLink<any, any, any, any, any>[] | null>([]);
 
   const [entities, setEntities] = React.useState<FilterEntityOptions>({
     sites: {
@@ -101,7 +100,7 @@ export function useTopologyV2Context(): TopologyV2ContextType {
   const [entityTypes, setEntityTypes] = React.useState<IEntity[]>(jsonClone(EntityTypes));
   const [searchQuery, setSearchQuery] = React.useState<string | null>(null);
   const [selectedType, setSelectedType] = React.useState<string | null>(null);
-  const linksRef = React.useRef<ILink[]>(links);
+  const linksRef = React.useRef<ITopoLink<any, any, any, any, any>[]>(links);
   const nodesRef = React.useRef<ITopoNode<any, any>[]>(nodes);
   const groupsRef = React.useRef(originGroupsData);
   const onSetData = (res: ITopologyDataRes) => {
@@ -140,7 +139,7 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     if (!nodesRef.current) return;
     const _arr: IEntity[] = jsonClone(entityTypes);
     const _nodes: ITopoNode<any, any>[] = jsonClone(nodesRef.current);
-    const _links: ILink[] = jsonClone(linksRef.current);
+    const _links: ITopoLink<any, any, any, any, any>[] = jsonClone(linksRef.current);
     const index: number = _arr.findIndex(it => it.id === _entity.id);
     updateEntity(_arr, index, _selected);
     // updateDataByEntity(_arr, _arr[index], _nodes, _links);
@@ -328,7 +327,8 @@ export function useTopologyV2Context(): TopologyV2ContextType {
       const _obj: FilterEntityOptions = { ...entities };
       _obj[type].selected = selected;
       if (type === FilterEntityTypes.PEERING_CONNECTIONS) {
-        const _nodes = updateRegionHeight(nodes, _obj[type].selected);
+        const _nodes = updateRegionHeight(nodesRef.current, _obj[type].selected);
+        nodesRef.current = _nodes;
         setNodes(_nodes);
       }
       if (type === FilterEntityTypes.SITES) {
@@ -337,6 +337,7 @@ export function useTopologyV2Context(): TopologyV2ContextType {
           if (it.type !== TopoNodeTypes.SITES) return;
           it.visible = _obj[type].selected;
         });
+        nodesRef.current = _nodes;
         setNodes(_nodes);
       }
       if (type === FilterEntityTypes.TRANSIT) {
@@ -345,6 +346,7 @@ export function useTopologyV2Context(): TopologyV2ContextType {
           if (it.type !== TopoNodeTypes.ACCOUNT) return;
           it.visible = _obj[type].selected;
         });
+        nodesRef.current = _nodes;
         setNodes(_nodes);
       }
       if (type === FilterEntityTypes.VPC) {
@@ -353,6 +355,7 @@ export function useTopologyV2Context(): TopologyV2ContextType {
           if (it.type !== TopoNodeTypes.REGION) return;
           it.visible = _obj[type].selected;
         });
+        nodesRef.current = _nodes;
         setNodes(_nodes);
       }
       setEntities(_obj);

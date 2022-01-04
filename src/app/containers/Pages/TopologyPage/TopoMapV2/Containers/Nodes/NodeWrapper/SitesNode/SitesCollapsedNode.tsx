@@ -51,17 +51,15 @@ const SitesCollapsedNode: React.FC<Props> = (props: Props) => {
             x={NODES_CONSTANTS.SITES.collapse.iconOffsetX}
             y={NODES_CONSTANTS.SITES.collapse.iconOffsetY}
           />
+          <NodeCounter label={`${props.childrenCount} Dev`} stylesObj={NODES_CONSTANTS.SITES.countStyles} />
           {props.childrenCount && props.childrenCount > 0 && (
-            <>
-              <NodeCounter label={`${props.childrenCount} Dev`} stylesObj={NODES_CONSTANTS.SITES.countStyles} />
-              <CollapseExpandButton
-                id={`sites${props.dataItem.id}${CollapseExpandState.EXPAND}`}
-                isCollapse
-                onClick={onExpand}
-                x={NODES_CONSTANTS.SITES.collapse.width - NODES_CONSTANTS.COLLAPSE_EXPAND.r}
-                y={NODES_CONSTANTS.SITES.collapse.height / 2 - NODES_CONSTANTS.COLLAPSE_EXPAND.r}
-              />
-            </>
+            <CollapseExpandButton
+              id={`sites${props.dataItem.id}${CollapseExpandState.EXPAND}`}
+              isCollapse
+              onClick={onExpand}
+              x={NODES_CONSTANTS.SITES.collapse.width - NODES_CONSTANTS.COLLAPSE_EXPAND.r}
+              y={NODES_CONSTANTS.SITES.collapse.height / 2 - NODES_CONSTANTS.COLLAPSE_EXPAND.r}
+            />
           )}
         </g>
         <NodeCollapsedName label={props.dataItem.name} stylesObj={NODES_CONSTANTS.SITES.labelCollapsedStyles} />

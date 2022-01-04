@@ -13,16 +13,18 @@ import {
   IDeviceNode,
   INetworkVNetworkPeeringConnectionNode,
   IChildrenCount,
+  ITopoLink,
 } from './models';
 import { createDeviceNode, createPeerConnectionNode, createTopoNode, createVPCNode, createWedgeNode } from './helpers/buildNodeHelpers';
 import { getChunksFromArray } from 'lib/helpers/arrayHelper';
 import { DEFAULT_GROUP_ID, TopologyGroupTypesAsNumber, TopologyGroupTypesAsString } from 'lib/models/topology';
+import { buildLinks } from './helpers/buildlinkHelper';
 
 export const createTopology = (showPeerConnection: boolean, _data: ITopologyMapData, _groups: ITopologyGroup[]): ITopologyPreparedMapDataV2 => {
   const regions: ITopoNode<any, INetworkVNetNode>[] = [];
   const accounts: ITopoNode<any, ITGWNode>[] = [];
   // const dataCenters: ITopoNode<any>[] = [];
-  const sites: ITopoNode<ITopologyGroup, IDeviceNode>[] = [];
+  const groups: ITopoNode<ITopologyGroup, IDeviceNode>[] = [];
   const devicesInGroup: IDeviceNode[] = [];
   const devicesInDefaultGroup: IDeviceNode[] = [];
   for (let i = 0; i < 1; i++) {
@@ -70,7 +72,7 @@ export const createTopology = (showPeerConnection: boolean, _data: ITopologyMapD
       NODES_CONSTANTS.SITES.collapse.width,
       NODES_CONSTANTS.SITES.collapse.height,
     );
-    sites.push(_objS);
+    groups.push(_objS);
   }
 
   _data.organizations.forEach((org, orgI) => {
@@ -129,35 +131,35 @@ export const createTopology = (showPeerConnection: boolean, _data: ITopologyMapD
       NODES_CONSTANTS.SITES.collapse.height,
     );
     _objS.children = devicesInDefaultGroup;
-    sites.unshift(_objS);
+    groups.unshift(_objS);
   }
 
   if (sitesGroups && sitesGroups.length && devicesInGroup && devicesInGroup.length) {
     sitesGroups.forEach((gr, index) => {
-      const _siteIndex = sites.findIndex(it => it.id === gr.id || it.name === gr.name);
+      const _siteIndex = groups.findIndex(it => it.id === gr.id || it.name === gr.name);
       if (_siteIndex !== -1) {
         const _devs = devicesInGroup.filter(it => it.selectorGroup === gr.name || it.selectorGroup === gr.id);
-        sites[_siteIndex].children = _devs;
+        groups[_siteIndex].children = _devs;
       }
     });
   }
   if (devicesInGroup && devicesInGroup.length) {
-    const _siteIndex = sites.findIndex(it => it.id === DEFAULT_GROUP_ID);
+    const _siteIndex = groups.findIndex(it => it.id === DEFAULT_GROUP_ID);
     if (_siteIndex !== -1) {
-      sites[_siteIndex].children.concat(devicesInGroup);
+      groups[_siteIndex].children.concat(devicesInGroup);
     }
   }
-  // const links: ILink[] = generateLinks(nodes, wedges, vnets, topologyGroups);
-  updateTopLevelItems(showPeerConnection, regions, accounts, sites);
-  const _nodes: ITopoNode<any, any>[] = [...regions, ...accounts, ...sites];
-  return { nodes: _nodes, links: [] };
+  updateTopLevelItems(showPeerConnection, regions, accounts, groups);
+  const links: ITopoLink<any, any, any, any, any>[] = buildLinks(regions, accounts, groups, showPeerConnection);
+  const _nodes: ITopoNode<any, any>[] = [...regions, ...accounts, ...groups];
+  return { nodes: _nodes, links: links };
 };
 
 export const updateTopLevelItems = (
   showPeerConnection: boolean,
   regions: ITopoNode<any, INetworkVNetNode>[],
   accounts: ITopoNode<any, ITGWNode>[],
-  sites: ITopoNode<ITopologyGroup, IDeviceNode>[],
+  groups: ITopoNode<ITopologyGroup, IDeviceNode>[],
 ) => {
   let offsetY = 0;
   let regionSizes: ISize = { width: 0, height: 0 };
@@ -171,11 +173,11 @@ export const updateTopLevelItems = (
     accountSizes = updateAccountItems(accounts, offsetY);
     offsetY = offsetY + accountSizes.height + NODES_CONSTANTS.ACCOUNT.expanded.spaceY;
   }
-  if (sites && sites.length) {
-    sitesSizes = updateSitesItems(sites, offsetY);
+  if (groups && groups.length) {
+    sitesSizes = updateSitesItems(groups, offsetY);
     offsetY += sitesSizes.height;
   }
-  centeredTopLevelNodes(regions, accounts, sites, regionSizes, accountSizes, sitesSizes);
+  centeredTopLevelNodes(regions, accounts, groups, regionSizes, accountSizes, sitesSizes);
 };
 
 export const updateRegionItems = (items: ITopoNode<any, INetworkVNetNode>[], showPeerConnection: boolean): ISize => {
