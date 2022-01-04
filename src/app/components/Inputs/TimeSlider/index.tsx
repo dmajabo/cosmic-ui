@@ -119,24 +119,24 @@ const TimeSlider: React.FC<Props> = (props: Props) => {
   const [values, setValues] = React.useState<ITimeValue[]>([]);
   const [selected, setSelected] = React.useState<number | null>(null);
   const [defaultValue] = React.useState<number>(new Date(Date.now()).getTime());
+  const currentPeriodRef = React.useRef(null);
 
   React.useEffect(() => {
-    const interval = setInterval(() => {
-      console.log('Check config');
+    let interval = null;
+    if (
+      props.currentPeriod !== currentPeriodRef.current ||
+      differenceInCalendarDays(selected, props.selectedCalendarDay) !== 0 ||
+      (isToday(props.selectedCalendarDay) && !isThisHour(props.selectedCalendarDay))
+    ) {
+      clearInterval(interval);
+      currentPeriodRef.current = props.currentPeriod;
       onSetConfig(props.currentPeriod, props.selectedCalendarDay);
-    }, 60000); // every 1min
-    return () => clearInterval(interval);
-  }, []);
-
-  React.useEffect(() => {
-    onSetConfig(props.currentPeriod, props.selectedCalendarDay);
-  }, [props.currentPeriod]);
-
-  React.useEffect(() => {
-    if (differenceInCalendarDays(selected, props.selectedCalendarDay) !== 0 || (isToday(props.selectedCalendarDay) && !isThisHour(props.selectedCalendarDay))) {
-      onSetConfig(props.currentPeriod, props.selectedCalendarDay);
+      interval = setInterval(() => {
+        onSetConfig(props.currentPeriod, props.selectedCalendarDay);
+      }, 60000);
     }
-  }, [props.selectedCalendarDay]);
+    return () => clearInterval(interval);
+  }, [props.currentPeriod, props.selectedCalendarDay]);
 
   const onSetConfig = (_period: ITimeTypes, startDate: Date | null) => {
     const _obj: ITimeConfig = getSliderValuesConfig(_period, startDate);
@@ -154,6 +154,7 @@ const TimeSlider: React.FC<Props> = (props: Props) => {
       ),
     }));
     setSelected(_selected);
+    console.log('Time config', _visibleItems);
     setValues(_visibleItems);
     setConfig(_obj);
     if (config && (_obj.min !== config.min || _obj.max !== config.max)) {

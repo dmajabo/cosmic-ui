@@ -43,8 +43,8 @@ export const getTicks = (period: ITimeTypes, _domain: number[], _selected: numbe
     if (arr[arr.length - 1].getTime() !== _domain[1]) {
       arr.push(new Date(_domain[1]));
     }
-    if (arr.length > 24 && arr.length < 48) {
-      const a = arr.filter((tick, i) => i % 3 === 0 || i === arr.length - 1);
+    if (arr.length > 24) {
+      const a = arr.filter((tick, i) => getHours(tick) % 3 === 0 || i === arr.length - 1);
       return a.map((d, i) => {
         const _tick = getTick(period, +d, i, arr.length - 1);
         return { value: +d, label: _tick.label, highlight: _tick.highlight };
@@ -83,6 +83,13 @@ export const getTicks = (period: ITimeTypes, _domain: number[], _selected: numbe
   }
   if (arr[arr.length - 1].getTime() !== _domain[1]) {
     arr.push(new Date(_domain[1]));
+  }
+  if (arr.length > 24) {
+    const a = arr.filter((tick, i) => getHours(tick) % 3 === 0 || i === arr.length - 1);
+    return a.map((d, i) => {
+      const _tick = getTick(period, +d, i, arr.length - 1);
+      return { value: +d, label: _tick.label, highlight: _tick.highlight };
+    });
   }
   return arr.map((d, i) => {
     const _tick = getTick(period, +d, i, arr.length - 1);
