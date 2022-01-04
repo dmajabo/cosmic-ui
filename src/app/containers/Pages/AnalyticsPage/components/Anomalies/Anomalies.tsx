@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { AnalyticsStyles } from '../../AnalyticsStyles';
-import { Tabs, Tab, Typography, Button } from '@mui/material';
-import FilterIcon from '../../icons/performance dashboard/filter.svg';
 import Select from 'react-select';
 import { ExperienceTab } from './ExperienceTab';
 import { PolicyTab } from './PolicyTab';
 import { CostTab } from './CostTab';
-import SecondaryButton from 'app/components/Buttons/SecondaryButton';
-import noop from 'lodash/noop';
+import { styled } from '@mui/system';
+import TabsUnstyled from '@mui/base/TabsUnstyled';
+import TabsListUnstyled from '@mui/base/TabsListUnstyled';
+import TabPanelUnstyled from '@mui/base/TabPanelUnstyled';
+import { buttonUnstyledClasses } from '@mui/base/ButtonUnstyled';
+import TabUnstyled, { tabUnstyledClasses } from '@mui/base/TabUnstyled';
 
 interface TabPanelProps {
   readonly name: string;
@@ -18,21 +20,6 @@ export enum AnomalyTabValue {
   Experience = 'Experience',
   Policy = 'Policy',
   Cost = 'Cost',
-}
-
-const TabPanel: React.FC<TabPanelProps> = ({ children, value, name }) => {
-  return (
-    <div role="tabpanel" hidden={value !== name} id={`simple-tabpanel-${name}`} aria-labelledby={`simple-tab-${name}`}>
-      {children}
-    </div>
-  );
-};
-
-function a11yProps(name: AnomalyTabValue) {
-  return {
-    id: `simple-tab-${name}`,
-    'aria-controls': `simple-tabpanel-${name}`,
-  };
 }
 
 export enum AnomalyTimeRangeLabel {
@@ -78,6 +65,49 @@ const TIME_RANGE_OPTIONS: AnomalySelectOption[] = [
   },
 ];
 
+const Tab = styled(TabUnstyled)`
+  color: #848da3;
+  cursor: pointer;
+  font-size: 12px;
+  background: #f3f6fc;
+  padding: 15px 40px 15px 40px;
+  border: none;
+  border-radius: 6px;
+  display: flex;
+
+  &.Mui-selected {
+    color: #437fec;
+    font-weight: bold;
+  }
+
+  &:hover {
+    color: #437fec;
+  }
+
+  &.${buttonUnstyledClasses.focusVisible} {
+    color: #437fec;
+  }
+
+  &.${tabUnstyledClasses.selected} {
+    background-color: white;
+  }
+
+  &.${buttonUnstyledClasses.disabled} {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+`;
+
+const TabPanel = styled(TabPanelUnstyled)`
+  width: 100%;
+`;
+
+const TabsList = styled(TabsListUnstyled)`
+  border-radius: 6px;
+  display: flex;
+  align-content: space-between;
+`;
+
 export const Anomalies: React.FC = () => {
   const classes = AnalyticsStyles();
 
@@ -90,9 +120,9 @@ export const Anomalies: React.FC = () => {
 
   return (
     <div className={classes.anomalyContainer}>
-      <div className={classes.tabTitleContainer}>
-        <div>
-          <Tabs classes={{ root: classes.anomalyTabContainer, indicator: classes.indicator }} value={tab} onChange={handleTabChange}>
+      {/* <div className={classes.tabTitleContainer}>
+        <div> */}
+      {/* <Tabs classes={{ root: classes.anomalyTabContainer, indicator: classes.indicator }} value={tab} onChange={handleTabChange}>
             <Tab
               classes={{ selected: classes.selectedTab }}
               value={AnomalyTabValue.Experience}
@@ -100,7 +130,7 @@ export const Anomalies: React.FC = () => {
               wrapped
               {...a11yProps(AnomalyTabValue.Experience)}
             />
-            <Tab
+            {/* <Tab
               classes={{ selected: classes.selectedTab }}
               value={AnomalyTabValue.Policy}
               label={<span className={classes.tableHeaderText}>{AnomalyTabValue.Policy.toUpperCase()}</span>}
@@ -113,19 +143,10 @@ export const Anomalies: React.FC = () => {
               label={<span className={classes.tableHeaderText}>{AnomalyTabValue.Cost.toUpperCase()}</span>}
               wrapped
               {...a11yProps(AnomalyTabValue.Cost)}
-            />
+            /> 
           </Tabs>
         </div>
         <div>
-          <SecondaryButton
-            label={
-              <>
-                <span className={classes.otherButtonText}>FILTER</span>
-                <img src={FilterIcon} alt="columns" />
-              </>
-            }
-            onClick={noop}
-          />
           <span className={classes.anomalyTimeRangeText}>Show:</span>
           <Select className={classes.inlineSelect} label="Single select" value={timeRange} options={TIME_RANGE_OPTIONS} onChange={handleTimeRangeChange} />
         </div>
@@ -138,7 +159,29 @@ export const Anomalies: React.FC = () => {
       </TabPanel>
       <TabPanel value={tab} name={AnomalyTabValue.Cost}>
         <CostTab />
-      </TabPanel>
+      </TabPanel> */}
+      <TabsUnstyled value={tab} onChange={handleTabChange}>
+        <div className={classes.tabTitleContainer}>
+          <div className={classes.anomalyTabContainer}>
+            <TabsList>
+              <Tab value={AnomalyTabValue.Experience}>{AnomalyTabValue.Experience.toUpperCase()}</Tab>
+            </TabsList>
+          </div>
+          <div>
+            <span className={classes.anomalyTimeRangeText}>Show:</span>
+            <Select className={classes.inlineSelect} label="Single select" value={timeRange} options={TIME_RANGE_OPTIONS} onChange={handleTimeRangeChange} />
+          </div>
+        </div>
+        <TabPanel value={AnomalyTabValue.Experience}>
+          <ExperienceTab timeRange={timeRange.value} />
+        </TabPanel>
+        <TabPanel value={AnomalyTabValue.Policy}>
+          <PolicyTab />
+        </TabPanel>
+        <TabPanel value={AnomalyTabValue.Cost}>
+          <CostTab />
+        </TabPanel>
+      </TabsUnstyled>
     </div>
   );
 };

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useTable, useSortBy, useAbsoluteLayout } from 'react-table';
 import { AnomalySessionLogsData, Column } from 'lib/api/http/SharedTypes';
 import { AnalyticsStyles } from '../../AnalyticsStyles';
-import SortIcon from '../../icons/performance dashboard/sort.svg';
+import SortIcon from '../../icons/performance dashboard/sort';
 
 const Styles = styled.div`
   overflow-x: auto;
@@ -52,7 +52,7 @@ export const AnomalyBlockTable: React.FC<AnomalyBlockTableProps> = ({ data, colu
                 <th {...column.getHeaderProps(column.getSortByToggleProps())}>
                   <div className={classes.tableHeaderText}>
                     {column.render('Header')}
-                    <span className={classes.sortIcon}>{sortableHeaders.includes(column.Header.toString()) ? <img src={SortIcon} alt="sort by name" /> : <span />}</span>
+                    <span className={classes.sortIcon}>{sortableHeaders.includes(column.Header.toString()) ? <span>{SortIcon}</span> : <span />}</span>
                   </div>
                 </th>
               ))}

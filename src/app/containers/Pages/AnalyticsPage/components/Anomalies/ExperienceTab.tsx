@@ -61,7 +61,7 @@ export interface BarChartData {
 enum AnomalySuffix {
   ANOMALY_PACKETLOSS = '%',
   ANOMALY_LATENCY = 'ms',
-  ANOMALY_GOODPUT = 'mbps',
+  ANOMALY_GOODPUT = 'Mbps',
 }
 
 enum AnomalyType {
@@ -103,11 +103,11 @@ const HITS_TABLE_COLUMNS: Column[] = [
 
 const HITS_TABLE_SORTABLE_HEADERS = ['VALUE', 'DESTINATION', 'NAME'];
 
-const HITS_TABLE_TIME_FORMAT = 'EEE,MMM dd yyyy,hh:mm a';
+const HITS_TABLE_TIME_FORMAT = 'EEE, MMM dd yyyy, hh:mm a';
+
+const INPUT_TIME_FORMAT = 'yyyy-MM-dd HH:mm:ss ZZZ z';
 
 const BAR_CHART_TIME_FORMAT = 'MMM dd';
-
-const getSQLTimeFormat = (time: string) => time.replace('+0000 UTC', '');
 
 export const ExperienceTab: React.FC<ExperienceTabProps> = ({ timeRange }) => {
   const classes = AnalyticsStyles();
@@ -200,7 +200,7 @@ export const ExperienceTab: React.FC<ExperienceTabProps> = ({ timeRange }) => {
     if (isEmpty(allExperienceAnomalies)) {
       setBarChartData([]);
     } else {
-      const luxonDateAnomalyData = allExperienceAnomalies.map(anomaly => DateTime.fromSQL(getSQLTimeFormat(anomaly.time)).toFormat(BAR_CHART_TIME_FORMAT));
+      const luxonDateAnomalyData = allExperienceAnomalies.map(anomaly => DateTime.fromFormat(anomaly.time, INPUT_TIME_FORMAT).toUTC().toFormat(BAR_CHART_TIME_FORMAT));
       const dateCount = countBy(luxonDateAnomalyData);
       const barChartData = Object.keys(dateCount).map(item => ({
         date: item,
@@ -222,7 +222,7 @@ export const ExperienceTab: React.FC<ExperienceTabProps> = ({ timeRange }) => {
       const triggerSpecificAnomalies = allExperienceAnomalies.filter(anomaly => anomaly.type === item.name);
       const filteredAnomalies = isEmpty(selectedBarChartPoints)
         ? triggerSpecificAnomalies
-        : triggerSpecificAnomalies.filter(anomaly => selectedBarChartPoints.includes(DateTime.fromSQL(getSQLTimeFormat(anomaly.time)).toFormat(BAR_CHART_TIME_FORMAT)));
+        : triggerSpecificAnomalies.filter(anomaly => selectedBarChartPoints.includes(DateTime.fromFormat(anomaly.time, INPUT_TIME_FORMAT).toUTC().toFormat(BAR_CHART_TIME_FORMAT)));
 
       const { triggerCount, ...otherItems } = item;
 
@@ -257,7 +257,7 @@ export const ExperienceTab: React.FC<ExperienceTabProps> = ({ timeRange }) => {
 
         return {
           name: slaTest?.name,
-          time: DateTime.fromSQL(getSQLTimeFormat(anomaly.time)).toFormat(HITS_TABLE_TIME_FORMAT),
+          time: DateTime.fromFormat(anomaly.time, INPUT_TIME_FORMAT).toUTC().toFormat(HITS_TABLE_TIME_FORMAT),
           sourceOrg: slaTest?.sourceOrg,
           sourceNetwork: slaTest?.sourceNetwork,
           sourceDevice: slaTest?.sourceDevice,

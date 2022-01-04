@@ -1,19 +1,21 @@
-import { Button, FormControlLabel, Typography } from '@mui/material';
+import { FormControlLabel } from '@mui/material';
 import { Column, ColumnAccessor, MetricsExplorerTableData } from 'lib/api/http/SharedTypes';
 import isEqual from 'lodash/isEqual';
 import sortBy from 'lodash/sortBy';
 import uniqWith from 'lodash/uniqWith';
 import React, { useEffect, useState } from 'react';
 import { AnalyticsStyles } from '../../AnalyticsStyles';
-import ColumnsIcon from '../../icons/metrics explorer/columns.svg';
-import SearchIcon from '../../icons/metrics explorer/search.svg';
-import SortIcon from '../../icons/metrics explorer/sort.svg';
+import ColumnsIcon from '../../icons/metrics explorer/columns';
+import SearchIcon from '../../icons/metrics explorer/search';
+import SortIcon from '../../icons/metrics explorer/sort';
 import { CheckboxData, DimensionOptions } from './Dimensions';
 import { LegendLine } from './LegendLine';
 import { Table } from './Table';
 import styled from 'styled-components';
 import { Checkbox, FormGroup, Popover } from '@mui/material';
 import produce from 'immer';
+import DragIcon from '../../icons/metrics explorer/drag';
+import SecondaryButtonwithEvent from '../SecondaryButtonwithEvent';
 
 interface MetricsTableProps {
   readonly dimensions: DimensionOptions[];
@@ -282,9 +284,7 @@ const dataColumns = (dataUnit: string): Column[] => [
           </div>
           <div>{`(${dataUnit})`}</div>
         </div>
-        <div>
-          <img className="image" src={SortIcon} alt="sort by name" />
-        </div>
+        <div>{SortIcon}</div>
       </FlexStart>
     ),
     accessor: ColumnAccessor.average,
@@ -298,9 +298,7 @@ const dataColumns = (dataUnit: string): Column[] => [
           </div>
           <div>{`(${dataUnit})`}</div>
         </div>
-        <div>
-          <img className="image" src={SortIcon} alt="sort by name" />
-        </div>
+        <div>{SortIcon}</div>
       </FlexStart>
     ),
     accessor: ColumnAccessor.ninetyFifthPercentile,
@@ -314,9 +312,7 @@ const dataColumns = (dataUnit: string): Column[] => [
           </div>
           <div>{`(${dataUnit})`}</div>
         </div>
-        <div>
-          <img className="image" src={SortIcon} alt="sort by name" />
-        </div>
+        <div>{SortIcon}</div>
       </FlexStart>
     ),
     accessor: ColumnAccessor.max,
@@ -330,9 +326,7 @@ const dataColumns = (dataUnit: string): Column[] => [
           </div>
           <div>{`(${dataUnit})`}</div>
         </div>
-        <div>
-          <img className="image" src={SortIcon} alt="sort by name" />
-        </div>
+        <div>{SortIcon}</div>
       </FlexStart>
     ),
     accessor: ColumnAccessor.lastDatapoint,
@@ -580,17 +574,18 @@ export const MetricsTable: React.FC<MetricsTableProps> = ({ dimensions, tableDat
       <div className={classes.tabTitleContainer}>
         <div>
           <input type="text" className={classes.metricsTableSearchBar} value={searchText} onChange={handleSearchTextChange} placeholder="Search" />
-          <span className={classes.searchIcon}>
-            <img src={SearchIcon} alt="search" />
-          </span>
+          <span className={classes.searchIcon}>{SearchIcon}</span>
         </div>
         <div>
-          <Button aria-describedby={columnsPopoverId} className={classes.otherButton} variant="contained" onClick={handleColmunsClick} disableElevation>
-            <Typography className={classes.otherButtonText} noWrap>
-              COLUMNS
-            </Typography>
-            <img src={ColumnsIcon} alt="columns" />
-          </Button>
+          <SecondaryButtonwithEvent
+            label={
+              <>
+                <span className={classes.otherButtonText}>COLUMNS</span>
+                {ColumnsIcon}
+              </>
+            }
+            onClick={handleColmunsClick}
+          />
           <Popover
             id={columnsPopoverId}
             open={isColumnsPopoverOpen}
@@ -612,7 +607,7 @@ export const MetricsTable: React.FC<MetricsTableProps> = ({ dimensions, tableDat
                     label={
                       <div className={classes.popoverText} draggable={true} id={item.accessor} onDragOver={e => e.preventDefault()} onDragStart={handleDrag} onDrop={handleDrop}>
                         <FlexStart>{item.Header}</FlexStart>
-                        <div className={classes.dragIcon} />
+                        <div className={classes.dragIcon}>{DragIcon}</div>
                       </div>
                     }
                   />

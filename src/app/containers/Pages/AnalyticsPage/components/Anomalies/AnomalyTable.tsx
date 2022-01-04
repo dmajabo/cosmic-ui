@@ -5,7 +5,7 @@ import { AnomalyCostTableData, AnomalyExperienceTableData, Column, ColumnAccesso
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import { AnalyticsStyles } from '../../AnalyticsStyles';
-import SortIcon from '../../icons/performance dashboard/sort.svg';
+import SortIcon from '../../icons/performance dashboard/sort';
 
 const Styles = styled.div`
   table {
@@ -91,7 +91,7 @@ export const AnomalyTable: React.FC<AnomalyTableProps> = ({ inputColumns, data, 
                 <th {...column.getHeaderProps(column.getSortByToggleProps())}>
                   <div className={classes.tableHeaderText}>
                     {column.render('Header')}
-                    <span className={classes.sortIcon}>{column.Header === 'NAME' ? <img src={SortIcon} alt="sort by name" /> : <span />}</span>
+                    <span className={classes.sortIcon}>{column.Header === 'NAME' ? <span>{SortIcon}</span> : <span />}</span>
                   </div>
                 </th>
               ))}

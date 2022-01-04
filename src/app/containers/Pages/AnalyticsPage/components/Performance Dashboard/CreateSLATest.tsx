@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { PerformanceDashboardStyles } from './PerformanceDashboardStyles';
 import Select from 'react-select';
 import { CreateSLATestRequest, Organization, SLATest, UpdateSLATestRequest } from 'lib/api/http/SharedTypes';
-import CloseIcon from '../../icons/performance dashboard/close.svg';
+import CloseIcon from '../../icons/performance dashboard/close';
 import { GetSelectedOrganization } from './filterFunctions';
 import CreatableSelect from 'react-select/creatable';
 import isEmpty from 'lodash/isEmpty';
@@ -185,7 +185,7 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ slaTestDataToUpdat
           </div>
           {popup ? (
             <div style={{ cursor: 'pointer' }} onClick={() => closeSlaTest()}>
-              <img src={CloseIcon} alt="close" />
+              {CloseIcon}
             </div>
           ) : (
             <div></div>

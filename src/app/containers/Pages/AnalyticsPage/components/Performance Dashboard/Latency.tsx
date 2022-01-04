@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { createApiClient } from 'lib/api/http/apiClient';
 import { PerformanceDashboardStyles } from './PerformanceDashboardStyles';
 import { MetricsLineChart } from './MetricsLineChart';
-import InfoIcon from '../../icons/performance dashboard/info.svg';
+import InfoIcon from '../../icons/performance dashboard/info';
 import LoadingIndicator from 'app/components/Loading';
 import { MetricKeyValue, TestIdToName } from './PacketLoss';
 import { Data } from './Table';
@@ -103,9 +103,7 @@ export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange }) => 
         <div>
           <Typography className={classes.itemTitle}>
             Latency summary
-            <span className={classes.sortIcon}>
-              <img src={InfoIcon} alt="ínfo" />
-            </span>
+            <span className={classes.sortIcon}>{InfoIcon}</span>
           </Typography>
           <Typography className={classes.subTitleText}>Shows aggregated latency between sources.</Typography>
         </div>
@@ -131,9 +129,7 @@ export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange }) => 
         <div>
           <Typography className={classes.itemTitle}>
             Median latency
-            <span className={classes.sortIcon}>
-              <img src={InfoIcon} alt="ínfo" />
-            </span>
+            <span className={classes.sortIcon}>{InfoIcon}</span>
           </Typography>
           <Typography className={classes.subTitleText}>Shows aggregated latency between branches and applications.</Typography>
         </div>

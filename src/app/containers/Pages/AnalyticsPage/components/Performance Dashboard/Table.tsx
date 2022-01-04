@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { PerformanceDashboardStyles } from './PerformanceDashboardStyles';
 import { Column } from 'lib/api/http/SharedTypes';
 import IndeterminateCheckbox from './IndeterminateCheckbox';
-import SortIcon from '../../icons/performance dashboard/sort.svg';
+import SortIcon from '../../icons/performance dashboard/sort';
 
 export interface Data {
   readonly id: string;
@@ -116,7 +116,7 @@ const Table: React.FC<TableProps> = ({ onSelectedRowsUpdate, columns, data }) =>
                 <th {...column.getHeaderProps(column.getSortByToggleProps())}>
                   <div className={classes.tableHeaderText}>
                     {column.render('Header')}
-                    <span className={classes.sortIcon}>{column.Header === 'NAME' ? <img src={SortIcon} alt="sort by name" /> : <span />}</span>
+                    <span className={classes.sortIcon}>{column.Header === 'NAME' ? { SortIcon } : <span />}</span>
                   </div>
                 </th>
               ))}
