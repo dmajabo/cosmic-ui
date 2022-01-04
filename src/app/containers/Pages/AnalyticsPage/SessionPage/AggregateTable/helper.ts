@@ -19,9 +19,9 @@ export const buildAggregatedData = (data: ISession[], buckets: IBuckets[]): IAgg
 const buildRow = (item: ISession, buckets: IBuckets[]): IAggregateRow => {
   const _buckects: IBuckets[] = buckets && buckets.length ? buckets.filter(it => it.key === item.sessionId) : [];
   const _groupData = getGroupedData(_buckects);
-  let _vendors: IState[] = _groupData && _groupData.vendors ? Object.keys(_groupData.vendors).map(key => getNestedTableHeader(_groupData.vendors[key])) : [];
+  let _vendors: IState[] = _groupData && _groupData.vendors ? Object.keys(_groupData.vendors).map(key => getVendorObject(_groupData.vendors[key])) : [];
   if (!_vendors || !_vendors.length) {
-    const _item = getNestedTableHeader(item.deviceVendor);
+    const _item = getVendorObject(item.deviceVendor);
     _vendors = [_item];
   }
   const _row: IAggregateRow = { session: item, data: _groupData.groupData, vendors: _vendors };
@@ -58,7 +58,7 @@ const getGroupedData = (data: IBuckets[]) => {
   return { groupData: Object.keys(_obj).length ? _obj : null, vendors: Object.keys(_vendors).length ? _vendors : null };
 };
 
-export const getNestedTableHeader = (label: AccountVendorTypes) => {
+export const getVendorObject = (label: AccountVendorTypes) => {
   if (label === AccountVendorTypes.CISCO_MERAKI) {
     return { icon: ciscoMerakiLogoIcon(28), label: 'Cisco Meraki' };
   }
