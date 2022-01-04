@@ -7,7 +7,6 @@ interface Props {
 }
 
 const NodeCollapsedName: React.FC<Props> = ({ label, stylesObj }) => {
-  console.log(label);
   return (
     <text fill={stylesObj.fill} x={stylesObj.x} y={stylesObj.y} textAnchor={stylesObj.textAnchor} fontWeight="500" fontSize={stylesObj.fontSize} fontFamily="DMSans">
       {label}

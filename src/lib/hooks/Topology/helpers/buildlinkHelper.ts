@@ -24,6 +24,7 @@ export const buildLinks = (
   }
   if (groups && groups.length) {
     groups.forEach(g => {
+      console.log(g);
       if (!g.children || !g.children.length) return;
       let tgws = new Set();
       g.children.forEach(dev => {

@@ -28,6 +28,7 @@ const RegionNode: React.FC<Props> = (props: Props) => {
   const [visible, setVisible] = React.useState<boolean>(false);
 
   React.useEffect(() => {
+    console.log('test');
     return () => {
       onUnsubscribeDrag();
     };
