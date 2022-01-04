@@ -199,7 +199,7 @@ export const PolicyLogs: React.FC = () => {
             label={
               <>
                 <span className={classes.otherButtonText}>FILTER</span>
-                {FilterIcon}
+                <FilterIcon />
               </>
             }
             onClick={noop}
@@ -209,7 +209,7 @@ export const PolicyLogs: React.FC = () => {
             label={
               <>
                 <span className={classes.otherButtonText}>COLUMNS</span>
-                {ColumnsIcon}
+                <ColumnsIcon />
               </>
             }
             onClick={handleColmunsClick}

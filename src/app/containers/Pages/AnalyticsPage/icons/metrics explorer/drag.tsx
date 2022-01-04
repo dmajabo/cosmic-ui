@@ -1,4 +1,4 @@
-const DragIcon = (
+const DragIcon: React.FC<React.SVGProps<SVGSVGElement>> = () => (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
       d="M5.33333 4.00004C6.06971 4.00004 6.66666 3.40309 6.66666 2.66671C6.66666 1.93033 6.06971 1.33337 5.33333 1.33337C4.59695 1.33337 4 1.93033 4 2.66671C4 3.40309 4.59695 4.00004 5.33333 4.00004Z"

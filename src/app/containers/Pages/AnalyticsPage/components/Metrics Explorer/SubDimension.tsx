@@ -33,11 +33,11 @@ export const SubDimension: React.FC<DimensionOptionsProps> = ({ dimensionOption,
           <div>
             {isTileOpen ? (
               <span className={classes.arrow} onClick={handleClose}>
-                {UpArrow}
+                <UpArrow />
               </span>
             ) : (
               <span className={classes.arrow} onClick={handleOpen}>
-                {DownArrow}
+                <DownArrow />
               </span>
             )}
           </div>

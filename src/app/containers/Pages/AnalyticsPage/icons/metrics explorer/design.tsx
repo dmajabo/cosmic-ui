@@ -1,4 +1,4 @@
-const DesignIcon = (
+const DesignIcon: React.FC<React.SVGProps<SVGSVGElement>> = () => (
   <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
       d="M9.79684 0C4.38245 0 0 4.38171 0 9.79684C0 10.0884 0.236321 10.3247 0.527837 10.3247H9.79684C10.0884 10.3247 10.3247 10.0884 10.3247 9.79684V0.527837C10.3247 0.236321 10.0884 0 9.79684 0Z"

@@ -107,7 +107,7 @@ export const Dimensions: React.FC<DimensionsProps> = ({ closePopup, dimensionDat
     <>
       <div className={classes.popupTitleContainer}>
         <div className={classes.closePopup} onClick={closePopup}>
-          {CloseIcon}
+          <CloseIcon />
         </div>
         <span className={classes.popupTitle}>Dimensions</span>
         <input type="text" className={classes.searchBar} value={searchText} onChange={handleSearchTextChange} placeholder="Search" />
@@ -129,7 +129,7 @@ export const Dimensions: React.FC<DimensionsProps> = ({ closePopup, dimensionDat
           </span>
           <span className={classes.blueSaveButton} onClick={handleSave}>
             <span className={`${classes.saveButton} ${classes.buttonText}`}>SAVE</span>
-            {SaveIcon}
+            <SaveIcon />
           </span>
         </div>
       </div>

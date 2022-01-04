@@ -4,10 +4,10 @@ import DownArrow from '../../icons/metrics explorer/downArrowTriangle';
 import UpArrow from '../../icons/metrics explorer/upArrowTriangle';
 
 export interface CustomizationTabProps {
-  readonly img: JSX.Element;
+  readonly img: React.FC<React.SVGProps<SVGSVGElement>>;
   readonly title: string;
   readonly description?: string;
-  readonly operationImage?: JSX.Element;
+  readonly operationImage?: React.FC<React.SVGProps<SVGSVGElement>>;
   readonly operationName?: string;
   readonly showModal?: () => void;
   readonly content?: JSX.Element;

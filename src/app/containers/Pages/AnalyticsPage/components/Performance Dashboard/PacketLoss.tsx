@@ -116,7 +116,9 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange 
         <div>
           <Typography className={classes.itemTitle}>
             Packet Loss summary
-            <span className={classes.sortIcon}>{InfoIcon}</span>
+            <span className={classes.sortIcon}>
+              <InfoIcon />
+            </span>
           </Typography>
           <Typography className={classes.subTitleText}>Shows aggregated packet loss between sources.</Typography>
         </div>
@@ -142,7 +144,9 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange 
         <div>
           <Typography className={classes.itemTitle}>
             Average packet loss
-            <span className={classes.sortIcon}>{InfoIcon}</span>
+            <span className={classes.sortIcon}>
+              <InfoIcon />
+            </span>
           </Typography>
           <Typography className={classes.subTitleText}>Shows aggregated packet loss between branches and applications.</Typography>
         </div>

@@ -101,7 +101,9 @@ export const Goodput: React.FC<GoodputProps> = ({ selectedRows, timeRange }) => 
         <div>
           <Typography className={classes.itemTitle}>
             Goodput summary
-            <span className={classes.sortIcon}>{InfoIcon}</span>
+            <span className={classes.sortIcon}>
+              <InfoIcon />
+            </span>
           </Typography>
           <Typography className={classes.subTitleText}>Shows aggregated goodput between sources.</Typography>
         </div>
@@ -127,7 +129,9 @@ export const Goodput: React.FC<GoodputProps> = ({ selectedRows, timeRange }) => 
         <div>
           <Typography className={classes.itemTitle}>
             Median Goodput
-            <span className={classes.sortIcon}>{InfoIcon}</span>
+            <span className={classes.sortIcon}>
+              <InfoIcon />
+            </span>
           </Typography>
           <Typography className={classes.subTitleText}>Shows aggregated goodput between branches and applications.</Typography>
         </div>

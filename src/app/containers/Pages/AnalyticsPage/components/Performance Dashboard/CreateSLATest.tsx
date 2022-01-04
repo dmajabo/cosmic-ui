@@ -185,10 +185,10 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ slaTestDataToUpdat
           </div>
           {popup ? (
             <div style={{ cursor: 'pointer' }} onClick={() => closeSlaTest()}>
-              {CloseIcon}
+              <CloseIcon />
             </div>
           ) : (
-            <div></div>
+            <div />
           )}
         </div>
         <div className={classes.formInputContainer}>

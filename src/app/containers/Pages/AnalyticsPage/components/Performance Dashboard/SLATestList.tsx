@@ -207,7 +207,7 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
               label={
                 <>
                   <span className={classes.otherButtonText}>COLUMNS</span>
-                  {ColumnsIcon}
+                  <ColumnsIcon />
                 </>
               }
               onClick={handleColmunsClick}

@@ -91,7 +91,7 @@ export const AnomalyTable: React.FC<AnomalyTableProps> = ({ inputColumns, data, 
                 <th {...column.getHeaderProps(column.getSortByToggleProps())}>
                   <div className={classes.tableHeaderText}>
                     {column.render('Header')}
-                    <span className={classes.sortIcon}>{column.Header === 'NAME' ? <span>{SortIcon}</span> : <span />}</span>
+                    <span className={classes.sortIcon}>{column.Header === 'NAME' ? <SortIcon /> : <span />}</span>
                   </div>
                 </th>
               ))}

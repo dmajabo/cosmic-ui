@@ -1,4 +1,4 @@
-const FilterIcon = (
+const FilterIcon: React.FC<React.SVGProps<SVGSVGElement>> = () => (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g clipPath="url(#clip0)">
       <path d="M6.125 8.49988V15.531C6.125 15.908 6.54547 16.1266 6.85375 15.921L9.66622 14.046C9.79669 13.9591 9.87497 13.8126 9.87497 13.656V8.49988H6.125Z" fill="#3A5277" />

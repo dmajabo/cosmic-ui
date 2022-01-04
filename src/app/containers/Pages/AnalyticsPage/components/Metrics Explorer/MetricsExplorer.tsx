@@ -12,14 +12,13 @@ import CloseIcon from '../../icons/metrics explorer/close';
 import NetworkIcon from '../../icons/metrics explorer/dimensions-network';
 import AwsIcon from '../../icons/metrics explorer/dimensions-aws';
 import MerakiIcon from '../../icons/metrics explorer/dimensions-meraki';
-import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import produce from 'immer';
 import { DimensionOptions, Dimensions } from './Dimensions';
 import { DataSource, DataSourceOptions } from './DataSource';
 import { MetricsChart } from './MetricsChart';
 import { ColumnAccessor, MetricsExplorerTableData } from 'lib/api/http/SharedTypes';
-import { Tab, Tabs } from '@mui/material';
+import { Modal, Tab, Tabs } from '@mui/material';
 import { LookbackLabel, LookbackSelectOption, LookbackTimeTab, LookbackValue } from './LookbackTimeTab';
 import { CustomTimeRangeLabel, CustomTimeRangeSelectOption, CustomTimeTab } from './CustomTimeTab';
 import { DataUnitDropdown, DataUnitLabel, DataUnitValue, DataUnitSelectOption } from './DataUnitDropdown';
@@ -30,7 +29,7 @@ import LineChartIcon from '../../icons/metrics explorer/chartType/lineChart';
 const DUMMY_DIMENSION_DATA: DimensionOptions[] = [
   {
     title: 'Network & Traffic Topology',
-    icon: NetworkIcon,
+    icon: <NetworkIcon />,
     source: [
       { label: 'Interface', value: ColumnAccessor.interfaceSource },
       { label: 'Connectivity Type', value: ColumnAccessor.connectivityTypeSource },
@@ -54,7 +53,7 @@ const DUMMY_DIMENSION_DATA: DimensionOptions[] = [
   },
   {
     title: 'Dimension 2',
-    icon: NetworkIcon,
+    icon: <NetworkIcon />,
     source: [
       { label: 'Interface', value: ColumnAccessor.interfaceSource },
       { label: 'Connectivity Type', value: ColumnAccessor.connectivityTypeSource },
@@ -81,12 +80,12 @@ const DUMMY_DIMENSION_DATA: DimensionOptions[] = [
 const DUMMY_DATA_SOURCE_OPTIONS: DataSourceOptions[] = [
   {
     title: 'Amazon Web Service',
-    icon: AwsIcon,
+    icon: <AwsIcon />,
     options: ['AWS US East (Northern Virginia) Region', 'AWS US West (Northern California) Region'],
   },
   {
     title: 'Cisco Meraki Device Metrics',
-    icon: MerakiIcon,
+    icon: <MerakiIcon />,
     options: ['Office 1', 'Office 2', 'Office 3', 'Office 4', 'Office 5', 'Office 6', 'Office 7', 'Office 8', 'Office 9', 'Office 10', 'Office 11', 'Office 12'],
   },
 ];
@@ -141,7 +140,7 @@ const DUMMY_METRICS_TABLE_DATA: MetricsExplorerTableData[] = [
 const Dummy_selected_dimensions: DimensionOptions[] = [
   {
     title: 'Network & Traffic Topology',
-    icon: NetworkIcon,
+    icon: <NetworkIcon />,
     source: [
       { label: 'Interface', value: ColumnAccessor.interfaceSource },
       { label: 'Connectivity Type', value: ColumnAccessor.connectivityTypeSource },
@@ -177,7 +176,7 @@ export interface SelectOption {
 export interface SelectChartTypeOption {
   readonly value: ChartTypeValue;
   readonly label: ChartTypeLabel;
-  readonly icon: JSX.Element;
+  readonly icon: React.FC<React.SVGProps<SVGSVGElement>>;
 }
 
 export const getDimensionCount = (dimensions: DimensionOptions[]) => {

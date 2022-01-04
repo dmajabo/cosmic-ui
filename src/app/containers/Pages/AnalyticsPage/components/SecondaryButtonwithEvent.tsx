@@ -3,21 +3,21 @@ import { SecondaryButtonStyles } from 'app/components/Buttons/SecondaryButton/st
 import { Label } from 'app/components/Buttons/styles/styles';
 import React from 'react';
 
-interface IProps {
-  label: JSX.Element | string;
-  icon?: JSX.Element;
-  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
-  disabled?: boolean;
-  styles?: Object;
-  withoutBorder?: boolean;
-  active?: boolean;
-  iconWidth?: string;
-  iconHeight?: string;
-  width?: string;
-  height?: string;
+interface SecondaryButtonProps {
+  readonly label: JSX.Element | string;
+  readonly icon?: JSX.Element;
+  readonly onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  readonly disabled?: boolean;
+  readonly styles?: Object;
+  readonly withoutBorder?: boolean;
+  readonly active?: boolean;
+  readonly iconWidth?: string;
+  readonly iconHeight?: string;
+  readonly width?: string;
+  readonly height?: string;
 }
 
-const SecondaryButton: React.FC<IProps> = (props: IProps) => {
+const SecondaryButton: React.FC<SecondaryButtonProps> = props => {
   return (
     <SecondaryButtonStyles
       className={props.active ? 'active' : ''}

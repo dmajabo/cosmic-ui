@@ -52,7 +52,7 @@ export const AnomalyBlockTable: React.FC<AnomalyBlockTableProps> = ({ data, colu
                 <th {...column.getHeaderProps(column.getSortByToggleProps())}>
                   <div className={classes.tableHeaderText}>
                     {column.render('Header')}
-                    <span className={classes.sortIcon}>{sortableHeaders.includes(column.Header.toString()) ? <span>{SortIcon}</span> : <span />}</span>
+                    <span className={classes.sortIcon}>{sortableHeaders.includes(column.Header.toString()) ? <SortIcon /> : <span />}</span>
                   </div>
                 </th>
               ))}

@@ -116,7 +116,7 @@ const Table: React.FC<TableProps> = ({ onSelectedRowsUpdate, columns, data }) =>
                 <th {...column.getHeaderProps(column.getSortByToggleProps())}>
                   <div className={classes.tableHeaderText}>
                     {column.render('Header')}
-                    <span className={classes.sortIcon}>{column.Header === 'NAME' ? { SortIcon } : <span />}</span>
+                    <span className={classes.sortIcon}>{column.Header === 'NAME' ? <SortIcon /> : <span />}</span>
                   </div>
                 </th>
               ))}

@@ -5,7 +5,7 @@ import { SelectChartTypeOption } from './MetricsExplorer';
 export const ChartTypeOption: React.FC<SelectChartTypeOption> = ({ label, icon, value }) => {
   return (
     <>
-      <span>{icon}</span>
+      {icon}
       <span className="chartTypeText">{label}</span>
     </>
   );
