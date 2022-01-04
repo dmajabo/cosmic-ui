@@ -47,19 +47,19 @@ export const getTicks = (period: ITimeTypes, _domain: number[], _selected: numbe
       const a = arr.filter((tick, i) => getHours(tick) % 3 === 0 || i === arr.length - 1);
       return a.map((d, i) => {
         const _tick = getTick(period, +d, i, arr.length - 1);
-        return { value: +d, label: _tick.label, highlight: _tick.highlight };
+        return { friendlyValue: new Date(+d), value: +d, label: _tick.label, highlight: _tick.highlight };
       });
     }
     return arr.map((d, i) => {
       const _tick = getTick(period, +d, i, arr.length - 1);
-      return { value: +d, label: _tick.label, highlight: _tick.highlight };
+      return { friendlyValue: new Date(+d), value: +d, label: _tick.label, highlight: _tick.highlight };
     });
     // 24 hours
   } else if (period === ITimeTypes.WEEK) {
     const arr = _ticks.ticks(7);
     return arr.map((d, i) => {
       const _tick = getTick(period, +d, i, arr.length - 1);
-      return { value: +d, label: _tick.label, highlight: _tick.highlight };
+      return { friendlyValue: new Date(+d), value: +d, label: _tick.label, highlight: _tick.highlight };
     });
   } else if (period === ITimeTypes.MONTH) {
     const arr = _ticks.ticks(31);
@@ -68,13 +68,13 @@ export const getTicks = (period: ITimeTypes, _domain: number[], _selected: numbe
     const filteredTicks = getFilteredTicks(arr, isOdd, _selected, period);
     return filteredTicks.map((d, i) => {
       const _tick = getTick(period, +d, i, filteredTicks.length - 1);
-      return { value: +d, label: _tick.label, highlight: _tick.highlight };
+      return { friendlyValue: new Date(+d), value: +d, label: _tick.label, highlight: _tick.highlight };
     });
   } else if (period === ITimeTypes.YEAR) {
     const arr = _ticks.ticks(12);
     return arr.map((d, i) => {
       const _tick = getTick(period, +d, i, arr.length - 1);
-      return { value: +d, label: _tick.label, highlight: _tick.highlight };
+      return { friendlyValue: new Date(+d), value: +d, label: _tick.label, highlight: _tick.highlight };
     });
   }
   const arr = _ticks.ticks(24);
@@ -88,12 +88,12 @@ export const getTicks = (period: ITimeTypes, _domain: number[], _selected: numbe
     const a = arr.filter((tick, i) => getHours(tick) % 3 === 0 || i === arr.length - 1);
     return a.map((d, i) => {
       const _tick = getTick(period, +d, i, arr.length - 1);
-      return { value: +d, label: _tick.label, highlight: _tick.highlight };
+      return { friendlyValue: new Date(+d), value: +d, label: _tick.label, highlight: _tick.highlight };
     });
   }
   return arr.map((d, i) => {
     const _tick = getTick(period, +d, i, arr.length - 1);
-    return { value: +d, label: _tick.label, highlight: _tick.highlight };
+    return { friendlyValue: new Date(+d), value: +d, label: _tick.label, highlight: _tick.highlight };
   });
 };
 

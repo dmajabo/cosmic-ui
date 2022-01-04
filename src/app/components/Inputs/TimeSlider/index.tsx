@@ -153,8 +153,10 @@ const TimeSlider: React.FC<Props> = (props: Props) => {
         </>
       ),
     }));
+    console.log('Time period:', _period);
+    console.log('Time startDate:', startDate);
+    console.log('Slider values:', _visibleItems);
     setSelected(_selected);
-    console.log('Time config', _visibleItems);
     setValues(_visibleItems);
     setConfig(_obj);
     if (config && (_obj.min !== config.min || _obj.max !== config.max)) {

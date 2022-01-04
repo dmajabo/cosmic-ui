@@ -25,6 +25,7 @@ export interface ITimeConfig {
 }
 
 export interface ITimeValue {
+  friendlyValue: string | Date;
   value: number;
   label: string | React.ReactNode;
   highlight: boolean;
