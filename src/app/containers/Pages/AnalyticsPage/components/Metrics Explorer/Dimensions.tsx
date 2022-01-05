@@ -22,7 +22,7 @@ export interface OptionData {
 
 export interface DimensionOptions {
   readonly title: string;
-  readonly icon?: JSX.Element;
+  readonly icon?: React.ReactNode;
   readonly source: OptionData[];
   readonly destination: OptionData[];
 }
@@ -111,7 +111,9 @@ export const Dimensions: React.FC<DimensionsProps> = ({ closePopup, dimensionDat
         </div>
         <span className={classes.popupTitle}>Dimensions</span>
         <input type="text" className={classes.searchBar} value={searchText} onChange={handleSearchTextChange} placeholder="Search" />
-        <span className={classes.searchIcon}>{SearchIcon}</span>
+        <span className={classes.searchIcon}>
+          <SearchIcon />
+        </span>
       </div>
       <div className={classes.popupContent}>
         {dimensionOptions.map(option => (

@@ -35,11 +35,11 @@ export const DataSourceOption: React.FC<DataSourceOptionProps> = ({ dataSourceOp
           <div>
             {isTileOpen ? (
               <span className={classes.arrow} onClick={handleClose}>
-                {UpArrow}
+                <UpArrow />
               </span>
             ) : (
               <span className={classes.arrow} onClick={handleOpen}>
-                {DownArrow}
+                <DownArrow />
               </span>
             )}
           </div>

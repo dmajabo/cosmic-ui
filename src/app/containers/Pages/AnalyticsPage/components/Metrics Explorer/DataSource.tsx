@@ -17,7 +17,7 @@ interface DataSourceProps {
 
 export interface DataSourceOptions {
   readonly title: string;
-  readonly icon?: JSX.Element;
+  readonly icon?: React.ReactNode;
   readonly options: string[];
 }
 
@@ -125,11 +125,13 @@ export const DataSource: React.FC<DataSourceProps> = ({ closePopup, dataSourcesD
     <>
       <div className={classes.popupTitleContainer}>
         <div className={classes.closePopup} onClick={closePopup}>
-          {CloseIcon}
+          <CloseIcon />
         </div>
         <span className={classes.popupTitle}>Data Source</span>
         <input type="text" className={classes.searchBar} value={searchText} onChange={handleSearchTextChange} placeholder="Search" />
-        <span className={classes.searchIcon}>{SearchIcon}</span>
+        <span className={classes.searchIcon}>
+          <SearchIcon />
+        </span>
         <FormControlLabel key="all_items" control={<Checkbox checked={checkboxData['all_items']} onChange={e => selectAllDataSources(e)} name="all_items" />} label="Use All Data Sources" />
       </div>
       <div className={classes.popupContent}>
@@ -154,7 +156,7 @@ export const DataSource: React.FC<DataSourceProps> = ({ closePopup, dataSourcesD
           </span>
           <span className={classes.blueSaveButton} onClick={handleSave}>
             <span className={`${classes.saveButton} ${classes.buttonText}`}>SAVE</span>
-            {SaveIcon}
+            <SaveIcon />
           </span>
         </div>
       </div>

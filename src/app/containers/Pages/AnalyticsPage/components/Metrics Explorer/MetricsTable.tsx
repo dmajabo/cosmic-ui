@@ -284,7 +284,9 @@ const dataColumns = (dataUnit: string): Column[] => [
           </div>
           <div>{`(${dataUnit})`}</div>
         </div>
-        <div>{SortIcon}</div>
+        <div>
+          <SortIcon />
+        </div>
       </FlexStart>
     ),
     accessor: ColumnAccessor.average,
@@ -298,7 +300,9 @@ const dataColumns = (dataUnit: string): Column[] => [
           </div>
           <div>{`(${dataUnit})`}</div>
         </div>
-        <div>{SortIcon}</div>
+        <div>
+          <SortIcon />
+        </div>
       </FlexStart>
     ),
     accessor: ColumnAccessor.ninetyFifthPercentile,
@@ -312,7 +316,9 @@ const dataColumns = (dataUnit: string): Column[] => [
           </div>
           <div>{`(${dataUnit})`}</div>
         </div>
-        <div>{SortIcon}</div>
+        <div>
+          <SortIcon />
+        </div>
       </FlexStart>
     ),
     accessor: ColumnAccessor.max,
@@ -326,7 +332,9 @@ const dataColumns = (dataUnit: string): Column[] => [
           </div>
           <div>{`(${dataUnit})`}</div>
         </div>
-        <div>{SortIcon}</div>
+        <div>
+          <SortIcon />
+        </div>
       </FlexStart>
     ),
     accessor: ColumnAccessor.lastDatapoint,
@@ -574,14 +582,16 @@ export const MetricsTable: React.FC<MetricsTableProps> = ({ dimensions, tableDat
       <div className={classes.tabTitleContainer}>
         <div>
           <input type="text" className={classes.metricsTableSearchBar} value={searchText} onChange={handleSearchTextChange} placeholder="Search" />
-          <span className={classes.searchIcon}>{SearchIcon}</span>
+          <span className={classes.searchIcon}>
+            <SearchIcon />
+          </span>
         </div>
         <div>
           <SecondaryButtonwithEvent
             label={
               <>
                 <span className={classes.otherButtonText}>COLUMNS</span>
-                {ColumnsIcon}
+                <ColumnsIcon />
               </>
             }
             onClick={handleColmunsClick}
@@ -607,7 +617,9 @@ export const MetricsTable: React.FC<MetricsTableProps> = ({ dimensions, tableDat
                     label={
                       <div className={classes.popoverText} draggable={true} id={item.accessor} onDragOver={e => e.preventDefault()} onDragStart={handleDrag} onDrop={handleDrop}>
                         <FlexStart>{item.Header}</FlexStart>
-                        <div className={classes.dragIcon}>{DragIcon}</div>
+                        <div className={classes.dragIcon}>
+                          <DragIcon />
+                        </div>
                       </div>
                     }
                   />

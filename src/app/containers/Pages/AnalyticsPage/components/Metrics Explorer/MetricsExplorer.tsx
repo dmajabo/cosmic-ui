@@ -176,7 +176,7 @@ export interface SelectOption {
 export interface SelectChartTypeOption {
   readonly value: ChartTypeValue;
   readonly label: ChartTypeLabel;
-  readonly icon: React.FC<React.SVGProps<SVGSVGElement>>;
+  readonly icon: React.ReactNode;
 }
 
 export const getDimensionCount = (dimensions: DimensionOptions[]) => {
@@ -291,12 +291,12 @@ export const MetricsExplorer: React.FC = () => {
 
   const customizationtabOptions: CustomizationTabProps[] = [
     {
-      img: DesignIcon,
+      img: <DesignIcon />,
       title: 'Design',
       content: <ChartTypeDropdown chartType={chartType} handleChartTypeChange={handleChartTypeChange} />,
     },
     {
-      img: DimensionsIcon,
+      img: <DimensionsIcon />,
       title: 'Dimensions',
       description: `${getDimensionCount(dimensions)}`,
       operationImage: getDimensionCount(dimensions) > 0 ? EditIcon : AddIcon,
@@ -353,12 +353,12 @@ export const MetricsExplorer: React.FC = () => {
         ),
     },
     {
-      img: MetricsIcon,
+      img: <MetricsIcon />,
       title: 'Metrics',
       content: <DataUnitDropdown dataUnit={dataUnit} handleDataUnitChange={handleDataUnitChange} />,
     },
     {
-      img: TimeIcon,
+      img: <TimeIcon />,
       title: 'Time',
       content: (
         <>
@@ -395,7 +395,7 @@ export const MetricsExplorer: React.FC = () => {
       ),
     },
     {
-      img: DataSourceIcon,
+      img: <DataSourceIcon />,
       title: 'Data Source',
       description: `${getDataSourceCount(dataSources)} of ${getDataSourceCount(DUMMY_DATA_SOURCE_OPTIONS)}`,
       operationImage: getDataSourceCount(dataSources) > 0 ? EditIcon : AddIcon,

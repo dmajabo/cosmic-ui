@@ -4,10 +4,10 @@ import DownArrow from '../../icons/metrics explorer/downArrowTriangle';
 import UpArrow from '../../icons/metrics explorer/upArrowTriangle';
 
 export interface CustomizationTabProps {
-  readonly img: React.FC<React.SVGProps<SVGSVGElement>>;
+  readonly img: React.ReactNode;
   readonly title: string;
   readonly description?: string;
-  readonly operationImage?: React.FC<React.SVGProps<SVGSVGElement>>;
+  readonly operationImage?: React.ReactNode;
   readonly operationName?: string;
   readonly showModal?: () => void;
   readonly content?: JSX.Element;
@@ -33,11 +33,11 @@ export const CustomizationTile: React.FC<CustomizationTabProps> = ({ img, title,
           <span onClick={showModal}>{operationImage}</span>
           {isTileOpen ? (
             <span className={classes.arrow} onClick={handleClose}>
-              {UpArrow}
+              <UpArrow />
             </span>
           ) : (
             <span className={classes.arrow} onClick={handleOpen}>
-              {DownArrow}
+              <DownArrow />
             </span>
           )}
         </div>
