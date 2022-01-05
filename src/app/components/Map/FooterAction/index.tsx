@@ -64,6 +64,7 @@ const FooterAction: React.FC<IProps> = (props: IProps) => {
   };
 
   const onUpdateRange = (_range: ITimeMinMaxRange) => {
+    console.log('Range updated', _range);
     topology.onUpdateTimeRange(_range);
   };
 

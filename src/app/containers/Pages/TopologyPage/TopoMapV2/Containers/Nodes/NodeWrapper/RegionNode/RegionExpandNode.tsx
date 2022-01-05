@@ -6,7 +6,7 @@ import CollapseExpandButton from '../../Containers/CollapseExpandButton';
 import * as d3 from 'd3';
 import NodeMarker from '../../Containers/NodeMarker';
 import NodeExpandedName from '../../Containers/NodeName/NodeExpandedName';
-import { INetworkVNetNode, ITopoNode, IVPC_PanelDataNode_V2 } from 'lib/hooks/Topology/models';
+import { INetworkVNetNode, ITopoNode } from 'lib/hooks/Topology/models';
 import ExpandNodeContent from './ExpandNodeContent';
 import NetworkVnetNode from '../NetworkVnetNode';
 import PeerConnectionNode from '../PeerConnectionNode';
@@ -17,7 +17,7 @@ interface Props {
   showPeeringConnections: boolean;
   show: boolean;
   onCollapse: () => void;
-  onVpcClick: (item: IVPC_PanelDataNode_V2) => void;
+  onVpcClick: (item: INetworkVNetNode) => void;
 }
 
 const RegionExpandNode: React.FC<Props> = (props: Props) => {

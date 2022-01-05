@@ -1,6 +1,5 @@
 import React from 'react';
-import { IDeviceNode, IVPC_PanelDataNode } from 'lib/models/topology';
-import { ITGWNode, ITopoNode, TopoNodeTypes } from 'lib/hooks/Topology/models';
+import { ITopoNode, TopoNodeTypes } from 'lib/hooks/Topology/models';
 import RegionNode from './RegionNode';
 import AccountNode from './AccountNode';
 import DataCenter from './DataCenter';
@@ -8,9 +7,6 @@ import SitesNode from './SitesNode';
 
 interface Props {
   dataItem: ITopoNode<any, any>;
-  onClickDevice: (_node: IDeviceNode) => void;
-  onClickWedge: (_node: ITGWNode) => void;
-  onClickVpc: (_data: IVPC_PanelDataNode) => void;
 }
 
 const NodesWrapper: React.FC<Props> = (props: Props) => {

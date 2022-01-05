@@ -193,11 +193,16 @@ export interface INetworkLoadBalancerListener extends IBaseEntity<string> {
   protocol: string;
   actions: INetworkLoadBalancerListenerAction[];
 }
+
+export enum CloudLoadBalancerTypeP {
+  NETWORK = 'NETWORK',
+  APPLICATION = 'APPLICATION',
+}
 export interface INetworkLoadBalancer extends IBaseEntity<string> {
   name: string;
   description: string;
   extUrl: string;
-  type: string;
+  type: CloudLoadBalancerTypeP;
   dnsName: string;
   extId: string;
   Ips: string[];

@@ -1,6 +1,6 @@
 import React from 'react';
 import { NODES_CONSTANTS } from '../../../../model';
-import { INetworkVNetNode, ITopoNode, IVPC_PanelDataNode_V2 } from 'lib/hooks/Topology/models';
+import { INetworkVNetNode, ITopoNode } from 'lib/hooks/Topology/models';
 import NodeCounter from '../../Containers/NodeCounter';
 import { select } from 'd3-selection';
 import { buildVnetTooltip, removeVnetTooltip } from './tooltipHelper';
@@ -8,7 +8,7 @@ import { buildVnetTooltip, removeVnetTooltip } from './tooltipHelper';
 interface Props {
   region: ITopoNode<any, INetworkVNetNode>;
   item: INetworkVNetNode;
-  onClick: (item: IVPC_PanelDataNode_V2) => void;
+  onClick: (item: INetworkVNetNode) => void;
 }
 
 const NetworkVnetNode: React.FC<Props> = (props: Props) => {
@@ -18,7 +18,7 @@ const NetworkVnetNode: React.FC<Props> = (props: Props) => {
   }, []);
 
   const onClick = () => {
-    props.onClick({ vm: null, group: null, vnet: { ...props.item } });
+    props.onClick(props.item);
   };
   const onMouseEnter = (e: React.BaseSyntheticEvent<MouseEvent>) => {
     const _node = select(nodeRef.current);

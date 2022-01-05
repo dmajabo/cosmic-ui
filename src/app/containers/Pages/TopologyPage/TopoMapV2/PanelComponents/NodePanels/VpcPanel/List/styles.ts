@@ -29,11 +29,24 @@ export const VmWrapStyles = styled.div`
 
   &:hover {
     background: var(--_hoverButtonBg);
-    color: var(--_hoverButtonColor);
+    color: var(--_primaryWhiteColor);
     .inheritFill {
-      fill: var(--_hoverButtonColor);
+      fill: var(--_primaryWhiteColor);
     }
   }
+`;
+
+export const BalanceWrapStyles = styled.div`
+  display: flex;
+  width: 100%;
+  margin: 0 0 4px 0;
+  border-radius: 6px;
+  background: var(--_vmsContainerBg);
+  height: 50px;
+  padding: 15px 20px;
+  align-items: center;
+  flex-shrink: 0;
+  color: var(--_primaryTextColor);
 `;
 
 export const GroupWrapper = styled.div`
@@ -99,4 +112,32 @@ export const GroupWrapStyles = styled.div`
       fill: var(--_hoverButtonColor);
     }
   }
+`;
+
+interface IIGARowProps {
+  margin?: string;
+}
+export const InternetGetAwayRow = styled.div<IIGARowProps>`
+  display: flex;
+  flex-shrink: 0;
+  margin: ${props => props.margin || '0 8px 0 0'};
+  align-items: center;
+  font-size: 16px;
+  line-height: 20px;
+`;
+export const InternetGetAwayLabel = styled.span`
+  color: var(--_primaryTextColor);
+  display: inline-block;
+  margin: auto 4px auto 0;
+  flex-shrink: 0;
+  font-weight: 500;
+`;
+export const InternetGetAwayValue = styled.div`
+  color: var(--_disabledTextColor);
+  display: inline-block;
+  font-weight: normal;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 100%;
 `;

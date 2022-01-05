@@ -1,123 +1,144 @@
 import React from 'react';
-import { PanelBarContent, PanelHeader, PanelTabWrapper, PanelTitle } from '../../styles';
+import { PanelHeader, PanelTitle } from '../../styles';
 import OverflowContainer from 'app/components/Basic/OverflowContainer/styles';
-import { IVPC_PanelDataNode, IApplication_Group, IVnetNode } from 'lib/models/topology';
-import { Tab, Tabs } from '@mui/material';
-import { TabsStyles } from 'app/components/Tabs/TabsStyles';
-import { TabComponentProps } from 'app/components/Tabs/TabComponentProps';
-import TabPanel from 'app/components/Tabs/TabPanel';
-import List from './List';
-import { returnArrow } from 'app/components/SVGIcons/arrows';
-import IconButton from 'app/components/Buttons/IconButton';
-import MetricsTab from './VmTabs/MetricsTab';
-import RoutesTab from './VmTabs/RoutesTab';
-import PolicyTab from './VmTabs/PolicyTab';
-import { INetworkVM } from 'lib/api/ApiModels/Topology/apiModels';
+import { CloudLoadBalancerTypeP, INetworkLoadBalancer, INetworkVM, INnetworkInternetGateway } from 'lib/api/ApiModels/Topology/apiModels';
+import { INetworkVNetNode } from 'lib/hooks/Topology/models';
+import SelectedItemPanel from './SelectedItemPanel';
+import ExpandGroup from 'app/components/Basic/ExpandGroup';
+import { AppLoaderBalancerIcon, InternetGatawayIcon, NetLoaderBalancerIcon, VmIcon } from 'app/components/SVGIcons/topologyIcons/TopoMapV2Icons/VnetPanelIcons/vnetPanelIcons';
+import VmItem from './List/VmItem';
+import ChildrenCount from './ChildrenCount';
+import { DEFAULT_VNET_EXPAND_FIELDS, IVnetFields } from './models';
+import { jsonClone } from 'lib/helpers/cloneHelper';
+import BalanceItem from './List/BalanceItem';
+import InternetGetAwayItem from './List/InternetGetAwayItem';
 
 interface IProps {
-  dataItem: IVPC_PanelDataNode;
+  dataItem: INetworkVNetNode;
 }
 
 const VpcPanel: React.FC<IProps> = (props: IProps) => {
-  const [value, setValue] = React.useState(0);
-  const [vnet, setVnet] = React.useState<IVnetNode>(null);
-  const [selectedVm, setSelectedVm] = React.useState<INetworkVM | null>(null);
-  const [listItems, setListItems] = React.useState<(INetworkVM | IApplication_Group)[] | null>(null);
-  const classes = TabsStyles();
-
+  const [vnet, setVnet] = React.useState<INetworkVNetNode>(null);
+  const [selectedSubItem, setSelectedSubItem] = React.useState<INetworkVM | null>(null);
+  const [vms, setVms] = React.useState<INetworkVM[]>([]);
+  const [netLoaderBalancerList, setNetLoaderBalancerList] = React.useState<INetworkLoadBalancer[]>([]);
+  const [appLoaderBalancerList, setAppLoaderBalancerList] = React.useState<INetworkLoadBalancer[]>([]);
+  const [internetGatAway, setInternetGetAway] = React.useState<INnetworkInternetGateway>(null);
+  const [expandStateObj, setExpandStateObj] = React.useState<IVnetFields>(jsonClone(DEFAULT_VNET_EXPAND_FIELDS));
   React.useEffect(() => {
-    if (props.dataItem && props.dataItem.vnet) {
-      const _vmslist: INetworkVM[] = props.dataItem.vnet.vms.filter(it => !it.selectorGroup);
-      const _appList: IApplication_Group[] = [];
-      if (props.dataItem.vnet.applicationGroups && props.dataItem.vnet.applicationGroups.length) {
-        props.dataItem.vnet.applicationGroups.forEach(gr => {
-          const _vms: INetworkVM[] = props.dataItem.vnet.vms.filter(it => it.selectorGroup === gr.name || it.selectorGroup === gr.id);
-          const _disabled = !_vms || !_vms.length;
-          const _expanded = props.dataItem.group && gr.id === props.dataItem.group.id;
-          const _obj: IApplication_Group = { ...gr, expanded: _expanded, items: _vms || [], disabled: _disabled };
-          _appList.push(_obj);
-        });
-      }
-      const _listItems: (INetworkVM | IApplication_Group)[] = [].concat([..._appList, ..._vmslist]);
-      const _selectedVm = props.dataItem.vm ? props.dataItem.vm : null;
-      setListItems(_listItems);
-      setSelectedVm(_selectedVm);
-      setVnet(props.dataItem.vnet);
-      setValue(0);
-    } else {
-      setListItems(null);
-      setSelectedVm(null);
-      setVnet(null);
-      setValue(0);
+    if (!vnet || (props.dataItem && props.dataItem.id !== vnet.id)) {
+      const _obj = getFilteredBalancerByType(props.dataItem.loadBalancers);
+      setVms(props.dataItem.vms);
+      setNetLoaderBalancerList(_obj.net);
+      setAppLoaderBalancerList(_obj.app);
+      setInternetGetAway(props.dataItem.internetGateway);
+      setSelectedSubItem(null);
+      const _expObj: IVnetFields = jsonClone(DEFAULT_VNET_EXPAND_FIELDS);
+      setExpandStateObj(_expObj);
+      setVnet(props.dataItem);
     }
   }, [props.dataItem]);
 
-  const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
-    setValue(newValue);
+  const getFilteredBalancerByType = (data: INetworkLoadBalancer[]) => {
+    if (!data || !data.length) return { net: [], app: [] };
+    const _nat: INetworkLoadBalancer[] = [];
+    const _app: INetworkLoadBalancer[] = [];
+    data.forEach(it => {
+      if (it.type === CloudLoadBalancerTypeP.NETWORK) {
+        _nat.push(it);
+        return;
+      }
+      _app.push(it);
+    });
+    return { net: _nat, app: _app };
   };
 
   const onSelectVm = (_item: INetworkVM) => {
-    if (selectedVm && selectedVm.id === _item.id) return;
-    setValue(0);
-    setSelectedVm(_item);
+    if (selectedSubItem && selectedSubItem.id === _item.id) return;
+    setSelectedSubItem(_item);
   };
 
   const onReturn = () => {
-    setValue(0);
-    setSelectedVm(null);
+    setSelectedSubItem(null);
+  };
+
+  const onToogleGroup = (fieldId: string, state: boolean) => {
+    const _obj: IVnetFields = { ...expandStateObj };
+    _obj[fieldId].expand = state;
+    setExpandStateObj(_obj);
   };
 
   if (!vnet) return null;
 
+  if (selectedSubItem) {
+    return <SelectedItemPanel vnetExtId={props.dataItem.extId} dataItem={selectedSubItem} onReturnBack={onReturn} />;
+  }
+
   return (
     <>
       <PanelHeader direction="row" align="center">
-        {selectedVm && <IconButton styles={{ margin: '0 12px 0 0', width: '40px', height: '40px' }} icon={returnArrow} title="Back" onClick={onReturn} />}
-        {selectedVm && <PanelTitle maxWidth="calc(100% - 32px)">{selectedVm.name ? selectedVm.name : selectedVm.extId}</PanelTitle>}
-        {!selectedVm && (
-          <PanelTitle margin="0" maxWidth="calc(100% - 32px)">
-            {props.dataItem.vnet.name ? props.dataItem.vnet.name : props.dataItem.vnet.extId}
-          </PanelTitle>
-        )}
+        <PanelTitle margin="0" maxWidth="calc(100% - 32px)">
+          {props.dataItem.name ? props.dataItem.name : props.dataItem.extId}
+        </PanelTitle>
       </PanelHeader>
-      {selectedVm && (
-        <PanelTabWrapper>
-          <Tabs
-            value={value}
-            onChange={handleChange}
-            className={classes.tabs}
-            TabIndicatorProps={{
-              style: {
-                background: 'var(--_hoverButtonBg)',
-                boxShadow: '0px 4px 7px rgba(67, 127, 236, 0.15)',
-                borderRadius: '100px',
-              },
-            }}
-          >
-            <Tab label="Metrics" classes={{ selected: classes.tabSelected }} {...TabComponentProps(0)} className={classes.tab} />
-            <Tab label="Routes" classes={{ selected: classes.tabSelected }} {...TabComponentProps(1)} className={classes.tab} />
-            <Tab label="Policy" classes={{ selected: classes.tabSelected }} {...TabComponentProps(2)} className={classes.tab} />
-          </Tabs>
-        </PanelTabWrapper>
-      )}
       <OverflowContainer>
-        {!selectedVm ? (
-          <PanelBarContent>
-            <List dataItems={listItems} onSelectVm={onSelectVm} />
-          </PanelBarContent>
-        ) : null}
-        {selectedVm && (
-          <>
-            <TabPanel value={value} index={0}>
-              <MetricsTab dataItem={selectedVm} />
-            </TabPanel>
-            <TabPanel value={value} index={1}>
-              <RoutesTab dataItem={vnet} />
-            </TabPanel>
-            <TabPanel value={value} index={2}>
-              <PolicyTab dataItem={selectedVm} />
-            </TabPanel>
-          </>
+        <ExpandGroup
+          id={expandStateObj.netLoadBalancer.id}
+          expand={expandStateObj.netLoadBalancer.expand}
+          onToogleExpand={onToogleGroup}
+          headerChildren={<ChildrenCount count={netLoaderBalancerList.length} />}
+          maxGroupHeight="none"
+          icon={NetLoaderBalancerIcon}
+          label="Network Load Balancers"
+          disabled={!netLoaderBalancerList.length}
+          styles={{ margin: '0 0 20px 0' }}
+          arrowStyles={!netLoaderBalancerList.length ? null : { margin: '0' }}
+        >
+          {netLoaderBalancerList && netLoaderBalancerList.length
+            ? netLoaderBalancerList.map(it => <BalanceItem key={`netLB${it.id}`} icon={NetLoaderBalancerIcon} dataItem={it} onClick={() => {}} />)
+            : null}
+        </ExpandGroup>
+        <ExpandGroup
+          id={expandStateObj.appLoadBalancer.id}
+          expand={expandStateObj.appLoadBalancer.expand}
+          onToogleExpand={onToogleGroup}
+          headerChildren={<ChildrenCount count={appLoaderBalancerList.length} />}
+          disabled={!appLoaderBalancerList.length}
+          maxGroupHeight="none"
+          icon={AppLoaderBalancerIcon}
+          label="Application Load Balancers"
+          styles={{ margin: '0 0 20px 0' }}
+          arrowStyles={!appLoaderBalancerList.length ? null : { margin: '0' }}
+        >
+          {appLoaderBalancerList && appLoaderBalancerList.length
+            ? appLoaderBalancerList.map(it => <BalanceItem key={`appLB${it.id}`} icon={AppLoaderBalancerIcon} dataItem={it} onClick={() => {}} />)
+            : null}
+        </ExpandGroup>
+        <ExpandGroup
+          id={expandStateObj.vms.id}
+          expand={expandStateObj.vms.expand}
+          onToogleExpand={onToogleGroup}
+          headerChildren={<ChildrenCount count={vms.length} />}
+          disabled={!vms.length}
+          arrowStyles={!vms.length ? null : { margin: '0' }}
+          maxGroupHeight="none"
+          icon={VmIcon}
+          label="Virtual Machines"
+          styles={{ margin: '0 0 20px 0' }}
+        >
+          {vms && vms.length ? vms.map(it => <VmItem key={`vmLIstItem${it.id}`} dataItem={it} onClick={onSelectVm} />) : null}
+        </ExpandGroup>
+        {internetGatAway && (
+          <ExpandGroup
+            id={expandStateObj.internetGatAway.id}
+            expand={expandStateObj.internetGatAway.expand}
+            onToogleExpand={onToogleGroup}
+            maxGroupHeight="none"
+            icon={InternetGatawayIcon}
+            label="Internet Gateway"
+          >
+            <InternetGetAwayItem dataItem={internetGatAway} />
+          </ExpandGroup>
         )}
       </OverflowContainer>
     </>

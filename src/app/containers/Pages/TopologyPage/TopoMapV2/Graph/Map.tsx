@@ -7,8 +7,6 @@ import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataCont
 import NodeWrapper from '../Containers/Nodes/NodeWrapper';
 import DefsComponent from '../Containers/Shared/DefsComponent';
 import { STANDART_DISPLAY_RESOLUTION_V2 } from 'lib/models/general';
-import { IVPC_PanelDataNode, TopologyPanelTypes } from 'lib/models/topology';
-import { IDeviceNode, ITGWNode } from 'lib/hooks/Topology/models';
 // import useResizeAware from 'react-resize-aware';
 interface Props {}
 
@@ -16,15 +14,6 @@ const Map: React.FC<Props> = (props: Props) => {
   // const [resizeListener, sizes] = useResizeAware();
   const { topology } = useTopologyV2DataContext();
 
-  const onClickVpc = (_data: IVPC_PanelDataNode) => {
-    topology.onToogleTopoPanel(TopologyPanelTypes.VPC, true, _data);
-  };
-  const onClickDevice = (dev: IDeviceNode) => {
-    topology.onToogleTopoPanel(TopologyPanelTypes.Device, true, dev);
-  };
-  const onClickWedge = (wedge: ITGWNode) => {
-    topology.onToogleTopoPanel(TopologyPanelTypes.Wedge, true, wedge);
-  };
   return (
     <>
       {/* {resizeListener} */}
@@ -41,11 +30,7 @@ const Map: React.FC<Props> = (props: Props) => {
         <GContainer id={TOPOLOGY_IDS.G_ROOT}>
           {topology && (
             <>
-              <g id="nodesContainer">
-                {topology.nodes &&
-                  topology.nodes.length &&
-                  topology.nodes.map(it => <NodeWrapper key={`node${it.uiId}`} dataItem={it} onClickVpc={onClickVpc} onClickDevice={onClickDevice} onClickWedge={onClickWedge} />)}
-              </g>
+              <g id="nodesContainer">{topology.nodes && topology.nodes.length && topology.nodes.map(it => <NodeWrapper key={`node${it.uiId}`} dataItem={it} />)}</g>
               <g id="linkContainer">{topology.links && topology.links.length && topology.links.map((link, index) => <TopologyLink dataItem={link} key={`link${link.id}${index}`} />)}</g>
             </>
           )}

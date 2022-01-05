@@ -1,5 +1,5 @@
 import React from 'react';
-import { INetworkVNetNode, ITopoNode, IVPC_PanelDataNode_V2 } from 'lib/hooks/Topology/models';
+import { INetworkVNetNode, ITopoNode } from 'lib/hooks/Topology/models';
 import { IPosition } from 'lib/models/general';
 import { useDrag } from 'app/containers/Pages/TopologyPage/TopoMapV2/hooks/useDrag';
 import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
@@ -63,7 +63,7 @@ const RegionNode: React.FC<Props> = (props: Props) => {
     topology.onCollapseExpandNode(props.dataItem, false);
   };
 
-  const onVpcClick = (item: IVPC_PanelDataNode_V2) => {
+  const onVpcClick = (item: INetworkVNetNode) => {
     topology.onToogleTopoPanel(TopologyPanelTypes.VPC, true, item);
   };
 

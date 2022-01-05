@@ -1,4 +1,5 @@
 import * as d3 from 'd3';
+import { INetworkLoadBalancer, CloudLoadBalancerTypeP, INnetworkInternetGateway } from 'lib/api/ApiModels/Topology/apiModels';
 import { INetworkVNetNode, ITopoNode } from 'lib/hooks/Topology/models';
 import { NODES_CONSTANTS } from '../../../../model';
 
@@ -36,10 +37,14 @@ export const buildVnetTooltip = (e: React.BaseSyntheticEvent<MouseEvent>, region
   vnetName.text(vnet.name || vnet.extId);
   buildTooltipSubTitle(content, 'Account', region.name, '0 0 8px 0');
   buildTooltipSubTitle(content, 'Region', region.name, '0 0 20px 0');
-  buildTooltipContentRow(content, 'Network Load Balancers', vnet.loadBalancers.length, getIcon('nbalancer'));
-  buildTooltipContentRow(content, 'Application Load Balancers', vnet.loadBalancers.length, getIcon('abalancer'));
-  buildTooltipContentRow(content, 'Virtual Machines', vnet.vms.length, getIcon('virtualmachine1'));
-  buildTooltipContentRow(content, 'Virtual Machines', vnet.loadBalancers.length, getIcon('virtualmachine2'));
+  const _nlb = getFilteredBalancerByType(vnet.loadBalancers);
+  buildTooltipContentRow(content, getIcon('nbalancer'), 'Network Load Balancers', _nlb.net.length);
+  buildTooltipContentRow(content, getIcon('abalancer'), 'Application Load Balancers', _nlb.app.length);
+  buildTooltipContentRow(content, getIcon('virtualmachine'), 'Virtual Machines', vnet.vms.length);
+  const _iname = getInternalName(vnet.internetGateway);
+  if (_iname) {
+    buildTooltipContentRow(content, getIcon('internalGetaway'), _iname);
+  }
 };
 
 const buildTooltipSubTitle = (node: any, label: string, value: string, margin: string) => {
@@ -48,7 +53,7 @@ const buildTooltipSubTitle = (node: any, label: string, value: string, margin: s
   _row.append('span').style('display', 'inline-block').style('font-weight', 'normal').style('color', 'var(--_disabledTextColor)').text(value);
 };
 
-const buildTooltipContentRow = (node: any, label: string, count: string | number, icon: any) => {
+const buildTooltipContentRow = (node: any, icon: any, label: string, count?: string | number) => {
   const _row = node
     .append('div')
     .style('width', '100%')
@@ -70,6 +75,7 @@ const buildTooltipContentRow = (node: any, label: string, count: string | number
     .style('margin', 'auto 0')
     .style('color', 'var(--_primaryTextColor)')
     .text(label);
+  if (!count && count !== 0) return;
   _row
     .append('span')
     .style('display', 'inline-block')
@@ -95,13 +101,13 @@ const getIcon = (type: string) => {
     </svg>
     `;
   }
-  if (type === 'virtualmachine1') {
+  if (type === 'virtualmachine') {
     return `<svg width="20" height="20" style="vertical-align: top;" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path fill-rule="evenodd" clip-rule="evenodd" d="M1.54913 8.61H3.74475V9.36H1.54913C1.1085 9.36 0.75 9.0015 0.75 8.56087V1.54913C0.75 1.1085 1.1085 0.75 1.54913 0.75H8.56087C9.0015 0.75 9.36 1.1085 9.36 1.54913V4.0725H8.61V1.54913C8.61 1.52213 8.58825 1.5 8.56087 1.5H1.54913C1.52213 1.5 1.5 1.52213 1.5 1.54913V8.56087C1.5 8.58788 1.52213 8.61 1.54913 8.61ZM5.15138 12.54H7.97962V13.29H5.15138C4.71113 13.29 4.35263 12.9315 4.35263 12.4912V5.47875C4.35263 5.0385 4.71113 4.68 5.15138 4.68H12.1635C12.6037 4.68 12.9626 5.0385 12.9626 5.47875V8.0025H12.2126V5.47875C12.2126 5.45175 12.1905 5.43 12.1635 5.43H5.15138C5.12438 5.43 5.10262 5.45175 5.10262 5.47875V12.4912C5.10262 12.5182 5.12438 12.54 5.15138 12.54ZM16.4437 16.47L9.36 16.4437V9.40912C9.36 9.38212 9.38212 9.36 9.40912 9.36H16.4209C16.4479 9.36 16.47 9.38212 16.47 9.40912L16.4437 16.47ZM16.4209 8.61H9.40912C8.9685 8.61 8.61 8.9685 8.61 9.40912V16.4437C8.61 16.8716 8.95837 17.22 9.38625 17.22H16.4437C16.8716 17.22 17.22 16.8716 17.22 16.4437V9.40912C17.22 8.9685 16.8615 8.61 16.4209 8.61Z" fill="#D45B07"/>
     </svg>
     `;
   }
-  if (type === 'virtualmachine2') {
+  if (type === 'internalGetaway') {
     return `<svg width="20" height="20" style="vertical-align: top;" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path fill-rule="evenodd" clip-rule="evenodd" d="M1.5 16.4824H16.4824V1.5H1.5V16.4824ZM16.8574 0.75H1.125C0.918 0.75 0.75 0.917625 0.75 1.125V16.8574C0.75 17.0647 0.918 17.2324 1.125 17.2324H16.8574C17.0647 17.2324 17.2324 17.0647 17.2324 16.8574V1.125C17.2324 0.917625 17.0647 0.75 16.8574 0.75Z" fill="#D45B07"/>
     </svg>`;
@@ -130,4 +136,25 @@ export const removeVnetTooltip = () => {
     .on('end', function (this: any) {
       d3.select(this).remove();
     });
+};
+
+const getInternalName = (data: INnetworkInternetGateway) => {
+  if (!data) return null;
+  if (data.name) return data.name;
+  if (data.extId) return data.extId;
+  return null;
+};
+
+const getFilteredBalancerByType = (data: INetworkLoadBalancer[]) => {
+  if (!data || !data.length) return { net: [], app: [] };
+  const _nat: INetworkLoadBalancer[] = [];
+  const _app: INetworkLoadBalancer[] = [];
+  data.forEach(it => {
+    if (it.type === CloudLoadBalancerTypeP.NETWORK) {
+      _nat.push(it);
+      return;
+    }
+    _app.push(it);
+  });
+  return { net: _nat, app: _app };
 };
