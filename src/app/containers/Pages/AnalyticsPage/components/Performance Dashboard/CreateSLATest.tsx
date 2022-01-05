@@ -183,12 +183,10 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ slaTestDataToUpdat
           <div>
             <Typography className={classes.itemTitle}>{updateSlaTest ? 'Edit SLA Test' : 'Create SLA Test'}</Typography>
           </div>
-          {popup ? (
+          {popup && (
             <div style={{ cursor: 'pointer' }} onClick={() => closeSlaTest()}>
               <CloseIcon />
             </div>
-          ) : (
-            <div />
           )}
         </div>
         <div className={classes.formInputContainer}>

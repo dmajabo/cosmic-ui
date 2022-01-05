@@ -56,6 +56,12 @@ const barChartOptions = (xAxisText: string, yAxisText: string, barChartData: num
           },
         },
       },
+      states: {
+        select: {
+          color: '#acc9ff',
+          borderColor: '#acc9ff',
+        },
+      },
     },
   },
   colors: ['#2C82C9'],
