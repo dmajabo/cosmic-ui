@@ -34,6 +34,16 @@ const AggregateTable: React.FC<Props> = (props: Props) => {
     { ...SessionGridColumns.bytes, hide: false },
     { ...SessionGridColumns.packets, hide: false },
     { ...SessionGridColumns.action, hide: false },
+    { ...SessionGridColumns.tcpFlags, hide: true },
+    { ...SessionGridColumns.trafficType, hide: true },
+    { ...SessionGridColumns.vnetworkExtId, hide: true },
+    { ...SessionGridColumns.vnetworkName, hide: true },
+    { ...SessionGridColumns.subnetExtId, hide: true },
+    { ...SessionGridColumns.subnetName, hide: true },
+    { ...SessionGridColumns.vmExtId, hide: true },
+    { ...SessionGridColumns.vmName, hide: true },
+    { ...SessionGridColumns.region, hide: true },
+    { ...SessionGridColumns.azId, hide: true },
   ]);
   React.useEffect(() => {
     const _data: IAggregateRow[] = buildAggregatedData(props.sessions, props.buckets);
