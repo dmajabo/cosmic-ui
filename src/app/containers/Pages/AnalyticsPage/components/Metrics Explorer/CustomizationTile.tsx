@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { AnalyticsStyles } from '../../AnalyticsStyles';
-import DownArrow from '../../icons/metrics explorer/downArrowTriangle.svg';
-import UpArrow from '../../icons/metrics explorer/upArrowTriangle.svg';
+import DownArrow from '../../icons/metrics explorer/downArrowTriangle';
+import UpArrow from '../../icons/metrics explorer/upArrowTriangle';
 
 export interface CustomizationTabProps {
-  readonly img: string;
+  readonly img: React.ReactNode;
   readonly title: string;
   readonly description?: string;
-  readonly operationImage?: string;
+  readonly operationImage?: React.ReactNode;
   readonly operationName?: string;
   readonly showModal?: () => void;
   readonly content?: JSX.Element;
@@ -25,21 +25,19 @@ export const CustomizationTile: React.FC<CustomizationTabProps> = ({ img, title,
     <div className={classes.customizationTabContainer}>
       <div className={classes.tabTitleContainer}>
         <div>
-          <img src={img} alt={title} />
+          {img}
           <span className={classes.tabTitle}>{title}</span>
           <span className={classes.countText}>{description}</span>
         </div>
         <div>
-          <span onClick={showModal}>
-            <img className={classes.operationImage} src={operationImage} alt={operationName} />
-          </span>
+          <span onClick={showModal}>{operationImage}</span>
           {isTileOpen ? (
             <span className={classes.arrow} onClick={handleClose}>
-              <img src={UpArrow} alt="close" />
+              <UpArrow />
             </span>
           ) : (
             <span className={classes.arrow} onClick={handleOpen}>
-              <img src={DownArrow} alt="open" />
+              <DownArrow />
             </span>
           )}
         </div>

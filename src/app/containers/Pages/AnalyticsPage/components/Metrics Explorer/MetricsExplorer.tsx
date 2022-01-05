@@ -1,36 +1,35 @@
 import React, { useState } from 'react';
 import { AnalyticsStyles } from '../../AnalyticsStyles';
 import { CustomizationTile, CustomizationTabProps } from './CustomizationTile';
-import DesignIcon from '../../icons/metrics explorer/design.svg';
-import DimensionsIcon from '../../icons/metrics explorer/dimensions.svg';
-import MetricsIcon from '../../icons/metrics explorer/metrics.svg';
-import TimeIcon from '../../icons/metrics explorer/time.svg';
-import DataSourceIcon from '../../icons/metrics explorer/dataSource.svg';
-import AddIcon from '../../icons/metrics explorer/add.svg';
-import EditIcon from '../../icons/metrics explorer/edit.svg';
-import CloseIcon from '../../icons/metrics explorer/close.svg';
-import NetworkIcon from '../../icons/metrics explorer/dimensions-network.svg';
-import AwsIcon from '../../icons/metrics explorer/dimensions-aws.svg';
-import MerakiIcon from '../../icons/metrics explorer/dimensions-meraki.svg';
-import Modal from '@mui/material/Modal';
+import DesignIcon from '../../icons/metrics explorer/design';
+import DimensionsIcon from '../../icons/metrics explorer/dimensions';
+import MetricsIcon from '../../icons/metrics explorer/metrics';
+import TimeIcon from '../../icons/metrics explorer/time';
+import DataSourceIcon from '../../icons/metrics explorer/dataSource';
+import AddIcon from '../../icons/metrics explorer/add';
+import EditIcon from '../../icons/metrics explorer/edit';
+import CloseIcon from '../../icons/metrics explorer/close';
+import NetworkIcon from '../../icons/metrics explorer/dimensions-network';
+import AwsIcon from '../../icons/metrics explorer/dimensions-aws';
+import MerakiIcon from '../../icons/metrics explorer/dimensions-meraki';
 import Box from '@mui/material/Box';
 import produce from 'immer';
 import { DimensionOptions, Dimensions } from './Dimensions';
 import { DataSource, DataSourceOptions } from './DataSource';
 import { MetricsChart } from './MetricsChart';
 import { ColumnAccessor, MetricsExplorerTableData } from 'lib/api/http/SharedTypes';
-import { Tab, Tabs } from '@mui/material';
+import { Modal, Tab, Tabs } from '@mui/material';
 import { LookbackLabel, LookbackSelectOption, LookbackTimeTab, LookbackValue } from './LookbackTimeTab';
 import { CustomTimeRangeLabel, CustomTimeRangeSelectOption, CustomTimeTab } from './CustomTimeTab';
 import { DataUnitDropdown, DataUnitLabel, DataUnitValue, DataUnitSelectOption } from './DataUnitDropdown';
 import { ChartTypeValue, ChartTypeDropdown, ChartTypeLabel } from './ChartTypeDropdown';
-import LineChartIcon from '../../icons/metrics explorer/chartType/lineChart.svg';
+import LineChartIcon from '../../icons/metrics explorer/chartType/lineChart';
 
 //TODO: Remove this once API is integrated
 const DUMMY_DIMENSION_DATA: DimensionOptions[] = [
   {
     title: 'Network & Traffic Topology',
-    icon: NetworkIcon,
+    icon: <NetworkIcon />,
     source: [
       { label: 'Interface', value: ColumnAccessor.interfaceSource },
       { label: 'Connectivity Type', value: ColumnAccessor.connectivityTypeSource },
@@ -54,7 +53,7 @@ const DUMMY_DIMENSION_DATA: DimensionOptions[] = [
   },
   {
     title: 'Dimension 2',
-    icon: NetworkIcon,
+    icon: <NetworkIcon />,
     source: [
       { label: 'Interface', value: ColumnAccessor.interfaceSource },
       { label: 'Connectivity Type', value: ColumnAccessor.connectivityTypeSource },
@@ -81,12 +80,12 @@ const DUMMY_DIMENSION_DATA: DimensionOptions[] = [
 const DUMMY_DATA_SOURCE_OPTIONS: DataSourceOptions[] = [
   {
     title: 'Amazon Web Service',
-    icon: AwsIcon,
+    icon: <AwsIcon />,
     options: ['AWS US East (Northern Virginia) Region', 'AWS US West (Northern California) Region'],
   },
   {
     title: 'Cisco Meraki Device Metrics',
-    icon: MerakiIcon,
+    icon: <MerakiIcon />,
     options: ['Office 1', 'Office 2', 'Office 3', 'Office 4', 'Office 5', 'Office 6', 'Office 7', 'Office 8', 'Office 9', 'Office 10', 'Office 11', 'Office 12'],
   },
 ];
@@ -141,7 +140,7 @@ const DUMMY_METRICS_TABLE_DATA: MetricsExplorerTableData[] = [
 const Dummy_selected_dimensions: DimensionOptions[] = [
   {
     title: 'Network & Traffic Topology',
-    icon: NetworkIcon,
+    icon: <NetworkIcon />,
     source: [
       { label: 'Interface', value: ColumnAccessor.interfaceSource },
       { label: 'Connectivity Type', value: ColumnAccessor.connectivityTypeSource },
@@ -177,7 +176,7 @@ export interface SelectOption {
 export interface SelectChartTypeOption {
   readonly value: ChartTypeValue;
   readonly label: ChartTypeLabel;
-  readonly icon: string;
+  readonly icon: React.ReactNode;
 }
 
 export const getDimensionCount = (dimensions: DimensionOptions[]) => {
@@ -292,12 +291,12 @@ export const MetricsExplorer: React.FC = () => {
 
   const customizationtabOptions: CustomizationTabProps[] = [
     {
-      img: DesignIcon,
+      img: <DesignIcon />,
       title: 'Design',
       content: <ChartTypeDropdown chartType={chartType} handleChartTypeChange={handleChartTypeChange} />,
     },
     {
-      img: DimensionsIcon,
+      img: <DimensionsIcon />,
       title: 'Dimensions',
       description: `${getDimensionCount(dimensions)}`,
       operationImage: getDimensionCount(dimensions) > 0 ? EditIcon : AddIcon,
@@ -321,7 +320,7 @@ export const MetricsExplorer: React.FC = () => {
                       </div>
                       <div>
                         <div className={classes.removeDimension} onClick={() => removeDimension(dimension.title, 'source', item.value)}>
-                          <img src={CloseIcon} alt="close popup" />
+                          {CloseIcon}
                         </div>
                       </div>
                     </div>
@@ -342,7 +341,7 @@ export const MetricsExplorer: React.FC = () => {
                       </div>
                       <div>
                         <div className={classes.removeDimension} onClick={() => removeDimension(dimension.title, 'destination', item.value)}>
-                          <img src={CloseIcon} alt="close popup" />
+                          {CloseIcon}
                         </div>
                       </div>
                     </div>
@@ -354,12 +353,12 @@ export const MetricsExplorer: React.FC = () => {
         ),
     },
     {
-      img: MetricsIcon,
+      img: <MetricsIcon />,
       title: 'Metrics',
       content: <DataUnitDropdown dataUnit={dataUnit} handleDataUnitChange={handleDataUnitChange} />,
     },
     {
-      img: TimeIcon,
+      img: <TimeIcon />,
       title: 'Time',
       content: (
         <>
@@ -396,7 +395,7 @@ export const MetricsExplorer: React.FC = () => {
       ),
     },
     {
-      img: DataSourceIcon,
+      img: <DataSourceIcon />,
       title: 'Data Source',
       description: `${getDataSourceCount(dataSources)} of ${getDataSourceCount(DUMMY_DATA_SOURCE_OPTIONS)}`,
       operationImage: getDataSourceCount(dataSources) > 0 ? EditIcon : AddIcon,
@@ -412,14 +411,14 @@ export const MetricsExplorer: React.FC = () => {
                 <div className={classes.tabTitleContainer}>
                   <div>
                     <span>
-                      <img className={classes.dataSourceDropdownImg} src={dataSource.icon} alt={dataSource.title} />
+                      <div className={classes.dataSourceDropdownImg}>{dataSource.icon}</div>
                       {dataSource.title}
                     </span>
                     <span className={classes.countText}>{dataSource.options.length}</span>
                   </div>
                   <div>
                     <div className={classes.removeDimension} onClick={() => removeDataSource(dataSource.title)}>
-                      <img src={CloseIcon} alt="close popup" />
+                      {CloseIcon}
                     </div>
                   </div>
                 </div>

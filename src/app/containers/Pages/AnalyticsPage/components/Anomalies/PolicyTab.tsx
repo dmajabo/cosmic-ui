@@ -55,6 +55,8 @@ const LOGS_TABLE_COLUMNS: Column[] = [
 
 const LOGS_TABLE_SORTABLE_HEADERS = ['EDGE', 'USER'];
 
+const ANOMALY_TABLE_SORTABLE_HEADERS = ['NAME'];
+
 export const PolicyTab: React.FC<PolicyTabProps> = () => {
   const classes = AnalyticsStyles();
 
@@ -118,7 +120,7 @@ export const PolicyTab: React.FC<PolicyTabProps> = () => {
           <span className={classes.anomalyTableTitle}>Triggers</span>
           <span className={classes.anomalyCount}>7</span>
         </div>
-        <AnomalyTable inputColumns={anomalyTableColumns} data={tableData} subComponent={policySubComponent} />
+        <AnomalyTable inputColumns={anomalyTableColumns} data={tableData} subComponent={policySubComponent} sortableHeaders={ANOMALY_TABLE_SORTABLE_HEADERS} />
       </div>
     </div>
   );

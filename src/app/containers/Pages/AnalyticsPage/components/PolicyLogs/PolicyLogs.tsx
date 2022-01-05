@@ -1,10 +1,9 @@
-import { Button, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
 import { AnalyticsStyles } from '../../AnalyticsStyles';
-import SearchIcon from '../../icons/metrics explorer/search.svg';
-import FilterIcon from '../../icons/performance dashboard/filter.svg';
-import ColumnsIcon from '../../icons/performance dashboard/columns.svg';
+import SearchIcon from '../../icons/metrics explorer/search';
+import FilterIcon from '../../icons/performance dashboard/filter';
+import ColumnsIcon from '../../icons/performance dashboard/columns';
 import { LookbackLabel, LookbackSelectOption, LookbackValue } from '../Metrics Explorer/LookbackTimeTab';
 import { AnomalyPolicyLogsTableData, Column, ColumnAccessor } from 'lib/api/http/SharedTypes';
 import { AnomalySLATestTable } from '../Anomalies/AnomalySLATestTable';
@@ -12,6 +11,8 @@ import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import { CheckboxData } from '../Metrics Explorer/Dimensions';
 import { Checkbox, FormControlLabel, FormGroup, Popover } from '@mui/material';
 import { DUMMY_POLICY_LOGS_TABLE_DATA } from '../../DummyData';
+import noop from 'lodash/noop';
+import SecondaryButtonwithEvent from '../SecondaryButtonwithEvent';
 
 // const REGEX = /[-[\]{}()*+?.,\\^$|#\s]/g;
 
@@ -191,23 +192,28 @@ export const PolicyLogs: React.FC = () => {
       <div className={classes.tabTitleContainer}>
         <div>
           <input type="text" className={classes.policyLogsSearchBar} value={searchText} onChange={handleSearchTextChange} placeholder="Search" />
-          <span className={classes.searchIcon}>
-            <img src={SearchIcon} alt="search" />
-          </span>
+          <span className={classes.searchIcon}>{SearchIcon}</span>
         </div>
         <div>
-          <Button className={classes.policyLogsOtherButton} variant="contained" disableElevation>
-            <Typography className={classes.otherButtonText} noWrap>
-              FILTER
-            </Typography>
-            <img src={FilterIcon} alt="columns" />
-          </Button>
-          <Button aria-describedby={columnsPopoverId} className={classes.policyLogsOtherButton} variant="contained" onClick={handleColmunsClick} disableElevation>
-            <Typography className={classes.otherButtonText} noWrap>
-              COLUMNS
-            </Typography>
-            <img src={ColumnsIcon} alt="columns" />
-          </Button>
+          <SecondaryButtonwithEvent
+            label={
+              <>
+                <span className={classes.otherButtonText}>FILTER</span>
+                <FilterIcon />
+              </>
+            }
+            onClick={noop}
+          />
+          <SecondaryButtonwithEvent
+            aria-describedby={columnsPopoverId}
+            label={
+              <>
+                <span className={classes.otherButtonText}>COLUMNS</span>
+                <ColumnsIcon />
+              </>
+            }
+            onClick={handleColmunsClick}
+          />
           <Popover
             id={columnsPopoverId}
             open={isColumnsPopoverOpen}

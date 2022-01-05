@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { AnalyticsStyles } from '../../AnalyticsStyles';
-import CloseIcon from '../../icons/metrics explorer/close.svg';
-import SearchIcon from '../../icons/metrics explorer/search.svg';
-import SaveIcon from '../../icons/metrics explorer/save.svg';
+import CloseIcon from '../../icons/metrics explorer/close';
+import SearchIcon from '../../icons/metrics explorer/search';
+import SaveIcon from '../../icons/metrics explorer/save';
 import { SubDimension } from './SubDimension';
 import { getDimensionCount } from './MetricsExplorer';
 import produce from 'immer';
@@ -22,7 +22,7 @@ export interface OptionData {
 
 export interface DimensionOptions {
   readonly title: string;
-  readonly icon?: string;
+  readonly icon?: React.ReactNode;
   readonly source: OptionData[];
   readonly destination: OptionData[];
 }
@@ -107,12 +107,12 @@ export const Dimensions: React.FC<DimensionsProps> = ({ closePopup, dimensionDat
     <>
       <div className={classes.popupTitleContainer}>
         <div className={classes.closePopup} onClick={closePopup}>
-          <img src={CloseIcon} alt="close popup" />
+          <CloseIcon />
         </div>
         <span className={classes.popupTitle}>Dimensions</span>
         <input type="text" className={classes.searchBar} value={searchText} onChange={handleSearchTextChange} placeholder="Search" />
         <span className={classes.searchIcon}>
-          <img src={SearchIcon} alt="search" />
+          <SearchIcon />
         </span>
       </div>
       <div className={classes.popupContent}>
@@ -131,7 +131,7 @@ export const Dimensions: React.FC<DimensionsProps> = ({ closePopup, dimensionDat
           </span>
           <span className={classes.blueSaveButton} onClick={handleSave}>
             <span className={`${classes.saveButton} ${classes.buttonText}`}>SAVE</span>
-            <img src={SaveIcon} alt="save" />
+            <SaveIcon />
           </span>
         </div>
       </div>

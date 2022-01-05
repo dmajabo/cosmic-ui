@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { createApiClient } from 'lib/api/http/apiClient';
 import { PerformanceDashboardStyles } from './PerformanceDashboardStyles';
 import { MetricsLineChart } from './MetricsLineChart';
-import InfoIcon from '../../icons/performance dashboard/info.svg';
+import InfoIcon from '../../icons/performance dashboard/info';
 import LoadingIndicator from 'app/components/Loading';
 import { Data } from './Table';
 import Heatmap, { LegendData } from './Heatmap';
@@ -117,7 +117,7 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange 
           <Typography className={classes.itemTitle}>
             Packet Loss summary
             <span className={classes.sortIcon}>
-              <img src={InfoIcon} alt="ínfo" />
+              <InfoIcon />
             </span>
           </Typography>
           <Typography className={classes.subTitleText}>Shows aggregated packet loss between sources.</Typography>
@@ -145,7 +145,7 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange 
           <Typography className={classes.itemTitle}>
             Average packet loss
             <span className={classes.sortIcon}>
-              <img src={InfoIcon} alt="ínfo" />
+              <InfoIcon />
             </span>
           </Typography>
           <Typography className={classes.subTitleText}>Shows aggregated packet loss between branches and applications.</Typography>
