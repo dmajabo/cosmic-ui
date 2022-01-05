@@ -82,7 +82,11 @@ export const AnomalySLATestTable: React.FC<AnomalySLATestTableProps> = ({ data, 
                 <th {...column.getHeaderProps(column.getSortByToggleProps())}>
                   <div className={classes.tableHeaderText}>
                     {column.render('Header')}
-                    <span className={classes.sortIcon}>{sortableHeaders.includes(column.Header.toString()) ? <SortIcon /> : <span />}</span>
+                    {sortableHeaders.includes(column.Header.toString()) && (
+                      <span className={classes.sortIcon}>
+                        <SortIcon />
+                      </span>
+                    )}
                   </div>
                 </th>
               ))}

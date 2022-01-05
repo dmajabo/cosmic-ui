@@ -103,6 +103,8 @@ const HITS_TABLE_COLUMNS: Column[] = [
 
 const HITS_TABLE_SORTABLE_HEADERS = ['VALUE', 'DESTINATION', 'NAME'];
 
+const ANOMALY_TABLE_SORTABLE_HEADERS = ['NAME'];
+
 const HITS_TABLE_TIME_FORMAT = 'EEE, MMM dd yyyy, hh:mm a';
 
 const INPUT_TIME_FORMAT = 'yyyy-MM-dd HH:mm:ss ZZZ z';
@@ -325,7 +327,7 @@ export const ExperienceTab: React.FC<ExperienceTabProps> = ({ timeRange }) => {
             Something went wrong. Please refresh page
           </ErrorMessage>
         ) : (
-          <AnomalyTable inputColumns={anomalyTableColumns} data={tableData} subComponent={experienceSubComponent} />
+          <AnomalyTable inputColumns={anomalyTableColumns} data={tableData} subComponent={experienceSubComponent} sortableHeaders={ANOMALY_TABLE_SORTABLE_HEADERS} />
         )}
       </div>
     </div>
