@@ -2,8 +2,8 @@ import React from 'react';
 import { AnalyticsStyles } from '../../AnalyticsStyles';
 import Select from 'react-select';
 import { SelectChartTypeOption } from './MetricsExplorer';
-import LineChartIcon from '../../icons/metrics explorer/chartType/lineChart.svg';
-import StackedBarChartIcon from '../../icons/metrics explorer/chartType/stackedBarChart.svg';
+import LineChartIcon from '../../icons/metrics explorer/chartType/lineChart';
+import StackedBarChartIcon from '../../icons/metrics explorer/chartType/stackedBarChart';
 import { ChartTypeOption } from './ChartTypeOption';
 
 interface ChartTypeDropdownProps {

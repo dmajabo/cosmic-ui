@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useTable, useSortBy, usePagination } from 'react-table';
 import { AnomalyPolicyLogsTableData, AnomalySlaTestData, Column, CostDetailTableData, HitsTableData } from 'lib/api/http/SharedTypes';
 import { AnalyticsStyles } from '../../AnalyticsStyles';
-import SortIcon from '../../icons/performance dashboard/sort.svg';
+import SortIcon from '../../icons/performance dashboard/sort';
 import { Typography } from '@mui/material';
 
 const Styles = styled.div`
@@ -18,9 +18,11 @@ const Styles = styled.div`
       background-color: #f7f8fb;
       padding: 20px;
       border-radius: 6px 6px 0px 0px;
+      text-align: center;
     }
     td {
       padding: 20px;
+      text-align: center;
     }
   }
   .pagination {
@@ -43,7 +45,6 @@ export const AnomalySLATestTable: React.FC<AnomalySLATestTableProps> = ({ data, 
     getTableProps,
     getTableBodyProps,
     headerGroups,
-    rows,
     prepareRow,
     page,
     canPreviousPage,
@@ -81,7 +82,11 @@ export const AnomalySLATestTable: React.FC<AnomalySLATestTableProps> = ({ data, 
                 <th {...column.getHeaderProps(column.getSortByToggleProps())}>
                   <div className={classes.tableHeaderText}>
                     {column.render('Header')}
-                    <span className={classes.sortIcon}>{sortableHeaders.includes(column.Header.toString()) ? <img src={SortIcon} alt="sort by name" /> : <span />}</span>
+                    {sortableHeaders.includes(column.Header.toString()) && (
+                      <span className={classes.sortIcon}>
+                        <SortIcon />
+                      </span>
+                    )}
                   </div>
                 </th>
               ))}

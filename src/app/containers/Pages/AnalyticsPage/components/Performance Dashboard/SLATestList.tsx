@@ -2,7 +2,7 @@ import { Backdrop, Button, Tab, Tabs, Typography } from '@mui/material';
 import { Add as AddIcon } from '@mui/icons-material';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { PerformanceDashboardStyles } from './PerformanceDashboardStyles';
-import ColumnsIcon from '../../icons/performance dashboard/columns.svg';
+import ColumnsIcon from '../../icons/performance dashboard/columns';
 import Table, { Data } from './Table';
 import { CreateSLATest } from './CreateSLATest';
 import { Organization, Column, FinalTableData, SLATest, UpdateSLATestRequest, ColumnAccessor } from 'lib/api/http/SharedTypes';
@@ -16,6 +16,7 @@ import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { createApiClient } from 'lib/api/http/apiClient';
 import { Checkbox, FormControlLabel, FormGroup, Popover } from '@mui/material';
 import { CheckboxData } from '../Metrics Explorer/Dimensions';
+import SecondaryButtonwithEvent from '../SecondaryButtonwithEvent';
 
 interface SLATestListProps {
   readonly finalTableData: FinalTableData[];
@@ -202,12 +203,15 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
             <Typography className={classes.itemTitle}>SLA Tests</Typography>
           </div>
           <div>
-            <Button aria-describedby={columnsPopoverId} className={classes.otherButton} variant="contained" onClick={handleColmunsClick} disableElevation>
-              <Typography className={classes.otherButtonText} noWrap>
-                COLUMNS
-              </Typography>
-              <img src={ColumnsIcon} alt="columns" />
-            </Button>
+            <SecondaryButtonwithEvent
+              label={
+                <>
+                  <span className={classes.otherButtonText}>COLUMNS</span>
+                  <ColumnsIcon />
+                </>
+              }
+              onClick={handleColmunsClick}
+            />
             <Popover
               id={columnsPopoverId}
               open={isColumnsPopoverOpen}

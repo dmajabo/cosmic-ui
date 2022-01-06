@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 import { AnalyticsStyles } from '../../AnalyticsStyles';
 import { DataSourceOptions } from './DataSource';
 import { CheckboxData } from './Dimensions';
-import DownArrow from '../../icons/metrics explorer/downArrowTriangle.svg';
-import UpArrow from '../../icons/metrics explorer/upArrowTriangle.svg';
+import DownArrow from '../../icons/metrics explorer/downArrowTriangle';
+import UpArrow from '../../icons/metrics explorer/upArrowTriangle';
 
 interface DataSourceOptionProps {
   readonly dataSourceOption: DataSourceOptions;
@@ -29,19 +29,17 @@ export const DataSourceOption: React.FC<DataSourceOptionProps> = ({ dataSourceOp
         <div className={classes.tabTitleContainer}>
           <div>
             <Checkbox checked={checkboxData[`${dataSourceOption.title}_all`]} onChange={e => selectAllDataSourceOption(e, dataSourceOption)} name={`${dataSourceOption.title}_all`} />
-            <span>
-              <img className={classes.subDimensionIcon} src={dataSourceOption.icon} alt={dataSourceOption.title} />
-            </span>
+            <span>{dataSourceOption.icon}</span>
             <span className={classes.subDimensionTitle}>{dataSourceOption.title}</span>
           </div>
           <div>
             {isTileOpen ? (
               <span className={classes.arrow} onClick={handleClose}>
-                <img src={UpArrow} alt="close" />
+                <UpArrow />
               </span>
             ) : (
               <span className={classes.arrow} onClick={handleOpen}>
-                <img src={DownArrow} alt="open" />
+                <DownArrow />
               </span>
             )}
           </div>

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { AnalyticsStyles } from '../../AnalyticsStyles';
-import CloseIcon from '../../icons/metrics explorer/close.svg';
-import SearchIcon from '../../icons/metrics explorer/search.svg';
-import SaveIcon from '../../icons/metrics explorer/save.svg';
+import CloseIcon from '../../icons/metrics explorer/close';
+import SearchIcon from '../../icons/metrics explorer/search';
+import SaveIcon from '../../icons/metrics explorer/save';
 import { DataSourceOption } from './DataSourceOption';
 import { CheckboxData } from './Dimensions';
 import produce from 'immer';
@@ -17,7 +17,7 @@ interface DataSourceProps {
 
 export interface DataSourceOptions {
   readonly title: string;
-  readonly icon?: string;
+  readonly icon?: React.ReactNode;
   readonly options: string[];
 }
 
@@ -125,12 +125,12 @@ export const DataSource: React.FC<DataSourceProps> = ({ closePopup, dataSourcesD
     <>
       <div className={classes.popupTitleContainer}>
         <div className={classes.closePopup} onClick={closePopup}>
-          <img src={CloseIcon} alt="close popup" />
+          <CloseIcon />
         </div>
         <span className={classes.popupTitle}>Data Source</span>
         <input type="text" className={classes.searchBar} value={searchText} onChange={handleSearchTextChange} placeholder="Search" />
         <span className={classes.searchIcon}>
-          <img src={SearchIcon} alt="search" />
+          <SearchIcon />
         </span>
         <FormControlLabel key="all_items" control={<Checkbox checked={checkboxData['all_items']} onChange={e => selectAllDataSources(e)} name="all_items" />} label="Use All Data Sources" />
       </div>
@@ -156,7 +156,7 @@ export const DataSource: React.FC<DataSourceProps> = ({ closePopup, dataSourcesD
           </span>
           <span className={classes.blueSaveButton} onClick={handleSave}>
             <span className={`${classes.saveButton} ${classes.buttonText}`}>SAVE</span>
-            <img src={SaveIcon} alt="save" />
+            <SaveIcon />
           </span>
         </div>
       </div>

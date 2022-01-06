@@ -60,6 +60,8 @@ const costDetailColumns: Column[] = [
 
 const ANOMALY_COST_DETAIL_TABLE_SORTABLE_HEADERS = ['DATE'];
 
+const ANOMALY_TABLE_SORTABLE_HEADERS = ['NAME'];
+
 export const CostTab: React.FC<CostTabProps> = () => {
   const classes = AnalyticsStyles();
 
@@ -128,7 +130,7 @@ export const CostTab: React.FC<CostTabProps> = () => {
           <span className={classes.anomalyTableTitle}>Triggers</span>
           <span className={classes.anomalyCount}>7</span>
         </div>
-        <AnomalyTable inputColumns={anomalyTableColumns} data={tableData} subComponent={costSubComponent} />
+        <AnomalyTable inputColumns={anomalyTableColumns} data={tableData} subComponent={costSubComponent} sortableHeaders={ANOMALY_TABLE_SORTABLE_HEADERS} />
       </div>
     </div>
   );

@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { CheckboxData, DimensionOptions, OptionData } from './Dimensions';
 import { Checkbox, FormControlLabel } from '@mui/material';
 import { AnalyticsStyles } from '../../AnalyticsStyles';
-import DownArrow from '../../icons/metrics explorer/downArrowTriangle.svg';
-import UpArrow from '../../icons/metrics explorer/upArrowTriangle.svg';
+import DownArrow from '../../icons/metrics explorer/downArrowTriangle';
+import UpArrow from '../../icons/metrics explorer/upArrowTriangle';
 
 interface DimensionOptionsProps {
   readonly dimensionOption: DimensionOptions;
@@ -26,18 +26,18 @@ export const SubDimension: React.FC<DimensionOptionsProps> = ({ dimensionOption,
         <div className={classes.tabTitleContainer}>
           <div>
             <span>
-              <img className={classes.subDimensionIcon} src={dimensionOption.icon} alt={dimensionOption.title} />
+              <div>{dimensionOption.icon}</div>
             </span>
             <span className={classes.subDimensionTitle}>{dimensionOption.title}</span>
           </div>
           <div>
             {isTileOpen ? (
               <span className={classes.arrow} onClick={handleClose}>
-                <img src={UpArrow} alt="close" />
+                <UpArrow />
               </span>
             ) : (
               <span className={classes.arrow} onClick={handleOpen}>
-                <img src={DownArrow} alt="open" />
+                <DownArrow />
               </span>
             )}
           </div>

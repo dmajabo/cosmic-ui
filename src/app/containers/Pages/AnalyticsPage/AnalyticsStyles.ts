@@ -1,7 +1,6 @@
 import { Theme } from '@mui/material';
 import { createStyles, makeStyles } from '@mui/styles';
 import { APP_HEADER_HEIGHT } from 'lib/constants/general';
-import DragIcon from './icons/metrics explorer/drag.svg';
 
 export const AnalyticsStyles = makeStyles(
   (theme: Theme) =>
@@ -393,7 +392,6 @@ export const AnalyticsStyles = makeStyles(
         width: 250,
       },
       dragIcon: {
-        background: `url(${DragIcon})`,
         width: 15,
         height: 15,
       },
@@ -478,6 +476,7 @@ export const AnalyticsStyles = makeStyles(
         fontSize: 14,
         color: 'var(--_tabHeaderTextColor)',
         paddingRight: 20,
+        paddingLeft: 10,
       },
       inlineSelect: {
         display: 'inline-block',
