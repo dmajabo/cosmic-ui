@@ -120,7 +120,7 @@ export const GridStyles = makeStyles(
             outline: 'none !important',
             background: 'transparent',
             height: '100%',
-            padding: '0 20px !important',
+            padding: '0 4px !important',
           },
           '& .MuiDataGrid-columnSeparator': {
             display: 'none',
