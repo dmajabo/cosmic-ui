@@ -27,7 +27,7 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
   const userContext = useContext<UserContextState>(UserContext);
   const { response, loading, error, onGet } = useGet<IAllSessionsRes>();
   const { response: aggregRes, loading: loadingAggreg, error: errorAggreg, onGet: onGetAggregatedData } = useGet<IAllSessionsRes>();
-  const [data, setData] = React.useState<ISession[]>([]);
+  const [sessionsData, setSessionsData] = React.useState<ISession[]>([]);
   const [aggregatedData, setAggregatedData] = React.useState<IAllSessionsRes>(null);
   const [totalCount, setTotalCount] = React.useState<number>(0);
   const [aggregCount, setAggregTotalCount] = React.useState<number>(0);
@@ -39,13 +39,13 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
   React.useEffect(() => {
     if (response && response.sessions) {
       const _total = convertStringToNumber(response.count);
-      setData(response.sessions);
+      setSessionsData(response.sessions);
       setTotalCount(_total);
       setAggregatedData(null);
       setAggregTotalCount(0);
       return;
     }
-    setData([]);
+    setSessionsData([]);
     setAggregatedData(null);
     setTotalCount(0);
     setAggregTotalCount(0);
@@ -54,13 +54,13 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
   React.useEffect(() => {
     if (aggregRes) {
       const _total = convertStringToNumber(aggregRes.count);
-      setData([]);
+      setSessionsData([]);
       setTotalCount(0);
       setAggregatedData(aggregRes);
       setAggregTotalCount(_total);
       return;
     }
-    setData([]);
+    setSessionsData([]);
     setAggregatedData(null);
     setTotalCount(0);
     setAggregTotalCount(0);
@@ -187,7 +187,7 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
               onChangeCurrentPage={onChangeCurrentPage}
               logCount={totalCount}
               error={error && error.message ? error.message : null}
-              data={data}
+              data={sessionsData}
               pageSize={sessions.sessionsPageSize}
               onChangePageSize={onChangePageSize}
             />
@@ -197,8 +197,7 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
               currentPage={sessions.sessionsCurrentPage}
               onChangeCurrentPage={onChangeCurrentPage}
               error={errorAggreg && errorAggreg.message ? errorAggreg.message : null}
-              sessions={aggregatedData && aggregatedData.sessions ? aggregatedData.sessions : []}
-              buckets={aggregatedData && aggregatedData.buckets ? aggregatedData.buckets : []}
+              data={aggregatedData && aggregatedData.buckets ? aggregatedData.buckets : []}
               logCount={aggregCount}
               pageSize={sessions.sessionsPageSize}
               onChangePageSize={onChangePageSize}

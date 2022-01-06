@@ -1,7 +1,7 @@
 import React from 'react';
 import { Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
 import AggregateRow from './AggregateRow';
-import { IBuckets, ISession } from 'lib/api/ApiModels/Sessions/apiModel';
+import { IBuckets } from 'lib/api/ApiModels/Sessions/apiModel';
 import { IAggregateRow } from './models';
 import { buildAggregatedData } from './helper';
 import TableHeader from './TableHeader';
@@ -11,8 +11,7 @@ import { TableContainer } from 'app/components/Basic/Table/LargeTableSryles';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 
 interface Props {
-  sessions: ISession[];
-  buckets: IBuckets[];
+  data: IBuckets[];
   logCount: number;
   error: string;
   pageSize: number;
@@ -31,24 +30,11 @@ const AggregateTable: React.FC<Props> = (props: Props) => {
     { ...SessionGridColumns.destIp, hide: false },
     { ...SessionGridColumns.destPort, hide: false },
     { ...SessionGridColumns.vendorsColumn, hide: false },
-    { ...SessionGridColumns.bytes, hide: false },
-    { ...SessionGridColumns.packets, hide: false },
-    { ...SessionGridColumns.action, hide: false },
-    { ...SessionGridColumns.tcpFlags, hide: true },
-    { ...SessionGridColumns.trafficType, hide: true },
-    { ...SessionGridColumns.vnetworkExtId, hide: true },
-    { ...SessionGridColumns.vnetworkName, hide: true },
-    { ...SessionGridColumns.subnetExtId, hide: true },
-    { ...SessionGridColumns.subnetName, hide: true },
-    { ...SessionGridColumns.vmExtId, hide: true },
-    { ...SessionGridColumns.vmName, hide: true },
-    { ...SessionGridColumns.region, hide: true },
-    { ...SessionGridColumns.azId, hide: true },
   ]);
   React.useEffect(() => {
-    const _data: IAggregateRow[] = buildAggregatedData(props.sessions, props.buckets);
+    const _data: IAggregateRow[] = buildAggregatedData(props.data);
     setData(_data);
-  }, [props.sessions, props.buckets]);
+  }, [props.data]);
 
   const onChangeColumn = (col: ISessionsGridFieldColumn) => {
     const _items: ISessionsGridFieldColumn[] = aggregatedColumns.slice();

@@ -37,18 +37,18 @@ const VendorTable: React.FC<Props> = (props: Props) => {
     { field: SessionGridColumns.natDestPort.resField, headerName: SessionGridColumns.natDestPort.label, minWidth: 200, flex: 0.5, hide: true, resizable: false },
     { field: SessionGridColumns.deviceName.resField, headerName: SessionGridColumns.deviceName.label, minWidth: 200, flex: 0.5, resizable: false },
     { field: SessionGridColumns.deviceExtId.resField, headerName: SessionGridColumns.deviceExtId.label, minWidth: 240, flex: 0.5, resizable: false },
-    // {
-    //   field: SessionGridColumns.deviceVendor.resField,
-    //   headerName: SessionGridColumns.deviceVendor.label,
-    //   minWidth: 200,
-    //   flex: 0.5,
-    //   resizable: false,
-    //   valueFormatter: (params: GridValueFormatterParams) => {
-    //     if (params.value === AccountVendorTypes.AMAZON_AWS) return 'AMAZON AWS';
-    //     if (params.value === AccountVendorTypes.CISCO_MERAKI) return 'CISCO MERAKI';
-    //     return params.value;
-    //   },
-    // },
+    { field: SessionGridColumns.bytes.resField, headerName: SessionGridColumns.bytes.label, minWidth: 160, flex: 0.5, resizable: false },
+    { field: SessionGridColumns.packets.resField, headerName: SessionGridColumns.packets.label, minWidth: 160, flex: 0.5, resizable: false },
+    { field: SessionGridColumns.action.resField, headerName: SessionGridColumns.action.label, minWidth: 160, flex: 0.5, resizable: false },
+    { field: SessionGridColumns.tcpFlags.resField, headerName: SessionGridColumns.tcpFlags.label, minWidth: 160, flex: 0.5, resizable: false },
+    { field: SessionGridColumns.trafficType.resField, headerName: SessionGridColumns.trafficType.label, minWidth: 160, flex: 0.5, resizable: false },
+    { field: SessionGridColumns.vnetworkExtId.resField, headerName: SessionGridColumns.vnetworkExtId.label, minWidth: 160, flex: 0.5, resizable: false },
+    { field: SessionGridColumns.vnetworkName.resField, headerName: SessionGridColumns.vnetworkName.label, minWidth: 160, flex: 0.5, resizable: false },
+    { field: SessionGridColumns.subnetExtId.resField, headerName: SessionGridColumns.subnetExtId.label, minWidth: 160, flex: 0.5, resizable: false },
+    { field: SessionGridColumns.subnetName.resField, headerName: SessionGridColumns.subnetName.label, minWidth: 160, flex: 0.5, resizable: false },
+    { field: SessionGridColumns.vmExtId.resField, headerName: SessionGridColumns.vmExtId.label, minWidth: 160, flex: 0.5, resizable: false },
+    { field: SessionGridColumns.region.resField, headerName: SessionGridColumns.region.label, minWidth: 160, flex: 0.5, resizable: false },
+    { field: SessionGridColumns.azId.resField, headerName: SessionGridColumns.azId.label, minWidth: 160, flex: 0.5, resizable: false },
   ]);
   return (
     <VendorTableWrapper margin={props.isLast ? '0' : '0 0 50px 0'}>
