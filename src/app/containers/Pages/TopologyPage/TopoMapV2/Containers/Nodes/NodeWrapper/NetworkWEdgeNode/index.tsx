@@ -22,6 +22,8 @@ const NetworkWEdgeNode: React.FC<Props> = (props: Props) => {
         height={NODES_CONSTANTS.NETWORK_WEDGE.collapse.height}
         x={0}
         y={0}
+        className="wedgeBg"
+        fill={`url(#${NODES_CONSTANTS.NETWORK_WEDGE.lineGradientId})`}
       />
       <foreignObject
         width={NODES_CONSTANTS.NETWORK_WEDGE.labelHtmlStyles.width}

@@ -89,6 +89,11 @@ export const StyledMap = styled.svg`
     .vpsBgIcon {
       color: var(--_primaryWhiteColor);
     }
+    .wedgeBg {
+      fill: var(--_highlightColor);
+      transition-property: fill;
+      transition: 0.2s linear;
+    }
   }
   .selectedTopoLevel1Link {
     fill: var(--_highlightColor);

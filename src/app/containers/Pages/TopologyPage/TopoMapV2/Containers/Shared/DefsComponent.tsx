@@ -27,10 +27,10 @@ const DefsComponent: React.FC<{}> = () => {
         width={NODES_CONSTANTS.NETWORK_WEDGE.collapse.r * 2}
         height={NODES_CONSTANTS.NETWORK_WEDGE.collapse.r * 2}
         viewBox="0 0 50 50"
-        fill="none"
+        fill="inherit"
         xmlns="http://www.w3.org/2000/svg"
       >
-        <path d="M0 25C0 11.1929 11.1929 0 25 0C38.8071 0 50 11.1929 50 25C50 38.8071 38.8071 50 25 50C11.1929 50 0 38.8071 0 25Z" fill={`url(#${NODES_CONSTANTS.NETWORK_WEDGE.lineGradientId})`} />
+        <path d="M0 25C0 11.1929 11.1929 0 25 0C38.8071 0 50 11.1929 50 25C50 38.8071 38.8071 50 25 50C11.1929 50 0 38.8071 0 25Z" fill="inherit" />
         <path
           fillRule="evenodd"
           clipRule="evenodd"
