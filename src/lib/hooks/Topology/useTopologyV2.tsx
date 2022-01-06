@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { IPanelBar, TopologyPanelTypes } from 'lib/models/topology';
-import { DATA_READY_STATE, IPosition, ISelectedListItem, ITimeTypes, TIME_PERIOD } from 'lib/models/general';
+import { IPosition, ISelectedListItem, ITimeTypes, TIME_PERIOD } from 'lib/models/general';
 import { jsonClone } from 'lib/helpers/cloneHelper';
 import { EntityTypes, IEntity } from 'lib/models/entites';
 import { ITopologyDataRes, ITopologyGroup, ITopologyGroupsData, ITopologyMapData } from 'lib/api/ApiModels/Topology/apiModels';
@@ -11,7 +11,6 @@ import { FilterEntityOptions, FilterEntityTypes, FilterSeverityOptions, ITopoLin
 import { AlertSeverity } from 'lib/api/ApiModels/Workflow/apiModel';
 
 export interface TopologyV2ContextType {
-  dataReadyToShow: DATA_READY_STATE;
   topoPanel: IPanelBar<TopologyPanelTypes>;
   selectedPeriod: ISelectedListItem<ITimeTypes>;
   selectedTime: Date | null;
@@ -34,7 +33,6 @@ export interface TopologyV2ContextType {
   onFilterQueryChange: (value: string | null) => void;
   onSetSelectedType: (_value: string | number | null) => void;
   onSelectEntity: (entity: IEntity, selected: boolean) => void;
-  onSetIsDataReadyToShow: (_state: DATA_READY_STATE) => void;
 
   onCollapseExpandNode: (node: ITopoNode<any, any>, state: boolean) => void;
   onUpdateNodeCoord: (node: ITopoNode<any, any>, _pos: IPosition) => void;
@@ -44,7 +42,6 @@ export interface TopologyV2ContextType {
   onSelectFilterOption: (groupType: TopoFilterTypes, type: FilterEntityTypes, _selected: boolean) => void;
 }
 export function useTopologyV2Context(): TopologyV2ContextType {
-  const [dataReadyToShow, setDataReadyToShow] = React.useState<DATA_READY_STATE>(DATA_READY_STATE.EMPTY);
   const [topoPanel, setTopoPanel] = React.useState<IPanelBar<TopologyPanelTypes>>({ show: false, type: null });
   const [originData, setOriginData] = React.useState<ITopologyMapData | null>(null);
   const [originGroupsData, setOriginGroupsData] = React.useState<ITopologyGroup[] | null>(null);
@@ -101,7 +98,6 @@ export function useTopologyV2Context(): TopologyV2ContextType {
   const groupsRef = React.useRef(originGroupsData);
   const onSetData = (res: ITopologyDataRes) => {
     if (!res) {
-      setDataReadyToShow(DATA_READY_STATE.EMPTY);
       setLinks(null);
       setOriginData(null);
       setOriginGroupsData(null);
@@ -119,12 +115,11 @@ export function useTopologyV2Context(): TopologyV2ContextType {
       linksRef.current = _data.links;
     }
     if (_data.nodes) {
-      setOriginData(_orgObj);
-      setOriginGroupsData(groupsRef.current);
       setNodes(_data.nodes);
       nodesRef.current = _data.nodes;
     }
-    setDataReadyToShow(DATA_READY_STATE.SUCCESS);
+    setOriginGroupsData(groupsRef.current);
+    setOriginData(_orgObj);
   };
 
   const onFilterQueryChange = (value: string | null) => {
@@ -286,10 +281,6 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     setTimeRange(_range);
   };
 
-  const onSetIsDataReadyToShow = (_state: DATA_READY_STATE) => {
-    setDataReadyToShow(_state);
-  };
-
   const onCollapseExpandNode = (node: ITopoNode<any, any>, state: boolean) => {
     const _data: ITopoNode<any, any>[] = nodesRef.current.slice();
     const index = _data.findIndex(it => it.id === node.id);
@@ -366,7 +357,6 @@ export function useTopologyV2Context(): TopologyV2ContextType {
   };
 
   return {
-    dataReadyToShow,
     topoPanel,
     selectedPeriod,
     selectedTime,
@@ -391,7 +381,6 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     onChangeTime,
     onUpdateTimeRange,
     onChangeSelectedDay,
-    onSetIsDataReadyToShow,
 
     onCollapseExpandNode,
     onUpdateNodeCoord,

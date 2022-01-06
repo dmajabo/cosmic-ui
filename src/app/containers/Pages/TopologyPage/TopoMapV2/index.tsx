@@ -2,7 +2,6 @@ import React, { useContext } from 'react';
 import { ContainerWithFooter, TopoContainer, MapContainer } from './styles';
 import LoadingIndicator from 'app/components/Loading';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
-import { DATA_READY_STATE } from 'lib/models/general';
 // import PanelBar from 'app/components/Basic/PanelBar';
 // import Entities from './PanelComponents/EntitiesComponent/Entities';
 // import GroupsComponent from './PanelComponents/GroupsComponent/GroupsComponent';
@@ -34,25 +33,17 @@ const TopoMapV2: React.FC<IProps> = (props: IProps) => {
     }
   }, [response]);
 
-  React.useEffect(() => {
-    if (error) {
-      topology.onSetIsDataReadyToShow(DATA_READY_STATE.ERROR);
-    }
-  }, [error]);
-
   const onOpenFullScreen = () => {
     setIsFullScreen(!isFullScreen);
   };
 
   const onTryLoadData = async () => {
-    topology.onSetIsDataReadyToShow(DATA_READY_STATE.LOADING);
     const _st = topology.selectedTime || null;
     const param: ITopologyQueryParam = createTopologyQueryParam(_st);
     await onGetChainData([PolicyApi.getAllGroups(), TopoApi.getAllOrganizations()], ['groups', 'organizations'], userContext.accessToken!, param);
   };
 
   const onReloadData = async (startTime: Date | null) => {
-    topology.onSetIsDataReadyToShow(DATA_READY_STATE.LOADING);
     const param: ITopologyQueryParam = createTopologyQueryParam(startTime);
     await onGetChainData([PolicyApi.getAllGroups(), TopoApi.getAllOrganizations()], ['groups', 'organizations'], userContext.accessToken!, param);
   };
@@ -61,14 +52,14 @@ const TopoMapV2: React.FC<IProps> = (props: IProps) => {
     <>
       <TopoContainer className={isFullScreen ? 'fullscreen' : ''}>
         <ContainerWithFooter>
-          <MapContainer>
-            {topology.originData && <Graph isFullScreen={isFullScreen} onReload={onTryLoadData} onOpenFullScreen={onOpenFullScreen} />}
-            {(loading || topology.dataReadyToShow === DATA_READY_STATE.LOADING) && (
+          <MapContainer height={error || (loading && !topology.originData) ? '100%' : null}>
+            <Graph disabledReload={loading} onlyRefreshAvaible={!!error || !topology.originData} isFullScreen={isFullScreen} onReload={onTryLoadData} onOpenFullScreen={onOpenFullScreen} />
+            {loading && (
               <AbsLoaderWrapper>
                 <LoadingIndicator margin="auto" />
               </AbsLoaderWrapper>
             )}
-            {(error || topology.dataReadyToShow === DATA_READY_STATE.ERROR) && (
+            {error && (
               <AbsLoaderWrapper width="100%" height="100%">
                 <ErrorMessage fontSize={28} margin="auto">
                   {error && error.message ? error.message : 'Something went wrong. Please refresh page'}

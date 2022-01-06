@@ -16,6 +16,8 @@ import { ITopoNode } from 'lib/hooks/Topology/models';
 // import MatSelect from 'app/components/Inputs/MatSelect';
 
 interface IProps {
+  disabledReload: boolean;
+  onlyRefreshAvaible: boolean;
   zoomValue: number;
   isFullScreen: boolean;
   onZoomIn: () => void;
@@ -50,23 +52,27 @@ const HeadeerAction: React.FC<IProps> = (props: IProps) => {
   return (
     <Wrapper>
       <Side margin="0 auto 0 0">
-        <IconButton iconStyles={{ verticalAlign: 'middle', height: '4px' }} styles={{ margin: '0 8px 0 0' }} icon={zoomOutIcon} title="Zoom out" onClick={props.onZoomOut} />
-        <ZoomValue>{props.zoomValue} %</ZoomValue>
-        <IconButton styles={{ margin: '0 20px 0 8px' }} icon={zoomInIcon} title="Zoom in" onClick={props.onZoomIn} />
-        <IconButton styles={{ margin: '0 20px 0 0' }} icon={zoomCenterIcon} title="Center" onClick={onCentered} />
-        <IconButton
-          styles={{ margin: '0' }}
-          icon={props.isFullScreen ? zoomOutFullScreenMode : zoomFullScreenIcon}
-          title={props.isFullScreen ? 'Close fullscreen mode' : 'Open fullscreen mode'}
-          onClick={onOpenFullScreen}
-        />
+        {!props.onlyRefreshAvaible && (
+          <>
+            <IconButton iconStyles={{ verticalAlign: 'middle', height: '4px' }} styles={{ margin: '0 8px 0 0' }} icon={zoomOutIcon} title="Zoom out" onClick={props.onZoomOut} />
+            <ZoomValue>{props.zoomValue} %</ZoomValue>
+            <IconButton styles={{ margin: '0 20px 0 8px' }} icon={zoomInIcon} title="Zoom in" onClick={props.onZoomIn} />
+            <IconButton styles={{ margin: '0 20px 0 0' }} icon={zoomCenterIcon} title="Center" onClick={onCentered} />
+            <IconButton
+              styles={{ margin: '0' }}
+              icon={props.isFullScreen ? zoomOutFullScreenMode : zoomFullScreenIcon}
+              title={props.isFullScreen ? 'Close fullscreen mode' : 'Open fullscreen mode'}
+              onClick={onOpenFullScreen}
+            />
+          </>
+        )}
       </Side>
       <Side margin="0 0 0 auto">
-        <IconButton styles={{ margin: '0' }} icon={refreshIcon} title="Refresh Topology" onClick={props.onRefresh} />
-        <SecondaryButton label="FILTER" icon={filterIcon} onClick={() => onClick(TopologyPanelTypes.FILTERS)} disabled={false} styles={{ margin: '0 0 0 20px' }} />
+        <IconButton disabled={props.disabledReload} styles={{ margin: '0' }} icon={refreshIcon} title="Refresh Topology" onClick={props.onRefresh} />
+        {!props.onlyRefreshAvaible && <SecondaryButton label="FILTER" icon={filterIcon} onClick={() => onClick(TopologyPanelTypes.FILTERS)} disabled={false} styles={{ margin: '0 0 0 20px' }} />}
         {/* <SecondaryButton label="ENTITIES" icon={entitiesIcon} onClick={() => onClick(TopologyPanelTypes.ENTITIES)} disabled={false} styles={{ margin: '0 0 0 20px' }} /> */}
         {/* <Filter onChange={onFilter} searchQuery={topology?.searchQuery || ''} /> */}
-        <SecondaryButton label="Edit Topology" icon={editIcon} onClick={() => onClick(TopologyPanelTypes.GROUPS)} disabled={false} styles={{ margin: '0 0 0 20px' }} />
+        {!props.onlyRefreshAvaible && <SecondaryButton label="Edit Topology" icon={editIcon} onClick={() => onClick(TopologyPanelTypes.GROUPS)} disabled={false} styles={{ margin: '0 0 0 20px' }} />}
       </Side>
     </Wrapper>
   );

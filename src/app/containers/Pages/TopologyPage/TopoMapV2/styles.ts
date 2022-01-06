@@ -37,12 +37,15 @@ export const ContainerWithMetrics = styled.div`
   flex-grow: 1;
 `;
 
-export const MapContainer = styled.div`
+interface MapContainerPRops {
+  height?: string;
+}
+export const MapContainer = styled.div<MapContainerPRops>`
   display: flex;
   flex-direction: column;
   position: relative;
   width: 100%;
-  height: calc(100% - 80px);
+  height: ${props => props.height || 'calc(100% - 80px)'};
 `;
 
 export const StyledMap = styled.svg`

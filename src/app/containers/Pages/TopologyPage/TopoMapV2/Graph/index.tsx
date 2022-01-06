@@ -15,6 +15,8 @@ import Map from './Map';
 import GroupsComponent from '../PanelComponents/GroupsComponent/GroupsComponent';
 
 interface Props {
+  disabledReload: boolean;
+  onlyRefreshAvaible: any;
   isFullScreen: boolean;
   onReload: () => void;
   onOpenFullScreen: () => void;
@@ -25,11 +27,13 @@ const Graph: React.FC<Props> = (props: Props) => {
   const { zoomValue, onZoomInit, onZoomIn, onZoomOut, onCentered, onUnsubscribe } = useZoom({ svgId: TOPOLOGY_IDS.SVG, rootId: TOPOLOGY_IDS.G_ROOT });
 
   React.useEffect(() => {
-    onZoomInit(topology.nodes);
+    if (!props.onlyRefreshAvaible) {
+      onZoomInit(topology.nodes);
+    }
     return () => {
       onUnsubscribe();
     };
-  }, []);
+  }, [props.onlyRefreshAvaible]);
 
   const onOpenFullScreen = () => {
     props.onOpenFullScreen();
@@ -42,6 +46,8 @@ const Graph: React.FC<Props> = (props: Props) => {
   return (
     <>
       <HeadeerAction
+        disabledReload={props.disabledReload}
+        onlyRefreshAvaible={props.onlyRefreshAvaible}
         zoomValue={zoomValue}
         isFullScreen={props.isFullScreen}
         onZoomIn={onZoomIn}
@@ -50,16 +56,18 @@ const Graph: React.FC<Props> = (props: Props) => {
         onOpenFullScreen={onOpenFullScreen}
         onRefresh={props.onReload}
       />
-      <ContainerWithMetrics>
-        <Map />
-        <PanelBar show={topology.topoPanel.show} onHidePanel={onHidePanel} type={IPanelBarLayoutTypes.VERTICAL}>
-          {topology.topoPanel.type === TopologyPanelTypes.FILTERS && <FilterComponent />}
-          {topology.topoPanel.type === TopologyPanelTypes.GROUPS && <GroupsComponent />}
-          {topology.topoPanel.type === TopologyPanelTypes.VPC && <VpcPanel dataItem={topology.topoPanel.dataItem} />}
-          {topology.topoPanel.type === TopologyPanelTypes.Device && <DevicePanel dataItem={topology.topoPanel.dataItem} />}
-          {topology.topoPanel.type === TopologyPanelTypes.Wedge && <WedgePanel dataItem={topology.topoPanel.dataItem} />}
-        </PanelBar>
-      </ContainerWithMetrics>
+      {topology.originData && (
+        <ContainerWithMetrics>
+          <Map />
+          <PanelBar show={topology.topoPanel.show} onHidePanel={onHidePanel} type={IPanelBarLayoutTypes.VERTICAL}>
+            {topology.topoPanel.type === TopologyPanelTypes.FILTERS && <FilterComponent />}
+            {topology.topoPanel.type === TopologyPanelTypes.GROUPS && <GroupsComponent />}
+            {topology.topoPanel.type === TopologyPanelTypes.VPC && <VpcPanel dataItem={topology.topoPanel.dataItem} />}
+            {topology.topoPanel.type === TopologyPanelTypes.Device && <DevicePanel dataItem={topology.topoPanel.dataItem} />}
+            {topology.topoPanel.type === TopologyPanelTypes.Wedge && <WedgePanel dataItem={topology.topoPanel.dataItem} />}
+          </PanelBar>
+        </ContainerWithMetrics>
+      )}
     </>
   );
 };
