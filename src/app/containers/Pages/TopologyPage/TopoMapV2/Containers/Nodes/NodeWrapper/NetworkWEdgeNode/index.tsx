@@ -1,6 +1,7 @@
 import React from 'react';
 import { NODES_CONSTANTS } from '../../../../model';
 import { ITGWNode } from 'lib/hooks/Topology/models';
+import { setSelectedClass } from '../helper';
 
 interface Props {
   item: ITGWNode;
@@ -9,10 +10,11 @@ interface Props {
 
 const NetworkWEdgeNode: React.FC<Props> = (props: Props) => {
   const onClick = () => {
+    setSelectedClass(props.item.nodeType, `wedgeCollapsed${props.item.id}`, props.item.id);
     props.onClick(props.item);
   };
   return (
-    <g transform={`translate(${props.item.x}, ${props.item.y})`} onClick={onClick}>
+    <g transform={`translate(${props.item.x}, ${props.item.y})`} id={`wedgeCollapsed${props.item.id}`} onClick={onClick} className="topoNodeLevel1 wedgeNodeWrapper">
       <use
         pointerEvents="all"
         href={`#${NODES_CONSTANTS.NETWORK_WEDGE.type}`}

@@ -1,6 +1,5 @@
 import { TopoNodeTypes } from 'lib/hooks/Topology/models';
 import { IIconSize, IMinSize, ISize, ISpace } from 'lib/models/general';
-import { TOPOLOGY_NODE_TYPES } from 'lib/models/topology';
 
 export const TOPOLOGY_IDS = {
   SVG: 'svgTopologyMap',
@@ -11,10 +10,6 @@ export const TOPOLOGY_IDS = {
 
 export interface INode<T> {
   type: T;
-}
-
-export interface INetworkGroupNode extends INode<TOPOLOGY_NODE_TYPES>, ISize, ISpace {
-  r: number;
 }
 
 export interface ICounterStyle {
@@ -129,7 +124,7 @@ export interface IPeeringConnectionNode extends INode<TopoNodeTypes>, ICollapseE
   labelHtmlStyles: ILabelHtmlStyles;
 }
 
-export interface IDeviceNode extends INode<TopoNodeTypes>, ICollapseExpandState {
+export interface ISiteNode extends INode<TopoNodeTypes>, ICollapseExpandState {
   iconId: string;
   groupLinkIconId: string;
   countStyles: ICounterStyle;
@@ -148,7 +143,7 @@ export interface INodes_Types {
   // SECOND LEVEL
   NETWORK_WEDGE: INetworkWEdgeNode;
   NETWORK_VNET: INetworkVNetworkNode;
-  DEVICE: IDeviceNode;
+  DEVICE: ISiteNode;
   PEERING_CONNECTION: IPeeringConnectionNode;
   // GENERAL
   COLLAPSE_EXPAND: ICollapseExpandBtn;

@@ -2,8 +2,8 @@ import React from 'react';
 import { NODES_CONSTANTS } from '../../../../model';
 import { IDeviceNode, ITopoNode } from 'lib/hooks/Topology/models';
 import { ITopologyGroup } from 'lib/api/ApiModels/Topology/apiModels';
-import { buildLink, IDeviceLink } from './helper';
-import DeviceLink from './DeviceLink';
+// import { buildLink, IDeviceLink } from './helper';
+// import DeviceLink from './DeviceLink';
 
 interface Props {
   parent: ITopoNode<ITopologyGroup, IDeviceNode>;
@@ -12,20 +12,20 @@ interface Props {
 }
 
 const DeviceNode: React.FC<Props> = (props: Props) => {
-  const [link, setLink] = React.useState<IDeviceLink>(null);
+  // const [link, setLink] = React.useState<IDeviceLink>(null);
 
-  React.useEffect(() => {
-    const _link = buildLink(props.item, props.parent);
-    setLink(_link);
-  }, []);
+  // React.useEffect(() => {
+  //   const _link = buildLink(props.item, props.parent);
+  //   setLink(_link);
+  // }, []);
 
   const onClick = () => {
     props.onClick(props.item);
   };
   return (
     <>
-      {link && <DeviceLink key={`${link.from.id}${link.to.id}devLink`} data={link} />}
-      <g transform={`translate(${props.item.x}, ${props.item.y})`} onClick={onClick}>
+      {/* {link && <DeviceLink key={`${link.from.id}${link.to.id}devLink`} data={link} />} */}
+      <g transform={`translate(${props.item.x}, ${props.item.y})`} onClick={onClick} className="topoNodeLevel1 deviceNodeWrapper">
         <use pointerEvents="all" href={`#bg${NODES_CONSTANTS.DEVICE.type}`} width={NODES_CONSTANTS.DEVICE.collapse.width} height={NODES_CONSTANTS.DEVICE.collapse.height} />
         <use
           href={`#${NODES_CONSTANTS.DEVICE.type}`}

@@ -27,7 +27,7 @@ const PeerConnectionNode: React.FC<Props> = (props: Props) => {
     const _node = d3.select(nodeRef.current);
     const _parentG = d3.select(`#${props.parentId}`);
     const _peerChildren = _parentG.selectAll('.peerConnectionNodeWrapper');
-    const _vnetChildren = _parentG.selectAll('.vnetNodeWrapper');
+    const _vnetChildren = _parentG.selectAll('.vnetNodeWrapper:not(.selectedTopoLevel1)');
     _vnetChildren.attr('opacity', 0.5);
     _peerChildren.attr('opacity', 0.5);
     _node.attr('opacity', 1).classed('peerConnectionNodeWrapperHover', true);

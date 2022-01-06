@@ -83,6 +83,34 @@ const VpcPanel: React.FC<IProps> = (props: IProps) => {
       </PanelHeader>
       <OverflowContainer>
         <ExpandGroup
+          id={expandStateObj.vms.id}
+          expand={expandStateObj.vms.expand}
+          onToogleExpand={onToogleGroup}
+          headerChildren={<ChildrenCount count={vms.length} />}
+          disabled={!vms.length}
+          arrowStyles={!vms.length ? null : { margin: '0' }}
+          maxGroupHeight="none"
+          icon={VmIcon}
+          label="Virtual Machines"
+          styles={{ margin: '0 0 20px 0' }}
+        >
+          {vms && vms.length ? vms.map(it => <VmItem key={`vmLIstItem${it.id}`} dataItem={it} onClick={onSelectVm} />) : null}
+        </ExpandGroup>
+        <ExpandGroup
+          id={expandStateObj.internetGatAway.id}
+          expand={expandStateObj.internetGatAway.expand}
+          headerChildren={<ChildrenCount count={internetGatAway ? 1 : 0} />}
+          disabled={!internetGatAway}
+          onToogleExpand={onToogleGroup}
+          maxGroupHeight="none"
+          icon={InternetGatawayIcon}
+          label="Internet Gateway"
+          arrowStyles={!internetGatAway ? null : { margin: '0' }}
+          styles={{ margin: '0 0 20px 0' }}
+        >
+          <InternetGetAwayItem dataItem={internetGatAway} />
+        </ExpandGroup>
+        <ExpandGroup
           id={expandStateObj.netLoadBalancer.id}
           expand={expandStateObj.netLoadBalancer.expand}
           onToogleExpand={onToogleGroup}
@@ -107,39 +135,12 @@ const VpcPanel: React.FC<IProps> = (props: IProps) => {
           maxGroupHeight="none"
           icon={AppLoaderBalancerIcon}
           label="Application Load Balancers"
-          styles={{ margin: '0 0 20px 0' }}
           arrowStyles={!appLoaderBalancerList.length ? null : { margin: '0' }}
         >
           {appLoaderBalancerList && appLoaderBalancerList.length
             ? appLoaderBalancerList.map(it => <BalanceItem key={`appLB${it.id}`} icon={AppLoaderBalancerIcon} dataItem={it} onClick={() => {}} />)
             : null}
         </ExpandGroup>
-        <ExpandGroup
-          id={expandStateObj.vms.id}
-          expand={expandStateObj.vms.expand}
-          onToogleExpand={onToogleGroup}
-          headerChildren={<ChildrenCount count={vms.length} />}
-          disabled={!vms.length}
-          arrowStyles={!vms.length ? null : { margin: '0' }}
-          maxGroupHeight="none"
-          icon={VmIcon}
-          label="Virtual Machines"
-          styles={{ margin: '0 0 20px 0' }}
-        >
-          {vms && vms.length ? vms.map(it => <VmItem key={`vmLIstItem${it.id}`} dataItem={it} onClick={onSelectVm} />) : null}
-        </ExpandGroup>
-        {internetGatAway && (
-          <ExpandGroup
-            id={expandStateObj.internetGatAway.id}
-            expand={expandStateObj.internetGatAway.expand}
-            onToogleExpand={onToogleGroup}
-            maxGroupHeight="none"
-            icon={InternetGatawayIcon}
-            label="Internet Gateway"
-          >
-            <InternetGetAwayItem dataItem={internetGatAway} />
-          </ExpandGroup>
-        )}
       </OverflowContainer>
     </>
   );

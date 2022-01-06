@@ -2,6 +2,7 @@ import React from 'react';
 import TransitionContainer from '../../TransitionContainer';
 import { ITopoLink, TopoLinkTypes } from 'lib/hooks/Topology/models';
 import NetworkNetworkLink from '../NetworkNetworkLink';
+import VPNLink from '../VPNLink';
 
 interface IProps {
   dataItem: ITopoLink<any, any, any, any, any>;
@@ -17,7 +18,7 @@ const TopologyLink: React.FC<IProps> = (props: IProps) => {
   if (props.dataItem.type === TopoLinkTypes.VPNLink) {
     return (
       <TransitionContainer stateIn={props.dataItem.visible}>
-        <NetworkNetworkLink dataItem={props.dataItem} />
+        <VPNLink dataItem={props.dataItem} />
       </TransitionContainer>
     );
   }

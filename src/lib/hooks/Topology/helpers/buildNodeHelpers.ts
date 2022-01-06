@@ -1,6 +1,5 @@
 import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
 import { INetworkOrg, INetworkwEdge, INetworkVNetwork, INetworkDevice, INetworkVNetworkPeeringConnection } from 'lib/api/ApiModels/Topology/apiModels';
-import { TOPOLOGY_NODE_TYPES } from 'lib/models/topology';
 import { ITGWNode, INetworkVNetNode, TopoNodeTypes, ITopoNode, IDeviceNode, INetworkVNetworkPeeringConnectionNode } from '../models';
 import uuid from 'react-uuid';
 
@@ -56,7 +55,7 @@ export const createTopoNode = <P, C>(
 
 export const createWedgeNode = (org: INetworkOrg, orgIndex: number, node: INetworkwEdge, index: number): ITGWNode => {
   const _x = index === 0 ? 0 : (NODES_CONSTANTS.NETWORK_WEDGE.collapse.width + NODES_CONSTANTS.NETWORK_WEDGE.collapse.spaceX) * index;
-  return { ...node, uiId: uuid(), vendorType: org.vendorType, visible: true, childIndex: index, orgIndex: orgIndex, orgId: org.id, x: _x, y: 0, nodeType: TOPOLOGY_NODE_TYPES.WEDGE };
+  return { ...node, uiId: uuid(), vendorType: org.vendorType, visible: true, childIndex: index, orgIndex: orgIndex, orgId: org.id, x: _x, y: 0, nodeType: TopoNodeTypes.WEDGE };
 };
 
 export const createVPCNode = (org: INetworkOrg, orgIndex: number, node: INetworkVNetwork, index: number): INetworkVNetNode => {
@@ -70,7 +69,7 @@ export const createVPCNode = (org: INetworkOrg, orgIndex: number, node: INetwork
     y: 0,
     uiId: uuid(),
     vendorType: org.vendorType,
-    nodeType: TOPOLOGY_NODE_TYPES.VNET,
+    nodeType: TopoNodeTypes.VNET,
   };
 };
 
@@ -85,10 +84,10 @@ export const createPeerConnectionNode = (org: INetworkOrg, orgIndex: number, nod
     y: 0,
     uiId: uuid(),
     vendorType: org.vendorType,
-    nodeType: TOPOLOGY_NODE_TYPES.PEERING_CONNECTIONS,
+    nodeType: TopoNodeTypes.PEERING_CONNECTION,
   };
 };
 
 export const createDeviceNode = (org: INetworkOrg, orgIndex: number, node: INetworkDevice, index: number): IDeviceNode => {
-  return { ...node, uiId: uuid(), vendorType: org.vendorType, visible: true, childIndex: index, orgIndex: orgIndex, orgId: org.id, x: 0, y: 0, nodeType: TOPOLOGY_NODE_TYPES.DEVICE };
+  return { ...node, uiId: uuid(), vendorType: org.vendorType, visible: true, childIndex: index, orgIndex: orgIndex, orgId: org.id, x: 0, y: 0, nodeType: TopoNodeTypes.DEVICE };
 };

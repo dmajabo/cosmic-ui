@@ -62,7 +62,7 @@ const SitesExpandNode: React.FC<Props> = (props: Props) => {
               ))}
             </g>
           </g>
-          <use href={`#${NODES_CONSTANTS.DEVICE.groupLinkIconId}`} x={NODES_CONSTANTS.SITES.expanded.minWidth / 2 - 7} y="-7" />
+          {/* <use href={`#${NODES_CONSTANTS.DEVICE.groupLinkIconId}`} x={NODES_CONSTANTS.SITES.expanded.minWidth / 2 - 7} y="-7" /> */}
           <CollapseExpandButton
             id={`sites${props.dataItem.id}${CollapseExpandState.COLLAPSE}`}
             onClick={onCollapse}

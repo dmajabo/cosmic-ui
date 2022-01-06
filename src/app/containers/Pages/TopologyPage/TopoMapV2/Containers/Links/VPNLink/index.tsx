@@ -1,12 +1,12 @@
 import React from 'react';
 // import { select } from 'd3-selection';
-import { INetworkVNetNode, ITGWNode, ITopoLink, ITopoNode } from 'lib/hooks/Topology/models';
-import { INetworkNetworkLink } from 'lib/api/ApiModels/Topology/apiModels';
+import { IDeviceNode, ITGWNode, ITopoLink, ITopoNode } from 'lib/hooks/Topology/models';
+import { ITopologyGroup, INetworkVpnLinkState } from 'lib/api/ApiModels/Topology/apiModels';
 
 interface IProps {
-  dataItem: ITopoLink<ITopoNode<any, INetworkVNetNode>, INetworkVNetNode, ITopoNode<any, ITGWNode>, ITGWNode, INetworkNetworkLink>;
+  dataItem: ITopoLink<ITopoNode<ITopologyGroup, IDeviceNode>, IDeviceNode, ITopoNode<any, ITGWNode>, ITGWNode, INetworkVpnLinkState>;
 }
-const NetworkNetworkLink: React.FC<IProps> = (props: IProps) => {
+const VPNLink: React.FC<IProps> = (props: IProps) => {
   // const onMouseEnter = () => {
   //   const g = select(`#${props.dataItem.id}`);
   //   g.selectAll('path').attr('fill', 'var(--_hoverLinkFill)').attr('stroke', 'var(--_hoverLinkFill)');
@@ -24,7 +24,7 @@ const NetworkNetworkLink: React.FC<IProps> = (props: IProps) => {
         fill="var(--_defaultLinkFill)"
         stroke="var(--_defaultLinkFill)"
         strokeWidth="1"
-        data-vnetid={`vnet${props.dataItem.fromNode.child.id}`}
+        data-devid={`dev${props.dataItem.fromNode.child.id}`}
         data-wedgeid={`wedge${props.dataItem.toNode.child.id}`}
         x1={props.dataItem.x1}
         y1={props.dataItem.y1}
@@ -35,4 +35,4 @@ const NetworkNetworkLink: React.FC<IProps> = (props: IProps) => {
   );
 };
 
-export default React.memo(NetworkNetworkLink);
+export default React.memo(VPNLink);

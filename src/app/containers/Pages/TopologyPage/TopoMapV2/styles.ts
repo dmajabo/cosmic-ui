@@ -77,7 +77,23 @@ export const StyledMap = styled.svg`
   .vpsHoverStroke {
     .vpcCollapsedBg {
       stroke: var(--_highlightColor);
-      transition: stroke 0.2s linear;
     }
+  }
+  .selectedTopoLevel1 {
+    .vpcCollapsedBg {
+      fill: var(--_highlightColor);
+      stroke: var(--_highlightColor);
+      transition-property: fill, stroke;
+      transition: 0.2s linear;
+    }
+    .vpsBgIcon {
+      color: var(--_primaryWhiteColor);
+    }
+  }
+  .selectedTopoLevel1Link {
+    fill: var(--_highlightColor);
+    stroke: var(--_highlightColor);
+    transition-property: fill, stroke;
+    transition: 0.2s linear;
   }
 `;

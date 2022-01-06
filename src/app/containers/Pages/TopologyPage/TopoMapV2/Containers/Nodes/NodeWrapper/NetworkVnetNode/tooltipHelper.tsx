@@ -1,50 +1,31 @@
 import * as d3 from 'd3';
-import { INetworkLoadBalancer, CloudLoadBalancerTypeP, INnetworkInternetGateway } from 'lib/api/ApiModels/Topology/apiModels';
+import { INetworkLoadBalancer, CloudLoadBalancerTypeP } from 'lib/api/ApiModels/Topology/apiModels';
 import { INetworkVNetNode, ITopoNode } from 'lib/hooks/Topology/models';
 import { NODES_CONSTANTS } from '../../../../model';
 
-export const buildVnetTooltip = (e: React.BaseSyntheticEvent<MouseEvent>, region: ITopoNode<any, INetworkVNetNode>, vnet: INetworkVNetNode) => {
+export const buildVnetTooltip = (e: React.BaseSyntheticEvent<MouseEvent>, region: ITopoNode<any, INetworkVNetNode>, vnet: INetworkVNetNode, containerId: string) => {
   if (!e || !e.target) return;
-  const box = d3.select(e.target).node().getBoundingClientRect();
-  removeVnetTooltip();
-  const body = d3.select('body');
-  const div = body.append('div');
-  div.interrupt();
-  div
-    .attr('class', 'vnettooltip')
-    .style('width', '320px')
-    .style('height', '288px')
-    .style('position', 'fixed')
-    .style('pointer-events', 'none')
-    .style('top', `${box.top}px`)
-    .style('left', `${box.left + NODES_CONSTANTS.NETWORK_VNET.collapse.width}px`)
-    .style('opacity', 0)
-    .transition()
-    .delay(500)
-    .duration(1000)
-    .style('opacity', 1);
-  const content = div.append('div');
-  content
-    .style('width', '100%')
-    .style('height', '100%')
-    .style('padding', '20px')
-    .style('background', 'var(--_primaryBg)')
-    .style('border-radius', '6px')
-    .style('box-shadow', '0px 10px 30px rgba(5, 20, 58, 0.1)')
-    .style('font-family', 'DMSans');
-  const vnetName = content.append('div').classed('textOverflowEllips', true);
+  const fo = d3.select(`#vnetTooltipFOContainer${containerId}`);
+  const container = fo.select(`#vnetTooltipContainer${containerId}`);
+  container.interrupt();
+  container.selectAll('*').remove();
+  const posY = Number(fo.attr('data-y'));
+  fo.attr('width', '328px')
+    .attr('height', '288px')
+    .attr('x', vnet.x + NODES_CONSTANTS.NETWORK_VNET.collapse.r * 2 + NODES_CONSTANTS.REGION.expanded.contentPadding + 10)
+    .attr('y', posY + vnet.y);
+  const vnetName = container.append('div').classed('textOverflowEllips', true);
   vnetName.style('width', '100%').style('margin', '0 0 10px 0').style('font-weight', 500).style('font-size', '16px').style('line-height', '21px').style('color', 'var(--_primaryTextColor)');
   vnetName.text(vnet.name || vnet.extId);
-  buildTooltipSubTitle(content, 'Account', region.name, '0 0 8px 0');
-  buildTooltipSubTitle(content, 'Region', region.name, '0 0 20px 0');
+  buildTooltipSubTitle(container, 'Account', region.name, '0 0 8px 0');
+  buildTooltipSubTitle(container, 'Region', region.name, '0 0 20px 0');
   const _nlb = getFilteredBalancerByType(vnet.loadBalancers);
-  buildTooltipContentRow(content, getIcon('nbalancer'), 'Network Load Balancers', _nlb.net.length);
-  buildTooltipContentRow(content, getIcon('abalancer'), 'Application Load Balancers', _nlb.app.length);
-  buildTooltipContentRow(content, getIcon('virtualmachine'), 'Virtual Machines', vnet.vms.length);
-  const _iname = getInternalName(vnet.internetGateway);
-  if (_iname) {
-    buildTooltipContentRow(content, getIcon('internalGetaway'), _iname);
-  }
+  buildTooltipContentRow(container, getIcon('virtualmachine'), 'Virtual Machines', vnet.vms.length);
+  const _igcount = vnet.internetGateway ? 1 : 0;
+  buildTooltipContentRow(container, getIcon('internalGetaway'), 'Internet Gateway', _igcount);
+  buildTooltipContentRow(container, getIcon('nbalancer'), 'Network Load Balancers', _nlb.net.length);
+  buildTooltipContentRow(container, getIcon('abalancer'), 'Application Load Balancers', _nlb.app.length);
+  container.transition().duration(500).style('opacity', 1);
 };
 
 const buildTooltipSubTitle = (node: any, label: string, value: string, margin: string) => {
@@ -75,7 +56,6 @@ const buildTooltipContentRow = (node: any, icon: any, label: string, count?: str
     .style('margin', 'auto 0')
     .style('color', 'var(--_primaryTextColor)')
     .text(label);
-  if (!count && count !== 0) return;
   _row
     .append('span')
     .style('display', 'inline-block')
@@ -125,24 +105,18 @@ const getIcon = (type: string) => {
   return null;
 };
 
-export const removeVnetTooltip = () => {
-  const body = d3.select('body');
-  const _nodes = body.selectAll(`.vnettooltip`);
-  _nodes.interrupt();
-  _nodes
+export const removeVnetTooltip = (containerId: string) => {
+  const fo = d3.select(`#vnetTooltipFOContainer${containerId}`);
+  const container = fo.select(`#vnetTooltipContainer${containerId}`);
+  container.interrupt();
+  container
     .transition()
-    .duration(1000)
+    .duration(500)
     .style('opacity', 0)
-    .on('end', function (this: any) {
-      d3.select(this).remove();
+    .on('end', () => {
+      container.selectAll(`*`).remove();
+      fo.attr('width', '0').attr('height', '0').attr('x', null).attr('y', null);
     });
-};
-
-const getInternalName = (data: INnetworkInternetGateway) => {
-  if (!data) return null;
-  if (data.name) return data.name;
-  if (data.extId) return data.extId;
-  return null;
 };
 
 const getFilteredBalancerByType = (data: INetworkLoadBalancer[]) => {

@@ -4,8 +4,10 @@ import { INetworkVNetNode, ITopoNode } from 'lib/hooks/Topology/models';
 import NodeCounter from '../../Containers/NodeCounter';
 import { select } from 'd3-selection';
 import { buildVnetTooltip, removeVnetTooltip } from './tooltipHelper';
+import { setSelectedClass } from '../helper';
 
 interface Props {
+  parentId: string;
   region: ITopoNode<any, INetworkVNetNode>;
   item: INetworkVNetNode;
   onClick: (item: INetworkVNetNode) => void;
@@ -13,20 +15,18 @@ interface Props {
 
 const NetworkVnetNode: React.FC<Props> = (props: Props) => {
   const nodeRef = React.useRef(null);
-  React.useEffect(() => {
-    removeVnetTooltip();
-  }, []);
 
   const onClick = () => {
+    setSelectedClass(props.item.nodeType, `vpsCollapsed${props.item.id}`, props.item.id);
     props.onClick(props.item);
   };
   const onMouseEnter = (e: React.BaseSyntheticEvent<MouseEvent>) => {
     const _node = select(nodeRef.current);
     _node.raise();
-    buildVnetTooltip(e, props.region, props.item);
+    buildVnetTooltip(e, props.region, props.item, props.parentId);
   };
   const onMouseLeave = () => {
-    removeVnetTooltip();
+    removeVnetTooltip(props.parentId);
   };
   return (
     <g
@@ -34,7 +34,7 @@ const NetworkVnetNode: React.FC<Props> = (props: Props) => {
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       id={`vpsCollapsed${props.item.id}`}
-      className="vnetNodeWrapper"
+      className="topoNodeLevel1 vnetNodeWrapper"
       transform={`translate(${props.item.x}, ${props.item.y})`}
       data-id={`vnet${props.item.id}`}
       onClick={onClick}
@@ -56,6 +56,7 @@ const NetworkVnetNode: React.FC<Props> = (props: Props) => {
         height={NODES_CONSTANTS.NETWORK_VNET.collapse.iconHeight}
         x={0}
         y={0}
+        color="#7BAB4E"
         pointerEvents="none"
       />
       <NodeCounter pointerEvents="none" label={`${props.item.vms && props.item.vms.length ? props.item.vms.length : 0}`} stylesObj={NODES_CONSTANTS.NETWORK_VNET.countStyles} />

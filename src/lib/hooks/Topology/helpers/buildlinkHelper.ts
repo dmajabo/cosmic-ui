@@ -1,4 +1,4 @@
-import { IAccountNode, INetworkVNetworkNode, INetworkWEdgeNode, IRegionNode, NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
+import { IAccountNode, INetworkVNetworkNode, INetworkWEdgeNode, IRegionNode, ISiteNode, ISitesNode, NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
 import { INetworkNetworkLink, INetworkVpnLink, INetworkVpnLinkState, ITopologyGroup } from 'lib/api/ApiModels/Topology/apiModels';
 import { ICoord } from 'lib/models/general';
 import { INetworkVNetNode, ITGWNode, ITopoLink, ITopoNode, IDeviceNode, TopoLinkTypes } from '../models';
@@ -24,9 +24,7 @@ export const buildLinks = (
   }
   if (groups && groups.length) {
     groups.forEach(g => {
-      console.log(g);
       if (!g.children || !g.children.length) return;
-      let tgws = new Set();
       g.children.forEach(dev => {
         if (!dev.vpnlinks || !dev.vpnlinks.length) return;
         dev.vpnlinks.forEach(vpn => {
@@ -34,8 +32,7 @@ export const buildLinks = (
           vpn.linkStates.forEach(it => {
             const _id = it.id || it.name;
             const obj = getWedge(accounts, _id);
-            if (obj.wedge && !tgws.has(obj.wedge.id)) {
-              tgws.add(obj.wedge.id);
+            if (obj.wedge) {
               const link = buildDevWedgeConnection(obj.account, obj.wedge, g, dev, it);
               links.push(link);
             }
@@ -43,15 +40,6 @@ export const buildLinks = (
         });
       });
     });
-    // sites.forEach(s => {
-    //   if (!s.children || !s.children.length) return;
-    //   r.children.forEach((vnet: INetworkVNetNode) => {
-    //     if (!vnet.name && !vnet.extId) return;
-    //     const _links: ITopoLink<any, INetworkVNetNode, any, ITGWNode, INetworkNetworkLink>[] = buildNetworkNetworkConnection(accounts, r, vnet, showPeerConnection);
-    //     if (!_links || !_links.length) return;
-    //     links = links.concat(_links);
-    //   });
-    // });
   }
   return links;
 };
@@ -64,12 +52,12 @@ const buildDevWedgeConnection = (
   vpn: INetworkVpnLinkState,
 ): ITopoLink<ITopoNode<ITopologyGroup, IDeviceNode>, IDeviceNode, ITopoNode<any, ITGWNode>, ITGWNode, INetworkVpnLinkState> => {
   const _visible = account.visible && group.visible;
-  const _grCoord = { x: group.x + group.expandedSize.width / 2, y: group.y };
+  const _devCoord = getDevCoord(group, dev, NODES_CONSTANTS.SITES, NODES_CONSTANTS.DEVICE);
   const _tgwCoord = getWedgeCoord(account, tgw, NODES_CONSTANTS.ACCOUNT, NODES_CONSTANTS.NETWORK_WEDGE);
   const _link: ITopoLink<ITopoNode<ITopologyGroup, IDeviceNode>, IDeviceNode, ITopoNode<any, ITGWNode>, ITGWNode, INetworkVpnLinkState> = {
     id: uuid(),
-    x1: _grCoord.x,
-    y1: _grCoord.y,
+    x1: _devCoord.x,
+    y1: _devCoord.y,
     x2: _tgwCoord.x,
     y2: _tgwCoord.y,
     type: TopoLinkTypes.VPNLink,
@@ -112,6 +100,12 @@ const buildNetworkNetworkConnection = (
     });
   });
   return _links;
+};
+
+const getDevCoord = (g: ITopoNode<ITopologyGroup, IDeviceNode>, dev: IDeviceNode, parentStyles: ISitesNode, nodeStyles: ISiteNode): ICoord => {
+  const _x = g.x + dev.x + parentStyles.expanded.contentPadding + nodeStyles.collapse.width / 2;
+  const _y = g.y + dev.y + parentStyles.expanded.contentPadding + parentStyles.headerHeight + nodeStyles.collapse.height / 2;
+  return { x: _x, y: _y };
 };
 
 const getVnetCoord = (r: ITopoNode<any, INetworkVNetNode>, vnet: INetworkVNetNode, showPeerConnection: boolean, parentStyles: IRegionNode, nodeStyles: INetworkVNetworkNode): ICoord => {

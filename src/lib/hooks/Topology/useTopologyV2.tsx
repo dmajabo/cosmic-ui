@@ -1,9 +1,5 @@
 import * as React from 'react';
-import {
-  IPanelBar,
-  TopologyPanelTypes,
-  // TOPOLOGY_NODE_TYPES,
-} from 'lib/models/topology';
+import { IPanelBar, TopologyPanelTypes } from 'lib/models/topology';
 import { DATA_READY_STATE, IPosition, ISelectedListItem, ITimeTypes, TIME_PERIOD } from 'lib/models/general';
 import { jsonClone } from 'lib/helpers/cloneHelper';
 import { EntityTypes, IEntity } from 'lib/models/entites';
