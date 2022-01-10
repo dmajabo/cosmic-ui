@@ -23,7 +23,7 @@ const NodesWrapper: React.FC<Props> = (props: Props) => {
           );
         }
 
-        if (it.type === TopoNodeTypes.REGION) {
+        if (it.type === TopoNodeTypes.REGION && it.visible) {
           return (
             <TransitionContainer stateIn={it.visible} origin="unset" transform="none">
               <RegionNode key={`node${it.uiId}`} dataItem={it} />
@@ -31,7 +31,7 @@ const NodesWrapper: React.FC<Props> = (props: Props) => {
           );
         }
 
-        if (it.type === TopoNodeTypes.DATA_CENTER) {
+        if (it.type === TopoNodeTypes.DATA_CENTER && it.visible) {
           return (
             <TransitionContainer stateIn={it.visible} origin="unset" transform="none">
               <DataCenter key={`node${it.uiId}`} dataItem={it} />
@@ -39,7 +39,7 @@ const NodesWrapper: React.FC<Props> = (props: Props) => {
           );
         }
 
-        if (it.type === TopoNodeTypes.SITES) {
+        if (it.type === TopoNodeTypes.SITES && it.visible) {
           return (
             <TransitionContainer stateIn={it.visible} origin="unset" transform="none">
               <SitesNode key={`node${it.uiId}`} dataItem={it} />

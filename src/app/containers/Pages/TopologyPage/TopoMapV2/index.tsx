@@ -5,6 +5,7 @@ import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 // import PanelBar from 'app/components/Basic/PanelBar';
 // import Entities from './PanelComponents/EntitiesComponent/Entities';
 // import GroupsComponent from './PanelComponents/GroupsComponent/GroupsComponent';
+import mock from './mock.json';
 import { ITopologyDataRes } from 'lib/api/ApiModels/Topology/apiModels';
 import FooterAction from './FooterAction';
 import Graph from './Graph';
@@ -29,7 +30,9 @@ const TopoMapV2: React.FC<IProps> = (props: IProps) => {
 
   React.useEffect(() => {
     if (response !== null) {
-      topology.onSetData(response);
+      // console.log(mock);
+      topology.onSetData({ ...response, organizations: mock });
+      // topology.onSetData(response);
     }
   }, [response]);
 

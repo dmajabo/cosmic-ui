@@ -32,15 +32,19 @@ export interface INnetworkInternetGateway extends IBaseEntity<string> {
   name: string;
   extId: string;
   tags: INetworkTag[];
+  ownerId: string;
+  regionCode: string;
 }
 
 export interface INetworkTag extends IBaseEntity<string> {
   key: string;
   value: string;
+  ownerId: string;
+  regionCode: string;
 }
 
 export interface IDimensions {
-  additionalProperties: any;
+  additionalProperties?: any;
 }
 
 export interface INetworkNATGateway extends IBaseEntity<string> {
@@ -49,6 +53,8 @@ export interface INetworkNATGateway extends IBaseEntity<string> {
   extId: string;
   state: string;
   tags: INetworkTag[];
+  ownerId: string;
+  regionCode: string;
 }
 
 export interface INetworkRoute {
@@ -56,6 +62,8 @@ export interface INetworkRoute {
   target: string;
   state: string;
   extId: string;
+  ownerId: string;
+  regionCode: string;
 }
 
 export interface INetworkRouteTable extends IBaseEntity<string> {
@@ -63,12 +71,16 @@ export interface INetworkRouteTable extends IBaseEntity<string> {
   description: string;
   extId: string;
   routes: INetworkRoute[];
+  ownerId: string;
+  regionCode: string;
 }
 
 export interface INetworkCidr extends IBaseEntity<string> {
   name: string;
   description: string;
   extId: string;
+  ownerId: string;
+  regionCode: string;
 }
 export interface INetworkSubnet extends IBaseEntity<string> {
   name: string;
@@ -78,6 +90,8 @@ export interface INetworkSubnet extends IBaseEntity<string> {
   cidrs: INetworkCidr[];
   routeTable: INetworkRouteTable;
   natGateway: INetworkNATGateway;
+  ownerId: string;
+  regionCode: string;
 }
 
 export interface INetworkRule extends IBaseEntity<string> {
@@ -92,6 +106,8 @@ export interface INetworkRule extends IBaseEntity<string> {
   syslogEnabled: boolean;
   comment: string;
   policy: string;
+  ownerId: string;
+  regionCode: string;
 }
 
 export interface INetworkSecurityGroup extends IBaseEntity<string> {
@@ -99,6 +115,8 @@ export interface INetworkSecurityGroup extends IBaseEntity<string> {
   description: string;
   extId: string;
   rules: INetworkRule[];
+  ownerId: string;
+  regionCode: string;
 }
 
 export interface INetworkNIC extends IBaseEntity<string> {
@@ -112,6 +130,8 @@ export interface INetworkNIC extends IBaseEntity<string> {
   publicIp: string;
   subnet: INetworkSubnet;
   securityGroups: INetworkSecurityGroup[];
+  ownerId: string;
+  regionCode: string;
 }
 
 export interface INetworkVM extends IBaseEntity<string> {
@@ -125,6 +145,8 @@ export interface INetworkVM extends IBaseEntity<string> {
   subnet: INetworkSubnet;
   dimensions: IDimensions;
   tags: INetworkTag[];
+  ownerId: string;
+  regionCode: string;
 
   uiId?: string;
 }
@@ -135,6 +157,8 @@ export interface INetworkEndPoint extends IBaseEntity<string> {
   extId: string;
   nic: boolean;
   ip: number[];
+  ownerId: string;
+  regionCode: string;
 }
 
 export interface INetworkNetworkLink extends IBaseEntity<string> {
@@ -145,6 +169,8 @@ export interface INetworkNetworkLink extends IBaseEntity<string> {
   peerExtId: string;
   vnet: INetworkVNetwork;
   routeTable: INetworkRouteTable;
+  ownerId: string;
+  regionCode: string;
 }
 
 export interface INetworkVpnLinkState extends IBaseEntity<string> {
@@ -164,6 +190,8 @@ export interface INetworkVpnLink extends IBaseEntity<string> {
   linkStates: INetworkVpnLinkState[];
   privateSubnets: INetworkSubnet[];
   routeTable: INetworkRouteTable;
+  ownerId: string;
+  regionCode: string;
 }
 
 export interface INetworkLoadBalancerTarget extends IBaseEntity<string> {
@@ -171,6 +199,8 @@ export interface INetworkLoadBalancerTarget extends IBaseEntity<string> {
   extId: string;
   state: string;
   vm: INetworkVM;
+  ownerId: string;
+  regionCode: string;
 }
 export interface INetworkLoadBalancerTargetGroup extends IBaseEntity<string> {
   name: string;
@@ -179,10 +209,14 @@ export interface INetworkLoadBalancerTargetGroup extends IBaseEntity<string> {
   extUrl: string;
   targets: INetworkLoadBalancerTarget[];
   type: string;
+  ownerId: string;
+  regionCode: string;
 }
 export interface INetworkLoadBalancerListenerAction extends IBaseEntity<string> {
   type: string;
   targetGroups: INetworkLoadBalancerTargetGroup[];
+  ownerId: string;
+  regionCode: string;
 }
 export interface INetworkLoadBalancerListener extends IBaseEntity<string> {
   name: string;
@@ -192,6 +226,8 @@ export interface INetworkLoadBalancerListener extends IBaseEntity<string> {
   port: number;
   protocol: string;
   actions: INetworkLoadBalancerListenerAction[];
+  ownerId: string;
+  regionCode: string;
 }
 
 export enum CloudLoadBalancerTypeP {
@@ -202,11 +238,13 @@ export interface INetworkLoadBalancer extends IBaseEntity<string> {
   name: string;
   description: string;
   extUrl: string;
-  type: CloudLoadBalancerTypeP;
+  type: CloudLoadBalancerTypeP | string;
   dnsName: string;
   extId: string;
   Ips: string[];
   listeners: INetworkLoadBalancerListener[];
+  ownerId: string;
+  regionCode: string;
 }
 
 export interface INetworkPhysicalIf extends IBaseEntity<string> {
@@ -221,6 +259,14 @@ export interface INetworkIP extends IBaseEntity<string> {
   ip: number;
 }
 
+export interface INetworkEgressOnlyGateway extends IBaseEntity<string> {
+  name: string;
+  extId: string;
+  tags: INetworkTag[];
+  status: string;
+  ownerId: string;
+  regionCode: string;
+}
 export interface INetworkVNetwork extends IBaseEntity<string> {
   name: string;
   description: string;
@@ -233,8 +279,21 @@ export interface INetworkVNetwork extends IBaseEntity<string> {
   routeTables: INetworkRouteTable[];
   loadBalancers: INetworkLoadBalancer[];
   internetGateway: INnetworkInternetGateway;
+  ownerId: string;
+  regionCode: string;
+  egressOnlyInternetGateway: INetworkEgressOnlyGateway;
 }
 
+export interface INetworkWedgePeeringConnection extends IBaseEntity<string> {
+  id: string;
+  extId: string;
+  peerWedge: INetworkwEdge;
+  state: string;
+  tags: INetworkTag[];
+  routeTable: INetworkRouteTable[];
+  ownerId: string;
+  regionCode: string;
+}
 export interface INetworkwEdge extends IBaseEntity<string> {
   name: string;
   description: string;
@@ -245,6 +304,9 @@ export interface INetworkwEdge extends IBaseEntity<string> {
   networkLinks: INetworkNetworkLink[];
   ips: INetworkIP[];
   tags: INetworkTag[];
+  wedgePeeringConnections: INetworkWedgePeeringConnection[];
+  ownerId: string;
+  regionCode: string;
 }
 
 export interface INetworkoEdge extends IBaseEntity<string> {
@@ -267,6 +329,8 @@ export interface INetworkDevice extends IBaseEntity<string> {
   selectorGroup: string;
   hostname: string;
   vpnlinks: INetworkVpnLink[];
+  ownerId: string;
+  regionCode: string;
 }
 
 export interface INetworkVNetworkPeeringConnection extends IBaseEntity<string> {
@@ -276,6 +340,8 @@ export interface INetworkVNetworkPeeringConnection extends IBaseEntity<string> {
   status: string;
   accepterVnetwork: INetworkVNetwork;
   requesterVnetwork: INetworkVNetwork;
+  ownerId: string;
+  regionCode: string;
 }
 
 export interface INetworkVpnGateway extends IBaseEntity<string> {
@@ -287,6 +353,8 @@ export interface INetworkVpnGateway extends IBaseEntity<string> {
   tags: INetworkTag[];
   networkLinks: INetworkNetworkLink[];
   vpns: INetworkVpnLink[];
+  ownerId: string;
+  regionCode: string;
 }
 
 export interface INetworkWebAcl extends IBaseEntity<string> {
@@ -295,8 +363,56 @@ export interface INetworkWebAcl extends IBaseEntity<string> {
   extId: string;
   lockToken: string;
   loadBalancers: INetworkLoadBalancer[];
+  ownerId: string;
+  regionCode: string;
 }
 
+export interface INetworkRegionDetail extends IBaseEntity<string> {
+  name: string;
+  code: string;
+  city: string;
+  country: string;
+  lat: number;
+  long: number;
+  ownerId: string;
+  regionCode: string;
+}
+
+export interface INetworkClientVpnEndpoint extends IBaseEntity<string> {
+  name: string;
+  extId: string;
+  tags: INetworkTag[];
+  description: string;
+  dnsName: string;
+  cidrBlock: INetworkCidr;
+  dnsServers: string[];
+  splitTunnel: boolean;
+  vpnProtocol: string;
+  transportProtocol: string;
+  vpnPort: number;
+  serverCertificateArn: string;
+  selfServicePortalUrl: string;
+  securityGroups: INetworkSecurityGroup[];
+  vnet: INetworkVNetwork;
+  routeTable: INetworkRouteTable;
+  ownerId: string;
+  regionCode: string;
+}
+
+export interface INetworkRegion extends IBaseEntity<string> {
+  extId: string;
+  name: string;
+  ownerId: string;
+  vnets: INetworkVNetwork[];
+  wedges: INetworkwEdge[];
+  oedges: INetworkoEdge[];
+  devices: INetworkDevice[];
+  vNetworkPeeringConnections: INetworkVNetworkPeeringConnection[];
+  vpnGateways: INetworkVpnGateway[];
+  webAcls: INetworkWebAcl[];
+  clientVpnEndpoints: INetworkClientVpnEndpoint[];
+  detail: INetworkRegionDetail;
+}
 export interface INetworkOrg extends IBaseEntity<string> {
   name: string;
   description: string;
@@ -305,18 +421,21 @@ export interface INetworkOrg extends IBaseEntity<string> {
   extUrl: string;
   ctrlrName: string;
   ctrlrId: string;
-  vnets: INetworkVNetwork[];
-  wedges: INetworkwEdge[];
-  oedges: INetworkoEdge[];
-  devices: INetworkDevice[];
-  vendorType: VendorTypes;
-  vNetworkPeeringConnections: INetworkVNetworkPeeringConnection[];
-  vpnGateways: INetworkVpnGateway[];
-  webAcls: INetworkWebAcl[];
+  vendorType: VendorTypes | string;
+
+  regions: INetworkRegion[];
+
+  // vnets?: INetworkVNetwork[];
+  // wedges?: INetworkwEdge[];
+  // oedges?: INetworkoEdge[];
+  // devices?: INetworkDevice[];
+  // vNetworkPeeringConnections?: INetworkVNetworkPeeringConnection[];
+  // vpnGateways?: INetworkVpnGateway[];
+  // webAcls?: INetworkWebAcl[];
 }
 
 export interface ITopologyMapData {
-  count: number;
+  count: number | string;
   organizations: INetworkOrg[];
 }
 

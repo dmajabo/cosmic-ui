@@ -24,8 +24,8 @@ export const createTopoNode = <P, C>(
     type: _type,
     orgId: _orgId,
     expandedSize: {
-      width: _cw,
-      height: _ch,
+      width: _cw || 20,
+      height: _ch || 20,
     },
     collapsedSize: {
       width: _cw,
@@ -53,9 +53,20 @@ export const createTopoNode = <P, C>(
   return _obj;
 };
 
-export const createWedgeNode = (org: INetworkOrg, orgIndex: number, node: INetworkwEdge, index: number): ITGWNode => {
-  const _x = index === 0 ? 0 : (NODES_CONSTANTS.NETWORK_WEDGE.collapse.width + NODES_CONSTANTS.NETWORK_WEDGE.collapse.spaceX) * index;
-  return { ...node, uiId: uuid(), vendorType: org.vendorType, visible: true, childIndex: index, orgIndex: orgIndex, orgId: org.id, x: _x, y: 0, nodeType: TopoNodeTypes.WEDGE };
+export const createWedgeNode = (org: INetworkOrg, orgIndex: number, node: INetworkwEdge, parentNode: ITopoNode<any, INetworkwEdge>): ITGWNode => {
+  const _x = parentNode.children.length === 0 ? 0 : (NODES_CONSTANTS.NETWORK_WEDGE.collapse.width + NODES_CONSTANTS.NETWORK_WEDGE.collapse.spaceX) * parentNode.children.length;
+  return {
+    ...node,
+    uiId: uuid(),
+    vendorType: org.vendorType,
+    visible: true,
+    childIndex: parentNode.children.length + 1,
+    orgIndex: orgIndex,
+    orgId: org.id,
+    x: _x,
+    y: 0,
+    nodeType: TopoNodeTypes.WEDGE,
+  };
 };
 
 export const createVPCNode = (org: INetworkOrg, orgIndex: number, node: INetworkVNetwork, index: number): INetworkVNetNode => {

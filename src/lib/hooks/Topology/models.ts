@@ -28,7 +28,7 @@ export interface IMappedNode extends IVisible {
   childIndex: number;
   orgIndex: number;
   orgId: string;
-  vendorType: VendorTypes;
+  vendorType: VendorTypes | string;
   nodeType: TopoNodeTypes;
   uiId: string;
 }

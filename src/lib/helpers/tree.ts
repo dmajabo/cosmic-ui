@@ -61,7 +61,7 @@ const createVnetNode = (org: INetworkOrg, orgIndex: number, node: INetworkVNetwo
   };
 };
 
-export const createGroupNode = (_item: ITopologyGroup, vendorType: VendorTypes, index: number): INetworkGroupNode => {
+export const createGroupNode = (_item: ITopologyGroup, vendorType: VendorTypes | string, index: number): INetworkGroupNode => {
   return { ..._item, uiId: uuid(), vendorType: vendorType, visible: true, collapsed: true, groupIndex: index, x: 0, y: 0, devices: [], links: [], r: 0, nodeType: TOPOLOGY_NODE_TYPES.NETWORK_GROUP };
 };
 
@@ -76,41 +76,41 @@ export const prepareNodesData = (_data: ITopologyMapData, _groups: ITopologyGrou
   let topologyGroups: INetworkGroupNode[] = [];
   const devicesInGroup: IDeviceNode[] = [];
   let createDefGroup = false;
-  _data.organizations.forEach((org, i) => {
-    if (org.wedges && org.wedges.length) {
-      org.wedges.forEach((w, index) => {
-        const obj: IWedgeNode = createWedgeNode(org, i, w, index);
-        nodes.push(obj);
-        wedges.push(obj);
-      });
-    }
-    if (org.vnets && org.vnets.length && org.vendorType !== 'MERAKI') {
-      org.vnets.forEach((v, index) => {
-        // if (v.vms && v.vms.length) {
-        //   for (let i = 0; i < 50; i++) {
-        //     const _vm: INetworkVM = createTestVMs(v.vms[v.vms.length - 1], `vm${v.vms.length + i}`);
-        //     v.vms.push(_vm);
-        //   }
-        // }
-        const obj: IVnetNode = createVnetNode(org, i, v, index, _groups);
-        nodes.push(obj);
-        vnets.push(obj);
-      });
-    }
-    if (org.devices && org.devices.length) {
-      org.devices.forEach((d, index) => {
-        const obj: IDeviceNode = createDeviceNode(org, i, d, index);
-        if (d.selectorGroup) {
-          if (!createDefGroup && d.selectorGroup === DEFAULT_GROUP_ID) {
-            createDefGroup = true;
-          }
-          devicesInGroup.push(obj);
-          return;
-        }
-        devices.push(obj);
-      });
-    }
-  });
+  // _data.organizations.forEach((org, i) => {
+  //   if (org.wedges && org.wedges.length) {
+  //     org.wedges.forEach((w, index) => {
+  //       const obj: IWedgeNode = createWedgeNode(org, i, w, index);
+  //       nodes.push(obj);
+  //       wedges.push(obj);
+  //     });
+  //   }
+  //   if (org.vnets && org.vnets.length && org.vendorType !== 'MERAKI') {
+  //     org.vnets.forEach((v, index) => {
+  //       // if (v.vms && v.vms.length) {
+  //       //   for (let i = 0; i < 50; i++) {
+  //       //     const _vm: INetworkVM = createTestVMs(v.vms[v.vms.length - 1], `vm${v.vms.length + i}`);
+  //       //     v.vms.push(_vm);
+  //       //   }
+  //       // }
+  //       const obj: IVnetNode = createVnetNode(org, i, v, index, _groups);
+  //       nodes.push(obj);
+  //       vnets.push(obj);
+  //     });
+  //   }
+  //   if (org.devices && org.devices.length) {
+  //     org.devices.forEach((d, index) => {
+  //       const obj: IDeviceNode = createDeviceNode(org, i, d, index);
+  //       if (d.selectorGroup) {
+  //         if (!createDefGroup && d.selectorGroup === DEFAULT_GROUP_ID) {
+  //           createDefGroup = true;
+  //         }
+  //         devicesInGroup.push(obj);
+  //         return;
+  //       }
+  //       devices.push(obj);
+  //     });
+  //   }
+  // });
   let groupStartIndex = topologyGroups.length;
   if ((devices && devices.length) || createDefGroup) {
     const defaultGroup: INetworkGroupNode = createGroupNode(

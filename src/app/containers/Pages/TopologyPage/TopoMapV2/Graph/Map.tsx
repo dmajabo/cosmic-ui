@@ -14,9 +14,6 @@ const Map: React.FC<Props> = (props: Props) => {
   // const [resizeListener, sizes] = useResizeAware();
   const { topology } = useTopologyV2DataContext();
 
-  const onUnselectNode = () => {
-    topology.onUnselectNode();
-  };
   return (
     <>
       {/* {resizeListener} */}
@@ -28,7 +25,6 @@ const Map: React.FC<Props> = (props: Props) => {
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         xmlnsXlink="http://www.w3.org/1999/xlink"
-        onDoubleClick={onUnselectNode}
       >
         <DefsComponent />
         <GContainer id={TOPOLOGY_IDS.G_ROOT}>

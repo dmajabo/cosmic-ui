@@ -49,7 +49,7 @@ export interface IMappedNode extends IVisible {
   childIndex: number;
   orgIndex: number;
   orgId: string;
-  vendorType: VendorTypes;
+  vendorType: VendorTypes | string;
   nodeType: TOPOLOGY_NODE_TYPES;
   uiId: string;
 }
@@ -83,7 +83,7 @@ export interface INetworkGroupNode extends ITopologyGroup, IVisible, ICoord, ICo
   devices: IDeviceNode[];
   links: ILink[];
   nodeType: TOPOLOGY_NODE_TYPES;
-  vendorType: VendorTypes;
+  vendorType: VendorTypes | string;
   uiId: string;
 }
 
