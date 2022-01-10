@@ -11,6 +11,7 @@ export const ElasticFilterWrapper = styled.div`
   margin-bottom: 40px;
   background: var(--_primaryBg);
   flex-shrink: 0;
+  z-index: 1;
 `;
 
 export const ElasticLabel = styled.div`
@@ -26,14 +27,14 @@ export const PopupWrapper = styled.div`
   width: 100%;
   height: 50px;
   position: relative;
-  z-index: 1;
+  z-index: 3;
 `;
 
 export const OperatorPopupWrapper = styled.span`
   width: 100%;
   display: inline-block;
   position: relative;
-  z-index: 2;
+  z-index: 1;
 `;
 
 export const ElasticValueWrapper = styled.div`
@@ -91,7 +92,7 @@ export const ListItem = styled.div<ListItemProps>`
   font-weight: 500;
   font-size: 14px;
   line-height: 23px;
-  color: var(--_primaryTextColor);
+  color: ${props => (props.selected ? 'var(--_highlightColor)' : 'var(--_primaryTextColor)')};
   background: ${props => (props.selected ? 'var(--_vmBg)' : 'var(--_primaryWhiteColor)')};
   cursor: ${props => (props.selected ? 'default' : 'pointer')};
   &:hover {
@@ -129,6 +130,7 @@ export const TagsWrapper = styled.div`
   max-height: 50px;
   align-content: flex-start;
   margin-top: 20px;
+  z-index: 1;
 `;
 
 export const TagItem = styled.span`

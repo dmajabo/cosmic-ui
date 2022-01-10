@@ -1,15 +1,14 @@
 import React from 'react';
-import { ISelectionGridCellValue } from 'lib/models/general';
 import { TagBg, TagItem, TagItemLabel, TextWrapper } from './styles';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { closeSmallIcon } from 'app/components/SVGIcons/close';
-import { ISessionsGridField } from 'app/containers/Pages/SessionsPage/SessionPage/models';
+import { IElasticFilterModel } from 'lib/models/elastic';
 
 interface Props {
-  item: ISelectionGridCellValue<ISessionsGridField, ISessionsGridField>;
+  item: IElasticFilterModel;
   index: number;
   onRemoveTag: (index: number) => void;
-  onSelectTag: (_item: ISelectionGridCellValue<ISessionsGridField, ISessionsGridField>, index: number) => void;
+  onSelectTag: (_item: IElasticFilterModel, index: number) => void;
 }
 
 const FieldValueTag: React.FC<Props> = ({ item, index, onRemoveTag, onSelectTag }) => {
@@ -26,7 +25,7 @@ const FieldValueTag: React.FC<Props> = ({ item, index, onRemoveTag, onSelectTag 
       <TagBg />
       <TextWrapper onClick={onSelect}>
         <TagItemLabel color="var(--_primaryTextColor)">{item.field.label}:</TagItemLabel>
-        <TagItemLabel padding="0 0 0 4px">{item.value.label}</TagItemLabel>
+        <TagItemLabel padding="0 0 0 4px">{item.value}</TagItemLabel>
       </TextWrapper>
       <IconWrapper styles={{ margin: 'auto 0 auto 8px', zIndex: 1 }} width="10px" height="10px" icon={closeSmallIcon} onClick={onRemove} />
     </TagItem>

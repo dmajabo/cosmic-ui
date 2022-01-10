@@ -1,7 +1,7 @@
 import React from 'react';
-import { FilterOpperatorsList } from 'app/containers/Pages/SessionsPage/SessionPage/models';
 import Dropdown from '../Dropdown';
 import { ISelectedListItem } from 'lib/models/general';
+import { FilterOpperatorsList } from 'app/containers/Pages/AnalyticsPage/SessionPage/models';
 
 interface Props {
   item: string;
@@ -21,7 +21,7 @@ const OperatorTag: React.FC<Props> = ({ item, index, onChangeOperator }) => {
       values={FilterOpperatorsList}
       onSelectValue={onUpdate}
       wrapStyles={{
-        height: '24px',
+        height: '30px',
         margin: '0 12px 12px 0',
         width: '70px',
       }}

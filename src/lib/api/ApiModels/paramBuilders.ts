@@ -1,6 +1,5 @@
 import { PAGING_DEFAULT_PAGE_SIZE } from 'lib/hooks/Sessions/model';
-import { IQuryFieldtype, ISessionsGridField } from 'app/containers/Pages/SessionsPage/SessionPage/models';
-import { ISelectionGridCellValue } from 'lib/models/general';
+import { ElasticFilterSuffics, IElasticFilterModel, IQuryFieldtype } from 'lib/models/elastic';
 
 export enum AUTOMATION_TIME_RANGE_QUERY_TYPES {
   LAST_HOUR = 'AUTOMATION_QUERY_LAST_HOUR',
@@ -31,7 +30,10 @@ export enum STITCHED_TYPES {
 export interface IParam {
   start_from?: number;
   page_size?: number;
-  time_range?: AUTOMATION_TIME_RANGE_QUERY_TYPES | AUDIT_LOGS_TIME_RANGE_QUERY_TYPES;
+  time_range?: AUTOMATION_TIME_RANGE_QUERY_TYPES | AUDIT_LOGS_TIME_RANGE_QUERY_TYPES | SESSIONS_TIME_RANGE_QUERY_TYPES;
+  search_type?: STITCHED_TYPES;
+  filters?: string;
+  filterSuffics?: ElasticFilterSuffics;
 }
 
 export const paramBuilder = (size?: number, currentPage?: number, time_range?: AUTOMATION_TIME_RANGE_QUERY_TYPES | AUDIT_LOGS_TIME_RANGE_QUERY_TYPES): IParam => {
@@ -52,33 +54,19 @@ export const paramBuilder = (size?: number, currentPage?: number, time_range?: A
   return param;
 };
 
-export interface ISessionParam {
-  start_from?: number;
-  page_size?: number;
-  search_type?: STITCHED_TYPES;
-  time_range?: SESSIONS_TIME_RANGE_QUERY_TYPES;
-  filters?: string;
-}
-
-export const sessionsParamBuilder = (
-  size?: number,
-  currentPage?: number,
-  time_range?: SESSIONS_TIME_RANGE_QUERY_TYPES,
-  type?: boolean,
-  filters?: (ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> | string)[],
-): ISessionParam => {
-  let param: ISessionParam = {};
-  if (currentPage !== 1) {
+export const sessionsParamBuilder = ({ size, currentPage, time_range, stitchOnly, filters, filterSuffics }): IParam => {
+  let param: IParam = {};
+  if (currentPage !== null && currentPage !== undefined && currentPage !== 1) {
     const _size = size || PAGING_DEFAULT_PAGE_SIZE;
     param.start_from = (currentPage - 1) * _size;
   }
-  if (size && size !== PAGING_DEFAULT_PAGE_SIZE) {
+  if (size !== null && size !== undefined && size !== PAGING_DEFAULT_PAGE_SIZE) {
     param.page_size = size;
   }
   if (time_range && time_range !== SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_HOUR) {
     param.time_range = time_range;
   }
-  if (type) {
+  if (stitchOnly === true) {
     param.search_type = STITCHED_TYPES.STITCHED_ONLY;
   }
   if (filters && filters.length) {
@@ -86,11 +74,16 @@ export const sessionsParamBuilder = (
       if (typeof item === 'string') {
         return item;
       }
-      const _el: ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> = item as ISelectionGridCellValue<ISessionsGridField, ISessionsGridField>;
-      if (_el.field.queryType === IQuryFieldtype.NUMBER) {
-        return `(${_el.field.searchField}:${_el.value.label})`;
+      const _el: IElasticFilterModel = item as IElasticFilterModel;
+      if (_el.field.queryType === IQuryFieldtype.STRING) {
+        const fieldValue = filterSuffics ? `${_el.field.searchField}.${filterSuffics}` : _el.field.searchField;
+        const _v = _el.field.valueTransform ? _el.field.valueTransform(_el.value) : _el.value;
+        return `(${fieldValue}:${_v})`;
       }
-      return `(${_el.field.searchField}:'${_el.value.label}')`;
+      if (filterSuffics && filterSuffics === ElasticFilterSuffics.AUTOCOMPLETE) {
+        return `(${_el.field.searchField}.${filterSuffics}:${_el.value})`;
+      }
+      return `(${_el.field.searchField}:${_el.value})`;
     });
     param.filters = arr.join('');
   }
