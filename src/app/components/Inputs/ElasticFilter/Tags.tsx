@@ -1,17 +1,16 @@
 import React from 'react';
-import { ISelectionGridCellValue } from 'lib/models/general';
 import { TagsWrapper } from './styles';
-import { ISessionsGridField } from 'app/containers/Pages/SessionsPage/SessionPage/models';
 import FieldValueTag from './FieldValueTag';
 import OperatorTag from './OperatorTag';
 import { closeSmallIcon } from 'app/components/SVGIcons/close';
 import SecondaryButton from 'app/components/Buttons/SecondaryButton';
+import { IElasticFilterModel } from 'lib/models/elastic';
 
 interface Props {
-  items: (ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> | string)[];
+  items: (IElasticFilterModel | string)[];
   onRemoveTag: (index: number) => void;
   onClearAll: () => void;
-  onSelectTag: (_item: ISelectionGridCellValue<ISessionsGridField, ISessionsGridField>, index: number) => void;
+  onSelectTag: (_item: any, index: number) => void;
   onChangeOperator: (_item: string, index: number) => void;
 }
 
@@ -20,7 +19,7 @@ const Tags: React.FC<Props> = (props: Props) => {
     props.onRemoveTag(index);
   };
 
-  const onSelectTag = (item: ISelectionGridCellValue<ISessionsGridField, ISessionsGridField>, index: number) => {
+  const onSelectTag = (item: any, index: number) => {
     props.onSelectTag(item, index);
   };
 
@@ -39,15 +38,7 @@ const Tags: React.FC<Props> = (props: Props) => {
         if (typeof it === 'string') {
           return <OperatorTag key={`tagFilterOperator${index}`} item={it} index={index} onChangeOperator={onChangeOperator} />;
         }
-        return (
-          <FieldValueTag
-            key={`tagFilterItem${index}`}
-            index={index}
-            item={it as ISelectionGridCellValue<ISessionsGridField, ISessionsGridField>}
-            onRemoveTag={onRemoveItem}
-            onSelectTag={onSelectTag}
-          />
-        );
+        return <FieldValueTag key={`tagFilterItem${index}`} index={index} item={it} onRemoveTag={onRemoveItem} onSelectTag={onSelectTag} />;
       })}
       {props.items && props.items.length ? (
         <SecondaryButton

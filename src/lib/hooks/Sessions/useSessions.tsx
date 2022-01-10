@@ -1,13 +1,13 @@
 import React from 'react';
 import { ITab } from 'lib/models/tabs';
 import { SessionsTabTypes, PAGING_DEFAULT_PAGE_SIZE, SESSIONS_SELECT_VALUES, SESSIONS_TABS } from './model';
-import { ISelectedListItem, ISelectionGridCellValue } from 'lib/models/general';
+import { ISelectedListItem } from 'lib/models/general';
 import { ISession } from 'lib/api/ApiModels/Sessions/apiModel';
-import { ISessionsGridField } from 'app/containers/Pages/SessionsPage/SessionPage/models';
 import { OKULIS_LOCAL_STORAGE_KEYS } from 'lib/api/http/utils';
 import { getSessionStoragePreferences, StoragePreferenceKeys, updateSessionStoragePreference } from 'lib/helpers/localStorageHelpers';
 import { convertStringToNumber } from 'lib/helpers/general';
 import { SESSIONS_TIME_RANGE_QUERY_TYPES } from 'lib/api/ApiModels/paramBuilders';
+import { IElasticFilterModel } from 'lib/models/elastic';
 
 export interface SessionsContextType {
   selectedTab: ITab<SessionsTabTypes>;
@@ -18,14 +18,14 @@ export interface SessionsContextType {
   sessionsPeriod: SESSIONS_TIME_RANGE_QUERY_TYPES;
   sessionsOverviewPeriod: SESSIONS_TIME_RANGE_QUERY_TYPES;
   sessionsStitch: boolean;
-  sessionsFilter: (ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> | string)[];
+  sessionsFilter: (IElasticFilterModel | string)[];
   onChangePageSize: (_size: number, _page?: number) => void;
   onChangeCurrentPage: (_page: number) => void;
   onSetSessionsData: (_items: ISession[], _count: number | string) => void;
   onChangeSelectedTab: (_tabIndex: number) => void;
   onChangeSelectedPeriod: (_value: ISelectedListItem<SESSIONS_TIME_RANGE_QUERY_TYPES>, _page: SessionsTabTypes) => void;
   onChangeSwitch: (_value: boolean, _page: SessionsTabTypes) => void;
-  onChangeFilter: (_value: (ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> | string)[]) => void;
+  onChangeFilter: (_value: (IElasticFilterModel | string)[]) => void;
   onClearContext: () => void;
 }
 export function useSessionsContext(): SessionsContextType {
@@ -37,7 +37,7 @@ export function useSessionsContext(): SessionsContextType {
   const [sessionsPeriod, setSessionsPeriod] = React.useState<SESSIONS_TIME_RANGE_QUERY_TYPES>(SESSIONS_SELECT_VALUES[0].value);
   const [sessionsOverviewPeriod, setSessionsOverviewPeriod] = React.useState<SESSIONS_TIME_RANGE_QUERY_TYPES>(null);
   const [sessionsStitch, setSessionsStitch] = React.useState<boolean>(false);
-  const [sessionsFilter, setSessionsFilterValue] = React.useState<(ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> | string)[]>([]);
+  const [sessionsFilter, setSessionsFilterValue] = React.useState<(IElasticFilterModel | string)[]>([]);
 
   React.useEffect(() => {
     const _preference = getSessionStoragePreferences(OKULIS_LOCAL_STORAGE_KEYS.OKULIS_PREFERENCE, [
@@ -85,7 +85,7 @@ export function useSessionsContext(): SessionsContextType {
     setSelectedTab(_tab);
   };
 
-  const onChangeFilter = (value: (ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> | string)[]) => {
+  const onChangeFilter = (value: (IElasticFilterModel | string)[]) => {
     updateSessionStoragePreference(value, OKULIS_LOCAL_STORAGE_KEYS.OKULIS_PREFERENCE, StoragePreferenceKeys.SESSIONS_FILTER);
     setSessionsFilterValue(value);
   };

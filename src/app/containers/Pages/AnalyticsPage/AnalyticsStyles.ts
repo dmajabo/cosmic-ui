@@ -20,7 +20,7 @@ export const AnalyticsStyles = makeStyles(
         paddingTop: 10,
         paddingBottom: 10,
         backgroundColor: 'var(--_appBg)',
-        zIndex: 3,
+        zIndex: 5,
       },
       tabLabel: {
         textTransform: 'none',

@@ -13,11 +13,21 @@ export interface IKEYBOARD_KEY {
 
 export interface IKEYBOARD_KEYS {
   ENTER: IKEYBOARD_KEY;
+  ARROW_UP: IKEYBOARD_KEY;
+  ARROW_DOWN: IKEYBOARD_KEY;
 }
 
 export const KEYBOARD_KEYS: IKEYBOARD_KEYS = {
   ENTER: {
     key: 'Enter',
     keyCode: 13,
+  },
+  ARROW_UP: {
+    key: 'ArrowUp',
+    keyCode: 38,
+  },
+  ARROW_DOWN: {
+    key: 'ArrowDown',
+    keyCode: 40,
   },
 };

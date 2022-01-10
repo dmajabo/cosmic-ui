@@ -6,11 +6,11 @@ import Table from './Table';
 import Dropdown from 'app/components/Inputs/Dropdown';
 import { SessionsTabTypes, SESSIONS_SELECT_VALUES } from 'lib/hooks/Sessions/model';
 import SessionsSwitch from './SessionsSwitch';
-import { ISelectedListItem, ISelectionGridCellValue } from 'lib/models/general';
+import { ISelectedListItem } from 'lib/models/general';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
 import ElasticFilter from 'app/components/Inputs/ElasticFilter';
-import { FilterOpperatorsList, ISessionsGridField, SessionGridColumnItems } from './models';
+import { FilterOpperatorsList, SessionElasticFieldItems } from './models';
 import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 import AggregateTable from './AggregateTable';
 import { convertStringToNumber } from 'lib/helpers/general';
@@ -19,6 +19,7 @@ import IconButton from 'app/components/Buttons/IconButton';
 import { refreshIcon } from 'app/components/SVGIcons/refresh';
 import { sessionsParamBuilder, SESSIONS_TIME_RANGE_QUERY_TYPES } from 'lib/api/ApiModels/paramBuilders';
 import { TesseractApi } from 'lib/api/ApiModels/Services/tesseract';
+import { ElasticFilterSuffics, IElasticFilterModel } from 'lib/models/elastic';
 
 interface IProps {}
 
@@ -67,7 +68,14 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
   }, [aggregRes]);
 
   const onRefresh = () => {
-    const _param = sessionsParamBuilder(sessions.sessionsPageSize, sessions.sessionsCurrentPage, sessions.sessionsPeriod, sessions.sessionsStitch, sessions.sessionsFilter);
+    const _param = sessionsParamBuilder({
+      size: sessions.sessionsPageSize,
+      currentPage: sessions.sessionsCurrentPage,
+      time_range: sessions.sessionsPeriod,
+      stitchOnly: sessions.sessionsStitch,
+      filters: sessions.sessionsFilter,
+      filterSuffics: ElasticFilterSuffics.KEYWORD,
+    });
     if (sessions.sessionsStitch) {
       loadAggregatedData(_param);
       return;
@@ -75,14 +83,15 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
     loadSessionsData(_param);
   };
 
-  const onTryToLoadData = (
-    pageSize: number,
-    page: number,
-    time: SESSIONS_TIME_RANGE_QUERY_TYPES,
-    stitch: boolean,
-    filterValue: (ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> | string)[],
-  ) => {
-    const _param = sessionsParamBuilder(pageSize, page, time, stitch, filterValue);
+  const onTryToLoadData = (pageSize: number, page: number, time: SESSIONS_TIME_RANGE_QUERY_TYPES, stitch: boolean, filterValue: (IElasticFilterModel | string)[]) => {
+    const _param = sessionsParamBuilder({
+      size: pageSize,
+      currentPage: page,
+      time_range: time,
+      stitchOnly: stitch,
+      filters: filterValue,
+      filterSuffics: ElasticFilterSuffics.KEYWORD,
+    });
     if (stitch) {
       loadAggregatedData(_param);
       return;
@@ -115,7 +124,7 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
   };
 
   const onClearFilteredItem = (index: number) => {
-    const _items: (ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> | string)[] = sessions.sessionsFilter && sessions.sessionsFilter.length ? sessions.sessionsFilter.slice() : [];
+    const _items: (IElasticFilterModel | string)[] = sessions.sessionsFilter && sessions.sessionsFilter.length ? sessions.sessionsFilter.slice() : [];
     let stIndex = index;
     let count = 1;
     if (_items.length > 1) {
@@ -134,23 +143,36 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
     sessions.onChangeFilter([]);
   };
 
-  const onAddFilter = (_item: ISelectionGridCellValue<ISessionsGridField, ISessionsGridField>, index: number | null) => {
-    const _items: (ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> | string)[] = sessions.sessionsFilter && sessions.sessionsFilter.length ? sessions.sessionsFilter.slice() : [];
-    if (index !== null) {
-      _items.splice(index, 1, _item);
-    } else {
-      if (_items.length >= 1) {
-        _items.push(FilterOpperatorsList[0].value);
-      }
-      _items.push(_item);
+  const onAddFilter = (_item: IElasticFilterModel) => {
+    const _items: (IElasticFilterModel | string)[] = sessions.sessionsFilter && sessions.sessionsFilter.length ? sessions.sessionsFilter.slice() : [];
+    if (_items.length >= 1) {
+      _items.push(FilterOpperatorsList[0].value);
     }
+    _items.push(_item);
+    sessions.onChangeFilter(_items);
+  };
+
+  const onUpdateFilter = (_item: IElasticFilterModel, index: number) => {
+    const _items: (IElasticFilterModel | string)[] = sessions.sessionsFilter && sessions.sessionsFilter.length ? sessions.sessionsFilter.slice() : [];
+    _items.splice(index, 1, _item);
     sessions.onChangeFilter(_items);
   };
 
   const onChangeOperator = (_item: string, index: number) => {
-    const _items: (ISelectionGridCellValue<ISessionsGridField, ISessionsGridField> | string)[] = sessions.sessionsFilter && sessions.sessionsFilter.length ? sessions.sessionsFilter.slice() : [];
+    const _items: (IElasticFilterModel | string)[] = sessions.sessionsFilter && sessions.sessionsFilter.length ? sessions.sessionsFilter.slice() : [];
     _items.splice(index, 1, _item);
     sessions.onChangeFilter(_items);
+  };
+
+  const onLoadDataEnd = (res: IAllSessionsRes) => {
+    const _total = convertStringToNumber(res.count);
+    if (sessions.sessionsStitch) {
+      setAggregTotalCount(_total);
+      setAggregatedData(res);
+      return;
+    }
+    setTotalCount(_total);
+    setSessionsData(res.sessions);
   };
 
   return (
@@ -171,13 +193,21 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
         </ActionPart>
       </ActionRowStyles>
       <ElasticFilter
-        onChangeOperator={onChangeOperator}
-        onClearFilteredItem={onClearFilteredItem}
         placeholder="Search Filter"
-        selectionFilterItems={sessions.sessionsFilter}
-        fields={SessionGridColumnItems}
+        applayedFilterItems={sessions.sessionsFilter}
+        fields={SessionElasticFieldItems}
+        onRemoveFilteredItem={onClearFilteredItem}
+        onUpdateFilter={onUpdateFilter}
         onAddFilter={onAddFilter}
-        onClearFilter={onClearFilter}
+        onClearAllFilter={onClearFilter}
+        onChangeOperator={onChangeOperator}
+        url={!sessions.sessionsStitch ? TesseractApi.getAllSessions() : TesseractApi.getAggregatedSessions()}
+        timePeriod={sessions.sessionsPeriod}
+        stitch={sessions.sessionsStitch}
+        onLoadDataEnd={onLoadDataEnd}
+        onMapRes={(data: IAllSessionsRes) => data.buckets.map(it => it.sessions.map(s => s)).flat()}
+        onRefresh={onRefresh}
+        paramBuilder={sessionsParamBuilder}
       />
       <ContentWrapper style={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
         <TableWrapper style={{ minHeight: 'unset', height: '100%', flexGrow: 1 }}>
