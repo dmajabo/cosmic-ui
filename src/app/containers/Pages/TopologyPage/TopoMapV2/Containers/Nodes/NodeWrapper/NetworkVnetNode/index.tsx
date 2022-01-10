@@ -4,7 +4,7 @@ import { INetworkVNetNode, ITopoNode } from 'lib/hooks/Topology/models';
 import NodeCounter from '../../Containers/NodeCounter';
 import { select } from 'd3-selection';
 import { buildVnetTooltip, removeVnetTooltip } from './tooltipHelper';
-import { setSelectedClass } from '../helper';
+import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 
 interface Props {
   parentId: string;
@@ -14,10 +14,19 @@ interface Props {
 }
 
 const NetworkVnetNode: React.FC<Props> = (props: Props) => {
+  const { topology } = useTopologyV2DataContext();
+  const [isNodeSelected, setIsNodeSelected] = React.useState<boolean>(false);
   const nodeRef = React.useRef(null);
 
+  React.useEffect(() => {
+    if (topology.selectedNode && topology.selectedNode.uiId === props.item.uiId && !isNodeSelected) {
+      setIsNodeSelected(true);
+    } else if (!topology.selectedNode || (topology.selectedNode && topology.selectedNode !== props.item.uiId)) {
+      setIsNodeSelected(false);
+    }
+  }, [topology.selectedNode]);
+
   const onClick = () => {
-    setSelectedClass(props.item.nodeType, `vpsCollapsed${props.item.id}`, props.item.id);
     props.onClick(props.item);
   };
   const onMouseEnter = (e: React.BaseSyntheticEvent<MouseEvent>) => {
@@ -34,7 +43,7 @@ const NetworkVnetNode: React.FC<Props> = (props: Props) => {
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       id={`vpsCollapsed${props.item.id}`}
-      className="topoNodeLevel1 vnetNodeWrapper"
+      className={`topoNodeLevel1 vnetNodeWrapper ${isNodeSelected ? 'selectedTopoLevel1' : ''}`}
       transform={`translate(${props.item.x}, ${props.item.y})`}
       data-id={`vnet${props.item.id}`}
       onClick={onClick}

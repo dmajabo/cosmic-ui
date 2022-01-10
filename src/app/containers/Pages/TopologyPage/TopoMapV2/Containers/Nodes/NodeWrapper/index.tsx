@@ -4,29 +4,52 @@ import RegionNode from './RegionNode';
 import AccountNode from './AccountNode';
 import DataCenter from './DataCenter';
 import SitesNode from './SitesNode';
+import TransitionContainer from '../../TransitionContainer';
 
 interface Props {
-  dataItem: ITopoNode<any, any>;
+  nodes: ITopoNode<any, any>[];
 }
 
 const NodesWrapper: React.FC<Props> = (props: Props) => {
-  if (props.dataItem.type === TopoNodeTypes.ACCOUNT && props.dataItem.visible) {
-    return <AccountNode dataItem={props.dataItem} />;
-  }
+  if (!props.nodes || !props.nodes.length) return null;
+  return (
+    <>
+      {props.nodes.map(it => {
+        if (it.type === TopoNodeTypes.ACCOUNT) {
+          return (
+            <TransitionContainer stateIn={it.visible} origin="unset" transform="none">
+              <AccountNode key={`node${it.uiId}`} dataItem={it} />
+            </TransitionContainer>
+          );
+        }
 
-  if (props.dataItem.type === TopoNodeTypes.REGION && props.dataItem.visible) {
-    return <RegionNode dataItem={props.dataItem} />;
-  }
+        if (it.type === TopoNodeTypes.REGION) {
+          return (
+            <TransitionContainer stateIn={it.visible} origin="unset" transform="none">
+              <RegionNode key={`node${it.uiId}`} dataItem={it} />
+            </TransitionContainer>
+          );
+        }
 
-  if (props.dataItem.type === TopoNodeTypes.DATA_CENTER && props.dataItem.visible) {
-    return <DataCenter dataItem={props.dataItem} />;
-  }
+        if (it.type === TopoNodeTypes.DATA_CENTER) {
+          return (
+            <TransitionContainer stateIn={it.visible} origin="unset" transform="none">
+              <DataCenter key={`node${it.uiId}`} dataItem={it} />
+            </TransitionContainer>
+          );
+        }
 
-  if (props.dataItem.type === TopoNodeTypes.SITES && props.dataItem.visible) {
-    return <SitesNode dataItem={props.dataItem} />;
-  }
-
-  return null;
+        if (it.type === TopoNodeTypes.SITES) {
+          return (
+            <TransitionContainer stateIn={it.visible} origin="unset" transform="none">
+              <SitesNode key={`node${it.uiId}`} dataItem={it} />
+            </TransitionContainer>
+          );
+        }
+        return null;
+      })}
+    </>
+  );
 };
 
 export default React.memo(NodesWrapper);

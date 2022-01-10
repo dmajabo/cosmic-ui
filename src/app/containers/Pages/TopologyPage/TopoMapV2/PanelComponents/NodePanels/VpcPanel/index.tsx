@@ -92,7 +92,7 @@ const VpcPanel: React.FC<IProps> = (props: IProps) => {
           maxGroupHeight="none"
           icon={VmIcon}
           label="Virtual Machines"
-          styles={{ margin: '0 0 20px 0' }}
+          styles={{ margin: '0 0 4px 0' }}
         >
           {vms && vms.length ? vms.map(it => <VmItem key={`vmLIstItem${it.id}`} dataItem={it} onClick={onSelectVm} />) : null}
         </ExpandGroup>
@@ -106,7 +106,7 @@ const VpcPanel: React.FC<IProps> = (props: IProps) => {
           icon={InternetGatawayIcon}
           label="Internet Gateway"
           arrowStyles={!internetGatAway ? null : { margin: '0' }}
-          styles={{ margin: '0 0 20px 0' }}
+          styles={{ margin: '0 0 4px 0' }}
         >
           <InternetGetAwayItem dataItem={internetGatAway} />
         </ExpandGroup>
@@ -119,7 +119,7 @@ const VpcPanel: React.FC<IProps> = (props: IProps) => {
           icon={NetLoaderBalancerIcon}
           label="Network Load Balancers"
           disabled={!netLoaderBalancerList.length}
-          styles={{ margin: '0 0 20px 0' }}
+          styles={{ margin: '0 0 4px 0' }}
           arrowStyles={!netLoaderBalancerList.length ? null : { margin: '0' }}
         >
           {netLoaderBalancerList && netLoaderBalancerList.length

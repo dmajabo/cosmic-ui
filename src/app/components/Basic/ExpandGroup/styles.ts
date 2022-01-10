@@ -18,7 +18,7 @@ export const GroupHeader = styled.div<HeaderProps>`
   display: flex;
   flex-shrink: 0;
   width: 100%;
-  padding: 15px 0;
+  padding: 20px 0;
   align-items: center;
   cursor: ${props => (props.disabled ? 'default' : 'pointer')};
   * svg {

@@ -57,10 +57,13 @@ const DefsComponent: React.FC<{}> = () => {
           className="vpcCollapsedIcon"
         />
       </svg>
-      <svg id={`bg${NODES_CONSTANTS.DEVICE.type}`} width="26" height="30" viewBox="0 0 26 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <svg id={`bg${NODES_CONSTANTS.DEVICE.type}`} width="26" height="30" viewBox="0 0 28 32" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
         <path
+          transform="translate(1, 1)"
           d="M11 1.1547C12.2376 0.440169 13.7624 0.440169 15 1.1547L23.9904 6.3453C25.228 7.05983 25.9904 8.38034 25.9904 9.8094V20.1906C25.9904 21.6197 25.228 22.9402 23.9904 23.6547L15 28.8453C13.7624 29.5598 12.2376 29.5598 11 28.8453L2.00962 23.6547C0.772014 22.9402 0.00961876 21.6197 0.00961876 20.1906V9.8094C0.00961876 8.38034 0.772014 7.05983 2.00962 6.3453L11 1.1547Z"
           fill="white"
+          stroke="currentColor"
+          strokeWidth="1"
         />
       </svg>
       <svg

@@ -20,8 +20,10 @@ export interface TopologyV2ContextType {
   searchQuery: string | null;
   selectedType: string | null;
   links: ITopoLink<any, any, any, any, any>[];
-  nodes: any[];
+  nodes: ITopoNode<any, any>[];
+  selectedNode: any;
   entityTypes: IEntity[];
+  onUnselectNode: () => void;
   onToogleTopoPanel: (_panel: TopologyPanelTypes, show: boolean, dataItem?: any) => void;
   onChangeTime: (_value: Date | null) => void;
   onUpdateTimeRange: (_range: ITimeMinMaxRange) => void;
@@ -45,9 +47,9 @@ export function useTopologyV2Context(): TopologyV2ContextType {
   const [topoPanel, setTopoPanel] = React.useState<IPanelBar<TopologyPanelTypes>>({ show: false, type: null });
   const [originData, setOriginData] = React.useState<ITopologyMapData | null>(null);
   const [originGroupsData, setOriginGroupsData] = React.useState<ITopologyGroup[] | null>(null);
-  const [nodes, setNodes] = React.useState<ITopoNode<any, any>[] | null>([]);
-  const [links, setLinks] = React.useState<ITopoLink<any, any, any, any, any>[] | null>([]);
-
+  const [nodes, setNodes] = React.useState<ITopoNode<any, any>[]>([]);
+  const [links, setLinks] = React.useState<ITopoLink<any, any, any, any, any>[]>([]);
+  const [selectedNode, setSelectedNode] = React.useState<ITopoNode<any, any>>(null);
   const [entities, setEntities] = React.useState<FilterEntityOptions>({
     sites: {
       type: FilterEntityTypes.SITES,
@@ -305,6 +307,9 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     };
     if (_dataItem) {
       _obj.dataItem = _dataItem;
+      setSelectedNode(_dataItem);
+    } else {
+      setSelectedNode(null);
     }
     setTopoPanel(_obj);
   };
@@ -356,6 +361,11 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     }
   };
 
+  const onUnselectNode = () => {
+    setSelectedNode(null);
+    setTopoPanel({ show: false, type: null, dataItem: null });
+  };
+
   return {
     topoPanel,
     selectedPeriod,
@@ -365,11 +375,13 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     originGroupsData,
     links,
     nodes,
+    selectedNode,
     searchQuery,
     selectedType,
     entityTypes,
 
     onToogleTopoPanel,
+    onUnselectNode,
 
     onSetData,
     onFilterQueryChange,

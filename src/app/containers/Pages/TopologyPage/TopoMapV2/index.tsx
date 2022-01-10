@@ -69,10 +69,6 @@ const TopoMapV2: React.FC<IProps> = (props: IProps) => {
           </MapContainer>
           {topology.originData && <FooterAction show onTryLoadData={onReloadData} isMetricks={topology.topoPanel && topology.topoPanel.show} />}
         </ContainerWithFooter>
-        {/* <PanelBar show={showPanelBar.show} onHidePanel={onHidePanel} type={IPanelBarLayoutTypes.VERTICAL}>
-          {showPanelBar.type === TopologyPanelTypes.ENTITIES && <Entities />}
-          {showPanelBar.type === TopologyPanelTypes.GROUPS && <GroupsComponent />}
-        </PanelBar> */}
       </TopoContainer>
     </>
   );

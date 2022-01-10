@@ -13,16 +13,8 @@ const calculateWedgesRowWidth = (items: ITGWNode[], expanded: IExpandedStyles, c
   return width;
 };
 
-export const setSelectedClass = (type: TopoNodeTypes, nodeId: string, itemId: string) => {
+export const setSelectedClass = (type: TopoNodeTypes, itemId: string) => {
   const g = d3.select(`#${TOPOLOGY_IDS.G_ROOT}`);
-  g.selectAll('.topoNodeLevel1').each(function (this: any) {
-    d3.select(this).classed('selectedTopoLevel1', null);
-  });
-  g.selectAll(`.selectedTopoLevel1Link`).each(function (this: any) {
-    d3.select(this).classed('selectedTopoLevel1Link', null);
-  });
-  const node = g.select(`#${nodeId}`);
-  node.classed('selectedTopoLevel1', true);
   if (type === TopoNodeTypes.VNET) {
     g.selectAll(`line[data-vnetid='vnet${itemId}']`).each(function (this: any) {
       d3.select(this).classed('selectedTopoLevel1Link', true);
@@ -31,6 +23,20 @@ export const setSelectedClass = (type: TopoNodeTypes, nodeId: string, itemId: st
   if (type === TopoNodeTypes.WEDGE) {
     g.selectAll(`line[data-wedgeid='wedge${itemId}']`).each(function (this: any) {
       d3.select(this).classed('selectedTopoLevel1Link', true);
+    });
+  }
+};
+
+export const removeSelectedClass = (type: TopoNodeTypes, itemId: string) => {
+  const g = d3.select(`#${TOPOLOGY_IDS.G_ROOT}`);
+  if (type === TopoNodeTypes.VNET) {
+    g.selectAll(`line[data-vnetid='vnet${itemId}']`).each(function (this: any) {
+      d3.select(this).classed('selectedTopoLevel1Link', null);
+    });
+  }
+  if (type === TopoNodeTypes.WEDGE) {
+    g.selectAll(`line[data-wedgeid='wedge${itemId}']`).each(function (this: any) {
+      d3.select(this).classed('selectedTopoLevel1Link', null);
     });
   }
 };

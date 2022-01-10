@@ -16,7 +16,7 @@ export const VmWrapStyles = styled.div`
   width: 100%;
   margin: 0 0 4px 0;
   border-radius: 6px;
-  background: var(--_vmsContainerBg);
+  background: var(--_appBg);
   height: 50px;
   padding: 15px 20px;
   align-items: center;
@@ -41,7 +41,7 @@ export const BalanceWrapStyles = styled.div`
   width: 100%;
   margin: 0 0 4px 0;
   border-radius: 6px;
-  background: var(--_vmsContainerBg);
+  background: var(--_appBg);
   height: 50px;
   padding: 15px 20px;
   align-items: center;
@@ -53,7 +53,7 @@ export const GroupWrapper = styled.div`
   display: flex;
   flex-direction: column;
   margin: 0 0 4px 0;
-  background: var(--_vmsContainerBg);
+  background: var(--_appBg);
   min-height: 50px;
   align-items: center;
   flex-shrink: 0;
@@ -120,7 +120,7 @@ interface IIGARowProps {
 export const InternetGetAwayRow = styled.div<IIGARowProps>`
   display: flex;
   flex-shrink: 0;
-  margin: ${props => props.margin || '0 8px 0 0'};
+  margin: ${props => props.margin || '0 0 10px 0'};
   align-items: center;
   font-size: 16px;
   line-height: 20px;

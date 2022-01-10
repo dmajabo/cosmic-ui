@@ -15,6 +15,7 @@ import { removeVnetTooltip } from '../NetworkVnetNode/tooltipHelper';
 interface Props {
   parentId: string;
   dataItem: ITopoNode<any, INetworkVNetNode>;
+  selectedNode: any;
   showPeeringConnections: boolean;
   show: boolean;
   onCollapse: () => void;
@@ -44,7 +45,7 @@ const RegionExpandNode: React.FC<Props> = (props: Props) => {
   return (
     <>
       <TransitionContainer stateIn={props.show} origin="unset" transform="none">
-        <g>
+        <>
           <g style={{ cursor: 'pointer' }} pointerEvents="all" onMouseEnter={showExpandCollapseBtn} onMouseLeave={hideExpandCollapseBtn}>
             <rect
               fill={NODES_CONSTANTS.REGION.expanded.bgColor}
@@ -91,7 +92,7 @@ const RegionExpandNode: React.FC<Props> = (props: Props) => {
               y={props.dataItem.expandedSize.height / 2 - NODES_CONSTANTS.COLLAPSE_EXPAND.r}
             />
           </g>
-        </g>
+        </>
       </TransitionContainer>
       <foreignObject
         data-y={

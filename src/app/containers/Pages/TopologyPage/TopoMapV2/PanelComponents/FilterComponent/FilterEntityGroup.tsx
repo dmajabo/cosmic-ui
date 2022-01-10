@@ -14,7 +14,6 @@ const FilterEntityGroup: React.FC<Props> = (props: Props) => {
   const onClick = (item: IFilterOption<any>) => {
     props.onClick(props.type, item.type, !item.selected);
   };
-  console.log(props.data);
   return (
     <>
       {Object.keys(props.data).map((key, index) => {

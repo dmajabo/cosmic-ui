@@ -50,7 +50,7 @@ const ExpandGroup: React.FC<Props> = (props: Props) => {
         )}
       </GroupHeader>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
-        <ContentWrapper margin={expanded ? '0 0 10px 0' : '0'} maxHeight={props.maxGroupHeight}>
+        <ContentWrapper margin={expanded ? '0 0 20px 0' : '0'} maxHeight={props.maxGroupHeight}>
           {props.children}
         </ContentWrapper>
       </Collapse>

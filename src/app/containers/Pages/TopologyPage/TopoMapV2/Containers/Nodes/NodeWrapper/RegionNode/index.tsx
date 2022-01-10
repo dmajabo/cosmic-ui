@@ -28,7 +28,6 @@ const RegionNode: React.FC<Props> = (props: Props) => {
   const [visible, setVisible] = React.useState<boolean>(false);
 
   React.useEffect(() => {
-    console.log('test');
     return () => {
       onUnsubscribeDrag();
     };
@@ -94,6 +93,7 @@ const RegionNode: React.FC<Props> = (props: Props) => {
         parentId={`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`}
         showPeeringConnections={topology.entities.peer_connections.selected}
         dataItem={props.dataItem}
+        selectedNode={topology.selectedNode}
         show={!props.dataItem.collapsed}
         onCollapse={onCollapse}
         onVpcClick={onVpcClick}

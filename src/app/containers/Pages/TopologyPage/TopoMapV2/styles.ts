@@ -97,6 +97,11 @@ export const StyledMap = styled.svg`
       transition-property: fill;
       transition: 0.2s linear;
     }
+    .deviceBg {
+      color: var(--_highlightColor);
+      transition-property: color;
+      transition: 0.2s linear;
+    }
   }
   .selectedTopoLevel1Link {
     fill: var(--_highlightColor);

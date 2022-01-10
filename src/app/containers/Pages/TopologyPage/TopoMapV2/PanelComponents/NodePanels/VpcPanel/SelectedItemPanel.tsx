@@ -33,7 +33,7 @@ const SelectedItemPanel: React.FC<IProps> = (props: IProps) => {
   return (
     <>
       <PanelHeader direction="row" align="center">
-        <IconButton styles={{ margin: '0 12px 0 0', width: '40px', height: '40px' }} icon={returnArrow} title="Back" onClick={onReturn} />
+        <IconButton styles={{ margin: '0 12px 0 0', width: '40px', height: '40px', flexShrink: 0 }} icon={returnArrow} title="Back" onClick={onReturn} />
         <PanelTitle maxWidth="calc(100% - 32px)">{props.dataItem.name ? props.dataItem.name : props.dataItem.extId}</PanelTitle>
       </PanelHeader>
       <PanelTabWrapper>

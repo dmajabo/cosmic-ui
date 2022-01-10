@@ -34,7 +34,7 @@ const AccountExpandNode: React.FC<Props> = (props: Props) => {
 
   return (
     <TransitionContainer stateIn={props.show} origin="unset" transform="none">
-      <g>
+      <>
         <g style={{ cursor: 'pointer' }} pointerEvents="all" onMouseEnter={showExpandCollapseBtn} onMouseLeave={hideExpandCollapseBtn}>
           <rect
             fill={NODES_CONSTANTS.ACCOUNT.expanded.bgColor}
@@ -67,7 +67,7 @@ const AccountExpandNode: React.FC<Props> = (props: Props) => {
             y={props.dataItem.expandedSize.height / 2 - NODES_CONSTANTS.COLLAPSE_EXPAND.r}
           />
         </g>
-      </g>
+      </>
     </TransitionContainer>
   );
 };
