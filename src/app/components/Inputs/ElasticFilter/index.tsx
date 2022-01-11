@@ -118,8 +118,8 @@ const ElasticFilter: React.FC<Props> = (props: Props) => {
     setInputValue(value);
   };
 
-  const onKeyUp = () => {
-    if (!selectedField || !searchedValue || showPopup) return;
+  const onKeyUp = (value: string) => {
+    if (!selectedField || !searchedValue) return;
     setNeedGetValues(false);
     setSelectedField(null);
     setSearchedValue(null);
@@ -127,10 +127,14 @@ const ElasticFilter: React.FC<Props> = (props: Props) => {
     setPopupItems(props.fields);
     setInputValue('');
     setIsTyping(false);
+    const _arr = value.split(':');
+    if (!_arr || _arr.length <= 1) return;
+    const _data: ISearchData = getSearchedFields(_arr[0].trim(), props.fields);
+    if (!_data || !_data.field) return;
     if (selectedTagIndex || selectedTagIndex === 0) {
-      props.onUpdateFilter({ field: selectedField, value: searchedValue }, selectedTagIndex);
+      props.onUpdateFilter({ field: _data.field, value: _arr[1].trim() }, selectedTagIndex);
     } else {
-      props.onAddFilter({ field: selectedField, value: searchedValue });
+      props.onAddFilter({ field: _data.field, value: _arr[1].trim() });
     }
   };
 
@@ -183,11 +187,18 @@ const ElasticFilter: React.FC<Props> = (props: Props) => {
 
   const onSelectPossibleValue = (item: string) => {
     setNeedGetValues(false);
+    setSelectedField(null);
+    setSearchedValue(null);
     setShowPopup(false);
-    setPopupItems([]);
-    setInputValue(`${selectedField.label}: ${item}`);
-    setSearchedValue(item);
-    onTryLoadData({ field: selectedField, value: item }, ElasticFilterSuffics.KEYWORD);
+    setPopupItems(props.fields);
+    setInputValue('');
+    setIsTyping(false);
+    if (!selectedField) return;
+    if (selectedTagIndex || selectedTagIndex === 0) {
+      props.onUpdateFilter({ field: selectedField, value: item }, selectedTagIndex);
+    } else {
+      props.onAddFilter({ field: selectedField, value: item });
+    }
     inputRef.current.focus();
   };
 
@@ -224,29 +235,14 @@ const ElasticFilter: React.FC<Props> = (props: Props) => {
         <ClickAwayListener onClickAway={onCloseDropdown}>
           <PopupWrapper>
             <ElasticValueWrapper>
-              <Input
-                ref={inputRef}
-                placeholder={props.placeholder ? props.placeholder : ''}
-                value={inputValue || ''}
-                onSearchChange={onSearch}
-                onKeyUp={onKeyUp}
-                onFocus={onToogleShow}
-                onBlur={onCloseDropdown}
-              />
+              <Input ref={inputRef} placeholder={props.placeholder ? props.placeholder : ''} value={inputValue || ''} onSearchChange={onSearch} onKeyUp={onKeyUp} />
               <IconsWrapper>
                 {loading && <LoadingIndicator width="16px" height="16px" margin="0 0 0 12px" />}
                 {inputValue && <IconWrapper styles={{ margin: '0 0 0 12px' }} onClick={onClear} icon={closeSmallIcon} />}
                 <IconWrapper onClick={onToogleShow} icon={filterIcon} styles={{ margin: '0 0 0 12px' }} />
               </IconsWrapper>
             </ElasticValueWrapper>
-            {showPopup && (
-              <Popup
-                // loading={loading}
-                selectedField={selectedField}
-                items={popupItems}
-                onSelectItem={onSelect}
-              />
-            )}
+            {showPopup && <Popup loading={loading} selectedField={selectedField} items={popupItems} onSelectItem={onSelect} />}
           </PopupWrapper>
         </ClickAwayListener>
         <Tags items={props.applayedFilterItems} onClearAll={onClearAll} onRemoveTag={onClearFilteredItem} onSelectTag={onSelectTag} onChangeOperator={onChangeOperator} />

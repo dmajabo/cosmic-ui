@@ -72,10 +72,13 @@ export const ListItemsWrapper = styled.div<ListProps>`
   width: 100%;
 `;
 
-export const ItemsContainer = styled.div`
+interface CProps {
+  minHeight?: string;
+}
+export const ItemsContainer = styled.div<CProps>`
   display: flex;
   flex-direction: column;
-  max-height: 100px;
+  min-height: ${props => props.minHeight || '160px'};
   max-height: 340px;
   overflow-y: auto;
   overflow-x: hidden;
@@ -95,6 +98,7 @@ export const ListItem = styled.div<ListItemProps>`
   color: ${props => (props.selected ? 'var(--_highlightColor)' : 'var(--_primaryTextColor)')};
   background: ${props => (props.selected ? 'var(--_vmBg)' : 'var(--_primaryWhiteColor)')};
   cursor: ${props => (props.selected ? 'default' : 'pointer')};
+  outline: none;
   &:hover {
     background: var(--_vmBg);
   }

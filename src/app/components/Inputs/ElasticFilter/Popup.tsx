@@ -14,10 +14,15 @@ interface Props {
 const Popup: React.FC<Props> = (props: Props) => {
   const [selectedField, setSelectedField] = React.useState<IElasticField | string>(null);
   const containerRef = React.useRef<HTMLDivElement>(null);
+
   React.useEffect(() => {
-    document.addEventListener('keydown', onKeyUp, false);
+    if (containerRef && containerRef.current) {
+      containerRef.current.addEventListener('keydown', onKeyDown, false);
+    }
     return () => {
-      document.removeEventListener('keydown', onKeyUp);
+      if (containerRef && containerRef.current) {
+        containerRef.current.removeEventListener('keydown', onKeyDown);
+      }
     };
   }, [props.items, props.selectedField, selectedField]);
 
@@ -27,7 +32,8 @@ const Popup: React.FC<Props> = (props: Props) => {
     }
   }, [props.selectedField]);
 
-  const onKeyUp = (e: KeyboardEvent) => {
+  const onKeyDown = (e: KeyboardEvent) => {
+    e.preventDefault();
     if (e.key === KEYBOARD_KEYS.ENTER.key) {
       if (props.selectedField !== selectedField) {
         onSelect(selectedField);
@@ -36,7 +42,6 @@ const Popup: React.FC<Props> = (props: Props) => {
       setSelectedField(props.selectedField);
       return;
     }
-    e.preventDefault();
     if (e.key === KEYBOARD_KEYS.ARROW_UP.key && props.items && props.items.length) {
       const index = getIndexFromEnd(selectedField, props.items);
       containerRef.current.scrollTo({ top: 40 * index });
@@ -69,19 +74,25 @@ const Popup: React.FC<Props> = (props: Props) => {
   };
   return (
     <ListItemsWrapper>
-      <ItemsContainer ref={containerRef}>
-        {props.items.map((it, index) => (
-          <PopupItem
-            key={typeof it === 'string' ? `suggestField${it}${index}` : `suggestField${it.resField}`}
-            item={it}
-            index={index}
-            onSelect={onSelect}
-            selected={(typeof it === 'string' && it === selectedField) || (typeof selectedField !== 'string' && selectedField && selectedField.resField === it.resField)}
-          />
-        ))}
-        <AbsLoaderWrapper width="100%" height="100%">
-          {props.loading && <LoadingIndicator margin="auto" />}
-        </AbsLoaderWrapper>
+      <ItemsContainer ref={containerRef} minHeight={props.items && props.items.length ? 'unset' : '160px'}>
+        {props.items && props.items.length ? (
+          props.items.map((it, index) => (
+            <PopupItem
+              key={typeof it === 'string' ? `suggestField${it}${index}` : `suggestField${it.resField}`}
+              item={it}
+              index={index}
+              onSelect={onSelect}
+              selected={(typeof it === 'string' && it === selectedField) || (typeof selectedField !== 'string' && selectedField && selectedField.resField === it.resField)}
+            />
+          ))
+        ) : (
+          <span style={{ display: 'inline-block', margin: 'auto', fontSize: '14px', color: 'var(--_primaryTextColor)' }}>No data</span>
+        )}
+        {props.loading && (
+          <AbsLoaderWrapper width="100%" height="100%">
+            <LoadingIndicator margin="auto" />
+          </AbsLoaderWrapper>
+        )}
       </ItemsContainer>
     </ListItemsWrapper>
   );

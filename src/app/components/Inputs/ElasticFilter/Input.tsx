@@ -6,9 +6,7 @@ interface InputProps {
   value: string;
   placeholder: string;
   onSearchChange: (value: string) => void;
-  onKeyUp: () => void;
-  onFocus: (e: any) => void;
-  onBlur: (e: any) => void;
+  onKeyUp: (inputValue: string) => void;
 }
 const Input = React.forwardRef<HTMLInputElement, InputProps>((props: InputProps, ref: React.Ref<HTMLInputElement>) => {
   const [inputValue, setInputValue] = React.useState<string>(props.value || '');
@@ -32,7 +30,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>((props: InputProps,
   const onKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === KEYBOARD_KEYS.ENTER.key) {
       setIsTyping(false);
-      props.onKeyUp();
+      props.onKeyUp(inputValue);
     }
   };
 
