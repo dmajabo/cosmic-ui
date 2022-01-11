@@ -15,6 +15,7 @@ export interface IKEYBOARD_KEYS {
   ENTER: IKEYBOARD_KEY;
   ARROW_UP: IKEYBOARD_KEY;
   ARROW_DOWN: IKEYBOARD_KEY;
+  TAB: IKEYBOARD_KEY;
 }
 
 export const KEYBOARD_KEYS: IKEYBOARD_KEYS = {
@@ -29,5 +30,9 @@ export const KEYBOARD_KEYS: IKEYBOARD_KEYS = {
   ARROW_DOWN: {
     key: 'ArrowDown',
     keyCode: 40,
+  },
+  TAB: {
+    key: 'Tab',
+    keyCode: 9,
   },
 };
