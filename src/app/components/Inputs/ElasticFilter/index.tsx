@@ -1,11 +1,10 @@
 import React from 'react';
-import { ElasticFilterWrapper, ElasticLabel, ElasticValueWrapper, IconsWrapper, PopupWrapper, SearchFieldInput } from './styles';
+import { ElasticFilterWrapper, ElasticLabel, ElasticValueWrapper, IconsWrapper, PopupWrapper } from './styles';
 import { ClickAwayListener } from '@mui/material';
 import Popup from './Popup';
 import Tags from './Tags';
 import { useGet } from 'lib/api/http/useAxiosHook';
 import useDebounce from 'lib/hooks/useDebounce';
-import { KEYBOARD_KEYS } from 'lib/constants/general';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { closeSmallIcon } from 'app/components/SVGIcons/close';
 import { filterIcon } from 'app/components/SVGIcons/filter';
@@ -14,6 +13,8 @@ import { ElasticFilterSuffics, IElasticField, IElasticFilterModel } from 'lib/mo
 import { IParam, SESSIONS_TIME_RANGE_QUERY_TYPES } from 'lib/api/ApiModels/paramBuilders';
 import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 import LoadingIndicator from 'app/components/Loading';
+import Input from './Input';
+
 interface Props {
   fields: IElasticField[];
   applayedFilterItems: (IElasticFilterModel | string)[];
@@ -28,7 +29,7 @@ interface Props {
   timePeriod?: string | SESSIONS_TIME_RANGE_QUERY_TYPES;
   stitch?: boolean;
   onLoadDataEnd?: (data: any) => void;
-  onMapRes?: (res: any) => void;
+  onMapRes?: (res: any, field: IElasticField, stitch?: boolean) => string[];
   onRefresh?: () => void;
   paramBuilder?: any;
 }
@@ -36,21 +37,52 @@ interface Props {
 const ElasticFilter: React.FC<Props> = (props: Props) => {
   const userContext = React.useContext<UserContextState>(UserContext);
   const { loading, response, onGet: onGetPossibleValues } = useGet<any>();
-  const [popupItems, setPopupItems] = React.useState<IElasticField[]>([]);
-  // const [resItems, setResItems] = React.useState<string[]>([]);
+  const [popupItems, setPopupItems] = React.useState<IElasticField[] | string[]>(props.fields);
   const [showPopup, setShowPopup] = React.useState<boolean>(false);
   const [selectedField, setSelectedField] = React.useState<IElasticField>(null);
   const [searchedValue, setSearchedValue] = React.useState<string>('');
   const [inputValue, setInputValue] = React.useState<string>('');
-  const [isTyping, setIsTyping] = React.useState(false);
   const [selectedTagIndex, setSelectedTagIndex] = React.useState<number>(null);
+  const [isTyping, setIsTyping] = React.useState(false);
+  const [needGetValues, setNeedGetValues] = React.useState<boolean>(false);
   const inputRef = React.useRef<HTMLInputElement>(null);
 
-  const debouncedSearchTerm = useDebounce(searchedValue, 1000);
+  const debouncedSearchTerm = useDebounce(searchedValue, 500);
 
   React.useEffect(() => {
     if (inputValue) {
-      const _arr = inputValue.split(':');
+      setSelectedField(null);
+      setSearchedValue(null);
+      setPopupItems(props.fields);
+      setInputValue('');
+    }
+  }, [props.stitch, props.timePeriod, props.url]);
+
+  React.useEffect(() => {
+    if ((debouncedSearchTerm || debouncedSearchTerm === '' || debouncedSearchTerm === null) && isTyping) {
+      setIsTyping(false);
+      if (selectedField && searchedValue) {
+        setNeedGetValues(true);
+        onTryLoadData({ field: selectedField, value: searchedValue }, ElasticFilterSuffics.AUTOCOMPLETE);
+      }
+    }
+  }, [debouncedSearchTerm]);
+
+  React.useEffect(() => {
+    if (response) {
+      if (needGetValues) {
+        const _items: string[] = props.onMapRes(response, selectedField, props.stitch);
+        setNeedGetValues(false);
+        setPopupItems(_items);
+        setShowPopup(true);
+      }
+      props.onLoadDataEnd(response);
+    }
+  }, [response]);
+
+  const onSearch = (value: string) => {
+    if (value) {
+      const _arr = value.split(':');
       if (!_arr || !_arr.length) {
         setSelectedField(null);
         setSearchedValue(null);
@@ -78,80 +110,43 @@ const ElasticFilter: React.FC<Props> = (props: Props) => {
           setSearchedValue(_v);
         }
       }
-      setShowPopup(true);
     } else {
-      if (showPopup) {
-        setShowPopup(false);
-        setPopupItems(props.fields);
-      }
-    }
-  }, [inputValue]);
-
-  React.useEffect(() => {
-    if (inputValue) {
-      setIsTyping(false);
-      setSelectedField(null);
-      setSearchedValue(null);
       setPopupItems(props.fields);
-      setInputValue('');
     }
-  }, [props.stitch, props.timePeriod, props.url]);
-
-  React.useEffect(() => {
-    if ((debouncedSearchTerm || debouncedSearchTerm === '' || debouncedSearchTerm === null) && isTyping) {
-      setIsTyping(false);
-      if (selectedField && searchedValue) {
-        onTryLoadData({ field: selectedField, value: searchedValue }, ElasticFilterSuffics.AUTOCOMPLETE);
-      }
-    }
-  }, [debouncedSearchTerm]);
-
-  React.useEffect(() => {
-    if (response) {
-      console.log(props.onMapRes(response));
-      props.onLoadDataEnd(response);
-    }
-  }, [response]);
-
-  const onSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-    setInputValue(value);
+    setShowPopup(true);
     setIsTyping(true);
+    setInputValue(value);
   };
 
-  const onKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === KEYBOARD_KEYS.ENTER.key && selectedField && searchedValue) {
-      setSelectedField(null);
-      setSearchedValue(null);
-      setPopupItems(props.fields);
-      setInputValue('');
-      setSelectedTagIndex(null);
-      if (selectedTagIndex || selectedTagIndex === 0) {
-        props.onUpdateFilter({ field: selectedField, value: searchedValue }, selectedTagIndex);
-      } else {
-        props.onAddFilter({ field: selectedField, value: searchedValue });
-      }
+  const onKeyUp = () => {
+    if (!selectedField || !searchedValue || showPopup) return;
+    setNeedGetValues(false);
+    setSelectedField(null);
+    setSearchedValue(null);
+    setShowPopup(false);
+    setPopupItems(props.fields);
+    setInputValue('');
+    setIsTyping(false);
+    if (selectedTagIndex || selectedTagIndex === 0) {
+      props.onUpdateFilter({ field: selectedField, value: searchedValue }, selectedTagIndex);
+    } else {
+      props.onAddFilter({ field: selectedField, value: searchedValue });
     }
   };
 
   const onToogleShow = () => {
-    if (props.disabled) return;
-    if (!selectedField) {
-      setShowPopup(true);
-      setPopupItems(props.fields);
-      return;
-    }
+    if (props.disabled || showPopup) return;
     setShowPopup(true);
-    setPopupItems(props.fields);
   };
 
   const onCloseDropdown = () => {
+    if (props.disabled || !showPopup) return;
     setShowPopup(false);
   };
 
   const onClear = () => {
     setShowPopup(false);
-    setPopupItems([]);
+    setPopupItems(props.fields);
     setSelectedField(null);
     setSearchedValue('');
     setInputValue('');
@@ -160,7 +155,7 @@ const ElasticFilter: React.FC<Props> = (props: Props) => {
 
   const onSelect = (item: IElasticField | string) => {
     if (typeof item === 'string') {
-      onSelectValue(item);
+      onSelectPossibleValue(item);
       return;
     }
     onChooseField(item);
@@ -181,12 +176,19 @@ const ElasticFilter: React.FC<Props> = (props: Props) => {
       return;
     }
     setInputValue(`${item.label}: ${_arr[1].trim()}`);
+    setNeedGetValues(true);
     onTryLoadData({ field: item, value: _arr[1].trim() }, ElasticFilterSuffics.AUTOCOMPLETE);
     inputRef.current.focus();
   };
 
-  const onSelectValue = (item: string) => {
+  const onSelectPossibleValue = (item: string) => {
+    setNeedGetValues(false);
     setShowPopup(false);
+    setPopupItems([]);
+    setInputValue(`${selectedField.label}: ${item}`);
+    setSearchedValue(item);
+    onTryLoadData({ field: selectedField, value: item }, ElasticFilterSuffics.KEYWORD);
+    inputRef.current.focus();
   };
 
   const onClearFilteredItem = (index: number) => {
@@ -222,12 +224,14 @@ const ElasticFilter: React.FC<Props> = (props: Props) => {
         <ClickAwayListener onClickAway={onCloseDropdown}>
           <PopupWrapper>
             <ElasticValueWrapper>
-              <SearchFieldInput
+              <Input
                 ref={inputRef}
-                placeholder={props.placeholder && !selectedField && !searchedValue ? props.placeholder : ''}
+                placeholder={props.placeholder ? props.placeholder : ''}
                 value={inputValue || ''}
-                onChange={onSearch}
+                onSearchChange={onSearch}
                 onKeyUp={onKeyUp}
+                onFocus={onToogleShow}
+                onBlur={onCloseDropdown}
               />
               <IconsWrapper>
                 {loading && <LoadingIndicator width="16px" height="16px" margin="0 0 0 12px" />}

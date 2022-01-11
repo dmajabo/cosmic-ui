@@ -19,7 +19,7 @@ import IconButton from 'app/components/Buttons/IconButton';
 import { refreshIcon } from 'app/components/SVGIcons/refresh';
 import { sessionsParamBuilder, SESSIONS_TIME_RANGE_QUERY_TYPES } from 'lib/api/ApiModels/paramBuilders';
 import { TesseractApi } from 'lib/api/ApiModels/Services/tesseract';
-import { ElasticFilterSuffics, IElasticFilterModel } from 'lib/models/elastic';
+import { ElasticFilterSuffics, IElasticField, IElasticFilterModel } from 'lib/models/elastic';
 
 interface IProps {}
 
@@ -175,6 +175,27 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
     setSessionsData(res.sessions);
   };
 
+  const onGetPossibleValues = (res: IAllSessionsRes, filteredField: IElasticField, stitch?: boolean): string[] => {
+    if (!res) return [];
+    if (stitch) {
+      if (!res.buckets || !res.buckets.length) return [];
+      const _arr = new Set();
+      res.buckets.forEach(it => {
+        if (!it.sessions || !it.sessions.length) return;
+        it.sessions.forEach(s => {
+          _arr.add(`${s[filteredField.resField]}`);
+        });
+      });
+      return Array.from(_arr) as string[];
+    }
+    if (!res.sessions || !res.sessions.length) return [];
+    const _arr = new Set();
+    res.sessions.forEach(it => {
+      _arr.add(`${it[filteredField.resField]}`);
+    });
+    return Array.from(_arr) as string[];
+  };
+
   return (
     <PageContentWrapper margin="20px 0 0 0" style={{ minHeight: 'calc(100% - 20px)' }}>
       <ActionRowStyles margin="0 0 40px 0" zIndex={2}>
@@ -205,7 +226,7 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
         timePeriod={sessions.sessionsPeriod}
         stitch={sessions.sessionsStitch}
         onLoadDataEnd={onLoadDataEnd}
-        onMapRes={(data: IAllSessionsRes) => data.buckets.map(it => it.sessions.map(s => s)).flat()}
+        onMapRes={onGetPossibleValues}
         onRefresh={onRefresh}
         paramBuilder={sessionsParamBuilder}
       />
