@@ -1,44 +1,46 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { IWedge } from 'lib/models/topology';
 import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
 import ChartContainer from 'app/components/ChartContainer';
 import { getTimeQueryMetricsParamFromRange } from 'lib/api/ApiModels/Metrics/queryTimeRangeHelper';
 import { IMetrickQueryParam, MetricsKeyTypes } from 'lib/api/ApiModels/Metrics/apiModel';
-import { isEqual } from 'lodash';
-interface IProps {
-  dataItem: IWedge;
+import isEqual from 'lodash/isEqual';
+
+interface MetricTabProps {
+  readonly dataItem: IWedge;
 }
 
-const MetricsTab: React.FC<IProps> = (props: IProps) => {
+const MetricsTab: React.FC<MetricTabProps> = (props: MetricTabProps) => {
   const { topology } = useTopologyDataContext();
-  const [param, setParam] = React.useState<IMetrickQueryParam>(null);
-  const [dataItem, setDataItem] = React.useState<IWedge>(null);
-  React.useEffect(() => {
+  const [metricsQueryParam, setMetricsQueryParam] = useState<IMetrickQueryParam>(null);
+  const [wedgeDataItem, setWedgeDataItem] = useState<IWedge>(null);
+
+  useEffect(() => {
     const _param: IMetrickQueryParam = getTimeQueryMetricsParamFromRange(topology.timeRange, topology.selectedPeriod);
-    if (!isEqual(param, _param)) {
-      setParam(_param);
+    if (!isEqual(metricsQueryParam, _param)) {
+      setMetricsQueryParam(_param);
     }
-    setDataItem(props.dataItem);
+    setWedgeDataItem(props.dataItem);
   }, []);
 
-  React.useEffect(() => {
-    if (props.dataItem && dataItem && props.dataItem.extId !== dataItem.extId) {
+  useEffect(() => {
+    if (props.dataItem && wedgeDataItem && props.dataItem.extId !== wedgeDataItem.extId) {
       const _param: IMetrickQueryParam = getTimeQueryMetricsParamFromRange(topology.timeRange, topology.selectedPeriod);
-      if (!isEqual(param, _param)) {
-        setParam(_param);
+      if (!isEqual(metricsQueryParam, _param)) {
+        setMetricsQueryParam(_param);
       }
-      setDataItem(props.dataItem);
+      setWedgeDataItem(props.dataItem);
     }
   }, [props.dataItem]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const _param: IMetrickQueryParam = getTimeQueryMetricsParamFromRange(topology.timeRange, topology.selectedPeriod);
-    if (!isEqual(param, _param)) {
-      setParam(_param);
+    if (!isEqual(metricsQueryParam, _param)) {
+      setMetricsQueryParam(_param);
     }
   }, [topology.timeRange]);
 
-  if (!dataItem) {
+  if (!wedgeDataItem) {
     return null;
   }
   return (
@@ -47,8 +49,8 @@ const MetricsTab: React.FC<IProps> = (props: IProps) => {
         title="Bytes Drop Count Blackhole"
         styles={{ margin: '0 0 20px 0', minHeight: '390px' }}
         chartType="Line"
-        id={dataItem.extId}
-        queryTimeParam={param}
+        id={wedgeDataItem.extId}
+        queryTimeParam={metricsQueryParam}
         queryKey={MetricsKeyTypes.BytesDropCountBlackhole}
         dataValueSuffix="bytes"
       />
@@ -56,8 +58,8 @@ const MetricsTab: React.FC<IProps> = (props: IProps) => {
         title="Bytes Drop No Route"
         styles={{ margin: '0 0 20px 0', minHeight: '390px' }}
         chartType="Line"
-        id={dataItem.extId}
-        queryTimeParam={param}
+        id={wedgeDataItem.extId}
+        queryTimeParam={metricsQueryParam}
         queryKey={MetricsKeyTypes.BytesDropCountNoRoute}
         dataValueSuffix="bytes"
       />
@@ -65,8 +67,8 @@ const MetricsTab: React.FC<IProps> = (props: IProps) => {
         title="Bytes In"
         styles={{ margin: '0 0 20px 0', minHeight: '390px' }}
         chartType="Line"
-        id={dataItem.extId}
-        queryTimeParam={param}
+        id={wedgeDataItem.extId}
+        queryTimeParam={metricsQueryParam}
         queryKey={MetricsKeyTypes.BytesIn}
         dataValueSuffix="bytes"
       />
@@ -74,8 +76,8 @@ const MetricsTab: React.FC<IProps> = (props: IProps) => {
         title="Bytes Out"
         styles={{ margin: '0 0 20px 0', minHeight: '390px' }}
         chartType="Line"
-        id={dataItem.extId}
-        queryTimeParam={param}
+        id={wedgeDataItem.extId}
+        queryTimeParam={metricsQueryParam}
         queryKey={MetricsKeyTypes.BytesOut}
         dataValueSuffix="bytes"
       />
@@ -83,8 +85,8 @@ const MetricsTab: React.FC<IProps> = (props: IProps) => {
         title="Packets In"
         styles={{ margin: '0 0 20px 0', minHeight: '390px' }}
         chartType="Line"
-        id={dataItem.extId}
-        queryTimeParam={param}
+        id={wedgeDataItem.extId}
+        queryTimeParam={metricsQueryParam}
         queryKey={MetricsKeyTypes.PacketsIn}
         dataValueSuffix="bytes"
       />
@@ -92,8 +94,8 @@ const MetricsTab: React.FC<IProps> = (props: IProps) => {
         title="Packets Out"
         styles={{ margin: '0 0 20px 0', minHeight: '390px' }}
         chartType="Line"
-        id={dataItem.extId}
-        queryTimeParam={param}
+        id={wedgeDataItem.extId}
+        queryTimeParam={metricsQueryParam}
         queryKey={MetricsKeyTypes.PacketsOut}
         dataValueSuffix="bytes"
       />
@@ -101,8 +103,8 @@ const MetricsTab: React.FC<IProps> = (props: IProps) => {
         title="Packets Drop Count Blackhole"
         styles={{ margin: '0 0 20px 0', minHeight: '390px' }}
         chartType="Line"
-        id={dataItem.extId}
-        queryTimeParam={param}
+        id={wedgeDataItem.extId}
+        queryTimeParam={metricsQueryParam}
         queryKey={MetricsKeyTypes.PacketDropCountBlackhole}
         dataValueSuffix="bytes"
       />
@@ -110,8 +112,8 @@ const MetricsTab: React.FC<IProps> = (props: IProps) => {
         title="Packets Drop Count No Route"
         styles={{ margin: '0 0 20px 0', minHeight: '390px' }}
         chartType="Line"
-        id={dataItem.extId}
-        queryTimeParam={param}
+        id={wedgeDataItem.extId}
+        queryTimeParam={metricsQueryParam}
         queryKey={MetricsKeyTypes.PacketDropCountNoRoute}
         dataValueSuffix="bytes"
       />

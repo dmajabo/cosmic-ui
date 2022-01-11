@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { PanelHeader, PanelTabWrapper, PanelTitle, SubPanelTitle } from '../../styles';
 import OverflowContainer from 'app/components/Basic/OverflowContainer/styles';
 import { IWedgeNode } from 'lib/models/topology';
@@ -9,17 +9,15 @@ import TabPanel from 'app/components/Tabs/TabPanel';
 import { TabComponentProps } from 'app/components/Tabs/TabComponentProps';
 import MetricsTab from './MetricsTab';
 
-interface IProps {
-  dataItem: IWedgeNode;
+interface WedgePanelProps {
+  readonly dataItem: IWedgeNode;
 }
 
-const WedgePanel: React.FC<IProps> = (props: IProps) => {
-  const [value, setValue] = React.useState(0);
+const WedgePanel: React.FC<WedgePanelProps> = (props: WedgePanelProps) => {
+  const [value, setValue] = useState(0);
   const classes = TabsStyles();
 
-  const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
-    setValue(newValue);
-  };
+  const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => setValue(newValue);
 
   return (
     <>
