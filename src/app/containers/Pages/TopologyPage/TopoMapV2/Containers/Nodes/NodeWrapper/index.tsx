@@ -1,9 +1,9 @@
 import React from 'react';
 import { ITopoNode, TopoNodeTypes } from 'lib/hooks/Topology/models';
-import RegionNode from './RegionNode';
-import AccountNode from './AccountNode';
+import RegionNode from './RegionNode/RegionNode';
+import AccountNode from './AccountNode/AccountNode';
 import DataCenter from './DataCenter';
-import SitesNode from './SitesNode';
+import SitesNode from './SitesNode/SitesNode';
 import TransitionContainer from '../../TransitionContainer';
 import AccountNodeTopContainer from './AccountNode/AccountNodeTopContainer';
 import RegionNodeTopContainer from './RegionNode/RegionNodeTopContainer';

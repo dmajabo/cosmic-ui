@@ -29,6 +29,7 @@ const NetworkWEdgeNode: React.FC<Props> = (props: Props) => {
       id={`wedgeCollapsed${props.item.id}`}
       onClick={onClick}
       className={`topoNodeLevel1 wedgeNodeWrapper ${isNodeSelected ? 'selectedTopoLevel1' : ''}`}
+      cursor="pointer"
     >
       <use
         pointerEvents="all"

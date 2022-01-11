@@ -5,7 +5,7 @@ import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataCont
 import ExpandNodeContent from './ExpandNodeContent';
 import NetworkVnetNode from '../NetworkVnetNode';
 import PeerConnectionNode from '../PeerConnectionNode';
-import { onHoverNode, onUnHoverNode } from '../../../../Graph/helper';
+// import { onHoverNode, onUnHoverNode } from '../../../../Graph/helper';
 import { TopologyPanelTypes } from 'lib/models/topology';
 import { removeVnetTooltip } from '../NetworkVnetNode/tooltipHelper';
 interface Props {
@@ -24,28 +24,30 @@ const RegionNode: React.FC<Props> = (props: Props) => {
     topology.onToogleTopoPanel(TopologyPanelTypes.VPC, true, item);
   };
 
-  const onMouseEnter = () => {
-    onHoverNode(`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`);
-  };
+  // const onMouseEnter = () => {
+  //   onHoverNode(`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`);
+  // };
 
-  const onMouseLeave = () => {
-    onUnHoverNode(`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`);
-  };
+  // const onMouseLeave = () => {
+  //   onUnHoverNode(`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`);
+  // };
 
   return (
     <g
-      id={`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
+      id={`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}childrensLayer`}
+      // onMouseEnter={onMouseEnter}
+      // onMouseLeave={onMouseLeave}
       className="topologyNode"
       transform={`translate(${props.dataItem.x}, ${props.dataItem.y})`}
       data-type={NODES_CONSTANTS.REGION.type}
     >
       {topology.entities && topology.entities.peer_connections.selected && props.dataItem.peerConnections && props.dataItem.peerConnections.length ? (
-        <ExpandNodeContent offsetY={NODES_CONSTANTS.REGION.headerHeight} width={props.dataItem.expandedSize.width}>
-          {props.dataItem.peerConnections.map((it, index) => (
-            <PeerConnectionNode key={`${it.uiId}peerConnection`} parentId={`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`} item={it} dataItem={props.dataItem} />
-          ))}
+        <ExpandNodeContent offsetY={NODES_CONSTANTS.REGION.headerHeight}>
+          <>
+            {props.dataItem.peerConnections.map(it => (
+              <PeerConnectionNode key={`${it.uiId}peerConnection`} parentId={`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`} item={it} dataItem={props.dataItem} />
+            ))}
+          </>
         </ExpandNodeContent>
       ) : null}
       <ExpandNodeContent
@@ -54,11 +56,12 @@ const RegionNode: React.FC<Props> = (props: Props) => {
             ? NODES_CONSTANTS.REGION.headerHeight + props.dataItem.peerConnectionsRows.rows * (NODES_CONSTANTS.PEERING_CONNECTION.collapse.r * 2) + NODES_CONSTANTS.REGION.expanded.contentPadding
             : NODES_CONSTANTS.REGION.headerHeight
         }
-        width={props.dataItem.expandedSize.width}
       >
-        {props.dataItem.children.map((it, index) => (
-          <NetworkVnetNode key={`${it.uiId}vnet`} parentId={`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`} region={props.dataItem} item={it} onClick={onVpcClick} />
-        ))}
+        <>
+          {props.dataItem.children.map(it => (
+            <NetworkVnetNode key={`${it.uiId}vnet`} parentId={`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`} region={props.dataItem} item={it} onClick={onVpcClick} />
+          ))}
+        </>
       </ExpandNodeContent>
       <foreignObject
         data-y={

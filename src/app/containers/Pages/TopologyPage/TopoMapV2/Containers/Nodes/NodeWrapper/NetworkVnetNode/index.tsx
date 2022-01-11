@@ -40,13 +40,14 @@ const NetworkVnetNode: React.FC<Props> = (props: Props) => {
   return (
     <g
       ref={nodeRef}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
+      onMouseOver={onMouseEnter}
+      onMouseOut={onMouseLeave}
       id={`vpsCollapsed${props.item.id}`}
       className={`topoNodeLevel1 vnetNodeWrapper ${isNodeSelected ? 'selectedTopoLevel1' : ''}`}
       transform={`translate(${props.item.x}, ${props.item.y})`}
       data-id={`vnet${props.item.id}`}
       onClick={onClick}
+      cursor="pointer"
     >
       <circle
         r={NODES_CONSTANTS.NETWORK_VNET.collapse.r - 1}

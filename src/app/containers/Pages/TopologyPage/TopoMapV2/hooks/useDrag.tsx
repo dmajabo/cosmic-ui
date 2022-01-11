@@ -28,6 +28,7 @@ export function useDrag(props: IProps, onUpdateCallBack: (pos: IPosition) => voi
   let translateX = 0;
   let translateY = 0;
   let node: any;
+  let childrenContainerNode: any;
   // let popup: any;
   // let popupTranslateCoord: ICoord | null;
   let targetLinks = null;
@@ -70,6 +71,7 @@ export function useDrag(props: IProps, onUpdateCallBack: (pos: IPosition) => voi
     translateX = position?.x || 0;
     translateY = position?.y || 0;
     node = d3.select(`#${id}`);
+    childrenContainerNode = d3.select(`#${id}childrensLayer`);
     // popup = d3.select(`#${popupId}`);
     if (!skipTargetsLinks) {
       targetLinks = d3.selectAll(`g[data-target_id=${id}]`);
@@ -154,6 +156,7 @@ export function useDrag(props: IProps, onUpdateCallBack: (pos: IPosition) => voi
       });
     }
     node.attr('transform', `translate(${translateX}, ${translateY})`);
+    childrenContainerNode.attr('transform', `translate(${translateX}, ${translateY})`);
   };
 
   const onDragEnd = () => {
@@ -161,6 +164,7 @@ export function useDrag(props: IProps, onUpdateCallBack: (pos: IPosition) => voi
     //   popup.style('display', 'block');
     // }
     node = null;
+    childrenContainerNode = null;
     targetLinks = null;
     sourceLinks = null;
     // allNodes = null;
