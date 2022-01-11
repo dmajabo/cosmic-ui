@@ -7,13 +7,11 @@ import * as d3 from 'd3';
 import NodeMarker from '../../Containers/NodeMarker';
 import NodeExpandedName from '../../Containers/NodeName/NodeExpandedName';
 import { ITGWNode, ITopoNode } from 'lib/hooks/Topology/models';
-import ExpandNodeContent from './ExpandNodeContent';
 
 interface Props {
   dataItem: ITopoNode<any, ITGWNode>;
   show: boolean;
   onCollapse: () => void;
-  onTgwClick: (item: ITGWNode) => void;
 }
 
 const AccountExpandNode: React.FC<Props> = (props: Props) => {
@@ -35,7 +33,7 @@ const AccountExpandNode: React.FC<Props> = (props: Props) => {
   return (
     <TransitionContainer stateIn={props.show} origin="unset" transform="none">
       <>
-        <g style={{ cursor: 'pointer' }} pointerEvents="all" onMouseEnter={showExpandCollapseBtn} onMouseLeave={hideExpandCollapseBtn}>
+        <g style={{ cursor: 'pointer' }} pointerEvents="all" onMouseOver={showExpandCollapseBtn} onMouseOut={hideExpandCollapseBtn}>
           <rect
             fill={NODES_CONSTANTS.ACCOUNT.expanded.bgColor}
             width={props.dataItem.expandedSize.width}
@@ -54,12 +52,6 @@ const AccountExpandNode: React.FC<Props> = (props: Props) => {
               stylesObj={NODES_CONSTANTS.ACCOUNT.labelExpandedStyles}
             />
           </g>
-          <ExpandNodeContent
-            items={props.dataItem.children}
-            width={props.dataItem.expandedSize.width}
-            height={props.dataItem.expandedSize.height - NODES_CONSTANTS.ACCOUNT.headerHeight}
-            onClick={props.onTgwClick}
-          />
           <CollapseExpandButton
             id={`accountNode${props.dataItem.id}${CollapseExpandState.COLLAPSE}`}
             onClick={onCollapse}

@@ -7,16 +7,13 @@ import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataCont
 import NodeWrapper from '../Containers/Nodes/NodeWrapper';
 import DefsComponent from '../Containers/Shared/DefsComponent';
 import { STANDART_DISPLAY_RESOLUTION_V2 } from 'lib/models/general';
-// import useResizeAware from 'react-resize-aware';
 interface Props {}
 
 const Map: React.FC<Props> = (props: Props) => {
-  // const [resizeListener, sizes] = useResizeAware();
   const { topology } = useTopologyV2DataContext();
 
   return (
     <>
-      {/* {resizeListener} */}
       <StyledMap
         id={TOPOLOGY_IDS.SVG}
         width="100%"
@@ -30,10 +27,13 @@ const Map: React.FC<Props> = (props: Props) => {
         <GContainer id={TOPOLOGY_IDS.G_ROOT}>
           {topology && (
             <>
+              <g id="nodesContainerTopLayer">
+                <NodeWrapper isTopLayer nodes={topology.nodes} />
+              </g>
+              <g id="linkContainer">{topology.links && topology.links.length && topology.links.map((link, index) => <TopologyLink dataItem={link} key={`link${link.id}${index}`} />)}</g>
               <g id="nodesContainer">
                 <NodeWrapper nodes={topology.nodes} />
               </g>
-              <g id="linkContainer">{topology.links && topology.links.length && topology.links.map((link, index) => <TopologyLink dataItem={link} key={`link${link.id}${index}`} />)}</g>
             </>
           )}
         </GContainer>

@@ -1,13 +1,11 @@
 import React from 'react';
 import { NODES_CONSTANTS } from '../../../../model';
-import { IDeviceNode, ITopoNode } from 'lib/hooks/Topology/models';
-import { ITopologyGroup } from 'lib/api/ApiModels/Topology/apiModels';
+import { IDeviceNode } from 'lib/hooks/Topology/models';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 // import { buildLink, IDeviceLink } from './helper';
 // import DeviceLink from './DeviceLink';
 
 interface Props {
-  parent: ITopoNode<ITopologyGroup, IDeviceNode>;
   item: IDeviceNode;
   onClick: (item: IDeviceNode) => void;
 }

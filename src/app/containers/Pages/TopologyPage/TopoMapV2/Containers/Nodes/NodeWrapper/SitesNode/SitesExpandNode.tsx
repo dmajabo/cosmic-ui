@@ -7,7 +7,7 @@ import * as d3 from 'd3';
 import NodeMarker from '../../Containers/NodeMarker';
 import NodeExpandedName from '../../Containers/NodeName/NodeExpandedName';
 import { IDeviceNode, ITopoNode } from 'lib/hooks/Topology/models';
-import DeviceNode from '../DeviceNode';
+
 import { ITopologyGroup } from 'lib/api/ApiModels/Topology/apiModels';
 
 interface Props {
@@ -55,13 +55,7 @@ const SitesExpandNode: React.FC<Props> = (props: Props) => {
               stylesObj={NODES_CONSTANTS.SITES.labelExpandedStyles}
             />
           </g>
-          <g transform={`translate(0, ${NODES_CONSTANTS.SITES.headerHeight})`}>
-            <g transform={`translate(${NODES_CONSTANTS.SITES.expanded.contentPadding}, ${NODES_CONSTANTS.SITES.expanded.contentPadding})`}>
-              {props.dataItem.children.map((it, index) => (
-                <DeviceNode key={`${it.uiId}device`} parent={props.dataItem} item={it} onClick={props.onDeviceClick} />
-              ))}
-            </g>
-          </g>
+
           {/* <use href={`#${NODES_CONSTANTS.DEVICE.groupLinkIconId}`} x={NODES_CONSTANTS.SITES.expanded.minWidth / 2 - 7} y="-7" /> */}
           <CollapseExpandButton
             id={`sites${props.dataItem.id}${CollapseExpandState.COLLAPSE}`}

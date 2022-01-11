@@ -15179,7 +15179,145 @@
             }
           ],
           "oedges": [],
-          "devices": [],
+          "devices": [
+            {
+              "id": "0x2f9440",
+              "name": "",
+              "description": "",
+              "extId": "Q2BZ-PWFA-V5DC",
+              "type": "",
+              "serial": "Q2BZ-PWFA-V5DC",
+              "model": "VMX-S",
+              "networkId": "N_624311498344312656",
+              "vnetworks": [],
+              "publicIp": "34.201.118.254",
+              "privateIp": "41.0.0.170",
+              "selectorGroup": "us-west",
+              "hostname": "Okulis_VMX_Network",
+              "ownerId": "013719935964",
+              "regionCode": "us-east-1",
+              "vpnlinks": [
+                {
+                  "id": "0x2f9449",
+                  "name": "AWS-TGW1-Cloud-APP-VPC-VMX1",
+                  "description": "",
+                  "extId": "",
+                  "connectionId": "",
+                  "linkStates": [
+                    {
+                      "id": "0x2f9448",
+                      "name": "state-AWS-TGW1-Cloud-APP-VPC-VMX1",
+                      "sourceIp": "34.201.118.254",
+                      "peerIp": "34.192.135.163",
+                      "peerId": "",
+                      "status": "unreachable",
+                      "statusMessage": "",
+                      "connectedTo": {
+                        "id": "0x2f94a2",
+                        "name": "state-34.192.135.163-34.201.118.254",
+                        "sourceIp": "34.192.135.163",
+                        "peerIp": "34.201.118.254",
+                        "peerId": "cgw-0488baf1cd5e62a19",
+                        "status": "DOWN",
+                        "statusMessage": "",
+                        "connectedTo": null
+                      }
+                    }
+                  ],
+                  "privateSubnets": [],
+                  "routeTable": null,
+                  "ownerId": "013719935964",
+                  "regionCode": "us-east-1"
+                }
+              ]
+            },
+            {
+              "id": "0x2f9444",
+              "name": "",
+              "description": "",
+              "extId": "Q2KN-U958-CSTY",
+              "type": "",
+              "serial": "Q2KN-U958-CSTY",
+              "model": "MX64",
+              "networkId": "N_624311498344292454",
+              "vnetworks": [
+                {
+                  "id": "0x2f9441",
+                  "name": "Okulis-OnPrem-Network",
+                  "description": "",
+                  "extId": "N_624311498344292454",
+                  "endpoints": [],
+                  "vms": [],
+                  "cidrs": [],
+                  "subnets": [],
+                  "securityGroups": [],
+                  "routeTables": [],
+                  "loadBalancers": [],
+                  "internetGateway": null,
+                  "egressOnlyInternetGateway": null,
+                  "ownerId": "013719935964",
+                  "regionCode": "us-east-1"
+                },
+                {
+                  "id": "0x2f944c",
+                  "name": "Okulis-VMX-Network",
+                  "description": "",
+                  "extId": "N_624311498344312656",
+                  "endpoints": [],
+                  "vms": [],
+                  "cidrs": [],
+                  "subnets": [],
+                  "securityGroups": [],
+                  "routeTables": [],
+                  "loadBalancers": [],
+                  "internetGateway": null,
+                  "egressOnlyInternetGateway": null,
+                  "ownerId": "013719935964",
+                  "regionCode": "us-east-1"
+                }
+              ],
+              "publicIp": "73.162.139.222",
+              "privateIp": "192.168.1.110",
+              "selectorGroup": "us-west",
+              "hostname": "Okulis_OnPrem_Network",
+              "ownerId": "013719935964",
+              "regionCode": "us-east-1",
+              "vpnlinks": [
+                {
+                  "id": "0x2f9446",
+                  "name": "AWS-TGW",
+                  "description": "",
+                  "extId": "",
+                  "connectionId": "",
+                  "linkStates": [
+                    {
+                      "id": "0x2f944d",
+                      "name": "state-AWS-TGW",
+                      "sourceIp": "73.162.139.222",
+                      "peerIp": "54.235.184.85",
+                      "peerId": "",
+                      "status": "unreachable",
+                      "statusMessage": "",
+                      "connectedTo": {
+                        "id": "0x2f960f",
+                        "name": "state-54.235.184.85-73.162.139.222",
+                        "sourceIp": "54.235.184.85",
+                        "peerIp": "73.162.139.222",
+                        "peerId": "cgw-046cb98db300a60fa",
+                        "status": "DOWN",
+                        "statusMessage": "",
+                        "connectedTo": null
+                      }
+                    }
+                  ],
+                  "privateSubnets": [],
+                  "routeTable": null,
+                  "ownerId": "013719935964",
+                  "regionCode": "us-east-1"
+                }
+              ]
+            }
+          ],
           "vNetworkPeeringConnections": [
             {
               "id": "0x1f7ef",
