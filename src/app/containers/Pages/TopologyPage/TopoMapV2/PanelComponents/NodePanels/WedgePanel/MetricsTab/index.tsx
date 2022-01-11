@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { useTopologyDataContext } from 'lib/hooks/useTopologyDataContext';
 import ChartContainer from 'app/components/ChartContainer';
 import { getTimeQueryMetricsParamFromRange } from 'lib/api/ApiModels/Metrics/queryTimeRangeHelper';
 import { IMetrickQueryParam, MetricsKeyTypes } from 'lib/api/ApiModels/Metrics/apiModel';
 import isEqual from 'lodash/isEqual';
 import { INetworkwEdge } from 'lib/api/ApiModels/Topology/apiModels';
+import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 
 interface MetricTabProps {
   readonly dataItem: INetworkwEdge;
 }
 
 const MetricsTab: React.FC<MetricTabProps> = (props: MetricTabProps) => {
-  const { topology } = useTopologyDataContext();
+  const { topology } = useTopologyV2DataContext();
   const [metricsQueryParam, setMetricsQueryParam] = useState<IMetrickQueryParam>(null);
   const [wedgeDataItem, setWedgeDataItem] = useState<INetworkwEdge>(null);
 
