@@ -51,10 +51,7 @@ const ElasticFilter: React.FC<Props> = (props: Props) => {
 
   React.useEffect(() => {
     if (inputValue) {
-      setSelectedField(null);
-      setSearchedValue(null);
-      setPopupItems(props.fields);
-      setInputValue('');
+      onClearState();
     }
   }, [props.stitch, props.timePeriod, props.url]);
 
@@ -120,19 +117,14 @@ const ElasticFilter: React.FC<Props> = (props: Props) => {
 
   const onKeyUp = (value: string) => {
     if (!selectedField || !searchedValue) return;
-    setNeedGetValues(false);
-    setSelectedField(null);
-    setSearchedValue(null);
-    setShowPopup(false);
-    setPopupItems(props.fields);
-    setInputValue('');
-    setIsTyping(false);
+    const i = selectedTagIndex;
+    onClearState();
     const _arr = value.split(':');
     if (!_arr || _arr.length <= 1) return;
     const _data: ISearchData = getSearchedFields(_arr[0].trim(), props.fields);
     if (!_data || !_data.field) return;
-    if (selectedTagIndex || selectedTagIndex === 0) {
-      props.onUpdateFilter({ field: _data.field, value: _arr[1].trim() }, selectedTagIndex);
+    if (i || i === 0) {
+      props.onUpdateFilter({ field: _data.field, value: _arr[1].trim() }, i);
     } else {
       props.onAddFilter({ field: _data.field, value: _arr[1].trim() });
     }
@@ -149,11 +141,7 @@ const ElasticFilter: React.FC<Props> = (props: Props) => {
   };
 
   const onClear = () => {
-    setShowPopup(false);
-    setPopupItems(props.fields);
-    setSelectedField(null);
-    setSearchedValue('');
-    setInputValue('');
+    onClearState();
     props.onRefresh();
   };
 
@@ -186,18 +174,14 @@ const ElasticFilter: React.FC<Props> = (props: Props) => {
   };
 
   const onSelectPossibleValue = (item: string) => {
-    setNeedGetValues(false);
-    setSelectedField(null);
-    setSearchedValue(null);
-    setShowPopup(false);
-    setPopupItems(props.fields);
-    setInputValue('');
-    setIsTyping(false);
+    const i = selectedTagIndex;
+    const f = selectedField;
+    onClearState();
     if (!selectedField) return;
-    if (selectedTagIndex || selectedTagIndex === 0) {
-      props.onUpdateFilter({ field: selectedField, value: item }, selectedTagIndex);
+    if (i || i === 0) {
+      props.onUpdateFilter({ field: f, value: item }, i);
     } else {
-      props.onAddFilter({ field: selectedField, value: item });
+      props.onAddFilter({ field: f, value: item });
     }
     inputRef.current.focus();
   };
@@ -221,6 +205,17 @@ const ElasticFilter: React.FC<Props> = (props: Props) => {
 
   const onChangeOperator = (_item: string, index: number) => {
     props.onChangeOperator(_item, index);
+  };
+
+  const onClearState = () => {
+    setSelectedTagIndex(null);
+    setNeedGetValues(false);
+    setSelectedField(null);
+    setSearchedValue(null);
+    setShowPopup(false);
+    setPopupItems(props.fields);
+    setInputValue('');
+    setIsTyping(false);
   };
 
   const onTryLoadData = async (filter: IElasticFilterModel, filterSuffics: ElasticFilterSuffics) => {
