@@ -127,4 +127,12 @@ export interface IMetrickQueryParam {
 export enum MetricsKeyTypes {
   MEMORY = 'mem_used_percent',
   CPU_UTILIZATION = 'CPUUtilization',
+  BytesDropCountBlackhole = 'BytesDropCountBlackhole',
+  BytesDropCountNoRoute = 'BytesDropCountNoRoute',
+  BytesIn = 'BytesIn',
+  BytesOut = 'BytesOut',
+  PacketsIn = 'PacketsIn',
+  PacketsOut = 'PacketsOut',
+  PacketDropCountBlackhole = 'PacketDropCountBlackhole',
+  PacketDropCountNoRoute = 'PacketDropCountNoRoute',
 }
