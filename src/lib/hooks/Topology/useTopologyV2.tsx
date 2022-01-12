@@ -5,11 +5,12 @@ import { jsonClone } from 'lib/helpers/cloneHelper';
 // import { EntityTypes, IEntity } from 'lib/models/entites';
 import { ITopologyDataRes, ITopologyGroup, ITopologyGroupsData, ITopologyMapData } from 'lib/api/ApiModels/Topology/apiModels';
 import { ITimeMinMaxRange } from 'app/components/Inputs/TimeSlider/helpers';
-import { createTopology, updateRegionHeight } from './helper';
+import { createTopology } from './helper';
 import { FilterEntityOptions, FilterEntityTypes, FilterSeverityOptions, ITopoLink, ITopologyPreparedMapDataV2, ITopoNode, TopoFilterTypes, TopoLinkTypes, TopoNodeTypes } from './models';
 import { AlertSeverity } from 'lib/api/ApiModels/Workflow/apiModel';
 import { getVnetCoord } from './helpers/buildlinkHelper';
 import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
+import { updateRegionHeight } from './helpers/coordinateHelper';
 
 export interface TopologyV2ContextType {
   topoPanel: IPanelBar<TopologyPanelTypes>;
@@ -102,9 +103,9 @@ export function useTopologyV2Context(): TopologyV2ContextType {
   const onSetData = (res: ITopologyDataRes) => {
     if (!res) {
       setLinks(null);
-      setOriginData(null);
       setOriginGroupsData(null);
       setNodes([]);
+      setOriginData(null);
       nodesRef.current = null;
       linksRef.current = null;
       return;
