@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import ChartContainer from 'app/components/ChartContainer';
 import { getTimeQueryMetricsParamFromRange } from 'lib/api/ApiModels/Metrics/queryTimeRangeHelper';
 import { IMetrickQueryParam, MetricsKeyTypes } from 'lib/api/ApiModels/Metrics/apiModel';
 import isEqual from 'lodash/isEqual';
