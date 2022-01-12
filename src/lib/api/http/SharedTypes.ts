@@ -474,3 +474,13 @@ export interface HitsTableData {
   readonly destination: string;
   readonly value: JSX.Element;
 }
+
+interface Metrics {
+  readonly resourceId: string;
+  readonly keyedmap: KeyedMap[];
+}
+
+export interface GetMetricsResponse {
+  readonly name: string;
+  readonly metrics: Metrics;
+}

@@ -1,4 +1,5 @@
 import axios, { AxiosRequestConfig } from 'axios';
+import { IMetrickQueryParam } from '../ApiModels/Metrics/apiModel';
 import {
   CreateSLATestRequest,
   CreateSLATestResponse,
@@ -16,6 +17,7 @@ import {
   PostPolicyControllerRequest,
   PostPolicyControllerResponse,
   GetExperienceAnomaliesResponse,
+  GetMetricsResponse,
 } from './SharedTypes';
 
 const BASE_URL = process.env.REACT_APP_API_ENDPOINT_PRODUCTION;
@@ -39,6 +41,7 @@ interface ApiClient {
   readonly updatePolicyController: (edgeId: string, request: PostPolicyControllerRequest) => Promise<PostPolicyControllerResponse>;
   readonly getHeatmapGoodput: (sourceNw: string, destination: string, startTime: string, testId: string) => Promise<HeatMapResponse>;
   readonly getExperienceAnomalies: (name: string, timeRange: string) => Promise<GetExperienceAnomaliesResponse>;
+  readonly getMetricsResponse: (id: string, params: IMetrickQueryParam) => Promise<GetMetricsResponse>;
 }
 
 const PATHS = Object.freeze({
@@ -60,6 +63,7 @@ const PATHS = Object.freeze({
   UPDATE_POLICY_CONTROLLER: (edgeId: string) => `/policy/api/v1/policy/controllers/${edgeId}`,
   GOODPUT_LATENCY: (sourceNw: string, destination: string) => `/telemetry/api/v1/metrics/source_nw/${sourceNw}/device/destination/${destination}/avggoodput`,
   GET_EXPERIENCE_ANOMALIES: (name: string, timeRange: string) => `telemetry/api/v1/anomalyhistory/type/${name}/range/${timeRange}`,
+  GET_METRICS_RESPONSE: (id: string) => `telemetry/api/v1/metrics/${id}`,
 });
 
 export const createApiClient = (token: string): ApiClient => {
@@ -339,6 +343,15 @@ export const createApiClient = (token: string): ApiClient => {
     }
   }
 
+  async function getMetricsResponse(id: string, params: IMetrickQueryParam): Promise<GetMetricsResponse> {
+    try {
+      const response = await axios.get<GetMetricsResponse>(PATHS.GET_METRICS_RESPONSE(id), { ...config, params: params });
+      return { ...response.data, name: params.metricname };
+    } catch (error) {
+      return null;
+    }
+  }
+
   return {
     getOrganizations,
     getSLATests,
@@ -358,5 +371,6 @@ export const createApiClient = (token: string): ApiClient => {
     updatePolicyController,
     getHeatmapGoodput,
     getExperienceAnomalies,
+    getMetricsResponse,
   };
 };

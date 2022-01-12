@@ -5,6 +5,7 @@ import { IMetrickQueryParam, MetricsKeyTypes } from 'lib/api/ApiModels/Metrics/a
 import isEqual from 'lodash/isEqual';
 import { INetworkwEdge } from 'lib/api/ApiModels/Topology/apiModels';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
+import MultiLineChartContainer from './MultiLineChartContainer';
 
 interface MetricTabProps {
   readonly dataItem: INetworkwEdge;
@@ -45,7 +46,7 @@ const MetricsTab: React.FC<MetricTabProps> = (props: MetricTabProps) => {
   }
   return (
     <>
-      <ChartContainer
+      {/* <ChartContainer
         title="Bytes Drop Count Blackhole"
         styles={{ margin: '0 0 20px 0', minHeight: '390px' }}
         chartType="Line"
@@ -116,6 +117,15 @@ const MetricsTab: React.FC<MetricTabProps> = (props: MetricTabProps) => {
         queryTimeParam={metricsQueryParam}
         queryKey={MetricsKeyTypes.PacketDropCountNoRoute}
         dataValueSuffix="bytes"
+      /> */}
+      <MultiLineChartContainer
+        title="Packets Drop Count No Route"
+        styles={{ margin: '0 0 20px 0', minHeight: '390px' }}
+        chartType="Line"
+        id={wedgeDataItem.extId}
+        queryTimeParam={metricsQueryParam}
+        queryKeys={[MetricsKeyTypes.PacketDropCountBlackhole, MetricsKeyTypes.PacketDropCountNoRoute]}
+        dataValueSuffix="packets"
       />
     </>
   );
