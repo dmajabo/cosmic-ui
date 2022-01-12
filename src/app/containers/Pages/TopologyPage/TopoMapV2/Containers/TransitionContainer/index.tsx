@@ -6,6 +6,7 @@ interface Props {
   stateIn: boolean;
   origin?: string;
   transform?: string;
+  id: string;
   children: React.ReactNode;
 }
 const TransitionContainer: React.FC<Props> = (props: Props) => {
@@ -14,7 +15,7 @@ const TransitionContainer: React.FC<Props> = (props: Props) => {
   return (
     <Transition mountOnEnter unmountOnExit timeout={100} in={props.stateIn}>
       {state => (
-        <TransitionGContainer origin={props.origin} transformStyle={props.transform} className={state}>
+        <TransitionGContainer id={props.id} origin={props.origin} transformStyle={props.transform} className={state}>
           {props.children}
         </TransitionGContainer>
       )}

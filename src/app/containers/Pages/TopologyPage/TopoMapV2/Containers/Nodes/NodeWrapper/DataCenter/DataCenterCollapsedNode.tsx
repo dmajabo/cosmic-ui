@@ -30,7 +30,7 @@ const DataCenterCollapsedNode: React.FC<Props> = (props: Props) => {
   };
 
   return (
-    <TransitionContainer stateIn={props.show} origin="unset" transform="none">
+    <TransitionContainer id={`collapseNodeWrapper${props.id}`} stateIn={props.show} origin="unset" transform="none">
       <>
         <g style={{ cursor: 'pointer' }} pointerEvents="all" onMouseEnter={showExpandBtn} onMouseLeave={hideExpandBtn}>
           <rect

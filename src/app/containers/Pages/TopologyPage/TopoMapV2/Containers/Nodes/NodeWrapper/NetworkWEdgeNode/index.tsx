@@ -26,7 +26,7 @@ const NetworkWEdgeNode: React.FC<Props> = (props: Props) => {
   return (
     <g
       transform={`translate(${props.item.x}, ${props.item.y})`}
-      id={`wedgeCollapsed${props.item.id}`}
+      id={`${props.item.nodeType}${props.item.id}`}
       onClick={onClick}
       className={`topoNodeLevel1 wedgeNodeWrapper ${isNodeSelected ? 'selectedTopoLevel1' : ''}`}
       cursor="pointer"
@@ -38,7 +38,7 @@ const NetworkWEdgeNode: React.FC<Props> = (props: Props) => {
         height={NODES_CONSTANTS.NETWORK_WEDGE.collapse.height}
         x={0}
         y={0}
-        className="wedgeBg"
+        className="wedgeBg eventHandler"
         fill={`url(#${NODES_CONSTANTS.NETWORK_WEDGE.lineGradientId})`}
       />
       <foreignObject

@@ -7,9 +7,10 @@ import * as d3 from 'd3';
 import NodeMarker from '../../Containers/NodeMarker';
 import NodeExpandedName from '../../Containers/NodeName/NodeExpandedName';
 import { INetworkVNetNode, ITopoNode } from 'lib/hooks/Topology/models';
+import { INetworkRegion } from 'lib/api/ApiModels/Topology/apiModels';
 
 interface Props {
-  dataItem: ITopoNode<any, INetworkVNetNode>;
+  dataItem: ITopoNode<INetworkRegion, INetworkVNetNode>;
   show: boolean;
   onCollapse: () => void;
 }
@@ -32,10 +33,11 @@ const RegionExpandNode: React.FC<Props> = (props: Props) => {
 
   return (
     <>
-      <TransitionContainer stateIn={props.show} origin="unset" transform="none">
+      <TransitionContainer id={`expandNodeWrapper${props.dataItem.id}`} stateIn={props.show} origin="unset" transform="none">
         <>
-          <g style={{ cursor: 'pointer' }} pointerEvents="all" onMouseEnter={showExpandCollapseBtn} onMouseLeave={hideExpandCollapseBtn}>
+          <g style={{ cursor: 'pointer' }} onMouseEnter={showExpandCollapseBtn} onMouseLeave={hideExpandCollapseBtn}>
             <rect
+              className="eventHandler"
               fill={NODES_CONSTANTS.REGION.expanded.bgColor}
               width={props.dataItem.expandedSize.width}
               height={props.dataItem.expandedSize.height}

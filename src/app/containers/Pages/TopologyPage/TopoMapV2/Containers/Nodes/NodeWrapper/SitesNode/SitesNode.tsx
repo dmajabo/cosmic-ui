@@ -7,6 +7,7 @@ import { TopologyPanelTypes } from 'lib/models/topology';
 import { IDeviceNode, ITopoNode } from 'lib/hooks/Topology/models';
 import { ITopologyGroup } from 'lib/api/ApiModels/Topology/apiModels';
 import DeviceNode from '../DeviceNode';
+import TransitionContainer from '../../../TransitionContainer';
 interface Props {
   dataItem: ITopoNode<ITopologyGroup, IDeviceNode>;
 }
@@ -26,19 +27,21 @@ const SitesNode: React.FC<Props> = (props: Props) => {
   // };
 
   return (
-    <g
-      id={`${NODES_CONSTANTS.SITES.type}${props.dataItem.uiId}childrensLayer`}
-      // onMouseEnter={onMouseEnter}
-      // onMouseLeave={onMouseLeave}
-      className="topologyNode"
-      transform={`translate(${props.dataItem.x}, ${props.dataItem.y})`}
-    >
-      <g transform={`translate(${NODES_CONSTANTS.SITES.expanded.contentPadding}, ${NODES_CONSTANTS.SITES.headerHeight + NODES_CONSTANTS.SITES.expanded.contentPadding})`}>
-        {props.dataItem.children.map((it, index) => (
-          <DeviceNode key={`${it.uiId}device`} item={it} onClick={onDeviceClick} />
-        ))}
+    <TransitionContainer id={`wrapper${NODES_CONSTANTS.SITES.type}${props.dataItem.uiId}childrensLayer`} stateIn={props.dataItem.visible} origin="unset" transform="none">
+      <g
+        id={`${NODES_CONSTANTS.SITES.type}${props.dataItem.uiId}childrensLayer`}
+        // onMouseEnter={onMouseEnter}
+        // onMouseLeave={onMouseLeave}
+        className="topologyNode"
+        transform={`translate(${props.dataItem.x}, ${props.dataItem.y})`}
+      >
+        <g transform={`translate(${NODES_CONSTANTS.SITES.expanded.contentPadding}, ${NODES_CONSTANTS.SITES.headerHeight + NODES_CONSTANTS.SITES.expanded.contentPadding})`}>
+          {props.dataItem.children.map((it, index) => (
+            <DeviceNode key={`${it.uiId}device`} item={it} onClick={onDeviceClick} />
+          ))}
+        </g>
       </g>
-    </g>
+    </TransitionContainer>
   );
 };
 

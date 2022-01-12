@@ -30,7 +30,9 @@ const Map: React.FC<Props> = (props: Props) => {
               <g id="nodesContainerTopLayer">
                 <NodeWrapper isTopLayer nodes={topology.nodes} />
               </g>
-              <g id="linkContainer">{topology.links && topology.links.length && topology.links.map((link, index) => <TopologyLink dataItem={link} key={`link${link.id}${index}`} />)}</g>
+              <g id="linkContainer">
+                <TopologyLink links={topology.links} />
+              </g>
               <g id="nodesContainer">
                 <NodeWrapper nodes={topology.nodes} />
               </g>

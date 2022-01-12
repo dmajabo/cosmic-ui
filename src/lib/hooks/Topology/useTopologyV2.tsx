@@ -2,13 +2,14 @@ import * as React from 'react';
 import { IPanelBar, TopologyPanelTypes } from 'lib/models/topology';
 import { IPosition, ISelectedListItem, ITimeTypes, TIME_PERIOD } from 'lib/models/general';
 import { jsonClone } from 'lib/helpers/cloneHelper';
-import { EntityTypes, IEntity } from 'lib/models/entites';
+// import { EntityTypes, IEntity } from 'lib/models/entites';
 import { ITopologyDataRes, ITopologyGroup, ITopologyGroupsData, ITopologyMapData } from 'lib/api/ApiModels/Topology/apiModels';
 import { ITimeMinMaxRange } from 'app/components/Inputs/TimeSlider/helpers';
-import { updateEntity } from 'lib/helpers/entityHelper';
 import { createTopology, updateRegionHeight } from './helper';
-import { FilterEntityOptions, FilterEntityTypes, FilterSeverityOptions, ITopoLink, ITopologyPreparedMapDataV2, ITopoNode, TopoFilterTypes, TopoNodeTypes } from './models';
+import { FilterEntityOptions, FilterEntityTypes, FilterSeverityOptions, ITopoLink, ITopologyPreparedMapDataV2, ITopoNode, TopoFilterTypes, TopoLinkTypes, TopoNodeTypes } from './models';
 import { AlertSeverity } from 'lib/api/ApiModels/Workflow/apiModel';
+import { getVnetCoord } from './helpers/buildlinkHelper';
+import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
 
 export interface TopologyV2ContextType {
   topoPanel: IPanelBar<TopologyPanelTypes>;
@@ -22,7 +23,7 @@ export interface TopologyV2ContextType {
   links: ITopoLink<any, any, any, any, any>[];
   nodes: ITopoNode<any, any>[];
   selectedNode: any;
-  entityTypes: IEntity[];
+  // entityTypes: IEntity[];
   onUnselectNode: () => void;
   onToogleTopoPanel: (_panel: TopologyPanelTypes, show: boolean, dataItem?: any) => void;
   onChangeTime: (_value: Date | null) => void;
@@ -34,7 +35,7 @@ export interface TopologyV2ContextType {
   onDeleteGroup: (_group: ITopologyGroup) => void;
   onFilterQueryChange: (value: string | null) => void;
   onSetSelectedType: (_value: string | number | null) => void;
-  onSelectEntity: (entity: IEntity, selected: boolean) => void;
+  // onSelectEntity: (entity: IEntity, selected: boolean) => void;
 
   onCollapseExpandNode: (node: ITopoNode<any, any>, state: boolean) => void;
   onUpdateNodeCoord: (node: ITopoNode<any, any>, _pos: IPosition) => void;
@@ -92,7 +93,7 @@ export function useTopologyV2Context(): TopologyV2ContextType {
   const [selectedPeriod, setSelectedPeriod] = React.useState<ISelectedListItem<ITimeTypes>>(TIME_PERIOD[0]);
   const [selectedTime, setSelectedTime] = React.useState<Date | null>(null);
   const [timeRange, setTimeRange] = React.useState<ITimeMinMaxRange | null>(null);
-  const [entityTypes, setEntityTypes] = React.useState<IEntity[]>(jsonClone(EntityTypes));
+  // const [entityTypes, setEntityTypes] = React.useState<IEntity[]>(jsonClone(EntityTypes));
   const [searchQuery, setSearchQuery] = React.useState<string | null>(null);
   const [selectedType, setSelectedType] = React.useState<string | null>(null);
   const linksRef = React.useRef<ITopoLink<any, any, any, any, any>[]>(links);
@@ -128,20 +129,20 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     setSearchQuery(value);
   };
 
-  const onSelectEntity = (_entity: IEntity, _selected: boolean) => {
-    if (!nodesRef.current) return;
-    const _arr: IEntity[] = jsonClone(entityTypes);
-    const _nodes: ITopoNode<any, any>[] = jsonClone(nodesRef.current);
-    const _links: ITopoLink<any, any, any, any, any>[] = jsonClone(linksRef.current);
-    const index: number = _arr.findIndex(it => it.id === _entity.id);
-    updateEntity(_arr, index, _selected);
-    // updateDataByEntity(_arr, _arr[index], _nodes, _links);
-    setEntityTypes(_arr);
-    setNodes(_nodes);
-    setLinks(_links);
-    nodesRef.current = _nodes;
-    linksRef.current = _links;
-  };
+  // const onSelectEntity = (_entity: IEntity, _selected: boolean) => {
+  //   if (!nodesRef.current) return;
+  //   const _arr: IEntity[] = jsonClone(entityTypes);
+  //   const _nodes: ITopoNode<any, any>[] = jsonClone(nodesRef.current);
+  //   const _links: ITopoLink<any, any, any, any, any>[] = jsonClone(linksRef.current);
+  //   const index: number = _arr.findIndex(it => it.id === _entity.id);
+  //   updateEntity(_arr, index, _selected);
+  //   // updateDataByEntity(_arr, _arr[index], _nodes, _links);
+  //   setEntityTypes(_arr);
+  //   setNodes(_nodes);
+  //   setLinks(_links);
+  //   nodesRef.current = _nodes;
+  //   linksRef.current = _links;
+  // };
 
   const onSetSelectedType = (_value: string | null) => {
     setSelectedType(_value);
@@ -316,39 +317,73 @@ export function useTopologyV2Context(): TopologyV2ContextType {
 
   const onSelectFilterOption = (groupType: TopoFilterTypes, type: FilterEntityTypes | AlertSeverity, selected: boolean) => {
     if (groupType === TopoFilterTypes.Entities) {
-      const _obj: FilterEntityOptions = { ...entities };
+      const _obj: FilterEntityOptions = jsonClone(entities);
       _obj[type].selected = selected;
       if (type === FilterEntityTypes.PEERING_CONNECTIONS) {
+        const _links = linksRef.current.slice();
         const _nodes = updateRegionHeight(nodesRef.current, _obj[type].selected);
+        _links.forEach(it => {
+          if (it.type !== TopoLinkTypes.NetworkNetworkLink) return;
+          const _coord = getVnetCoord(it.fromNode.parent, it.fromNode.child, _obj[type].selected, NODES_CONSTANTS.REGION, NODES_CONSTANTS.NETWORK_VNET);
+          it.y1 = _coord.y;
+        });
         nodesRef.current = _nodes;
+        linksRef.current = _links;
         setNodes(_nodes);
+        setLinks(_links);
       }
       if (type === FilterEntityTypes.SITES) {
-        const _nodes = nodes.slice();
+        const _nodes = nodesRef.current.slice();
+        const _links = linksRef.current.slice();
         _nodes.forEach(it => {
           if (it.type !== TopoNodeTypes.SITES) return;
           it.visible = _obj[type].selected;
         });
+        _links.forEach(it => {
+          if (it.type !== TopoLinkTypes.VPNLink) return;
+          it.visible = !!(_obj[type].selected && _obj.transit.selected);
+        });
         nodesRef.current = _nodes;
+        linksRef.current = _links;
         setNodes(_nodes);
+        setLinks(_links);
       }
       if (type === FilterEntityTypes.TRANSIT) {
-        const _nodes = nodes.slice();
+        const _nodes = nodesRef.current.slice();
+        const _links = linksRef.current.slice();
         _nodes.forEach(it => {
           if (it.type !== TopoNodeTypes.ACCOUNT) return;
           it.visible = _obj[type].selected;
         });
+        _links.forEach(it => {
+          if (it.type === TopoLinkTypes.VPNLink) {
+            it.visible = !!(_obj.sites.selected && _obj[type].selected);
+          }
+          if (it.type === TopoLinkTypes.NetworkNetworkLink) {
+            it.visible = !!(_obj.vpc.selected && _obj[type].selected);
+          }
+        });
         nodesRef.current = _nodes;
+        linksRef.current = _links;
         setNodes(_nodes);
+        setLinks(_links);
       }
       if (type === FilterEntityTypes.VPC) {
-        const _nodes = nodes.slice();
+        const _nodes = nodesRef.current.slice();
+        const _links = linksRef.current.slice();
         _nodes.forEach(it => {
           if (it.type !== TopoNodeTypes.REGION) return;
           it.visible = _obj[type].selected;
         });
+        _links.forEach(it => {
+          if (it.type === TopoLinkTypes.NetworkNetworkLink) {
+            it.visible = !!(_obj[type].selected && _obj.transit.selected);
+          }
+        });
         nodesRef.current = _nodes;
+        linksRef.current = _links;
         setNodes(_nodes);
+        setLinks(_links);
       }
       setEntities(_obj);
       return;
@@ -378,7 +413,7 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     selectedNode,
     searchQuery,
     selectedType,
-    entityTypes,
+    // entityTypes,
 
     onToogleTopoPanel,
     onUnselectNode,
@@ -386,7 +421,7 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     onSetData,
     onFilterQueryChange,
     onSetSelectedType,
-    onSelectEntity,
+    // onSelectEntity,
     onUpdateGroups,
     onDeleteGroup,
     onChangeTimePeriod,

@@ -5,10 +5,10 @@ import NodeCounter from '../../Containers/NodeCounter';
 import { select } from 'd3-selection';
 import { buildVnetTooltip, removeVnetTooltip } from './tooltipHelper';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
-
+import { INetworkRegion } from 'lib/api/ApiModels/Topology/apiModels';
 interface Props {
   parentId: string;
-  region: ITopoNode<any, INetworkVNetNode>;
+  region: ITopoNode<INetworkRegion, INetworkVNetNode>;
   item: INetworkVNetNode;
   onClick: (item: INetworkVNetNode) => void;
 }
@@ -42,7 +42,7 @@ const NetworkVnetNode: React.FC<Props> = (props: Props) => {
       ref={nodeRef}
       onMouseOver={onMouseEnter}
       onMouseOut={onMouseLeave}
-      id={`vpsCollapsed${props.item.id}`}
+      id={`${props.item.nodeType}${props.item.id}`}
       className={`topoNodeLevel1 vnetNodeWrapper ${isNodeSelected ? 'selectedTopoLevel1' : ''}`}
       transform={`translate(${props.item.x}, ${props.item.y})`}
       data-id={`vnet${props.item.id}`}
@@ -56,7 +56,7 @@ const NetworkVnetNode: React.FC<Props> = (props: Props) => {
         fill="var(--_primaryBg)"
         stroke="var(--_primaryBg)"
         strokeWidth="1"
-        className="vpcCollapsedBg"
+        className="vpcCollapsedBg eventHandler"
         pointerEvents="all"
       />
       <use

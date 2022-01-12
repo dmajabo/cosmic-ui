@@ -34,10 +34,11 @@ const SitesExpandNode: React.FC<Props> = (props: Props) => {
   };
 
   return (
-    <TransitionContainer stateIn={props.show} origin="unset" transform="none">
+    <TransitionContainer id={`expandNodeWrapper${props.dataItem.id}`} stateIn={props.show} origin="unset" transform="none">
       <g>
-        <g style={{ cursor: 'pointer' }} pointerEvents="all" onMouseEnter={showExpandCollapseBtn} onMouseLeave={hideExpandCollapseBtn}>
+        <g style={{ cursor: 'pointer' }} onMouseEnter={showExpandCollapseBtn} onMouseLeave={hideExpandCollapseBtn}>
           <rect
+            className="eventHandler"
             fill={NODES_CONSTANTS.SITES.expanded.bgColor}
             width={NODES_CONSTANTS.SITES.expanded.minWidth}
             height={NODES_CONSTANTS.SITES.expanded.minHeight}

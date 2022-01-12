@@ -63,6 +63,17 @@ export const StyledMap = styled.svg`
     opacity: 1;
     transition: opacity 0.2s linear;
   }
+  .topologyNode.topoDisabledOnDrag {
+    & * {
+      pointer-events: none;
+    }
+    & .collapseExpandButton {
+      display: none;
+    }
+  }
+  .topologyNode.topoOnDrag .collapseExpandButton {
+    display: none;
+  }
   .peerConnectionNodeWrapperHover {
     .peerConnectionNode {
       fill: var(--_highlightColor);

@@ -1,9 +1,9 @@
 import * as d3 from 'd3';
-import { INetworkLoadBalancer, CloudLoadBalancerTypeP } from 'lib/api/ApiModels/Topology/apiModels';
+import { INetworkLoadBalancer, CloudLoadBalancerTypeP, INetworkRegion } from 'lib/api/ApiModels/Topology/apiModels';
 import { INetworkVNetNode, ITopoNode } from 'lib/hooks/Topology/models';
 import { NODES_CONSTANTS } from '../../../../model';
 
-export const buildVnetTooltip = (e: React.BaseSyntheticEvent<MouseEvent>, region: ITopoNode<any, INetworkVNetNode>, vnet: INetworkVNetNode, containerId: string) => {
+export const buildVnetTooltip = (e: React.BaseSyntheticEvent<MouseEvent>, region: ITopoNode<INetworkRegion, INetworkVNetNode>, vnet: INetworkVNetNode, containerId: string) => {
   if (!e || !e.target) return;
   const fo = d3.select(`#vnetTooltipFOContainer${containerId}`);
   const container = fo.select(`#vnetTooltipContainer${containerId}`);

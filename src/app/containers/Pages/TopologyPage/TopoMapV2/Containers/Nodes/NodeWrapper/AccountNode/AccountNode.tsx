@@ -26,7 +26,12 @@ const AccountNode: React.FC<Props> = (props: Props) => {
   //   onUnHoverNode(`${NODES_CONSTANTS.ACCOUNT.type}${props.dataItem.uiId}`);
   // };
   return (
-    <TransitionContainer stateIn={props.dataItem.visible && !props.dataItem.collapsed} origin="unset" transform="none">
+    <TransitionContainer
+      id={`wrapper${NODES_CONSTANTS.ACCOUNT.type}${props.dataItem.uiId}childrensLayer`}
+      stateIn={props.dataItem.visible && !props.dataItem.collapsed}
+      origin="unset"
+      transform="none"
+    >
       <g
         id={`${NODES_CONSTANTS.ACCOUNT.type}${props.dataItem.uiId}childrensLayer`}
         // onMouseEnter={onMouseEnter}

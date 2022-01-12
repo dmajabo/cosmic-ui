@@ -1,24 +1,24 @@
 import React from 'react';
 import * as d3 from 'd3';
-import { TOPOLOGY_LINKS_TYPES } from 'lib/models/topology';
-import { IPosition, IRotateCoord } from 'lib/models/general';
-import { calculateAttachmentPosition, getPointsData } from '../Containers/Links/Attachment/helper';
+import { IPosition } from 'lib/models/general';
+// import { calculateAttachmentPosition, getPointsData } from '../Containers/Links/Attachment/helper';
+import { TopoNodeTypes } from 'lib/hooks/Topology/models';
 
 interface IProps {
   id: string;
-  // popupId: string;
-  skipTargetsLinks?: boolean;
-  skipSourceLinks?: boolean;
-  scaleFactor?: number;
+  parentId: string;
+  resId: string;
+  linkPrefiks: 'fromparentid' | 'toparentid' | 'fromchildid' | 'tochildid';
+  nodeType: TopoNodeTypes;
 }
 export function useDrag(props: IProps, onUpdateCallBack: (pos: IPosition) => void) {
+  const [parentId] = React.useState<string>(props.parentId);
   const [id] = React.useState<string>(props.id);
-  // const [popupId] = React.useState<string>(props.popupId);
-  // const [scaleFactor] = React.useState<number>(props.scaleFactor || 1);
+  const [nodeType] = React.useState<TopoNodeTypes>(props.nodeType);
+  const [resId] = React.useState<string>(props.resId);
+  const [linkPrefiks] = React.useState<string>(props.linkPrefiks);
   const [position, setPosition] = React.useState<IPosition | null>(null);
   const [visible, setVisible] = React.useState<boolean>(true);
-  const [skipTargetsLinks] = React.useState<boolean>(props.skipTargetsLinks || false);
-  const [skipSourceLinks] = React.useState<boolean>(props.skipSourceLinks || false);
   const [isUpdated, setIsUpdated] = React.useState<boolean>(false);
   const drag = d3
     .drag()
@@ -29,11 +29,7 @@ export function useDrag(props: IProps, onUpdateCallBack: (pos: IPosition) => voi
   let translateY = 0;
   let node: any;
   let childrenContainerNode: any;
-  // let popup: any;
-  // let popupTranslateCoord: ICoord | null;
-  let targetLinks = null;
-  let sourceLinks = null;
-  // let allNodes = null;
+  let links = null;
   React.useEffect(() => {
     return () => {
       onUnsubscribeDrag();
@@ -66,27 +62,21 @@ export function useDrag(props: IProps, onUpdateCallBack: (pos: IPosition) => voi
     setPosition(pos);
     setIsUpdated(true);
   };
-
   const onDragStart = () => {
     translateX = position?.x || 0;
     translateY = position?.y || 0;
     node = d3.select(`#${id}`);
     childrenContainerNode = d3.select(`#${id}childrensLayer`);
-    // popup = d3.select(`#${popupId}`);
-    if (!skipTargetsLinks) {
-      targetLinks = d3.selectAll(`g[data-target_id=${id}]`);
-    }
-    if (!skipSourceLinks) {
-      sourceLinks = d3.selectAll(`g[data-source_id=${id}]`);
-    }
-    // allNodes = d3.selectAll('.topologyNode');
-    // if (popup && popup.node()) {
-    //   popup.style('display', 'none');
-    //   // popupTranslateCoord = {
-    //   //   x: Number(popup.attr('data-x')),
-    //   //   y: Number(popup.attr('data-y')),
-    //   // };
-    // }
+    links = d3.selectAll(`line[data-${linkPrefiks}='${nodeType}${resId}']`);
+    raiseNode(links);
+  };
+
+  const raiseNode = (_links: any) => {
+    d3.selectAll('.topologyNode').classed('topoDisabledOnDrag', true);
+    const parent = d3.select(`#${parentId}`);
+    parent.raise();
+    d3.select(`#${parentId}childrensLayer`).raise();
+    parent.selectAll('.topologyNode').classed('topoDisabledOnDrag', null).classed('topoOnDrag', true);
   };
 
   // const collisionDetection = (e) => {
@@ -99,60 +89,25 @@ export function useDrag(props: IProps, onUpdateCallBack: (pos: IPosition) => voi
   // };
 
   const onDrag = e => {
-    if (!node || !e) {
-      return;
-    }
+    if (!node || !e) return;
     const { dx, dy } = e;
     translateX += dx;
     translateY += dy;
-    // if (popupTranslateCoord) {
-    //   popupTranslateCoord.x += dx;
-    //   popupTranslateCoord.y += dy;
-    //   popup
-    //     .attr('data-x', popupTranslateCoord.x + 'px')
-    //     .attr('data-y', popupTranslateCoord.y + 'px')
-    //     .style('left', popupTranslateCoord.x + 'px')
-    //     .style('top', popupTranslateCoord.y + 'px');
-    // }
-    // if (allNodes) {
-    //   collisionDetection(e);
-    // }
-    if (targetLinks) {
-      targetLinks.each(function (this: any) {
-        const _g = d3.select(this);
-        const _l = _g.select('.topologyLink');
-        const _type = _g.attr('data-link_type');
-        const _tX = Number(_g.attr('data-target_x')) + dx;
-        const _tY = Number(_g.attr('data-target_y')) + dy;
-        const _sX = Number(_g.attr('data-source_x'));
-        const _sY = Number(_g.attr('data-source_y'));
-        if (_type === TOPOLOGY_LINKS_TYPES.NETWORKLINK || _type === TOPOLOGY_LINKS_TYPES.NETWORK_BRENCH_LINK) {
-          const gAtt = _g.select('.networkAttached');
-          const _points = getPointsData({ x: _tX, y: _tY }, { x: _sX, y: _sY });
-          const _data: IRotateCoord = calculateAttachmentPosition(_points);
-          gAtt.attr('transform', `translate(${_data.x}, ${_data.y}) rotate(${_data.angle})`);
+    if (links) {
+      links.each(function (this: any) {
+        const _l = d3.select(this);
+        let x = 0;
+        let y = 0;
+        if (linkPrefiks === 'fromparentid') {
+          x = Number(_l.attr('x1')) + dx;
+          y = Number(_l.attr('y1')) + dy;
+          _l.attr('x1', x).attr('y1', y);
         }
-        _g.attr('data-target_x', _tX).attr('data-target_y', _tY);
-        _l.attr('x2', _tX).attr('y2', _tY);
-      });
-    }
-    if (sourceLinks) {
-      sourceLinks.each(function (this: any) {
-        const _g = d3.select(this);
-        const _l = _g.select('.topologyLink');
-        const _type = _g.attr('data-link_type');
-        const _tX = Number(_g.attr('data-target_x'));
-        const _tY = Number(_g.attr('data-target_y'));
-        const _sX = Number(_g.attr('data-source_x')) + dx;
-        const _sY = Number(_g.attr('data-source_y')) + dy;
-        if (_type === TOPOLOGY_LINKS_TYPES.NETWORKLINK || _type === TOPOLOGY_LINKS_TYPES.NETWORK_BRENCH_LINK) {
-          const gAtt = _g.select('.networkAttached');
-          const _points = getPointsData({ x: _tX, y: _tY }, { x: _sX, y: _sY });
-          const _data: IRotateCoord = calculateAttachmentPosition(_points);
-          gAtt.attr('transform', `translate(${_data.x}, ${_data.y}) rotate(${_data.angle})`);
+        if (linkPrefiks === 'toparentid') {
+          x = Number(_l.attr('x2')) + dx;
+          y = Number(_l.attr('y2')) + dy;
+          _l.attr('x2', x).attr('y2', y);
         }
-        _g.attr('data-source_x', _sX).attr('data-source_y', _sY);
-        _l.attr('x1', _sX).attr('y1', _sY);
       });
     }
     node.attr('transform', `translate(${translateX}, ${translateY})`);
@@ -160,16 +115,10 @@ export function useDrag(props: IProps, onUpdateCallBack: (pos: IPosition) => voi
   };
 
   const onDragEnd = () => {
-    // if (popup) {
-    //   popup.style('display', 'block');
-    // }
+    d3.selectAll('.topologyNode').classed('topoDisabledOnDrag', null).classed('topoOnDrag', null);
     node = null;
     childrenContainerNode = null;
-    targetLinks = null;
-    sourceLinks = null;
-    // allNodes = null;
-    // popup = null;
-    // popupTranslateCoord = null;
+    links = null;
     onUpdateCallBack({ x: translateX, y: translateY });
   };
 

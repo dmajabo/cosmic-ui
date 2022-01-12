@@ -32,10 +32,11 @@ const RegionCollapsedNode: React.FC<Props> = (props: Props) => {
   };
 
   return (
-    <TransitionContainer stateIn={props.show} origin="unset" transform="none">
+    <TransitionContainer id={`collapseNodeWrapper${props.id}`} stateIn={props.show} origin="unset" transform="none">
       <>
-        <g style={{ cursor: 'pointer' }} pointerEvents="all" onMouseEnter={showExpandBtn} onMouseLeave={hideExpandBtn}>
+        <g style={{ cursor: 'pointer' }} onMouseEnter={showExpandBtn} onMouseLeave={hideExpandBtn}>
           <rect
+            className="eventHandler"
             fill={NODES_CONSTANTS.REGION.collapse.bgColor}
             width={NODES_CONSTANTS.REGION.collapse.width}
             height={NODES_CONSTANTS.REGION.collapse.height}

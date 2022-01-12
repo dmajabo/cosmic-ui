@@ -31,7 +31,7 @@ const DataCenterExpandNode: React.FC<Props> = (props: Props) => {
   };
 
   return (
-    <TransitionContainer stateIn={props.show} origin="unset" transform="none">
+    <TransitionContainer id={`expandNodeWrapper${props.id}`} stateIn={props.show} origin="unset" transform="none">
       <g transform={`translate(${NODES_CONSTANTS.DATA_CENTER.expanded.minOffsetX}, ${NODES_CONSTANTS.DATA_CENTER.expanded.minOffsetY})`}>
         <g style={{ cursor: 'pointer' }} pointerEvents="all" onMouseEnter={showExpandCollapseBtn} onMouseLeave={hideExpandCollapseBtn}>
           <rect

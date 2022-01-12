@@ -4,7 +4,6 @@ import RegionNode from './RegionNode/RegionNode';
 import AccountNode from './AccountNode/AccountNode';
 import DataCenter from './DataCenter';
 import SitesNode from './SitesNode/SitesNode';
-import TransitionContainer from '../../TransitionContainer';
 import AccountNodeTopContainer from './AccountNode/AccountNodeTopContainer';
 import RegionNodeTopContainer from './RegionNode/RegionNodeTopContainer';
 import SitesNodeTopContainer from './SitesNode/SitesNodeTopContainer';
@@ -21,55 +20,27 @@ const NodesWrapper: React.FC<Props> = (props: Props) => {
       {props.nodes.map(it => {
         if (it.type === TopoNodeTypes.ACCOUNT) {
           if (props.isTopLayer) {
-            return (
-              <TransitionContainer stateIn={it.visible} origin="unset" transform="none" key={`nodeWrapperTopLayer${it.uiId}`}>
-                <AccountNodeTopContainer key={`nodeTopLevel${it.uiId}`} dataItem={it} />
-              </TransitionContainer>
-            );
+            return <AccountNodeTopContainer key={`nodeWrapperTopLayer${it.uiId}`} dataItem={it} />;
           }
-          return (
-            <TransitionContainer stateIn={it.visible} origin="unset" transform="none" key={`nodeWrapper${it.uiId}`}>
-              <AccountNode key={`node${it.uiId}`} dataItem={it} />
-            </TransitionContainer>
-          );
+          return <AccountNode key={`nodeWrapper${it.uiId}`} dataItem={it} />;
         }
 
-        if (it.type === TopoNodeTypes.REGION && it.visible) {
+        if (it.type === TopoNodeTypes.REGION) {
           if (props.isTopLayer) {
-            return (
-              <TransitionContainer stateIn={it.visible} origin="unset" transform="none" key={`nodeWrapperTopLayer${it.uiId}`}>
-                <RegionNodeTopContainer key={`nodeTopLevel${it.uiId}`} dataItem={it} />
-              </TransitionContainer>
-            );
+            return <RegionNodeTopContainer key={`nodeWrapperTopLayer${it.uiId}`} dataItem={it} />;
           }
-          return (
-            <TransitionContainer stateIn={it.visible} origin="unset" transform="none" key={`nodeWrapper${it.uiId}`}>
-              <RegionNode key={`node${it.uiId}`} dataItem={it} />
-            </TransitionContainer>
-          );
+          return <RegionNode key={`nodeWrapper${it.uiId}`} dataItem={it} />;
         }
 
-        if (it.type === TopoNodeTypes.DATA_CENTER && it.visible) {
-          return (
-            <TransitionContainer stateIn={it.visible} origin="unset" transform="none" key={`nodeWrapper${it.uiId}`}>
-              <DataCenter key={`node${it.uiId}`} dataItem={it} />
-            </TransitionContainer>
-          );
+        if (it.type === TopoNodeTypes.DATA_CENTER) {
+          return <DataCenter key={`nodeWrapper${it.uiId}`} dataItem={it} />;
         }
 
-        if (it.type === TopoNodeTypes.SITES && it.visible) {
+        if (it.type === TopoNodeTypes.SITES) {
           if (props.isTopLayer) {
-            return (
-              <TransitionContainer stateIn={it.visible} origin="unset" transform="none" key={`nodeWrapperTopLayer${it.uiId}`}>
-                <SitesNodeTopContainer key={`nodeTopLevel${it.uiId}`} dataItem={it} />
-              </TransitionContainer>
-            );
+            return <SitesNodeTopContainer key={`nodeWrapperTopLayer${it.uiId}`} dataItem={it} />;
           }
-          return (
-            <TransitionContainer stateIn={it.visible} origin="unset" transform="none" key={`nodeWrapper${it.uiId}`}>
-              <SitesNode key={`node${it.uiId}`} dataItem={it} />
-            </TransitionContainer>
-          );
+          return <SitesNode key={`nodeWrapper${it.uiId}`} dataItem={it} />;
         }
         return null;
       })}

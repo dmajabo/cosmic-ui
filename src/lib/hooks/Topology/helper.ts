@@ -1,4 +1,4 @@
-import { INetworkRegion, ITopologyGroup, ITopologyMapData, SelectorEvalType } from 'lib/api/ApiModels/Topology/apiModels';
+import { INetworkOrg, INetworkRegion, ITopologyGroup, ITopologyMapData, SelectorEvalType } from 'lib/api/ApiModels/Topology/apiModels';
 import { ICollapseStyles, IExpandedStyles, NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
 import { IPosition, ISize } from 'lib/models/general';
 import {
@@ -19,6 +19,7 @@ import { createDeviceNode, createPeerConnectionNode, createTopoNode, createVPCNo
 import { getChunksFromArray } from 'lib/helpers/arrayHelper';
 import { DEFAULT_GROUP_ID, TopologyGroupTypesAsNumber, TopologyGroupTypesAsString } from 'lib/models/topology';
 import { buildLinks } from './helpers/buildlinkHelper';
+import { capitalizeFirstLetter } from 'lib/helpers/stringHelper';
 
 export const createTopology = (showPeerConnection: boolean, _data: ITopologyMapData, _groups: ITopologyGroup[]): ITopologyPreparedMapDataV2 => {
   const regions: ITopoNode<INetworkRegion, INetworkVNetNode>[] = [];
@@ -27,21 +28,22 @@ export const createTopology = (showPeerConnection: boolean, _data: ITopologyMapD
   const groups: ITopoNode<ITopologyGroup, IDeviceNode>[] = [];
   const devicesInGroup: IDeviceNode[] = [];
   const devicesInDefaultGroup: IDeviceNode[] = [];
-  for (let i = 0; i < 1; i++) {
-    const _objA: ITopoNode<any, ITGWNode> = createTopoNode(
-      null,
-      _data.organizations[0].id,
-      TopoNodeTypes.ACCOUNT,
-      `${TopoNodeTypes.ACCOUNT}${i}`,
-      `${TopoNodeTypes.ACCOUNT}${i}`,
-      false,
-      0,
-      0,
-      NODES_CONSTANTS.ACCOUNT.collapse.width,
-      NODES_CONSTANTS.ACCOUNT.collapse.height,
-    );
-    accounts.push(_objA);
-  }
+  console.log(_data);
+  // for (let i = 0; i < 1; i++) {
+  //   const _objA: ITopoNode<any, ITGWNode> = createTopoNode(
+  //     null,
+  //     _data.organizations[0].id,
+  //     TopoNodeTypes.ACCOUNT,
+  //     `${TopoNodeTypes.ACCOUNT}${i}`,
+  //     `${TopoNodeTypes.ACCOUNT}${i}`,
+  //     false,
+  //     0,
+  //     0,
+  //     NODES_CONSTANTS.ACCOUNT.collapse.width,
+  //     NODES_CONSTANTS.ACCOUNT.collapse.height,
+  //   );
+  //   accounts.push(_objA);
+  // }
   const sitesGroups = _groups.filter(group => group.type === TopologyGroupTypesAsString.BRANCH_NETWORKS || group.type === TopologyGroupTypesAsNumber.BRANCH_NETWORKS);
   for (let i = 0; i < sitesGroups.length; i++) {
     const _objS: ITopoNode<ITopologyGroup, IDeviceNode> = createTopoNode(
@@ -61,12 +63,13 @@ export const createTopology = (showPeerConnection: boolean, _data: ITopologyMapD
   _data.organizations.forEach((org, orgI) => {
     if (!org.regions || !org.regions.length) return;
     org.regions.forEach((region, i) => {
+      const _name = buildRegionName(org, region);
       const _objR: ITopoNode<INetworkRegion, INetworkVNetNode> = createTopoNode(
         region,
         org.id,
         TopoNodeTypes.REGION,
         region.id,
-        region.name,
+        _name,
         false,
         0,
         0,
@@ -76,8 +79,27 @@ export const createTopology = (showPeerConnection: boolean, _data: ITopologyMapD
       );
       if (region.wedges && region.wedges.length) {
         region.wedges.forEach((w, index) => {
-          const _wNode: ITGWNode = createWedgeNode(org, orgI, w, accounts[0]);
-          accounts[0].children.push(_wNode);
+          let _aIndex: number = accounts.findIndex(it => it.id === `${w.regionCode}${w.ownerId}`);
+          if (_aIndex !== -1) {
+            const _wNode: ITGWNode = createWedgeNode(org, orgI, w, accounts[_aIndex]);
+            accounts[_aIndex].children.push(_wNode);
+            return;
+          }
+          const _a: ITopoNode<any, ITGWNode> = createTopoNode(
+            null,
+            org.id,
+            TopoNodeTypes.ACCOUNT,
+            `${region.name}${org.extId}`,
+            _name,
+            false,
+            0,
+            0,
+            NODES_CONSTANTS.ACCOUNT.collapse.width,
+            NODES_CONSTANTS.ACCOUNT.collapse.height,
+          );
+          const _wNode: ITGWNode = createWedgeNode(org, orgI, w, _a);
+          _a.children.push(_wNode);
+          accounts.push(_a);
         });
       }
       if (region.vnets && region.vnets.length && org.vendorType !== 'MERAKI') {
@@ -155,9 +177,31 @@ export const createTopology = (showPeerConnection: boolean, _data: ITopologyMapD
   return { nodes: _nodes, links: links };
 };
 
+const buildRegionName = (org: INetworkOrg, region: INetworkRegion): string => {
+  const { extId, ctrlrName } = org;
+  const { extId: regExtId, name } = region;
+  let str = '';
+  if (ctrlrName) {
+    str = capitalizeFirstLetter(ctrlrName) + ' ';
+  }
+  if (extId) {
+    str += `(${extId})`;
+  }
+  if (name) {
+    if (str.length) {
+      str += ` - ${name.toUpperCase()}`;
+    } else {
+      str += name.toUpperCase();
+    }
+  }
+  if (str.length) return str;
+  if (regExtId) return regExtId;
+  return 'Unknown region';
+};
+
 export const updateTopLevelItems = (
   showPeerConnection: boolean,
-  regions: ITopoNode<any, INetworkVNetNode>[],
+  regions: ITopoNode<INetworkRegion, INetworkVNetNode>[],
   accounts: ITopoNode<any, ITGWNode>[],
   groups: ITopoNode<ITopologyGroup, IDeviceNode>[],
 ) => {
@@ -180,7 +224,7 @@ export const updateTopLevelItems = (
   centeredTopLevelNodes(regions, accounts, groups, regionSizes, accountSizes, sitesSizes);
 };
 
-export const updateRegionItems = (items: ITopoNode<any, INetworkVNetNode>[], showPeerConnection: boolean): ISize => {
+export const updateRegionItems = (items: ITopoNode<INetworkRegion, INetworkVNetNode>[], showPeerConnection: boolean): ISize => {
   if (!items || !items.length) return { width: 0, height: 0 };
   let offsetX = 0;
   let maxNodeHeight = 0;

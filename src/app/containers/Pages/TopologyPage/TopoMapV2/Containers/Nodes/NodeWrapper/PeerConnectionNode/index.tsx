@@ -4,10 +4,11 @@ import { INetworkVNetNode, INetworkVNetworkPeeringConnectionNode, ITopoNode } fr
 import { buildPeerLinks, IPeerLink } from './helper';
 import PeerConnectionLink from './PeerConnectionLink';
 import * as d3 from 'd3';
+import { INetworkRegion } from 'lib/api/ApiModels/Topology/apiModels';
 
 interface Props {
   item: INetworkVNetworkPeeringConnectionNode;
-  dataItem: ITopoNode<any, INetworkVNetNode>;
+  dataItem: ITopoNode<INetworkRegion, INetworkVNetNode>;
   parentId: string;
 }
 
@@ -32,7 +33,7 @@ const PeerConnectionNode: React.FC<Props> = (props: Props) => {
     _peerChildren.attr('opacity', 0.5);
     _node.attr('opacity', 1).classed('peerConnectionNodeWrapperHover', true);
     links.forEach(link => {
-      const _vps = d3.select(`#vpsCollapsed${link.from.id}`);
+      const _vps = d3.select(`#${link.from.nodeType}${link.from.id}`);
       _vps.attr('opacity', 1).classed('vpsHoverStroke', true);
     });
   };
@@ -46,7 +47,7 @@ const PeerConnectionNode: React.FC<Props> = (props: Props) => {
     _peerChildren.attr('opacity', 1);
     _node.classed('peerConnectionNodeWrapperHover', null);
     links.forEach(link => {
-      const _vps = d3.select(`#vpsCollapsed${link.from.id}`);
+      const _vps = d3.select(`#${link.from.nodeType}${link.from.id}`);
       _vps.classed('vpsHoverStroke', null);
     });
   };
@@ -56,13 +57,14 @@ const PeerConnectionNode: React.FC<Props> = (props: Props) => {
       {links.map(it => (
         <PeerConnectionLink key={`${it.from.id}${it.to.id}peerLink`} peerConnectionId={props.item.id} from={it.from} to={it.to} offsetY={vpsOffsetY} />
       ))}
-      <g transform={`translate(${props.item.x}, ${props.item.y})`} pointerEvents="all" onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
+      <g transform={`translate(${props.item.x}, ${props.item.y})`} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
         <circle
           fill={NODES_CONSTANTS.PEERING_CONNECTION.collapse.bgColor}
           r={NODES_CONSTANTS.PEERING_CONNECTION.collapse.r}
           cx={NODES_CONSTANTS.PEERING_CONNECTION.collapse.r}
           cy={NODES_CONSTANTS.PEERING_CONNECTION.collapse.r}
-          className="peerConnectionNode"
+          className="peerConnectionNode eventHandler"
+          pointerEvents="all"
         />
         <use
           href={`#${NODES_CONSTANTS.PEERING_CONNECTION.type}`}
@@ -71,6 +73,7 @@ const PeerConnectionNode: React.FC<Props> = (props: Props) => {
           x={0}
           y={0}
           color="#4D27AA"
+          pointerEvents="none"
           className="peerConnectionNodeIcon"
         />
       </g>

@@ -12,7 +12,7 @@ const PeerConnectionLink: React.FC<Props> = ({ peerConnectionId, from, to, offse
   return (
     <line
       data-id={peerConnectionId}
-      className="peerConnectionLink"
+      className="peerConnectionLink eventHandler"
       stroke="#BBCDE7"
       x1={from.x + NODES_CONSTANTS.NETWORK_VNET.collapse.r}
       y1={offsetY + from.y + NODES_CONSTANTS.NETWORK_VNET.collapse.r}

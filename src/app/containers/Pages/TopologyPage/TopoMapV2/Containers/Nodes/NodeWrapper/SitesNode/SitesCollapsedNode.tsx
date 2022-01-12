@@ -32,10 +32,11 @@ const SitesCollapsedNode: React.FC<Props> = (props: Props) => {
   };
 
   return (
-    <TransitionContainer stateIn={props.show} origin="unset" transform="none">
+    <TransitionContainer id={`collapseNodeWrapper${props.dataItem.id}`} stateIn={props.show} origin="unset" transform="none">
       <>
-        <g style={{ cursor: 'pointer' }} pointerEvents="all" onMouseEnter={showExpandBtn} onMouseLeave={hideExpandBtn}>
+        <g style={{ cursor: 'pointer' }} onMouseEnter={showExpandBtn} onMouseLeave={hideExpandBtn}>
           <rect
+            className="eventHandler"
             fill={NODES_CONSTANTS.SITES.collapse.bgColor}
             width={NODES_CONSTANTS.SITES.collapse.width}
             height={NODES_CONSTANTS.SITES.collapse.height}

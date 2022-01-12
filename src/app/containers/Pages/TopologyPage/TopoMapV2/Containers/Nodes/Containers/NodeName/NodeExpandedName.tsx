@@ -19,7 +19,7 @@ const NodeExpandedName: React.FC<Props> = (props: Props) => {
   }, []);
 
   return (
-    <foreignObject width={width} height={props.height} x={props.markerWidth} y={props.stylesObj.y}>
+    <foreignObject width={width} height={props.height} x={props.markerWidth} y={props.stylesObj.y} pointerEvents="none">
       <div
         style={{
           display: 'flex',

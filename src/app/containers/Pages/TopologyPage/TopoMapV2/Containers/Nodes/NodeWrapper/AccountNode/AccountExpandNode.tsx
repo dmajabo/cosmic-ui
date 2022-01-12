@@ -31,10 +31,11 @@ const AccountExpandNode: React.FC<Props> = (props: Props) => {
   };
 
   return (
-    <TransitionContainer stateIn={props.show} origin="unset" transform="none">
+    <TransitionContainer id={`expandNodeWrapper${props.dataItem.id}`} stateIn={props.show} origin="unset" transform="none">
       <>
-        <g style={{ cursor: 'pointer' }} pointerEvents="all" onMouseOver={showExpandCollapseBtn} onMouseOut={hideExpandCollapseBtn}>
+        <g style={{ cursor: 'pointer' }} onMouseOver={showExpandCollapseBtn} onMouseOut={hideExpandCollapseBtn}>
           <rect
+            className="eventHandler"
             fill={NODES_CONSTANTS.ACCOUNT.expanded.bgColor}
             width={props.dataItem.expandedSize.width}
             height={props.dataItem.expandedSize.height}
