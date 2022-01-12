@@ -25,20 +25,16 @@ const RegionNode: React.FC<Props> = (props: Props) => {
     topology.onToogleTopoPanel(TopologyPanelTypes.VPC, true, item);
   };
 
-  // const onMouseEnter = () => {
-  //   onHoverNode(`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`);
-  // };
-
-  // const onMouseLeave = () => {
-  //   onUnHoverNode(`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`);
-  // };
-
   return (
-    <TransitionContainer id={`wrapper${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}childrensLayer`} stateIn={props.dataItem.visible && !props.dataItem.collapsed} origin="unset" transform="none">
+    <TransitionContainer
+      id={`wrapper${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}childrensLayer`}
+      stateIn={props.dataItem.visible && !props.dataItem.collapsed}
+      origin="unset"
+      transform="none"
+      timing={50}
+    >
       <g
         id={`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}childrensLayer`}
-        // onMouseEnter={onMouseEnter}
-        // onMouseLeave={onMouseLeave}
         className="topologyNode"
         transform={`translate(${props.dataItem.x}, ${props.dataItem.y})`}
         data-type={NODES_CONSTANTS.REGION.type}

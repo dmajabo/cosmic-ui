@@ -18,23 +18,15 @@ const SitesNode: React.FC<Props> = (props: Props) => {
     topology.onToogleTopoPanel(TopologyPanelTypes.Device, true, item);
   };
 
-  // const onMouseEnter = () => {
-  //   onHoverNode(`${NODES_CONSTANTS.SITES.type}${props.dataItem.uiId}`);
-  // };
-
-  // const onMouseLeave = () => {
-  //   onUnHoverNode(`${NODES_CONSTANTS.SITES.type}${props.dataItem.uiId}`);
-  // };
-
   return (
-    <TransitionContainer id={`wrapper${NODES_CONSTANTS.SITES.type}${props.dataItem.uiId}childrensLayer`} stateIn={props.dataItem.visible && !props.dataItem.collapsed} origin="unset" transform="none">
-      <g
-        id={`${NODES_CONSTANTS.SITES.type}${props.dataItem.uiId}childrensLayer`}
-        // onMouseEnter={onMouseEnter}
-        // onMouseLeave={onMouseLeave}
-        className="topologyNode"
-        transform={`translate(${props.dataItem.x}, ${props.dataItem.y})`}
-      >
+    <TransitionContainer
+      id={`wrapper${NODES_CONSTANTS.SITES.type}${props.dataItem.uiId}childrensLayer`}
+      stateIn={props.dataItem.visible && !props.dataItem.collapsed}
+      origin="unset"
+      transform="none"
+      timing={50}
+    >
+      <g id={`${NODES_CONSTANTS.SITES.type}${props.dataItem.uiId}childrensLayer`} className="topologyNode" transform={`translate(${props.dataItem.x}, ${props.dataItem.y})`}>
         <g transform={`translate(${NODES_CONSTANTS.SITES.expanded.contentPadding}, ${NODES_CONSTANTS.SITES.headerHeight + NODES_CONSTANTS.SITES.expanded.contentPadding})`}>
           {props.dataItem.children.map((it, index) => (
             <DeviceNode key={`${it.uiId}device`} item={it} onClick={onDeviceClick} />

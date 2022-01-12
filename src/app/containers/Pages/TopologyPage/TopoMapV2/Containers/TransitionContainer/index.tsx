@@ -7,13 +7,14 @@ interface Props {
   origin?: string;
   transform?: string;
   id: string;
+  timing?: number;
   children: React.ReactNode;
 }
 const TransitionContainer: React.FC<Props> = (props: Props) => {
   // if (!props.stateIn) return null;
   // return <g>{props.children}</g>;
   return (
-    <Transition mountOnEnter unmountOnExit timeout={100} in={props.stateIn}>
+    <Transition mountOnEnter unmountOnExit timeout={props.timing || 100} in={props.stateIn}>
       {state => (
         <TransitionGContainer id={props.id} origin={props.origin} transformStyle={props.transform} className={state}>
           {props.children}

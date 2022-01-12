@@ -12,7 +12,7 @@ interface Props {
 
 const DataCenterExpandNode: React.FC<Props> = (props: Props) => {
   return (
-    <TransitionContainer id={`expandNodeWrapper${props.id}`} stateIn={props.show} origin="unset" transform="none">
+    <TransitionContainer id={`expandNodeWrapper${props.id}`} stateIn={props.show} origin="unset" transform="none" timing={50}>
       <g transform={`translate(${NODES_CONSTANTS.DATA_CENTER.expanded.minOffsetX}, ${NODES_CONSTANTS.DATA_CENTER.expanded.minOffsetY})`}>
         <g style={{ cursor: 'pointer' }} pointerEvents="all">
           <rect

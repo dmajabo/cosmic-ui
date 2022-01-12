@@ -10,5 +10,6 @@ export const onHoverNode = (id: string) => {
 
 export const onUnHoverNode = (id: string) => {
   const svg = d3.select(`#${TOPOLOGY_IDS.SVG}`);
-  svg.selectAll('.topologyNode').classed('unHoverNode', null).classed('hoverNode', null);
+  svg.selectAll('.hoverNode').classed('hoverNode', false);
+  svg.selectAll('.unHoverNode').classed('unHoverNode', false);
 };
