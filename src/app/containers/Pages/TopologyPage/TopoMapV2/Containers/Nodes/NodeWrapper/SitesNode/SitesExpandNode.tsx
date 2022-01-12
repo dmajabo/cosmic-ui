@@ -19,7 +19,6 @@ const SitesExpandNode: React.FC<Props> = (props: Props) => {
       <g>
         <g style={{ cursor: 'pointer' }}>
           <rect
-            className="eventHandler"
             fill={NODES_CONSTANTS.SITES.expanded.bgColor}
             width={NODES_CONSTANTS.SITES.expanded.minWidth}
             height={NODES_CONSTANTS.SITES.expanded.minHeight}

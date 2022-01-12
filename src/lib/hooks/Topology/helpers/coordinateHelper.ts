@@ -87,6 +87,10 @@ export const updateRegionItems = (items: ITopoRegionNode[], showPeerConnection: 
       const count = setUpChildCoord(a.peerConnections, VPCS_IN_ROW, minRegWidth, NODES_CONSTANTS.PEERING_CONNECTION.collapse);
       a.peerConnectionsRows = count;
     }
+    if (a.peerConnections && a.peerConnections.length) {
+      const count = setUpChildCoord(a.webAcls, VPCS_IN_ROW, minRegWidth, NODES_CONSTANTS.WEB_ACL.collapse);
+      a.webAclsRows = count;
+    }
     a.y = 0;
     if (a.collapsed) {
       maxNodeHeight = Math.max(maxNodeHeight, a.collapsedSize.height);
@@ -100,8 +104,9 @@ export const updateRegionItems = (items: ITopoRegionNode[], showPeerConnection: 
     if (showPeerConnection) {
       peerH = calculateRowsHeight(a.peerConnectionsRows.rows, NODES_CONSTANTS.PEERING_CONNECTION.collapse);
     }
+    const webAclH = calculateRowsHeight(a.webAclsRows.rows, NODES_CONSTANTS.WEB_ACL.collapse);
     const childrenHeight = calculateRowsHeight(a.childrenRows.rows, NODES_CONSTANTS.NETWORK_VNET.collapse);
-    const _height = calculateTotalNodeHeight(peerH + childrenHeight, NODES_CONSTANTS.REGION.headerHeight, NODES_CONSTANTS.REGION.expanded.contentPadding);
+    const _height = calculateTotalNodeHeight(peerH + webAclH + childrenHeight, NODES_CONSTANTS.REGION.headerHeight, NODES_CONSTANTS.REGION.expanded.contentPadding);
     a.x = offsetX;
     a.expandedSize.width = Math.max(NODES_CONSTANTS.REGION.expanded.minWidth, _width);
     a.expandedSize.height = Math.max(NODES_CONSTANTS.REGION.expanded.minHeight, _height);

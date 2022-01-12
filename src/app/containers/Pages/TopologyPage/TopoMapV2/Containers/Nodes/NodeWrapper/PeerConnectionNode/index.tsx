@@ -62,7 +62,7 @@ const PeerConnectionNode: React.FC<Props> = (props: Props) => {
           r={NODES_CONSTANTS.PEERING_CONNECTION.collapse.r}
           cx={NODES_CONSTANTS.PEERING_CONNECTION.collapse.r}
           cy={NODES_CONSTANTS.PEERING_CONNECTION.collapse.r}
-          className="peerConnectionNode eventHandler"
+          className="peerConnectionNode"
           pointerEvents="all"
         />
         <use

@@ -16,6 +16,7 @@ export enum TopologyPanelTypes {
   VPC = 'Vpc',
   Device = ' device',
   Wedge = 'wedge',
+  WebAcl = 'webAcl',
 }
 
 export interface IPanelBar<T> {

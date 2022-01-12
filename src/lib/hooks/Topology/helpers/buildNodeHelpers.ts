@@ -1,6 +1,6 @@
 import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
-import { INetworkOrg, INetworkwEdge, INetworkVNetwork, INetworkDevice, INetworkVNetworkPeeringConnection, INetworkRegion } from 'lib/api/ApiModels/Topology/apiModels';
-import { ITGWNode, INetworkVNetNode, TopoNodeTypes, ITopoNode, IDeviceNode, INetworkVNetworkPeeringConnectionNode, ITopoRegionNode } from '../models';
+import { INetworkOrg, INetworkwEdge, INetworkVNetwork, INetworkDevice, INetworkVNetworkPeeringConnection, INetworkRegion, INetworkWebAcl } from 'lib/api/ApiModels/Topology/apiModels';
+import { ITGWNode, INetworkVNetNode, TopoNodeTypes, ITopoNode, IDeviceNode, INetworkVNetworkPeeringConnectionNode, ITopoRegionNode, INetworkWebAclNode } from '../models';
 import uuid from 'react-uuid';
 
 export const createTopoNode = <P, C>(
@@ -136,6 +136,21 @@ export const createPeerConnectionNode = (org: INetworkOrg, orgIndex: number, nod
     uiId: uuid(),
     vendorType: org.vendorType,
     nodeType: TopoNodeTypes.PEERING_CONNECTION,
+  };
+};
+
+export const createWebAclNode = (org: INetworkOrg, orgIndex: number, node: INetworkWebAcl, index: number): INetworkWebAclNode => {
+  return {
+    ...node,
+    visible: true,
+    childIndex: index,
+    orgIndex: orgIndex,
+    orgId: org.id,
+    x: 0,
+    y: 0,
+    uiId: uuid(),
+    vendorType: org.vendorType,
+    nodeType: TopoNodeTypes.WEB_ACL,
   };
 };
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { INetworkVNetNode, ITopoRegionNode } from 'lib/hooks/Topology/models';
+import { INetworkVNetNode, INetworkWebAclNode, ITopoRegionNode } from 'lib/hooks/Topology/models';
 import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 import ExpandNodeContent from './ExpandNodeContent';
@@ -9,6 +9,7 @@ import PeerConnectionNode from '../PeerConnectionNode';
 import { TopologyPanelTypes } from 'lib/models/topology';
 import { removeVnetTooltip } from '../NetworkVnetNode/tooltipHelper';
 import TransitionContainer from '../../../TransitionContainer';
+import WebAclNode from '../WebAclNode';
 interface Props {
   dataItem: ITopoRegionNode;
 }
@@ -23,6 +24,10 @@ const RegionNode: React.FC<Props> = (props: Props) => {
 
   const onVpcClick = (item: INetworkVNetNode) => {
     topology.onToogleTopoPanel(TopologyPanelTypes.VPC, true, item);
+  };
+
+  const onWebAclClick = (item: INetworkWebAclNode) => {
+    topology.onToogleTopoPanel(TopologyPanelTypes.WebAcl, true, item);
   };
 
   return (
@@ -44,6 +49,15 @@ const RegionNode: React.FC<Props> = (props: Props) => {
             <>
               {props.dataItem.peerConnections.map(it => (
                 <PeerConnectionNode key={`${it.uiId}peerConnection`} parentId={`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`} item={it} dataItem={props.dataItem} />
+              ))}
+            </>
+          </ExpandNodeContent>
+        ) : null}
+        {props.dataItem.webAcls && props.dataItem.webAcls.length ? (
+          <ExpandNodeContent offsetY={NODES_CONSTANTS.REGION.headerHeight}>
+            <>
+              {props.dataItem.webAcls.map(it => (
+                <WebAclNode key={`${it.uiId}webacl`} parentId={`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`} item={it} region={props.dataItem} onClick={onWebAclClick} />
               ))}
             </>
           </ExpandNodeContent>

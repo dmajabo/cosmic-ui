@@ -17,7 +17,6 @@ const RegionCollapsedNode: React.FC<Props> = (props: Props) => {
       <>
         <g style={{ cursor: 'pointer' }}>
           <rect
-            className="eventHandler"
             fill={NODES_CONSTANTS.REGION.collapse.bgColor}
             width={NODES_CONSTANTS.REGION.collapse.width}
             height={NODES_CONSTANTS.REGION.collapse.height}

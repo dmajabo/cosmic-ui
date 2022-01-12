@@ -17,7 +17,6 @@ const AccountCollapsedNode: React.FC<Props> = (props: Props) => {
       <>
         <g style={{ cursor: 'pointer' }}>
           <rect
-            className="eventHandler"
             fill={NODES_CONSTANTS.ACCOUNT.collapse.bgColor}
             width={NODES_CONSTANTS.ACCOUNT.collapse.width}
             height={NODES_CONSTANTS.ACCOUNT.collapse.height}

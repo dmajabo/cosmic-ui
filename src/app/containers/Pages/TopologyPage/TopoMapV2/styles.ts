@@ -106,10 +106,12 @@ export const StyledMap = styled.svg`
       transition-property: fill, stroke;
       transition: 0.2s linear;
     }
-    .vpsBgIcon {
+    .vpsBgIcon,
+    .webAclNodeIcon {
       color: var(--_primaryWhiteColor);
     }
-    .wedgeBg {
+    .wedgeBg,
+    .webAclNode {
       fill: var(--_highlightColor);
       transition-property: fill;
       transition: 0.2s linear;

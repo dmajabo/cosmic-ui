@@ -1,7 +1,18 @@
 import { INetworkOrg, INetworkRegion, ITopologyGroup, ITopologyMapData, SelectorEvalType } from 'lib/api/ApiModels/Topology/apiModels';
 import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
-import { ITopoNode, ITopoRegionNode, ITopologyPreparedMapDataV2, TopoNodeTypes, ITGWNode, INetworkVNetNode, IDeviceNode, INetworkVNetworkPeeringConnectionNode, ITopoLink } from './models';
-import { createDeviceNode, createPeerConnectionNode, createTopoNode, createTopoRegionNode, createVPCNode, createWedgeNode } from './helpers/buildNodeHelpers';
+import {
+  ITopoNode,
+  ITopoRegionNode,
+  ITopologyPreparedMapDataV2,
+  TopoNodeTypes,
+  ITGWNode,
+  INetworkVNetNode,
+  IDeviceNode,
+  INetworkVNetworkPeeringConnectionNode,
+  ITopoLink,
+  INetworkWebAclNode,
+} from './models';
+import { createDeviceNode, createPeerConnectionNode, createTopoNode, createTopoRegionNode, createVPCNode, createWebAclNode, createWedgeNode } from './helpers/buildNodeHelpers';
 import { DEFAULT_GROUP_ID, TopologyGroupTypesAsNumber, TopologyGroupTypesAsString } from 'lib/models/topology';
 import { buildLinks } from './helpers/buildlinkHelper';
 import { capitalizeFirstLetter } from 'lib/helpers/stringHelper';
@@ -87,7 +98,7 @@ export const createTopology = (showPeerConnection: boolean, _data: ITopologyMapD
           accounts.push(_a);
         });
       }
-      if (region.vnets && region.vnets.length && org.vendorType !== 'MERAKI') {
+      if (region.vnets && region.vnets.length) {
         region.vnets.forEach((v, index) => {
           const obj: INetworkVNetNode = createVPCNode(org, orgI, v, index);
           _objR.children.push(obj);
@@ -96,10 +107,21 @@ export const createTopology = (showPeerConnection: boolean, _data: ITopologyMapD
           // _objR.children.push(objT);
         });
       }
-      if (region.vNetworkPeeringConnections && region.vNetworkPeeringConnections.length && org.vendorType !== 'MERAKI') {
+      if (region.vNetworkPeeringConnections && region.vNetworkPeeringConnections.length) {
         region.vNetworkPeeringConnections.forEach((v, index) => {
           const obj: INetworkVNetworkPeeringConnectionNode = createPeerConnectionNode(org, orgI, v, index);
           _objR.peerConnections.push(obj);
+
+          // for (let j = 0; j < 40; j++) {
+          //   const objT: INetworkVNetworkPeeringConnectionNode = createPeerConnectionNode(org, orgI, v, index + 100 + j);
+          //   _objR.peerConnections.push(objT);
+          // }
+        });
+      }
+      if (region.webAcls && region.webAcls.length) {
+        region.webAcls.forEach((v, index) => {
+          const obj: INetworkWebAclNode = createWebAclNode(org, orgI, v, index);
+          _objR.webAcls.push(obj);
 
           // for (let j = 0; j < 40; j++) {
           //   const objT: INetworkVNetworkPeeringConnectionNode = createPeerConnectionNode(org, orgI, v, index + 100 + j);

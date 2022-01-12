@@ -15,7 +15,6 @@ const RegionExpandNode: React.FC<Props> = (props: Props) => {
     <TransitionContainer id={`expandNodeWrapper${props.dataItem.id}`} stateIn={props.show} origin="unset" transform="none">
       <g style={{ cursor: 'pointer' }}>
         <rect
-          className="eventHandler"
           fill={NODES_CONSTANTS.REGION.expanded.bgColor}
           width={props.dataItem.expandedSize.width}
           height={props.dataItem.expandedSize.height}
