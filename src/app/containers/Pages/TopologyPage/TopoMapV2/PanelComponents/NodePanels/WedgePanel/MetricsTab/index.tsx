@@ -119,7 +119,7 @@ const MetricsTab: React.FC<MetricTabProps> = (props: MetricTabProps) => {
         dataValueSuffix="bytes"
       /> */}
       <MultiLineChartContainer
-        title="Packets Drop Count No Route"
+        title="Packets Drop"
         styles={{ margin: '0 0 20px 0', minHeight: '390px' }}
         chartType="Line"
         id={wedgeDataItem.extId}

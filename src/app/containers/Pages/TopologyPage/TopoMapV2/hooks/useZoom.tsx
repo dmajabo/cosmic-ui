@@ -1,6 +1,6 @@
 import React from 'react';
 import * as d3 from 'd3';
-import { ISize, ITransform, ZoomRange } from 'lib/models/general';
+import { ITransform, ZoomRange } from 'lib/models/general';
 import { ITopoNode } from 'lib/hooks/Topology/models';
 import { STANDART_DISPLAY_RESOLUTION_V2 } from 'lib/models/general';
 interface IProps {
@@ -26,7 +26,7 @@ export function useZoom(props: IProps) {
     const svg = d3.select(`#${svgId}`);
     svg.call(zoom);
     svg.on('click.zoom', null).on('dblclick.zoom', null);
-    onCentered(nodes, true);
+    // onCentered(nodes, true);
   };
 
   const convertScale = (k: number): number => {
@@ -66,11 +66,10 @@ export function useZoom(props: IProps) {
 
   const onCentered = (nodes: ITopoNode<any, any>[], _disabledTransition?: boolean) => {
     const svg = d3.select(`#${svgId}`);
-    // const svgSize = document.getElementById(svgId).getBoundingClientRect();
     const rootSize = getMapSize(nodes);
     const scale = getScaleSizeHelper(rootSize.width, rootSize.height);
-    const centerX = STANDART_DISPLAY_RESOLUTION_V2.width / 2 - (rootSize.width * scale) / 2;
-    const centerY = STANDART_DISPLAY_RESOLUTION_V2.height / 2 - (rootSize.height * scale) / 2;
+    const centerX = STANDART_DISPLAY_RESOLUTION_V2.width / 2 - (rootSize.width * scale) / 2 - rootSize.left * scale;
+    const centerY = STANDART_DISPLAY_RESOLUTION_V2.height / 2 - (rootSize.height * scale) / 2 - rootSize.top * scale;
     if (_disabledTransition) {
       disabledTransition = _disabledTransition;
     }
@@ -123,7 +122,7 @@ export function useZoom(props: IProps) {
     setTransform({ x, y, k });
   };
 
-  const getMapSize = (nodes: ITopoNode<any, any>[]): ISize => {
+  const getMapSize = (nodes: ITopoNode<any, any>[]) => {
     let left = 0;
     let right = 0;
     let top = 0;
@@ -151,7 +150,7 @@ export function useZoom(props: IProps) {
         bottom = node.y + nodeH;
       }
     });
-    return { width: right - left, height: bottom - top };
+    return { width: right - left, height: bottom - top, left: left, rigth: right, top: top, bottom: bottom };
   };
 
   return {

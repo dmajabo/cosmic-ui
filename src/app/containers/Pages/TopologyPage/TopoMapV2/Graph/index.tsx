@@ -35,6 +35,12 @@ const Graph: React.FC<Props> = (props: Props) => {
     };
   }, [props.onlyRefreshAvaible]);
 
+  React.useEffect(() => {
+    if (topology.originData) {
+      onCentered(topology.nodes);
+    }
+  }, [topology.originData]);
+
   const onOpenFullScreen = () => {
     props.onOpenFullScreen();
   };
