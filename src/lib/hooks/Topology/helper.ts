@@ -9,7 +9,6 @@ import {
   ITGWNode,
   INetworkVNetNode,
   VPCS_IN_ROW,
-  PEER_CONNECTIONS_IN_ROW,
   IDeviceNode,
   INetworkVNetworkPeeringConnectionNode,
   IChildrenCount,
@@ -106,12 +105,20 @@ export const createTopology = (showPeerConnection: boolean, _data: ITopologyMapD
         region.vnets.forEach((v, index) => {
           const obj: INetworkVNetNode = createVPCNode(org, orgI, v, index);
           _objR.children.push(obj);
+
+          // const objT: INetworkVNetNode = createVPCNode(org, orgI, v, index + 100);
+          // _objR.children.push(objT);
         });
       }
       if (region.vNetworkPeeringConnections && region.vNetworkPeeringConnections.length && org.vendorType !== 'MERAKI') {
         region.vNetworkPeeringConnections.forEach((v, index) => {
           const obj: INetworkVNetworkPeeringConnectionNode = createPeerConnectionNode(org, orgI, v, index);
           _objR.peerConnections.push(obj);
+
+          // for (let j = 0; j < 40; j++) {
+          //   const objT: INetworkVNetworkPeeringConnectionNode = createPeerConnectionNode(org, orgI, v, index + 100 + j);
+          //   _objR.peerConnections.push(objT);
+          // }
         });
       }
       if (region.devices && region.devices.length) {
@@ -238,8 +245,7 @@ export const updateRegionItems = (items: ITopoNode<INetworkRegion, INetworkVNetN
       a.childrenRows = count;
     }
     if (a.peerConnections && a.peerConnections.length) {
-      const _maxCount = a.childrenRows.childrenCount === VPCS_IN_ROW ? PEER_CONNECTIONS_IN_ROW : Math.max(2, a.childrenRows.childrenCount - 2);
-      const count = setUpChildCoord(a.peerConnections, _maxCount, minRegWidth, NODES_CONSTANTS.PEERING_CONNECTION.collapse);
+      const count = setUpChildCoord(a.peerConnections, VPCS_IN_ROW, minRegWidth, NODES_CONSTANTS.PEERING_CONNECTION.collapse);
       a.peerConnectionsRows = count;
     }
     a.y = 0;

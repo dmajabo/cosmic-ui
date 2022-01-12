@@ -3,7 +3,6 @@ import { AlertSeverity } from 'lib/api/ApiModels/Workflow/apiModel';
 import { IBaseEntity, ICollapsed, ICoord, IFilterOption, ISize, IVisible } from 'lib/models/general';
 
 export const VPCS_IN_ROW = 12;
-export const PEER_CONNECTIONS_IN_ROW = 10;
 
 export enum TopoNodeTypes {
   ACCOUNT = 'account',
