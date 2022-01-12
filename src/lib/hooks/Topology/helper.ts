@@ -1,14 +1,14 @@
 import { INetworkOrg, INetworkRegion, ITopologyGroup, ITopologyMapData, SelectorEvalType } from 'lib/api/ApiModels/Topology/apiModels';
 import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
-import { ITopoNode, ITopologyPreparedMapDataV2, TopoNodeTypes, ITGWNode, INetworkVNetNode, IDeviceNode, INetworkVNetworkPeeringConnectionNode, ITopoLink } from './models';
-import { createDeviceNode, createPeerConnectionNode, createTopoNode, createVPCNode, createWedgeNode } from './helpers/buildNodeHelpers';
+import { ITopoNode, ITopoRegionNode, ITopologyPreparedMapDataV2, TopoNodeTypes, ITGWNode, INetworkVNetNode, IDeviceNode, INetworkVNetworkPeeringConnectionNode, ITopoLink } from './models';
+import { createDeviceNode, createPeerConnectionNode, createTopoNode, createTopoRegionNode, createVPCNode, createWedgeNode } from './helpers/buildNodeHelpers';
 import { DEFAULT_GROUP_ID, TopologyGroupTypesAsNumber, TopologyGroupTypesAsString } from 'lib/models/topology';
 import { buildLinks } from './helpers/buildlinkHelper';
 import { capitalizeFirstLetter } from 'lib/helpers/stringHelper';
 import { updateTopLevelItems } from './helpers/coordinateHelper';
 
 export const createTopology = (showPeerConnection: boolean, _data: ITopologyMapData, _groups: ITopologyGroup[]): ITopologyPreparedMapDataV2 => {
-  const regions: ITopoNode<INetworkRegion, INetworkVNetNode>[] = [];
+  const regions: ITopoRegionNode[] = [];
   const accounts: ITopoNode<any, ITGWNode>[] = [];
   // const dataCenters: ITopoNode<any>[] = [];
   const groups: ITopoNode<ITopologyGroup, IDeviceNode>[] = [];
@@ -50,7 +50,7 @@ export const createTopology = (showPeerConnection: boolean, _data: ITopologyMapD
     if (!org.regions || !org.regions.length) return;
     org.regions.forEach((region, i) => {
       const _name = buildRegionName(org, region);
-      const _objR: ITopoNode<INetworkRegion, INetworkVNetNode> = createTopoNode(
+      const _objR: ITopoRegionNode = createTopoRegionNode(
         region,
         org.id,
         TopoNodeTypes.REGION,
@@ -61,7 +61,6 @@ export const createTopology = (showPeerConnection: boolean, _data: ITopologyMapD
         0,
         NODES_CONSTANTS.REGION.collapse.width,
         NODES_CONSTANTS.REGION.collapse.height,
-        true,
       );
       if (region.wedges && region.wedges.length) {
         region.wedges.forEach((w, index) => {

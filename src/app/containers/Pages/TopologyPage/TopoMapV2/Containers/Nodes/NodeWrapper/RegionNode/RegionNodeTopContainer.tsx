@@ -1,5 +1,5 @@
 import React from 'react';
-import { INetworkVNetNode, ITopoNode } from 'lib/hooks/Topology/models';
+import { ITopoRegionNode } from 'lib/hooks/Topology/models';
 import { IPosition } from 'lib/models/general';
 import { useDrag } from 'app/containers/Pages/TopologyPage/TopoMapV2/hooks/useDrag';
 import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
@@ -8,11 +8,10 @@ import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataCont
 import RegionCollapsedNode from './RegionCollapsedNode';
 import RegionExpandNode from './RegionExpandNode';
 import { onHoverNode, onUnHoverNode } from '../../../../Graph/helper';
-import { INetworkRegion } from 'lib/api/ApiModels/Topology/apiModels';
 import TransitionContainer from '../../../TransitionContainer';
 
 interface Props {
-  dataItem: ITopoNode<INetworkRegion, INetworkVNetNode>;
+  dataItem: ITopoRegionNode;
 }
 
 const RegionNodeTopContainer: React.FC<Props> = (props: Props) => {

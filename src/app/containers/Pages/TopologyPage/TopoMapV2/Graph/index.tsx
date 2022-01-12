@@ -28,7 +28,7 @@ const Graph: React.FC<Props> = (props: Props) => {
 
   React.useEffect(() => {
     if (!props.onlyRefreshAvaible) {
-      onZoomInit(topology.nodes);
+      onZoomInit();
     }
     return () => {
       onUnsubscribe();

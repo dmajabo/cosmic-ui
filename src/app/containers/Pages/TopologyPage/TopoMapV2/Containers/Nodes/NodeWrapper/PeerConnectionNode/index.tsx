@@ -1,14 +1,13 @@
 import React from 'react';
 import { NODES_CONSTANTS } from '../../../../model';
-import { INetworkVNetNode, INetworkVNetworkPeeringConnectionNode, ITopoNode } from 'lib/hooks/Topology/models';
+import { INetworkVNetworkPeeringConnectionNode, ITopoRegionNode } from 'lib/hooks/Topology/models';
 import { buildPeerLinks, IPeerLink } from './helper';
 import PeerConnectionLink from './PeerConnectionLink';
 import * as d3 from 'd3';
-import { INetworkRegion } from 'lib/api/ApiModels/Topology/apiModels';
 
 interface Props {
   item: INetworkVNetworkPeeringConnectionNode;
-  dataItem: ITopoNode<INetworkRegion, INetworkVNetNode>;
+  dataItem: ITopoRegionNode;
   parentId: string;
 }
 

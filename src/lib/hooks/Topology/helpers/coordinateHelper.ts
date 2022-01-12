@@ -1,15 +1,10 @@
 import { ICollapseStyles, IExpandedStyles, NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
-import { INetworkRegion, ITopologyGroup } from 'lib/api/ApiModels/Topology/apiModels';
+import { ITopologyGroup } from 'lib/api/ApiModels/Topology/apiModels';
 import { getChunksFromArray } from 'lib/helpers/arrayHelper';
 import { IPosition, ISize, STANDART_DISPLAY_RESOLUTION_V2 } from 'lib/models/general';
-import { DirectionType, IChildrenCount, IDeviceNode, INetworkVNetNode, ITGWNode, ITopoNode, TopoNodeTypes, VPCS_IN_ROW } from '../models';
+import { DirectionType, IChildrenCount, IDeviceNode, ITGWNode, ITopoNode, ITopoRegionNode, TopoNodeTypes, VPCS_IN_ROW } from '../models';
 
-export const updateTopLevelItems = (
-  showPeerConnection: boolean,
-  regions: ITopoNode<INetworkRegion, INetworkVNetNode>[],
-  accounts: ITopoNode<any, ITGWNode>[],
-  groups: ITopoNode<ITopologyGroup, IDeviceNode>[],
-) => {
+export const updateTopLevelItems = (showPeerConnection: boolean, regions: ITopoRegionNode[], accounts: ITopoNode<any, ITGWNode>[], groups: ITopoNode<ITopologyGroup, IDeviceNode>[]) => {
   let offsetY = 0;
   let regionSizes: ISize = { width: 0, height: 0 };
   let accountSizes: ISize = { width: 0, height: 0 };
@@ -30,7 +25,7 @@ export const updateTopLevelItems = (
 };
 
 const centeredTopLevelNodes = (
-  regions: ITopoNode<any, any>[],
+  regions: ITopoRegionNode[],
   accounts: ITopoNode<any, any>[],
   sites: ITopoNode<ITopologyGroup, IDeviceNode>[],
   regionSize: ISize,
@@ -75,7 +70,7 @@ const calculateRowsHeight = (_count: number, chStyles: ICollapseStyles): number 
   return height;
 };
 
-export const updateRegionItems = (items: ITopoNode<INetworkRegion, INetworkVNetNode>[], showPeerConnection: boolean): ISize => {
+export const updateRegionItems = (items: ITopoRegionNode[], showPeerConnection: boolean): ISize => {
   if (!items || !items.length) return { width: 0, height: 0 };
   let offsetX = 0;
   let maxNodeHeight = 0;
@@ -116,11 +111,12 @@ export const updateRegionItems = (items: ITopoNode<INetworkRegion, INetworkVNetN
   return { width: offsetX, height: maxNodeHeight };
 };
 
-export const updateRegionHeight = (nodes: ITopoNode<any, any>[], showPeerConnection: boolean): ITopoNode<any, any>[] => {
-  const _nodes: ITopoNode<any, any>[] = nodes.slice();
+export const updateRegionHeight = (nodes: (ITopoNode<any, any> | ITopoRegionNode)[], showPeerConnection: boolean): (ITopoNode<any, any> | ITopoRegionNode)[] => {
+  const _nodes: (ITopoNode<any, any> | ITopoRegionNode)[] = nodes.slice();
   _nodes.forEach(node => {
     if (node.type !== TopoNodeTypes.REGION) return;
-    const peerHeight = !showPeerConnection ? 0 : calculateRowsHeight(node.peerConnectionsRows.rows, NODES_CONSTANTS.PEERING_CONNECTION.collapse);
+    const _n = node as ITopoRegionNode;
+    const peerHeight = !showPeerConnection ? 0 : calculateRowsHeight(_n.peerConnectionsRows.rows, NODES_CONSTANTS.PEERING_CONNECTION.collapse);
     const childrenHeight = calculateRowsHeight(node.childrenRows.rows, NODES_CONSTANTS.NETWORK_VNET.collapse);
     const _height = calculateTotalNodeHeight(peerHeight + childrenHeight, NODES_CONSTANTS.REGION.headerHeight, NODES_CONSTANTS.REGION.expanded.contentPadding);
     node.expandedSize.height = _height;

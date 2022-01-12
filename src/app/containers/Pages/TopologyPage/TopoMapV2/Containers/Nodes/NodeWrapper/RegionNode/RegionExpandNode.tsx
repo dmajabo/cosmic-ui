@@ -6,11 +6,10 @@ import CollapseExpandButton from '../../Containers/CollapseExpandButton';
 import * as d3 from 'd3';
 import NodeMarker from '../../Containers/NodeMarker';
 import NodeExpandedName from '../../Containers/NodeName/NodeExpandedName';
-import { INetworkVNetNode, ITopoNode } from 'lib/hooks/Topology/models';
-import { INetworkRegion } from 'lib/api/ApiModels/Topology/apiModels';
+import { ITopoRegionNode } from 'lib/hooks/Topology/models';
 
 interface Props {
-  dataItem: ITopoNode<INetworkRegion, INetworkVNetNode>;
+  dataItem: ITopoRegionNode;
   show: boolean;
   onCollapse: () => void;
 }

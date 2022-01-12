@@ -124,6 +124,14 @@ export interface IPeeringConnectionNode extends INode<TopoNodeTypes>, ICollapseE
   labelHtmlStyles: ILabelHtmlStyles;
 }
 
+export interface IWebAcl extends INode<TopoNodeTypes>, ICollapseExpandState {
+  iconId: string;
+  countStyles: ICounterStyle;
+  labelCollapsedStyles: ICollapseLabelStyle;
+  labelExpandedStyles: IExpandLabelStyle;
+  labelHtmlStyles: ILabelHtmlStyles;
+}
+
 export interface ISiteNode extends INode<TopoNodeTypes>, ICollapseExpandState {
   iconId: string;
   groupLinkIconId: string;
@@ -145,6 +153,7 @@ export interface INodes_Types {
   NETWORK_VNET: INetworkVNetworkNode;
   DEVICE: ISiteNode;
   PEERING_CONNECTION: IPeeringConnectionNode;
+  WEB_ACL: IWebAcl;
   // GENERAL
   COLLAPSE_EXPAND: ICollapseExpandBtn;
 }
@@ -509,6 +518,28 @@ export const NODES_CONSTANTS: INodes_Types = {
       iconHeight: 20,
       iconOffsetX: 5, // 30 / 2 - 20 / 2
       iconOffsetY: 5, // 30 / 2 - 20 / 2
+      bgColor: 'var(--_primaryBg)',
+      borderRadius: 6,
+    },
+    expanded: null,
+    countStyles: null,
+    labelCollapsedStyles: null,
+    labelExpandedStyles: null,
+    labelHtmlStyles: null,
+  },
+  WEB_ACL: {
+    type: TopoNodeTypes.WEB_ACL,
+    iconId: TopoNodeTypes.WEB_ACL,
+    collapse: {
+      spaceX: 10,
+      spaceY: 10,
+      width: 30,
+      height: 30,
+      r: 15,
+      iconWidth: 18,
+      iconHeight: 18,
+      iconOffsetX: 6, // 30 / 2 - 18 / 2
+      iconOffsetY: 6, // 30 / 2 - 18 / 2
       bgColor: 'var(--_primaryBg)',
       borderRadius: 6,
     },

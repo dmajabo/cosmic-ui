@@ -1,6 +1,6 @@
 import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
-import { INetworkOrg, INetworkwEdge, INetworkVNetwork, INetworkDevice, INetworkVNetworkPeeringConnection } from 'lib/api/ApiModels/Topology/apiModels';
-import { ITGWNode, INetworkVNetNode, TopoNodeTypes, ITopoNode, IDeviceNode, INetworkVNetworkPeeringConnectionNode } from '../models';
+import { INetworkOrg, INetworkwEdge, INetworkVNetwork, INetworkDevice, INetworkVNetworkPeeringConnection, INetworkRegion } from 'lib/api/ApiModels/Topology/apiModels';
+import { ITGWNode, INetworkVNetNode, TopoNodeTypes, ITopoNode, IDeviceNode, INetworkVNetworkPeeringConnectionNode, ITopoRegionNode } from '../models';
 import uuid from 'react-uuid';
 
 export const createTopoNode = <P, C>(
@@ -14,7 +14,6 @@ export const createTopoNode = <P, C>(
   _eh: number,
   _cw: number,
   _ch: number,
-  peerConnection?: boolean,
 ): ITopoNode<P, C> => {
   const _obj: ITopoNode<P, C> = {
     dataItem: _dataItem,
@@ -40,16 +39,57 @@ export const createTopoNode = <P, C>(
       rows: 1,
       childrenCount: 0,
     },
-    peerConnections: null,
-    peerConnectionsRows: null,
   };
-  if (peerConnection) {
-    _obj.peerConnections = [];
-    _obj.peerConnectionsRows = {
+  return _obj;
+};
+
+export const createTopoRegionNode = (
+  _dataItem: INetworkRegion,
+  _orgId: string,
+  _type: TopoNodeTypes,
+  _id: string,
+  _name: string,
+  _collapsed: boolean,
+  _ew: number,
+  _eh: number,
+  _cw: number,
+  _ch: number,
+): ITopoRegionNode => {
+  const _obj: ITopoRegionNode = {
+    dataItem: _dataItem,
+    id: _id,
+    name: _name,
+    uiId: uuid(),
+    type: _type,
+    orgId: _orgId,
+    expandedSize: {
+      width: _cw || 20,
+      height: _ch || 20,
+    },
+    collapsedSize: {
+      width: _cw,
+      height: _ch,
+    },
+    x: 0,
+    y: 0,
+    visible: true,
+    collapsed: _collapsed,
+    children: [],
+    childrenRows: {
       rows: 1,
       childrenCount: 0,
-    };
-  }
+    },
+    peerConnections: [],
+    peerConnectionsRows: {
+      rows: 1,
+      childrenCount: 0,
+    },
+    webAcls: [],
+    webAclsRows: {
+      rows: 1,
+      childrenCount: 0,
+    },
+  };
   return _obj;
 };
 

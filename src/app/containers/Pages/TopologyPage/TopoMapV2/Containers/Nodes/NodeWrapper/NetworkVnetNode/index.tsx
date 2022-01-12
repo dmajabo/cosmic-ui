@@ -1,14 +1,14 @@
 import React from 'react';
 import { NODES_CONSTANTS } from '../../../../model';
-import { INetworkVNetNode, ITopoNode } from 'lib/hooks/Topology/models';
+import { INetworkVNetNode, ITopoRegionNode } from 'lib/hooks/Topology/models';
 import NodeCounter from '../../Containers/NodeCounter';
 import { select } from 'd3-selection';
 import { buildVnetTooltip, removeVnetTooltip } from './tooltipHelper';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
-import { INetworkRegion } from 'lib/api/ApiModels/Topology/apiModels';
+
 interface Props {
   parentId: string;
-  region: ITopoNode<INetworkRegion, INetworkVNetNode>;
+  region: ITopoRegionNode;
   item: INetworkVNetNode;
   onClick: (item: INetworkVNetNode) => void;
 }

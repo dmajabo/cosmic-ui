@@ -1,5 +1,5 @@
 import React from 'react';
-import { INetworkVNetNode, ITopoNode } from 'lib/hooks/Topology/models';
+import { INetworkVNetNode, ITopoRegionNode } from 'lib/hooks/Topology/models';
 import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 import ExpandNodeContent from './ExpandNodeContent';
@@ -8,10 +8,9 @@ import PeerConnectionNode from '../PeerConnectionNode';
 // import { onHoverNode, onUnHoverNode } from '../../../../Graph/helper';
 import { TopologyPanelTypes } from 'lib/models/topology';
 import { removeVnetTooltip } from '../NetworkVnetNode/tooltipHelper';
-import { INetworkRegion } from 'lib/api/ApiModels/Topology/apiModels';
 import TransitionContainer from '../../../TransitionContainer';
 interface Props {
-  dataItem: ITopoNode<INetworkRegion, INetworkVNetNode>;
+  dataItem: ITopoRegionNode;
 }
 
 const RegionNode: React.FC<Props> = (props: Props) => {
