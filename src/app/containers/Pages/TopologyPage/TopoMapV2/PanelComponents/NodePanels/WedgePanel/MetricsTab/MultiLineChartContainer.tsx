@@ -51,6 +51,7 @@ const MultiLineChartContainer: React.FC<MultiLineChartContainerProps> = (props: 
       }
       return apiClient.getMetricsResponse(id, _param);
     });
+    setIsLoading(true);
     Promise.all(promises)
       .then(responses => {
         const metricsData: MultiLineMetricsData[] = responses.map(response => {
