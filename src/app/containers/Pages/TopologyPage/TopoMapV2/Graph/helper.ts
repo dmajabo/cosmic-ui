@@ -3,12 +3,12 @@ import { TOPOLOGY_IDS } from '../model';
 
 export const onHoverNode = (id: string) => {
   const svg = d3.select(`#${TOPOLOGY_IDS.SVG}`);
-  svg.select(`#${id}`).selectAll('.topologyNode').classed('hovered', true);
-  svg.select(`#${id}childrensLayer`).selectAll('.topologyNode').classed('hovered', true);
-  svg.selectAll('.topologyNode:not(.hovered)').classed('unhoverNode', true);
+  svg.select(`#${id}`).classed('hoverNode', true);
+  svg.select(`#${id}childrensLayer`).classed('hoverNode', true);
+  svg.selectAll('.topologyNode:not(.hoverNode)').classed('unHoverNode', true);
 };
 
 export const onUnHoverNode = (id: string) => {
   const svg = d3.select(`#${TOPOLOGY_IDS.SVG}`);
-  svg.selectAll('.topologyNode').classed('unhoverNode', false).classed('hovered', false);
+  svg.selectAll('.topologyNode').classed('unHoverNode', null).classed('hoverNode', null);
 };

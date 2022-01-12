@@ -300,8 +300,8 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     const _data: (ITopoNode<any, any> | ITopoRegionNode)[] = nodesRef.current.slice();
     const index = _data.findIndex(it => it.id === node.id);
     _data[index].collapsed = state;
-    setNodes(_data);
     nodesRef.current = _data;
+    setNodes(_data);
   };
 
   const onUpdateNodeCoord = (node: ITopoNode<any, any> | ITopoRegionNode, _position: IPosition) => {

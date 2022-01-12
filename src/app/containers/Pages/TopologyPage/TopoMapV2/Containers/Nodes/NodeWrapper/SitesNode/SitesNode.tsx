@@ -27,7 +27,7 @@ const SitesNode: React.FC<Props> = (props: Props) => {
   // };
 
   return (
-    <TransitionContainer id={`wrapper${NODES_CONSTANTS.SITES.type}${props.dataItem.uiId}childrensLayer`} stateIn={props.dataItem.visible} origin="unset" transform="none">
+    <TransitionContainer id={`wrapper${NODES_CONSTANTS.SITES.type}${props.dataItem.uiId}childrensLayer`} stateIn={props.dataItem.visible && !props.dataItem.collapsed} origin="unset" transform="none">
       <g
         id={`${NODES_CONSTANTS.SITES.type}${props.dataItem.uiId}childrensLayer`}
         // onMouseEnter={onMouseEnter}
