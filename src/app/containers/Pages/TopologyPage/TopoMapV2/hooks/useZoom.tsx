@@ -78,8 +78,8 @@ export function useZoom(props: IProps) {
   };
 
   const getScaleSizeHelper = (width, height) => {
-    const scaleX = Math.min(1, (STANDART_DISPLAY_RESOLUTION_V2.width - 80) / width);
-    const scaleY = Math.min(1, (STANDART_DISPLAY_RESOLUTION_V2.height - 80) / height);
+    const scaleX = Math.min(1, (STANDART_DISPLAY_RESOLUTION_V2.width - 40) / width);
+    const scaleY = Math.min(1, (STANDART_DISPLAY_RESOLUTION_V2.height - 40) / height);
     let k = Math.min(scaleX, scaleY);
     k = checkMinMaxScale(k);
     return Number(k.toFixed(4));

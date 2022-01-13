@@ -3,6 +3,9 @@ import { AlertSeverity } from 'lib/api/ApiModels/Workflow/apiModel';
 import { IBaseEntity, ICollapsed, ICoord, IFilterOption, ISize, IVisible } from 'lib/models/general';
 
 export const VPCS_IN_ROW = 12;
+export const PEER_CONNECTION_IN_ROW = 11;
+export const WEB_ACL_IN_ROW = 11;
+export const DEV_IN_ROW = 100;
 
 export enum TopoNodeTypes {
   ACCOUNT = 'account',
@@ -46,6 +49,7 @@ export interface ITGWNode extends INetworkwEdge, IMappedNode, ICoord {}
 export interface IChildrenCount {
   rows: number;
   childrenCount: number;
+  totalHeight: number;
 }
 
 export enum TopoLinkTypes {
@@ -111,6 +115,7 @@ export enum FilterEntityTypes {
   TRANSIT = 'transit',
   VPC = 'vpc',
   PEERING_CONNECTIONS = 'peer_connections',
+  WEB_ACLS = 'web_acls',
 }
 
 export interface FilterEntityOptions {
@@ -118,6 +123,7 @@ export interface FilterEntityOptions {
   transit: IFilterOption<FilterEntityTypes>;
   vpc: IFilterOption<FilterEntityTypes>;
   peer_connections: IFilterOption<FilterEntityTypes>;
+  web_acls: IFilterOption<FilterEntityTypes>;
 }
 
 export interface FilterSeverityOptions {

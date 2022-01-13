@@ -18,7 +18,7 @@ const PeerConnectionNode: React.FC<Props> = (props: Props) => {
 
   React.useEffect(() => {
     const _links = buildPeerLinks(props.item, props.dataItem);
-    const _offsetY = props.dataItem.peerConnectionsRows.rows * (NODES_CONSTANTS.PEERING_CONNECTION.collapse.r * 2) + 20;
+    const _offsetY = props.dataItem.peerConnectionsRows.totalHeight + NODES_CONSTANTS.REGION.expanded.contentPadding;
     setVpcOffsetY(_offsetY);
     setLinks(_links);
   }, []);

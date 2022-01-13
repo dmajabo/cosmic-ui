@@ -532,7 +532,7 @@ export const NODES_CONSTANTS: INodes_Types = {
     iconId: TopoNodeTypes.WEB_ACL,
     collapse: {
       spaceX: 10,
-      spaceY: 10,
+      spaceY: 20,
       width: 30,
       height: 30,
       r: 15,

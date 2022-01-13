@@ -19,9 +19,9 @@ import {
   TopoNodeTypes,
 } from './models';
 import { AlertSeverity } from 'lib/api/ApiModels/Workflow/apiModel';
-import { getVnetCoord } from './helpers/buildlinkHelper';
+import { getVnetCoord, getVnetOffsetTop } from './helpers/buildlinkHelper';
 import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
-import { updateRegionHeight } from './helpers/coordinateHelper';
+import { updateRegionHeight } from './helpers/buildNodeHelpers';
 
 export interface TopologyV2ContextType {
   topoPanel: IPanelBar<TopologyPanelTypes>;
@@ -84,6 +84,11 @@ export function useTopologyV2Context(): TopologyV2ContextType {
       selected: true,
       label: 'Peering Connections',
     },
+    web_acls: {
+      type: FilterEntityTypes.WEB_ACLS,
+      selected: true,
+      label: 'Web Acls',
+    },
   });
   const [severity, setSeverity] = React.useState<FilterSeverityOptions>({
     LOW: {
@@ -124,7 +129,7 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     const _orgObj: ITopologyMapData = res.organizations ? jsonClone(res.organizations) : null;
     const _groupsObj: ITopologyGroupsData = res.groups ? jsonClone(res.groups) : [];
     groupsRef.current = _groupsObj.groups;
-    const _data: ITopologyPreparedMapDataV2 = createTopology(entities.peer_connections.selected, _orgObj, groupsRef.current);
+    const _data: ITopologyPreparedMapDataV2 = createTopology(entities, _orgObj, groupsRef.current);
     if (_data.links) {
       setLinks(_data.links);
       linksRef.current = _data.links;
@@ -331,12 +336,13 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     if (groupType === TopoFilterTypes.Entities) {
       const _obj: FilterEntityOptions = jsonClone(entities);
       _obj[type].selected = selected;
-      if (type === FilterEntityTypes.PEERING_CONNECTIONS) {
+      if (type === FilterEntityTypes.PEERING_CONNECTIONS || type === FilterEntityTypes.WEB_ACLS) {
         const _links = linksRef.current.slice();
-        const _nodes = updateRegionHeight(nodesRef.current, _obj[type].selected);
+        const _nodes = updateRegionHeight(nodesRef.current, _obj);
         _links.forEach(it => {
           if (it.type !== TopoLinkTypes.NetworkNetworkLink) return;
-          const _coord = getVnetCoord(it.fromNode.parent, it.fromNode.child, _obj[type].selected, NODES_CONSTANTS.REGION, NODES_CONSTANTS.NETWORK_VNET);
+          const _offsetVpcY = getVnetOffsetTop(it.fromNode.parent, _obj.peer_connections.selected, _obj.web_acls.selected);
+          const _coord = getVnetCoord(it.fromNode.parent, it.fromNode.child, _offsetVpcY, NODES_CONSTANTS.REGION, NODES_CONSTANTS.NETWORK_VNET);
           it.y1 = _coord.y;
         });
         nodesRef.current = _nodes;

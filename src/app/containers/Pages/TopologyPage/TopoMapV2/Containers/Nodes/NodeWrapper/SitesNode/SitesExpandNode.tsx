@@ -20,8 +20,8 @@ const SitesExpandNode: React.FC<Props> = (props: Props) => {
         <g style={{ cursor: 'pointer' }}>
           <rect
             fill={NODES_CONSTANTS.SITES.expanded.bgColor}
-            width={NODES_CONSTANTS.SITES.expanded.minWidth}
-            height={NODES_CONSTANTS.SITES.expanded.minHeight}
+            width={props.dataItem.expandedSize.width}
+            height={props.dataItem.expandedSize.height}
             rx={NODES_CONSTANTS.SITES.expanded.borderRadius}
             ry={NODES_CONSTANTS.SITES.expanded.borderRadius}
             pointerEvents="all"
