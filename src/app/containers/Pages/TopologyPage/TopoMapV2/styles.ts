@@ -103,15 +103,13 @@ export const StyledMap = styled.svg`
     .vpcCollapsedBg {
       fill: var(--_highlightColor);
       stroke: var(--_highlightColor);
-      transition-property: fill, stroke;
-      transition: 0.2s linear;
     }
-    .vpsBgIcon,
-    .webAclNodeIcon {
+    /* .webAclNodeIcon, */
+    /* .vpsBgIcon {
       color: var(--_primaryWhiteColor);
-    }
-    .wedgeBg,
-    .webAclNode {
+    } */
+    /* .webAclNode, */
+    .wedgeBg {
       fill: var(--_highlightColor);
       transition-property: fill;
       transition: 0.2s linear;
@@ -126,6 +124,10 @@ export const StyledMap = styled.svg`
     fill: var(--_highlightColor);
     stroke: var(--_highlightColor);
     transition-property: fill, stroke;
+    transition: 0.2s linear;
+  }
+  .transitionStyle {
+    transition-property: all;
     transition: 0.2s linear;
   }
 `;

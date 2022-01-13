@@ -23,7 +23,7 @@ const RegionNodeTopContainer: React.FC<Props> = (props: Props) => {
     {
       id: `${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`,
       parentId: `wrapper${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`,
-      expandCollapseId: `expandCollapse${props.dataItem.uiId}`,
+      dragId: `drag${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`,
       resId: props.dataItem.id,
       linkPrefiks: 'fromparentid',
       nodeType: props.dataItem.type,
@@ -33,7 +33,6 @@ const RegionNodeTopContainer: React.FC<Props> = (props: Props) => {
 
   const [pos, setPosition] = React.useState<IPosition>(null);
   const [visible, setVisible] = React.useState<boolean>(false);
-
   React.useEffect(() => {
     return () => {
       onUnsubscribeDrag();
@@ -82,6 +81,10 @@ const RegionNodeTopContainer: React.FC<Props> = (props: Props) => {
   //   topology.onCollapseExpandNode(props.dataItem, false);
   // };
 
+  const onShowFullStructure = () => {
+    topology.onToogleRegionStructure(props.dataItem, true);
+  };
+
   const onMouseEnter = () => {
     onHoverNode(`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`);
   };
@@ -102,7 +105,7 @@ const RegionNodeTopContainer: React.FC<Props> = (props: Props) => {
         data-type={NODES_CONSTANTS.REGION.type}
       >
         <RegionCollapsedNode id={props.dataItem.id} name={props.dataItem.name} childrenCount={props.dataItem.children.length} show={props.dataItem.collapsed} />
-        <RegionExpandNode dataItem={props.dataItem} show={!props.dataItem.collapsed} />
+        <RegionExpandNode dragId={`drag${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`} dataItem={props.dataItem} show={!props.dataItem.collapsed} onClick={onShowFullStructure} />
         {/* <CollapseExpandButton
           id={`expandCollapse${props.dataItem.uiId}`}
           isCollapse={!props.dataItem.collapsed}

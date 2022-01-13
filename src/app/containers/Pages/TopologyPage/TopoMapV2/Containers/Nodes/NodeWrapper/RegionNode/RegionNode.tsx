@@ -12,6 +12,7 @@ import TransitionContainer from '../../../TransitionContainer';
 import WebAclNode from '../WebAclNode';
 import PeerContainer from './ExpandNodeContent/PeerContainer';
 import VpcContainer from './ExpandNodeContent/VpcContainer';
+import VnetTooltipContainer from '../../Containers/VnetTooltipContainer';
 interface Props {
   dataItem: ITopoRegionNode;
 }
@@ -47,19 +48,40 @@ const RegionNode: React.FC<Props> = (props: Props) => {
         data-type={NODES_CONSTANTS.REGION.type}
       >
         {topology.entities && topology.entities.web_acls.selected && props.dataItem.webAcls && props.dataItem.webAcls.length ? (
-          <WebAclsContainer offsetY={NODES_CONSTANTS.REGION.headerHeight}>
+          <WebAclsContainer offsetY={NODES_CONSTANTS.REGION.headerHeight} offsetX={NODES_CONSTANTS.REGION.expanded.contentPadding}>
             <>
               {props.dataItem.webAcls.map(it => (
-                <WebAclNode key={`${it.uiId}webacl`} parentId={`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`} item={it} region={props.dataItem} onClick={onWebAclClick} />
+                <WebAclNode
+                  key={`${it.uiId}webacl`}
+                  item={it}
+                  x={it.x}
+                  y={it.y}
+                  onClick={onWebAclClick}
+                  nodeStyles={NODES_CONSTANTS.WEB_ACL.collapse}
+                  counterStyles={NODES_CONSTANTS.WEB_ACL.countStyles}
+                  labelStyles={NODES_CONSTANTS.WEB_ACL.labelHtmlStyles}
+                />
               ))}
             </>
           </WebAclsContainer>
         ) : null}
         {topology.entities && topology.entities.peer_connections.selected && props.dataItem.peerConnections && props.dataItem.peerConnections.length ? (
-          <PeerContainer showWebAcls={topology.entities && topology.entities.web_acls.selected} webAclTotalHeight={props.dataItem.webAclsRows.totalHeight}>
+          <PeerContainer
+            showWebAcls={topology.entities && topology.entities.web_acls.selected}
+            webAclTotalHeight={props.dataItem.webAclsRows.totalHeight}
+            offsetX={NODES_CONSTANTS.REGION.expanded.contentPadding}
+          >
             <>
               {props.dataItem.peerConnections.map(it => (
-                <PeerConnectionNode key={`${it.uiId}peerConnection`} parentId={`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`} item={it} dataItem={props.dataItem} />
+                <PeerConnectionNode
+                  key={`${it.uiId}peerConnection`}
+                  parentId={`wrapper${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}childrensLayer`}
+                  x={it.x}
+                  y={it.y}
+                  item={it}
+                  dataItem={props.dataItem}
+                  nodeStyles={NODES_CONSTANTS.PEERING_CONNECTION.collapse}
+                />
               ))}
             </>
           </PeerContainer>
@@ -70,6 +92,7 @@ const RegionNode: React.FC<Props> = (props: Props) => {
           webAclTotalHeight={props.dataItem.webAclsRows.totalHeight}
           showPeerConnections={topology.entities && topology.entities.peer_connections.selected}
           peerConnectionTotalHeight={props.dataItem.peerConnectionsRows.totalHeight}
+          offsetX={NODES_CONSTANTS.REGION.expanded.contentPadding}
         >
           <>
             {props.dataItem.children.map(it => (
@@ -77,32 +100,14 @@ const RegionNode: React.FC<Props> = (props: Props) => {
             ))}
           </>
         </VpcContainer>
-        <foreignObject
-          data-y={
-            topology.entities && topology.entities.peer_connections.selected && props.dataItem.peerConnections && props.dataItem.peerConnections.length
-              ? NODES_CONSTANTS.REGION.headerHeight + props.dataItem.peerConnectionsRows.rows * (NODES_CONSTANTS.PEERING_CONNECTION.collapse.r * 2) + NODES_CONSTANTS.REGION.expanded.contentPadding * 2
-              : NODES_CONSTANTS.REGION.headerHeight + NODES_CONSTANTS.REGION.expanded.contentPadding
-          }
-          id={`vnetTooltipFOContainer${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`}
-          width="0"
-          height="0"
-          pointerEvents="none"
-        >
-          <div
-            id={`vnetTooltipContainer${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`}
-            className="vnetTooltipContainer"
-            style={{
-              background: 'var(--_primaryBg)',
-              borderRadius: '6px',
-              boxShadow: '0px 10px 30px rgba(5, 20, 58, 0.1)',
-              width: '100%',
-              height: '100%',
-              pointerEvents: 'none',
-              padding: '20px',
-              fontFamily: 'DMSans',
-            }}
-          />
-        </foreignObject>
+        <VnetTooltipContainer
+          id={`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`}
+          showWebAcls={topology.entities && topology.entities.web_acls.selected}
+          webAclTotalHeight={props.dataItem.webAclsRows.totalHeight}
+          showPeerConnections={topology.entities && topology.entities.peer_connections.selected}
+          peerConnectionTotalHeight={props.dataItem.peerConnectionsRows.totalHeight}
+          offsetX={NODES_CONSTANTS.REGION.expanded.contentPadding}
+        />
       </g>
     </TransitionContainer>
   );

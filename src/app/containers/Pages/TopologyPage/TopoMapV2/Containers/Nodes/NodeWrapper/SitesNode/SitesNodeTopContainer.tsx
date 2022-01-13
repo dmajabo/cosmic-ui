@@ -25,7 +25,7 @@ const SitesNodeTopContainer: React.FC<Props> = (props: Props) => {
     {
       id: `${NODES_CONSTANTS.SITES.type}${props.dataItem.uiId}`,
       parentId: `wrapper${NODES_CONSTANTS.SITES.type}${props.dataItem.uiId}`,
-      expandCollapseId: `expandCollapse${props.dataItem.uiId}`,
+      dragId: `drag${NODES_CONSTANTS.SITES.type}${props.dataItem.uiId}`,
       resId: props.dataItem.id,
       linkPrefiks: 'fromparentid',
       nodeType: props.dataItem.type,
@@ -108,7 +108,7 @@ const SitesNodeTopContainer: React.FC<Props> = (props: Props) => {
         data-type={NODES_CONSTANTS.SITES.type}
       >
         <SitesCollapsedNode dataItem={props.dataItem.dataItem} childrenCount={props.dataItem.children.length} show={props.dataItem.collapsed} />
-        <SitesExpandNode dataItem={props.dataItem} show={!props.dataItem.collapsed} onDeviceClick={onDeviceClick} />
+        <SitesExpandNode dragId={`drag${NODES_CONSTANTS.SITES.type}${props.dataItem.uiId}`} dataItem={props.dataItem} show={!props.dataItem.collapsed} onDeviceClick={onDeviceClick} />
         {/* <CollapseExpandButton
           id={`expandCollapse${props.dataItem.uiId}`}
           isCollapse={!props.dataItem.collapsed}

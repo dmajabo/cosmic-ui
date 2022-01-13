@@ -6,8 +6,10 @@ import NodeExpandedName from '../../Containers/NodeName/NodeExpandedName';
 import { ITopoRegionNode } from 'lib/hooks/Topology/models';
 
 interface Props {
+  dragId: string;
   dataItem: ITopoRegionNode;
   show: boolean;
+  onClick: () => void;
 }
 
 const RegionExpandNode: React.FC<Props> = (props: Props) => {
@@ -15,6 +17,7 @@ const RegionExpandNode: React.FC<Props> = (props: Props) => {
     <TransitionContainer id={`expandNodeWrapper${props.dataItem.id}`} stateIn={props.show} origin="unset" transform="none">
       <g style={{ cursor: 'pointer' }}>
         <rect
+          id={props.dragId}
           fill={NODES_CONSTANTS.REGION.expanded.bgColor}
           width={props.dataItem.expandedSize.width}
           height={props.dataItem.expandedSize.height}
@@ -31,6 +34,7 @@ const RegionExpandNode: React.FC<Props> = (props: Props) => {
             markerWidth={NODES_CONSTANTS.REGION.expanded.marker.width}
             height={NODES_CONSTANTS.REGION.expanded.marker.height}
             stylesObj={NODES_CONSTANTS.REGION.labelExpandedStyles}
+            onClick={props.onClick}
           />
         </g>
       </g>

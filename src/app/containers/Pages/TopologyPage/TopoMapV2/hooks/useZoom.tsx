@@ -65,6 +65,12 @@ export function useZoom(props: IProps) {
     zoom.scaleTo(svg, _k);
   };
 
+  const onZoomChange = (v: number) => {
+    if (v === transform.k) return;
+    const svg = d3.select(`#${svgId}`);
+    zoom.scaleTo(svg, v);
+  };
+
   const onCentered = (nodes: (ITopoNode<any, any> | ITopoRegionNode)[], _disabledTransition?: boolean) => {
     const svg = d3.select(`#${svgId}`);
     const rootSize = getMapSize(nodes);
@@ -100,18 +106,18 @@ export function useZoom(props: IProps) {
     if (!event.sourceEvent) {
       if (disabledTransition) {
         disabledTransition = false;
-        g.attr('transform', `translate(${x}, ${y}) scale(${k})`);
+        g.attr('transform', `translate(${x}, ${y}) scale(${k})`).attr('data-k', k);
         return;
       }
-      g.transition().attr('transform', `translate(${x}, ${y}) scale(${k})`);
+      g.transition().attr('transform', `translate(${x}, ${y}) scale(${k})`).attr('data-k', k);
       return;
     }
     if (disabledTransition) {
       disabledTransition = false;
-      g.attr('transform', `translate(${x}, ${y}) scale(${k})`);
+      g.attr('transform', `translate(${x}, ${y}) scale(${k})`).attr('data-k', k);
       return;
     }
-    g.transition().duration(0).attr('transform', `translate(${x}, ${y}) scale(${k})`);
+    g.transition().duration(0).attr('transform', `translate(${x}, ${y}) scale(${k})`).attr('data-k', k);
   };
 
   const zoomEnd = event => {
@@ -160,6 +166,7 @@ export function useZoom(props: IProps) {
     onZoomInit,
     onZoomIn,
     onZoomOut,
+    onZoomChange,
     onCentered,
     onUnsubscribe,
   };

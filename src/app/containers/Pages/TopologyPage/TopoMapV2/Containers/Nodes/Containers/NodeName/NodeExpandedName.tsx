@@ -4,6 +4,7 @@ import { IExpandLabelStyle } from '../../../../model';
 interface Props {
   name: string;
   strBtnLabel?: string;
+  onClick?: () => void;
   nodeWidth: number;
   markerWidth: number;
   height: number;
@@ -52,7 +53,9 @@ const NodeExpandedName: React.FC<Props> = (props: Props) => {
               margin: 'auto 0 auto auto',
               fontSize: props.stylesObj.strBtnFontSize + 'px',
               color: props.stylesObj.strBtnColor,
+              pointerEvents: 'all',
             }}
+            onClick={props.onClick}
           >
             {props.strBtnLabel}
           </span>

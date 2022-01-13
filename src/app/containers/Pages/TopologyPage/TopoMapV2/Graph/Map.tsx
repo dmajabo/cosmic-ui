@@ -7,6 +7,7 @@ import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataCont
 import NodeWrapper from '../Containers/Nodes/NodeWrapper';
 import DefsComponent from '../Containers/Shared/DefsComponent';
 import { STANDART_DISPLAY_RESOLUTION_V2 } from 'lib/models/general';
+import StructuresWrapper from '../Containers/Nodes/StructuresWrapper';
 interface Props {}
 
 const Map: React.FC<Props> = (props: Props) => {
@@ -35,6 +36,9 @@ const Map: React.FC<Props> = (props: Props) => {
               </g>
               <g id="nodesContainer">
                 <NodeWrapper nodes={topology.nodes} />
+              </g>
+              <g id="regionStructuresContainer">
+                <StructuresWrapper nodes={topology.regionStructures} />
               </g>
             </>
           )}

@@ -19,7 +19,7 @@ const DataCenter: React.FC<Props> = (props: Props) => {
     {
       id: `${NODES_CONSTANTS.DATA_CENTER.type}${props.dataItem.uiId}`,
       parentId: `wrapper${NODES_CONSTANTS.DATA_CENTER.type}${props.dataItem.uiId}`,
-      expandCollapseId: `expandCollapse${props.dataItem.uiId}`,
+      dragId: `drag${NODES_CONSTANTS.DATA_CENTER.type}${props.dataItem.uiId}`,
       resId: props.dataItem.id,
       linkPrefiks: 'fromparentid',
       nodeType: props.dataItem.type,
@@ -98,7 +98,7 @@ const DataCenter: React.FC<Props> = (props: Props) => {
         data-type={NODES_CONSTANTS.DATA_CENTER.type}
       >
         <DataCenterCollapsedNode id={props.dataItem.id} name={props.dataItem.name} show={props.dataItem.collapsed} />
-        <DataCenterExpandNode id={props.dataItem.id} name={props.dataItem.name} show={!props.dataItem.collapsed} />
+        <DataCenterExpandNode dragId={`drag${NODES_CONSTANTS.DATA_CENTER.type}${props.dataItem.uiId}`} id={props.dataItem.id} name={props.dataItem.name} show={!props.dataItem.collapsed} />
         <CollapseExpandButton
           id={`expandCollapse${props.dataItem.uiId}`}
           isCollapse={!props.dataItem.collapsed}

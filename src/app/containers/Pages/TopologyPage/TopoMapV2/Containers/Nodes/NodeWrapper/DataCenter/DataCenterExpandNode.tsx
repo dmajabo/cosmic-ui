@@ -5,6 +5,7 @@ import NodeMarker from '../../Containers/NodeMarker';
 import NodeExpandedName from '../../Containers/NodeName/NodeExpandedName';
 
 interface Props {
+  dragId: string;
   id: string;
   name: string;
   show: boolean;
@@ -16,6 +17,7 @@ const DataCenterExpandNode: React.FC<Props> = (props: Props) => {
       <g transform={`translate(${NODES_CONSTANTS.DATA_CENTER.expanded.minOffsetX}, ${NODES_CONSTANTS.DATA_CENTER.expanded.minOffsetY})`}>
         <g style={{ cursor: 'pointer' }} pointerEvents="all">
           <rect
+            id={props.dragId}
             fill={NODES_CONSTANTS.DATA_CENTER.expanded.bgColor}
             width={NODES_CONSTANTS.DATA_CENTER.expanded.minWidth}
             height={NODES_CONSTANTS.DATA_CENTER.expanded.minHeight}

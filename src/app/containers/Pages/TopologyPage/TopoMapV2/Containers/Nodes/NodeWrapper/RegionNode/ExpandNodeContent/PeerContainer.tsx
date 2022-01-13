@@ -4,6 +4,7 @@ import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/mod
 interface Props {
   showWebAcls: boolean;
   webAclTotalHeight: number;
+  offsetX: number;
   children: React.ReactNode;
 }
 
@@ -18,9 +19,9 @@ const PeerContainer: React.FC<Props> = (props: Props) => {
       const _off = NODES_CONSTANTS.REGION.expanded.contentPadding + NODES_CONSTANTS.REGION.headerHeight;
       setOffsetTop(_off);
     }
-  }, [props.showWebAcls]);
+  }, [props.showWebAcls, props.webAclTotalHeight]);
 
-  return <g transform={`translate(${NODES_CONSTANTS.REGION.expanded.contentPadding}, ${offsetTop})`}>{props.children}</g>;
+  return <g transform={`translate(${props.offsetX}, ${offsetTop})`}>{props.children}</g>;
 };
 
 export default React.memo(PeerContainer);

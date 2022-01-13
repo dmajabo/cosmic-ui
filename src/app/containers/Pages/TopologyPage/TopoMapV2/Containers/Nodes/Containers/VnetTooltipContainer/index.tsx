@@ -1,16 +1,16 @@
 import React from 'react';
-import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
+import { NODES_CONSTANTS } from '../../../../model';
 
 interface Props {
+  id: string;
   showWebAcls: boolean;
   showPeerConnections: boolean;
   webAclTotalHeight: number;
   peerConnectionTotalHeight: number;
   offsetX: number;
-  children: React.ReactNode;
 }
 
-const VpcContainer: React.FC<Props> = (props: Props) => {
+const VnetTooltipContainer: React.FC<Props> = (props: Props) => {
   const [offsetTop, setOffsetTop] = React.useState<number>(NODES_CONSTANTS.REGION.expanded.contentPadding + NODES_CONSTANTS.REGION.headerHeight);
 
   React.useEffect(() => {
@@ -39,8 +39,24 @@ const VpcContainer: React.FC<Props> = (props: Props) => {
       setOffsetTop(_off);
     }
   }, [props.showWebAcls, props.showPeerConnections, props.webAclTotalHeight, props.peerConnectionTotalHeight]);
-
-  return <g transform={`translate(${props.offsetX}, ${offsetTop})`}>{props.children}</g>;
+  return (
+    <foreignObject data-y={offsetTop} id={`vnetTooltipFOContainer${props.id}`} width="0" height="0" pointerEvents="none">
+      <div
+        id={`vnetTooltipContainer${props.id}`}
+        className="vnetTooltipContainer"
+        style={{
+          background: 'var(--_primaryBg)',
+          borderRadius: '6px',
+          boxShadow: '0px 10px 30px rgba(5, 20, 58, 0.1)',
+          width: '100%',
+          height: '100%',
+          pointerEvents: 'none',
+          padding: '20px',
+          fontFamily: 'DMSans',
+        }}
+      />
+    </foreignObject>
+  );
 };
 
-export default React.memo(VpcContainer);
+export default React.memo(VnetTooltipContainer);

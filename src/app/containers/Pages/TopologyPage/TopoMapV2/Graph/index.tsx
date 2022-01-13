@@ -25,7 +25,7 @@ interface Props {
 
 const Graph: React.FC<Props> = (props: Props) => {
   const { topology } = useTopologyV2DataContext();
-  const { zoomValue, onZoomInit, onZoomIn, onZoomOut, onCentered, onUnsubscribe } = useZoom({ svgId: TOPOLOGY_IDS.SVG, rootId: TOPOLOGY_IDS.G_ROOT });
+  const { transform, onZoomInit, onZoomIn, onZoomOut, onZoomChange, onCentered, onUnsubscribe } = useZoom({ svgId: TOPOLOGY_IDS.SVG, rootId: TOPOLOGY_IDS.G_ROOT });
 
   React.useEffect(() => {
     if (!props.onlyRefreshAvaible) {
@@ -55,10 +55,11 @@ const Graph: React.FC<Props> = (props: Props) => {
       <HeadeerAction
         disabledReload={props.disabledReload}
         onlyRefreshAvaible={props.onlyRefreshAvaible}
-        zoomValue={zoomValue}
+        transform={transform}
         isFullScreen={props.isFullScreen}
         onZoomIn={onZoomIn}
         onZoomOut={onZoomOut}
+        onZoomChange={onZoomChange}
         onCentered={onCentered}
         onOpenFullScreen={onOpenFullScreen}
         onRefresh={props.onReload}

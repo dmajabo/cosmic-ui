@@ -51,6 +51,8 @@ export interface TopologyV2ContextType {
 
   onCollapseExpandNode: (node: ITopoNode<any, any> | ITopoRegionNode, state: boolean) => void;
   onUpdateNodeCoord: (node: ITopoNode<any, any> | ITopoRegionNode, _pos: IPosition) => void;
+  regionStructures: ITopoRegionNode[];
+  onToogleRegionStructure: (dataItem: ITopoRegionNode, show?: boolean) => void;
 
   entities: FilterEntityOptions;
   severity: FilterSeverityOptions;
@@ -63,11 +65,12 @@ export function useTopologyV2Context(): TopologyV2ContextType {
   const [nodes, setNodes] = React.useState<(ITopoNode<any, any> | ITopoRegionNode)[]>([]);
   const [links, setLinks] = React.useState<ITopoLink<any, any, any, any, any>[]>([]);
   const [selectedNode, setSelectedNode] = React.useState<ITopoNode<any, any> | ITopoRegionNode>(null);
+  const [regionStructures, setRegionStructures] = React.useState<ITopoRegionNode[]>([]);
   const [entities, setEntities] = React.useState<FilterEntityOptions>({
     sites: {
       type: FilterEntityTypes.SITES,
       selected: true,
-      label: 'Sites',
+      label: 'Site',
     },
     transit: {
       type: FilterEntityTypes.TRANSIT,
@@ -77,17 +80,17 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     vpc: {
       type: FilterEntityTypes.VPC,
       selected: true,
-      label: 'VPCs',
+      label: 'VPC',
     },
     peer_connections: {
       type: FilterEntityTypes.PEERING_CONNECTIONS,
       selected: true,
-      label: 'Peering Connections',
+      label: 'Peering Connection',
     },
     web_acls: {
       type: FilterEntityTypes.WEB_ACLS,
       selected: true,
-      label: 'Web Acls',
+      label: 'Web Acl',
     },
   });
   const [severity, setSeverity] = React.useState<FilterSeverityOptions>({
@@ -419,6 +422,17 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     setTopoPanel({ show: false, type: null, dataItem: null });
   };
 
+  const onToogleRegionStructure = (dataItem: ITopoRegionNode, show?: boolean) => {
+    if (show) {
+      const structure = regionStructures.find(it => it.id === dataItem.id);
+      if (structure) return;
+      setRegionStructures([...regionStructures, dataItem]);
+      return;
+    }
+    const _strs = regionStructures.filter(it => it.id !== dataItem.id);
+    setRegionStructures(_strs);
+  };
+
   return {
     topoPanel,
     selectedPeriod,
@@ -449,6 +463,8 @@ export function useTopologyV2Context(): TopologyV2ContextType {
 
     onCollapseExpandNode,
     onUpdateNodeCoord,
+    regionStructures,
+    onToogleRegionStructure,
 
     entities,
     severity,

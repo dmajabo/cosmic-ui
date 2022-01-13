@@ -6,6 +6,7 @@ import NodeExpandedName from '../../Containers/NodeName/NodeExpandedName';
 import { ITGWNode, ITopoNode } from 'lib/hooks/Topology/models';
 
 interface Props {
+  dragId: string;
   dataItem: ITopoNode<any, ITGWNode>;
   show: boolean;
 }
@@ -15,6 +16,7 @@ const AccountExpandNode: React.FC<Props> = (props: Props) => {
     <TransitionContainer id={`expandNodeWrapper${props.dataItem.id}`} stateIn={props.show} origin="unset" transform="none">
       <g style={{ cursor: 'pointer' }}>
         <rect
+          id={props.dragId}
           fill={NODES_CONSTANTS.ACCOUNT.expanded.bgColor}
           width={props.dataItem.expandedSize.width}
           height={props.dataItem.expandedSize.height}

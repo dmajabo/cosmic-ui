@@ -8,14 +8,14 @@ interface IProps {
   id: string;
   parentId: string;
   resId: string;
-  expandCollapseId: string;
+  dragId: string;
   linkPrefiks: 'fromparentid' | 'toparentid' | 'fromchildid' | 'tochildid';
   nodeType: TopoNodeTypes;
 }
 export function useDrag(props: IProps, onUpdateCallBack: (pos: IPosition) => void) {
   const [parentId] = React.useState<string>(props.parentId);
   const [id] = React.useState<string>(props.id);
-  const [expandCollapseId] = React.useState<string>(props.expandCollapseId);
+  const [dragId] = React.useState<string>(props.dragId);
   const [nodeType] = React.useState<TopoNodeTypes>(props.nodeType);
   const [resId] = React.useState<string>(props.resId);
   const [linkPrefiks] = React.useState<string>(props.linkPrefiks);
@@ -32,6 +32,7 @@ export function useDrag(props: IProps, onUpdateCallBack: (pos: IPosition) => voi
   let node: any;
   let childrenContainerNode: any;
   let links = null;
+  let isDraggable = false;
   React.useEffect(() => {
     return () => {
       onUnsubscribeDrag();
@@ -65,7 +66,8 @@ export function useDrag(props: IProps, onUpdateCallBack: (pos: IPosition) => voi
     setIsUpdated(true);
   };
   const onDragStart = e => {
-    if (e && e.sourceEvent && e.sourceEvent.target && e.sourceEvent.target.id === expandCollapseId) return;
+    if (e && e.sourceEvent && e.sourceEvent.target && e.sourceEvent.target.id !== dragId) return;
+    isDraggable = true;
     translateX = position?.x || 0;
     translateY = position?.y || 0;
     node = d3.select(`#${id}`);
@@ -92,7 +94,7 @@ export function useDrag(props: IProps, onUpdateCallBack: (pos: IPosition) => voi
   // };
 
   const onDrag = e => {
-    if (!node || !e) return;
+    if (!node || !e || !isDraggable) return;
     const { dx, dy } = e;
     translateX += dx;
     translateY += dy;
@@ -118,6 +120,8 @@ export function useDrag(props: IProps, onUpdateCallBack: (pos: IPosition) => voi
   };
 
   const onDragEnd = () => {
+    if (!isDraggable) return;
+    isDraggable = false;
     d3.selectAll('.topologyNode').classed('topoDisabledOnDrag', null).classed('topoOnDrag', null);
     node = null;
     childrenContainerNode = null;

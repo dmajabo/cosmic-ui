@@ -2,7 +2,7 @@ import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/mod
 import { INetworkOrg, INetworkwEdge, INetworkVNetwork, INetworkDevice, INetworkVNetworkPeeringConnection, INetworkRegion, INetworkWebAcl } from 'lib/api/ApiModels/Topology/apiModels';
 import { ITGWNode, INetworkVNetNode, TopoNodeTypes, ITopoNode, IDeviceNode, INetworkVNetworkPeeringConnectionNode, ITopoRegionNode, INetworkWebAclNode, FilterEntityOptions } from '../models';
 import uuid from 'react-uuid';
-import { calculateTotalNodeHeight } from './coordinateHelper';
+import { getRegionPadding, getTotalNodeHeight } from './sizeHelpers';
 
 export const createTopoNode = <P, C>(
   _dataItem: P,
@@ -169,21 +169,10 @@ export const updateRegionHeight = (nodes: (ITopoNode<any, any> | ITopoRegionNode
     const peerHeight = filter && filter.peer_connections && !filter.peer_connections.selected ? 0 : _n.peerConnectionsRows.totalHeight;
     const webHeight = filter && filter.web_acls && !filter.web_acls.selected ? 0 : _n.webAclsRows.totalHeight;
     const childrenHeight = _n.childrenRows.totalHeight;
-    const padding = getRegionPadding(filter, _n.peerConnections, _n.webAcls);
-    const _height = calculateTotalNodeHeight(peerHeight + webHeight + childrenHeight, NODES_CONSTANTS.REGION.headerHeight, padding);
+    const padding = getRegionPadding(filter, _n.peerConnections, _n.webAcls, NODES_CONSTANTS.REGION.expanded.contentPadding);
+    const _height = getTotalNodeHeight(peerHeight + webHeight + childrenHeight, NODES_CONSTANTS.REGION.headerHeight, padding);
     _n.expandedSize = { ...node.expandedSize, height: Math.max(NODES_CONSTANTS.REGION.expanded.minHeight, _height) };
     return _n;
   });
   return _nodes;
-};
-
-export const getRegionPadding = (filter: FilterEntityOptions, prs: INetworkVNetworkPeeringConnectionNode[], webAcls: INetworkWebAclNode[]): number => {
-  let padding = NODES_CONSTANTS.REGION.expanded.contentPadding;
-  if (filter && filter.peer_connections && filter.peer_connections.selected && prs && prs.length) {
-    padding += NODES_CONSTANTS.REGION.expanded.contentPadding;
-  }
-  if (filter && filter.web_acls && filter.web_acls.selected && webAcls && webAcls.length) {
-    padding += NODES_CONSTANTS.REGION.expanded.contentPadding;
-  }
-  return padding;
 };

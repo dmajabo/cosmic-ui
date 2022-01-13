@@ -1,5 +1,5 @@
 import React from 'react';
-import { Side, Wrapper, ZoomValue } from './styles';
+import { Side, Wrapper } from './styles';
 import { editIcon } from 'app/components/SVGIcons/edit';
 import {
   TopologyPanelTypes,
@@ -13,16 +13,19 @@ import { zoomCenterIcon, zoomFullScreenIcon, zoomInIcon, zoomOutFullScreenMode, 
 import { filterIcon } from 'app/components/SVGIcons/filter';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 import { ITopoNode, ITopoRegionNode } from 'lib/hooks/Topology/models';
+import { ITransform, ZoomRange } from 'lib/models/general';
+import ZoomInput from './ZoomInput';
 
 // import MatSelect from 'app/components/Inputs/MatSelect';
 
 interface IProps {
   disabledReload: boolean;
   onlyRefreshAvaible: boolean;
-  zoomValue: number;
+  transform: ITransform;
   isFullScreen: boolean;
   onZoomIn: () => void;
   onZoomOut: () => void;
+  onZoomChange: (v: number) => void;
   onCentered: (nodes: (ITopoNode<any, any> | ITopoRegionNode)[]) => void;
   onOpenFullScreen: () => void;
   onRefresh: () => void;
@@ -56,7 +59,7 @@ const HeadeerAction: React.FC<IProps> = (props: IProps) => {
         {!props.onlyRefreshAvaible && (
           <>
             <IconButton iconStyles={{ verticalAlign: 'middle', height: '4px' }} styles={{ margin: '0 8px 0 0' }} icon={zoomOutIcon} title="Zoom out" onClick={props.onZoomOut} />
-            <ZoomValue>{props.zoomValue} %</ZoomValue>
+            <ZoomInput value={props.transform} min={ZoomRange.min} max={ZoomRange.max} onChange={props.onZoomChange} />
             <IconButton styles={{ margin: '0 20px 0 8px' }} icon={zoomInIcon} title="Zoom in" onClick={props.onZoomIn} />
             <IconButton styles={{ margin: '0 20px 0 0' }} icon={zoomCenterIcon} title="Center" onClick={onCentered} />
             <IconButton

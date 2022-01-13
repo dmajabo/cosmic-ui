@@ -118,9 +118,9 @@ export const createTopology = (filter: FilterEntityOptions, _data: ITopologyMapD
         // }
       }
       if (region.devices && region.devices.length) {
-        // for test
+        // // for test
         // for (let j = 0; j < 2000; j++) {
-        //   const objE: IDeviceNode = createDeviceNode(org, orgI, region.devices[0], 100 + j);
+        //   const objE: IDeviceNode = createDeviceNode(org, orgI, region.devices[1], 100 + j);
         //   devicesInGroup.push(objE);
         // }
         region.devices.forEach((d, index) => {
