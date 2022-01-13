@@ -1,14 +1,14 @@
 import { IAccountNode, INetworkVNetworkNode, INetworkWEdgeNode, IRegionNode, ISiteNode, ISitesNode, NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
-import { INetworkNetworkLink, INetworkRegion, INetworkVpnLink, INetworkVpnLinkState, ITopologyGroup } from 'lib/api/ApiModels/Topology/apiModels';
+import { INetworkNetworkLink, INetworkVpnLink, INetworkVpnLinkState, ITopologyGroup } from 'lib/api/ApiModels/Topology/apiModels';
 import { ICoord } from 'lib/models/general';
-import { INetworkVNetNode, ITGWNode, ITopoLink, ITopoNode, IDeviceNode, TopoLinkTypes } from '../models';
+import { INetworkVNetNode, ITGWNode, ITopoLink, ITopoNode, ITopoRegionNode, IDeviceNode, TopoLinkTypes, FilterEntityOptions } from '../models';
 import uuid from 'react-uuid';
 
 export const buildLinks = (
-  regions: ITopoNode<INetworkRegion, INetworkVNetNode>[],
+  regions: ITopoRegionNode[],
   accounts: ITopoNode<any, ITGWNode>[],
   groups: ITopoNode<ITopologyGroup, IDeviceNode>[],
-  showPeerConnection: boolean,
+  filter: FilterEntityOptions,
 ): ITopoLink<any, any, any, any, any>[] => {
   let links: ITopoLink<any, any, any, any, any>[] = [];
   if (regions && regions.length) {
@@ -16,7 +16,13 @@ export const buildLinks = (
       if (!r.children || !r.children.length) return;
       r.children.forEach((vnet: INetworkVNetNode) => {
         if (!vnet.name && !vnet.extId) return;
-        const _links: ITopoLink<any, INetworkVNetNode, any, ITGWNode, INetworkNetworkLink>[] = buildNetworkNetworkConnection(accounts, r, vnet, showPeerConnection);
+        const _links: ITopoLink<any, INetworkVNetNode, any, ITGWNode, INetworkNetworkLink>[] = buildNetworkNetworkConnection(
+          accounts,
+          r,
+          vnet,
+          filter.peer_connections.selected,
+          filter.web_acls.selected,
+        );
         if (!_links || !_links.length) return;
         links = links.concat(_links);
       });
@@ -71,19 +77,21 @@ const buildDevWedgeConnection = (
 
 const buildNetworkNetworkConnection = (
   accounts: ITopoNode<any, ITGWNode>[],
-  r: ITopoNode<INetworkRegion, INetworkVNetNode>,
+  r: ITopoRegionNode,
   vnet: INetworkVNetNode,
   showPeerConnection: boolean,
-): ITopoLink<ITopoNode<INetworkRegion, INetworkVNetNode>, INetworkVNetNode, ITopoNode<any, ITGWNode>, ITGWNode, INetworkNetworkLink>[] => {
-  const _links: ITopoLink<ITopoNode<INetworkRegion, INetworkVNetNode>, INetworkVNetNode, ITopoNode<any, ITGWNode>, ITGWNode, INetworkNetworkLink>[] = [];
+  showWebAcls: boolean,
+): ITopoLink<ITopoRegionNode, INetworkVNetNode, ITopoNode<any, ITGWNode>, ITGWNode, INetworkNetworkLink>[] => {
+  const _links: ITopoLink<ITopoRegionNode, INetworkVNetNode, ITopoNode<any, ITGWNode>, ITGWNode, INetworkNetworkLink>[] = [];
   accounts.forEach(a => {
     if (!a.children || !a.children.length) return;
+    const _offsetTop = getVnetOffsetTop(r, showPeerConnection, showWebAcls);
     a.children.forEach(tgw => {
       if (!tgw.networkLinks || !tgw.networkLinks.length) return;
       const _link: INetworkNetworkLink = tgw.networkLinks.find(it => (it.vnet ? vnet.name === it.vnet.name : vnet.extId === it.peerExtId));
       if (!_link) return;
       const _visible = r.visible && a.visible;
-      const _vnetCoord = getVnetCoord(r, vnet, showPeerConnection, NODES_CONSTANTS.REGION, NODES_CONSTANTS.NETWORK_VNET);
+      const _vnetCoord = getVnetCoord(r, vnet, _offsetTop, NODES_CONSTANTS.REGION, NODES_CONSTANTS.NETWORK_VNET);
       const _tgwCoord = getWedgeCoord(a, tgw, NODES_CONSTANTS.ACCOUNT, NODES_CONSTANTS.NETWORK_WEDGE);
       _links.push({
         id: uuid(),
@@ -108,24 +116,17 @@ const getDevCoord = (g: ITopoNode<ITopologyGroup, IDeviceNode>, dev: IDeviceNode
   return { x: _x, y: _y };
 };
 
-export const getVnetCoord = (
-  r: ITopoNode<INetworkRegion, INetworkVNetNode>,
-  vnet: INetworkVNetNode,
-  showPeerConnection: boolean,
-  parentStyles: IRegionNode,
-  nodeStyles: INetworkVNetworkNode,
-): ICoord => {
+export const getVnetCoord = (r: ITopoRegionNode, vnet: INetworkVNetNode, offsetTop: number, parentStyles: IRegionNode, nodeStyles: INetworkVNetworkNode): ICoord => {
   const _x = r.x + vnet.x + parentStyles.expanded.contentPadding + nodeStyles.collapse.r;
-  const _offsetTop = getVnetOffsetTop(r, showPeerConnection);
-  const _y = r.y + vnet.y + parentStyles.expanded.contentPadding + _offsetTop + nodeStyles.collapse.r;
+  const _y = r.y + vnet.y + offsetTop + nodeStyles.collapse.r;
   return { x: _x, y: _y };
 };
 
-export const getVnetOffsetTop = (r: ITopoNode<INetworkRegion, INetworkVNetNode>, showPeerConnection: boolean) => {
-  if (showPeerConnection && r.peerConnections && r.peerConnections.length) {
-    return NODES_CONSTANTS.REGION.headerHeight + r.peerConnectionsRows.rows * (NODES_CONSTANTS.PEERING_CONNECTION.collapse.r * 2) + 20;
-  }
-  return NODES_CONSTANTS.REGION.headerHeight;
+export const getVnetOffsetTop = (r: ITopoRegionNode, showPeerConnection: boolean, showWebAcls: boolean): number => {
+  const peerHeight = !showPeerConnection ? 0 : r.peerConnectionsRows.totalHeight + NODES_CONSTANTS.REGION.expanded.contentPadding;
+  const webHeight = !showWebAcls ? 0 : r.webAclsRows.totalHeight + NODES_CONSTANTS.REGION.expanded.contentPadding;
+  const _offset = NODES_CONSTANTS.REGION.headerHeight + NODES_CONSTANTS.REGION.expanded.contentPadding + peerHeight + webHeight;
+  return _offset;
 };
 
 const getWedgeCoord = (a: ITopoNode<any, ITGWNode>, tgw: ITGWNode, parentStyles: IAccountNode, nodeStyles: INetworkWEdgeNode): ICoord => {

@@ -6,11 +6,22 @@ import { jsonClone } from 'lib/helpers/cloneHelper';
 import { ITopologyDataRes, ITopologyGroup, ITopologyGroupsData, ITopologyMapData } from 'lib/api/ApiModels/Topology/apiModels';
 import { ITimeMinMaxRange } from 'app/components/Inputs/TimeSlider/helpers';
 import { createTopology } from './helper';
-import { FilterEntityOptions, FilterEntityTypes, FilterSeverityOptions, ITopoLink, ITopologyPreparedMapDataV2, ITopoNode, TopoFilterTypes, TopoLinkTypes, TopoNodeTypes } from './models';
+import {
+  FilterEntityOptions,
+  FilterEntityTypes,
+  FilterSeverityOptions,
+  ITopoLink,
+  ITopologyPreparedMapDataV2,
+  ITopoNode,
+  ITopoRegionNode,
+  TopoFilterTypes,
+  TopoLinkTypes,
+  TopoNodeTypes,
+} from './models';
 import { AlertSeverity } from 'lib/api/ApiModels/Workflow/apiModel';
-import { getVnetCoord } from './helpers/buildlinkHelper';
+import { getVnetCoord, getVnetOffsetTop } from './helpers/buildlinkHelper';
 import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
-import { updateRegionHeight } from './helpers/coordinateHelper';
+import { updateRegionHeight } from './helpers/buildNodeHelpers';
 
 export interface TopologyV2ContextType {
   topoPanel: IPanelBar<TopologyPanelTypes>;
@@ -22,7 +33,7 @@ export interface TopologyV2ContextType {
   searchQuery: string | null;
   selectedType: string | null;
   links: ITopoLink<any, any, any, any, any>[];
-  nodes: ITopoNode<any, any>[];
+  nodes: (ITopoNode<any, any> | ITopoRegionNode)[];
   selectedNode: any;
   // entityTypes: IEntity[];
   onUnselectNode: () => void;
@@ -38,8 +49,8 @@ export interface TopologyV2ContextType {
   onSetSelectedType: (_value: string | number | null) => void;
   // onSelectEntity: (entity: IEntity, selected: boolean) => void;
 
-  onCollapseExpandNode: (node: ITopoNode<any, any>, state: boolean) => void;
-  onUpdateNodeCoord: (node: ITopoNode<any, any>, _pos: IPosition) => void;
+  onCollapseExpandNode: (node: ITopoNode<any, any> | ITopoRegionNode, state: boolean) => void;
+  onUpdateNodeCoord: (node: ITopoNode<any, any> | ITopoRegionNode, _pos: IPosition) => void;
 
   entities: FilterEntityOptions;
   severity: FilterSeverityOptions;
@@ -49,9 +60,9 @@ export function useTopologyV2Context(): TopologyV2ContextType {
   const [topoPanel, setTopoPanel] = React.useState<IPanelBar<TopologyPanelTypes>>({ show: false, type: null });
   const [originData, setOriginData] = React.useState<ITopologyMapData | null>(null);
   const [originGroupsData, setOriginGroupsData] = React.useState<ITopologyGroup[] | null>(null);
-  const [nodes, setNodes] = React.useState<ITopoNode<any, any>[]>([]);
+  const [nodes, setNodes] = React.useState<(ITopoNode<any, any> | ITopoRegionNode)[]>([]);
   const [links, setLinks] = React.useState<ITopoLink<any, any, any, any, any>[]>([]);
-  const [selectedNode, setSelectedNode] = React.useState<ITopoNode<any, any>>(null);
+  const [selectedNode, setSelectedNode] = React.useState<ITopoNode<any, any> | ITopoRegionNode>(null);
   const [entities, setEntities] = React.useState<FilterEntityOptions>({
     sites: {
       type: FilterEntityTypes.SITES,
@@ -72,6 +83,11 @@ export function useTopologyV2Context(): TopologyV2ContextType {
       type: FilterEntityTypes.PEERING_CONNECTIONS,
       selected: true,
       label: 'Peering Connections',
+    },
+    web_acls: {
+      type: FilterEntityTypes.WEB_ACLS,
+      selected: true,
+      label: 'Web Acls',
     },
   });
   const [severity, setSeverity] = React.useState<FilterSeverityOptions>({
@@ -98,7 +114,7 @@ export function useTopologyV2Context(): TopologyV2ContextType {
   const [searchQuery, setSearchQuery] = React.useState<string | null>(null);
   const [selectedType, setSelectedType] = React.useState<string | null>(null);
   const linksRef = React.useRef<ITopoLink<any, any, any, any, any>[]>(links);
-  const nodesRef = React.useRef<ITopoNode<any, any>[]>(nodes);
+  const nodesRef = React.useRef<(ITopoNode<any, any> | ITopoRegionNode)[]>(nodes);
   const groupsRef = React.useRef(originGroupsData);
   const onSetData = (res: ITopologyDataRes) => {
     if (!res) {
@@ -113,7 +129,7 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     const _orgObj: ITopologyMapData = res.organizations ? jsonClone(res.organizations) : null;
     const _groupsObj: ITopologyGroupsData = res.groups ? jsonClone(res.groups) : [];
     groupsRef.current = _groupsObj.groups;
-    const _data: ITopologyPreparedMapDataV2 = createTopology(entities.peer_connections.selected, _orgObj, groupsRef.current);
+    const _data: ITopologyPreparedMapDataV2 = createTopology(entities, _orgObj, groupsRef.current);
     if (_data.links) {
       setLinks(_data.links);
       linksRef.current = _data.links;
@@ -285,16 +301,16 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     setTimeRange(_range);
   };
 
-  const onCollapseExpandNode = (node: ITopoNode<any, any>, state: boolean) => {
-    const _data: ITopoNode<any, any>[] = nodesRef.current.slice();
+  const onCollapseExpandNode = (node: ITopoNode<any, any> | ITopoRegionNode, state: boolean) => {
+    const _data: (ITopoNode<any, any> | ITopoRegionNode)[] = nodesRef.current.slice();
     const index = _data.findIndex(it => it.id === node.id);
     _data[index].collapsed = state;
-    setNodes(_data);
     nodesRef.current = _data;
+    setNodes(_data);
   };
 
-  const onUpdateNodeCoord = (node: ITopoNode<any, any>, _position: IPosition) => {
-    const _data: ITopoNode<any, any>[] = nodesRef.current.slice();
+  const onUpdateNodeCoord = (node: ITopoNode<any, any> | ITopoRegionNode, _position: IPosition) => {
+    const _data: (ITopoNode<any, any> | ITopoRegionNode)[] = nodesRef.current.slice();
     const index = _data.findIndex(it => it.id === node.id);
     _data[index].x = _position.x;
     _data[index].y = _position.y;
@@ -320,12 +336,13 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     if (groupType === TopoFilterTypes.Entities) {
       const _obj: FilterEntityOptions = jsonClone(entities);
       _obj[type].selected = selected;
-      if (type === FilterEntityTypes.PEERING_CONNECTIONS) {
+      if (type === FilterEntityTypes.PEERING_CONNECTIONS || type === FilterEntityTypes.WEB_ACLS) {
         const _links = linksRef.current.slice();
-        const _nodes = updateRegionHeight(nodesRef.current, _obj[type].selected);
+        const _nodes = updateRegionHeight(nodesRef.current, _obj);
         _links.forEach(it => {
           if (it.type !== TopoLinkTypes.NetworkNetworkLink) return;
-          const _coord = getVnetCoord(it.fromNode.parent, it.fromNode.child, _obj[type].selected, NODES_CONSTANTS.REGION, NODES_CONSTANTS.NETWORK_VNET);
+          const _offsetVpcY = getVnetOffsetTop(it.fromNode.parent, _obj.peer_connections.selected, _obj.web_acls.selected);
+          const _coord = getVnetCoord(it.fromNode.parent, it.fromNode.child, _offsetVpcY, NODES_CONSTANTS.REGION, NODES_CONSTANTS.NETWORK_VNET);
           it.y1 = _coord.y;
         });
         nodesRef.current = _nodes;

@@ -1,9 +1,6 @@
 import React from 'react';
 import TransitionContainer from 'app/containers/Pages/TopologyPage/TopoMapV2/Containers/TransitionContainer';
-import { CollapseExpandState } from 'lib/models/general';
 import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
-import CollapseExpandButton from '../../Containers/CollapseExpandButton';
-import * as d3 from 'd3';
 import NodeMarker from '../../Containers/NodeMarker';
 import NodeExpandedName from '../../Containers/NodeName/NodeExpandedName';
 import { IDeviceNode, ITopoNode } from 'lib/hooks/Topology/models';
@@ -13,35 +10,18 @@ import { ITopologyGroup } from 'lib/api/ApiModels/Topology/apiModels';
 interface Props {
   dataItem: ITopoNode<ITopologyGroup, IDeviceNode>;
   show: boolean;
-  onCollapse: () => void;
   onDeviceClick: (item: IDeviceNode) => void;
 }
 
 const SitesExpandNode: React.FC<Props> = (props: Props) => {
-  const showExpandCollapseBtn = () => {
-    const _node = d3.select(`#sites${props.dataItem.id}${CollapseExpandState.COLLAPSE}`);
-    _node.transition().delay(300).attr('opacity', 1);
-  };
-
-  const hideExpandCollapseBtn = () => {
-    const _node = d3.select(`#sites${props.dataItem.id}${CollapseExpandState.COLLAPSE}`);
-    _node.transition().attr('opacity', 0);
-  };
-
-  const onCollapse = () => {
-    hideExpandCollapseBtn();
-    props.onCollapse();
-  };
-
   return (
     <TransitionContainer id={`expandNodeWrapper${props.dataItem.id}`} stateIn={props.show} origin="unset" transform="none">
       <g>
-        <g style={{ cursor: 'pointer' }} onMouseEnter={showExpandCollapseBtn} onMouseLeave={hideExpandCollapseBtn}>
+        <g style={{ cursor: 'pointer' }}>
           <rect
-            className="eventHandler"
             fill={NODES_CONSTANTS.SITES.expanded.bgColor}
-            width={NODES_CONSTANTS.SITES.expanded.minWidth}
-            height={NODES_CONSTANTS.SITES.expanded.minHeight}
+            width={props.dataItem.expandedSize.width}
+            height={props.dataItem.expandedSize.height}
             rx={NODES_CONSTANTS.SITES.expanded.borderRadius}
             ry={NODES_CONSTANTS.SITES.expanded.borderRadius}
             pointerEvents="all"
@@ -56,14 +36,6 @@ const SitesExpandNode: React.FC<Props> = (props: Props) => {
               stylesObj={NODES_CONSTANTS.SITES.labelExpandedStyles}
             />
           </g>
-
-          {/* <use href={`#${NODES_CONSTANTS.DEVICE.groupLinkIconId}`} x={NODES_CONSTANTS.SITES.expanded.minWidth / 2 - 7} y="-7" /> */}
-          <CollapseExpandButton
-            id={`sites${props.dataItem.id}${CollapseExpandState.COLLAPSE}`}
-            onClick={onCollapse}
-            x={NODES_CONSTANTS.SITES.expanded.minWidth - NODES_CONSTANTS.COLLAPSE_EXPAND.r}
-            y={NODES_CONSTANTS.SITES.expanded.minHeight / 2 - NODES_CONSTANTS.COLLAPSE_EXPAND.r}
-          />
         </g>
       </g>
     </TransitionContainer>

@@ -8,12 +8,14 @@ interface IProps {
   id: string;
   parentId: string;
   resId: string;
+  expandCollapseId: string;
   linkPrefiks: 'fromparentid' | 'toparentid' | 'fromchildid' | 'tochildid';
   nodeType: TopoNodeTypes;
 }
 export function useDrag(props: IProps, onUpdateCallBack: (pos: IPosition) => void) {
   const [parentId] = React.useState<string>(props.parentId);
   const [id] = React.useState<string>(props.id);
+  const [expandCollapseId] = React.useState<string>(props.expandCollapseId);
   const [nodeType] = React.useState<TopoNodeTypes>(props.nodeType);
   const [resId] = React.useState<string>(props.resId);
   const [linkPrefiks] = React.useState<string>(props.linkPrefiks);
@@ -22,7 +24,7 @@ export function useDrag(props: IProps, onUpdateCallBack: (pos: IPosition) => voi
   const [isUpdated, setIsUpdated] = React.useState<boolean>(false);
   const drag = d3
     .drag()
-    .on('start', () => onDragStart())
+    .on('start', e => onDragStart(e))
     .on('drag', e => onDrag(e), { passive: true })
     .on('end', () => onDragEnd(), { passive: true });
   let translateX = 0;
@@ -62,7 +64,8 @@ export function useDrag(props: IProps, onUpdateCallBack: (pos: IPosition) => voi
     setPosition(pos);
     setIsUpdated(true);
   };
-  const onDragStart = () => {
+  const onDragStart = e => {
+    if (e && e.sourceEvent && e.sourceEvent.target && e.sourceEvent.target.id === expandCollapseId) return;
     translateX = position?.x || 0;
     translateY = position?.y || 0;
     node = d3.select(`#${id}`);

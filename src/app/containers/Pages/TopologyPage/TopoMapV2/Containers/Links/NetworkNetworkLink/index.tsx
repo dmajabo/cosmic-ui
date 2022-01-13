@@ -1,12 +1,12 @@
 import React from 'react';
 // import { select } from 'd3-selection';
-import { INetworkVNetNode, ITGWNode, ITopoLink, ITopoNode } from 'lib/hooks/Topology/models';
-import { INetworkNetworkLink, INetworkRegion } from 'lib/api/ApiModels/Topology/apiModels';
+import { INetworkVNetNode, ITGWNode, ITopoLink, ITopoNode, ITopoRegionNode } from 'lib/hooks/Topology/models';
+import { INetworkNetworkLink } from 'lib/api/ApiModels/Topology/apiModels';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 import TransitionContainer from '../../TransitionContainer';
 
 interface IProps {
-  dataItem: ITopoLink<ITopoNode<INetworkRegion, INetworkVNetNode>, INetworkVNetNode, ITopoNode<any, ITGWNode>, ITGWNode, INetworkNetworkLink>;
+  dataItem: ITopoLink<ITopoRegionNode, INetworkVNetNode, ITopoNode<any, ITGWNode>, ITGWNode, INetworkNetworkLink>;
 }
 const NetworkNetworkLink: React.FC<IProps> = (props: IProps) => {
   const { topology } = useTopologyV2DataContext();

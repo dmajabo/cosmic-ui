@@ -1,8 +1,9 @@
 import React from 'react';
 import * as d3 from 'd3';
 import { ITransform, ZoomRange } from 'lib/models/general';
-import { ITopoNode } from 'lib/hooks/Topology/models';
+import { ITopoNode, ITopoRegionNode } from 'lib/hooks/Topology/models';
 import { STANDART_DISPLAY_RESOLUTION_V2 } from 'lib/models/general';
+
 interface IProps {
   svgId: string;
   rootId: string;
@@ -22,7 +23,7 @@ export function useZoom(props: IProps) {
     .on('zoom', e => zoomed(e))
     .on('end', e => zoomEnd(e));
 
-  const onZoomInit = (nodes: ITopoNode<any, any>[]) => {
+  const onZoomInit = () => {
     const svg = d3.select(`#${svgId}`);
     svg.call(zoom);
     svg.on('click.zoom', null).on('dblclick.zoom', null);
@@ -64,7 +65,7 @@ export function useZoom(props: IProps) {
     zoom.scaleTo(svg, _k);
   };
 
-  const onCentered = (nodes: ITopoNode<any, any>[], _disabledTransition?: boolean) => {
+  const onCentered = (nodes: (ITopoNode<any, any> | ITopoRegionNode)[], _disabledTransition?: boolean) => {
     const svg = d3.select(`#${svgId}`);
     const rootSize = getMapSize(nodes);
     const scale = getScaleSizeHelper(rootSize.width, rootSize.height);
@@ -77,8 +78,8 @@ export function useZoom(props: IProps) {
   };
 
   const getScaleSizeHelper = (width, height) => {
-    const scaleX = Math.min(1, (STANDART_DISPLAY_RESOLUTION_V2.width - 80) / width);
-    const scaleY = Math.min(1, (STANDART_DISPLAY_RESOLUTION_V2.height - 80) / height);
+    const scaleX = Math.min(1, (STANDART_DISPLAY_RESOLUTION_V2.width - 40) / width);
+    const scaleY = Math.min(1, (STANDART_DISPLAY_RESOLUTION_V2.height - 40) / height);
     let k = Math.min(scaleX, scaleY);
     k = checkMinMaxScale(k);
     return Number(k.toFixed(4));
@@ -122,7 +123,7 @@ export function useZoom(props: IProps) {
     setTransform({ x, y, k });
   };
 
-  const getMapSize = (nodes: ITopoNode<any, any>[]) => {
+  const getMapSize = (nodes: (ITopoNode<any, any> | ITopoRegionNode)[]) => {
     let left = 0;
     let right = 0;
     let top = 0;

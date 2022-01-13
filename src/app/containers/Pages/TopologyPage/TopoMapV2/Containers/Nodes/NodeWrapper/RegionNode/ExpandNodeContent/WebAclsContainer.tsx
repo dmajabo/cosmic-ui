@@ -6,8 +6,8 @@ interface Props {
   children: React.ReactNode;
 }
 
-const ExpandNodeContent: React.FC<Props> = (props: Props) => {
+const WebAclsContainer: React.FC<Props> = (props: Props) => {
   return <g transform={`translate(${NODES_CONSTANTS.REGION.expanded.contentPadding}, ${props.offsetY + NODES_CONSTANTS.REGION.expanded.contentPadding})`}>{props.children}</g>;
 };
 
-export default React.memo(ExpandNodeContent);
+export default React.memo(WebAclsContainer);

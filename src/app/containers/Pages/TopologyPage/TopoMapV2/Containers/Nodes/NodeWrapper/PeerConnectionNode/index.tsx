@@ -1,14 +1,13 @@
 import React from 'react';
 import { NODES_CONSTANTS } from '../../../../model';
-import { INetworkVNetNode, INetworkVNetworkPeeringConnectionNode, ITopoNode } from 'lib/hooks/Topology/models';
+import { INetworkVNetworkPeeringConnectionNode, ITopoRegionNode } from 'lib/hooks/Topology/models';
 import { buildPeerLinks, IPeerLink } from './helper';
 import PeerConnectionLink from './PeerConnectionLink';
 import * as d3 from 'd3';
-import { INetworkRegion } from 'lib/api/ApiModels/Topology/apiModels';
 
 interface Props {
   item: INetworkVNetworkPeeringConnectionNode;
-  dataItem: ITopoNode<INetworkRegion, INetworkVNetNode>;
+  dataItem: ITopoRegionNode;
   parentId: string;
 }
 
@@ -19,7 +18,7 @@ const PeerConnectionNode: React.FC<Props> = (props: Props) => {
 
   React.useEffect(() => {
     const _links = buildPeerLinks(props.item, props.dataItem);
-    const _offsetY = props.dataItem.peerConnectionsRows.rows * (NODES_CONSTANTS.PEERING_CONNECTION.collapse.r * 2) + 20;
+    const _offsetY = props.dataItem.peerConnectionsRows.totalHeight + NODES_CONSTANTS.REGION.expanded.contentPadding;
     setVpcOffsetY(_offsetY);
     setLinks(_links);
   }, []);
@@ -63,7 +62,7 @@ const PeerConnectionNode: React.FC<Props> = (props: Props) => {
           r={NODES_CONSTANTS.PEERING_CONNECTION.collapse.r}
           cx={NODES_CONSTANTS.PEERING_CONNECTION.collapse.r}
           cy={NODES_CONSTANTS.PEERING_CONNECTION.collapse.r}
-          className="peerConnectionNode eventHandler"
+          className="peerConnectionNode"
           pointerEvents="all"
         />
         <use

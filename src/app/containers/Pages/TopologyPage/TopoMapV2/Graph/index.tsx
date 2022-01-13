@@ -13,6 +13,7 @@ import DevicePanel from '../PanelComponents/NodePanels/DevicePanel';
 import WedgePanel from '../PanelComponents/NodePanels/WedgePanel';
 import Map from './Map';
 import GroupsComponent from '../PanelComponents/GroupsComponent/GroupsComponent';
+import WebAclPanel from '../PanelComponents/NodePanels/WebAclPanel';
 
 interface Props {
   disabledReload: boolean;
@@ -28,7 +29,7 @@ const Graph: React.FC<Props> = (props: Props) => {
 
   React.useEffect(() => {
     if (!props.onlyRefreshAvaible) {
-      onZoomInit(topology.nodes);
+      onZoomInit();
     }
     return () => {
       onUnsubscribe();
@@ -69,6 +70,7 @@ const Graph: React.FC<Props> = (props: Props) => {
             {topology.topoPanel.type === TopologyPanelTypes.FILTERS && <FilterComponent />}
             {topology.topoPanel.type === TopologyPanelTypes.GROUPS && <GroupsComponent />}
             {topology.topoPanel.type === TopologyPanelTypes.VPC && <VpcPanel dataItem={topology.topoPanel.dataItem} />}
+            {topology.topoPanel.type === TopologyPanelTypes.WebAcl && <WebAclPanel dataItem={topology.topoPanel.dataItem} />}
             {topology.topoPanel.type === TopologyPanelTypes.Device && <DevicePanel dataItem={topology.topoPanel.dataItem} />}
             {topology.topoPanel.type === TopologyPanelTypes.Wedge && <WedgePanel dataItem={topology.topoPanel.dataItem} />}
           </PanelBar>

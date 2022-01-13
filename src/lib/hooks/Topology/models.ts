@@ -1,8 +1,11 @@
-import { INetworkDevice, INetworkVNetwork, INetworkVNetworkPeeringConnection, INetworkwEdge, VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
+import { INetworkDevice, INetworkRegion, INetworkVNetwork, INetworkVNetworkPeeringConnection, INetworkWebAcl, INetworkwEdge, VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
 import { AlertSeverity } from 'lib/api/ApiModels/Workflow/apiModel';
 import { IBaseEntity, ICollapsed, ICoord, IFilterOption, ISize, IVisible } from 'lib/models/general';
 
 export const VPCS_IN_ROW = 12;
+export const PEER_CONNECTION_IN_ROW = 11;
+export const WEB_ACL_IN_ROW = 11;
+export const DEV_IN_ROW = 100;
 
 export enum TopoNodeTypes {
   ACCOUNT = 'account',
@@ -14,6 +17,7 @@ export enum TopoNodeTypes {
   VNET = 'vnet',
   DEVICE = 'device',
   PEERING_CONNECTION = 'peerConnection',
+  WEB_ACL = 'webAcl',
   DEVICE_GROUP_LINK = 'devGroupLink',
 }
 
@@ -38,11 +42,14 @@ export interface INetworkVNetworkPeeringConnectionNode extends INetworkVNetworkP
 
 export interface INetworkVNetNode extends INetworkVNetwork, IMappedNode, ICoord {}
 
+export interface INetworkWebAclNode extends INetworkWebAcl, IMappedNode, ICoord {}
+
 export interface ITGWNode extends INetworkwEdge, IMappedNode, ICoord {}
 
 export interface IChildrenCount {
   rows: number;
   childrenCount: number;
+  totalHeight: number;
 }
 
 export enum TopoLinkTypes {
@@ -75,12 +82,26 @@ export interface ITopoNode<P, C> extends ICoord, ICollapsed, IVisible, IBaseEnti
   collapsedSize: ISize;
   children: C[];
   childrenRows: IChildrenCount;
+}
+
+export interface ITopoRegionNode extends ICoord, ICollapsed, IVisible, IBaseEntity<string> {
+  dataItem: INetworkRegion;
+  name: string;
+  uiId: string;
+  orgId: string;
+  type: TopoNodeTypes;
+  expandedSize: ISize;
+  collapsedSize: ISize;
+  children: INetworkVNetNode[];
+  childrenRows: IChildrenCount;
   peerConnections: INetworkVNetworkPeeringConnectionNode[];
   peerConnectionsRows: IChildrenCount;
+  webAcls: INetworkWebAclNode[];
+  webAclsRows: IChildrenCount;
 }
 
 export interface ITopologyPreparedMapDataV2 {
-  nodes: ITopoNode<any, any>[];
+  nodes: (ITopoNode<any, any> | ITopoRegionNode)[];
   links: ITopoLink<any, any, any, any, any>[];
 }
 
@@ -94,6 +115,7 @@ export enum FilterEntityTypes {
   TRANSIT = 'transit',
   VPC = 'vpc',
   PEERING_CONNECTIONS = 'peer_connections',
+  WEB_ACLS = 'web_acls',
 }
 
 export interface FilterEntityOptions {
@@ -101,6 +123,7 @@ export interface FilterEntityOptions {
   transit: IFilterOption<FilterEntityTypes>;
   vpc: IFilterOption<FilterEntityTypes>;
   peer_connections: IFilterOption<FilterEntityTypes>;
+  web_acls: IFilterOption<FilterEntityTypes>;
 }
 
 export interface FilterSeverityOptions {

@@ -28,14 +28,7 @@ const DeviceNode: React.FC<Props> = (props: Props) => {
     <>
       {/* {link && <DeviceLink key={`${link.from.id}${link.to.id}devLink`} data={link} />} */}
       <g transform={`translate(${props.item.x}, ${props.item.y})`} onClick={onClick} className={`topoNodeLevel1 deviceNodeWrapper ${isNodeSelected ? 'selectedTopoLevel1' : ''}`}>
-        <use
-          className="deviceBg eventHandler"
-          pointerEvents="all"
-          href={`#bg${NODES_CONSTANTS.DEVICE.type}`}
-          color="var(--_primaryBg)"
-          width={NODES_CONSTANTS.DEVICE.collapse.width}
-          height={NODES_CONSTANTS.DEVICE.collapse.height}
-        />
+        <use pointerEvents="all" href={`#bg${NODES_CONSTANTS.DEVICE.type}`} color="var(--_primaryBg)" width={NODES_CONSTANTS.DEVICE.collapse.width} height={NODES_CONSTANTS.DEVICE.collapse.height} />
         <use
           href={`#${NODES_CONSTANTS.DEVICE.type}`}
           width={NODES_CONSTANTS.DEVICE.collapse.iconWidth}

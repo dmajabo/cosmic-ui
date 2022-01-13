@@ -54,14 +54,20 @@ export const StyledMap = styled.svg`
   .topologyNode {
     opacity: 1;
     transition: opacity 0.2s linear;
+    .collapseExpandButton {
+      opacity: 0;
+    }
   }
-  .topologyNode.unhoverNode {
+  .topologyNode.unHoverNode {
     opacity: 0.5;
     transition: opacity 0.2s linear;
   }
   .topologyNode.hoverNode {
     opacity: 1;
     transition: opacity 0.2s linear;
+    .collapseExpandButton {
+      opacity: 1;
+    }
   }
   .topologyNode.topoDisabledOnDrag {
     & * {
@@ -100,10 +106,12 @@ export const StyledMap = styled.svg`
       transition-property: fill, stroke;
       transition: 0.2s linear;
     }
-    .vpsBgIcon {
+    .vpsBgIcon,
+    .webAclNodeIcon {
       color: var(--_primaryWhiteColor);
     }
-    .wedgeBg {
+    .wedgeBg,
+    .webAclNode {
       fill: var(--_highlightColor);
       transition-property: fill;
       transition: 0.2s linear;

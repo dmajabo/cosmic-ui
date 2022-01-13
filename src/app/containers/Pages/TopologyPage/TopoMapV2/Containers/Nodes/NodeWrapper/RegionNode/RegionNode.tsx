@@ -1,17 +1,19 @@
 import React from 'react';
-import { INetworkVNetNode, ITopoNode } from 'lib/hooks/Topology/models';
+import { INetworkVNetNode, INetworkWebAclNode, ITopoRegionNode } from 'lib/hooks/Topology/models';
 import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
-import ExpandNodeContent from './ExpandNodeContent';
+import WebAclsContainer from './ExpandNodeContent/WebAclsContainer';
 import NetworkVnetNode from '../NetworkVnetNode';
 import PeerConnectionNode from '../PeerConnectionNode';
 // import { onHoverNode, onUnHoverNode } from '../../../../Graph/helper';
 import { TopologyPanelTypes } from 'lib/models/topology';
 import { removeVnetTooltip } from '../NetworkVnetNode/tooltipHelper';
-import { INetworkRegion } from 'lib/api/ApiModels/Topology/apiModels';
 import TransitionContainer from '../../../TransitionContainer';
+import WebAclNode from '../WebAclNode';
+import PeerContainer from './ExpandNodeContent/PeerContainer';
+import VpcContainer from './ExpandNodeContent/VpcContainer';
 interface Props {
-  dataItem: ITopoNode<INetworkRegion, INetworkVNetNode>;
+  dataItem: ITopoRegionNode;
 }
 
 const RegionNode: React.FC<Props> = (props: Props) => {
@@ -26,46 +28,55 @@ const RegionNode: React.FC<Props> = (props: Props) => {
     topology.onToogleTopoPanel(TopologyPanelTypes.VPC, true, item);
   };
 
-  // const onMouseEnter = () => {
-  //   onHoverNode(`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`);
-  // };
-
-  // const onMouseLeave = () => {
-  //   onUnHoverNode(`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`);
-  // };
+  const onWebAclClick = (item: INetworkWebAclNode) => {
+    topology.onToogleTopoPanel(TopologyPanelTypes.WebAcl, true, item);
+  };
 
   return (
-    <TransitionContainer id={`wrapper${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}childrensLayer`} stateIn={props.dataItem.visible} origin="unset" transform="none">
+    <TransitionContainer
+      id={`wrapper${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}childrensLayer`}
+      stateIn={props.dataItem.visible && !props.dataItem.collapsed}
+      origin="unset"
+      transform="none"
+      timing={50}
+    >
       <g
         id={`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}childrensLayer`}
-        // onMouseEnter={onMouseEnter}
-        // onMouseLeave={onMouseLeave}
         className="topologyNode"
         transform={`translate(${props.dataItem.x}, ${props.dataItem.y})`}
         data-type={NODES_CONSTANTS.REGION.type}
       >
+        {topology.entities && topology.entities.web_acls.selected && props.dataItem.webAcls && props.dataItem.webAcls.length ? (
+          <WebAclsContainer offsetY={NODES_CONSTANTS.REGION.headerHeight}>
+            <>
+              {props.dataItem.webAcls.map(it => (
+                <WebAclNode key={`${it.uiId}webacl`} parentId={`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`} item={it} region={props.dataItem} onClick={onWebAclClick} />
+              ))}
+            </>
+          </WebAclsContainer>
+        ) : null}
         {topology.entities && topology.entities.peer_connections.selected && props.dataItem.peerConnections && props.dataItem.peerConnections.length ? (
-          <ExpandNodeContent offsetY={NODES_CONSTANTS.REGION.headerHeight}>
+          <PeerContainer showWebAcls={topology.entities && topology.entities.web_acls.selected} webAclTotalHeight={props.dataItem.webAclsRows.totalHeight}>
             <>
               {props.dataItem.peerConnections.map(it => (
                 <PeerConnectionNode key={`${it.uiId}peerConnection`} parentId={`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`} item={it} dataItem={props.dataItem} />
               ))}
             </>
-          </ExpandNodeContent>
+          </PeerContainer>
         ) : null}
-        <ExpandNodeContent
-          offsetY={
-            topology.entities && topology.entities.peer_connections.selected && props.dataItem.peerConnections && props.dataItem.peerConnections.length
-              ? NODES_CONSTANTS.REGION.headerHeight + props.dataItem.peerConnectionsRows.rows * (NODES_CONSTANTS.PEERING_CONNECTION.collapse.r * 2) + NODES_CONSTANTS.REGION.expanded.contentPadding
-              : NODES_CONSTANTS.REGION.headerHeight
-          }
+
+        <VpcContainer
+          showWebAcls={topology.entities && topology.entities.web_acls.selected}
+          webAclTotalHeight={props.dataItem.webAclsRows.totalHeight}
+          showPeerConnections={topology.entities && topology.entities.peer_connections.selected}
+          peerConnectionTotalHeight={props.dataItem.peerConnectionsRows.totalHeight}
         >
           <>
             {props.dataItem.children.map(it => (
               <NetworkVnetNode key={`${it.uiId}vnet`} parentId={`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`} region={props.dataItem} item={it} onClick={onVpcClick} />
             ))}
           </>
-        </ExpandNodeContent>
+        </VpcContainer>
         <foreignObject
           data-y={
             topology.entities && topology.entities.peer_connections.selected && props.dataItem.peerConnections && props.dataItem.peerConnections.length
