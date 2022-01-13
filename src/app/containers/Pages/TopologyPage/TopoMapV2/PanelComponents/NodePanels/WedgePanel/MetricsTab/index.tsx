@@ -43,17 +43,9 @@ const MetricsTab: React.FC<MetricTabProps> = (props: MetricTabProps) => {
   if (!wedgeDataItem) {
     return null;
   }
+
   return (
     <>
-      <MultiLineChartContainer
-        title="Bytes Dropped"
-        styles={{ margin: '0 0 20px 0', minHeight: '390px' }}
-        chartType="Line"
-        id={wedgeDataItem.extId}
-        queryTimeParam={metricsQueryParam}
-        queryKeys={[MetricsKeyTypes.BytesDropCountBlackhole, MetricsKeyTypes.BytesDropCountNoRoute]}
-        dataValueSuffix="bytes"
-      />
       <MultiLineChartContainer
         title="Bytes In and Out"
         styles={{ margin: '0 0 20px 0', minHeight: '390px' }}
@@ -63,7 +55,6 @@ const MetricsTab: React.FC<MetricTabProps> = (props: MetricTabProps) => {
         queryKeys={[MetricsKeyTypes.BytesIn, MetricsKeyTypes.BytesOut]}
         dataValueSuffix="bytes"
       />
-
       <MultiLineChartContainer
         title="Packets In and Out"
         styles={{ margin: '0 0 20px 0', minHeight: '390px' }}
@@ -72,6 +63,15 @@ const MetricsTab: React.FC<MetricTabProps> = (props: MetricTabProps) => {
         queryTimeParam={metricsQueryParam}
         queryKeys={[MetricsKeyTypes.PacketsIn, MetricsKeyTypes.PacketsOut]}
         dataValueSuffix="packets"
+      />
+      <MultiLineChartContainer
+        title="Bytes Dropped"
+        styles={{ margin: '0 0 20px 0', minHeight: '390px' }}
+        chartType="Line"
+        id={wedgeDataItem.extId}
+        queryTimeParam={metricsQueryParam}
+        queryKeys={[MetricsKeyTypes.BytesDropCountBlackhole, MetricsKeyTypes.BytesDropCountNoRoute]}
+        dataValueSuffix="bytes"
       />
       <MultiLineChartContainer
         title="Packets Dropped"
