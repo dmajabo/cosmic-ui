@@ -12,12 +12,12 @@ interface LineChartProps {
   readonly timeFormat?: string;
 }
 
-const OLD_TIME_FORMAT: string = 'yyyy-MM-dd HH:mm:ss ZZZ z';
+const INPUT_TIME_FORMAT: string = 'yyyy-MM-dd HH:mm:ss ZZZ z';
 
-export const MultiLineChart: React.FC<LineChartProps> = ({ dataValueSuffix, inputData, chartWidth, chartHeight }) => {
+export const MultiLineChart: React.FC<LineChartProps> = ({ dataValueSuffix, inputData, chartWidth = 300, chartHeight = 380 }) => {
   const series = inputData.map(item => {
     const metrics = item.metrics.map(metric => {
-      const time = DateTime.fromFormat(metric.time, OLD_TIME_FORMAT).toUTC();
+      const time = DateTime.fromFormat(metric.time, INPUT_TIME_FORMAT).toUTC();
       return { x: time.toMillis(), y: metric.value };
     });
     return {
@@ -25,10 +25,11 @@ export const MultiLineChart: React.FC<LineChartProps> = ({ dataValueSuffix, inpu
       data: metrics,
     };
   });
+
   const lineChartOptions = {
     chart: {
-      height: chartHeight || 300,
-      width: chartWidth || 380,
+      height: chartHeight,
+      width: chartWidth,
     },
     time: {
       useUTC: false,

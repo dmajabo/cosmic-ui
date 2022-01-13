@@ -21,7 +21,7 @@ interface MultiLineChartContainerProps {
   readonly dataValueSuffix?: string;
 }
 
-const errorText = 'Something went wrong.Please try again';
+const ERROR_TEXT = 'Something went wrong.Please try again';
 
 const isMetricsEmpty = (metrics: MultiLineMetricsData[]) => {
   const reducedMetrics: MetricsData[] = metrics.reduce((acc, nextValue) => acc.concat(nextValue.metrics), []);
@@ -66,7 +66,7 @@ const MultiLineChartContainer: React.FC<MultiLineChartContainerProps> = (props: 
         setMetricsData(metricsData);
       })
       .catch(() => {
-        setError(errorText);
+        setError(ERROR_TEXT);
         setIsLoading(false);
       });
   };
