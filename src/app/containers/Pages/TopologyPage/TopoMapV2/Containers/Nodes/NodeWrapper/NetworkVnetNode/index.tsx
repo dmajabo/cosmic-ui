@@ -6,8 +6,13 @@ import { select } from 'd3-selection';
 import { buildVnetTooltip, removeVnetTooltip } from './tooltipHelper';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 import HtmlNodeLabel from '../../Containers/HtmlNodeLabel';
+import { IPosition } from 'lib/models/general';
 
 interface Props {
+  x: number;
+  y: number;
+  rowWidth: number;
+  nodeWidth: number;
   parentId: string;
   region: ITopoRegionNode;
   item: INetworkVNetNode;
@@ -16,6 +21,7 @@ interface Props {
 
 const NetworkVnetNode: React.FC<Props> = (props: Props) => {
   const { topology } = useTopologyV2DataContext();
+  const [coord] = React.useState<IPosition>({ x: props.x + props.nodeWidth / 2 - props.rowWidth / 2, y: props.y });
   const [isNodeSelected, setIsNodeSelected] = React.useState<boolean>(false);
   const nodeRef = React.useRef(null);
 
@@ -33,7 +39,7 @@ const NetworkVnetNode: React.FC<Props> = (props: Props) => {
   const onMouseEnter = (e: React.BaseSyntheticEvent<MouseEvent>) => {
     const _node = select(nodeRef.current);
     _node.raise();
-    buildVnetTooltip(e, props.region, props.item, props.parentId);
+    buildVnetTooltip(e, props.region, props.item, props.parentId, coord);
   };
   const onMouseLeave = () => {
     removeVnetTooltip(props.parentId);
@@ -43,12 +49,13 @@ const NetworkVnetNode: React.FC<Props> = (props: Props) => {
       ref={nodeRef}
       onMouseOver={onMouseEnter}
       onMouseOut={onMouseLeave}
-      id={`${props.item.nodeType}${props.item.id}`}
       className={`topoNodeLevel1 vnetNodeWrapper ${isNodeSelected ? 'selectedTopoLevel1' : ''}`}
-      transform={`translate(${props.item.x}, ${props.item.y})`}
-      data-id={`vnet${props.item.id}`}
+      transform={`translate(${coord.x}, ${coord.y})`}
+      data-id={`${props.item.nodeType}${props.item.id}`}
       onClick={onClick}
       cursor="pointer"
+      data-x={NODES_CONSTANTS.NETWORK_VNET.collapse.r + coord.x}
+      data-y={NODES_CONSTANTS.NETWORK_VNET.collapse.r + coord.y}
     >
       <circle
         r={NODES_CONSTANTS.NETWORK_VNET.collapse.r - 1}

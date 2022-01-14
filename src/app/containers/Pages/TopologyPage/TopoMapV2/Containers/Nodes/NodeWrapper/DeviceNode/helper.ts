@@ -1,16 +1,15 @@
 import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
-import { ITopologyGroup } from 'lib/api/ApiModels/Topology/apiModels';
-import { IDeviceNode, ITopoNode } from 'lib/hooks/Topology/models';
+import { IDeviceNode, ITopoSitesNode } from 'lib/hooks/Topology/models';
 
 export interface IDeviceLink {
   from: IDeviceNode;
-  to: ITopoNode<ITopologyGroup, IDeviceNode>;
+  to: ITopoSitesNode;
   x1: number;
   y1: number;
   x2: number;
   y2: number;
 }
-export const buildLink = (item: IDeviceNode, dataItem: ITopoNode<ITopologyGroup, IDeviceNode>): IDeviceLink => {
+export const buildLink = (item: IDeviceNode, dataItem: ITopoSitesNode): IDeviceLink => {
   return {
     from: item,
     to: dataItem,

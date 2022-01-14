@@ -1,17 +1,20 @@
 import React from 'react';
 import { NODES_CONSTANTS } from '../../../../model';
 import { INetworkVNetNode, ITopoRegionNode } from 'lib/hooks/Topology/models';
-import { select } from 'd3-selection';
-import { buildVnetTooltip, removeVnetTooltip } from './tooltipHelper';
+// import { select } from 'd3-selection';
+// import { buildVnetTooltip, removeVnetTooltip } from './tooltipHelper';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 import NodeMarker from '../../Containers/NodeMarker';
 import NodeExpandedName from '../../Containers/NodeName/NodeExpandedName';
 import HtmlIconNode from '../../Containers/HtmlIconNode';
-import { AppLoaderBalancerIcon, InternetGatawayIcon, NgfwIcon, VmIcon } from 'app/components/SVGIcons/topologyIcons/TopoMapV2Icons/VnetPanelIcons/vnetPanelIcons';
+import { AppLoaderBalancerIcon, InternetGatawayIcon, VmIcon } from 'app/components/SVGIcons/topologyIcons/TopoMapV2Icons/VnetPanelIcons/vnetPanelIcons';
+import { IPosition } from 'lib/models/general';
 
 interface Props {
   x: number;
   y: number;
+  rowWidth: number;
+  nodeWidth: number;
   parentId: string;
   region: ITopoRegionNode;
   item: INetworkVNetNode;
@@ -20,6 +23,7 @@ interface Props {
 
 const ExpandedNetworkVnetNode: React.FC<Props> = (props: Props) => {
   const { topology } = useTopologyV2DataContext();
+  const [coord] = React.useState<IPosition>({ x: props.x + props.nodeWidth / 2 - props.rowWidth / 2, y: props.y });
   const [isNodeSelected, setIsNodeSelected] = React.useState<boolean>(false);
   const nodeRef = React.useRef(null);
 
@@ -34,32 +38,36 @@ const ExpandedNetworkVnetNode: React.FC<Props> = (props: Props) => {
   const onClick = () => {
     props.onClick(props.item);
   };
-  const onMouseEnter = (e: React.BaseSyntheticEvent<MouseEvent>) => {
-    const _node = select(nodeRef.current);
-    _node.raise();
-    buildVnetTooltip(e, props.region, props.item, props.parentId);
-  };
-  const onMouseLeave = () => {
-    removeVnetTooltip(props.parentId);
-  };
+  // const onMouseEnter = (e: React.BaseSyntheticEvent<MouseEvent>) => {
+  //   const _node = select(nodeRef.current);
+  //   _node.raise();
+  //   buildVnetTooltip(e, props.region, props.item, props.parentId);
+  // };
+  // const onMouseLeave = () => {
+  //   removeVnetTooltip(props.parentId);
+  // };
   return (
     <g
       ref={nodeRef}
-      onMouseOver={onMouseEnter}
-      onMouseOut={onMouseLeave}
-      id={`${props.item.nodeType}${props.item.id}`}
+      // onMouseOver={onMouseEnter}
+      // onMouseOut={onMouseLeave}
       className={`topoNodeLevel1 vnetNodeWrapper ${isNodeSelected ? 'selectedTopoLevel1' : ''}`}
-      transform={`translate(${props.x}, ${props.y})`}
-      data-id={`vnetExpanded${props.item.id}`}
+      transform={`translate(${coord.x}, ${coord.y})`}
+      data-id={`${props.item.nodeType}${props.item.id}`}
       onClick={onClick}
       cursor="pointer"
+      data-x={NODES_CONSTANTS.NETWORK_VNET.expanded.minWidth / 2 + coord.x}
+      data-y={coord.y}
     >
       <rect
-        fill={NODES_CONSTANTS.NETWORK_VNET.expanded.bgColor}
+        stroke={isNodeSelected ? 'var(--_highlightColor)' : NODES_CONSTANTS.NETWORK_VNET.expanded.stroke}
+        strokeWidth="1"
+        fill={isNodeSelected ? 'var(--_highlightColor)' : NODES_CONSTANTS.NETWORK_VNET.expanded.bgColor}
         width={NODES_CONSTANTS.NETWORK_VNET.expanded.minWidth}
         height={NODES_CONSTANTS.NETWORK_VNET.expanded.minHeight}
         rx={NODES_CONSTANTS.NETWORK_VNET.expanded.borderRadius}
         ry={NODES_CONSTANTS.NETWORK_VNET.expanded.borderRadius}
+        className="vpcCollapsedBg transitionStyle"
         pointerEvents="all"
       />
       <g transform="translate(0, 0)">
@@ -79,7 +87,7 @@ const ExpandedNetworkVnetNode: React.FC<Props> = (props: Props) => {
         y={NODES_CONSTANTS.NETWORK_VNET.expanded.marker.height}
       >
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%', padding: `${NODES_CONSTANTS.NETWORK_VNET.expanded.contentPadding}px` }}>
-          <HtmlIconNode icon={NgfwIcon} name="NGFW" count={0} />
+          {/* <HtmlIconNode icon={NgfwIcon} name="NGFW" count={0} /> */}
           <HtmlIconNode icon={VmIcon} name="VMs" count={props.item.vms.length} />
           <HtmlIconNode icon={InternetGatawayIcon} name="Security Groups" count={props.item.securityGroups.length} />
           <HtmlIconNode icon={AppLoaderBalancerIcon} name="Nat Gateway" count={props.item.internetGateway ? 1 : 0} />

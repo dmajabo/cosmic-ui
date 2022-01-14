@@ -10,13 +10,12 @@ import SitesCollapsedNode from './SitesCollapsedNode';
 import { onHoverNode, onUnHoverNode } from '../../../../Graph/helper';
 import SitesExpandNode from './SitesExpandNode';
 import { TopologyPanelTypes } from 'lib/models/topology';
-import { IDeviceNode, ITopoNode } from 'lib/hooks/Topology/models';
-import { ITopologyGroup } from 'lib/api/ApiModels/Topology/apiModels';
+import { IDeviceNode, ITopoSitesNode } from 'lib/hooks/Topology/models';
 import TransitionContainer from '../../../TransitionContainer';
 // import CollapseExpandButton from '../../Containers/CollapseExpandButton';
 
 interface Props {
-  dataItem: ITopoNode<ITopologyGroup, IDeviceNode>;
+  dataItem: ITopoSitesNode;
 }
 
 const SitesNodeTopContainer: React.FC<Props> = (props: Props) => {

@@ -1,26 +1,10 @@
 import { ICollapseStyles, NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
-import { ITopologyGroup } from 'lib/api/ApiModels/Topology/apiModels';
 import { getChunksFromArray } from 'lib/helpers/arrayHelper';
 import { IPosition, ISize, STANDART_DISPLAY_RESOLUTION_V2 } from 'lib/models/general';
-import {
-  DEV_IN_ROW,
-  DirectionType,
-  FilterEntityOptions,
-  IChildrenCount,
-  IDeviceNode,
-  INetworkVNetNode,
-  INetworkVNetworkPeeringConnectionNode,
-  INetworkWebAclNode,
-  ITGWNode,
-  ITopoNode,
-  ITopoRegionNode,
-  PEER_CONNECTION_IN_ROW,
-  VPCS_IN_ROW,
-  WEB_ACL_IN_ROW,
-} from '../models';
-import { centeredItemsInRow, getContainerHeight, getRowsHeight, getRowsWidth, getStartChildRowOffsetX, getTotalNodeHeight } from './sizeHelpers';
+import { DirectionType, FilterEntityOptions, ITGWNode, ITopoNode, ITopoRegionNode, ITopoSitesNode } from '../models';
+import { centeredTopLevelItemsInRow, getChildContainerWidth, getChildContainerHeight, getRowsWidth, getStartChildRowOffsetX, getTotalNodeHeight, getTotalNodeWidth } from './sizeHelpers';
 
-export const updateTopLevelItems = (filter: FilterEntityOptions, regions: ITopoRegionNode[], accounts: ITopoNode<any, ITGWNode>[], groups: ITopoNode<ITopologyGroup, IDeviceNode>[]) => {
+export const updateTopLevelItems = (filter: FilterEntityOptions, regions: ITopoRegionNode[], accounts: ITopoNode<any, ITGWNode>[], groups: ITopoSitesNode[]) => {
   let offsetY = 0;
   let regionSizes: ISize = { width: 0, height: 0 };
   let accountSizes: ISize = { width: 0, height: 0 };
@@ -40,63 +24,30 @@ export const updateTopLevelItems = (filter: FilterEntityOptions, regions: ITopoR
   centeredTopLevelNodes(regions, accounts, groups, regionSizes, accountSizes, sitesSizes);
 };
 
-const centeredTopLevelNodes = (
-  regions: ITopoRegionNode[],
-  accounts: ITopoNode<any, any>[],
-  sites: ITopoNode<ITopologyGroup, IDeviceNode>[],
-  regionSize: ISize,
-  accountSize: ISize,
-  sitesSize: ISize,
-) => {
-  centeredItemsInRow(regions, regionSize, STANDART_DISPLAY_RESOLUTION_V2.width);
-  centeredItemsInRow(accounts, accountSize, STANDART_DISPLAY_RESOLUTION_V2.width);
-  centeredItemsInRow(sites, sitesSize, STANDART_DISPLAY_RESOLUTION_V2.width);
-};
-
-const getBeautifulRowsCount = (_count: number, maxInRow: number): number => {
-  if (_count <= 6) return _count;
-  if (_count <= maxInRow) return Math.max(4, Math.ceil(_count / 1.75));
-  return maxInRow;
-};
-
-const getDevicesBeautifulRowsCount = (_count: number, maxInRow: number): number => {
-  if (_count <= 6) return _count;
-  if (_count <= maxInRow) return Math.max(4, Math.ceil(Math.sqrt(_count) * 2));
-  return maxInRow;
-};
-
-const getRegionChildrenCounts = (chs: INetworkVNetNode[], prs: INetworkVNetworkPeeringConnectionNode[], webAcls: INetworkWebAclNode[]) => {
-  const maxCHInRow = chs && chs.length ? getBeautifulRowsCount(chs.length, VPCS_IN_ROW) : 0;
-  const chRowW = getRowsWidth(maxCHInRow, NODES_CONSTANTS.NETWORK_VNET.collapse.width, NODES_CONSTANTS.NETWORK_VNET.collapse.spaceX);
-  const maxPRInRow = prs && prs.length ? getBeautifulRowsCount(prs.length, PEER_CONNECTION_IN_ROW) : 0;
-  const prRowW = getRowsWidth(maxPRInRow, NODES_CONSTANTS.PEERING_CONNECTION.collapse.width, NODES_CONSTANTS.PEERING_CONNECTION.collapse.spaceX);
-  const maxWebInRow = webAcls && webAcls.length ? getBeautifulRowsCount(webAcls.length, WEB_ACL_IN_ROW) : 0;
-  const wRowW = getRowsWidth(maxWebInRow, NODES_CONSTANTS.WEB_ACL.collapse.width, NODES_CONSTANTS.WEB_ACL.collapse.spaceX);
-  return { value: Math.max(maxCHInRow, maxPRInRow, maxWebInRow), maxWidth: Math.max(chRowW, prRowW, wRowW) };
+const centeredTopLevelNodes = (regions: ITopoRegionNode[], accounts: ITopoNode<any, any>[], sites: ITopoSitesNode[], regionSize: ISize, accountSize: ISize, sitesSize: ISize) => {
+  centeredTopLevelItemsInRow(regions, regionSize, STANDART_DISPLAY_RESOLUTION_V2.width);
+  centeredTopLevelItemsInRow(accounts, accountSize, STANDART_DISPLAY_RESOLUTION_V2.width);
+  centeredTopLevelItemsInRow(sites, sitesSize, STANDART_DISPLAY_RESOLUTION_V2.width);
 };
 
 export const updateRegionItems = (items: ITopoRegionNode[], filter: FilterEntityOptions): ISize => {
   if (!items || !items.length) return { width: 0, height: 0 };
   let offsetX = 0;
   let maxNodeHeight = 0;
-  const minRegWidth = NODES_CONSTANTS.REGION.expanded.minWidth - NODES_CONSTANTS.REGION.expanded.contentPadding * 2;
+  // const minRegWidth = NODES_CONSTANTS.REGION.expanded.minWidth - NODES_CONSTANTS.REGION.expanded.contentPadding * 2;
   items.forEach((a, i) => {
     if ((!a.children || !a.children.length) && (!a.peerConnections || !a.peerConnections.length) && (!a.webAcls || !a.webAcls.length)) {
       a.collapsed = true;
     }
-    const maxInRow = getRegionChildrenCounts(a.children, a.peerConnections, a.webAcls);
-    if (a.children && a.children.length) {
-      const count = setUpChildCoord(a.children, VPCS_IN_ROW, maxInRow.value, maxInRow.maxWidth, minRegWidth, NODES_CONSTANTS.NETWORK_VNET.collapse);
-      a.childrenRows = count;
-    }
-    if (a.peerConnections && a.peerConnections.length) {
-      const count = setUpChildCoord(a.peerConnections, PEER_CONNECTION_IN_ROW, maxInRow.value, maxInRow.maxWidth, minRegWidth, NODES_CONSTANTS.PEERING_CONNECTION.collapse);
-      a.peerConnectionsRows = count;
-    }
-    if (a.webAcls && a.webAcls.length) {
-      const count = setUpChildCoord(a.webAcls, WEB_ACL_IN_ROW, maxInRow.value, maxInRow.maxWidth, minRegWidth, NODES_CONSTANTS.WEB_ACL.collapse);
-      a.webAclsRows = count;
-    }
+    // if (a.children && a.children.length) {
+    //   setUpChildCoord(a.children, VPCS_IN_ROW, maxInRow.value, maxInRow.maxWidth, minRegWidth, NODES_CONSTANTS.NETWORK_VNET.collapse);
+    // }
+    // if (a.peerConnections && a.peerConnections.length) {
+    //   setUpChildCoord(a.peerConnections, PEER_CONNECTION_IN_ROW, maxInRow.value, maxInRow.maxWidth, minRegWidth, NODES_CONSTANTS.PEERING_CONNECTION.collapse);
+    // }
+    // if (a.webAcls && a.webAcls.length) {
+    //   setUpChildCoord(a.webAcls, WEB_ACL_IN_ROW, maxInRow.value, maxInRow.maxWidth, minRegWidth, NODES_CONSTANTS.WEB_ACL.collapse);
+    // }
     a.y = 0;
     if (a.collapsed) {
       maxNodeHeight = Math.max(maxNodeHeight, a.collapsedSize.height);
@@ -104,30 +55,46 @@ export const updateRegionItems = (items: ITopoRegionNode[], filter: FilterEntity
       offsetX = i !== items.length - 1 ? a.x + a.collapsedSize.width + NODES_CONSTANTS.REGION.collapse.spaceX : a.x + a.collapsedSize.width;
       return;
     }
-    const peerH = getContainerHeight(
+    const pHeight = getChildContainerHeight(
       filter.peer_connections.selected,
-      a.peerConnectionsRows.rows,
+      a.peerConnections.length,
       NODES_CONSTANTS.REGION.expanded.contentPadding,
       NODES_CONSTANTS.PEERING_CONNECTION.collapse.height,
       NODES_CONSTANTS.PEERING_CONNECTION.collapse.spaceY,
     );
-    const webAclH = getContainerHeight(
+    const pWidth = getChildContainerWidth(
+      filter.peer_connections.selected,
+      a.peerConnections,
+      NODES_CONSTANTS.REGION.expanded.contentPadding,
+      NODES_CONSTANTS.PEERING_CONNECTION.collapse.width,
+      NODES_CONSTANTS.PEERING_CONNECTION.collapse.spaceX,
+    );
+    const wHeight = getChildContainerHeight(
       filter.web_acls.selected,
-      a.webAclsRows.rows,
+      a.webAcls.length,
       NODES_CONSTANTS.REGION.expanded.contentPadding,
       NODES_CONSTANTS.WEB_ACL.collapse.height,
       NODES_CONSTANTS.WEB_ACL.collapse.spaceY,
     );
-    const chH = getContainerHeight(
+    const wWidth = getChildContainerWidth(
+      filter.web_acls.selected,
+      a.webAcls,
+      NODES_CONSTANTS.REGION.expanded.contentPadding,
+      NODES_CONSTANTS.WEB_ACL.collapse.width,
+      NODES_CONSTANTS.WEB_ACL.collapse.spaceX,
+    );
+    const cHeight = getChildContainerHeight(
       true,
-      a.childrenRows.rows,
+      a.children.length,
       NODES_CONSTANTS.REGION.expanded.contentPadding,
       NODES_CONSTANTS.NETWORK_VNET.collapse.height,
       NODES_CONSTANTS.NETWORK_VNET.collapse.spaceY,
     );
-    const _height = getTotalNodeHeight(peerH + webAclH + chH, NODES_CONSTANTS.REGION.headerHeight, 0);
+    const cWidth = getChildContainerWidth(true, a.children, NODES_CONSTANTS.REGION.expanded.contentPadding, NODES_CONSTANTS.NETWORK_VNET.collapse.width, NODES_CONSTANTS.NETWORK_VNET.collapse.spaceX);
+    const _height = getTotalNodeHeight(pHeight + wHeight + cHeight, NODES_CONSTANTS.REGION.headerHeight, NODES_CONSTANTS.REGION.expanded.contentPadding);
+    const _width = getTotalNodeWidth(Math.max(cWidth, wWidth, pWidth), NODES_CONSTANTS.REGION.expanded.contentPadding);
     a.x = offsetX;
-    a.expandedSize.width = Math.max(NODES_CONSTANTS.REGION.expanded.minWidth, maxInRow.maxWidth + NODES_CONSTANTS.REGION.expanded.contentPadding * 2);
+    a.expandedSize.width = Math.max(NODES_CONSTANTS.REGION.expanded.minWidth, _width);
     a.expandedSize.height = Math.max(NODES_CONSTANTS.REGION.expanded.minHeight, _height);
     maxNodeHeight = Math.max(maxNodeHeight, _height);
     offsetX = i !== items.length - 1 ? offsetX + a.expandedSize.width + NODES_CONSTANTS.REGION.expanded.spaceX : offsetX + a.expandedSize.width;
@@ -135,21 +102,20 @@ export const updateRegionItems = (items: ITopoRegionNode[], filter: FilterEntity
   return { width: offsetX, height: maxNodeHeight };
 };
 
-export const updateSitesItems = (items: ITopoNode<ITopologyGroup, IDeviceNode>[], offsetY: number): ISize => {
+export const updateSitesItems = (items: ITopoSitesNode[], offsetY: number): ISize => {
   if (!items || !items.length) return { width: 0, height: 0 };
   let offsetX = 0;
   let maxNodeHeight = 0;
-  const minSitesWidth = NODES_CONSTANTS.SITES.expanded.minWidth - NODES_CONSTANTS.SITES.expanded.contentPadding * 2;
+  // const minSitesWidth = NODES_CONSTANTS.SITES.expanded.minWidth - NODES_CONSTANTS.SITES.expanded.contentPadding * 2;
   items.forEach((a, i) => {
     if (!a.children || !a.children.length) {
       a.collapsed = true;
     }
-    if (a.children && a.children.length) {
-      const max = getDevicesBeautifulRowsCount(a.children.length, DEV_IN_ROW);
-      const wRowW = getRowsWidth(max, NODES_CONSTANTS.DEVICE.collapse.width, NODES_CONSTANTS.DEVICE.collapse.spaceX);
-      const count = setUpChildCoord(a.children, max, max, wRowW, minSitesWidth, NODES_CONSTANTS.DEVICE.collapse);
-      a.childrenRows = count;
-    }
+    // if (a.children && a.children.length) {
+    //   const max = getDevicesBeautifulRowsCount(a.children.length, DEV_IN_ROW);
+    //   const wRowW = getRowsWidth(max, NODES_CONSTANTS.DEVICE.collapse.width, NODES_CONSTANTS.DEVICE.collapse.spaceX);
+    //   setUpChildCoord(a.children, max, max, wRowW, minSitesWidth, NODES_CONSTANTS.DEVICE.collapse);
+    // }
     a.y = offsetY;
     if (a.collapsed) {
       maxNodeHeight = Math.max(maxNodeHeight, a.collapsedSize.height);
@@ -157,12 +123,14 @@ export const updateSitesItems = (items: ITopoNode<ITopologyGroup, IDeviceNode>[]
       offsetX = i !== items.length - 1 ? a.x + a.collapsedSize.width + NODES_CONSTANTS.SITES.collapse.spaceX : a.x + a.collapsedSize.width;
       return;
     }
-    const _width = getRowsWidth(a.childrenRows.childrenCount, NODES_CONSTANTS.DEVICE.collapse.width, NODES_CONSTANTS.DEVICE.collapse.spaceX);
-    const _childrenHeight = getRowsHeight(a.childrenRows.rows, NODES_CONSTANTS.DEVICE.collapse.height, NODES_CONSTANTS.DEVICE.collapse.spaceY);
-    const totalHeight = getTotalNodeHeight(_childrenHeight, NODES_CONSTANTS.SITES.headerHeight, NODES_CONSTANTS.SITES.expanded.contentPadding);
+
+    const cHeight = getChildContainerHeight(true, a.children.length, NODES_CONSTANTS.SITES.expanded.contentPadding, NODES_CONSTANTS.DEVICE.collapse.height, NODES_CONSTANTS.DEVICE.collapse.spaceY);
+    const cWidth = getChildContainerWidth(true, a.children, NODES_CONSTANTS.SITES.expanded.contentPadding, NODES_CONSTANTS.DEVICE.collapse.width, NODES_CONSTANTS.DEVICE.collapse.spaceX);
+    const _height = getTotalNodeHeight(cHeight, NODES_CONSTANTS.SITES.headerHeight, NODES_CONSTANTS.REGION.expanded.contentPadding);
+    const _width = getTotalNodeWidth(cWidth, NODES_CONSTANTS.SITES.expanded.contentPadding);
     a.x = offsetX;
-    a.expandedSize.width = Math.max(NODES_CONSTANTS.SITES.expanded.minWidth, _width + NODES_CONSTANTS.SITES.expanded.contentPadding * 2);
-    a.expandedSize.height = Math.max(NODES_CONSTANTS.SITES.expanded.minHeight, totalHeight);
+    a.expandedSize.width = Math.max(NODES_CONSTANTS.SITES.expanded.minWidth, _width);
+    a.expandedSize.height = Math.max(NODES_CONSTANTS.SITES.expanded.minHeight, _height);
     maxNodeHeight = Math.max(maxNodeHeight, a.expandedSize.height);
     offsetX = i !== items.length - 1 ? offsetX + a.expandedSize.width + NODES_CONSTANTS.SITES.expanded.spaceX : offsetX + a.expandedSize.width;
   });
@@ -181,8 +149,7 @@ export const updateAccountItems = (items: ITopoNode<any, ITGWNode>[], offsetY: n
     a.y = offsetY;
     if (a.children && a.children.length) {
       const wRowW = getRowsWidth(a.children.length, NODES_CONSTANTS.NETWORK_WEDGE.collapse.width, NODES_CONSTANTS.NETWORK_WEDGE.collapse.spaceX);
-      const count = setUpChildCoord(a.children, a.children.length, a.children.length, wRowW, minSitesWidth, NODES_CONSTANTS.NETWORK_WEDGE.collapse);
-      a.childrenRows = count;
+      setUpChildCoord(a.children, a.children.length, a.children.length, wRowW, minSitesWidth, NODES_CONSTANTS.NETWORK_WEDGE.collapse);
     }
     if (a.collapsed) {
       maxNodeHeight = Math.max(maxNodeHeight, a.collapsedSize.height);
@@ -191,7 +158,7 @@ export const updateAccountItems = (items: ITopoNode<any, ITGWNode>[], offsetY: n
       return;
     }
     a.x = offsetX;
-    const _width = getRowsWidth(a.childrenRows.childrenCount, NODES_CONSTANTS.NETWORK_WEDGE.collapse.width, NODES_CONSTANTS.NETWORK_WEDGE.collapse.spaceX);
+    const _width = getRowsWidth(a.children.length, NODES_CONSTANTS.NETWORK_WEDGE.collapse.width, NODES_CONSTANTS.NETWORK_WEDGE.collapse.spaceX);
     a.expandedSize.width = Math.max(NODES_CONSTANTS.ACCOUNT.expanded.minWidth, _width + NODES_CONSTANTS.ACCOUNT.expanded.contentPadding * 2);
     a.expandedSize.height = NODES_CONSTANTS.ACCOUNT.expanded.minHeight;
     maxNodeHeight = Math.max(maxNodeHeight, a.expandedSize.height);
@@ -200,7 +167,7 @@ export const updateAccountItems = (items: ITopoNode<any, ITGWNode>[], offsetY: n
   return { width: offsetX, height: maxNodeHeight };
 };
 
-const setUpChildCoord = (items: any[], maxCh: number, maxInRow: number, maxWidth: number, minWidth: number, styleObj: ICollapseStyles): IChildrenCount => {
+const setUpChildCoord = (items: any[], maxCh: number, maxInRow: number, maxWidth: number, minWidth: number, styleObj: ICollapseStyles) => {
   const _arr = getChunksFromArray(items, Math.min(maxCh, maxInRow));
   const w = styleObj.r ? styleObj.r * 2 : styleObj.width;
   const h = styleObj.r ? styleObj.r * 2 : styleObj.height;

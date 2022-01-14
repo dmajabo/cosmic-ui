@@ -13,17 +13,35 @@ import WebAclNode from '../WebAclNode';
 import PeerContainer from './ExpandNodeContent/PeerContainer';
 import VpcContainer from './ExpandNodeContent/VpcContainer';
 import VnetTooltipContainer from '../../Containers/VnetTooltipContainer';
+import { getRegionChildrenContainersOffsets, IRefionContainersOffsets } from './ExpandNodeContent/helper';
 interface Props {
   dataItem: ITopoRegionNode;
 }
 
 const RegionNode: React.FC<Props> = (props: Props) => {
   const { topology } = useTopologyV2DataContext();
+  const [offsetsData, setOffsetsData] = React.useState<IRefionContainersOffsets>(null);
 
   React.useEffect(() => {
     removeVnetTooltip(`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`);
     return () => removeVnetTooltip(`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`);
   }, []);
+
+  React.useEffect(() => {
+    const _offsests = getRegionChildrenContainersOffsets(
+      topology.entities,
+      props.dataItem.webAcls.length,
+      props.dataItem.peerConnections.length,
+      props.dataItem.children.length,
+      NODES_CONSTANTS.REGION.headerHeight,
+      NODES_CONSTANTS.REGION.expanded.contentPadding,
+      NODES_CONSTANTS.WEB_ACL.collapse,
+      NODES_CONSTANTS.PEERING_CONNECTION.collapse,
+      NODES_CONSTANTS.NETWORK_VNET.collapse,
+      props.dataItem.expandedSize.width,
+    );
+    setOffsetsData(_offsests);
+  }, [props.dataItem, topology.entities]);
 
   const onVpcClick = (item: INetworkVNetNode) => {
     topology.onToogleTopoPanel(TopologyPanelTypes.VPC, true, item);
@@ -32,6 +50,8 @@ const RegionNode: React.FC<Props> = (props: Props) => {
   const onWebAclClick = (item: INetworkWebAclNode) => {
     topology.onToogleTopoPanel(TopologyPanelTypes.WebAcl, true, item);
   };
+
+  if (!offsetsData) return null;
 
   return (
     <TransitionContainer
@@ -48,68 +68,82 @@ const RegionNode: React.FC<Props> = (props: Props) => {
         data-type={NODES_CONSTANTS.REGION.type}
       >
         {topology.entities && topology.entities.web_acls.selected && props.dataItem.webAcls && props.dataItem.webAcls.length ? (
-          <WebAclsContainer offsetY={NODES_CONSTANTS.REGION.headerHeight} offsetX={NODES_CONSTANTS.REGION.expanded.contentPadding}>
+          <WebAclsContainer offsetY={offsetsData.topOffset} offsetX={NODES_CONSTANTS.REGION.expanded.contentPadding}>
             <>
-              {props.dataItem.webAcls.map(it => (
-                <WebAclNode
-                  key={`${it.uiId}webacl`}
-                  item={it}
-                  x={it.x}
-                  y={it.y}
-                  onClick={onWebAclClick}
-                  nodeStyles={NODES_CONSTANTS.WEB_ACL.collapse}
-                  counterStyles={NODES_CONSTANTS.WEB_ACL.countStyles}
-                  labelStyles={NODES_CONSTANTS.WEB_ACL.labelHtmlStyles}
-                />
-              ))}
+              {props.dataItem.webAcls.map((row, ri) => {
+                const rowWidth = row.length * (NODES_CONSTANTS.WEB_ACL.collapse.width + NODES_CONSTANTS.WEB_ACL.collapse.spaceX) - NODES_CONSTANTS.WEB_ACL.collapse.spaceX;
+                const rowY = ri * (NODES_CONSTANTS.WEB_ACL.collapse.height + NODES_CONSTANTS.WEB_ACL.collapse.spaceY);
+                const itemOffsetX = NODES_CONSTANTS.WEB_ACL.collapse.width + NODES_CONSTANTS.WEB_ACL.collapse.spaceX;
+                return row.map((it, i) => (
+                  <WebAclNode
+                    key={`${it.uiId}webacl`}
+                    item={it}
+                    x={i * itemOffsetX}
+                    y={rowY}
+                    rowWidth={rowWidth}
+                    nodeWidth={offsetsData.totalWidth}
+                    onClick={onWebAclClick}
+                    nodeStyles={NODES_CONSTANTS.WEB_ACL.collapse}
+                    counterStyles={NODES_CONSTANTS.WEB_ACL.countStyles}
+                    labelStyles={NODES_CONSTANTS.WEB_ACL.labelHtmlStyles}
+                  />
+                ));
+              })}
             </>
           </WebAclsContainer>
         ) : null}
         {topology.entities && topology.entities.peer_connections.selected && props.dataItem.peerConnections && props.dataItem.peerConnections.length ? (
-          <PeerContainer
-            headerHeight={NODES_CONSTANTS.REGION.headerHeight}
-            showWebAcls={topology.entities && topology.entities.web_acls.selected}
-            webAclTotalHeight={props.dataItem.webAclsRows.totalHeight}
-            offsetX={NODES_CONSTANTS.REGION.expanded.contentPadding}
-          >
+          <PeerContainer id={`peerLinkContainer${props.dataItem.uiId}`} offsetY={offsetsData.topOffset + offsetsData.webAcl_TotalHeight} offsetX={NODES_CONSTANTS.REGION.expanded.contentPadding}>
             <>
-              {props.dataItem.peerConnections.map(it => (
-                <PeerConnectionNode
-                  key={`${it.uiId}peerConnection`}
-                  parentId={`wrapper${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}childrensLayer`}
-                  x={it.x}
-                  y={it.y}
-                  item={it}
-                  dataItem={props.dataItem}
-                  nodeStyles={NODES_CONSTANTS.PEERING_CONNECTION.collapse}
-                />
-              ))}
+              {props.dataItem.peerConnections.map((row, ri) => {
+                const rowWidth =
+                  row.length * (NODES_CONSTANTS.PEERING_CONNECTION.collapse.width + NODES_CONSTANTS.PEERING_CONNECTION.collapse.spaceX) - NODES_CONSTANTS.PEERING_CONNECTION.collapse.spaceX;
+                const rowY = ri * (NODES_CONSTANTS.PEERING_CONNECTION.collapse.height + NODES_CONSTANTS.PEERING_CONNECTION.collapse.spaceY);
+                return row.map((it, i) => (
+                  <PeerConnectionNode
+                    key={`${it.uiId}peerConnection`}
+                    regionUiId={`wrapper${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}childrensLayer`}
+                    offsetData={offsetsData}
+                    x={i * (NODES_CONSTANTS.PEERING_CONNECTION.collapse.width + NODES_CONSTANTS.PEERING_CONNECTION.collapse.spaceX)}
+                    y={rowY}
+                    rowWidth={rowWidth}
+                    item={it}
+                    dataItem={props.dataItem}
+                    nodeStyles={NODES_CONSTANTS.PEERING_CONNECTION.collapse}
+                    vnetCollapseStyles={NODES_CONSTANTS.NETWORK_VNET.collapse}
+                  />
+                ));
+              })}
             </>
           </PeerContainer>
         ) : null}
 
         <VpcContainer
-          headerHeight={NODES_CONSTANTS.REGION.headerHeight}
-          showWebAcls={topology.entities && topology.entities.web_acls.selected}
-          webAclTotalHeight={props.dataItem.webAclsRows.totalHeight}
-          showPeerConnections={topology.entities && topology.entities.peer_connections.selected}
-          peerConnectionTotalHeight={props.dataItem.peerConnectionsRows.totalHeight}
+          id={`vnetContainer${props.dataItem.uiId}`}
+          offsetY={offsetsData.topOffset + offsetsData.webAcl_TotalHeight + offsetsData.peerConnection_TotalHeight}
           offsetX={NODES_CONSTANTS.REGION.expanded.contentPadding}
         >
           <>
-            {props.dataItem.children.map(it => (
-              <NetworkVnetNode key={`${it.uiId}vnet`} parentId={`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`} region={props.dataItem} item={it} onClick={onVpcClick} />
-            ))}
+            {props.dataItem.children.map((row, ri) => {
+              const rowWidth = row.length * (NODES_CONSTANTS.NETWORK_VNET.collapse.width + NODES_CONSTANTS.NETWORK_VNET.collapse.spaceX) - NODES_CONSTANTS.NETWORK_VNET.collapse.spaceX;
+              const rowY = ri * (NODES_CONSTANTS.NETWORK_VNET.collapse.height + NODES_CONSTANTS.NETWORK_VNET.collapse.spaceY);
+              return row.map((it, i) => (
+                <NetworkVnetNode
+                  key={`${it.uiId}vnet`}
+                  x={i * (NODES_CONSTANTS.NETWORK_VNET.collapse.width + NODES_CONSTANTS.NETWORK_VNET.collapse.spaceX)}
+                  y={rowY}
+                  rowWidth={rowWidth}
+                  nodeWidth={offsetsData.totalWidth}
+                  parentId={`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`}
+                  region={props.dataItem}
+                  item={it}
+                  onClick={onVpcClick}
+                />
+              ));
+            })}
           </>
         </VpcContainer>
-        <VnetTooltipContainer
-          id={`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`}
-          showWebAcls={topology.entities && topology.entities.web_acls.selected}
-          webAclTotalHeight={props.dataItem.webAclsRows.totalHeight}
-          showPeerConnections={topology.entities && topology.entities.peer_connections.selected}
-          peerConnectionTotalHeight={props.dataItem.peerConnectionsRows.totalHeight}
-          offsetX={NODES_CONSTANTS.REGION.expanded.contentPadding}
-        />
+        <VnetTooltipContainer id={`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`} offsetData={offsetsData} offsetX={NODES_CONSTANTS.REGION.expanded.contentPadding} />
       </g>
     </TransitionContainer>
   );

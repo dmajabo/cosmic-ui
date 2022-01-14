@@ -4,12 +4,11 @@ import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataCont
 
 // import { onHoverNode, onUnHoverNode } from '../../../../Graph/helper';
 import { TopologyPanelTypes } from 'lib/models/topology';
-import { IDeviceNode, ITopoNode } from 'lib/hooks/Topology/models';
-import { ITopologyGroup } from 'lib/api/ApiModels/Topology/apiModels';
+import { IDeviceNode, ITopoSitesNode } from 'lib/hooks/Topology/models';
 import DeviceNode from '../DeviceNode';
 import TransitionContainer from '../../../TransitionContainer';
 interface Props {
-  dataItem: ITopoNode<ITopologyGroup, IDeviceNode>;
+  dataItem: ITopoSitesNode;
 }
 
 const SitesNode: React.FC<Props> = (props: Props) => {
@@ -28,9 +27,17 @@ const SitesNode: React.FC<Props> = (props: Props) => {
     >
       <g id={`${NODES_CONSTANTS.SITES.type}${props.dataItem.uiId}childrensLayer`} className="topologyNode" transform={`translate(${props.dataItem.x}, ${props.dataItem.y})`}>
         <g transform={`translate(${NODES_CONSTANTS.SITES.expanded.contentPadding}, ${NODES_CONSTANTS.SITES.headerHeight + NODES_CONSTANTS.SITES.expanded.contentPadding})`}>
-          {props.dataItem.children.map((it, index) => (
-            <DeviceNode key={`${it.uiId}device`} item={it} onClick={onDeviceClick} />
-          ))}
+          {props.dataItem.children.map((row, ri) => {
+            return row.map((it, i) => (
+              <DeviceNode
+                x={i * (NODES_CONSTANTS.DEVICE.collapse.width + NODES_CONSTANTS.DEVICE.collapse.spaceX)}
+                y={ri * (NODES_CONSTANTS.DEVICE.collapse.height + NODES_CONSTANTS.DEVICE.collapse.spaceY)}
+                key={`${it.uiId}device`}
+                item={it}
+                onClick={onDeviceClick}
+              />
+            ));
+          })}
         </g>
       </g>
     </TransitionContainer>

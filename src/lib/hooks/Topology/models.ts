@@ -1,4 +1,4 @@
-import { INetworkDevice, INetworkRegion, INetworkVNetwork, INetworkVNetworkPeeringConnection, INetworkWebAcl, INetworkwEdge, VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
+import { INetworkDevice, INetworkRegion, INetworkVNetwork, INetworkVNetworkPeeringConnection, INetworkWebAcl, INetworkwEdge, ITopologyGroup, VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
 import { AlertSeverity } from 'lib/api/ApiModels/Workflow/apiModel';
 import { IBaseEntity, ICollapsed, ICoord, IFilterOption, ISize, IVisible } from 'lib/models/general';
 
@@ -27,30 +27,31 @@ export enum DirectionType {
   BOTTOM = 'bottom',
 }
 
-export interface IMappedNode extends IVisible {
-  childIndex: number;
+export interface IOrganizationNode {
   orgIndex: number;
   orgId: string;
   vendorType: VendorTypes | string;
+}
+export interface IMappedNode extends IOrganizationNode, IVisible {
+  childIndex: number;
+  rowIndex: number;
   nodeType: TopoNodeTypes;
   uiId: string;
 }
 
-export interface IDeviceNode extends INetworkDevice, IMappedNode, ICoord {}
+export interface IFilteredNetworkDevice extends INetworkDevice, IOrganizationNode {}
 
-export interface INetworkVNetworkPeeringConnectionNode extends INetworkVNetworkPeeringConnection, IMappedNode, ICoord {}
+export interface IDeviceNode extends IFilteredNetworkDevice, IMappedNode, ICoord {}
 
-export interface INetworkVNetNode extends INetworkVNetwork, IMappedNode, ICoord {}
+export interface INetworkVNetworkPeeringConnectionNode extends INetworkVNetworkPeeringConnection, IOrganizationNode, IMappedNode, ICoord {}
 
-export interface INetworkWebAclNode extends INetworkWebAcl, IMappedNode, ICoord {}
-
-export interface ITGWNode extends INetworkwEdge, IMappedNode, ICoord {}
-
-export interface IChildrenCount {
-  rows: number;
-  childrenCount: number;
-  totalHeight: number;
+export interface INetworkVNetNode extends INetworkVNetwork, IOrganizationNode, IMappedNode, ICoord {
+  itemsInRow: number;
 }
+
+export interface INetworkWebAclNode extends INetworkWebAcl, IOrganizationNode, IMappedNode, ICoord {}
+
+export interface ITGWNode extends INetworkwEdge, IOrganizationNode, IMappedNode, ICoord {}
 
 export enum TopoLinkTypes {
   NetworkNetworkLink = 'NetworkNetworkLink',
@@ -66,10 +67,10 @@ export interface ITopoLink<PP, P, PC, C, L> extends IVisible, IBaseEntity<string
   fromNode: ITopoLinkNode<PP, P>;
   toNode: ITopoLinkNode<PC, C>;
   data: L;
-  x1: number;
-  y1: number;
-  x2: number;
-  y2: number;
+  // x1: number;
+  // y1: number;
+  // x2: number;
+  // y2: number;
 }
 
 export interface ITopoNode<P, C> extends ICoord, ICollapsed, IVisible, IBaseEntity<string> {
@@ -81,7 +82,17 @@ export interface ITopoNode<P, C> extends ICoord, ICollapsed, IVisible, IBaseEnti
   expandedSize: ISize;
   collapsedSize: ISize;
   children: C[];
-  childrenRows: IChildrenCount;
+}
+
+export interface ITopoSitesNode extends ICoord, ICollapsed, IVisible, IBaseEntity<string> {
+  dataItem: ITopologyGroup;
+  name: string;
+  uiId: string;
+  orgId: string;
+  type: TopoNodeTypes;
+  expandedSize: ISize;
+  collapsedSize: ISize;
+  children: IDeviceNode[][];
 }
 
 export interface ITopoRegionNode extends ICoord, ICollapsed, IVisible, IBaseEntity<string> {
@@ -92,16 +103,13 @@ export interface ITopoRegionNode extends ICoord, ICollapsed, IVisible, IBaseEnti
   type: TopoNodeTypes;
   expandedSize: ISize;
   collapsedSize: ISize;
-  children: INetworkVNetNode[];
-  childrenRows: IChildrenCount;
-  peerConnections: INetworkVNetworkPeeringConnectionNode[];
-  peerConnectionsRows: IChildrenCount;
-  webAcls: INetworkWebAclNode[];
-  webAclsRows: IChildrenCount;
+  children: INetworkVNetNode[][];
+  peerConnections: INetworkVNetworkPeeringConnectionNode[][];
+  webAcls: INetworkWebAclNode[][];
 }
 
 export interface ITopologyPreparedMapDataV2 {
-  nodes: (ITopoNode<any, any> | ITopoRegionNode)[];
+  nodes: (ITopoNode<any, any> | ITopoSitesNode | ITopoRegionNode)[];
   links: ITopoLink<any, any, any, any, any>[];
 }
 

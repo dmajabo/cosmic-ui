@@ -8,6 +8,8 @@ import HtmlNodeLabel from '../../Containers/HtmlNodeLabel';
 interface Props {
   x: number;
   y: number;
+  rowWidth: number;
+  nodeWidth: number;
   item: INetworkWebAclNode;
   nodeStyles: ICollapseStyles;
   counterStyles: ICounterStyle;
@@ -32,7 +34,12 @@ const WebAclNode: React.FC<Props> = (props: Props) => {
   };
 
   return (
-    <g transform={`translate(${props.x}, ${props.y})`} className={`topoNodeLevel1 webaclNodeWrapper ${isNodeSelected ? 'selectedTopoLevel1' : ''}`} onClick={onClick} cursor="pointer">
+    <g
+      transform={`translate(${props.x + props.nodeWidth / 2 - props.rowWidth / 2}, ${props.y})`}
+      className={`topoNodeLevel1 webaclNodeWrapper ${isNodeSelected ? 'selectedTopoLevel1' : ''}`}
+      onClick={onClick}
+      cursor="pointer"
+    >
       <circle
         fill={isNodeSelected ? 'var(--_highlightColor)' : props.nodeStyles.bgColor}
         r={props.nodeStyles.r}

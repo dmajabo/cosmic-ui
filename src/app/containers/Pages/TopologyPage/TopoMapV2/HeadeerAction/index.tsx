@@ -12,7 +12,7 @@ import SecondaryButton from 'app/components/Buttons/SecondaryButton';
 import { zoomCenterIcon, zoomFullScreenIcon, zoomInIcon, zoomOutFullScreenMode, zoomOutIcon } from 'app/components/SVGIcons/zoom';
 import { filterIcon } from 'app/components/SVGIcons/filter';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
-import { ITopoNode, ITopoRegionNode } from 'lib/hooks/Topology/models';
+import { ITopoNode, ITopoRegionNode, ITopoSitesNode } from 'lib/hooks/Topology/models';
 import { ITransform, ZoomRange } from 'lib/models/general';
 import ZoomInput from './ZoomInput';
 
@@ -26,7 +26,7 @@ interface IProps {
   onZoomIn: () => void;
   onZoomOut: () => void;
   onZoomChange: (v: number) => void;
-  onCentered: (nodes: (ITopoNode<any, any> | ITopoRegionNode)[]) => void;
+  onCentered: (nodes: (ITopoNode<any, any> | ITopoSitesNode | ITopoRegionNode)[]) => void;
   onOpenFullScreen: () => void;
   onRefresh: () => void;
 }

@@ -63,6 +63,7 @@ export interface IMarker extends ISize, IIconSize {
 export interface IExpandedStyles extends IMinSize, ISpace {
   marker: IMarker;
   bgColor: string;
+  stroke?: string;
   borderRadius: number;
   contentPadding: number;
 }
@@ -509,6 +510,7 @@ export const NODES_CONSTANTS: INodes_Types = {
       minOffsetX: 0,
       minOffsetY: 0,
       bgColor: 'var(--_primaryBg)',
+      stroke: 'var(--_primaryBg)',
       borderRadius: 6,
       contentPadding: 15,
     },
@@ -569,8 +571,8 @@ export const NODES_CONSTANTS: INodes_Types = {
     labelHtmlStyles: null,
     structureStyles: {
       nodeStyles: {
-        spaceX: 20,
-        spaceY: 30,
+        spaceX: 40,
+        spaceY: 50,
         width: 50,
         height: 50,
         r: 25,
@@ -583,9 +585,9 @@ export const NODES_CONSTANTS: INodes_Types = {
       },
       countStyles: null,
       labelHtmlStyles: {
-        x: -5,
+        x: -20,
         y: 56,
-        width: 60,
+        width: 90,
         height: 16,
         textAnchor: 'unset',
         textAlign: 'center',
@@ -638,8 +640,8 @@ export const NODES_CONSTANTS: INodes_Types = {
     },
     structureStyles: {
       nodeStyles: {
-        spaceX: 20,
-        spaceY: 30,
+        spaceX: 40,
+        spaceY: 40,
         width: 50,
         height: 50,
         r: 25,
@@ -664,9 +666,9 @@ export const NODES_CONSTANTS: INodes_Types = {
         cMinWidth: '100%',
       },
       labelHtmlStyles: {
-        x: -5,
+        x: -20,
         y: 56,
-        width: 60,
+        width: 90,
         height: 16,
         textAnchor: 'unset',
         textAlign: 'center',

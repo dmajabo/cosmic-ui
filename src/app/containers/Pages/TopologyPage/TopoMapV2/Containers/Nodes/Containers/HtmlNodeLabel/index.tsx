@@ -4,11 +4,12 @@ import { ILabelHtmlStyles } from '../../../../model';
 interface Props {
   name: string;
   labelStyles: ILabelHtmlStyles;
+  labelWidth?: number;
 }
 
-const HtmlNodeLabel: React.FC<Props> = ({ name, labelStyles }) => {
+const HtmlNodeLabel: React.FC<Props> = ({ name, labelStyles, labelWidth }) => {
   return (
-    <foreignObject width={labelStyles.width} height={labelStyles.height} x={labelStyles.x} y={labelStyles.y}>
+    <foreignObject width={labelWidth || labelStyles.width} height={labelStyles.height} x={labelStyles.x} y={labelStyles.y}>
       <div
         style={{
           display: 'flex',

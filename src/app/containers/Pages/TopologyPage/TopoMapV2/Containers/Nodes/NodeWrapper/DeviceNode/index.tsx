@@ -2,10 +2,11 @@ import React from 'react';
 import { NODES_CONSTANTS } from '../../../../model';
 import { IDeviceNode } from 'lib/hooks/Topology/models';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
-// import { buildLink, IDeviceLink } from './helper';
-// import DeviceLink from './DeviceLink';
+import HtmlNodeLabel from '../../Containers/HtmlNodeLabel';
 
 interface Props {
+  x: number;
+  y: number;
   item: IDeviceNode;
   onClick: (item: IDeviceNode) => void;
 }
@@ -26,8 +27,7 @@ const DeviceNode: React.FC<Props> = (props: Props) => {
   };
   return (
     <>
-      {/* {link && <DeviceLink key={`${link.from.id}${link.to.id}devLink`} data={link} />} */}
-      <g transform={`translate(${props.item.x}, ${props.item.y})`} onClick={onClick} className={`topoNodeLevel1 deviceNodeWrapper ${isNodeSelected ? 'selectedTopoLevel1' : ''}`}>
+      <g transform={`translate(${props.x}, ${props.y})`} onClick={onClick} className={`topoNodeLevel1 deviceNodeWrapper ${isNodeSelected ? 'selectedTopoLevel1' : ''}`}>
         <use pointerEvents="all" href={`#bg${NODES_CONSTANTS.DEVICE.type}`} color="var(--_primaryBg)" width={NODES_CONSTANTS.DEVICE.collapse.width} height={NODES_CONSTANTS.DEVICE.collapse.height} />
         <use
           href={`#${NODES_CONSTANTS.DEVICE.type}`}
@@ -37,38 +37,7 @@ const DeviceNode: React.FC<Props> = (props: Props) => {
           y={NODES_CONSTANTS.DEVICE.collapse.iconOffsetY}
           pointerEvents="none"
         />
-        <foreignObject
-          width={NODES_CONSTANTS.DEVICE.labelHtmlStyles.width}
-          height={NODES_CONSTANTS.DEVICE.labelHtmlStyles.height}
-          x={NODES_CONSTANTS.DEVICE.labelHtmlStyles.x}
-          y={NODES_CONSTANTS.DEVICE.labelHtmlStyles.y}
-        >
-          <div
-            style={{
-              display: 'flex',
-              width: '100%',
-              height: '100%',
-            }}
-            title={props.item.name}
-          >
-            <span
-              style={{
-                display: 'inline-block',
-                maxWidth: '100%',
-                margin: 'auto',
-                color: NODES_CONSTANTS.DEVICE.labelHtmlStyles.fill,
-                fontSize: NODES_CONSTANTS.DEVICE.labelHtmlStyles.fontSize + 'px',
-                textAlign: 'center',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                fontWeight: 500,
-              }}
-            >
-              {props.item.name || props.item.extId}
-            </span>
-          </div>
-        </foreignObject>
+        <HtmlNodeLabel name={props.item.name || props.item.extId} labelStyles={NODES_CONSTANTS.DEVICE.labelHtmlStyles} />
       </g>
     </>
   );

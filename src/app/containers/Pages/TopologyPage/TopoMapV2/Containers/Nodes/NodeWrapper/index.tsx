@@ -1,5 +1,5 @@
 import React from 'react';
-import { ITopoNode, ITopoRegionNode, TopoNodeTypes } from 'lib/hooks/Topology/models';
+import { ITopoNode, ITopoRegionNode, ITopoSitesNode, TopoNodeTypes } from 'lib/hooks/Topology/models';
 import RegionNode from './RegionNode/RegionNode';
 import AccountNode from './AccountNode/AccountNode';
 import DataCenter from './DataCenter';
@@ -10,7 +10,7 @@ import SitesNodeTopContainer from './SitesNode/SitesNodeTopContainer';
 
 interface Props {
   isTopLayer?: boolean;
-  nodes: (ITopoNode<any, any> | ITopoRegionNode)[];
+  nodes: (ITopoNode<any, any> | ITopoSitesNode | ITopoRegionNode)[];
 }
 
 const NodesWrapper: React.FC<Props> = (props: Props) => {

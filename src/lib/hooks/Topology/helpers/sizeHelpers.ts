@@ -1,9 +1,5 @@
 import { ISize } from 'lib/models/general';
-import { FilterEntityOptions, INetworkVNetworkPeeringConnectionNode, INetworkWebAclNode, ITopoNode } from '../models';
-
-export const getTotalNodeHeight = (chsHeight: number, headerHeight: number, padding: number): number => {
-  return chsHeight + headerHeight + padding;
-};
+import { ITopoNode } from '../models';
 
 export const getRowsWidth = (_count: number, width: number, spaceX: number): number => {
   if (!_count || _count === 0) return 0;
@@ -21,7 +17,7 @@ export const getStartChildRowOffsetX = (maxWidth: number, minWidth: number, item
   return Math.max(0, _width / 2 - totalInRow / 2);
 };
 
-export const centeredItemsInRow = (items: ITopoNode<any, any>[], size: ISize, width: number) => {
+export const centeredTopLevelItemsInRow = (items: ITopoNode<any, any>[], size: ISize, width: number) => {
   const hvw = width / 2;
   items.forEach(it => {
     it.x = it.x + hvw - size.width / 2;
@@ -32,19 +28,22 @@ export const centeredItemsInRow = (items: ITopoNode<any, any>[], size: ISize, wi
   });
 };
 
-export const getContainerHeight = (visible: boolean, rows: number, containerPadding: number, itemHeight: number, itemSpace: number): number => {
+export const getTotalNodeHeight = (chsHeight: number, headerHeight: number, padding: number): number => {
+  return chsHeight + headerHeight + padding;
+};
+
+export const getTotalNodeWidth = (chsWidth: number, padding: number): number => {
+  return chsWidth + padding;
+};
+
+export const getChildContainerWidth = (visible: boolean, items: any[][], containerPadding: number, chWidth: number, chSpaceX: number): number => {
+  if (!items || !items.length || !visible) return 0;
+  const w = getRowsWidth(items[0].length, chWidth, chSpaceX);
+  return w + containerPadding;
+};
+
+export const getChildContainerHeight = (visible: boolean, rows: number, containerPadding: number, itemHeight: number, itemSpace: number): number => {
   if (!rows || rows === 0 || !visible) return 0;
   const _h = getRowsHeight(rows, itemHeight, itemSpace);
   return _h + containerPadding;
-};
-
-export const getRegionPadding = (filter: FilterEntityOptions, prs: INetworkVNetworkPeeringConnectionNode[], webAcls: INetworkWebAclNode[], p: number): number => {
-  let padding = p;
-  if (filter && filter.peer_connections && filter.peer_connections.selected && prs && prs.length) {
-    padding += p;
-  }
-  if (filter && filter.web_acls && filter.web_acls.selected && webAcls && webAcls.length) {
-    padding += p;
-  }
-  return padding;
 };

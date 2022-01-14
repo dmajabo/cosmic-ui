@@ -3,13 +3,11 @@ import TransitionContainer from 'app/containers/Pages/TopologyPage/TopoMapV2/Con
 import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
 import NodeMarker from '../../Containers/NodeMarker';
 import NodeExpandedName from '../../Containers/NodeName/NodeExpandedName';
-import { IDeviceNode, ITopoNode } from 'lib/hooks/Topology/models';
-
-import { ITopologyGroup } from 'lib/api/ApiModels/Topology/apiModels';
+import { IDeviceNode, ITopoSitesNode } from 'lib/hooks/Topology/models';
 
 interface Props {
   dragId: string;
-  dataItem: ITopoNode<ITopologyGroup, IDeviceNode>;
+  dataItem: ITopoSitesNode;
   show: boolean;
   onDeviceClick: (item: IDeviceNode) => void;
 }

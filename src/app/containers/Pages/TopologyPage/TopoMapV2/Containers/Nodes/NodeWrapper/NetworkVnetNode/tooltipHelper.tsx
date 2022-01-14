@@ -1,9 +1,10 @@
 import * as d3 from 'd3';
 import { INetworkLoadBalancer, CloudLoadBalancerTypeP } from 'lib/api/ApiModels/Topology/apiModels';
 import { INetworkVNetNode, ITopoRegionNode } from 'lib/hooks/Topology/models';
+import { IPosition } from 'lib/models/general';
 import { NODES_CONSTANTS } from '../../../../model';
 
-export const buildVnetTooltip = (e: React.BaseSyntheticEvent<MouseEvent>, region: ITopoRegionNode, vnet: INetworkVNetNode, containerId: string) => {
+export const buildVnetTooltip = (e: React.BaseSyntheticEvent<MouseEvent>, region: ITopoRegionNode, vnet: INetworkVNetNode, containerId: string, coord: IPosition) => {
   if (!e || !e.target) return;
   const fo = d3.select(`#vnetTooltipFOContainer${containerId}`);
   const container = fo.select(`#vnetTooltipContainer${containerId}`);
@@ -12,8 +13,8 @@ export const buildVnetTooltip = (e: React.BaseSyntheticEvent<MouseEvent>, region
   const posY = Number(fo.attr('data-y'));
   fo.attr('width', '328px')
     .attr('height', '288px')
-    .attr('x', vnet.x + NODES_CONSTANTS.NETWORK_VNET.collapse.r * 2 + NODES_CONSTANTS.REGION.expanded.contentPadding + 10)
-    .attr('y', posY + vnet.y);
+    .attr('x', coord.x + NODES_CONSTANTS.NETWORK_VNET.collapse.r * 2 + NODES_CONSTANTS.REGION.expanded.contentPadding + 10)
+    .attr('y', posY + coord.y);
   const vnetName = container.append('div').classed('textOverflowEllips', true);
   vnetName.style('width', '100%').style('margin', '0 0 10px 0').style('font-weight', 500).style('font-size', '16px').style('line-height', '21px').style('color', 'var(--_primaryTextColor)');
   vnetName.text(vnet.name || vnet.extId);

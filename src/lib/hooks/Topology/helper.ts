@@ -6,32 +6,37 @@ import {
   ITopologyPreparedMapDataV2,
   TopoNodeTypes,
   ITGWNode,
-  INetworkVNetNode,
-  IDeviceNode,
-  INetworkVNetworkPeeringConnectionNode,
   ITopoLink,
-  INetworkWebAclNode,
   FilterEntityOptions,
+  VPCS_IN_ROW,
+  PEER_CONNECTION_IN_ROW,
+  WEB_ACL_IN_ROW,
+  ITopoSitesNode,
+  DEV_IN_ROW,
+  IFilteredNetworkDevice,
 } from './models';
 import { createDeviceNode, createPeerConnectionNode, createTopoNode, createTopoRegionNode, createVPCNode, createWebAclNode, createWedgeNode } from './helpers/buildNodeHelpers';
 import { DEFAULT_GROUP_ID, TopologyGroupTypesAsNumber, TopologyGroupTypesAsString } from 'lib/models/topology';
 import { buildLinks } from './helpers/buildlinkHelper';
 import { capitalizeFirstLetter } from 'lib/helpers/stringHelper';
 import { updateTopLevelItems } from './helpers/coordinateHelper';
+import { getRegionChildrenCounts } from './helpers/rowsHelper';
+import { getChunksFromArray } from 'lib/helpers/arrayHelper';
 
 export const createTopology = (filter: FilterEntityOptions, _data: ITopologyMapData, _groups: ITopologyGroup[]): ITopologyPreparedMapDataV2 => {
   const regions: ITopoRegionNode[] = [];
   const accounts: ITopoNode<any, ITGWNode>[] = [];
   // const dataCenters: ITopoNode<any>[] = [];
-  const groups: ITopoNode<ITopologyGroup, IDeviceNode>[] = [];
-  const devicesInGroup: IDeviceNode[] = [];
-  const devicesInDefaultGroup: IDeviceNode[] = [];
+  const groups: ITopoSitesNode[] = [];
+  const devicesInGroup: IFilteredNetworkDevice[] = [];
+  const devicesInDefaultGroup: IFilteredNetworkDevice[] = [];
   console.log(_data);
   const sitesGroups = _groups.filter(group => group.type === TopologyGroupTypesAsString.BRANCH_NETWORKS || group.type === TopologyGroupTypesAsNumber.BRANCH_NETWORKS);
   for (let i = 0; i < sitesGroups.length; i++) {
-    const _objS: ITopoNode<ITopologyGroup, IDeviceNode> = createTopoNode(
+    const _orgId = _data.organizations && _data.organizations.length ? _data.organizations[0].id : 'unknown';
+    const _objS: ITopoSitesNode = createTopoNode(
       sitesGroups[i],
-      _data.organizations[0].id,
+      _orgId,
       TopoNodeTypes.SITES,
       sitesGroups[i].id,
       sitesGroups[i].name,
@@ -43,105 +48,110 @@ export const createTopology = (filter: FilterEntityOptions, _data: ITopologyMapD
     );
     groups.push(_objS);
   }
-  _data.organizations.forEach((org, orgI) => {
-    if (!org.regions || !org.regions.length) return;
-    org.regions.forEach((region, i) => {
-      const _name = buildRegionName(org, region);
-      const _objR: ITopoRegionNode = createTopoRegionNode(
-        region,
-        org.id,
-        TopoNodeTypes.REGION,
-        region.id,
-        _name,
-        false,
-        0,
-        0,
-        NODES_CONSTANTS.REGION.collapse.width,
-        NODES_CONSTANTS.REGION.collapse.height,
-      );
-      if (region.wedges && region.wedges.length) {
-        region.wedges.forEach((w, index) => {
-          let _aIndex: number = accounts.findIndex(it => it.id === `${w.regionCode}${w.ownerId}`);
-          if (_aIndex !== -1) {
-            const _wNode: ITGWNode = createWedgeNode(org, orgI, w, accounts[_aIndex]);
-            accounts[_aIndex].children.push(_wNode);
-            return;
-          }
-          const _a: ITopoNode<any, ITGWNode> = createTopoNode(
-            null,
-            org.id,
-            TopoNodeTypes.ACCOUNT,
-            `${region.name}${org.extId}`,
-            _name,
-            false,
-            0,
-            0,
-            NODES_CONSTANTS.ACCOUNT.collapse.width,
-            NODES_CONSTANTS.ACCOUNT.collapse.height,
-          );
-          const _wNode: ITGWNode = createWedgeNode(org, orgI, w, _a);
-          _a.children.push(_wNode);
-          accounts.push(_a);
-        });
-      }
-      if (region.vnets && region.vnets.length && org.vendorType !== 'MERAKI') {
-        region.vnets.forEach((v, index) => {
-          const obj: INetworkVNetNode = createVPCNode(org, orgI, v, index);
-          _objR.children.push(obj);
-        });
-        // // for test
-        // for (let j = 0; j < 26; j++) {
-        //   const objT: INetworkVNetNode = createVPCNode(org, orgI, region.vnets[0], 100 + j);
-        //   _objR.children.push(objT);
-        // }
-      }
-      if (region.vNetworkPeeringConnections && region.vNetworkPeeringConnections.length) {
-        region.vNetworkPeeringConnections.forEach((v, index) => {
-          const obj: INetworkVNetworkPeeringConnectionNode = createPeerConnectionNode(org, orgI, v, index);
-          _objR.peerConnections.push(obj);
-        });
-        // // for test
-        // for (let j = 0; j < 32; j++) {
-        //   const objT: INetworkVNetworkPeeringConnectionNode = createPeerConnectionNode(org, orgI, region.vNetworkPeeringConnections[0], 100 + j);
-        //   _objR.peerConnections.push(objT);
-        // }
-      }
-      if (region.webAcls && region.webAcls.length) {
-        region.webAcls.forEach((v, index) => {
-          const obj: INetworkWebAclNode = createWebAclNode(org, orgI, v, index);
-          _objR.webAcls.push(obj);
-        });
-        // // for test
-        // for (let j = 0; j < 24; j++) {
-        //   const objE: INetworkWebAclNode = createWebAclNode(org, orgI, _objR.webAcls[0], 100 + j);
-        //   _objR.webAcls.push(objE);
-        // }
-      }
-      if (region.devices && region.devices.length) {
-        // // for test
-        // for (let j = 0; j < 2000; j++) {
-        //   const objE: IDeviceNode = createDeviceNode(org, orgI, region.devices[1], 100 + j);
-        //   devicesInGroup.push(objE);
-        // }
-        region.devices.forEach((d, index) => {
-          const obj: IDeviceNode = createDeviceNode(org, orgI, d, index);
-          if (d.selectorGroup) {
-            if (d.selectorGroup === DEFAULT_GROUP_ID) {
-              devicesInDefaultGroup.push(obj);
+  if (_data.organizations && _data.organizations.length) {
+    _data.organizations.forEach((org, orgI) => {
+      if (!org.regions || !org.regions.length) return;
+      org.regions.forEach((region, i) => {
+        const _name = buildRegionName(org, region);
+        const _objR: ITopoRegionNode = createTopoRegionNode(
+          region,
+          org.id,
+          TopoNodeTypes.REGION,
+          region.id,
+          _name,
+          false,
+          0,
+          0,
+          NODES_CONSTANTS.REGION.collapse.width,
+          NODES_CONSTANTS.REGION.collapse.height,
+        );
+        if (region.wedges && region.wedges.length) {
+          region.wedges.forEach((w, index) => {
+            let _aIndex: number = accounts.findIndex(it => it.id === `${w.regionCode}${w.ownerId}`);
+            if (_aIndex !== -1) {
+              const _wNode: ITGWNode = createWedgeNode(org, orgI, 0, index, w, accounts[_aIndex]);
+              accounts[_aIndex].children.push(_wNode);
               return;
             }
-            devicesInGroup.push(obj);
-            return;
+            const _a: ITopoNode<any, ITGWNode> = createTopoNode(
+              null,
+              org.id,
+              TopoNodeTypes.ACCOUNT,
+              `${region.name}${org.extId}`,
+              _name,
+              false,
+              0,
+              0,
+              NODES_CONSTANTS.ACCOUNT.collapse.width,
+              NODES_CONSTANTS.ACCOUNT.collapse.height,
+            );
+            const _wNode: ITGWNode = createWedgeNode(org, orgI, 0, index, w, _a);
+            _a.children.push(_wNode);
+            accounts.push(_a);
+          });
+        }
+        // // for test
+        let customPeerData = region.vNetworkPeeringConnections && region.vNetworkPeeringConnections.length ? [...region.vNetworkPeeringConnections] : [];
+        let customWebData = region.webAcls && region.webAcls.length ? [...region.webAcls] : [];
+        let customVnetData = region.vnets && region.vnets.length ? [...region.vnets] : [];
+        if (customPeerData.length) {
+          for (let j = 0; j < 32; j++) {
+            customPeerData.push({ ...region.vNetworkPeeringConnections[0], id: region.vNetworkPeeringConnections[0].id + j + 100 });
           }
-          devicesInDefaultGroup.push(obj);
-        });
-      }
-      regions.push(_objR);
+        }
+        if (customWebData.length) {
+          for (let j = 0; j < 24; j++) {
+            customWebData.push({ ...region.webAcls[0], id: region.webAcls[0].id + j + 100 });
+          }
+        }
+        if (customVnetData.length) {
+          for (let j = 0; j < 40; j++) {
+            customVnetData.push({ ...region.vnets[0], id: region.vnets[0].id + j + 100 });
+            customVnetData.reverse();
+          }
+        }
+        // const max = getRegionChildrenCounts(customVnetData, customPeerData, customWebData);
+        const max = getRegionChildrenCounts(region.vnets, region.vNetworkPeeringConnections, region.webAcls);
+        if (region.vnets && region.vnets.length && org.vendorType !== 'MERAKI') {
+          // const _arr = getChunksFromArray(customVnetData, Math.min(VPCS_IN_ROW, max));
+          const _arr = getChunksFromArray(region.vnets, Math.min(VPCS_IN_ROW, max));
+          _objR.children = _arr.map((row, ri) => row.map((v, i) => createVPCNode(org, row.length, orgI, ri, i, v)));
+        }
+        if (region.vNetworkPeeringConnections && region.vNetworkPeeringConnections.length) {
+          // const _arr = getChunksFromArray(customPeerData, Math.min(PEER_CONNECTION_IN_ROW, max));
+          const _arr = getChunksFromArray(region.vNetworkPeeringConnections, Math.min(PEER_CONNECTION_IN_ROW, max));
+          _objR.peerConnections = _arr.map((row, ri) => row.map((v, i) => createPeerConnectionNode(org, orgI, ri, i, v)));
+        }
+        if (region.webAcls && region.webAcls.length) {
+          // const _arr = getChunksFromArray(customWebData, Math.min(WEB_ACL_IN_ROW, max));
+          const _arr = getChunksFromArray(region.webAcls, Math.min(WEB_ACL_IN_ROW, max));
+          _objR.webAcls = _arr.map((row, ri) => row.map((v, i) => createWebAclNode(org, orgI, ri, i, v)));
+        }
+        if (region.devices && region.devices.length) {
+          // // for test
+          // for (let j = 0; j < 2000; j++) {
+          //   const objE: IDeviceNode = createDeviceNode(org, orgI, region.devices[1], 100 + j);
+          //   devicesInGroup.push(objE);
+          // }
+          region.devices.forEach((d, i) => {
+            if (d.selectorGroup) {
+              if (d.selectorGroup === DEFAULT_GROUP_ID) {
+                devicesInDefaultGroup.push({ ...d, orgIndex: orgI, orgId: org.id, vendorType: org.vendorType });
+                return;
+              }
+              devicesInGroup.push({ ...d, orgIndex: orgI, orgId: org.id, vendorType: org.vendorType });
+              return;
+            }
+            devicesInDefaultGroup.push({ ...d, orgIndex: orgI, orgId: org.id, vendorType: org.vendorType });
+          });
+        }
+        regions.push(_objR);
+      });
     });
-  });
+  }
 
   if (devicesInDefaultGroup && devicesInDefaultGroup.length) {
-    const _objS: ITopoNode<ITopologyGroup, IDeviceNode> = createTopoNode(
+    const _objS: ITopoSitesNode = createTopoNode(
       {
         id: DEFAULT_GROUP_ID,
         name: 'Default',
@@ -160,7 +170,8 @@ export const createTopology = (filter: FilterEntityOptions, _data: ITopologyMapD
       NODES_CONSTANTS.SITES.collapse.width,
       NODES_CONSTANTS.SITES.collapse.height,
     );
-    _objS.children = devicesInDefaultGroup;
+    const _arr = getChunksFromArray(devicesInDefaultGroup, DEV_IN_ROW);
+    _objS.children = _arr.map((row, ri) => row.map((v, i) => createDeviceNode(ri, i, v)));
     groups.unshift(_objS);
   }
 
@@ -169,14 +180,17 @@ export const createTopology = (filter: FilterEntityOptions, _data: ITopologyMapD
       const _siteIndex = groups.findIndex(it => it.id === gr.id || it.name === gr.name);
       if (_siteIndex !== -1) {
         const _devs = devicesInGroup.filter(it => it.selectorGroup === gr.name || it.selectorGroup === gr.id);
-        groups[_siteIndex].children = _devs;
+        const _arr = getChunksFromArray(_devs, DEV_IN_ROW);
+        groups[_siteIndex].children = _arr.map((row, ri) => row.map((v, i) => createDeviceNode(ri, i, v)));
       }
     });
   }
   if (devicesInGroup && devicesInGroup.length) {
     const _siteIndex = groups.findIndex(it => it.id === DEFAULT_GROUP_ID);
     if (_siteIndex !== -1) {
-      groups[_siteIndex].children.concat(devicesInGroup);
+      const _arr = getChunksFromArray(devicesInGroup, DEV_IN_ROW);
+      const _nodes = _arr.map((row, ri) => row.map((v, i) => createDeviceNode(ri, i, v)));
+      groups[_siteIndex].children.concat(_nodes);
     }
   }
   updateTopLevelItems(filter, regions, accounts, groups);
