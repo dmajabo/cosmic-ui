@@ -6,7 +6,7 @@ import { STANDART_DISPLAY_RESOLUTION_V2 } from 'lib/models/general';
 import { TopologyPanelTypes } from 'lib/models/topology';
 import React from 'react';
 import { NODES_CONSTANTS } from '../../../model';
-import NetworkVnetNode from '../NodeWrapper/NetworkVnetNode';
+import ExpandedNetworkVnetNode from '../NodeWrapper/NetworkVnetNode/ExpandedNetworkVnetNode';
 import PeerConnectionNode from '../NodeWrapper/PeerConnectionNode';
 import PeerContainer from '../NodeWrapper/RegionNode/ExpandNodeContent/PeerContainer';
 import VpcContainer from '../NodeWrapper/RegionNode/ExpandNodeContent/VpcContainer';
@@ -113,7 +113,7 @@ const StructureNode: React.FC<Props> = (props: Props) => {
         </foreignObject>
       </g>
       {topology.entities && topology.entities.web_acls.selected && props.dataItem.webAcls && props.dataItem.webAcls.length ? (
-        <WebAclsContainer offsetY={NODES_CONSTANTS.REGION.headerHeight} offsetX={NODES_CONSTANTS.REGION.expanded.contentPadding}>
+        <WebAclsContainer offsetY={40} offsetX={NODES_CONSTANTS.REGION.expanded.contentPadding}>
           <>
             {props.dataItem.webAcls.map((it, index) => (
               <WebAclNode
@@ -131,7 +131,12 @@ const StructureNode: React.FC<Props> = (props: Props) => {
         </WebAclsContainer>
       ) : null}
       {topology.entities && topology.entities.peer_connections.selected && props.dataItem.peerConnections && props.dataItem.peerConnections.length ? (
-        <PeerContainer showWebAcls={topology.entities && topology.entities.web_acls.selected} webAclTotalHeight={webAclsHeight} offsetX={NODES_CONSTANTS.REGION.expanded.contentPadding}>
+        <PeerContainer
+          headerHeight={40}
+          showWebAcls={topology.entities && topology.entities.web_acls.selected}
+          webAclTotalHeight={webAclsHeight}
+          offsetX={NODES_CONSTANTS.REGION.expanded.contentPadding}
+        >
           <>
             {props.dataItem.peerConnections.map((it, index) => (
               <PeerConnectionNode
@@ -151,6 +156,7 @@ const StructureNode: React.FC<Props> = (props: Props) => {
       ) : null}
 
       <VpcContainer
+        headerHeight={40}
         showWebAcls={topology.entities && topology.entities.web_acls.selected}
         webAclTotalHeight={webAclsHeight}
         showPeerConnections={topology.entities && topology.entities.peer_connections.selected}
@@ -158,8 +164,16 @@ const StructureNode: React.FC<Props> = (props: Props) => {
         offsetX={NODES_CONSTANTS.REGION.expanded.contentPadding}
       >
         <>
-          {props.dataItem.children.map(it => (
-            <NetworkVnetNode key={`${it.uiId}vnet`} parentId={`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`} region={props.dataItem} item={it} onClick={onVpcClick} />
+          {props.dataItem.children.map((it, index) => (
+            <ExpandedNetworkVnetNode
+              key={`${it.uiId}vnet`}
+              x={index * 230}
+              y={0}
+              parentId={`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`}
+              region={props.dataItem}
+              item={it}
+              onClick={onVpcClick}
+            />
           ))}
         </>
       </VpcContainer>

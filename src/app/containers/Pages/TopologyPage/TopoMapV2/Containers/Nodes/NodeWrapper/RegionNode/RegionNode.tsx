@@ -67,6 +67,7 @@ const RegionNode: React.FC<Props> = (props: Props) => {
         ) : null}
         {topology.entities && topology.entities.peer_connections.selected && props.dataItem.peerConnections && props.dataItem.peerConnections.length ? (
           <PeerContainer
+            headerHeight={NODES_CONSTANTS.REGION.headerHeight}
             showWebAcls={topology.entities && topology.entities.web_acls.selected}
             webAclTotalHeight={props.dataItem.webAclsRows.totalHeight}
             offsetX={NODES_CONSTANTS.REGION.expanded.contentPadding}
@@ -88,6 +89,7 @@ const RegionNode: React.FC<Props> = (props: Props) => {
         ) : null}
 
         <VpcContainer
+          headerHeight={NODES_CONSTANTS.REGION.headerHeight}
           showWebAcls={topology.entities && topology.entities.web_acls.selected}
           webAclTotalHeight={props.dataItem.webAclsRows.totalHeight}
           showPeerConnections={topology.entities && topology.entities.peer_connections.selected}

@@ -56,6 +56,7 @@ export interface ICollapseStyles extends ISize, IIconSize, ISpace {
 
 export interface IMarker extends ISize, IIconSize {
   bgColor: string;
+  iconColor?: string;
   borderRadius: number;
   viewBox: string;
 }
@@ -488,7 +489,29 @@ export const NODES_CONSTANTS: INodes_Types = {
       stroke: 'var(--_primaryBg)',
       borderRadius: 6,
     },
-    expanded: null,
+    expanded: {
+      marker: {
+        width: 30,
+        height: 30,
+        viewBox: '0 0 30 30',
+        iconWidth: 19,
+        iconHeight: 18,
+        iconOffsetX: 5.5, // 30 / 2 - 19 / 2
+        iconOffsetY: 6, // 30 / 2 - 18 / 2
+        bgColor: 'var(--_vnetIconBg)',
+        iconColor: 'var(--_primaryBg)',
+        borderRadius: 6,
+      },
+      spaceX: 30,
+      spaceY: 30,
+      minWidth: 208,
+      minHeight: 120,
+      minOffsetX: 0,
+      minOffsetY: 0,
+      bgColor: 'var(--_primaryBg)',
+      borderRadius: 6,
+      contentPadding: 15,
+    },
     countStyles: {
       x: 8,
       y: 25,
@@ -503,7 +526,15 @@ export const NODES_CONSTANTS: INodes_Types = {
       cMinWidth: '100%',
     },
     labelCollapsedStyles: null,
-    labelExpandedStyles: null,
+    labelExpandedStyles: {
+      x: 33, // 25 + 8
+      y: 0,
+      strBtnColor: 'var(--_highlightColor)',
+      strBtnFontSize: 10,
+      textAnchor: 'unset',
+      fill: 'var(--_primaryTextColor)',
+      fontSize: 12,
+    },
     labelHtmlStyles: {
       x: -7.5,
       y: 34,

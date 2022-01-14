@@ -66,7 +66,7 @@ const NetworkVnetNode: React.FC<Props> = (props: Props) => {
         height={NODES_CONSTANTS.NETWORK_VNET.collapse.iconHeight}
         x={NODES_CONSTANTS.NETWORK_VNET.collapse.iconOffsetX}
         y={NODES_CONSTANTS.NETWORK_VNET.collapse.iconOffsetY}
-        color={isNodeSelected ? 'var(--_primaryWhiteColor)' : '#7BAB4E'}
+        color={isNodeSelected ? 'var(--_primaryWhiteColor)' : 'var(--_vnetIconBg)'}
         pointerEvents="none"
         className="vpsBgIcon transitionStyle"
       />
