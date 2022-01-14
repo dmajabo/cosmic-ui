@@ -1,4 +1,3 @@
-import { Typography } from '@mui/material';
 import React, { useContext, useEffect, useState } from 'react';
 import { createApiClient } from 'lib/api/http/apiClient';
 import { PerformanceDashboardStyles } from './PerformanceDashboardStyles';
@@ -114,13 +113,13 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange 
     <div>
       <div className={classes.flexContainer}>
         <div>
-          <Typography className={classes.itemTitle}>
+          <div className={classes.itemTitle}>
             Packet Loss summary
             <span className={classes.sortIcon}>
               <InfoIcon />
             </span>
-          </Typography>
-          <Typography className={classes.subTitleText}>Shows aggregated packet loss between sources.</Typography>
+          </div>
+          <div className={classes.subTitleText}>Shows aggregated packet loss between sources.</div>
         </div>
       </div>
       <div className={classes.lineChartContainer}>
@@ -135,20 +134,20 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange 
           )
         ) : (
           <div className={classes.noChartContainer}>
-            <Typography className={classes.noChartText}>To see the data select SLA Tests on top</Typography>
+            <span className={classes.noChartText}>To see the data select SLA Tests on top</span>
           </div>
         )}
       </div>
       <hr className={classes.hrLine} />
       <div className={classes.flexContainer}>
         <div>
-          <Typography className={classes.itemTitle}>
+          <span className={classes.itemTitle}>
             Average packet loss
             <span className={classes.sortIcon}>
               <InfoIcon />
             </span>
-          </Typography>
-          <Typography className={classes.subTitleText}>Shows aggregated packet loss between branches and applications.</Typography>
+          </span>
+          <div className={classes.subTitleText}>Shows aggregated packet loss between branches and applications.</div>
         </div>
       </div>
       <div className={classes.lineChartContainer}>
@@ -162,7 +161,7 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange 
           )
         ) : (
           <div className={classes.noChartContainer}>
-            <Typography className={classes.noChartText}>To see the data select SLA Tests on top</Typography>
+            <span className={classes.noChartText}>To see the data select SLA Tests on top</span>
           </div>
         )}
       </div>

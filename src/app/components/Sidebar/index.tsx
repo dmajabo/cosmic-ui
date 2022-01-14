@@ -34,12 +34,12 @@ const Sidebar: React.FC<SidebarProps> = props => {
               <ListLink key={`app_page${page.id}`} isActive={props.activePageId === page.id} icon={page.icon} label={page.pageName} onClick={() => onGoTo(page)} />
             ))}
           </List>
-          <Demo isOpen={props.isOpenSidebar}>
+          {/* <Demo isOpen={props.isOpenSidebar}>
             <DemoBorder isOpen={props.isOpenSidebar} />
             {demoIcon}
             <DemoLabel>DEMO</DemoLabel>
             <IconWrapper styles={{ margin: 'auto 0 auto 26px', flexShrink: 0 }} icon={nextArrow} />
-          </Demo>
+          </Demo> */}
         </ContentWrapper>
         <ToogleButton onClick={props.onToogleSideBar}>{toggleSideBarIcon}</ToogleButton>
       </ToogleWrapper>

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useTable, useSortBy, usePagination } from 'react-table';
 import { AnomalyPolicyLogsTableData, AnomalySlaTestData, Column, CostDetailTableData, HitsTableData } from 'lib/api/http/SharedTypes';
 import { AnalyticsStyles } from '../../AnalyticsStyles';
-import SortIcon from '../../icons/performance dashboard/sort';
+import SortIcon from '../../../MetricsPage/icons/performance dashboard/sort';
 import { Typography } from '@mui/material';
 
 const Styles = styled.div`

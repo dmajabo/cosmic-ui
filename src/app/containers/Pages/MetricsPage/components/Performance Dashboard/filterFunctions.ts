@@ -1,7 +1,8 @@
+import { INetworkOrg } from 'lib/api/ApiModels/Topology/apiModels';
 import { Organization } from 'lib/api/http/SharedTypes';
 import isEmpty from 'lodash/isEmpty';
 
-export const GetSelectedOrganization = (organizations: Organization[], orgId: string) => {
+export const GetSelectedOrganization = (organizations: INetworkOrg[], orgId: string) => {
   const selectedOrganization = organizations.find(organization => organization.extId === orgId);
   return selectedOrganization
     ? selectedOrganization
@@ -12,16 +13,16 @@ export const GetSelectedOrganization = (organizations: Organization[], orgId: st
         extId: '',
         extType: '',
         extUrl: '',
-        vnets: [],
-        wedges: [],
-        devices: [],
+        ctrlrName: '',
+        ctrlrId: '',
         vendorType: '',
+        regions: [],
       };
 };
 
-export const GetDevicesString = (organization: Organization, sourceNetworkExtId: string) => {
+export const GetDevicesString = (organization: INetworkOrg, sourceNetworkExtId: string) => {
   if (typeof organization !== 'undefined') {
-    const orgDevices = organization.devices;
+    const orgDevices = organization.regions.reduce((acc, nextValue) => acc.concat(nextValue.devices), []);
 
     if (!isEmpty(orgDevices)) {
       return orgDevices

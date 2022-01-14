@@ -1,6 +1,6 @@
 const ColumnsIcon: React.FC<React.SVGProps<SVGSVGElement>> = () => (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <g clip-path="url(#clip0)">
+    <g clipPath="url(#clip0)">
       <path
         d="M0.666667 16H3.33333C3.70133 16 4 15.7013 4 15.3333V0.666667C4 0.298667 3.70133 0 3.33333 0H0.666667C0.298667 0 0 0.298667 0 0.666667V15.3333C0 15.7013 0.298667 16 0.666667 16Z"
         fill="#3A5277"

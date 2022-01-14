@@ -2,16 +2,17 @@ import { Button, Typography } from '@mui/material';
 import React, { useState, useEffect } from 'react';
 import { PerformanceDashboardStyles } from './PerformanceDashboardStyles';
 import Select from 'react-select';
-import { CreateSLATestRequest, Organization, SLATest, UpdateSLATestRequest } from 'lib/api/http/SharedTypes';
+import { CreateSLATestRequest, SLATest, UpdateSLATestRequest } from 'lib/api/http/SharedTypes';
 import CloseIcon from '../../icons/performance dashboard/close';
 import { GetSelectedOrganization } from './filterFunctions';
 import CreatableSelect from 'react-select/creatable';
 import isEmpty from 'lodash/isEmpty';
+import { INetworkOrg } from 'lib/api/ApiModels/Topology/apiModels';
 
 interface CreateSLATestProps {
   readonly addSlaTest?: Function;
-  readonly merakiOrganizations: Organization[];
-  readonly awsOrganizations: Organization[];
+  readonly merakiOrganizations: INetworkOrg[];
+  readonly awsOrganizations: INetworkOrg[];
   readonly popup?: boolean;
   readonly closeSlaTest?: Function;
   readonly isUpdateTest?: boolean;
@@ -66,7 +67,8 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ slaTestDataToUpdat
   useEffect(() => {
     const destinationOptions: SelectOptions[] = [];
     awsOrganizations.forEach(organization => {
-      organization.vnets.forEach(vnet => {
+      const orgVnets = organization.regions.reduce((acc, nextValue) => acc.concat(nextValue.vnets), []);
+      orgVnets.forEach(vnet => {
         vnet.vms.forEach(vm => {
           vm.nic.forEach(nic => {
             const ipAddress = nic.publicIp ? nic.publicIp : nic.privateIp;
@@ -84,7 +86,8 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ slaTestDataToUpdat
   useEffect(() => {
     if (!isEmpty(merakiOrganizations) && sourceOrg) {
       const selectedOrganization = GetSelectedOrganization(merakiOrganizations, sourceOrg.value);
-      setSelectedOrganizationVnets(selectedOrganization.vnets);
+      const orgVnets = selectedOrganization.regions.reduce((acc, nextValue) => acc.concat(nextValue.vnets), []);
+      setSelectedOrganizationVnets(orgVnets);
     }
   }, [sourceOrg]);
 

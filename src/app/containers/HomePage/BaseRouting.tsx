@@ -8,6 +8,7 @@ import SettingsPage from 'app/containers/Pages/SettingsPage';
 // import SessionsPage from 'app/containers/Pages/SessionsPage';
 import AutomationPage from 'app/containers/Pages/AutomationPage';
 import Edges from 'app/containers/Pages/Edges';
+import MetricsPage from 'app/containers/Pages/MetricsPage';
 
 export default function BaseRouting() {
   const match = useRouteMatch();
@@ -18,6 +19,7 @@ export default function BaseRouting() {
         <Route exact path={`${match.path}${ROUTE.topology}`} component={TopologyPage} />
         <Route exact path={`${match.path}${ROUTE.transit}`} component={Edges} />
         {/* <Route exact path={`${match.path}${ROUTE.sessions}`} component={SessionsPage} /> */}
+        <Route exact path={`${match.path}${ROUTE.metrics}`} component={MetricsPage} />
         <Route exact path={`${match.path}${ROUTE.analytics}`} component={AnalyticsPage} />
         <Route path={`${match.path}${ROUTE.workflow}`} component={AutomationPage} />
         <Route exact path={`${match.path}${ROUTE.settings}`} component={SettingsPage} />
