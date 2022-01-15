@@ -261,7 +261,7 @@ export const useGetChainData = <T = any>(): IApiRes<T> => {
   const getDataAsync = async (isSubscribed: boolean, url: string[], keys: string[], token: string, param?: any) => {
     const _header = getHeaders(token, param);
     await axios
-      .all([axios.get(url[0], _header), axios.get(url[1], _header)])
+      .all([...keys.map((it, index) => axios.get(url[index], _header))])
       .then((res: AxiosResponse<any>[]) => {
         if (!isSubscribed) return;
         const _obj: any = {};

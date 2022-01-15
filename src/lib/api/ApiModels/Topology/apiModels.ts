@@ -1,5 +1,6 @@
 import { IBaseEntity } from 'lib/models/general';
 import { TopologyGroupTypesAsNumber, TopologyGroupTypesAsString } from 'lib/models/topology';
+import { IPolicysvcListSegmentPsResponse } from '../Policy/Segment';
 
 export enum SelectorEvalType {
   EXPR = 'EXPR',
@@ -435,6 +436,7 @@ export interface ITopologyMapData {
 }
 
 export interface ITopologyDataRes {
+  segments: IPolicysvcListSegmentPsResponse;
   groups: ITopologyGroupsData;
   organizations: ITopologyMapData;
 }
