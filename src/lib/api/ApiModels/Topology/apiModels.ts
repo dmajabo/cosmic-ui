@@ -147,6 +147,7 @@ export interface INetworkVM extends IBaseEntity<string> {
   tags: INetworkTag[];
   ownerId: string;
   regionCode: string;
+  segmentId: string;
 
   uiId?: string;
 }
@@ -271,6 +272,8 @@ export interface INetworkVNetwork extends IBaseEntity<string> {
   name: string;
   description: string;
   extId: string;
+  ownerId: string;
+  regionCode: string;
   endpoints: INetworkEndPoint[];
   vms: INetworkVM[];
   cidrs: INetworkCidr[];
@@ -279,9 +282,8 @@ export interface INetworkVNetwork extends IBaseEntity<string> {
   routeTables: INetworkRouteTable[];
   loadBalancers: INetworkLoadBalancer[];
   internetGateway: INnetworkInternetGateway;
-  ownerId: string;
-  regionCode: string;
   egressOnlyInternetGateway: INetworkEgressOnlyGateway;
+  segmentId: string;
 }
 
 export interface INetworkWedgePeeringConnection extends IBaseEntity<string> {
@@ -331,6 +333,7 @@ export interface INetworkDevice extends IBaseEntity<string> {
   vpnlinks: INetworkVpnLink[];
   ownerId: string;
   regionCode: string;
+  segmentId: string;
 }
 
 export interface INetworkVNetworkPeeringConnection extends IBaseEntity<string> {
@@ -412,6 +415,7 @@ export interface INetworkRegion extends IBaseEntity<string> {
   webAcls: INetworkWebAcl[];
   clientVpnEndpoints: INetworkClientVpnEndpoint[];
   detail: INetworkRegionDetail;
+  tags: INetworkTag[];
 }
 export interface INetworkOrg extends IBaseEntity<string> {
   name: string;
@@ -422,16 +426,7 @@ export interface INetworkOrg extends IBaseEntity<string> {
   ctrlrName: string;
   ctrlrId: string;
   vendorType: VendorTypes | string;
-
   regions: INetworkRegion[];
-
-  // vnets?: INetworkVNetwork[];
-  // wedges?: INetworkwEdge[];
-  // oedges?: INetworkoEdge[];
-  // devices?: INetworkDevice[];
-  // vNetworkPeeringConnections?: INetworkVNetworkPeeringConnection[];
-  // vpnGateways?: INetworkVpnGateway[];
-  // webAcls?: INetworkWebAcl[];
 }
 
 export interface ITopologyMapData {
