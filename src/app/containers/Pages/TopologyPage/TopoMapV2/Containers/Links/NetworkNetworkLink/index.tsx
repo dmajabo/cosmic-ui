@@ -1,12 +1,12 @@
 import React from 'react';
 // import { select } from 'd3-selection';
-import { INetworkVNetNode, ITGWNode, ITopoLink, ITopoNode, ITopoRegionNode } from 'lib/hooks/Topology/models';
+import { INetworkVNetNode, ITGWNode, ITopoLink, ITopoAccountNode, ITopoRegionNode } from 'lib/hooks/Topology/models';
 import { INetworkNetworkLink } from 'lib/api/ApiModels/Topology/apiModels';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 import TransitionContainer from '../../TransitionContainer';
 
 interface IProps {
-  dataItem: ITopoLink<ITopoRegionNode, INetworkVNetNode, ITopoNode<any, ITGWNode>, ITGWNode, INetworkNetworkLink>;
+  dataItem: ITopoLink<ITopoRegionNode, INetworkVNetNode, ITopoAccountNode, ITGWNode, INetworkNetworkLink>;
 }
 const NetworkNetworkLink: React.FC<IProps> = (props: IProps) => {
   const { topology } = useTopologyV2DataContext();
@@ -28,8 +28,8 @@ const NetworkNetworkLink: React.FC<IProps> = (props: IProps) => {
         strokeWidth="1"
         data-fromchildid={`${props.dataItem.fromNode.child.nodeType}${props.dataItem.fromNode.child.id}`}
         data-tochildid={`${props.dataItem.toNode.child.nodeType}${props.dataItem.toNode.child.id}`}
-        data-fromparentid={`${props.dataItem.fromNode.parent.type}${props.dataItem.fromNode.parent.id}`}
-        data-toparentid={`${props.dataItem.toNode.parent.type}${props.dataItem.toNode.parent.id}`}
+        data-fromparentid={`${props.dataItem.fromNode.parent.type}${props.dataItem.fromNode.parent.dataItem.id}`}
+        data-toparentid={`${props.dataItem.toNode.parent.type}${props.dataItem.toNode.parent.dataItem.id}`}
         // x1={props.dataItem.x1}
         // y1={props.dataItem.y1}
         // x2={props.dataItem.x2}

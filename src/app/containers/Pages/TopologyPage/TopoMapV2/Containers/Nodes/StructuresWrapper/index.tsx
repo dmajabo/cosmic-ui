@@ -12,8 +12,8 @@ const StructuresWrapper: React.FC<Props> = (props: Props) => {
   return (
     <>
       {props.nodes.map(it => (
-        <StructureContainer key={`structureRegion${it.id}`}>
-          <StructureNode dataItem={it} />
+        <StructureContainer key={`structureRegion${it.dataItem.id}`}>
+          <StructureNode region={it} />
         </StructureContainer>
       ))}
     </>

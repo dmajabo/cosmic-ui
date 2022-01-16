@@ -1,5 +1,5 @@
 import React from 'react';
-import { ITGWNode, ITopoNode } from 'lib/hooks/Topology/models';
+import { ITopoAccountNode } from 'lib/hooks/Topology/models';
 import {
   // CollapseExpandState,
   IPosition,
@@ -14,19 +14,19 @@ import TransitionContainer from '../../../TransitionContainer';
 // import CollapseExpandButton from '../../Containers/CollapseExpandButton';
 
 interface Props {
-  dataItem: ITopoNode<any, ITGWNode>;
+  account: ITopoAccountNode;
 }
 
 const AccountNodeTopContainer: React.FC<Props> = (props: Props) => {
   const { topology } = useTopologyV2DataContext();
   const { onUpdate, onUnsubscribeDrag } = useDrag(
     {
-      id: `${NODES_CONSTANTS.ACCOUNT.type}${props.dataItem.uiId}`,
-      parentId: `wrapper${NODES_CONSTANTS.ACCOUNT.type}${props.dataItem.uiId}`,
-      dragId: `drag${NODES_CONSTANTS.ACCOUNT.type}${props.dataItem.uiId}`,
-      resId: props.dataItem.id,
+      id: `${NODES_CONSTANTS.ACCOUNT.type}${props.account.uiId}`,
+      parentId: `wrapper${NODES_CONSTANTS.ACCOUNT.type}${props.account.uiId}`,
+      dragId: `drag${NODES_CONSTANTS.ACCOUNT.type}${props.account.uiId}`,
+      resId: props.account.dataItem.id,
       linkPrefiks: 'toparentid',
-      nodeType: props.dataItem.type,
+      nodeType: props.account.type,
     },
     (e: IPosition) => onUpdatePosition(e),
   );
@@ -41,14 +41,14 @@ const AccountNodeTopContainer: React.FC<Props> = (props: Props) => {
   }, []);
 
   React.useEffect(() => {
-    setVisible(props.dataItem.visible);
-    setPosition({ x: props.dataItem.x, y: props.dataItem.y });
-  }, [props.dataItem]);
+    setVisible(props.account.visible);
+    setPosition({ x: props.account.x, y: props.account.y });
+  }, [props.account]);
 
   React.useEffect(() => {
     if (visible) {
       if (pos) {
-        onUpdate({ x: props.dataItem.x, y: props.dataItem.y }, visible);
+        onUpdate({ x: props.account.x, y: props.account.y }, visible);
       } else {
         onUnsubscribeDrag();
       }
@@ -58,11 +58,11 @@ const AccountNodeTopContainer: React.FC<Props> = (props: Props) => {
   }, [pos, visible]);
 
   const onUpdatePosition = (_pos: IPosition) => {
-    if (props.dataItem.x === _pos.x && props.dataItem.y === _pos.y) {
+    if (props.account.x === _pos.x && props.account.y === _pos.y) {
       return;
     }
     setPosition({ x: _pos.x, y: _pos.y });
-    topology.onUpdateNodeCoord(props.dataItem, _pos);
+    topology.onUpdateNodeCoord(props.account, _pos);
   };
 
   // const onExpandCollapse = (type: CollapseExpandState) => {
@@ -83,26 +83,34 @@ const AccountNodeTopContainer: React.FC<Props> = (props: Props) => {
   // };
 
   const onMouseEnter = () => {
-    onHoverNode(`${NODES_CONSTANTS.ACCOUNT.type}${props.dataItem.uiId}`);
+    onHoverNode(`${NODES_CONSTANTS.ACCOUNT.type}${props.account.uiId}`);
   };
 
   const onMouseLeave = () => {
-    onUnHoverNode(`${NODES_CONSTANTS.ACCOUNT.type}${props.dataItem.uiId}`);
+    onUnHoverNode(`${NODES_CONSTANTS.ACCOUNT.type}${props.account.uiId}`);
   };
 
   if (!pos) return null;
   return (
-    <TransitionContainer id={`wrapper${NODES_CONSTANTS.ACCOUNT.type}${props.dataItem.uiId}`} stateIn={props.dataItem.visible} origin="unset" transform="none">
+    <TransitionContainer id={`wrapper${NODES_CONSTANTS.ACCOUNT.type}${props.account.uiId}`} stateIn={props.account.visible} origin="unset" transform="none">
       <g
-        id={`${NODES_CONSTANTS.ACCOUNT.type}${props.dataItem.uiId}`}
+        id={`${NODES_CONSTANTS.ACCOUNT.type}${props.account.uiId}`}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
         className="topologyNode"
         transform={`translate(${pos.x}, ${pos.y})`}
         data-type={NODES_CONSTANTS.ACCOUNT.type}
       >
-        <AccountCollapsedNode id={props.dataItem.id} name={props.dataItem.name} childrenCount={props.dataItem.children.length} show={props.dataItem.collapsed} />
-        <AccountExpandNode dragId={`drag${NODES_CONSTANTS.ACCOUNT.type}${props.dataItem.uiId}`} dataItem={props.dataItem} show={!props.dataItem.collapsed} />
+        {props.account.collapsed && (
+          <AccountCollapsedNode
+            dragId={`drag${NODES_CONSTANTS.ACCOUNT.type}${props.account.uiId}`}
+            id={props.account.dataItem.id}
+            name={props.account.dataItem.name}
+            childrenCount={props.account.children.length}
+            show={props.account.collapsed}
+          />
+        )}
+        <AccountExpandNode dragId={`drag${NODES_CONSTANTS.ACCOUNT.type}${props.account.uiId}`} account={props.account} show={!props.account.collapsed} />
         {/* <CollapseExpandButton
           id={`expandCollapse${props.dataItem.id}`}
           isCollapse={!props.dataItem.collapsed}

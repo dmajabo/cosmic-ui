@@ -177,7 +177,7 @@ export const NODES_CONSTANTS: INodes_Types = {
     collapse: {
       width: 62,
       height: 62,
-      spaceX: 50,
+      spaceX: 100,
       spaceY: 175,
       iconWidth: 28,
       iconHeight: 28,

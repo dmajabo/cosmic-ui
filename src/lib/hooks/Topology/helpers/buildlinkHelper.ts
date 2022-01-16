@@ -1,10 +1,10 @@
 import { IAccountNode, INetworkVNetworkNode, INetworkWEdgeNode, IRegionNode, ISiteNode, ISitesNode, NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
 import { INetworkNetworkLink, INetworkVpnLink, INetworkVpnLinkState } from 'lib/api/ApiModels/Topology/apiModels';
 import { ICoord } from 'lib/models/general';
-import { INetworkVNetNode, ITGWNode, ITopoLink, ITopoNode, ITopoRegionNode, IDeviceNode, TopoLinkTypes, FilterEntityOptions, ITopoSitesNode } from '../models';
+import { INetworkVNetNode, ITGWNode, ITopoLink, ITopoAccountNode, ITopoRegionNode, IDeviceNode, TopoLinkTypes, FilterEntityOptions, ITopoSitesNode } from '../models';
 import uuid from 'react-uuid';
 
-export const buildLinks = (regions: ITopoRegionNode[], accounts: ITopoNode<any, ITGWNode>[], groups: ITopoSitesNode[], filter: FilterEntityOptions): ITopoLink<any, any, any, any, any>[] => {
+export const buildLinks = (regions: ITopoRegionNode[], accounts: ITopoAccountNode[], groups: ITopoSitesNode[], filter: FilterEntityOptions): ITopoLink<any, any, any, any, any>[] => {
   let links: ITopoLink<any, any, any, any, any>[] = [];
   if (regions && regions.length) {
     regions.forEach(r => {
@@ -50,16 +50,16 @@ export const buildLinks = (regions: ITopoRegionNode[], accounts: ITopoNode<any, 
 };
 
 const buildDevWedgeConnection = (
-  account: ITopoNode<any, ITGWNode>,
+  account: ITopoAccountNode,
   tgw: ITGWNode,
   group: ITopoSitesNode,
   dev: IDeviceNode,
   vpn: INetworkVpnLinkState,
-): ITopoLink<ITopoSitesNode, IDeviceNode, ITopoNode<any, ITGWNode>, ITGWNode, INetworkVpnLinkState> => {
+): ITopoLink<ITopoSitesNode, IDeviceNode, ITopoAccountNode, ITGWNode, INetworkVpnLinkState> => {
   const _visible = account.visible && group.visible;
   // const _devCoord = getDevCoord(group, dev, NODES_CONSTANTS.SITES, NODES_CONSTANTS.DEVICE);
   // const _tgwCoord = getWedgeCoord(account, tgw, NODES_CONSTANTS.ACCOUNT, NODES_CONSTANTS.NETWORK_WEDGE);
-  const _link: ITopoLink<ITopoSitesNode, IDeviceNode, ITopoNode<any, ITGWNode>, ITGWNode, INetworkVpnLinkState> = {
+  const _link: ITopoLink<ITopoSitesNode, IDeviceNode, ITopoAccountNode, ITGWNode, INetworkVpnLinkState> = {
     id: uuid(),
     // x1: _devCoord.x,
     // y1: _devCoord.y,
@@ -75,13 +75,13 @@ const buildDevWedgeConnection = (
 };
 
 const buildNetworkNetworkConnection = (
-  accounts: ITopoNode<any, ITGWNode>[],
+  accounts: ITopoAccountNode[],
   r: ITopoRegionNode,
   vnet: INetworkVNetNode,
   showPeerConnection: boolean,
   showWebAcls: boolean,
-): ITopoLink<ITopoRegionNode, INetworkVNetNode, ITopoNode<any, ITGWNode>, ITGWNode, INetworkNetworkLink>[] => {
-  const _links: ITopoLink<ITopoRegionNode, INetworkVNetNode, ITopoNode<any, ITGWNode>, ITGWNode, INetworkNetworkLink>[] = [];
+): ITopoLink<ITopoRegionNode, INetworkVNetNode, ITopoAccountNode, ITGWNode, INetworkNetworkLink>[] => {
+  const _links: ITopoLink<ITopoRegionNode, INetworkVNetNode, ITopoAccountNode, ITGWNode, INetworkNetworkLink>[] = [];
   accounts.forEach(a => {
     if (!a.children || !a.children.length) return;
     // const _offsetTop = getVnetOffsetTop(r, showPeerConnection, showWebAcls);
@@ -128,13 +128,13 @@ export const getVnetOffsetTop = (r: ITopoRegionNode, showPeerConnection: boolean
   return _offset;
 };
 
-const getWedgeCoord = (a: ITopoNode<any, ITGWNode>, tgw: ITGWNode, parentStyles: IAccountNode, nodeStyles: INetworkWEdgeNode): ICoord => {
+const getWedgeCoord = (a: ITopoAccountNode, tgw: ITGWNode, parentStyles: IAccountNode, nodeStyles: INetworkWEdgeNode): ICoord => {
   const _x = a.x + tgw.x + parentStyles.expanded.contentPadding + nodeStyles.collapse.r;
   const _y = a.y + tgw.y + parentStyles.expanded.contentPadding + parentStyles.headerHeight + nodeStyles.collapse.r;
   return { x: _x, y: _y };
 };
 
-const getWedge = (accounts: ITopoNode<any, ITGWNode>[], connectedTo: string) => {
+const getWedge = (accounts: ITopoAccountNode[], connectedTo: string) => {
   let a = null;
   let tgw = null;
   for (let i = 0; i < accounts.length; i++) {

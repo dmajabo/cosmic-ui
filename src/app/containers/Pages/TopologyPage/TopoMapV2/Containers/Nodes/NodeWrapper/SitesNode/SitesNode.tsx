@@ -8,30 +8,29 @@ import { IDeviceNode, ITopoSitesNode } from 'lib/hooks/Topology/models';
 import DeviceNode from '../DeviceNode';
 import TransitionContainer from '../../../TransitionContainer';
 interface Props {
-  dataItem: ITopoSitesNode;
+  site: ITopoSitesNode;
 }
 
 const SitesNode: React.FC<Props> = (props: Props) => {
   const { topology } = useTopologyV2DataContext();
+  const [nodeWidth] = React.useState<number>(props.site.expandedSize.width - NODES_CONSTANTS.SITES.expanded.contentPadding * 2);
   const onDeviceClick = (item: IDeviceNode) => {
     topology.onToogleTopoPanel(TopologyPanelTypes.Device, true, item);
   };
 
   return (
-    <TransitionContainer
-      id={`wrapper${NODES_CONSTANTS.SITES.type}${props.dataItem.uiId}childrensLayer`}
-      stateIn={props.dataItem.visible && !props.dataItem.collapsed}
-      origin="unset"
-      transform="none"
-      timing={50}
-    >
-      <g id={`${NODES_CONSTANTS.SITES.type}${props.dataItem.uiId}childrensLayer`} className="topologyNode" transform={`translate(${props.dataItem.x}, ${props.dataItem.y})`}>
+    <TransitionContainer id={`wrapper${NODES_CONSTANTS.SITES.type}${props.site.uiId}childrensLayer`} stateIn={props.site.visible && !props.site.collapsed} origin="unset" transform="none" timing={50}>
+      <g id={`${NODES_CONSTANTS.SITES.type}${props.site.uiId}childrensLayer`} className="topologyNode" transform={`translate(${props.site.x}, ${props.site.y})`}>
         <g transform={`translate(${NODES_CONSTANTS.SITES.expanded.contentPadding}, ${NODES_CONSTANTS.SITES.headerHeight + NODES_CONSTANTS.SITES.expanded.contentPadding})`}>
-          {props.dataItem.children.map((row, ri) => {
+          {props.site.children.map((row, ri) => {
+            const rowWidth = row.length * (NODES_CONSTANTS.DEVICE.collapse.width + NODES_CONSTANTS.DEVICE.collapse.spaceX) - NODES_CONSTANTS.DEVICE.collapse.spaceX;
+            const rowY = ri * (NODES_CONSTANTS.DEVICE.collapse.height + NODES_CONSTANTS.DEVICE.collapse.spaceY);
             return row.map((it, i) => (
               <DeviceNode
+                nodeWidth={nodeWidth}
+                rowWidth={rowWidth}
                 x={i * (NODES_CONSTANTS.DEVICE.collapse.width + NODES_CONSTANTS.DEVICE.collapse.spaceX)}
-                y={ri * (NODES_CONSTANTS.DEVICE.collapse.height + NODES_CONSTANTS.DEVICE.collapse.spaceY)}
+                y={rowY}
                 key={`${it.uiId}device`}
                 item={it}
                 onClick={onDeviceClick}

@@ -18,8 +18,8 @@ export const buildVnetTooltip = (e: React.BaseSyntheticEvent<MouseEvent>, region
   const vnetName = container.append('div').classed('textOverflowEllips', true);
   vnetName.style('width', '100%').style('margin', '0 0 10px 0').style('font-weight', 500).style('font-size', '16px').style('line-height', '21px').style('color', 'var(--_primaryTextColor)');
   vnetName.text(vnet.name || vnet.extId);
-  buildTooltipSubTitle(container, 'Account', region.name, '0 0 8px 0');
-  buildTooltipSubTitle(container, 'Region', region.name, '0 0 20px 0');
+  buildTooltipSubTitle(container, 'Account', region.dataItem.name, '0 0 8px 0');
+  buildTooltipSubTitle(container, 'Region', region.dataItem.name, '0 0 20px 0');
   const _nlb = getFilteredBalancerByType(vnet.loadBalancers);
   buildTooltipContentRow(container, getIcon('virtualmachine'), 'Virtual Machines', vnet.vms.length);
   const _igcount = vnet.internetGateway ? 1 : 0;

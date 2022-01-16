@@ -3,7 +3,7 @@ import { IPanelBar, TopologyPanelTypes } from 'lib/models/topology';
 import { IPosition, ISelectedListItem, ITimeTypes, TIME_PERIOD } from 'lib/models/general';
 import { jsonClone } from 'lib/helpers/cloneHelper';
 // import { EntityTypes, IEntity } from 'lib/models/entites';
-import { ITopologyDataRes, ITopologyGroup, ITopologyGroupsData, ITopologyMapData } from 'lib/api/ApiModels/Topology/apiModels';
+import { INetworkOrg, ITopologyDataRes, ITopologyGroup } from 'lib/api/ApiModels/Topology/apiModels';
 import { ITimeMinMaxRange } from 'app/components/Inputs/TimeSlider/helpers';
 import { createTopology } from './helper';
 import {
@@ -12,7 +12,7 @@ import {
   FilterSeverityOptions,
   ITopoLink,
   ITopologyPreparedMapDataV2,
-  ITopoNode,
+  ITopoAccountNode,
   ITopoRegionNode,
   ITopoSitesNode,
   TopoFilterTypes,
@@ -21,20 +21,21 @@ import {
 } from './models';
 import { AlertSeverity } from 'lib/api/ApiModels/Workflow/apiModel';
 import { updateRegionHeight } from './helpers/buildNodeHelpers';
+import { ISegmentSegmentP } from 'lib/api/ApiModels/Policy/Segment';
 
 export interface TopologyV2ContextType {
   topoPanel: IPanelBar<TopologyPanelTypes>;
   selectedPeriod: ISelectedListItem<ITimeTypes>;
   selectedTime: Date | null;
   timeRange: ITimeMinMaxRange | null;
-  originData: ITopologyMapData | null;
+  originData: INetworkOrg[] | null;
   originGroupsData: ITopologyGroup[] | null;
+  originSegmentsData: ISegmentSegmentP[] | null;
   searchQuery: string | null;
   selectedType: string | null;
   links: ITopoLink<any, any, any, any, any>[];
-  nodes: (ITopoNode<any, any> | ITopoSitesNode | ITopoRegionNode)[];
+  nodes: (ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[];
   selectedNode: any;
-  // entityTypes: IEntity[];
   onUnselectNode: () => void;
   onToogleTopoPanel: (_panel: TopologyPanelTypes, show: boolean, dataItem?: any) => void;
   onChangeTime: (_value: Date | null) => void;
@@ -46,10 +47,9 @@ export interface TopologyV2ContextType {
   onDeleteGroup: (_group: ITopologyGroup) => void;
   onFilterQueryChange: (value: string | null) => void;
   onSetSelectedType: (_value: string | number | null) => void;
-  // onSelectEntity: (entity: IEntity, selected: boolean) => void;
 
-  onCollapseExpandNode: (node: ITopoNode<any, any> | ITopoSitesNode | ITopoRegionNode, state: boolean) => void;
-  onUpdateNodeCoord: (node: ITopoNode<any, any> | ITopoSitesNode | ITopoRegionNode, _pos: IPosition) => void;
+  onCollapseExpandNode: (node: ITopoAccountNode | ITopoSitesNode | ITopoRegionNode, state: boolean) => void;
+  onUpdateNodeCoord: (node: ITopoAccountNode | ITopoSitesNode | ITopoRegionNode, _pos: IPosition) => void;
   regionStructures: ITopoRegionNode[];
   onToogleRegionStructure: (dataItem: ITopoRegionNode, show?: boolean) => void;
 
@@ -59,11 +59,12 @@ export interface TopologyV2ContextType {
 }
 export function useTopologyV2Context(): TopologyV2ContextType {
   const [topoPanel, setTopoPanel] = React.useState<IPanelBar<TopologyPanelTypes>>({ show: false, type: null });
-  const [originData, setOriginData] = React.useState<ITopologyMapData | null>(null);
+  const [originData, setOriginData] = React.useState<INetworkOrg[] | null>(null);
   const [originGroupsData, setOriginGroupsData] = React.useState<ITopologyGroup[] | null>(null);
-  const [nodes, setNodes] = React.useState<(ITopoNode<any, any> | ITopoSitesNode | ITopoRegionNode)[]>([]);
+  const [originSegmentsData, setOriginSegmentsData] = React.useState<ISegmentSegmentP[] | null>(null);
+  const [nodes, setNodes] = React.useState<(ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[]>([]);
   const [links, setLinks] = React.useState<ITopoLink<any, any, any, any, any>[]>([]);
-  const [selectedNode, setSelectedNode] = React.useState<ITopoNode<any, any> | ITopoSitesNode | ITopoRegionNode>(null);
+  const [selectedNode, setSelectedNode] = React.useState<ITopoAccountNode | ITopoSitesNode | ITopoRegionNode>(null);
   const [regionStructures, setRegionStructures] = React.useState<ITopoRegionNode[]>([]);
   const [entities, setEntities] = React.useState<FilterEntityOptions>({
     sites: {
@@ -112,25 +113,30 @@ export function useTopologyV2Context(): TopologyV2ContextType {
   const [selectedPeriod, setSelectedPeriod] = React.useState<ISelectedListItem<ITimeTypes>>(TIME_PERIOD[0]);
   const [selectedTime, setSelectedTime] = React.useState<Date | null>(null);
   const [timeRange, setTimeRange] = React.useState<ITimeMinMaxRange | null>(null);
-  // const [entityTypes, setEntityTypes] = React.useState<IEntity[]>(jsonClone(EntityTypes));
   const [searchQuery, setSearchQuery] = React.useState<string | null>(null);
   const [selectedType, setSelectedType] = React.useState<string | null>(null);
   const linksRef = React.useRef<ITopoLink<any, any, any, any, any>[]>(links);
-  const nodesRef = React.useRef<(ITopoNode<any, any> | ITopoSitesNode | ITopoRegionNode)[]>(nodes);
-  const groupsRef = React.useRef(originGroupsData);
+  const nodesRef = React.useRef<(ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[]>(nodes);
+  const groupsRef = React.useRef<ITopologyGroup[] | null>(originGroupsData);
+  const segmentsRef = React.useRef<ISegmentSegmentP[] | null>(originSegmentsData);
   const onSetData = (res: ITopologyDataRes) => {
     if (!res) {
-      setLinks(null);
-      setOriginGroupsData(null);
+      setLinks([]);
       setNodes([]);
+      setOriginSegmentsData(null);
+      setOriginGroupsData(null);
       setOriginData(null);
+      groupsRef.current = null;
+      segmentsRef.current = null;
       nodesRef.current = null;
       linksRef.current = null;
       return;
     }
-    const _orgObj: ITopologyMapData = res.organizations ? jsonClone(res.organizations) : null;
-    const _groupsObj: ITopologyGroupsData = res.groups ? jsonClone(res.groups) : [];
-    groupsRef.current = _groupsObj.groups;
+    const _orgObj: INetworkOrg[] = res.organizations && res.organizations.organizations ? jsonClone(res.organizations.organizations) : null;
+    const _groupsObj: ITopologyGroup[] = res.groups && res.groups.groups ? jsonClone(res.groups.groups) : [];
+    const _segmentsObj: ISegmentSegmentP[] = res.segments && res.segments.segments ? jsonClone(res.segments.segments) : [];
+    groupsRef.current = _groupsObj;
+    segmentsRef.current = _segmentsObj;
     const _data: ITopologyPreparedMapDataV2 = createTopology(entities, _orgObj, groupsRef.current);
     if (_data.links) {
       setLinks(_data.links);
@@ -140,6 +146,7 @@ export function useTopologyV2Context(): TopologyV2ContextType {
       setNodes(_data.nodes);
       nodesRef.current = _data.nodes;
     }
+    setOriginSegmentsData(segmentsRef.current);
     setOriginGroupsData(groupsRef.current);
     setOriginData(_orgObj);
   };
@@ -303,17 +310,17 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     setTimeRange(_range);
   };
 
-  const onCollapseExpandNode = (node: ITopoNode<any, any> | ITopoSitesNode | ITopoRegionNode, state: boolean) => {
-    const _data: (ITopoNode<any, any> | ITopoSitesNode | ITopoRegionNode)[] = nodesRef.current.slice();
-    const index = _data.findIndex(it => it.id === node.id);
+  const onCollapseExpandNode = (node: ITopoAccountNode | ITopoSitesNode | ITopoRegionNode, state: boolean) => {
+    const _data: (ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[] = nodesRef.current.slice();
+    const index = _data.findIndex(it => it.dataItem.id === node.dataItem.id);
     _data[index].collapsed = state;
     nodesRef.current = _data;
     setNodes(_data);
   };
 
-  const onUpdateNodeCoord = (node: ITopoNode<any, any> | ITopoSitesNode | ITopoRegionNode, _position: IPosition) => {
-    const _data: (ITopoNode<any, any> | ITopoSitesNode | ITopoRegionNode)[] = nodesRef.current.slice();
-    const index = _data.findIndex(it => it.id === node.id);
+  const onUpdateNodeCoord = (node: ITopoAccountNode | ITopoSitesNode | ITopoRegionNode, _position: IPosition) => {
+    const _data: (ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[] = nodesRef.current.slice();
+    const index = _data.findIndex(it => it.dataItem.id === node.dataItem.id);
     _data[index].x = _position.x;
     _data[index].y = _position.y;
     setNodes(_data);
@@ -421,14 +428,14 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     setTopoPanel({ show: false, type: null, dataItem: null });
   };
 
-  const onToogleRegionStructure = (dataItem: ITopoRegionNode, show?: boolean) => {
+  const onToogleRegionStructure = (region: ITopoRegionNode, show?: boolean) => {
     if (show) {
-      const structure = regionStructures.find(it => it.id === dataItem.id);
+      const structure = regionStructures.find(it => it.dataItem.id === region.dataItem.id);
       if (structure) return;
-      setRegionStructures([...regionStructures, dataItem]);
+      setRegionStructures([...regionStructures, region]);
       return;
     }
-    const _strs = regionStructures.filter(it => it.id !== dataItem.id);
+    const _strs = regionStructures.filter(it => it.dataItem.id !== region.dataItem.id);
     setRegionStructures(_strs);
   };
 
@@ -439,6 +446,7 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     timeRange,
     originData,
     originGroupsData,
+    originSegmentsData,
     links,
     nodes,
     selectedNode,

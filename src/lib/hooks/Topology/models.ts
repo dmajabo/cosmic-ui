@@ -41,15 +41,21 @@ export interface IMappedNode extends IOrganizationNode, IVisible {
 
 export interface IFilteredNetworkDevice extends INetworkDevice, IOrganizationNode {}
 
-export interface IDeviceNode extends IFilteredNetworkDevice, IMappedNode, ICoord {}
+export interface IDeviceNode extends IFilteredNetworkDevice, IMappedNode, ICoord {
+  itemsInRow: number;
+}
 
-export interface INetworkVNetworkPeeringConnectionNode extends INetworkVNetworkPeeringConnection, IOrganizationNode, IMappedNode, ICoord {}
+export interface INetworkVNetworkPeeringConnectionNode extends INetworkVNetworkPeeringConnection, IOrganizationNode, IMappedNode, ICoord {
+  itemsInRow: number;
+}
 
 export interface INetworkVNetNode extends INetworkVNetwork, IOrganizationNode, IMappedNode, ICoord {
   itemsInRow: number;
 }
 
-export interface INetworkWebAclNode extends INetworkWebAcl, IOrganizationNode, IMappedNode, ICoord {}
+export interface INetworkWebAclNode extends INetworkWebAcl, IOrganizationNode, IMappedNode, ICoord {
+  itemsInRow: number;
+}
 
 export interface ITGWNode extends INetworkwEdge, IOrganizationNode, IMappedNode, ICoord {}
 
@@ -73,31 +79,32 @@ export interface ITopoLink<PP, P, PC, C, L> extends IVisible, IBaseEntity<string
   // y2: number;
 }
 
-export interface ITopoNode<P, C> extends ICoord, ICollapsed, IVisible, IBaseEntity<string> {
-  dataItem: P;
+export interface IAccountNode extends IBaseEntity<string> {
   name: string;
+}
+
+export interface ITopoAccountNode extends ICoord, ICollapsed, IVisible {
+  dataItem: IAccountNode;
   uiId: string;
   orgId: string;
   type: TopoNodeTypes;
   expandedSize: ISize;
   collapsedSize: ISize;
-  children: C[];
+  children: ITGWNode[];
 }
 
-export interface ITopoSitesNode extends ICoord, ICollapsed, IVisible, IBaseEntity<string> {
+export interface ITopoSitesNode extends ICoord, ICollapsed, IVisible {
   dataItem: ITopologyGroup;
-  name: string;
   uiId: string;
-  orgId: string;
   type: TopoNodeTypes;
   expandedSize: ISize;
   collapsedSize: ISize;
   children: IDeviceNode[][];
+  currentPage: number;
 }
 
-export interface ITopoRegionNode extends ICoord, ICollapsed, IVisible, IBaseEntity<string> {
+export interface ITopoRegionNode extends ICoord, ICollapsed, IVisible {
   dataItem: INetworkRegion;
-  name: string;
   uiId: string;
   orgId: string;
   type: TopoNodeTypes;
@@ -109,7 +116,7 @@ export interface ITopoRegionNode extends ICoord, ICollapsed, IVisible, IBaseEnti
 }
 
 export interface ITopologyPreparedMapDataV2 {
-  nodes: (ITopoNode<any, any> | ITopoSitesNode | ITopoRegionNode)[];
+  nodes: (ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[];
   links: ITopoLink<any, any, any, any, any>[];
 }
 

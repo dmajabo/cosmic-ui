@@ -15,19 +15,19 @@ import TransitionContainer from '../../../TransitionContainer';
 // import CollapseExpandButton from '../../Containers/CollapseExpandButton';
 
 interface Props {
-  dataItem: ITopoSitesNode;
+  site: ITopoSitesNode;
 }
 
 const SitesNodeTopContainer: React.FC<Props> = (props: Props) => {
   const { topology } = useTopologyV2DataContext();
   const { onUpdate, onUnsubscribeDrag } = useDrag(
     {
-      id: `${NODES_CONSTANTS.SITES.type}${props.dataItem.uiId}`,
-      parentId: `wrapper${NODES_CONSTANTS.SITES.type}${props.dataItem.uiId}`,
-      dragId: `drag${NODES_CONSTANTS.SITES.type}${props.dataItem.uiId}`,
-      resId: props.dataItem.id,
+      id: `${NODES_CONSTANTS.SITES.type}${props.site.uiId}`,
+      parentId: `wrapper${NODES_CONSTANTS.SITES.type}${props.site.uiId}`,
+      dragId: `drag${NODES_CONSTANTS.SITES.type}${props.site.uiId}`,
+      resId: props.site.dataItem.id,
       linkPrefiks: 'fromparentid',
-      nodeType: props.dataItem.type,
+      nodeType: props.site.type,
     },
     (e: IPosition) => onUpdatePosition(e),
   );
@@ -42,14 +42,14 @@ const SitesNodeTopContainer: React.FC<Props> = (props: Props) => {
   }, []);
 
   React.useEffect(() => {
-    setVisible(props.dataItem.visible);
-    setPosition({ x: props.dataItem.x, y: props.dataItem.y });
-  }, [props.dataItem]);
+    setVisible(props.site.visible);
+    setPosition({ x: props.site.x, y: props.site.y });
+  }, [props.site]);
 
   React.useEffect(() => {
     if (visible) {
       if (pos) {
-        onUpdate({ x: props.dataItem.x, y: props.dataItem.y }, visible);
+        onUpdate({ x: props.site.x, y: props.site.y }, visible);
       } else {
         onUnsubscribeDrag();
       }
@@ -59,11 +59,11 @@ const SitesNodeTopContainer: React.FC<Props> = (props: Props) => {
   }, [pos, visible]);
 
   const onUpdatePosition = (_pos: IPosition) => {
-    if (props.dataItem.x === _pos.x && props.dataItem.y === _pos.y) {
+    if (props.site.x === _pos.x && props.site.y === _pos.y) {
       return;
     }
     setPosition({ x: _pos.x, y: _pos.y });
-    topology.onUpdateNodeCoord(props.dataItem, _pos);
+    topology.onUpdateNodeCoord(props.site, _pos);
   };
 
   // const onExpandCollapse = (type: CollapseExpandState) => {
@@ -88,26 +88,28 @@ const SitesNodeTopContainer: React.FC<Props> = (props: Props) => {
   };
 
   const onMouseEnter = () => {
-    onHoverNode(`${NODES_CONSTANTS.SITES.type}${props.dataItem.uiId}`);
+    onHoverNode(`${NODES_CONSTANTS.SITES.type}${props.site.uiId}`);
   };
 
   const onMouseLeave = () => {
-    onUnHoverNode(`${NODES_CONSTANTS.SITES.type}${props.dataItem.uiId}`);
+    onUnHoverNode(`${NODES_CONSTANTS.SITES.type}${props.site.uiId}`);
   };
 
   if (!pos) return null;
   return (
-    <TransitionContainer id={`wrapper${NODES_CONSTANTS.SITES.type}${props.dataItem.uiId}`} stateIn={props.dataItem.visible} origin="unset" transform="none">
+    <TransitionContainer id={`wrapper${NODES_CONSTANTS.SITES.type}${props.site.uiId}`} stateIn={props.site.visible} origin="unset" transform="none">
       <g
-        id={`${NODES_CONSTANTS.SITES.type}${props.dataItem.uiId}`}
+        id={`${NODES_CONSTANTS.SITES.type}${props.site.uiId}`}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
         className="topologyNode"
         transform={`translate(${pos.x}, ${pos.y})`}
         data-type={NODES_CONSTANTS.SITES.type}
       >
-        <SitesCollapsedNode dataItem={props.dataItem.dataItem} childrenCount={props.dataItem.children.length} show={props.dataItem.collapsed} />
-        <SitesExpandNode dragId={`drag${NODES_CONSTANTS.SITES.type}${props.dataItem.uiId}`} dataItem={props.dataItem} show={!props.dataItem.collapsed} onDeviceClick={onDeviceClick} />
+        {props.site.collapsed && (
+          <SitesCollapsedNode dragId={`drag${NODES_CONSTANTS.ACCOUNT.type}${props.site.uiId}`} dataItem={props.site.dataItem} childrenCount={props.site.children.length} show={props.site.collapsed} />
+        )}
+        <SitesExpandNode dragId={`drag${NODES_CONSTANTS.SITES.type}${props.site.uiId}`} site={props.site} show={!props.site.collapsed} onDeviceClick={onDeviceClick} />
         {/* <CollapseExpandButton
           id={`expandCollapse${props.dataItem.uiId}`}
           isCollapse={!props.dataItem.collapsed}

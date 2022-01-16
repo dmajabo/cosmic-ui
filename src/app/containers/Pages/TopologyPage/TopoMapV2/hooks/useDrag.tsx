@@ -22,6 +22,7 @@ export function useDrag(props: IProps, onUpdateCallBack: (pos: IPosition) => voi
   const [position, setPosition] = React.useState<IPosition | null>(null);
   const [visible, setVisible] = React.useState<boolean>(true);
   const [isUpdated, setIsUpdated] = React.useState<boolean>(false);
+  const positionRef = React.useRef<IPosition>(position);
   const drag = d3
     .drag()
     .on('start', e => onDragStart(e))
@@ -61,6 +62,8 @@ export function useDrag(props: IProps, onUpdateCallBack: (pos: IPosition) => voi
   };
 
   const onUpdate = (pos: IPosition, visible: boolean) => {
+    // debugger
+    positionRef.current = pos ? { ...pos } : null;
     setVisible(visible);
     setPosition(pos);
     setIsUpdated(true);
@@ -68,8 +71,8 @@ export function useDrag(props: IProps, onUpdateCallBack: (pos: IPosition) => voi
   const onDragStart = e => {
     if (e && e.sourceEvent && e.sourceEvent.target && e.sourceEvent.target.id !== dragId) return;
     isDraggable = true;
-    translateX = position?.x || 0;
-    translateY = position?.y || 0;
+    translateX = positionRef.current.x || 0;
+    translateY = positionRef.current.y || 0;
     node = d3.select(`#${id}`);
     childrenContainerNode = d3.select(`#${id}childrensLayer`);
     links = d3.selectAll(`line[data-${linkPrefiks}='${nodeType}${resId}']`);

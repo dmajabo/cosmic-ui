@@ -1,7 +1,7 @@
 import React from 'react';
 import * as d3 from 'd3';
 import { ITransform, ZoomRange } from 'lib/models/general';
-import { ITopoNode, ITopoRegionNode, ITopoSitesNode } from 'lib/hooks/Topology/models';
+import { ITopoAccountNode, ITopoRegionNode, ITopoSitesNode } from 'lib/hooks/Topology/models';
 import { STANDART_DISPLAY_RESOLUTION_V2 } from 'lib/models/general';
 
 interface IProps {
@@ -71,7 +71,7 @@ export function useZoom(props: IProps) {
     zoom.scaleTo(svg, v);
   };
 
-  const onCentered = (nodes: (ITopoNode<any, any> | ITopoSitesNode | ITopoRegionNode)[], _disabledTransition?: boolean) => {
+  const onCentered = (nodes: (ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[], _disabledTransition?: boolean) => {
     const svg = d3.select(`#${svgId}`);
     const rootSize = getMapSize(nodes);
     const scale = getScaleSizeHelper(rootSize.width, rootSize.height);
@@ -129,7 +129,7 @@ export function useZoom(props: IProps) {
     setTransform({ x, y, k });
   };
 
-  const getMapSize = (nodes: (ITopoNode<any, any> | ITopoSitesNode | ITopoRegionNode)[]) => {
+  const getMapSize = (nodes: (ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[]) => {
     let left = 0;
     let right = 0;
     let top = 0;

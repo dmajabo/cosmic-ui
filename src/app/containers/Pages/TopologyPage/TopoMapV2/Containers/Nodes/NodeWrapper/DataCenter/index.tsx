@@ -1,5 +1,4 @@
 import React from 'react';
-import { ITopoNode } from 'lib/hooks/Topology/models';
 import { CollapseExpandState, IPosition } from 'lib/models/general';
 import { useDrag } from 'app/containers/Pages/TopologyPage/TopoMapV2/hooks/useDrag';
 import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
@@ -10,7 +9,7 @@ import DataCenterExpandNode from './DataCenterExpandNode';
 import TransitionContainer from '../../../TransitionContainer';
 import CollapseExpandButton from '../../Containers/CollapseExpandButton';
 interface Props {
-  dataItem: ITopoNode<any, any>;
+  dataItem: any;
 }
 
 const DataCenter: React.FC<Props> = (props: Props) => {

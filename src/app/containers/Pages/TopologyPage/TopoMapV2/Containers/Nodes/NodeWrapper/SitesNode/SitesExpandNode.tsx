@@ -7,21 +7,21 @@ import { IDeviceNode, ITopoSitesNode } from 'lib/hooks/Topology/models';
 
 interface Props {
   dragId: string;
-  dataItem: ITopoSitesNode;
+  site: ITopoSitesNode;
   show: boolean;
   onDeviceClick: (item: IDeviceNode) => void;
 }
 
 const SitesExpandNode: React.FC<Props> = (props: Props) => {
   return (
-    <TransitionContainer id={`expandNodeWrapper${props.dataItem.id}`} stateIn={props.show} origin="unset" transform="none">
+    <TransitionContainer id={`expandNodeWrapper${props.site.dataItem.id}`} stateIn={props.show} origin="unset" transform="none">
       <g>
         <g style={{ cursor: 'pointer' }}>
           <rect
             id={props.dragId}
             fill={NODES_CONSTANTS.SITES.expanded.bgColor}
-            width={props.dataItem.expandedSize.width}
-            height={props.dataItem.expandedSize.height}
+            width={props.site.expandedSize.width}
+            height={props.site.expandedSize.height}
             rx={NODES_CONSTANTS.SITES.expanded.borderRadius}
             ry={NODES_CONSTANTS.SITES.expanded.borderRadius}
             pointerEvents="all"
@@ -29,7 +29,7 @@ const SitesExpandNode: React.FC<Props> = (props: Props) => {
           <g transform="translate(0, 0)">
             <NodeMarker iconId={NODES_CONSTANTS.SITES.iconId} stylesObj={NODES_CONSTANTS.SITES.expanded.marker} />
             <NodeExpandedName
-              name={props.dataItem.name}
+              name={props.site.dataItem.name}
               nodeWidth={NODES_CONSTANTS.SITES.expanded.minWidth}
               markerWidth={NODES_CONSTANTS.SITES.expanded.marker.width}
               height={NODES_CONSTANTS.SITES.expanded.marker.height}

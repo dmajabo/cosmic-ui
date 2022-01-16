@@ -1,5 +1,5 @@
 import { ISize } from 'lib/models/general';
-import { ITopoNode } from '../models';
+import { ITopoAccountNode, ITopoRegionNode, ITopoSitesNode } from '../models';
 
 export const getRowsWidth = (_count: number, width: number, spaceX: number): number => {
   if (!_count || _count === 0) return 0;
@@ -17,7 +17,7 @@ export const getStartChildRowOffsetX = (maxWidth: number, minWidth: number, item
   return Math.max(0, _width / 2 - totalInRow / 2);
 };
 
-export const centeredTopLevelItemsInRow = (items: ITopoNode<any, any>[], size: ISize, width: number) => {
+export const centeredTopLevelItemsInRow = (items: (ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[], size: ISize, width: number) => {
   const hvw = width / 2;
   items.forEach(it => {
     it.x = it.x + hvw - size.width / 2;

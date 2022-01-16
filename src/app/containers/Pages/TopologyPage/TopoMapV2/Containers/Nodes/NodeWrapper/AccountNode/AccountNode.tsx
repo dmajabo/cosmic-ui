@@ -1,5 +1,5 @@
 import React from 'react';
-import { ITGWNode, ITopoNode } from 'lib/hooks/Topology/models';
+import { ITGWNode, ITopoAccountNode } from 'lib/hooks/Topology/models';
 import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 // import { onHoverNode, onUnHoverNode } from '../../../../Graph/helper';
@@ -8,7 +8,7 @@ import TransitionContainer from '../../../TransitionContainer';
 import NetworkWEdgeNode from '../NetworkWEdgeNode';
 
 interface Props {
-  dataItem: ITopoNode<any, ITGWNode>;
+  dataItem: ITopoAccountNode;
 }
 
 const AccountNode: React.FC<Props> = (props: Props) => {

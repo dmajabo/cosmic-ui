@@ -15,7 +15,7 @@ import WebAclsContainer from '../NodeWrapper/RegionNode/ExpandNodeContent/WebAcl
 import WebAclNode from '../NodeWrapper/WebAclNode';
 
 interface Props {
-  dataItem: ITopoRegionNode;
+  region: ITopoRegionNode;
 }
 
 const StructureNode: React.FC<Props> = (props: Props) => {
@@ -25,21 +25,22 @@ const StructureNode: React.FC<Props> = (props: Props) => {
   React.useEffect(() => {
     const _offsests = getRegionChildrenContainersOffsets(
       topology.entities,
-      props.dataItem.webAcls.length,
-      props.dataItem.peerConnections.length,
-      props.dataItem.children.length,
+      props.region.webAcls.length,
+      props.region.peerConnections.length,
+      props.region.children.length,
       40,
       NODES_CONSTANTS.REGION.expanded.contentPadding,
       NODES_CONSTANTS.WEB_ACL.structureStyles.nodeStyles,
       NODES_CONSTANTS.PEERING_CONNECTION.structureStyles.nodeStyles,
       NODES_CONSTANTS.NETWORK_VNET.expanded,
       STANDART_DISPLAY_RESOLUTION_V2.width - 80,
+      true,
     );
     setOffsetsData(_offsests);
-  }, [props.dataItem, topology.entities]);
+  }, [props.region]);
 
   const onClose = () => {
-    topology.onToogleRegionStructure(props.dataItem);
+    topology.onToogleRegionStructure(props.region);
   };
   const onVpcClick = (item: INetworkVNetNode) => {
     topology.onToogleTopoPanel(TopologyPanelTypes.VPC, true, item);
@@ -52,7 +53,7 @@ const StructureNode: React.FC<Props> = (props: Props) => {
   if (!offsetsData) return null;
 
   return (
-    <g transform="translate(40, 40)" id={`wrapper${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}structure`}>
+    <g transform="translate(40, 40)" id={`wrapper${NODES_CONSTANTS.REGION.type}${props.region.uiId}structure`}>
       <rect
         fill={NODES_CONSTANTS.REGION.expanded.bgColor}
         rx={NODES_CONSTANTS.REGION.expanded.borderRadius}
@@ -92,7 +93,7 @@ const StructureNode: React.FC<Props> = (props: Props) => {
                 overflow: 'hidden',
               }}
             >
-              {props.dataItem.name}
+              {props.region.dataItem.name}
             </span>
             <span
               onClick={onClose}
@@ -103,10 +104,10 @@ const StructureNode: React.FC<Props> = (props: Props) => {
           </div>
         </foreignObject>
       </g>
-      {topology.entities && topology.entities.web_acls.selected && props.dataItem.webAcls && props.dataItem.webAcls.length ? (
+      {props.region.webAcls && props.region.webAcls.length ? (
         <WebAclsContainer offsetY={offsetsData.topOffset} offsetX={NODES_CONSTANTS.REGION.expanded.contentPadding}>
           <>
-            {props.dataItem.webAcls.map((row, ri) => {
+            {props.region.webAcls.map((row, ri) => {
               const rowWidth =
                 row.length * (NODES_CONSTANTS.WEB_ACL.structureStyles.nodeStyles.width + NODES_CONSTANTS.WEB_ACL.structureStyles.nodeStyles.spaceX) -
                 NODES_CONSTANTS.WEB_ACL.structureStyles.nodeStyles.spaceX;
@@ -129,14 +130,14 @@ const StructureNode: React.FC<Props> = (props: Props) => {
           </>
         </WebAclsContainer>
       ) : null}
-      {topology.entities && topology.entities.peer_connections.selected && props.dataItem.peerConnections && props.dataItem.peerConnections.length ? (
+      {props.region.peerConnections && props.region.peerConnections.length ? (
         <PeerContainer
-          id={`peerLinkContainerStructure${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`}
+          id={`peerLinkContainerStructure${NODES_CONSTANTS.REGION.type}${props.region.uiId}`}
           offsetY={offsetsData.topOffset + offsetsData.webAcl_TotalHeight}
           offsetX={NODES_CONSTANTS.REGION.expanded.contentPadding}
         >
           <>
-            {props.dataItem.peerConnections.map((row, ri) => {
+            {props.region.peerConnections.map((row, ri) => {
               const rowWidth =
                 row.length * (NODES_CONSTANTS.PEERING_CONNECTION.structureStyles.nodeStyles.width + NODES_CONSTANTS.PEERING_CONNECTION.structureStyles.nodeStyles.spaceX) -
                 NODES_CONSTANTS.PEERING_CONNECTION.structureStyles.nodeStyles.spaceX;
@@ -144,13 +145,13 @@ const StructureNode: React.FC<Props> = (props: Props) => {
               return row.map((it, i) => (
                 <PeerConnectionNode
                   key={`${it.uiId}peerConnection`}
-                  regionUiId={`wrapper${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}structure`}
+                  regionUiId={`wrapper${NODES_CONSTANTS.REGION.type}${props.region.uiId}structure`}
                   offsetData={offsetsData}
                   item={it}
                   rowWidth={rowWidth}
                   x={it.childIndex * (NODES_CONSTANTS.PEERING_CONNECTION.structureStyles.nodeStyles.width + NODES_CONSTANTS.PEERING_CONNECTION.structureStyles.nodeStyles.spaceX)}
                   y={rowY}
-                  dataItem={props.dataItem}
+                  dataItem={props.region}
                   showLabel
                   labelStyles={NODES_CONSTANTS.PEERING_CONNECTION.structureStyles.labelHtmlStyles}
                   nodeStyles={NODES_CONSTANTS.PEERING_CONNECTION.structureStyles.nodeStyles}
@@ -164,12 +165,12 @@ const StructureNode: React.FC<Props> = (props: Props) => {
       ) : null}
 
       <VpcContainer
-        id={`vnetContainerStructure${props.dataItem.uiId}`}
+        id={`vnetContainerStructure${props.region.uiId}`}
         offsetY={offsetsData.topOffset + offsetsData.webAcl_TotalHeight + offsetsData.peerConnection_TotalHeight}
         offsetX={NODES_CONSTANTS.REGION.expanded.contentPadding}
       >
         <>
-          {props.dataItem.children.map((row, ri) => {
+          {props.region.children.map((row, ri) => {
             const rowWidth = row.length * (NODES_CONSTANTS.NETWORK_VNET.expanded.minWidth + NODES_CONSTANTS.NETWORK_VNET.expanded.spaceX) - NODES_CONSTANTS.NETWORK_VNET.expanded.spaceX;
             const rowY = ri * (NODES_CONSTANTS.NETWORK_VNET.expanded.minHeight + NODES_CONSTANTS.NETWORK_VNET.expanded.spaceY);
             return row.map((it, i) => (
@@ -179,8 +180,8 @@ const StructureNode: React.FC<Props> = (props: Props) => {
                 nodeWidth={offsetsData.totalWidth}
                 x={i * (NODES_CONSTANTS.NETWORK_VNET.expanded.minWidth + NODES_CONSTANTS.NETWORK_VNET.expanded.spaceX)}
                 y={rowY}
-                parentId={`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`}
-                region={props.dataItem}
+                parentId={`${NODES_CONSTANTS.REGION.type}${props.region.uiId}`}
+                region={props.region}
                 item={it}
                 onClick={onVpcClick}
               />

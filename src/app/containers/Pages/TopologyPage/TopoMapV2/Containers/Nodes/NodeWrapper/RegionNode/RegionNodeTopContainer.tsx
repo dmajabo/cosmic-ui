@@ -2,6 +2,7 @@ import React from 'react';
 import { ITopoRegionNode } from 'lib/hooks/Topology/models';
 import {
   // CollapseExpandState,
+  // CollapseExpandState,
   IPosition,
 } from 'lib/models/general';
 import { useDrag } from 'app/containers/Pages/TopologyPage/TopoMapV2/hooks/useDrag';
@@ -12,21 +13,22 @@ import RegionExpandNode from './RegionExpandNode';
 import { onHoverNode, onUnHoverNode } from '../../../../Graph/helper';
 import TransitionContainer from '../../../TransitionContainer';
 // import CollapseExpandButton from '../../Containers/CollapseExpandButton';
+// import CollapseExpandButton from '../../Containers/CollapseExpandButton';
 
 interface Props {
-  dataItem: ITopoRegionNode;
+  region: ITopoRegionNode;
 }
 
 const RegionNodeTopContainer: React.FC<Props> = (props: Props) => {
   const { topology } = useTopologyV2DataContext();
   const { onUpdate, onUnsubscribeDrag } = useDrag(
     {
-      id: `${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`,
-      parentId: `wrapper${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`,
-      dragId: `drag${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`,
-      resId: props.dataItem.id,
+      id: `${NODES_CONSTANTS.REGION.type}${props.region.uiId}`,
+      parentId: `wrapper${NODES_CONSTANTS.REGION.type}${props.region.uiId}`,
+      dragId: `drag${NODES_CONSTANTS.REGION.type}${props.region.uiId}`,
+      resId: props.region.dataItem.id,
       linkPrefiks: 'fromparentid',
-      nodeType: props.dataItem.type,
+      nodeType: props.region.type,
     },
     (e: IPosition) => onUpdatePosition(e),
   );
@@ -40,14 +42,14 @@ const RegionNodeTopContainer: React.FC<Props> = (props: Props) => {
   }, []);
 
   React.useEffect(() => {
-    setVisible(props.dataItem.visible);
-    setPosition({ x: props.dataItem.x, y: props.dataItem.y });
-  }, [props.dataItem]);
+    setVisible(props.region.visible);
+    setPosition({ x: props.region.x, y: props.region.y });
+  }, [props.region]);
 
   React.useEffect(() => {
     if (visible) {
       if (pos) {
-        onUpdate({ x: props.dataItem.x, y: props.dataItem.y }, visible);
+        onUpdate({ x: props.region.x, y: props.region.y }, visible);
       } else {
         onUnsubscribeDrag();
       }
@@ -57,11 +59,11 @@ const RegionNodeTopContainer: React.FC<Props> = (props: Props) => {
   }, [pos, visible]);
 
   const onUpdatePosition = (_pos: IPosition) => {
-    if (props.dataItem.x === _pos.x && props.dataItem.y === _pos.y) {
+    if (props.region.x === _pos.x && props.region.y === _pos.y) {
       return;
     }
     setPosition({ x: _pos.x, y: _pos.y });
-    topology.onUpdateNodeCoord(props.dataItem, _pos);
+    topology.onUpdateNodeCoord(props.region, _pos);
   };
 
   // const onExpandCollapse = (type: CollapseExpandState) => {
@@ -82,30 +84,42 @@ const RegionNodeTopContainer: React.FC<Props> = (props: Props) => {
   // };
 
   const onShowFullStructure = () => {
-    topology.onToogleRegionStructure(props.dataItem, true);
+    topology.onToogleRegionStructure(props.region, true);
   };
 
   const onMouseEnter = () => {
-    onHoverNode(`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`);
+    onHoverNode(`${NODES_CONSTANTS.REGION.type}${props.region.uiId}`);
   };
 
   const onMouseLeave = () => {
-    onUnHoverNode(`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`);
+    onUnHoverNode(`${NODES_CONSTANTS.REGION.type}${props.region.uiId}`);
   };
 
   if (!pos) return null;
   return (
-    <TransitionContainer id={`wrapper${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`} stateIn={props.dataItem.visible} origin="unset" transform="none">
+    <TransitionContainer id={`wrapper${NODES_CONSTANTS.REGION.type}${props.region.uiId}`} stateIn={props.region.visible} origin="unset" transform="none">
       <g
-        id={`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`}
+        id={`${NODES_CONSTANTS.REGION.type}${props.region.uiId}`}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
         className="topologyNode"
         transform={`translate(${pos.x}, ${pos.y})`}
         data-type={NODES_CONSTANTS.REGION.type}
       >
-        <RegionCollapsedNode id={props.dataItem.id} name={props.dataItem.name} childrenCount={props.dataItem.children.length} show={props.dataItem.collapsed} />
-        <RegionExpandNode dragId={`drag${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`} dataItem={props.dataItem} show={!props.dataItem.collapsed} onClick={onShowFullStructure} />
+        {props.region.collapsed && (
+          <RegionCollapsedNode
+            dragId={`drag${NODES_CONSTANTS.REGION.type}${props.region.uiId}`}
+            id={props.region.dataItem.id}
+            name={props.region.dataItem.name}
+            childrenCount={props.region.children.length}
+            show={props.region.collapsed}
+          />
+        )}
+
+        {!props.region.collapsed && (
+          <RegionExpandNode dragId={`drag${NODES_CONSTANTS.REGION.type}${props.region.uiId}`} region={props.region} show={!props.region.collapsed} onClick={onShowFullStructure} />
+        )}
+
         {/* <CollapseExpandButton
           id={`expandCollapse${props.dataItem.uiId}`}
           isCollapse={!props.dataItem.collapsed}

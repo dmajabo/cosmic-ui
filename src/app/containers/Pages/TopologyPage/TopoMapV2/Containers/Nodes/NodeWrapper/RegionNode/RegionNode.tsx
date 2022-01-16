@@ -15,7 +15,7 @@ import VpcContainer from './ExpandNodeContent/VpcContainer';
 import VnetTooltipContainer from '../../Containers/VnetTooltipContainer';
 import { getRegionChildrenContainersOffsets, IRefionContainersOffsets } from './ExpandNodeContent/helper';
 interface Props {
-  dataItem: ITopoRegionNode;
+  region: ITopoRegionNode;
 }
 
 const RegionNode: React.FC<Props> = (props: Props) => {
@@ -23,25 +23,25 @@ const RegionNode: React.FC<Props> = (props: Props) => {
   const [offsetsData, setOffsetsData] = React.useState<IRefionContainersOffsets>(null);
 
   React.useEffect(() => {
-    removeVnetTooltip(`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`);
-    return () => removeVnetTooltip(`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`);
+    removeVnetTooltip(`${NODES_CONSTANTS.REGION.type}${props.region.uiId}`);
+    return () => removeVnetTooltip(`${NODES_CONSTANTS.REGION.type}${props.region.uiId}`);
   }, []);
 
   React.useEffect(() => {
     const _offsests = getRegionChildrenContainersOffsets(
       topology.entities,
-      props.dataItem.webAcls.length,
-      props.dataItem.peerConnections.length,
-      props.dataItem.children.length,
+      props.region.webAcls.length,
+      props.region.peerConnections.length,
+      props.region.children.length,
       NODES_CONSTANTS.REGION.headerHeight,
       NODES_CONSTANTS.REGION.expanded.contentPadding,
       NODES_CONSTANTS.WEB_ACL.collapse,
       NODES_CONSTANTS.PEERING_CONNECTION.collapse,
       NODES_CONSTANTS.NETWORK_VNET.collapse,
-      props.dataItem.expandedSize.width,
+      props.region.expandedSize.width,
     );
     setOffsetsData(_offsests);
-  }, [props.dataItem, topology.entities]);
+  }, [props.region, topology.entities]);
 
   const onVpcClick = (item: INetworkVNetNode) => {
     topology.onToogleTopoPanel(TopologyPanelTypes.VPC, true, item);
@@ -55,22 +55,22 @@ const RegionNode: React.FC<Props> = (props: Props) => {
 
   return (
     <TransitionContainer
-      id={`wrapper${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}childrensLayer`}
-      stateIn={props.dataItem.visible && !props.dataItem.collapsed}
+      id={`wrapper${NODES_CONSTANTS.REGION.type}${props.region.uiId}childrensLayer`}
+      stateIn={props.region.visible && !props.region.collapsed}
       origin="unset"
       transform="none"
       timing={50}
     >
       <g
-        id={`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}childrensLayer`}
+        id={`${NODES_CONSTANTS.REGION.type}${props.region.uiId}childrensLayer`}
         className="topologyNode"
-        transform={`translate(${props.dataItem.x}, ${props.dataItem.y})`}
+        transform={`translate(${props.region.x}, ${props.region.y})`}
         data-type={NODES_CONSTANTS.REGION.type}
       >
-        {topology.entities && topology.entities.web_acls.selected && props.dataItem.webAcls && props.dataItem.webAcls.length ? (
+        {topology.entities && topology.entities.web_acls.selected && props.region.webAcls && props.region.webAcls.length ? (
           <WebAclsContainer offsetY={offsetsData.topOffset} offsetX={NODES_CONSTANTS.REGION.expanded.contentPadding}>
             <>
-              {props.dataItem.webAcls.map((row, ri) => {
+              {props.region.webAcls.map((row, ri) => {
                 const rowWidth = row.length * (NODES_CONSTANTS.WEB_ACL.collapse.width + NODES_CONSTANTS.WEB_ACL.collapse.spaceX) - NODES_CONSTANTS.WEB_ACL.collapse.spaceX;
                 const rowY = ri * (NODES_CONSTANTS.WEB_ACL.collapse.height + NODES_CONSTANTS.WEB_ACL.collapse.spaceY);
                 const itemOffsetX = NODES_CONSTANTS.WEB_ACL.collapse.width + NODES_CONSTANTS.WEB_ACL.collapse.spaceX;
@@ -92,23 +92,23 @@ const RegionNode: React.FC<Props> = (props: Props) => {
             </>
           </WebAclsContainer>
         ) : null}
-        {topology.entities && topology.entities.peer_connections.selected && props.dataItem.peerConnections && props.dataItem.peerConnections.length ? (
-          <PeerContainer id={`peerLinkContainer${props.dataItem.uiId}`} offsetY={offsetsData.topOffset + offsetsData.webAcl_TotalHeight} offsetX={NODES_CONSTANTS.REGION.expanded.contentPadding}>
+        {topology.entities && topology.entities.peer_connections.selected && props.region.peerConnections && props.region.peerConnections.length ? (
+          <PeerContainer id={`peerLinkContainer${props.region.uiId}`} offsetY={offsetsData.topOffset + offsetsData.webAcl_TotalHeight} offsetX={NODES_CONSTANTS.REGION.expanded.contentPadding}>
             <>
-              {props.dataItem.peerConnections.map((row, ri) => {
+              {props.region.peerConnections.map((row, ri) => {
                 const rowWidth =
                   row.length * (NODES_CONSTANTS.PEERING_CONNECTION.collapse.width + NODES_CONSTANTS.PEERING_CONNECTION.collapse.spaceX) - NODES_CONSTANTS.PEERING_CONNECTION.collapse.spaceX;
                 const rowY = ri * (NODES_CONSTANTS.PEERING_CONNECTION.collapse.height + NODES_CONSTANTS.PEERING_CONNECTION.collapse.spaceY);
                 return row.map((it, i) => (
                   <PeerConnectionNode
                     key={`${it.uiId}peerConnection`}
-                    regionUiId={`wrapper${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}childrensLayer`}
+                    regionUiId={`wrapper${NODES_CONSTANTS.REGION.type}${props.region.uiId}childrensLayer`}
                     offsetData={offsetsData}
                     x={i * (NODES_CONSTANTS.PEERING_CONNECTION.collapse.width + NODES_CONSTANTS.PEERING_CONNECTION.collapse.spaceX)}
                     y={rowY}
                     rowWidth={rowWidth}
                     item={it}
-                    dataItem={props.dataItem}
+                    dataItem={props.region}
                     nodeStyles={NODES_CONSTANTS.PEERING_CONNECTION.collapse}
                     vnetCollapseStyles={NODES_CONSTANTS.NETWORK_VNET.collapse}
                   />
@@ -119,12 +119,12 @@ const RegionNode: React.FC<Props> = (props: Props) => {
         ) : null}
 
         <VpcContainer
-          id={`vnetContainer${props.dataItem.uiId}`}
+          id={`vnetContainer${props.region.uiId}`}
           offsetY={offsetsData.topOffset + offsetsData.webAcl_TotalHeight + offsetsData.peerConnection_TotalHeight}
           offsetX={NODES_CONSTANTS.REGION.expanded.contentPadding}
         >
           <>
-            {props.dataItem.children.map((row, ri) => {
+            {props.region.children.map((row, ri) => {
               const rowWidth = row.length * (NODES_CONSTANTS.NETWORK_VNET.collapse.width + NODES_CONSTANTS.NETWORK_VNET.collapse.spaceX) - NODES_CONSTANTS.NETWORK_VNET.collapse.spaceX;
               const rowY = ri * (NODES_CONSTANTS.NETWORK_VNET.collapse.height + NODES_CONSTANTS.NETWORK_VNET.collapse.spaceY);
               return row.map((it, i) => (
@@ -134,8 +134,8 @@ const RegionNode: React.FC<Props> = (props: Props) => {
                   y={rowY}
                   rowWidth={rowWidth}
                   nodeWidth={offsetsData.totalWidth}
-                  parentId={`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`}
-                  region={props.dataItem}
+                  parentId={`${NODES_CONSTANTS.REGION.type}${props.region.uiId}`}
+                  region={props.region}
                   item={it}
                   onClick={onVpcClick}
                 />
@@ -143,7 +143,7 @@ const RegionNode: React.FC<Props> = (props: Props) => {
             })}
           </>
         </VpcContainer>
-        <VnetTooltipContainer id={`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`} offsetData={offsetsData} offsetX={NODES_CONSTANTS.REGION.expanded.contentPadding} />
+        <VnetTooltipContainer id={`${NODES_CONSTANTS.REGION.type}${props.region.uiId}`} offsetData={offsetsData} offsetX={NODES_CONSTANTS.REGION.expanded.contentPadding} />
       </g>
     </TransitionContainer>
   );

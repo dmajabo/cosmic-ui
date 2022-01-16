@@ -10,7 +10,7 @@ export const getBeautifulRowsCount = (_count: number, maxInRow: number): number 
 export const getDevicesBeautifulRowsCount = (_count: number, maxInRow: number): number => {
   if (_count <= 6) return _count;
   if (_count <= maxInRow) return Math.max(4, Math.ceil(Math.sqrt(_count) * 2));
-  return maxInRow;
+  return Math.ceil(Math.sqrt(_count) * 1.75);
 };
 
 export const getRegionChildrenCounts = (chs: INetworkVNetwork[], prs: INetworkVNetworkPeeringConnection[], webAcls: INetworkWebAcl[]): number => {

@@ -29,8 +29,6 @@ const TopoMapV2: React.FC<IProps> = (props: IProps) => {
 
   React.useEffect(() => {
     if (response !== null) {
-      // console.log(mock);
-      // topology.onSetData({ ...response, organizations: mock });
       topology.onSetData(response);
     }
   }, [response]);

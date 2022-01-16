@@ -19,6 +19,7 @@ export const getRegionChildrenContainersOffsets = (
   peerConnectionNodeStyles,
   vnetStyles,
   regionWidth: number,
+  skipFilterOption?: boolean,
 ): IRefionContainersOffsets => {
   const totalWidth = regionWidth - padding * 2;
   const topOffset = headerHeight + padding;
@@ -27,8 +28,12 @@ export const getRegionChildrenContainersOffsets = (
   let vpsHeight = 0;
   if (filter && filter.web_acls && filter.web_acls.selected && webAclRows !== 0) {
     webAglHeight = getRowsHeight(webAclRows, webAclNodeStyles.height, webAclNodeStyles.spaceY) + padding;
+  } else if (skipFilterOption) {
+    webAglHeight = getRowsHeight(webAclRows, webAclNodeStyles.height, webAclNodeStyles.spaceY) + padding;
   }
   if (filter && filter.peer_connections && filter.peer_connections.selected && peerConnectionsRows !== 0) {
+    peerHeight = getRowsHeight(peerConnectionsRows, peerConnectionNodeStyles.height, peerConnectionNodeStyles.spaceY) + padding;
+  } else if (skipFilterOption) {
     peerHeight = getRowsHeight(peerConnectionsRows, peerConnectionNodeStyles.height, peerConnectionNodeStyles.spaceY) + padding;
   }
   if (vnetRows !== 0) {
