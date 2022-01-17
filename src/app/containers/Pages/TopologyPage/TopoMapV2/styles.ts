@@ -35,6 +35,7 @@ export const ContainerWithMetrics = styled.div`
   height: calc(100% - 70px);
   flex-shrink: 1;
   flex-grow: 1;
+  position: relative;
 `;
 
 interface MapContainerPRops {
@@ -104,11 +105,6 @@ export const StyledMap = styled.svg`
       fill: var(--_highlightColor);
       stroke: var(--_highlightColor);
     }
-    /* .webAclNodeIcon, */
-    /* .vpsBgIcon {
-      color: var(--_primaryWhiteColor);
-    } */
-    /* .webAclNode, */
     .wedgeBg {
       fill: var(--_highlightColor);
       transition-property: fill;
@@ -116,8 +112,6 @@ export const StyledMap = styled.svg`
     }
     .deviceBg {
       color: var(--_highlightColor);
-      transition-property: color;
-      transition: 0.2s linear;
     }
   }
   .selectedTopoLevel1Link {

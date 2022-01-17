@@ -105,7 +105,7 @@ const RegionExpandNode: React.FC<Props> = (props: Props) => {
                 return row.map((it, i) => (
                   <PeerConnectionNode
                     key={`${it.uiId}peerConnection`}
-                    regionUiId={`wrapper${NODES_CONSTANTS.REGION.type}${props.region.uiId}childrensLayer`}
+                    regionUiId={`${NODES_CONSTANTS.REGION.type}${props.region.uiId}childrensLayer`}
                     offsetData={props.offsetsData}
                     x={it.x}
                     y={it.y}

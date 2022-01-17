@@ -7,12 +7,11 @@ import {
 import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 import SitesCollapsedNode from './SitesCollapsedNode';
-import { onHoverNode, onUnHoverNode } from '../../../../Graph/helper';
+// import { onHoverNode, onUnHoverNode } from '../../../../Graph/helper';
 import SitesExpandNode from './SitesExpandNode';
 import { TopologyPanelTypes } from 'lib/models/topology';
 import { IDeviceNode, ITopoSitesNode } from 'lib/hooks/Topology/models';
 import TransitionContainer from '../../../TransitionContainer';
-import VPNLink from '../../../Links/VPNLink';
 // import CollapseExpandButton from '../../Containers/CollapseExpandButton';
 
 interface Props {
@@ -88,13 +87,13 @@ const SitesNodeTopContainer: React.FC<Props> = (props: Props) => {
     topology.onToogleTopoPanel(TopologyPanelTypes.Device, true, item);
   };
 
-  const onMouseEnter = () => {
-    onHoverNode(`${NODES_CONSTANTS.SITES.type}${props.site.uiId}`);
-  };
+  // const onMouseEnter = () => {
+  //   onHoverNode(`${NODES_CONSTANTS.SITES.type}${props.site.uiId}`);
+  // };
 
-  const onMouseLeave = () => {
-    onUnHoverNode(`${NODES_CONSTANTS.SITES.type}${props.site.uiId}`);
-  };
+  // const onMouseLeave = () => {
+  //   onUnHoverNode(`${NODES_CONSTANTS.SITES.type}${props.site.uiId}`);
+  // };
 
   const onPrev = () => {
     if (currentPage === 0) {
@@ -114,27 +113,33 @@ const SitesNodeTopContainer: React.FC<Props> = (props: Props) => {
 
   if (!pos) return null;
   return (
-    <TransitionContainer id={`wrapper${NODES_CONSTANTS.SITES.type}${props.site.uiId}`} stateIn={props.site.visible} origin="unset" transform="none">
-      <g
-        id={`${NODES_CONSTANTS.SITES.type}${props.site.uiId}`}
-        onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}
-        className="topologyNode"
-        transform={`translate(${pos.x}, ${pos.y})`}
-        data-type={NODES_CONSTANTS.SITES.type}
-      >
+    <TransitionContainer stateIn={props.site.visible} transform="none">
+      <>
         {props.site.collapsed && (
-          <SitesCollapsedNode dragId={`drag${NODES_CONSTANTS.ACCOUNT.type}${props.site.uiId}`} dataItem={props.site.dataItem} childrenCount={props.site.children.length} show={props.site.collapsed} />
+          <SitesCollapsedNode
+            uiId={props.site.uiId}
+            x={pos.x}
+            y={pos.y}
+            dragId={`drag${NODES_CONSTANTS.ACCOUNT.type}${props.site.uiId}`}
+            dataItem={props.site.dataItem}
+            childrenCount={props.site.children.length}
+            show={props.site.collapsed}
+          />
         )}
-        <SitesExpandNode
-          dragId={`drag${NODES_CONSTANTS.SITES.type}${props.site.uiId}`}
-          currentPage={currentPage}
-          site={props.site}
-          show={!props.site.collapsed}
-          onDeviceClick={onDeviceClick}
-          onPrev={onPrev}
-          onNext={onNext}
-        />
+        {!props.site.collapsed && (
+          <SitesExpandNode
+            x={pos.x}
+            y={pos.y}
+            dragId={`drag${NODES_CONSTANTS.SITES.type}${props.site.uiId}`}
+            currentPage={currentPage}
+            site={props.site}
+            show={!props.site.collapsed}
+            showTransits={topology.entities && topology.entities.transit && topology.entities.transit.selected}
+            onDeviceClick={onDeviceClick}
+            onPrev={onPrev}
+            onNext={onNext}
+          />
+        )}
         {/* <CollapseExpandButton
           id={`expandCollapse${props.dataItem.uiId}`}
           isCollapse={!props.dataItem.collapsed}
@@ -142,22 +147,7 @@ const SitesNodeTopContainer: React.FC<Props> = (props: Props) => {
           x={!props.dataItem.collapsed ? props.dataItem.expandedSize.width - NODES_CONSTANTS.COLLAPSE_EXPAND.r : NODES_CONSTANTS.SITES.collapse.width - NODES_CONSTANTS.COLLAPSE_EXPAND.r}
           y={!props.dataItem.collapsed ? props.dataItem.expandedSize.height / 2 - NODES_CONSTANTS.COLLAPSE_EXPAND.r : NODES_CONSTANTS.SITES.collapse.height / 2 - NODES_CONSTANTS.COLLAPSE_EXPAND.r}
         /> */}
-      </g>
-      {props.site.links && props.site.links.length ? (
-        <TransitionContainer
-          id={`linksWrapper${NODES_CONSTANTS.SITES.type}${props.site.uiId}`}
-          stateIn={topology.entities && topology.entities.transit && topology.entities.transit.selected}
-          origin="unset"
-          transform="none"
-        >
-          <>
-            {props.site.links.map(it => {
-              if (it.fromNode.child.page !== currentPage) return null;
-              return <VPNLink key={`link${NODES_CONSTANTS.SITES.type}${props.site.uiId}`} dataItem={it} />;
-            })}
-          </>
-        </TransitionContainer>
-      ) : null}
+      </>
     </TransitionContainer>
   );
 };

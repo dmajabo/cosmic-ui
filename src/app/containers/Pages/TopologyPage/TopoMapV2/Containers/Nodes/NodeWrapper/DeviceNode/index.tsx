@@ -28,7 +28,14 @@ const DeviceNode: React.FC<Props> = (props: Props) => {
   return (
     <>
       <g transform={`translate(${props.x}, ${props.y})`} onClick={onClick} className={`topoNodeLevel1 deviceNodeWrapper ${isNodeSelected ? 'selectedTopoLevel1' : ''}`}>
-        <use pointerEvents="all" href={`#bg${NODES_CONSTANTS.DEVICE.type}`} color="var(--_primaryBg)" width={NODES_CONSTANTS.DEVICE.collapse.width} height={NODES_CONSTANTS.DEVICE.collapse.height} />
+        <use
+          pointerEvents="all"
+          href={`#bg${NODES_CONSTANTS.DEVICE.type}`}
+          color={isNodeSelected ? 'var(--_highlightColor)' : 'var(--_primaryBg)'}
+          className="transitionStyle"
+          width={NODES_CONSTANTS.DEVICE.collapse.width}
+          height={NODES_CONSTANTS.DEVICE.collapse.height}
+        />
         <use
           href={`#${NODES_CONSTANTS.DEVICE.type}`}
           width={NODES_CONSTANTS.DEVICE.collapse.iconWidth}

@@ -39,7 +39,7 @@ const PeerConnectionNode: React.FC<Props> = (props: Props) => {
     _regG.selectAll('.vnetNodeWrapper').attr('opacity', 0.5);
     _node.attr('opacity', 1).classed('peerConnectionNodeWrapperHover', true);
     links.forEach(link => {
-      const _vps = _regG.select(`g[data-id='${link.from.nodeType}${link.from.id}']`);
+      const _vps = _regG.select(`g[data-id='${link.to.nodeType}${link.to.id}']`);
       _vps.attr('opacity', 1).classed('vpsHoverStroke', true);
     });
   };
@@ -52,7 +52,7 @@ const PeerConnectionNode: React.FC<Props> = (props: Props) => {
     _regG.selectAll('.vnetNodeWrapper').attr('opacity', 1);
     _node.classed('peerConnectionNodeWrapperHover', null);
     links.forEach(link => {
-      const _vps = _regG.select(`g[data-id='${link.from.nodeType}${link.from.id}']`);
+      const _vps = _regG.select(`g[data-id='${link.to.nodeType}${link.to.id}']`);
       _vps.classed('vpsHoverStroke', null);
     });
   };

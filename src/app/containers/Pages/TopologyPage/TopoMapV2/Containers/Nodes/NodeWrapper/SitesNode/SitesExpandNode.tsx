@@ -6,12 +6,16 @@ import NodeExpandedName from '../../Containers/NodeName/NodeExpandedName';
 import { IDeviceNode, ITopoSitesNode } from 'lib/hooks/Topology/models';
 import DeviceNode from '../DeviceNode';
 import SitePager from './SitePager';
+import VPNLink from '../../../Links/VPNLink';
 
 interface Props {
+  x: number;
+  y: number;
   dragId: string;
   site: ITopoSitesNode;
   show: boolean;
   currentPage: number;
+  showTransits: boolean;
   onDeviceClick: (item: IDeviceNode) => void;
   onPrev: () => void;
   onNext: () => void;
@@ -19,29 +23,39 @@ interface Props {
 
 const SitesExpandNode: React.FC<Props> = (props: Props) => {
   return (
-    <TransitionContainer id={`expandNodeWrapper${props.site.dataItem.id}`} stateIn={props.show} origin="unset" transform="none">
-      <g>
-        <g style={{ cursor: 'pointer' }}>
-          <rect
-            id={props.dragId}
-            fill={NODES_CONSTANTS.SITES.expanded.bgColor}
-            width={props.site.expandedSize.width}
-            height={props.site.expandedSize.height}
-            rx={NODES_CONSTANTS.SITES.expanded.borderRadius}
-            ry={NODES_CONSTANTS.SITES.expanded.borderRadius}
-            pointerEvents="all"
+    <>
+      <g style={{ cursor: 'pointer' }} id={`${NODES_CONSTANTS.SITES.type}${props.site.uiId}`} data-type={NODES_CONSTANTS.SITES.type} transform={`translate(${props.x}, ${props.y})`}>
+        <rect
+          id={props.dragId}
+          fill={NODES_CONSTANTS.SITES.expanded.bgColor}
+          width={props.site.expandedSize.width}
+          height={props.site.expandedSize.height}
+          rx={NODES_CONSTANTS.SITES.expanded.borderRadius}
+          ry={NODES_CONSTANTS.SITES.expanded.borderRadius}
+          pointerEvents="all"
+        />
+        <g transform="translate(0, 0)">
+          <NodeMarker iconId={NODES_CONSTANTS.SITES.iconId} stylesObj={NODES_CONSTANTS.SITES.expanded.marker} />
+          <NodeExpandedName
+            name={props.site.dataItem.name}
+            nodeWidth={props.site.expandedSize.width}
+            markerWidth={NODES_CONSTANTS.SITES.expanded.marker.width}
+            height={NODES_CONSTANTS.SITES.expanded.marker.height}
+            stylesObj={NODES_CONSTANTS.SITES.labelExpandedStyles}
           />
-          <g transform="translate(0, 0)">
-            <NodeMarker iconId={NODES_CONSTANTS.SITES.iconId} stylesObj={NODES_CONSTANTS.SITES.expanded.marker} />
-            <NodeExpandedName
-              name={props.site.dataItem.name}
-              nodeWidth={props.site.expandedSize.width}
-              markerWidth={NODES_CONSTANTS.SITES.expanded.marker.width}
-              height={NODES_CONSTANTS.SITES.expanded.marker.height}
-              stylesObj={NODES_CONSTANTS.SITES.labelExpandedStyles}
-            />
-          </g>
         </g>
+      </g>
+      {props.site.links && props.site.links.length ? (
+        <TransitionContainer id={`linksWrapper${NODES_CONSTANTS.SITES.type}${props.site.uiId}`} stateIn={props.showTransits} transform="none">
+          <>
+            {props.site.links.map(it => {
+              if (it.fromNode.child.page !== props.currentPage) return null;
+              return <VPNLink key={`link${NODES_CONSTANTS.SITES.type}${props.site.uiId}${it.id}`} dataItem={it} />;
+            })}
+          </>
+        </TransitionContainer>
+      ) : null}
+      <g id={`${NODES_CONSTANTS.SITES.type}${props.site.uiId}childrensLayer`} className="topologyNode" data-type={NODES_CONSTANTS.SITES.type} transform={`translate(${props.x}, ${props.y})`}>
         {props.site.children && props.site.children.length && props.site.children[props.currentPage] ? (
           <g transform={`translate(0, ${NODES_CONSTANTS.SITES.headerHeight + NODES_CONSTANTS.SITES.expanded.contentPadding})`}>
             {props.site.children[props.currentPage].map(it => (
@@ -60,7 +74,7 @@ const SitesExpandNode: React.FC<Props> = (props: Props) => {
           />
         ) : null}
       </g>
-    </TransitionContainer>
+    </>
   );
 };
 
