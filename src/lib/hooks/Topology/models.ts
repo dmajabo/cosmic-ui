@@ -5,7 +5,8 @@ import { IBaseEntity, ICollapsed, ICoord, IFilterOption, ISize, IVisible } from 
 export const VPCS_IN_ROW = 12;
 export const PEER_CONNECTION_IN_ROW = 11;
 export const WEB_ACL_IN_ROW = 11;
-export const DEV_IN_ROW = 100;
+export const DEV_IN_PAGE = 60;
+export const DEV_IN_ROW = 12;
 
 export enum TopoNodeTypes {
   ACCOUNT = 'account',
@@ -42,6 +43,7 @@ export interface IMappedNode extends IOrganizationNode, IVisible {
 export interface IFilteredNetworkDevice extends INetworkDevice, IOrganizationNode {}
 
 export interface IDeviceNode extends IFilteredNetworkDevice, IMappedNode, ICoord {
+  page: number;
   itemsInRow: number;
 }
 
@@ -73,10 +75,10 @@ export interface ITopoLink<PP, P, PC, C, L> extends IVisible, IBaseEntity<string
   fromNode: ITopoLinkNode<PP, P>;
   toNode: ITopoLinkNode<PC, C>;
   data: L;
-  // x1: number;
-  // y1: number;
-  // x2: number;
-  // y2: number;
+  fromX?: number;
+  fromY?: number;
+  toX?: number;
+  toY?: number;
 }
 
 export interface IAccountNode extends IBaseEntity<string> {
@@ -100,6 +102,7 @@ export interface ITopoSitesNode extends ICoord, ICollapsed, IVisible {
   expandedSize: ISize;
   collapsedSize: ISize;
   children: IDeviceNode[][];
+  links: ITopoLink<any, any, any, any, any>[];
   currentPage: number;
 }
 

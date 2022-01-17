@@ -108,18 +108,13 @@ const StructureNode: React.FC<Props> = (props: Props) => {
         <WebAclsContainer offsetY={offsetsData.topOffset} offsetX={NODES_CONSTANTS.REGION.expanded.contentPadding}>
           <>
             {props.region.webAcls.map((row, ri) => {
-              const rowWidth =
-                row.length * (NODES_CONSTANTS.WEB_ACL.structureStyles.nodeStyles.width + NODES_CONSTANTS.WEB_ACL.structureStyles.nodeStyles.spaceX) -
-                NODES_CONSTANTS.WEB_ACL.structureStyles.nodeStyles.spaceX;
-              const rowY = ri * (NODES_CONSTANTS.WEB_ACL.structureStyles.nodeStyles.height + NODES_CONSTANTS.WEB_ACL.structureStyles.nodeStyles.spaceY);
               return row.map(it => (
                 <WebAclNode
-                  rowWidth={rowWidth}
-                  nodeWidth={offsetsData.totalWidth}
                   key={`${it.uiId}webacl`}
                   item={it}
-                  x={it.childIndex * (NODES_CONSTANTS.WEB_ACL.structureStyles.nodeStyles.width + NODES_CONSTANTS.WEB_ACL.structureStyles.nodeStyles.spaceX)}
-                  y={rowY}
+                  x={it.x}
+                  // x={it.x * (NODES_CONSTANTS.WEB_ACL.structureStyles.nodeStyles.width + NODES_CONSTANTS.WEB_ACL.structureStyles.nodeStyles.spaceX)}
+                  y={it.y}
                   onClick={onWebAclClick}
                   nodeStyles={NODES_CONSTANTS.WEB_ACL.structureStyles.nodeStyles}
                   counterStyles={NODES_CONSTANTS.WEB_ACL.structureStyles.countStyles}
@@ -138,9 +133,6 @@ const StructureNode: React.FC<Props> = (props: Props) => {
         >
           <>
             {props.region.peerConnections.map((row, ri) => {
-              const rowWidth =
-                row.length * (NODES_CONSTANTS.PEERING_CONNECTION.structureStyles.nodeStyles.width + NODES_CONSTANTS.PEERING_CONNECTION.structureStyles.nodeStyles.spaceX) -
-                NODES_CONSTANTS.PEERING_CONNECTION.structureStyles.nodeStyles.spaceX;
               const rowY = ri * (NODES_CONSTANTS.PEERING_CONNECTION.structureStyles.nodeStyles.height + NODES_CONSTANTS.PEERING_CONNECTION.structureStyles.nodeStyles.spaceY);
               return row.map((it, i) => (
                 <PeerConnectionNode
@@ -148,7 +140,6 @@ const StructureNode: React.FC<Props> = (props: Props) => {
                   regionUiId={`wrapper${NODES_CONSTANTS.REGION.type}${props.region.uiId}structure`}
                   offsetData={offsetsData}
                   item={it}
-                  rowWidth={rowWidth}
                   x={it.childIndex * (NODES_CONSTANTS.PEERING_CONNECTION.structureStyles.nodeStyles.width + NODES_CONSTANTS.PEERING_CONNECTION.structureStyles.nodeStyles.spaceX)}
                   y={rowY}
                   dataItem={props.region}

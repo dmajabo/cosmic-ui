@@ -1,9 +1,6 @@
 import React from 'react';
 import { ITopoAccountNode, ITopoRegionNode, ITopoSitesNode, TopoNodeTypes } from 'lib/hooks/Topology/models';
-import RegionNode from './RegionNode/RegionNode';
-import AccountNode from './AccountNode/AccountNode';
 import DataCenter from './DataCenter';
-import SitesNode from './SitesNode/SitesNode';
 import AccountNodeTopContainer from './AccountNode/AccountNodeTopContainer';
 import RegionNodeTopContainer from './RegionNode/RegionNodeTopContainer';
 import SitesNodeTopContainer from './SitesNode/SitesNodeTopContainer';
@@ -19,17 +16,13 @@ const NodesWrapper: React.FC<Props> = (props: Props) => {
     <>
       {props.nodes.map(it => {
         if (it.type === TopoNodeTypes.ACCOUNT) {
-          if (props.isTopLayer) {
-            return <AccountNodeTopContainer key={`nodeWrapperTopLayer${it.uiId}`} account={it as ITopoAccountNode} />;
-          }
-          return <AccountNode key={`nodeWrapper${it.uiId}`} dataItem={it as ITopoAccountNode} />;
+          if (props.isTopLayer) return null;
+          return <AccountNodeTopContainer key={`nodeWrapperTopLayer${it.uiId}`} account={it as ITopoAccountNode} />;
         }
 
         if (it.type === TopoNodeTypes.REGION) {
-          if (props.isTopLayer) {
-            return <RegionNodeTopContainer key={`nodeWrapperTopLayer${it.uiId}`} region={it as ITopoRegionNode} />;
-          }
-          return <RegionNode key={`nodeWrapper${it.uiId}`} region={it as ITopoRegionNode} />;
+          if (props.isTopLayer) return null;
+          return <RegionNodeTopContainer key={`nodeWrapperTopLayer${it.uiId}`} region={it as ITopoRegionNode} />;
         }
 
         if (it.type === TopoNodeTypes.DATA_CENTER) {
@@ -37,10 +30,8 @@ const NodesWrapper: React.FC<Props> = (props: Props) => {
         }
 
         if (it.type === TopoNodeTypes.SITES) {
-          if (props.isTopLayer) {
-            return <SitesNodeTopContainer key={`nodeWrapperTopLayer${it.uiId}`} site={it as ITopoSitesNode} />;
-          }
-          return <SitesNode key={`nodeWrapper${it.uiId}`} site={it as ITopoSitesNode} />;
+          if (props.isTopLayer) return null;
+          return <SitesNodeTopContainer key={`nodeWrapperTopLayer${it.uiId}`} site={it as ITopoSitesNode} />;
         }
         return null;
       })}

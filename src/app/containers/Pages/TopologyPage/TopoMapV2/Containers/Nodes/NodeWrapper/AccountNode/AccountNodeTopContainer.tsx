@@ -1,16 +1,17 @@
 import React from 'react';
-import { ITopoAccountNode } from 'lib/hooks/Topology/models';
+import { ITGWNode, ITopoAccountNode } from 'lib/hooks/Topology/models';
 import {
   // CollapseExpandState,
   IPosition,
 } from 'lib/models/general';
-import { useDrag } from 'app/containers/Pages/TopologyPage/TopoMapV2/hooks/useDrag';
+// import { useDrag } from 'app/containers/Pages/TopologyPage/TopoMapV2/hooks/useDrag';
 import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 import AccountCollapsedNode from './AccountCollapsedNode';
 import { onHoverNode, onUnHoverNode } from '../../../../Graph/helper';
 import AccountExpandNode from './AccountExpandNode';
 import TransitionContainer from '../../../TransitionContainer';
+import { TopologyPanelTypes } from 'lib/models/topology';
 // import CollapseExpandButton from '../../Containers/CollapseExpandButton';
 
 interface Props {
@@ -19,51 +20,51 @@ interface Props {
 
 const AccountNodeTopContainer: React.FC<Props> = (props: Props) => {
   const { topology } = useTopologyV2DataContext();
-  const { onUpdate, onUnsubscribeDrag } = useDrag(
-    {
-      id: `${NODES_CONSTANTS.ACCOUNT.type}${props.account.uiId}`,
-      parentId: `wrapper${NODES_CONSTANTS.ACCOUNT.type}${props.account.uiId}`,
-      dragId: `drag${NODES_CONSTANTS.ACCOUNT.type}${props.account.uiId}`,
-      resId: props.account.dataItem.id,
-      linkPrefiks: 'toparentid',
-      nodeType: props.account.type,
-    },
-    (e: IPosition) => onUpdatePosition(e),
-  );
+  // const { onUpdate, onUnsubscribeDrag } = useDrag(
+  //   {
+  //     id: `${NODES_CONSTANTS.ACCOUNT.type}${props.account.uiId}`,
+  //     parentId: `wrapper${NODES_CONSTANTS.ACCOUNT.type}${props.account.uiId}`,
+  //     dragId: `drag${NODES_CONSTANTS.ACCOUNT.type}${props.account.uiId}`,
+  //     resId: props.account.dataItem.id,
+  //     linkPrefiks: 'toparentid',
+  //     nodeType: props.account.type,
+  //   },
+  //   (e: IPosition) => onUpdatePosition(e),
+  // );
 
   const [pos, setPosition] = React.useState<IPosition>(null);
-  const [visible, setVisible] = React.useState<boolean>(false);
+  // const [visible, setVisible] = React.useState<boolean>(false);
+
+  // React.useEffect(() => {
+  //   return () => {
+  //     onUnsubscribeDrag();
+  //   };
+  // }, []);
 
   React.useEffect(() => {
-    return () => {
-      onUnsubscribeDrag();
-    };
-  }, []);
-
-  React.useEffect(() => {
-    setVisible(props.account.visible);
+    // setVisible(props.account.visible);
     setPosition({ x: props.account.x, y: props.account.y });
   }, [props.account]);
 
-  React.useEffect(() => {
-    if (visible) {
-      if (pos) {
-        onUpdate({ x: props.account.x, y: props.account.y }, visible);
-      } else {
-        onUnsubscribeDrag();
-      }
-    } else {
-      onUnsubscribeDrag();
-    }
-  }, [pos, visible]);
+  // React.useEffect(() => {
+  //   if (visible) {
+  //     if (pos) {
+  //       onUpdate({ x: props.account.x, y: props.account.y }, visible);
+  //     } else {
+  //       onUnsubscribeDrag();
+  //     }
+  //   } else {
+  //     onUnsubscribeDrag();
+  //   }
+  // }, [pos, visible]);
 
-  const onUpdatePosition = (_pos: IPosition) => {
-    if (props.account.x === _pos.x && props.account.y === _pos.y) {
-      return;
-    }
-    setPosition({ x: _pos.x, y: _pos.y });
-    topology.onUpdateNodeCoord(props.account, _pos);
-  };
+  // const onUpdatePosition = (_pos: IPosition) => {
+  //   if (props.account.x === _pos.x && props.account.y === _pos.y) {
+  //     return;
+  //   }
+  //   setPosition({ x: _pos.x, y: _pos.y });
+  //   topology.onUpdateNodeCoord(props.account, _pos);
+  // };
 
   // const onExpandCollapse = (type: CollapseExpandState) => {
   //   onUnHoverNode(`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`);
@@ -81,6 +82,10 @@ const AccountNodeTopContainer: React.FC<Props> = (props: Props) => {
   // const onCollapse = () => {
   //   topology.onCollapseExpandNode(props.dataItem, false);
   // };
+
+  const onTgwClick = (item: ITGWNode) => {
+    topology.onToogleTopoPanel(TopologyPanelTypes.Wedge, true, item);
+  };
 
   const onMouseEnter = () => {
     onHoverNode(`${NODES_CONSTANTS.ACCOUNT.type}${props.account.uiId}`);
@@ -110,7 +115,7 @@ const AccountNodeTopContainer: React.FC<Props> = (props: Props) => {
             show={props.account.collapsed}
           />
         )}
-        <AccountExpandNode dragId={`drag${NODES_CONSTANTS.ACCOUNT.type}${props.account.uiId}`} account={props.account} show={!props.account.collapsed} />
+        <AccountExpandNode dragId={`drag${NODES_CONSTANTS.ACCOUNT.type}${props.account.uiId}`} account={props.account} show={!props.account.collapsed} onTgwClick={onTgwClick} />
         {/* <CollapseExpandButton
           id={`expandCollapse${props.dataItem.id}`}
           isCollapse={!props.dataItem.collapsed}

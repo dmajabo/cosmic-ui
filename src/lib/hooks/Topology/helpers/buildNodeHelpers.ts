@@ -60,6 +60,7 @@ export const createSitesNode = (_dataItem: ITopologyGroup): ITopoSitesNode => {
     visible: true,
     collapsed: false,
     children: [],
+    links: [],
     currentPage: 1,
   };
   return _obj;
@@ -91,6 +92,7 @@ export const createTopoRegionNode = (_dataItem: INetworkRegion, _orgId: string):
 };
 
 export const createWedgeNode = (org: INetworkOrg, orgIndex: number, rowIndex: number, childIndex: number, node: INetworkwEdge): ITGWNode => {
+  const _x = childIndex * (NODES_CONSTANTS.NETWORK_WEDGE.collapse.width + NODES_CONSTANTS.NETWORK_WEDGE.collapse.spaceX);
   return {
     ...node,
     uiId: uuid(),
@@ -100,13 +102,15 @@ export const createWedgeNode = (org: INetworkOrg, orgIndex: number, rowIndex: nu
     rowIndex: rowIndex,
     orgIndex: orgIndex,
     orgId: org.id,
-    x: 0,
+    x: _x,
     y: 0,
     nodeType: TopoNodeTypes.WEDGE,
   };
 };
 
 export const createVPCNode = (org: INetworkOrg, itemsInRow: number, orgIndex: number, rowIndex: number, childIndex: number, node: INetworkVNetwork): INetworkVNetNode => {
+  const _x = childIndex * (NODES_CONSTANTS.NETWORK_VNET.collapse.width + NODES_CONSTANTS.NETWORK_VNET.collapse.spaceX);
+  const _y = rowIndex * (NODES_CONSTANTS.NETWORK_VNET.collapse.height + NODES_CONSTANTS.NETWORK_VNET.collapse.spaceY);
   return {
     ...node,
     visible: true,
@@ -115,8 +119,8 @@ export const createVPCNode = (org: INetworkOrg, itemsInRow: number, orgIndex: nu
     itemsInRow: itemsInRow,
     orgIndex: orgIndex,
     orgId: org.id,
-    x: 0,
-    y: 0,
+    x: _x,
+    y: _y,
     uiId: uuid(),
     vendorType: org.vendorType,
     nodeType: TopoNodeTypes.VNET,
@@ -131,6 +135,8 @@ export const createPeerConnectionNode = (
   childIndex: number,
   node: INetworkVNetworkPeeringConnection,
 ): INetworkVNetworkPeeringConnectionNode => {
+  const _x = childIndex * (NODES_CONSTANTS.PEERING_CONNECTION.collapse.width + NODES_CONSTANTS.PEERING_CONNECTION.collapse.spaceX);
+  const _y = rowIndex * (NODES_CONSTANTS.PEERING_CONNECTION.collapse.height + NODES_CONSTANTS.PEERING_CONNECTION.collapse.spaceY);
   return {
     ...node,
     visible: true,
@@ -139,8 +145,8 @@ export const createPeerConnectionNode = (
     itemsInRow: itemsInRow,
     orgIndex: orgIndex,
     orgId: org.id,
-    x: 0,
-    y: 0,
+    x: _x,
+    y: _y,
     uiId: uuid(),
     vendorType: org.vendorType,
     nodeType: TopoNodeTypes.PEERING_CONNECTION,
@@ -148,6 +154,8 @@ export const createPeerConnectionNode = (
 };
 
 export const createWebAclNode = (org: INetworkOrg, itemsInRow: number, orgIndex: number, rowIndex: number, childIndex: number, node: INetworkWebAcl): INetworkWebAclNode => {
+  const _y = rowIndex * (NODES_CONSTANTS.WEB_ACL.collapse.height + NODES_CONSTANTS.WEB_ACL.collapse.spaceY);
+  const _x = childIndex * (NODES_CONSTANTS.WEB_ACL.collapse.width + NODES_CONSTANTS.WEB_ACL.collapse.spaceX);
   return {
     ...node,
     visible: true,
@@ -156,15 +164,15 @@ export const createWebAclNode = (org: INetworkOrg, itemsInRow: number, orgIndex:
     itemsInRow: itemsInRow,
     orgIndex: orgIndex,
     orgId: org.id,
-    x: 0,
-    y: 0,
+    x: _x,
+    y: _y,
     uiId: uuid(),
     vendorType: org.vendorType,
     nodeType: TopoNodeTypes.WEB_ACL,
   };
 };
 
-export const createDeviceNode = (itemsInRow: number, rowIndex: number, childIndex: number, node: IFilteredNetworkDevice): IDeviceNode => {
+export const createDeviceNode = (page: number, rowIndex: number, itemsInRow: number, childIndex: number, node: IFilteredNetworkDevice): IDeviceNode => {
   return {
     ...node,
     uiId: uuid(),
@@ -172,6 +180,7 @@ export const createDeviceNode = (itemsInRow: number, rowIndex: number, childInde
     childIndex: childIndex,
     rowIndex: rowIndex,
     itemsInRow: itemsInRow,
+    page: page,
     x: 0,
     y: 0,
     nodeType: TopoNodeTypes.DEVICE,

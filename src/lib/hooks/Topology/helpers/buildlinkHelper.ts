@@ -49,6 +49,23 @@ export const buildLinks = (regions: ITopoRegionNode[], accounts: ITopoAccountNod
   return links;
 };
 
+export const build_VPN_Links = (group: ITopoSitesNode, device: IDeviceNode, accounts: ITopoAccountNode[]): ITopoLink<any, any, any, any, any>[] => {
+  if (!device.vpnlinks || !device.vpnlinks.length) return [];
+  const links: ITopoLink<any, any, any, any, any>[] = [];
+  device.vpnlinks.forEach(vpn => {
+    if (!vpn.linkStates || !vpn.linkStates.length) return;
+    vpn.linkStates.forEach(it => {
+      const _id = it.id || it.name;
+      const obj = getWedge(accounts, _id);
+      if (obj.wedge) {
+        const link = buildDevWedgeConnection(obj.account, obj.wedge, group, device, it);
+        links.push(link);
+      }
+    });
+  });
+  return links;
+};
+
 const buildDevWedgeConnection = (
   account: ITopoAccountNode,
   tgw: ITGWNode,
@@ -57,14 +74,12 @@ const buildDevWedgeConnection = (
   vpn: INetworkVpnLinkState,
 ): ITopoLink<ITopoSitesNode, IDeviceNode, ITopoAccountNode, ITGWNode, INetworkVpnLinkState> => {
   const _visible = account.visible && group.visible;
-  // const _devCoord = getDevCoord(group, dev, NODES_CONSTANTS.SITES, NODES_CONSTANTS.DEVICE);
-  // const _tgwCoord = getWedgeCoord(account, tgw, NODES_CONSTANTS.ACCOUNT, NODES_CONSTANTS.NETWORK_WEDGE);
   const _link: ITopoLink<ITopoSitesNode, IDeviceNode, ITopoAccountNode, ITGWNode, INetworkVpnLinkState> = {
     id: uuid(),
-    // x1: _devCoord.x,
-    // y1: _devCoord.y,
-    // x2: _tgwCoord.x,
-    // y2: _tgwCoord.y,
+    fromX: 0,
+    fromY: 0,
+    toX: 0,
+    toY: 0,
     type: TopoLinkTypes.VPNLink,
     visible: _visible,
     fromNode: { parent: group, child: dev },
@@ -72,6 +87,20 @@ const buildDevWedgeConnection = (
     data: vpn,
   };
   return _link;
+};
+
+export const updateDevWedgeConnection = (accounts: ITopoAccountNode[], groups: ITopoSitesNode[], link: ITopoLink<ITopoSitesNode, IDeviceNode, ITopoAccountNode, ITGWNode, INetworkVpnLinkState>) => {
+  const _gr = groups.find(it => it.dataItem.id === link.fromNode.parent.dataItem.id);
+  const _a = accounts.find(it => it.dataItem.id === link.toNode.parent.dataItem.id);
+  const _dev = _gr.children[link.fromNode.child.page].find(it => it.id === link.fromNode.child.id);
+  const tgw = _a.children.find(it => it.id === link.toNode.child.id);
+  const _devCoord = getDevCoord(_dev, NODES_CONSTANTS.SITES, NODES_CONSTANTS.DEVICE);
+  const _tgwoffsetY = NODES_CONSTANTS.ACCOUNT.headerHeight + NODES_CONSTANTS.ACCOUNT.expanded.contentPadding;
+  const _tgwCoord = getWedgeCoord(tgw, _tgwoffsetY, 0, NODES_CONSTANTS.NETWORK_WEDGE);
+  link.fromX = _gr.x + _devCoord.x;
+  link.fromY = _gr.y + _devCoord.y;
+  link.toX = _a.x + _tgwCoord.x;
+  link.toY = _a.y + _tgwCoord.y;
 };
 
 const buildNetworkNetworkConnection = (
@@ -109,9 +138,9 @@ const buildNetworkNetworkConnection = (
   return _links;
 };
 
-const getDevCoord = (g: ITopoSitesNode, dev: IDeviceNode, parentStyles: ISitesNode, nodeStyles: ISiteNode): ICoord => {
-  const _x = g.x + dev.x + parentStyles.expanded.contentPadding + nodeStyles.collapse.width / 2;
-  const _y = g.y + dev.y + parentStyles.expanded.contentPadding + parentStyles.headerHeight + nodeStyles.collapse.height / 2;
+const getDevCoord = (dev: IDeviceNode, parentStyles: ISitesNode, nodeStyles: ISiteNode): ICoord => {
+  const _x = dev.x + nodeStyles.collapse.width / 2;
+  const _y = dev.y + parentStyles.expanded.contentPadding + parentStyles.headerHeight + nodeStyles.collapse.height / 2;
   return { x: _x, y: _y };
 };
 
@@ -128,9 +157,9 @@ export const getVnetOffsetTop = (r: ITopoRegionNode, showPeerConnection: boolean
   return _offset;
 };
 
-const getWedgeCoord = (a: ITopoAccountNode, tgw: ITGWNode, parentStyles: IAccountNode, nodeStyles: INetworkWEdgeNode): ICoord => {
-  const _x = a.x + tgw.x + parentStyles.expanded.contentPadding + nodeStyles.collapse.r;
-  const _y = a.y + tgw.y + parentStyles.expanded.contentPadding + parentStyles.headerHeight + nodeStyles.collapse.r;
+const getWedgeCoord = (tgw: ITGWNode, offsetY: number, padding: number, nodeStyles: INetworkWEdgeNode): ICoord => {
+  const _x = tgw.x + padding + nodeStyles.collapse.r;
+  const _y = tgw.y + offsetY + nodeStyles.collapse.r;
   return { x: _x, y: _y };
 };
 

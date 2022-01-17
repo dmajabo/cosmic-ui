@@ -36,10 +36,9 @@ export const getTotalNodeWidth = (chsWidth: number, padding: number): number => 
   return chsWidth + padding;
 };
 
-export const getChildContainerWidth = (visible: boolean, items: any[][], containerPadding: number, chWidth: number, chSpaceX: number): number => {
+export const getChildContainerWidth = (visible: boolean, items: any[], chWidth: number, chSpaceX: number): number => {
   if (!items || !items.length || !visible) return 0;
-  const w = getRowsWidth(items[0].length, chWidth, chSpaceX);
-  return w + containerPadding;
+  return getRowsWidth(items.length, chWidth, chSpaceX);
 };
 
 export const getChildContainerHeight = (visible: boolean, rows: number, containerPadding: number, itemHeight: number, itemSpace: number): number => {

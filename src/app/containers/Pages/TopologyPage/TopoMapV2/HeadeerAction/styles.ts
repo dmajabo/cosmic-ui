@@ -48,9 +48,9 @@ export const ZoomValue = styled.span`
     color: var(--_primaryBg);
   }
   span {
-    position: absolute;
+    /* position: absolute;
     top: 0;
-    left: 0;
+    left: 0; */
     width: 100%;
     pointer-events: none;
   }

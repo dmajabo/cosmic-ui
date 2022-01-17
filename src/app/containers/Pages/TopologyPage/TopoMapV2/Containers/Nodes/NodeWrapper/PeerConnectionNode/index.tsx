@@ -13,7 +13,6 @@ interface Props {
   regionUiId: string;
   x: number;
   y: number;
-  rowWidth: number;
   offsetData: IRefionContainersOffsets;
   nodeStyles: ICollapseStyles;
   vnetCollapseStyles?: ICollapseStyles;
@@ -63,7 +62,7 @@ const PeerConnectionNode: React.FC<Props> = (props: Props) => {
       {links.map(it => (
         <PeerConnectionLink
           key={`${it.from.id}${it.to.id}peerLink`}
-          toCenterX={props.x + props.offsetData.totalWidth / 2 - props.rowWidth / 2 + props.nodeStyles.r}
+          toCenterX={props.x + props.nodeStyles.r}
           toCenterY={props.y + props.nodeStyles.r}
           peerConnectionId={props.item.id}
           from={it.from}
@@ -74,7 +73,7 @@ const PeerConnectionNode: React.FC<Props> = (props: Props) => {
           isStructure={props.isStructure}
         />
       ))}
-      <g transform={`translate(${props.x + props.offsetData.totalWidth / 2 - props.rowWidth / 2}, ${props.y})`} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
+      <g transform={`translate(${props.x}, ${props.y})`} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
         <circle fill={props.nodeStyles.bgColor} r={props.nodeStyles.r} cx={props.nodeStyles.r} cy={props.nodeStyles.r} className="peerConnectionNode" pointerEvents="all" />
         <use
           href={`#${NODES_CONSTANTS.PEERING_CONNECTION.type}`}
