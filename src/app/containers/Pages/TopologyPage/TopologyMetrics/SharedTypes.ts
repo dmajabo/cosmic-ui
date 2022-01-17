@@ -38,3 +38,8 @@ interface Metrics {
 export interface GetMetricsResponse {
   readonly metrics: Metrics;
 }
+
+export interface MultiLineMetricsData {
+  readonly name: string;
+  readonly metrics: MetricsData[];
+}
