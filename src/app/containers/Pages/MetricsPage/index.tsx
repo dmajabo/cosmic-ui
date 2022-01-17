@@ -40,16 +40,18 @@ const MetricsPage: React.FC = () => {
 
   return (
     <div className={classes.metricsPageContainer}>
-      <TabsWrapperStyles>
-        <Tabs value={selectedTabName} onChange={handleTabChange} indicatorColor="primary">
-          <Tab
-            value={TabName.Performance}
-            label={<span className={selectedTabName === TabName.Performance ? classes.activeTabLabel : classes.tabLabel}>{TabName.Performance}</span>}
-            wrapped
-            {...a11yProps(TabName.Performance)}
-          />
-        </Tabs>
-      </TabsWrapperStyles>
+      <div className={classes.fixedTabBar}>
+        <TabsWrapperStyles>
+          <Tabs value={selectedTabName} onChange={handleTabChange} indicatorColor="primary">
+            <Tab
+              value={TabName.Performance}
+              label={<span className={selectedTabName === TabName.Performance ? classes.activeTabLabel : classes.tabLabel}>{TabName.Performance}</span>}
+              wrapped
+              {...a11yProps(TabName.Performance)}
+            />
+          </Tabs>
+        </TabsWrapperStyles>
+      </div>
       <TabPanel value={selectedTabName} title={TabName.Performance}>
         <PerformanceDashboard />
       </TabPanel>

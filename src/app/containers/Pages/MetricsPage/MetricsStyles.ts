@@ -26,10 +26,9 @@ export const MetricsStyles = makeStyles(
       },
       fixedTabBar: {
         position: 'sticky',
-        top: 80,
-        width: '100%',
+        top: APP_HEADER_HEIGHT,
         paddingTop: 10,
-        paddingBottom: 10,
+        width: '100%',
         backgroundColor: 'var(--_appBg)',
         zIndex: 5,
       },
