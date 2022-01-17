@@ -20,7 +20,7 @@ export const MetricsStyles = makeStyles(
       },
       activeTabLabel: {
         textTransform: 'none',
-        color: 'var(--_tabHeaderActiveTextColor)',
+        color: '#1976d2',
         fontSize: 18,
         fontWeight: 700,
       },
