@@ -6,6 +6,7 @@ import LoadingIndicator from 'app/components/Loading';
 import AddEdges from 'app/containers/SignUpPage';
 import { Redirect } from 'react-router';
 import { ROUTE } from './model';
+import isEmpty from 'lodash/isEmpty';
 
 export const UserRedirect: React.FC = () => {
   const [policyControllers, setPolicyControllers] = useState<PolicyController[]>([]);
@@ -29,8 +30,7 @@ export const UserRedirect: React.FC = () => {
     <div style={{ marginTop: '50vh' }}>
       <LoadingIndicator />
     </div>
-  ) : //TODO: change below condition to isEmpty(policyControllers)
-  policyControllers.length > 2 ? (
+  ) : isEmpty(policyControllers) ? (
     <Redirect to={ROUTE.app} />
   ) : (
     <AddEdges />
