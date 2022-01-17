@@ -75,10 +75,10 @@ export interface ITopoLink<PP, P, PC, C, L> extends IVisible, IBaseEntity<string
   fromNode: ITopoLinkNode<PP, P>;
   toNode: ITopoLinkNode<PC, C>;
   data: L;
-  fromX?: number;
-  fromY?: number;
-  toX?: number;
-  toY?: number;
+  fromX: number;
+  fromY: number;
+  toX: number;
+  toY: number;
 }
 
 export interface IAccountNode extends IBaseEntity<string> {
@@ -116,6 +116,7 @@ export interface ITopoRegionNode extends ICoord, ICollapsed, IVisible {
   children: INetworkVNetNode[][];
   peerConnections: INetworkVNetworkPeeringConnectionNode[][];
   webAcls: INetworkWebAclNode[][];
+  vnetLinks: ITopoLink<any, any, any, any, any>[];
 }
 
 export interface ITopologyPreparedMapDataV2 {

@@ -62,8 +62,8 @@ const PeerConnectionNode: React.FC<Props> = (props: Props) => {
       {links.map(it => (
         <PeerConnectionLink
           key={`${it.from.id}${it.to.id}peerLink`}
-          toCenterX={props.x + props.nodeStyles.r}
-          toCenterY={props.y + props.nodeStyles.r}
+          fromCenterX={props.x + props.nodeStyles.r}
+          fromCenterY={props.y + props.nodeStyles.r}
           peerConnectionId={props.item.id}
           from={it.from}
           to={it.to}

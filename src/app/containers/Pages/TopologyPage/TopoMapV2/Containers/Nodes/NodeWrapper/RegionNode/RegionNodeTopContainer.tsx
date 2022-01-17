@@ -10,9 +10,10 @@ import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/mod
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 import RegionCollapsedNode from './RegionCollapsedNode';
 import RegionExpandNode from './RegionExpandNode';
-import { onHoverNode, onUnHoverNode } from '../../../../Graph/helper';
+// import { onHoverNode, onUnHoverNode } from '../../../../Graph/helper';
 import TransitionContainer from '../../../TransitionContainer';
 import { TopologyPanelTypes } from 'lib/models/topology';
+import { getRegionChildrenContainersOffsets, IRefionContainersOffsets } from './ExpandNodeContent/helper';
 // import CollapseExpandButton from '../../Containers/CollapseExpandButton';
 // import CollapseExpandButton from '../../Containers/CollapseExpandButton';
 
@@ -22,6 +23,24 @@ interface Props {
 
 const RegionNodeTopContainer: React.FC<Props> = (props: Props) => {
   const { topology } = useTopologyV2DataContext();
+  const [pos, setPosition] = React.useState<IPosition>(null);
+  const [offsetsData, setOffsetsData] = React.useState<IRefionContainersOffsets>(null);
+
+  React.useEffect(() => {
+    const _offsests = getRegionChildrenContainersOffsets(
+      topology.entities,
+      props.region.webAcls.length,
+      props.region.peerConnections.length,
+      props.region.children.length,
+      NODES_CONSTANTS.REGION.headerHeight,
+      NODES_CONSTANTS.REGION.expanded.contentPadding,
+      NODES_CONSTANTS.WEB_ACL.collapse,
+      NODES_CONSTANTS.PEERING_CONNECTION.collapse,
+      NODES_CONSTANTS.NETWORK_VNET.collapse,
+      props.region.expandedSize.width,
+    );
+    setOffsetsData(_offsests);
+  }, [props.region, topology.entities]);
   // const { onUpdate, onUnsubscribeDrag } = useDrag(
   //   {
   //     id: `${NODES_CONSTANTS.REGION.type}${props.region.uiId}`,
@@ -34,7 +53,6 @@ const RegionNodeTopContainer: React.FC<Props> = (props: Props) => {
   //   (e: IPosition) => onUpdatePosition(e),
   // );
 
-  const [pos, setPosition] = React.useState<IPosition>(null);
   // const [visible, setVisible] = React.useState<boolean>(false);
 
   // React.useEffect(() => {
@@ -97,27 +115,23 @@ const RegionNodeTopContainer: React.FC<Props> = (props: Props) => {
     topology.onToogleRegionStructure(props.region, true);
   };
 
-  const onMouseEnter = () => {
-    onHoverNode(`${NODES_CONSTANTS.REGION.type}${props.region.uiId}`);
-  };
+  // const onMouseEnter = () => {
+  //   onHoverNode(`${NODES_CONSTANTS.REGION.type}${props.region.uiId}`);
+  // };
 
-  const onMouseLeave = () => {
-    onUnHoverNode(`${NODES_CONSTANTS.REGION.type}${props.region.uiId}`);
-  };
+  // const onMouseLeave = () => {
+  //   onUnHoverNode(`${NODES_CONSTANTS.REGION.type}${props.region.uiId}`);
+  // };
 
-  if (!pos) return null;
+  if (!pos || !offsetsData) return null;
   return (
-    <TransitionContainer id={`wrapper${NODES_CONSTANTS.REGION.type}${props.region.uiId}`} stateIn={props.region.visible} origin="unset" transform="none">
-      <g
-        id={`${NODES_CONSTANTS.REGION.type}${props.region.uiId}`}
-        onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}
-        className="topologyNode"
-        transform={`translate(${pos.x}, ${pos.y})`}
-        data-type={NODES_CONSTANTS.REGION.type}
-      >
+    <TransitionContainer stateIn={props.region.visible} transform="none">
+      <>
         {props.region.collapsed && (
           <RegionCollapsedNode
+            uiId={props.region.uiId}
+            x={pos.x}
+            y={pos.y}
             dragId={`drag${NODES_CONSTANTS.REGION.type}${props.region.uiId}`}
             id={props.region.dataItem.id}
             name={props.region.dataItem.name}
@@ -128,24 +142,30 @@ const RegionNodeTopContainer: React.FC<Props> = (props: Props) => {
 
         {!props.region.collapsed && (
           <RegionExpandNode
+            x={pos.x}
+            y={pos.y}
             dragId={`drag${NODES_CONSTANTS.REGION.type}${props.region.uiId}`}
             region={props.region}
             show={!props.region.collapsed}
             onShowFullStructure={onShowFullStructure}
-            entities={topology.entities}
+            offsetsData={offsetsData}
+            showPeerConnections={topology.entities && topology.entities.peer_connections && topology.entities.peer_connections.selected}
+            showWebAcls={topology.entities && topology.entities.web_acls && topology.entities.web_acls.selected}
+            showTransits={topology.entities && topology.entities.transit && topology.entities.transit.selected}
             onWebAclClick={onWebAclClick}
             onVpcClick={onVpcClick}
           />
         )}
-
-        {/* <CollapseExpandButton
+      </>
+      {/* <g onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} className="topologyNode">
+        <CollapseExpandButton
           id={`expandCollapse${props.dataItem.uiId}`}
           isCollapse={!props.dataItem.collapsed}
           onClick={onExpandCollapse}
           x={!props.dataItem.collapsed ? props.dataItem.expandedSize.width - NODES_CONSTANTS.COLLAPSE_EXPAND.r : NODES_CONSTANTS.REGION.collapse.width - NODES_CONSTANTS.COLLAPSE_EXPAND.r}
           y={!props.dataItem.collapsed ? props.dataItem.expandedSize.height / 2 - NODES_CONSTANTS.COLLAPSE_EXPAND.r : NODES_CONSTANTS.REGION.collapse.height / 2 - NODES_CONSTANTS.COLLAPSE_EXPAND.r}
-        /> */}
-      </g>
+        />
+      </g> */}
     </TransitionContainer>
   );
 };

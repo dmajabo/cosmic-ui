@@ -7,10 +7,10 @@ import { getVnetXPosition, getVnetYPosition } from './helper';
 
 interface Props {
   peerConnectionId: string;
-  from: INetworkVNetNode;
-  to: INetworkVNetworkPeeringConnectionNode;
-  toCenterX: number;
-  toCenterY: number;
+  from: INetworkVNetworkPeeringConnectionNode;
+  to: INetworkVNetNode;
+  fromCenterX: number;
+  fromCenterY: number;
   offsetData: IRefionContainersOffsets;
   vnetCollapseStyles?: ICollapseStyles;
   vnetExpandStyles?: IExpandedStyles;
@@ -18,19 +18,19 @@ interface Props {
 }
 
 const PeerConnectionLink: React.FC<Props> = (props: Props) => {
-  const [coordFrom, setCoordFrom] = React.useState<IPosition>(null);
-  const [coordTo] = React.useState<IPosition>({ x: props.toCenterX, y: props.toCenterY });
+  const [coordFrom] = React.useState<IPosition>({ x: props.fromCenterX, y: props.fromCenterY });
+  const [coordTo, setTocoord] = React.useState<IPosition>(null);
 
   React.useEffect(() => {
     const { peerConnection_TotalHeight } = props.offsetData;
     if (props.isStructure) {
-      const _x = getVnetXPosition(props.offsetData.totalWidth, props.vnetExpandStyles.minWidth, props.vnetExpandStyles.spaceX, props.from.childIndex, props.from.itemsInRow);
-      const _y = getVnetYPosition(peerConnection_TotalHeight, props.vnetExpandStyles.minHeight, props.vnetExpandStyles.spaceY, props.from.rowIndex, 0);
-      setCoordFrom({ x: _x, y: _y });
+      // const _x = getVnetXPosition(props.offsetData.totalWidth, props.vnetExpandStyles.minWidth, props.vnetExpandStyles.spaceX, props.from.childIndex, props.from.itemsInRow);
+      // const _y = getVnetYPosition(peerConnection_TotalHeight, props.vnetExpandStyles.minHeight, props.vnetExpandStyles.spaceY, props.from.rowIndex, 0);
+      // setTocoord({ x: _x, y: _y });
     } else {
-      const _x = getVnetXPosition(props.offsetData.totalWidth, props.vnetCollapseStyles.width, props.vnetCollapseStyles.spaceX, props.from.childIndex, props.from.itemsInRow);
-      const _y = getVnetYPosition(peerConnection_TotalHeight, props.vnetCollapseStyles.height, props.vnetCollapseStyles.spaceY, props.from.rowIndex, props.vnetCollapseStyles.r);
-      setCoordFrom({ x: _x, y: _y });
+      const _x = getVnetXPosition(props.to.x, props.vnetCollapseStyles.width);
+      const _y = getVnetYPosition(props.to.y, peerConnection_TotalHeight, props.vnetCollapseStyles.height);
+      setTocoord({ x: _x, y: _y });
     }
   }, [props.offsetData]);
 
@@ -41,8 +41,8 @@ const PeerConnectionLink: React.FC<Props> = (props: Props) => {
       stroke="#BBCDE7"
       x1={coordFrom ? coordFrom.x : null}
       y1={coordFrom ? coordFrom.y : null}
-      x2={coordTo.x}
-      y2={coordTo.y}
+      x2={coordTo ? coordTo.x : null}
+      y2={coordTo ? coordTo.y : null}
       strokeDasharray="4, 2"
       data-from={props.from.id}
       data-to={props.to.id}

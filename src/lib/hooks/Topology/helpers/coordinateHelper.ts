@@ -1,8 +1,6 @@
 import { ICollapseStyles, NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
-import { getChunksFromArray } from 'lib/helpers/arrayHelper';
 import { IPosition, ISize, STANDART_DISPLAY_RESOLUTION_V2 } from 'lib/models/general';
-import { DirectionType, FilterEntityOptions, IDeviceNode, ITGWNode, ITopoAccountNode, ITopoLink, ITopoRegionNode, ITopoSitesNode } from '../models';
-import { build_VPN_Links, updateDevWedgeConnection } from './buildlinkHelper';
+import { DirectionType, FilterEntityOptions, IDeviceNode, ITGWNode, ITopoAccountNode, ITopoRegionNode, ITopoSitesNode } from '../models';
 import { getCollapseExpandState } from './buildNodeHelpers';
 import { centeredTopLevelItemsInRow, getChildContainerWidth, getChildContainerHeight, getRowsWidth, getStartChildRowOffsetX, getTotalNodeHeight, getTotalNodeWidth } from './sizeHelpers';
 
@@ -30,63 +28,32 @@ const centeredTopLevelNodes = (regions: ITopoRegionNode[], accounts: ITopoAccoun
   centeredTopLevelItemsInRow(regions, regionSize, STANDART_DISPLAY_RESOLUTION_V2.width);
   centeredTopLevelItemsInRow(accounts, accountSize, STANDART_DISPLAY_RESOLUTION_V2.width);
   centeredTopLevelItemsInRow(sites, sitesSize, STANDART_DISPLAY_RESOLUTION_V2.width);
-  sites.forEach(site => {
-    site.links.forEach(link => {
-      updateDevWedgeConnection(accounts, sites, link);
-    });
-  });
 };
 
 export const updateRegionItems = (items: ITopoRegionNode[], filter: FilterEntityOptions): ISize => {
   if (!items || !items.length) return { width: 0, height: 0 };
   let offsetX = 0;
   let maxNodeHeight = 0;
-  // const minRegWidth = NODES_CONSTANTS.REGION.expanded.minWidth - NODES_CONSTANTS.REGION.expanded.contentPadding * 2;
   items.forEach((a, i) => {
     a.expandedSize.width = NODES_CONSTANTS.REGION.expanded.minWidth;
     a.expandedSize.height = NODES_CONSTANTS.REGION.expanded.minHeight;
     a.collapsed = getCollapseExpandState(filter, a.children, a.peerConnections, a.webAcls);
-    // if (a.children && a.children.length) {
-    //   setUpChildCoord(a.children, VPCS_IN_ROW, maxInRow.value, maxInRow.maxWidth, minRegWidth, NODES_CONSTANTS.NETWORK_VNET.collapse);
-    // }
-    // if (a.peerConnections && a.peerConnections.length) {
-    //   setUpChildCoord(a.peerConnections, PEER_CONNECTION_IN_ROW, maxInRow.value, maxInRow.maxWidth, minRegWidth, NODES_CONSTANTS.PEERING_CONNECTION.collapse);
-    // }
-    // if (a.webAcls && a.webAcls.length) {
-    //   setUpChildCoord(a.webAcls, WEB_ACL_IN_ROW, maxInRow.value, maxInRow.maxWidth, minRegWidth, NODES_CONSTANTS.WEB_ACL.collapse);
-    // }
-    const pHeight = getChildContainerHeight(
-      filter.peer_connections.selected,
-      a.peerConnections.length,
-      NODES_CONSTANTS.REGION.expanded.contentPadding,
-      NODES_CONSTANTS.PEERING_CONNECTION.collapse.height,
-      NODES_CONSTANTS.PEERING_CONNECTION.collapse.spaceY,
-    );
-    const pWidth =
-      a.peerConnections && a.peerConnections.length
-        ? getChildContainerWidth(filter.peer_connections.selected, a.peerConnections[0], NODES_CONSTANTS.PEERING_CONNECTION.collapse.width, NODES_CONSTANTS.PEERING_CONNECTION.collapse.spaceX)
-        : 0;
-    const wHeight = getChildContainerHeight(
-      filter.web_acls.selected,
-      a.webAcls.length,
-      NODES_CONSTANTS.REGION.expanded.contentPadding,
-      NODES_CONSTANTS.WEB_ACL.collapse.height,
-      NODES_CONSTANTS.WEB_ACL.collapse.spaceY,
-    );
-    const wWidth = a.webAcls && a.webAcls.length ? getChildContainerWidth(filter.web_acls.selected, a.webAcls[0], NODES_CONSTANTS.WEB_ACL.collapse.width, NODES_CONSTANTS.WEB_ACL.collapse.spaceX) : 0;
-    const cHeight = getChildContainerHeight(
-      true,
-      a.children.length,
-      NODES_CONSTANTS.REGION.expanded.contentPadding,
-      NODES_CONSTANTS.NETWORK_VNET.collapse.height,
-      NODES_CONSTANTS.NETWORK_VNET.collapse.spaceY,
-    );
-    const cWidth = a.children && a.children.length ? getChildContainerWidth(true, a.children[0], NODES_CONSTANTS.NETWORK_VNET.collapse.width, NODES_CONSTANTS.NETWORK_VNET.collapse.spaceX) : 0;
-    const _height = getTotalNodeHeight(pHeight + wHeight + cHeight, NODES_CONSTANTS.REGION.headerHeight, NODES_CONSTANTS.REGION.expanded.contentPadding);
-    const _width = getTotalNodeWidth(Math.max(cWidth, wWidth, pWidth), NODES_CONSTANTS.REGION.expanded.contentPadding);
+    const { webHeight, peerHeight, childrenHeight } = getRegionChildContainersHeight(a, filter);
+    const { webWidth, peerWidth, childrenWidth } = getRegionChildContainersWidth(a);
+    const _height = getTotalNodeHeight(webHeight + peerHeight + childrenHeight, NODES_CONSTANTS.REGION.headerHeight, NODES_CONSTANTS.REGION.expanded.contentPadding);
+    const _width = getTotalNodeWidth(Math.max(webWidth, peerWidth, childrenWidth), NODES_CONSTANTS.REGION.expanded.contentPadding * 2);
     a.y = 0;
     a.expandedSize.width = Math.max(NODES_CONSTANTS.REGION.expanded.minWidth, _width);
     a.expandedSize.height = Math.max(NODES_CONSTANTS.REGION.expanded.minHeight, _height);
+    if (a.children && a.children.length) {
+      setUpRegionChildCoord(a.children, a.expandedSize.width, NODES_CONSTANTS.NETWORK_VNET.collapse);
+    }
+    if (a.peerConnections && a.peerConnections.length) {
+      setUpRegionChildCoord(a.peerConnections, a.expandedSize.width, NODES_CONSTANTS.PEERING_CONNECTION.collapse);
+    }
+    if (a.webAcls && a.webAcls.length) {
+      setUpRegionChildCoord(a.webAcls, a.expandedSize.width, NODES_CONSTANTS.WEB_ACL.collapse);
+    }
     if (a.collapsed) {
       maxNodeHeight = Math.max(maxNodeHeight, a.collapsedSize.height);
       a.x = offsetX;
@@ -98,17 +65,6 @@ export const updateRegionItems = (items: ITopoRegionNode[], filter: FilterEntity
     }
   });
   return { width: offsetX, height: maxNodeHeight };
-};
-
-const setUpDevicesCoord = (accounts: ITopoAccountNode[], group: ITopoSitesNode, items: IDeviceNode[], siteCenterX: number) => {
-  if (!items || !items.length) return;
-  const _offsetX = NODES_CONSTANTS.DEVICE.collapse.width + NODES_CONSTANTS.DEVICE.collapse.spaceX;
-  const _offsetY = NODES_CONSTANTS.DEVICE.collapse.height + NODES_CONSTANTS.DEVICE.collapse.spaceY;
-  items.forEach(it => {
-    const _halfRowWidth = (it.itemsInRow * _offsetX - NODES_CONSTANTS.DEVICE.collapse.spaceX) / 2;
-    it.x = it.childIndex * _offsetX + siteCenterX - _halfRowWidth;
-    it.y = it.rowIndex * _offsetY;
-  });
 };
 
 export const updateSitesItems = (accounts: ITopoAccountNode[], items: ITopoSitesNode[], offsetY: number): ISize => {
@@ -131,7 +87,7 @@ export const updateSitesItems = (accounts: ITopoAccountNode[], items: ITopoSites
       gr.expandedSize.height = Math.max(_height, NODES_CONSTANTS.SITES.expanded.minHeight);
       const siteCenterX = gr.expandedSize.width / 2;
       gr.children.forEach(page => {
-        setUpDevicesCoord(accounts, gr, page, siteCenterX);
+        setUpDevicesCoord(page, siteCenterX);
       });
     }
     gr.y = offsetY;
@@ -146,17 +102,6 @@ export const updateSitesItems = (accounts: ITopoAccountNode[], items: ITopoSites
     }
   });
   return { width: offsetX, height: maxNodeHeight };
-};
-
-const setUpAccountCoord = (items: ITGWNode[], accountCenterX: number) => {
-  if (!items || !items.length) return;
-  const _offsetX = NODES_CONSTANTS.NETWORK_WEDGE.collapse.width + NODES_CONSTANTS.NETWORK_WEDGE.collapse.spaceX;
-  const _offsetY = NODES_CONSTANTS.NETWORK_WEDGE.collapse.height + NODES_CONSTANTS.NETWORK_WEDGE.collapse.spaceY;
-  const _halfRowWidth = (items.length * _offsetX - NODES_CONSTANTS.NETWORK_WEDGE.collapse.spaceX) / 2;
-  items.forEach(it => {
-    it.x = it.childIndex * _offsetX + accountCenterX - _halfRowWidth;
-    it.y = it.rowIndex * _offsetY;
-  });
 };
 
 export const updateAccountItems = (items: ITopoAccountNode[], offsetY: number): ISize => {
@@ -183,7 +128,7 @@ export const updateAccountItems = (items: ITopoAccountNode[], offsetY: number): 
       a.expandedSize.width = Math.max(_width, NODES_CONSTANTS.ACCOUNT.expanded.minWidth);
       a.expandedSize.height = Math.max(_height, NODES_CONSTANTS.ACCOUNT.expanded.minHeight);
       const accountCenterX = a.expandedSize.width / 2;
-      setUpAccountCoord(a.children, accountCenterX);
+      setUpTgwCoord(a.children, accountCenterX);
     }
     a.y = offsetY;
     if (a.collapsed) {
@@ -199,19 +144,82 @@ export const updateAccountItems = (items: ITopoAccountNode[], offsetY: number): 
   return { width: offsetX, height: maxNodeHeight };
 };
 
-const setUpChildCoord = (items: any[], maxCh: number, maxInRow: number, maxWidth: number, minWidth: number, styleObj: ICollapseStyles) => {
-  const _arr = getChunksFromArray(items, Math.min(maxCh, maxInRow));
+const setUpRegionChildCoord = (items: any[], nodeWidth: number, styleObj: ICollapseStyles) => {
   const w = styleObj.r ? styleObj.r * 2 : styleObj.width;
   const h = styleObj.r ? styleObj.r * 2 : styleObj.height;
-  _arr.forEach((subArray, rowIndex) => {
-    const offsetX = getStartChildRowOffsetX(maxWidth, minWidth, subArray.length, styleObj.width, styleObj.spaceX);
+  items.forEach((subArray, rowIndex) => {
+    const offsetX = getStartChildRowOffsetX(nodeWidth, subArray.length, styleObj.width, styleObj.spaceX);
     subArray.forEach((it, index) => {
       it.x = index === 0 ? offsetX : offsetX + (w + styleObj.spaceX) * index;
       it.y = rowIndex === 0 ? 0 : (h + styleObj.spaceY) * rowIndex;
     });
   });
-  const _totalHeight = _arr.length * (h + styleObj.spaceY);
-  return { rows: _arr.length, childrenCount: maxInRow, totalHeight: _totalHeight };
+};
+
+const setUpDevicesCoord = (items: IDeviceNode[], siteCenterX: number) => {
+  if (!items || !items.length) return;
+  const _offsetX = NODES_CONSTANTS.DEVICE.collapse.width + NODES_CONSTANTS.DEVICE.collapse.spaceX;
+  const _offsetY = NODES_CONSTANTS.DEVICE.collapse.height + NODES_CONSTANTS.DEVICE.collapse.spaceY;
+  items.forEach(it => {
+    const _halfRowWidth = (it.itemsInRow * _offsetX - NODES_CONSTANTS.DEVICE.collapse.spaceX) / 2;
+    it.x = it.childIndex * _offsetX + siteCenterX - _halfRowWidth;
+    it.y = it.rowIndex * _offsetY;
+  });
+};
+
+const setUpTgwCoord = (items: ITGWNode[], accountCenterX: number) => {
+  if (!items || !items.length) return;
+  const _offsetX = NODES_CONSTANTS.NETWORK_WEDGE.collapse.width + NODES_CONSTANTS.NETWORK_WEDGE.collapse.spaceX;
+  const _offsetY = NODES_CONSTANTS.NETWORK_WEDGE.collapse.height + NODES_CONSTANTS.NETWORK_WEDGE.collapse.spaceY;
+  const _halfRowWidth = (items.length * _offsetX - NODES_CONSTANTS.NETWORK_WEDGE.collapse.spaceX) / 2;
+  items.forEach(it => {
+    it.x = it.childIndex * _offsetX + accountCenterX - _halfRowWidth;
+    it.y = it.rowIndex * _offsetY;
+  });
+};
+
+const getRegionChildContainersHeight = (a: ITopoRegionNode, filter: FilterEntityOptions) => {
+  const wHeight =
+    a.webAcls && a.webAcls.length
+      ? getChildContainerHeight(
+          filter.web_acls.selected,
+          a.webAcls.length,
+          NODES_CONSTANTS.REGION.expanded.contentPadding,
+          NODES_CONSTANTS.WEB_ACL.collapse.height,
+          NODES_CONSTANTS.WEB_ACL.collapse.spaceY,
+        )
+      : 0;
+  const pHeight =
+    a.peerConnections && a.peerConnections.length
+      ? getChildContainerHeight(
+          filter.peer_connections.selected,
+          a.peerConnections.length,
+          NODES_CONSTANTS.REGION.expanded.contentPadding,
+          NODES_CONSTANTS.PEERING_CONNECTION.collapse.height,
+          NODES_CONSTANTS.PEERING_CONNECTION.collapse.spaceY,
+        )
+      : 0;
+  const cHeight =
+    a.children && a.children.length
+      ? getChildContainerHeight(true, a.children.length, NODES_CONSTANTS.REGION.expanded.contentPadding, NODES_CONSTANTS.NETWORK_VNET.collapse.height, NODES_CONSTANTS.NETWORK_VNET.collapse.spaceY)
+      : 0;
+  return { webHeight: wHeight, peerHeight: pHeight, childrenHeight: cHeight };
+};
+
+const getRegionChildContainersWidth = (r: ITopoRegionNode) => {
+  let _webContainerWidth = 0;
+  if (r.webAcls && r.webAcls.length) {
+    _webContainerWidth = getChildContainerWidth(r.webAcls[0], NODES_CONSTANTS.WEB_ACL.collapse.width, NODES_CONSTANTS.WEB_ACL.collapse.spaceX);
+  }
+  let _peerContainerWidth = 0;
+  if (r.peerConnections && r.peerConnections.length) {
+    _peerContainerWidth = getChildContainerWidth(r.peerConnections[0], NODES_CONSTANTS.PEERING_CONNECTION.collapse.width, NODES_CONSTANTS.PEERING_CONNECTION.collapse.spaceX);
+  }
+  let childrenWidth = 0;
+  if (r.children && r.children.length) {
+    childrenWidth = getChildContainerWidth(r.children[0], NODES_CONSTANTS.NETWORK_VNET.collapse.width, NODES_CONSTANTS.NETWORK_VNET.collapse.spaceX);
+  }
+  return { webWidth: _webContainerWidth, peerWidth: _peerContainerWidth, childrenWidth: childrenWidth };
 };
 
 export const getExpandedPosition = (direction: DirectionType, expandedWidth: number, expandedHeight: number, collapse: ICollapseStyles): IPosition => {

@@ -87,6 +87,7 @@ export const createTopoRegionNode = (_dataItem: INetworkRegion, _orgId: string):
     children: [],
     peerConnections: [],
     webAcls: [],
+    vnetLinks: [],
   };
   return _obj;
 };

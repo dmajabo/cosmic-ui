@@ -6,6 +6,7 @@ export interface IRefionContainersOffsets {
   topOffset: number;
   webAcl_TotalHeight: number;
   peerConnection_TotalHeight: number;
+  vnetOffsetY: number;
   vnet_TotalHeight: number;
 }
 export const getRegionChildrenContainersOffsets = (
@@ -40,5 +41,12 @@ export const getRegionChildrenContainersOffsets = (
     const _h = vnetStyles.height || vnetStyles.minHeight;
     vpsHeight = getRowsHeight(vnetRows, _h, vnetStyles.spaceY);
   }
-  return { topOffset: topOffset, webAcl_TotalHeight: webAglHeight, peerConnection_TotalHeight: peerHeight, vnet_TotalHeight: vpsHeight, totalWidth: totalWidth };
+  return {
+    topOffset: topOffset,
+    webAcl_TotalHeight: webAglHeight,
+    peerConnection_TotalHeight: peerHeight,
+    vnet_TotalHeight: vpsHeight,
+    vnetOffsetY: topOffset + webAglHeight + peerHeight,
+    totalWidth: totalWidth,
+  };
 };

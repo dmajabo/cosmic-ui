@@ -6,19 +6,7 @@ import { jsonClone } from 'lib/helpers/cloneHelper';
 import { INetworkOrg, ITopologyDataRes, ITopologyGroup } from 'lib/api/ApiModels/Topology/apiModels';
 import { ITimeMinMaxRange } from 'app/components/Inputs/TimeSlider/helpers';
 import { createTopology } from './helper';
-import {
-  FilterEntityOptions,
-  FilterEntityTypes,
-  FilterSeverityOptions,
-  ITopoLink,
-  ITopologyPreparedMapDataV2,
-  ITopoAccountNode,
-  ITopoRegionNode,
-  ITopoSitesNode,
-  TopoFilterTypes,
-  TopoLinkTypes,
-  TopoNodeTypes,
-} from './models';
+import { FilterEntityOptions, FilterEntityTypes, FilterSeverityOptions, ITopoAccountNode, ITopoRegionNode, ITopoSitesNode, TopoFilterTypes, TopoNodeTypes } from './models';
 import { AlertSeverity } from 'lib/api/ApiModels/Workflow/apiModel';
 import { updateRegionHeight } from './helpers/buildNodeHelpers';
 import { ISegmentSegmentP } from 'lib/api/ApiModels/Policy/Segment';
@@ -33,7 +21,7 @@ export interface TopologyV2ContextType {
   originSegmentsData: ISegmentSegmentP[] | null;
   searchQuery: string | null;
   selectedType: string | null;
-  links: ITopoLink<any, any, any, any, any>[];
+  // links: ITopoLink<any, any, any, any, any>[];
   nodes: (ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[];
   selectedNode: any;
   onUnselectNode: () => void;
@@ -63,7 +51,7 @@ export function useTopologyV2Context(): TopologyV2ContextType {
   const [originGroupsData, setOriginGroupsData] = React.useState<ITopologyGroup[] | null>(null);
   const [originSegmentsData, setOriginSegmentsData] = React.useState<ISegmentSegmentP[] | null>(null);
   const [nodes, setNodes] = React.useState<(ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[]>([]);
-  const [links, setLinks] = React.useState<ITopoLink<any, any, any, any, any>[]>([]);
+  // const [links, setLinks] = React.useState<ITopoLink<any, any, any, any, any>[]>([]);
   const [selectedNode, setSelectedNode] = React.useState<ITopoAccountNode | ITopoSitesNode | ITopoRegionNode>(null);
   const [regionStructures, setRegionStructures] = React.useState<ITopoRegionNode[]>([]);
   const [entities, setEntities] = React.useState<FilterEntityOptions>({
@@ -115,13 +103,13 @@ export function useTopologyV2Context(): TopologyV2ContextType {
   const [timeRange, setTimeRange] = React.useState<ITimeMinMaxRange | null>(null);
   const [searchQuery, setSearchQuery] = React.useState<string | null>(null);
   const [selectedType, setSelectedType] = React.useState<string | null>(null);
-  const linksRef = React.useRef<ITopoLink<any, any, any, any, any>[]>(links);
+  // const linksRef = React.useRef<ITopoLink<any, any, any, any, any>[]>(links);
   const nodesRef = React.useRef<(ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[]>(nodes);
   const groupsRef = React.useRef<ITopologyGroup[] | null>(originGroupsData);
   const segmentsRef = React.useRef<ISegmentSegmentP[] | null>(originSegmentsData);
   const onSetData = (res: ITopologyDataRes) => {
     if (!res) {
-      setLinks([]);
+      // setLinks([]);
       setNodes([]);
       setOriginSegmentsData(null);
       setOriginGroupsData(null);
@@ -129,7 +117,7 @@ export function useTopologyV2Context(): TopologyV2ContextType {
       groupsRef.current = null;
       segmentsRef.current = null;
       nodesRef.current = null;
-      linksRef.current = null;
+      // linksRef.current = null;
       return;
     }
     const _orgObj: INetworkOrg[] = res.organizations && res.organizations.organizations ? jsonClone(res.organizations.organizations) : null;
@@ -137,14 +125,14 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     const _segmentsObj: ISegmentSegmentP[] = res.segments && res.segments.segments ? jsonClone(res.segments.segments) : [];
     groupsRef.current = _groupsObj;
     segmentsRef.current = _segmentsObj;
-    const _data: ITopologyPreparedMapDataV2 = createTopology(entities, _orgObj, groupsRef.current);
-    if (_data.links) {
-      setLinks(_data.links);
-      linksRef.current = _data.links;
-    }
-    if (_data.nodes) {
-      setNodes(_data.nodes);
-      nodesRef.current = _data.nodes;
+    const _data: (ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[] = createTopology(entities, _orgObj, groupsRef.current);
+    // if (_data.links) {
+    //   setLinks(_data.links);
+    //   linksRef.current = _data.links;
+    // }
+    if (_data) {
+      setNodes(_data);
+      nodesRef.current = _data;
     }
     setOriginSegmentsData(segmentsRef.current);
     setOriginGroupsData(groupsRef.current);
@@ -346,7 +334,7 @@ export function useTopologyV2Context(): TopologyV2ContextType {
       const _obj: FilterEntityOptions = jsonClone(entities);
       _obj[type].selected = selected;
       if (type === FilterEntityTypes.PEERING_CONNECTIONS || type === FilterEntityTypes.WEB_ACLS) {
-        const _links = linksRef.current.slice();
+        // const _links = linksRef.current.slice();
         const _nodes = updateRegionHeight(nodesRef.current, _obj);
         // _links.forEach(it => {
         //   if (it.type !== TopoLinkTypes.NetworkNetworkLink) return;
@@ -355,62 +343,62 @@ export function useTopologyV2Context(): TopologyV2ContextType {
         //   it.y1 = _coord.y;
         // });
         nodesRef.current = _nodes;
-        linksRef.current = _links;
+        // linksRef.current = _links;
         setNodes(_nodes);
-        setLinks(_links);
+        // setLinks(_links);
       }
       if (type === FilterEntityTypes.SITES) {
         const _nodes = nodesRef.current.slice();
-        const _links = linksRef.current.slice();
+        // const _links = linksRef.current.slice();
         _nodes.forEach(it => {
           if (it.type !== TopoNodeTypes.SITES) return;
           it.visible = _obj[type].selected;
         });
-        _links.forEach(it => {
-          if (it.type !== TopoLinkTypes.VPNLink) return;
-          it.visible = !!(_obj[type].selected && _obj.transit.selected);
-        });
+        // _links.forEach(it => {
+        //   if (it.type !== TopoLinkTypes.VPNLink) return;
+        //   it.visible = !!(_obj[type].selected && _obj.transit.selected);
+        // });
         nodesRef.current = _nodes;
-        linksRef.current = _links;
+        // linksRef.current = _links;
         setNodes(_nodes);
-        setLinks(_links);
+        // setLinks(_links);
       }
       if (type === FilterEntityTypes.TRANSIT) {
         const _nodes = nodesRef.current.slice();
-        const _links = linksRef.current.slice();
+        // const _links = linksRef.current.slice();
         _nodes.forEach(it => {
           if (it.type !== TopoNodeTypes.ACCOUNT) return;
           it.visible = _obj[type].selected;
         });
-        _links.forEach(it => {
-          if (it.type === TopoLinkTypes.VPNLink) {
-            it.visible = !!(_obj.sites.selected && _obj[type].selected);
-          }
-          if (it.type === TopoLinkTypes.NetworkNetworkLink) {
-            it.visible = !!(_obj.vpc.selected && _obj[type].selected);
-          }
-        });
+        // _links.forEach(it => {
+        //   if (it.type === TopoLinkTypes.VPNLink) {
+        //     it.visible = !!(_obj.sites.selected && _obj[type].selected);
+        //   }
+        //   if (it.type === TopoLinkTypes.NetworkNetworkLink) {
+        //     it.visible = !!(_obj.vpc.selected && _obj[type].selected);
+        //   }
+        // });
         nodesRef.current = _nodes;
-        linksRef.current = _links;
+        // linksRef.current = _links;
         setNodes(_nodes);
-        setLinks(_links);
+        // setLinks(_links);
       }
       if (type === FilterEntityTypes.VPC) {
         const _nodes = nodesRef.current.slice();
-        const _links = linksRef.current.slice();
+        // const _links = linksRef.current.slice();
         _nodes.forEach(it => {
           if (it.type !== TopoNodeTypes.REGION) return;
           it.visible = _obj[type].selected;
         });
-        _links.forEach(it => {
-          if (it.type === TopoLinkTypes.NetworkNetworkLink) {
-            it.visible = !!(_obj[type].selected && _obj.transit.selected);
-          }
-        });
+        // _links.forEach(it => {
+        //   if (it.type === TopoLinkTypes.NetworkNetworkLink) {
+        //     it.visible = !!(_obj[type].selected && _obj.transit.selected);
+        //   }
+        // });
         nodesRef.current = _nodes;
-        linksRef.current = _links;
+        // linksRef.current = _links;
         setNodes(_nodes);
-        setLinks(_links);
+        // setLinks(_links);
       }
       setEntities(_obj);
       return;
@@ -447,7 +435,7 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     originData,
     originGroupsData,
     originSegmentsData,
-    links,
+    // links,
     nodes,
     selectedNode,
     searchQuery,

@@ -18,7 +18,6 @@ const VPNLink: React.FC<IProps> = (props: IProps) => {
       setIsSelected(false);
     }
   }, [topology.selectedNode]);
-
   return (
     <TransitionContainer stateIn={props.dataItem.visible} id={`vpnLink${props.dataItem.id}`}>
       <line
@@ -30,10 +29,10 @@ const VPNLink: React.FC<IProps> = (props: IProps) => {
         data-tochildid={`${props.dataItem.toNode.child.nodeType}${props.dataItem.toNode.child.id}`}
         data-fromparentid={`${props.dataItem.fromNode.parent.type}${props.dataItem.fromNode.parent.dataItem.id}`}
         data-toparentid={`${props.dataItem.toNode.parent.type}${props.dataItem.toNode.parent.dataItem.id}`}
-        // x1={props.dataItem.x1}
-        // y1={props.dataItem.y1}
-        // x2={props.dataItem.x2}
-        // y2={props.dataItem.y2}
+        x1={props.dataItem.fromX}
+        y1={props.dataItem.fromY}
+        x2={props.dataItem.toX}
+        y2={props.dataItem.toY}
       />
     </TransitionContainer>
   );

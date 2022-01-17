@@ -2,9 +2,7 @@ import { INetworkOrg, INetworkRegion, ITopologyGroup, SelectorEvalType } from 'l
 
 import {
   ITopoRegionNode,
-  ITopologyPreparedMapDataV2,
   ITGWNode,
-  ITopoLink,
   FilterEntityOptions,
   VPCS_IN_ROW,
   PEER_CONNECTION_IN_ROW,
@@ -48,7 +46,7 @@ export const createAccounts = (_data: INetworkOrg[]): ITopoAccountNode[] => {
   return _accounts;
 };
 
-export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[], _groups: ITopologyGroup[]): ITopologyPreparedMapDataV2 => {
+export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[], _groups: ITopologyGroup[]): (ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[] => {
   const regions: ITopoRegionNode[] = [];
   let accounts: ITopoAccountNode[] = [];
   // const dataCenters: ITopoNode<any>[] = [];
@@ -165,9 +163,9 @@ export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[]
     });
   }
   updateTopLevelItems(filter, regions, accounts, groups);
-  const links: ITopoLink<any, any, any, any, any>[] = buildLinks(regions, accounts, groups, filter);
-  const _nodes: (ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[] = [...regions, ...accounts, ...groups];
-  return { nodes: _nodes, links: links };
+  buildLinks(regions, accounts, groups);
+  const _nodes: (ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[] = [...accounts, ...regions, ...groups];
+  return _nodes;
 };
 
 const buildRegionName = (org: INetworkOrg, region: INetworkRegion): string => {

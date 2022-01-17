@@ -12,7 +12,7 @@ import SitesExpandNode from './SitesExpandNode';
 import { TopologyPanelTypes } from 'lib/models/topology';
 import { IDeviceNode, ITopoSitesNode } from 'lib/hooks/Topology/models';
 import TransitionContainer from '../../../TransitionContainer';
-import DeviceLink from '../DeviceNode/DeviceLink';
+import VPNLink from '../../../Links/VPNLink';
 // import CollapseExpandButton from '../../Containers/CollapseExpandButton';
 
 interface Props {
@@ -143,10 +143,21 @@ const SitesNodeTopContainer: React.FC<Props> = (props: Props) => {
           y={!props.dataItem.collapsed ? props.dataItem.expandedSize.height / 2 - NODES_CONSTANTS.COLLAPSE_EXPAND.r : NODES_CONSTANTS.SITES.collapse.height / 2 - NODES_CONSTANTS.COLLAPSE_EXPAND.r}
         /> */}
       </g>
-      {props.site.links.map(it => {
-        if (it.fromNode.child.page !== currentPage) return null;
-        return <DeviceLink key={`link${NODES_CONSTANTS.SITES.type}${props.site.uiId}`} data={it} />;
-      })}
+      {props.site.links && props.site.links.length ? (
+        <TransitionContainer
+          id={`linksWrapper${NODES_CONSTANTS.SITES.type}${props.site.uiId}`}
+          stateIn={topology.entities && topology.entities.transit && topology.entities.transit.selected}
+          origin="unset"
+          transform="none"
+        >
+          <>
+            {props.site.links.map(it => {
+              if (it.fromNode.child.page !== currentPage) return null;
+              return <VPNLink key={`link${NODES_CONSTANTS.SITES.type}${props.site.uiId}`} dataItem={it} />;
+            })}
+          </>
+        </TransitionContainer>
+      ) : null}
     </TransitionContainer>
   );
 };

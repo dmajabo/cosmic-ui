@@ -4,6 +4,7 @@ import { IIconSize, IMinSize, ISize, ISpace } from 'lib/models/general';
 export const TOPOLOGY_IDS = {
   SVG: 'svgTopologyMap',
   G_ROOT: 'gRoot',
+  STRUCTURE_ROOT: 'structureRoot',
   LINKS_ROOT: 'linksRoot',
   NODES_ROOT: 'nodesRoot',
 };

@@ -1,19 +1,22 @@
 import React from 'react';
 import { TOPOLOGY_IDS } from '../model';
-import { ContainerWithMetrics } from '../styles';
+import { ContainerWithMetrics, StyledMap } from '../styles';
 import { TopologyPanelTypes } from 'lib/models/topology';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 import { useZoom } from '../hooks/useZoom';
 import HeadeerAction from '../HeadeerAction';
-import { IPanelBarLayoutTypes } from 'lib/models/general';
+import { IPanelBarLayoutTypes, STANDART_DISPLAY_RESOLUTION_V2 } from 'lib/models/general';
 import PanelBar from 'app/components/Basic/PanelBar';
 import FilterComponent from '../PanelComponents/FilterComponent';
 import VpcPanel from '../PanelComponents/NodePanels/VpcPanel';
 import DevicePanel from '../PanelComponents/NodePanels/DevicePanel';
 import WedgePanel from '../PanelComponents/NodePanels/WedgePanel';
-import Map from './Map';
 import GroupsComponent from '../PanelComponents/GroupsComponent/GroupsComponent';
 import WebAclPanel from '../PanelComponents/NodePanels/WebAclPanel';
+import GContainer from '../Containers/GContainer/GContainer';
+import NodeWrapper from '../Containers/Nodes/NodeWrapper';
+import StructuresWrapper from '../Containers/Nodes/StructuresWrapper';
+import DefsComponent from '../Containers/Shared/DefsComponent';
 
 interface Props {
   disabledReload: boolean;
@@ -50,6 +53,10 @@ const Graph: React.FC<Props> = (props: Props) => {
     topology.onToogleTopoPanel(null, false);
   };
 
+  const onUnselectNode = () => {
+    topology.onUnselectNode();
+  };
+
   return (
     <>
       <HeadeerAction
@@ -66,7 +73,22 @@ const Graph: React.FC<Props> = (props: Props) => {
       />
       {topology.originData && (
         <ContainerWithMetrics>
-          <Map />
+          <StyledMap
+            id={TOPOLOGY_IDS.SVG}
+            width="100%"
+            height="100%"
+            viewBox={`0 0 ${STANDART_DISPLAY_RESOLUTION_V2.width} ${STANDART_DISPLAY_RESOLUTION_V2.height}`}
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlnsXlink="http://www.w3.org/1999/xlink"
+            onDoubleClick={onUnselectNode}
+          >
+            <DefsComponent />
+            <GContainer id={TOPOLOGY_IDS.G_ROOT}>
+              <NodeWrapper nodes={topology.nodes} />
+            </GContainer>
+            <GContainer id={TOPOLOGY_IDS.STRUCTURE_ROOT}>{topology && <StructuresWrapper nodes={topology.regionStructures} />}</GContainer>
+          </StyledMap>
           <PanelBar show={topology.topoPanel.show} onHidePanel={onHidePanel} type={IPanelBarLayoutTypes.VERTICAL}>
             {topology.topoPanel.type === TopologyPanelTypes.FILTERS && <FilterComponent />}
             {topology.topoPanel.type === TopologyPanelTypes.GROUPS && <GroupsComponent />}

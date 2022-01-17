@@ -11,10 +11,9 @@ export const getRowsHeight = (_count: number, height: number, spaceY: number): n
   return _count * (height + spaceY);
 };
 
-export const getStartChildRowOffsetX = (maxWidth: number, minWidth: number, items: number, itemWidth: number, itemSpace: number): number => {
-  const _width = Math.max(minWidth, maxWidth);
-  const totalInRow = getRowsWidth(items, itemWidth, itemSpace);
-  return Math.max(0, _width / 2 - totalInRow / 2);
+export const getStartChildRowOffsetX = (nodeWidth: number, items: number, itemWidth: number, itemSpace: number): number => {
+  const rowWidth = getRowsWidth(items, itemWidth, itemSpace);
+  return nodeWidth / 2 - rowWidth / 2;
 };
 
 export const centeredTopLevelItemsInRow = (items: (ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[], size: ISize, width: number) => {
@@ -36,8 +35,8 @@ export const getTotalNodeWidth = (chsWidth: number, padding: number): number => 
   return chsWidth + padding;
 };
 
-export const getChildContainerWidth = (visible: boolean, items: any[], chWidth: number, chSpaceX: number): number => {
-  if (!items || !items.length || !visible) return 0;
+export const getChildContainerWidth = (items: any[], chWidth: number, chSpaceX: number): number => {
+  if (!items || !items.length) return 0;
   return getRowsWidth(items.length, chWidth, chSpaceX);
 };
 

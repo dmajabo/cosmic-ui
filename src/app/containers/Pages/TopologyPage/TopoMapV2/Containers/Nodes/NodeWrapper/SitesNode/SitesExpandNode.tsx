@@ -42,11 +42,13 @@ const SitesExpandNode: React.FC<Props> = (props: Props) => {
             />
           </g>
         </g>
-        <g transform={`translate(0, ${NODES_CONSTANTS.SITES.headerHeight + NODES_CONSTANTS.SITES.expanded.contentPadding})`}>
-          {props.site.children[props.currentPage].map(it => (
-            <DeviceNode x={it.x} y={it.y} key={`${it.uiId}device`} item={it} onClick={props.onDeviceClick} />
-          ))}
-        </g>
+        {props.site.children && props.site.children.length && props.site.children[props.currentPage] ? (
+          <g transform={`translate(0, ${NODES_CONSTANTS.SITES.headerHeight + NODES_CONSTANTS.SITES.expanded.contentPadding})`}>
+            {props.site.children[props.currentPage].map(it => (
+              <DeviceNode x={it.x} y={it.y} key={`${it.uiId}device`} item={it} onClick={props.onDeviceClick} />
+            ))}
+          </g>
+        ) : null}
         {props.site.children.length > 1 ? (
           <SitePager
             y={props.site.expandedSize.height - 20}
