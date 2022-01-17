@@ -106,7 +106,7 @@ export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[]
         }
         if (region.devices && region.devices.length) {
           // // for test
-          for (let j = 0; j < 1021; j++) {
+          for (let j = 0; j < 20; j++) {
             // const objE: IDeviceNode = createDeviceNode(org, orgI, region.devices[1], 100 + j);
             devicesInDefaultGroup.push({ ...region.devices[0], name: `${j + 1}`, selectorGroup: DEFAULT_GROUP_ID, orgIndex: orgI, orgId: org.id, vendorType: org.vendorType });
             // devicesInGroup.push(objE);

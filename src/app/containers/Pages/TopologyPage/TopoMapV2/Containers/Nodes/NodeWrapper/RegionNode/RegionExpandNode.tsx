@@ -79,7 +79,7 @@ const RegionExpandNode: React.FC<Props> = (props: Props) => {
       ) : null}
       <g id={`${NODES_CONSTANTS.REGION.type}${props.region.uiId}childrensLayer`} className="topologyNode" data-type={NODES_CONSTANTS.REGION.type} transform={`translate(${props.x}, ${props.y})`}>
         {props.showWebAcls && props.region.webAcls && props.region.webAcls.length ? (
-          <WebAclsContainer offsetY={props.offsetsData.topOffset} offsetX={0}>
+          <WebAclsContainer offsetY={props.offsetsData.topOffset}>
             <>
               {props.region.webAcls.map((row, ri) => {
                 return row.map((it, i) => (
@@ -99,7 +99,7 @@ const RegionExpandNode: React.FC<Props> = (props: Props) => {
           </WebAclsContainer>
         ) : null}
         {props.showPeerConnections && props.region.peerConnections && props.region.peerConnections.length ? (
-          <PeerContainer id={`peerLinkContainer${props.region.uiId}`} offsetY={props.offsetsData.topOffset + props.offsetsData.webAcl_TotalHeight} offsetX={0}>
+          <PeerContainer id={`peerLinkContainer${props.region.uiId}`} offsetY={props.offsetsData.topOffset + props.offsetsData.webAcl_TotalHeight}>
             <>
               {props.region.peerConnections.map(row => {
                 return row.map((it, i) => (
@@ -120,7 +120,7 @@ const RegionExpandNode: React.FC<Props> = (props: Props) => {
           </PeerContainer>
         ) : null}
 
-        <VpcContainer id={`vnetContainer${props.region.uiId}`} offsetY={props.offsetsData.topOffset + props.offsetsData.webAcl_TotalHeight + props.offsetsData.peerConnection_TotalHeight} offsetX={0}>
+        <VpcContainer id={`vnetContainer${props.region.uiId}`} offsetY={props.offsetsData.topOffset + props.offsetsData.webAcl_TotalHeight + props.offsetsData.peerConnection_TotalHeight}>
           <>
             {props.region.children.map((row, ri) => {
               return row.map((it, i) => (

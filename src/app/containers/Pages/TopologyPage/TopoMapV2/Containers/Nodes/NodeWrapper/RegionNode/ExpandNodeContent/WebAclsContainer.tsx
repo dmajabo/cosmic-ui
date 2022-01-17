@@ -2,13 +2,12 @@ import React from 'react';
 
 interface Props {
   offsetY: number;
-  offsetX: number;
   children: React.ReactNode;
 }
 
-const WebAclsContainer: React.FC<Props> = ({ offsetY, offsetX, children }) => {
+const WebAclsContainer: React.FC<Props> = ({ offsetY, children }) => {
   return (
-    <g transform={`translate(${offsetX}, ${offsetY})`} data-x={offsetX} data-y={offsetY}>
+    <g transform={`translate(0, ${offsetY})`} data-y={offsetY}>
       {children}
     </g>
   );

@@ -87,8 +87,8 @@ const Graph: React.FC<Props> = (props: Props) => {
             <GContainer id={TOPOLOGY_IDS.G_ROOT}>
               <NodeWrapper nodes={topology.nodes} />
             </GContainer>
-            <GContainer id={TOPOLOGY_IDS.STRUCTURE_ROOT}>{topology && <StructuresWrapper nodes={topology.regionStructures} />}</GContainer>
           </StyledMap>
+          {topology.regionStructures && topology.regionStructures.length ? <StructuresWrapper nodes={topology.regionStructures} /> : null}
           <PanelBar show={topology.topoPanel.show} onHidePanel={onHidePanel} type={IPanelBarLayoutTypes.VERTICAL}>
             {topology.topoPanel.type === TopologyPanelTypes.FILTERS && <FilterComponent />}
             {topology.topoPanel.type === TopologyPanelTypes.GROUPS && <GroupsComponent />}
