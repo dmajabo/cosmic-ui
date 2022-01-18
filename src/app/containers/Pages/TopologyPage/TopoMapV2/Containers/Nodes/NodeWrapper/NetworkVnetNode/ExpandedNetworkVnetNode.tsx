@@ -7,7 +7,7 @@ import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataCont
 import NodeMarker from '../../Containers/NodeMarker';
 import NodeExpandedName from '../../Containers/NodeName/NodeExpandedName';
 import HtmlIconNode from '../../Containers/HtmlIconNode';
-import { AppLoaderBalancerIcon, InternetGatawayIcon, VmIcon } from 'app/components/SVGIcons/topologyIcons/TopoMapV2Icons/VnetPanelIcons/vnetPanelIcons';
+import { AppLoaderBalancerIcon, SecurityGroupIcon, VmIcon } from 'app/components/SVGIcons/topologyIcons/TopoMapV2Icons/VnetPanelIcons/vnetPanelIcons';
 import { IPosition } from 'lib/models/general';
 
 interface Props {
@@ -87,7 +87,7 @@ const ExpandedNetworkVnetNode: React.FC<Props> = (props: Props) => {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%', padding: `${NODES_CONSTANTS.NETWORK_VNET.expanded.contentPadding}px` }}>
           {/* <HtmlIconNode icon={NgfwIcon} name="NGFW" count={0} /> */}
           <HtmlIconNode icon={VmIcon} name="VMs" count={props.item.vms.length} />
-          <HtmlIconNode icon={InternetGatawayIcon} name="Security Groups" count={props.item.securityGroups.length} />
+          <HtmlIconNode icon={SecurityGroupIcon} name="Security Groups" count={props.item.securityGroups.length} />
           <HtmlIconNode icon={AppLoaderBalancerIcon} name="Nat Gateway" count={props.item.internetGateway ? 1 : 0} />
         </div>
       </foreignObject>
