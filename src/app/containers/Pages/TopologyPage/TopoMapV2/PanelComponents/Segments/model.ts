@@ -1,9 +1,10 @@
 import { ISelectedListItem } from 'lib/models/general';
 import { TopologyGroupTypesAsNumber, TopologyGroupTypesAsString, TopologyGroupTypesLabel } from 'lib/models/topology';
 
-export enum ITopologyGroupFields {
+export enum ITopologySegmentFields {
   NAME = 'name',
   DESCRIPTION = 'description',
+  COLOR = 'color',
 }
 
 export enum TopologySegementView {

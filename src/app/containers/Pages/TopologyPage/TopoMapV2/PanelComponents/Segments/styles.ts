@@ -65,6 +65,11 @@ export const GroupWrapper = styled.div`
   }
 `;
 
+export const GroupRow = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+`;
+
 export const ButtonsGroup = styled.div`
   display: flex;
   flex-direction: row;

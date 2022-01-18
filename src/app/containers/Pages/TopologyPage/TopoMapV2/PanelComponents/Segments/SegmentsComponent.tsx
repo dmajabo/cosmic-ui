@@ -73,7 +73,7 @@ const SegmentsComponent: React.FC<IProps> = (props: IProps) => {
   };
 
   const onCancel = () => {
-    if (topology.originGroupsData && topology.originGroupsData.length) {
+    if (topology.originSegmentsData && topology.originSegmentsData.length) {
       setView(TopologySegementView.ALL);
     } else {
       setView(TopologySegementView.EMPTY);

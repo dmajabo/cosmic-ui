@@ -17,7 +17,7 @@ import GContainer from '../Containers/GContainer/GContainer';
 import NodeWrapper from '../Containers/Nodes/NodeWrapper';
 import StructuresWrapper from '../Containers/Nodes/StructuresWrapper';
 import DefsComponent from '../Containers/Shared/DefsComponent';
-import SegmentsComponent from '../PanelComponents/Segments/SegmentsComponent';
+// import SegmentsComponent from '../PanelComponents/Segments/SegmentsComponent';
 
 interface Props {
   disabledReload: boolean;
@@ -93,7 +93,7 @@ const Graph: React.FC<Props> = (props: Props) => {
           <PanelBar show={topology.topoPanel.show} onHidePanel={onHidePanel} type={IPanelBarLayoutTypes.VERTICAL}>
             {topology.topoPanel.type === TopologyPanelTypes.FILTERS && <FilterComponent />}
             {topology.topoPanel.type === TopologyPanelTypes.GROUPS && <GroupsComponent />}
-            {topology.topoPanel.type === TopologyPanelTypes.SEGMENTS && <SegmentsComponent />}
+            {/* {topology.topoPanel.type === TopologyPanelTypes.SEGMENTS && <SegmentsComponent />} */}
             {topology.topoPanel.type === TopologyPanelTypes.VPC && <VpcPanel dataItem={topology.topoPanel.dataItem} />}
             {topology.topoPanel.type === TopologyPanelTypes.WebAcl && <WebAclPanel dataItem={topology.topoPanel.dataItem} />}
             {topology.topoPanel.type === TopologyPanelTypes.Device && <DevicePanel dataItem={topology.topoPanel.dataItem} />}

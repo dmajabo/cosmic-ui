@@ -1,9 +1,7 @@
 import React from 'react';
 import TextInput from 'app/components/Inputs/TextInput';
-import { TopologyGroupTypesAsNumber } from 'lib/models/topology';
-import { ButtonsGroup, GroupWrapper } from './styles';
-import { ISelectedListItem } from 'lib/models/general';
-import { ITopologyGroupFields } from './model';
+import { ButtonsGroup, GroupRow, GroupWrapper } from './styles';
+import { ITopologySegmentFields } from './model';
 import { onValidateGroup } from './helpers';
 import PrimaryButton from 'app/components/Buttons/PrimaryButton';
 import SecondaryButton from 'app/components/Buttons/SecondaryButton';
@@ -12,6 +10,9 @@ import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import MatSelect from 'app/components/Inputs/MatSelect';
 import { ValueLabel } from 'app/components/Inputs/MatSelect/styles';
 import { ISegmentSegmentP, SegmentSegmentType } from 'lib/api/ApiModels/Policy/Segment';
+import { jsonClone } from 'lib/helpers/cloneHelper';
+import ColorPiker from 'app/components/Inputs/ColorPiker';
+
 interface IProps {
   segment?: ISegmentSegmentP;
   onCancel: () => void;
@@ -45,28 +46,26 @@ const EditSegmentView: React.FC<IProps> = (props: IProps) => {
     }
   }, [props.error]);
 
-  const onChangeField = (_value: string | null, field: ITopologyGroupFields, err?: string) => {
-    // const _group: ITopologyGroup = jsonClone(group);
-    // _group[field] = _value;
-    // const isValid = onValidateGroup(_group) && !err;
-    // if (err) {
-    //   setError(err);
-    // } else if (error && !err) {
-    //   setError(null);
-    // }
-    // setGroup(_group);
-    // setIsGroupValid(isValid);
+  const onChangeField = (_value: string | null, field: ITopologySegmentFields, err?: string) => {
+    const _s: ISegmentSegmentP = jsonClone(segment);
+    console.log(_value);
+    _s[field] = _value;
+    const isValid = onValidateGroup(_s) && !err;
+    if (err) {
+      setError(err);
+    } else if (error && !err) {
+      setError(null);
+    }
+    setIsSegmentValid(isValid);
+    setSegment(_s);
   };
 
-  const onChangeType = (_item: ISelectedListItem<TopologyGroupTypesAsNumber>) => {
-    // const _group: ITopologyGroup = jsonClone(group);
-    // _group.type = _item.value;
-    // const _possibleKeys: ISelectedListItem<any>[] | null = getPossibleKeys(_group.type);
-    // const isValid = onValidateGroup(_group);
-    // setGroup(_group);
-    // setSelectedType(_item);
-    // setIsGroupValid(isValid);
-    // setPossibleKeys(_possibleKeys);
+  const onChangeType = (_value: SegmentSegmentType) => {
+    const _s: ISegmentSegmentP = jsonClone(segment);
+    _s.segType = _value;
+    const isValid = onValidateGroup(_s);
+    setIsSegmentValid(isValid);
+    setSegment(_s);
   };
 
   const onCancel = () => {
@@ -88,22 +87,32 @@ const EditSegmentView: React.FC<IProps> = (props: IProps) => {
 
   return (
     <GroupWrapper>
-      <TextInput
-        required
-        id="segmentName"
-        name="segmentName"
-        value={segment.name}
-        label="Segment Name"
-        inputStyles={{ height: '50px' }}
-        onChange={_value => onChangeField(_value, ITopologyGroupFields.NAME)}
-      />
+      <GroupRow>
+        <TextInput
+          required
+          id="segmentName"
+          name="segmentName"
+          value={segment.name}
+          label="Segment Name"
+          styles={{ width: 'calc(100% - 60px)', margin: '0 auto 20px 0' }}
+          inputStyles={{ height: '50px' }}
+          onChange={_value => onChangeField(_value, ITopologySegmentFields.NAME)}
+        />
+        <ColorPiker
+          label=" "
+          styles={{ width: '50px', margin: '0 auto 0 10px' }}
+          id="segmentColorPiker"
+          color={segment.color}
+          onChange={_value => onChangeField(_value, ITopologySegmentFields.COLOR)}
+        />
+      </GroupRow>
       <TextInput
         id="segmentDescription"
         name="segmentDescription"
         value={segment.description}
         label="Description"
         inputStyles={{ height: '50px' }}
-        onChange={_value => onChangeField(_value, ITopologyGroupFields.DESCRIPTION)}
+        onChange={_value => onChangeField(_value, ITopologySegmentFields.DESCRIPTION)}
         type="textarea"
       />
       <MatSelect
