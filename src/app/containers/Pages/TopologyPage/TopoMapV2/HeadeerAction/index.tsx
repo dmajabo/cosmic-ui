@@ -1,6 +1,5 @@
 import React from 'react';
 import { Side, Wrapper } from './styles';
-import { editIcon } from 'app/components/SVGIcons/edit';
 import {
   TopologyPanelTypes,
   // ITopologySelectTypes, TOPOLOGY_SELECT_VALUES,
@@ -15,7 +14,9 @@ import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataCont
 import { ITopoAccountNode, ITopoRegionNode, ITopoSitesNode } from 'lib/hooks/Topology/models';
 import { ITransform, ZoomRange } from 'lib/models/general';
 import ZoomInput from './ZoomInput';
-
+import { segmentsIcon } from 'app/components/SVGIcons/segmentsIcon';
+import history from 'utils/history';
+import { ROUTE } from 'lib/Routes/model';
 // import MatSelect from 'app/components/Inputs/MatSelect';
 
 interface IProps {
@@ -33,9 +34,11 @@ interface IProps {
 
 const HeadeerAction: React.FC<IProps> = (props: IProps) => {
   const { topology } = useTopologyV2DataContext();
-
   const onClick = (panel: TopologyPanelTypes) => {
     topology.onToogleTopoPanel(panel, true);
+  };
+  const onGoToSegments = () => {
+    history.push(ROUTE.app + ROUTE.policy);
   };
   // const onFilter = (value: string | null) => {
   //   topology?.onFilterQueryChange(value);
@@ -73,10 +76,14 @@ const HeadeerAction: React.FC<IProps> = (props: IProps) => {
       </Side>
       <Side margin="0 0 0 auto">
         <IconButton disabled={props.disabledReload} styles={{ margin: '0' }} icon={refreshIcon} title="Refresh Topology" onClick={props.onRefresh} />
-        {!props.onlyRefreshAvaible && <SecondaryButton label="FILTER" icon={filterIcon} onClick={() => onClick(TopologyPanelTypes.FILTERS)} disabled={false} styles={{ margin: '0 0 0 20px' }} />}
-        {/* <SecondaryButton label="ENTITIES" icon={entitiesIcon} onClick={() => onClick(TopologyPanelTypes.ENTITIES)} disabled={false} styles={{ margin: '0 0 0 20px' }} /> */}
-        {/* <Filter onChange={onFilter} searchQuery={topology?.searchQuery || ''} /> */}
-        {!props.onlyRefreshAvaible && <SecondaryButton label="Edit Topology" icon={editIcon} onClick={() => onClick(TopologyPanelTypes.SEGMENTS)} disabled={false} styles={{ margin: '0 0 0 20px' }} />}
+        {!props.onlyRefreshAvaible && (
+          <>
+            <SecondaryButton label="FILTER" icon={filterIcon} onClick={() => onClick(TopologyPanelTypes.FILTERS)} disabled={false} styles={{ margin: '0 0 0 20px' }} />
+            <SecondaryButton label="Segments" icon={segmentsIcon} onClick={onGoToSegments} disabled={false} styles={{ margin: '0 0 0 20px' }} />
+            {/* <Filter onChange={onFilter} searchQuery={topology?.searchQuery || ''} /> */}
+            {/* <SecondaryButton label="Edit Topology" icon={editIcon} onClick={() => onClick(TopologyPanelTypes.SEGMENTS)} disabled={false} styles={{ margin: '0 0 0 20px' }} /> */}
+          </>
+        )}
       </Side>
     </Wrapper>
   );
