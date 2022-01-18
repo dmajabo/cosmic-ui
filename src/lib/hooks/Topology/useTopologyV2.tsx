@@ -31,6 +31,10 @@ export interface TopologyV2ContextType {
   onChangeSelectedDay: (_value: Date | null) => void;
   onChangeTimePeriod: (_value: ISelectedListItem<ITimeTypes>) => void;
   onSetData: (res: ITopologyDataRes) => void;
+
+  onUpdateSegments: (res: ISegmentSegmentP) => void;
+  onDeleteSegment: (_s: ISegmentSegmentP) => void;
+
   onUpdateGroups: (res: ITopologyGroup) => void;
   onDeleteGroup: (_group: ITopologyGroup) => void;
   onFilterQueryChange: (value: string | null) => void;
@@ -161,6 +165,21 @@ export function useTopologyV2Context(): TopologyV2ContextType {
   const onSetSelectedType = (_value: string | null) => {
     setSelectedType(_value);
   };
+
+  const onUpdateSegments = (_s: ISegmentSegmentP) => {
+    const _gindex: number = originGroupsData.findIndex(it => it.id === _s.id);
+    if (_gindex === -1) {
+      onCreateSegment(_s);
+      return;
+    }
+    onUpdateSegment(_s, _gindex);
+  };
+
+  const onCreateSegment = (_s: ISegmentSegmentP) => {};
+
+  const onUpdateSegment = (_s: ISegmentSegmentP, gindex: number) => {};
+
+  const onDeleteSegment = (_group: ISegmentSegmentP) => {};
 
   const onUpdateGroups = (_group: ITopologyGroup) => {
     const _gindex: number = originGroupsData.findIndex(it => it.id === _group.id);
@@ -449,6 +468,9 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     onFilterQueryChange,
     onSetSelectedType,
     // onSelectEntity,
+    onUpdateSegments,
+    onDeleteSegment,
+
     onUpdateGroups,
     onDeleteGroup,
     onChangeTimePeriod,

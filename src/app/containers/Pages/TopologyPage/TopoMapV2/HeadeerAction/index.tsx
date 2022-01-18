@@ -76,7 +76,7 @@ const HeadeerAction: React.FC<IProps> = (props: IProps) => {
         {!props.onlyRefreshAvaible && <SecondaryButton label="FILTER" icon={filterIcon} onClick={() => onClick(TopologyPanelTypes.FILTERS)} disabled={false} styles={{ margin: '0 0 0 20px' }} />}
         {/* <SecondaryButton label="ENTITIES" icon={entitiesIcon} onClick={() => onClick(TopologyPanelTypes.ENTITIES)} disabled={false} styles={{ margin: '0 0 0 20px' }} /> */}
         {/* <Filter onChange={onFilter} searchQuery={topology?.searchQuery || ''} /> */}
-        {!props.onlyRefreshAvaible && <SecondaryButton label="Edit Topology" icon={editIcon} onClick={() => onClick(TopologyPanelTypes.GROUPS)} disabled={false} styles={{ margin: '0 0 0 20px' }} />}
+        {!props.onlyRefreshAvaible && <SecondaryButton label="Edit Topology" icon={editIcon} onClick={() => onClick(TopologyPanelTypes.SEGMENTS)} disabled={false} styles={{ margin: '0 0 0 20px' }} />}
       </Side>
     </Wrapper>
   );
