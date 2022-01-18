@@ -2,8 +2,7 @@ import React from 'react';
 import { INetworkVNetNode, INetworkVNetworkPeeringConnectionNode } from 'lib/hooks/Topology/models';
 import { IPosition } from 'lib/models/general';
 import { IRefionContainersOffsets } from '../RegionNode/ExpandNodeContent/helper';
-import { ICollapseStyles } from '../../../../model';
-import { getVnetXPosition, getVnetYPosition } from './helper';
+import { IExpandedStyles, NODES_CONSTANTS } from '../../../../model';
 
 interface Props {
   peerConnectionId: string;
@@ -12,18 +11,20 @@ interface Props {
   fromCenterX: number;
   fromCenterY: number;
   offsetData: IRefionContainersOffsets;
-  vnetCollapseStyles?: ICollapseStyles;
+  vnetExpandStyles?: IExpandedStyles;
 }
 
-const PeerConnectionLink: React.FC<Props> = (props: Props) => {
+const StructurePeerLink: React.FC<Props> = (props: Props) => {
   const [coordFrom] = React.useState<IPosition>({ x: props.fromCenterX, y: props.fromCenterY });
   const [coordTo, setTocoord] = React.useState<IPosition>(null);
 
   React.useEffect(() => {
-    const { peerConnection_TotalHeight } = props.offsetData;
-    const _x = getVnetXPosition(props.to.x, props.vnetCollapseStyles.width);
-    const _y = getVnetYPosition(props.to.y, peerConnection_TotalHeight, props.vnetCollapseStyles.height);
-    setTocoord({ x: _x, y: _y });
+    const { peerConnection_TotalHeight, totalWidth } = props.offsetData;
+    const rowWidth = props.to.itemsInRow * (NODES_CONSTANTS.NETWORK_VNET.expanded.minWidth + NODES_CONSTANTS.NETWORK_VNET.expanded.spaceX) - NODES_CONSTANTS.NETWORK_VNET.expanded.spaceX;
+    const _offfsetX = props.to.childIndex * (NODES_CONSTANTS.NETWORK_VNET.expanded.minWidth + NODES_CONSTANTS.NETWORK_VNET.expanded.spaceX);
+    const _x = _offfsetX + NODES_CONSTANTS.NETWORK_VNET.expanded.minWidth / 2 + totalWidth / 2 - rowWidth / 2;
+    const rowY = props.to.rowIndex * (NODES_CONSTANTS.NETWORK_VNET.expanded.minHeight + NODES_CONSTANTS.NETWORK_VNET.expanded.spaceY);
+    setTocoord({ x: _x, y: peerConnection_TotalHeight + rowY });
   }, [props.offsetData]);
 
   return (
@@ -42,4 +43,4 @@ const PeerConnectionLink: React.FC<Props> = (props: Props) => {
   );
 };
 
-export default React.memo(PeerConnectionLink);
+export default React.memo(StructurePeerLink);

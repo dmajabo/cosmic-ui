@@ -8,6 +8,8 @@ export const ContainerWrapperStyles = styled.div`
   background: ${NODES_CONSTANTS.REGION.expanded.bgColor};
   border-radius: ${NODES_CONSTANTS.REGION.expanded.borderRadius + 'px'};
   box-shadow: 0px 4px 7px rgb(67 127 236 / 15%);
+  z-index: 1;
+  border: 10px solid var(--_primaryBg);
 `;
 
 export const ContainerHeader = styled.div`

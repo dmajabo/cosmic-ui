@@ -27,6 +27,14 @@ export const ContainerWithFooter = styled.div`
   height: 100%;
   flex-grow: 1;
   overflow: hidden;
+  .fullscreen {
+    z-index: 10000;
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+  }
 `;
 
 export const ContainerWithMetrics = styled.div`
@@ -36,6 +44,69 @@ export const ContainerWithMetrics = styled.div`
   flex-shrink: 1;
   flex-grow: 1;
   position: relative;
+  .rndTooltip {
+    .resize {
+      background: var(--_disabledTextColor);
+    }
+    .resize-t,
+    .resize-b {
+      width: 20px !important;
+      height: 4px !important;
+      left: calc(50% - 10px) !important;
+    }
+    .resize-t {
+      top: -2px !important;
+    }
+    .resize-b {
+      bottom: -2px !important;
+    }
+    .resize-l,
+    .resize-r {
+      width: 4px !important;
+      height: 20px !important;
+      top: calc(50% - 10px) !important;
+    }
+    .resize-l {
+      left: -2px !important;
+    }
+    .resize-r {
+      right: -2px !important;
+    }
+    .resize-rect {
+      width: 15px !important;
+      height: 15px !important;
+      background: transparent;
+      border: 4px solid var(--_disabledTextColor);
+    }
+    .resize-sw {
+      bottom: -2px !important;
+      left: -2px !important;
+      border-top: none;
+      border-right: none;
+      border-bottom-left-radius: 6px;
+    }
+    .resize-se {
+      bottom: -2px !important;
+      right: -2px !important;
+      border-top: none;
+      border-left: none;
+      border-bottom-right-radius: 6px;
+    }
+    .resize-nw {
+      top: -2px !important;
+      left: -2px !important;
+      border-bottom: none;
+      border-right: none;
+      border-top-left-radius: 6px;
+    }
+    .resize-ne {
+      top: -2px !important;
+      right: -2px !important;
+      border-bottom: none;
+      border-left: none;
+      border-top-right-radius: 6px;
+    }
+  }
 `;
 
 interface MapContainerPRops {
@@ -47,6 +118,13 @@ export const MapContainer = styled.div<MapContainerPRops>`
   position: relative;
   width: 100%;
   height: ${props => props.height || 'calc(100% - 80px)'};
+`;
+
+export const OverflowStructureMapContainer = styled.div`
+  width: 100%;
+  height: calc(100% - 40px);
+  padding: 24px;
+  overflow: auto;
 `;
 
 export const StyledMap = styled.svg`

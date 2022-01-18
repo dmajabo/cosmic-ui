@@ -5,7 +5,7 @@ import { TopologyPanelTypes } from 'lib/models/topology';
 import React from 'react';
 import { NODES_CONSTANTS } from '../../../model';
 import ExpandedNetworkVnetNode from '../NodeWrapper/NetworkVnetNode/ExpandedNetworkVnetNode';
-import PeerConnectionNode from '../NodeWrapper/PeerConnectionNode';
+import StructurePeerConnection from '../NodeWrapper/PeerConnectionNode/StructurePeerConnection';
 import { getRegionChildrenContainersOffsets, IRefionContainersOffsets } from '../NodeWrapper/RegionNode/ExpandNodeContent/helper';
 import PeerContainer from '../NodeWrapper/RegionNode/ExpandNodeContent/PeerContainer';
 import VpcContainer from '../NodeWrapper/RegionNode/ExpandNodeContent/VpcContainer';
@@ -53,17 +53,16 @@ const StructureNode: React.FC<Props> = (props: Props) => {
         <WebAclsContainer offsetY={offsetsData.topOffset}>
           <>
             {props.region.webAcls.map((row, ri) => {
+              const rowWidth =
+                row.length * (NODES_CONSTANTS.WEB_ACL.structureStyles.nodeStyles.width + NODES_CONSTANTS.WEB_ACL.structureStyles.nodeStyles.spaceX) -
+                NODES_CONSTANTS.WEB_ACL.structureStyles.nodeStyles.spaceX;
               const rowY = ri * (NODES_CONSTANTS.WEB_ACL.structureStyles.nodeStyles.height + NODES_CONSTANTS.WEB_ACL.structureStyles.nodeStyles.spaceY);
+              const _offsetX = offsetsData.totalWidth / 2 - rowWidth / 2;
               return row.map(it => (
                 <WebAclNode
                   key={`${it.uiId}webacl`}
                   item={it}
-                  x={
-                    it.childIndex * (NODES_CONSTANTS.WEB_ACL.structureStyles.nodeStyles.width + NODES_CONSTANTS.WEB_ACL.structureStyles.nodeStyles.spaceX) +
-                    offsetsData.totalWidth / 2 -
-                    it.itemsInRow * (NODES_CONSTANTS.WEB_ACL.structureStyles.nodeStyles.width + NODES_CONSTANTS.WEB_ACL.structureStyles.nodeStyles.spaceX) -
-                    NODES_CONSTANTS.WEB_ACL.structureStyles.nodeStyles.spaceX
-                  }
+                  x={it.childIndex * (NODES_CONSTANTS.WEB_ACL.structureStyles.nodeStyles.width + NODES_CONSTANTS.WEB_ACL.structureStyles.nodeStyles.spaceX) + _offsetX}
                   y={rowY}
                   onClick={onWebAclClick}
                   nodeStyles={NODES_CONSTANTS.WEB_ACL.structureStyles.nodeStyles}
@@ -79,21 +78,24 @@ const StructureNode: React.FC<Props> = (props: Props) => {
         <PeerContainer id={`peerLinkContainerStructure${NODES_CONSTANTS.REGION.type}${props.region.uiId}`} offsetY={offsetsData.topOffset + offsetsData.webAcl_TotalHeight}>
           <>
             {props.region.peerConnections.map((row, ri) => {
+              const rowWidth =
+                row.length * (NODES_CONSTANTS.PEERING_CONNECTION.structureStyles.nodeStyles.width + NODES_CONSTANTS.PEERING_CONNECTION.structureStyles.nodeStyles.spaceX) -
+                NODES_CONSTANTS.PEERING_CONNECTION.structureStyles.nodeStyles.spaceX;
               const rowY = ri * (NODES_CONSTANTS.PEERING_CONNECTION.structureStyles.nodeStyles.height + NODES_CONSTANTS.PEERING_CONNECTION.structureStyles.nodeStyles.spaceY);
+              const _offsetX = offsetsData.totalWidth / 2 - rowWidth / 2;
               return row.map((it, i) => (
-                <PeerConnectionNode
+                <StructurePeerConnection
                   key={`${it.uiId}peerConnection`}
                   regionUiId={`wrapper${NODES_CONSTANTS.REGION.type}${props.region.uiId}structure`}
                   offsetData={offsetsData}
                   item={it}
-                  x={it.childIndex * (NODES_CONSTANTS.PEERING_CONNECTION.structureStyles.nodeStyles.width + NODES_CONSTANTS.PEERING_CONNECTION.structureStyles.nodeStyles.spaceX)}
+                  x={it.childIndex * (NODES_CONSTANTS.PEERING_CONNECTION.structureStyles.nodeStyles.width + NODES_CONSTANTS.PEERING_CONNECTION.structureStyles.nodeStyles.spaceX) + _offsetX}
                   y={rowY}
                   dataItem={props.region}
                   showLabel
                   labelStyles={NODES_CONSTANTS.PEERING_CONNECTION.structureStyles.labelHtmlStyles}
                   nodeStyles={NODES_CONSTANTS.PEERING_CONNECTION.structureStyles.nodeStyles}
                   vnetExpandStyles={NODES_CONSTANTS.NETWORK_VNET.expanded}
-                  isStructure
                 />
               ));
             })}

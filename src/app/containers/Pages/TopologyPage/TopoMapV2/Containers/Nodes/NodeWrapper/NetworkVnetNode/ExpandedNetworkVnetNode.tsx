@@ -53,11 +53,9 @@ const ExpandedNetworkVnetNode: React.FC<Props> = (props: Props) => {
       // onMouseOut={onMouseLeave}
       className={`topoNodeLevel1 vnetNodeWrapper ${isNodeSelected ? 'selectedTopoLevel1' : ''}`}
       transform={`translate(${coord.x}, ${coord.y})`}
-      data-id={`${props.item.nodeType}${props.item.id}`}
+      data-id={`structure${props.item.nodeType}${props.item.id}`}
       onClick={onClick}
       cursor="pointer"
-      data-x={NODES_CONSTANTS.NETWORK_VNET.expanded.minWidth / 2 + coord.x}
-      data-y={coord.y}
     >
       <rect
         stroke={isNodeSelected ? 'var(--_highlightColor)' : NODES_CONSTANTS.NETWORK_VNET.expanded.stroke}

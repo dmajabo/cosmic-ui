@@ -1,11 +1,11 @@
 import React from 'react';
-import { ICollapseStyles, ILabelHtmlStyles, NODES_CONSTANTS } from '../../../../model';
+import { ICollapseStyles, IExpandedStyles, ILabelHtmlStyles, NODES_CONSTANTS } from '../../../../model';
 import { INetworkVNetworkPeeringConnectionNode, ITopoRegionNode } from 'lib/hooks/Topology/models';
 import { buildPeerLinks, IPeerLink } from './helper';
-import PeerConnectionLink from './PeerConnectionLink';
 import * as d3 from 'd3';
 import HtmlNodeLabel from '../../Containers/HtmlNodeLabel';
 import { IRefionContainersOffsets } from '../RegionNode/ExpandNodeContent/helper';
+import StructurePeerLink from './StructurePeerLink';
 
 interface Props {
   dataItem: ITopoRegionNode;
@@ -15,12 +15,12 @@ interface Props {
   y: number;
   offsetData: IRefionContainersOffsets;
   nodeStyles: ICollapseStyles;
-  vnetCollapseStyles?: ICollapseStyles;
+  vnetExpandStyles: IExpandedStyles;
   labelStyles?: ILabelHtmlStyles;
   showLabel?: boolean;
 }
 
-const PeerConnectionNode: React.FC<Props> = (props: Props) => {
+const StructurePeerConnection: React.FC<Props> = (props: Props) => {
   const [links, setLinks] = React.useState<IPeerLink[]>([]);
   const nodeRef = React.useRef(null);
 
@@ -37,7 +37,7 @@ const PeerConnectionNode: React.FC<Props> = (props: Props) => {
     _regG.selectAll('.vnetNodeWrapper').attr('opacity', 0.5);
     _node.attr('opacity', 1).classed('peerConnectionNodeWrapperHover', true);
     links.forEach(link => {
-      const _vps = _regG.select(`g[data-id='${link.to.nodeType}${link.to.id}']`);
+      const _vps = _regG.select(`g[data-id='structure${link.to.nodeType}${link.to.id}']`);
       _vps.attr('opacity', 1).classed('vpsHoverStroke', true);
     });
   };
@@ -50,7 +50,7 @@ const PeerConnectionNode: React.FC<Props> = (props: Props) => {
     _regG.selectAll('.vnetNodeWrapper').attr('opacity', 1);
     _node.classed('peerConnectionNodeWrapperHover', null);
     links.forEach(link => {
-      const _vps = _regG.select(`g[data-id='${link.to.nodeType}${link.to.id}']`);
+      const _vps = _regG.select(`g[data-id='structure${link.to.nodeType}${link.to.id}']`);
       _vps.classed('vpsHoverStroke', null);
     });
   };
@@ -58,7 +58,7 @@ const PeerConnectionNode: React.FC<Props> = (props: Props) => {
   return (
     <g ref={nodeRef} className="peerConnectionNodeWrapper">
       {links.map(it => (
-        <PeerConnectionLink
+        <StructurePeerLink
           key={`${it.from.id}${it.to.id}peerLink`}
           fromCenterX={props.x + props.nodeStyles.r}
           fromCenterY={props.y + props.nodeStyles.r}
@@ -66,7 +66,7 @@ const PeerConnectionNode: React.FC<Props> = (props: Props) => {
           from={it.from}
           to={it.to}
           offsetData={props.offsetData}
-          vnetCollapseStyles={props.vnetCollapseStyles}
+          vnetExpandStyles={props.vnetExpandStyles}
         />
       ))}
       <g transform={`translate(${props.x}, ${props.y})`} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
@@ -87,4 +87,4 @@ const PeerConnectionNode: React.FC<Props> = (props: Props) => {
   );
 };
 
-export default React.memo(PeerConnectionNode);
+export default React.memo(StructurePeerConnection);
