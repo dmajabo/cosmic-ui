@@ -13,3 +13,7 @@ export const onUnHoverNode = (id: string) => {
   svg.selectAll('.hoverNode').classed('hoverNode', false);
   svg.selectAll('.unHoverNode').classed('unHoverNode', false);
 };
+
+export const onReiseNode = (gId: string) => {
+  d3.select(`#${gId}`).raise();
+};

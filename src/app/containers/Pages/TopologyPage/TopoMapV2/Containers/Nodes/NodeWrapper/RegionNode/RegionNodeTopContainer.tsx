@@ -10,7 +10,6 @@ import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/mod
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 import RegionCollapsedNode from './RegionCollapsedNode';
 import RegionExpandNode from './RegionExpandNode';
-// import { onHoverNode, onUnHoverNode } from '../../../../Graph/helper';
 import TransitionContainer from '../../../TransitionContainer';
 import { TopologyPanelTypes } from 'lib/models/topology';
 import { getRegionChildrenContainersOffsets, IRefionContainersOffsets } from './ExpandNodeContent/helper';
@@ -115,17 +114,9 @@ const RegionNodeTopContainer: React.FC<Props> = (props: Props) => {
     topology.onToogleRegionStructure(props.region, true);
   };
 
-  // const onMouseEnter = () => {
-  //   onHoverNode(`${NODES_CONSTANTS.REGION.type}${props.region.uiId}`);
-  // };
-
-  // const onMouseLeave = () => {
-  //   onUnHoverNode(`${NODES_CONSTANTS.REGION.type}${props.region.uiId}`);
-  // };
-
   if (!pos || !offsetsData) return null;
   return (
-    <TransitionContainer stateIn={props.region.visible} transform="none">
+    <TransitionContainer id={`g${NODES_CONSTANTS.REGION.type}${props.region.uiId}`} stateIn={props.region.visible} transform="none">
       <>
         {props.region.collapsed && (
           <RegionCollapsedNode
