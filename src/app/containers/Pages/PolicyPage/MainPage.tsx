@@ -2,28 +2,28 @@ import React from 'react';
 import { Tab, Tabs } from '@mui/material';
 import { TabsStyles } from 'app/components/Tabs/TabsStyles';
 import { TabComponentProps } from 'app/components/Tabs/TabComponentProps';
-import { PageWrapperStyles, TabsWrapperStyles } from '../../Shared/styles';
 import TabPanel from 'app/components/Tabs/TabPanel';
-import { AUTOMATIONS_TABS } from 'lib/hooks/Automation/models';
-import { useAutomationDataContext } from 'lib/hooks/Automation/useAutomationDataContext';
-import Triggers from './Triggers';
-import Configutation from './Configutation';
+import { usePolicyDataContext } from 'lib/hooks/Policy/usePolicyDataContext';
+import { POLICY_TABS } from 'lib/hooks/Policy/models';
+import { PageWrapperStyles, TabsWrapperStyles } from '../Shared/styles';
+import Segments from './Page/Segments';
+import Rules from './Page/Rules';
 
 interface IProps {}
 
 const MainPage: React.FC<IProps> = (props: IProps) => {
-  const { automation } = useAutomationDataContext();
+  const { policy } = usePolicyDataContext();
   const classes = TabsStyles();
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
-    automation.onChangeSelectedTab(newValue);
+    policy.onChangeSelectedTab(newValue);
   };
 
   return (
     <PageWrapperStyles>
       <TabsWrapperStyles>
         <Tabs
-          value={automation.selectedTab.index}
+          value={policy.selectedTab.index}
           onChange={handleChange}
           className={classes.tabs}
           TabIndicatorProps={{
@@ -34,24 +34,24 @@ const MainPage: React.FC<IProps> = (props: IProps) => {
             },
           }}
         >
-          {AUTOMATIONS_TABS.map(it => (
+          {POLICY_TABS.map(it => (
             <Tab disableRipple key={`automationKey${it.id}`} label={it.label} classes={{ selected: classes.tabSelected }} {...TabComponentProps(0)} className={classes.tabBigSize} />
           ))}
         </Tabs>
       </TabsWrapperStyles>
       <TabPanel
-        styles={{ display: 'flex', flexDirection: 'column', flex: automation.selectedTab.index === AUTOMATIONS_TABS[0].index ? '1 1 100%' : '0' }}
-        value={automation.selectedTab.index}
-        index={AUTOMATIONS_TABS[0].index}
+        styles={{ display: 'flex', flexDirection: 'column', flex: policy.selectedTab.index === POLICY_TABS[0].index ? '1 1 100%' : '0' }}
+        value={policy.selectedTab.index}
+        index={POLICY_TABS[0].index}
       >
-        <Triggers />
+        <Segments />
       </TabPanel>
       <TabPanel
-        styles={{ display: 'flex', flexDirection: 'column', flex: automation.selectedTab.index === AUTOMATIONS_TABS[1].index ? '1 1 100%' : '0' }}
-        value={automation.selectedTab.index}
-        index={AUTOMATIONS_TABS[1].index}
+        styles={{ display: 'flex', flexDirection: 'column', flex: policy.selectedTab.index === POLICY_TABS[1].index ? '1 1 100%' : '0' }}
+        value={policy.selectedTab.index}
+        index={POLICY_TABS[1].index}
       >
-        <Configutation />
+        <Rules />
       </TabPanel>
     </PageWrapperStyles>
   );

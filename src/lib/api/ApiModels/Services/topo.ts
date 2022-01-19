@@ -13,4 +13,5 @@ export const TopoApi = {
   getSites: () => 'topo/api/v1/topology/onprem/devices',
   getApps: () => 'topo/api/v1/topology/cloud/apps',
   getWedges: () => 'topo/api/v1/topology/wedges', // => IWEdgesRes
+  getVnetworks: () => 'topo/api/v1/topology/cloud/vnetworks', // => IVnetworksRes
 };

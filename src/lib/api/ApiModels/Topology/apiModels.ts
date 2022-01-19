@@ -1,5 +1,6 @@
 import { IBaseEntity } from 'lib/models/general';
 import { TopologyGroupTypesAsNumber, TopologyGroupTypesAsString } from 'lib/models/topology';
+import { IBasePages, IBaseTotalCount } from '../generalApiModel';
 import { IPolicysvcListSegmentPsResponse } from '../Policy/Segment';
 
 export enum SelectorEvalType {
@@ -439,4 +440,14 @@ export interface ITopologyDataRes {
   segments: IPolicysvcListSegmentPsResponse;
   groups: ITopologyGroupsData;
   organizations: ITopologyMapData;
+}
+
+export interface ICloudVNetworkP extends IBaseEntity<string> {
+  controllerName: string;
+  name: string;
+  cidrBlock: string;
+  extId: string;
+}
+export interface IVnetworksRes extends IBaseTotalCount, IBasePages {
+  vnets: ICloudVNetworkP[];
 }

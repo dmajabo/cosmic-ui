@@ -165,3 +165,8 @@ export interface IFilterOption<T> {
   label: string;
   hide?: boolean;
 }
+
+export interface IKeyValuePair<T> {
+  key: string;
+  value: T;
+}

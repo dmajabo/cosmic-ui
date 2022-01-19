@@ -54,6 +54,7 @@ const AnalyticsPage: React.FC = () => {
               value={TabName.SessionLogs}
               label={<span className={selectedTabName === TabName.SessionLogs ? classes.activeTabLabel : classes.tabLabel}>{TabName.SessionLogs}</span>}
               wrapped
+              disableRipple
               {...a11yProps(TabName.SessionLogs)}
             />
             {/* <Tab
@@ -66,12 +67,14 @@ const AnalyticsPage: React.FC = () => {
               value={TabName.Anomalies}
               label={<span className={selectedTabName === TabName.Anomalies ? classes.activeTabLabel : classes.tabLabel}>{TabName.Anomalies}</span>}
               wrapped
+              disableRipple
               {...a11yProps(TabName.Anomalies)}
             />
             <Tab
               value={TabName.PolicyLogs}
               label={<span className={selectedTabName === TabName.PolicyLogs ? classes.activeTabLabel : classes.tabLabel}>{TabName.PolicyLogs}</span>}
               wrapped
+              disableRipple
               {...a11yProps(TabName.PolicyLogs)}
             />
             {/* <Tab

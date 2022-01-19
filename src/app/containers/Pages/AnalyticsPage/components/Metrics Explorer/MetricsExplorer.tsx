@@ -368,6 +368,7 @@ export const MetricsExplorer: React.FC = () => {
               value={TimeMetricTabValue.Lookback}
               label={<span className={classes.tableHeaderText}>LOOKBACK</span>}
               wrapped
+              disableRipple
               {...a11yProps(TimeMetricTabValue.Lookback)}
             />
             <Tab
@@ -375,6 +376,7 @@ export const MetricsExplorer: React.FC = () => {
               value={TimeMetricTabValue.Custom}
               label={<span className={classes.tableHeaderText}>CUSTOM</span>}
               wrapped
+              disableRipple
               {...a11yProps(TimeMetricTabValue.Custom)}
             />
           </Tabs>

@@ -16,7 +16,7 @@ export const PolicyApi = {
 
   getSegments: () => 'policy/api/v1/policy/segments', // IPolicysvcListSegmentPsResponse
   postSegments: () => 'policy/api/v1/policy/segments', // body: { segment: ISegmentSegmentP, dry_run?: boolean }  => res: baseBaseResponse
-  getSegmentsById: (id: string) => 'api/v1/policy/segments/' + id, // ISegmentSegmentP
-  deleteSegmentsById: (id: string) => 'api/v1/policy/segments/' + id, // empty
-  putSegmentsById: (id: string) => 'api/v1/policy/segments/' + id, // baseBaseResponse
+  getSegmentsById: (id: string) => 'policy/api/v1/policy/segments/' + id, // ISegmentSegmentP
+  deleteSegmentsById: (id: string) => 'policy/api/v1/policy/segments/' + id, // empty
+  putSegmentsById: (id: string) => 'policy/api/v1/policy/segments/' + id, // baseBaseResponse
 };

@@ -261,6 +261,7 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
             value={MetricTabValue.latency}
             label={<span className={classes.tableHeaderText}>LATENCY</span>}
             wrapped
+            disableRipple
             {...a11yProps(MetricTabValue.latency)}
           />
           <Tab
@@ -268,6 +269,7 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
             value={MetricTabValue.packetLoss}
             label={<span className={classes.tableHeaderText}>PACKET LOSS</span>}
             wrapped
+            disableRipple
             {...a11yProps(MetricTabValue.packetLoss)}
           />
           <Tab
@@ -275,6 +277,7 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
             value={MetricTabValue.goodput}
             label={<span className={classes.tableHeaderText}>GOODPUT</span>}
             wrapped
+            disableRipple
             {...a11yProps(MetricTabValue.goodput)}
           />
         </Tabs>

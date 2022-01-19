@@ -63,7 +63,7 @@ export const GridStyles = makeStyles(
         '& .MuiDataGrid-row': {
           height: 70,
           '&:hover': {
-            background: 'transparent',
+            background: 'transparent !important',
           },
         },
         '& .MuiDataGrid-cell': {
@@ -140,13 +140,13 @@ export const GridStyles = makeStyles(
           border: '1px solid var(--_rowBorder)',
           boxSizing: 'border-box',
           '&:hover': {
-            background: 'var(--_primaryBg)',
+            background: 'var(--_primaryBg) !important',
           },
           '&.Mui-selected': {
-            background: 'var(--_primaryBg)',
+            background: 'var(--_primaryBg) !important',
           },
           '&.Mui-selected:hover': {
-            background: 'var(--_primaryBg)',
+            background: 'var(--_primaryBg) !important',
           },
         },
         '& .MuiDataGrid-cell': {
@@ -177,6 +177,10 @@ export const GridStyles = makeStyles(
         '& .MuiDataGrid-columnHeaders': {
           borderBottom: '1px solid var(--_rowBorder)',
           height: '50px',
+          background: 'var(--_appBg)',
+          '& .MuiDataGrid-columnHeaderTitleContainer': {
+            padding: 0,
+          },
           '& .MuiDataGrid-columnHeadersInner': {
             height: '100%',
           },
@@ -215,13 +219,13 @@ export const GridStyles = makeStyles(
           height: 50,
           background: 'var(--_primaryBg)',
           '&:hover': {
-            background: 'var(--_primaryBg)',
+            background: 'var(--_primaryBg) !important',
           },
         },
         '& .MuiDataGrid-row.Mui-selected': {
-          background: 'var(--_primaryBg)',
+          background: 'var(--_primaryBg) !important',
           '&:hover': {
-            background: 'var(--_primaryBg)',
+            background: 'var(--_primaryBg) !important',
           },
         },
 

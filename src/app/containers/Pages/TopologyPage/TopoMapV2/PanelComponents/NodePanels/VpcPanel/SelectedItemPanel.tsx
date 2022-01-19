@@ -49,9 +49,9 @@ const SelectedItemPanel: React.FC<IProps> = (props: IProps) => {
             },
           }}
         >
-          <Tab label="Metrics" classes={{ selected: classes.tabSelected }} {...TabComponentProps(0)} className={classes.tab} />
-          <Tab label="Routes" classes={{ selected: classes.tabSelected }} {...TabComponentProps(1)} className={classes.tab} />
-          <Tab label="Policy" classes={{ selected: classes.tabSelected }} {...TabComponentProps(2)} className={classes.tab} />
+          <Tab disableRipple label="Metrics" classes={{ selected: classes.tabSelected }} {...TabComponentProps(0)} className={classes.tab} />
+          <Tab disableRipple label="Routes" classes={{ selected: classes.tabSelected }} {...TabComponentProps(1)} className={classes.tab} />
+          <Tab disableRipple label="Policy" classes={{ selected: classes.tabSelected }} {...TabComponentProps(2)} className={classes.tab} />
         </Tabs>
       </PanelTabWrapper>
       <OverflowContainer>
