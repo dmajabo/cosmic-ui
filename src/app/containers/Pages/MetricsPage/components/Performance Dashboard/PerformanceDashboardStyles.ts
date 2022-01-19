@@ -28,6 +28,7 @@ export const PerformanceDashboardStyles = makeStyles(
       },
       itemTitle: {
         fontSize: 22,
+        marginTop: 10,
         color: 'var(--_primaryTextColor)',
         fontWeight: 700,
       },
@@ -142,6 +143,11 @@ export const PerformanceDashboardStyles = makeStyles(
         padding: 5,
         marginBottom: 20,
       },
+      performanceTabContainer: {
+        backgroundColor: 'var(--_tabContainerBg)',
+        padding: 5,
+        borderRadius: 6,
+      },
       selectedTab: {
         backgroundColor: 'white',
         borderRadius: 6,
@@ -161,12 +167,15 @@ export const PerformanceDashboardStyles = makeStyles(
         zIndex: 4,
         backgroundColor: '#F3F6FC',
       },
+      tabTitleContainer: {
+        display: 'flex',
+        justifyContent: 'space-between',
+      },
       timeRangeContainer: {
         width: 250,
         display: 'flex',
         justifyContent: 'space-between',
         float: 'right',
-        marginTop: 100,
       },
       timeRangeText: {
         color: '#848DA3',
@@ -270,6 +279,21 @@ export const PerformanceDashboardStyles = makeStyles(
       popoverText: {
         fontSize: 12,
         fontWeight: 700,
+      },
+      marginButton: {
+        marginRight: 20,
+        position: 'relative',
+      },
+      searchBar: {
+        border: '1px solid #CBD2DC',
+        padding: 13,
+        borderRadius: 6,
+        width: '25vw',
+      },
+      searchIcon: {
+        position: 'absolute',
+        right: 15,
+        bottom: 0,
       },
     }),
   {

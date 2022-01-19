@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useTable, useSortBy, useAbsoluteLayout } from 'react-table';
 import { AnomalySessionLogsData, Column } from 'lib/api/http/SharedTypes';
 import { AnalyticsStyles } from '../../AnalyticsStyles';
-import SortIcon from '../../icons/performance dashboard/sort';
+import SortIcon from '../../../MetricsPage/icons/performance dashboard/sort';
 
 const Styles = styled.div`
   overflow-x: auto;

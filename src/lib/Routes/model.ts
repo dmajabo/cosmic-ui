@@ -7,6 +7,7 @@ import { analyticsIcon } from 'app/components/SVGIcons/pagesIcons/analytics';
 import { policyIcon } from 'app/components/SVGIcons/pagesIcons/policyIcon';
 // import { sessionsIcon } from 'app/components/SVGIcons/pagesIcons/sessions';
 // import { edgesIcon } from 'app/components/SVGIcons/pagesIcons/edgesIcon';
+import { metricsIcon } from 'app/components/SVGIcons/pagesIcons/metrics';
 export const ROUTE = {
   base: '/',
   login: '/login',
@@ -20,6 +21,7 @@ export const ROUTE = {
   settings: '/settings',
   workflow: '/workflow',
   signUp: '/sign-up',
+  metrics: '/metrics',
   // sessions: '/sessions',
   notFound: '*',
 };
@@ -45,6 +47,7 @@ export const APP_PAGES: IPage[] = [
   // { id: 'transit', path: ROUTE.transit, pageName: 'Transit', icon: edgesIcon, breadcrumb: BreadCrumbTypes.TRANSIT },
   // { id: 'performanceDashboard', path: ROUTE.performanceDashboard, pageName: 'Performance Dashboard', icon: performanceDashboard, breadcrumb: null },
   // { id: 'sessions', path: ROUTE.sessions, pageName: 'Sessions', icon: sessionsIcon, breadcrumb: null },
+  { id: 'metrics', path: ROUTE.metrics, pageName: 'Metrics', icon: metricsIcon, breadcrumb: null },
   { id: 'analytics', path: ROUTE.analytics, pageName: 'Analytics', icon: analyticsIcon, breadcrumb: null },
   { id: 'workflow', path: ROUTE.workflow, pageName: 'Workflow', icon: automationIcon, breadcrumb: BreadCrumbTypes.WORK_FLOW },
   { id: 'settings', path: ROUTE.settings, pageName: 'Settings', icon: settingsIcon, breadcrumb: null },

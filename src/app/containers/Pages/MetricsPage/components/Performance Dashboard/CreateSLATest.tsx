@@ -1,17 +1,18 @@
-import { Button, Typography } from '@mui/material';
+import { Button } from '@mui/material';
 import React, { useState, useEffect } from 'react';
 import { PerformanceDashboardStyles } from './PerformanceDashboardStyles';
 import Select from 'react-select';
-import { CreateSLATestRequest, Organization, SLATest, UpdateSLATestRequest } from 'lib/api/http/SharedTypes';
-import CloseIcon from '../../icons/performance dashboard/close';
+import { CreateSLATestRequest, SLATest, UpdateSLATestRequest } from 'lib/api/http/SharedTypes';
 import { GetSelectedOrganization } from './filterFunctions';
 import CreatableSelect from 'react-select/creatable';
 import isEmpty from 'lodash/isEmpty';
+import { INetworkOrg } from 'lib/api/ApiModels/Topology/apiModels';
+import CloseIcon from '../../icons/performance dashboard/close';
 
 interface CreateSLATestProps {
   readonly addSlaTest?: Function;
-  readonly merakiOrganizations: Organization[];
-  readonly awsOrganizations: Organization[];
+  readonly merakiOrganizations: INetworkOrg[];
+  readonly awsOrganizations: INetworkOrg[];
   readonly popup?: boolean;
   readonly closeSlaTest?: Function;
   readonly isUpdateTest?: boolean;
@@ -66,7 +67,8 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ slaTestDataToUpdat
   useEffect(() => {
     const destinationOptions: SelectOptions[] = [];
     awsOrganizations.forEach(organization => {
-      organization.vnets.forEach(vnet => {
+      const orgVnets = organization.regions.reduce((acc, nextValue) => acc.concat(nextValue.vnets), []);
+      orgVnets.forEach(vnet => {
         vnet.vms.forEach(vm => {
           vm.nic.forEach(nic => {
             const ipAddress = nic.publicIp ? nic.publicIp : nic.privateIp;
@@ -84,7 +86,8 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ slaTestDataToUpdat
   useEffect(() => {
     if (!isEmpty(merakiOrganizations) && sourceOrg) {
       const selectedOrganization = GetSelectedOrganization(merakiOrganizations, sourceOrg.value);
-      setSelectedOrganizationVnets(selectedOrganization.vnets);
+      const orgVnets = selectedOrganization.regions.reduce((acc, nextValue) => acc.concat(nextValue.vnets), []);
+      setSelectedOrganizationVnets(orgVnets);
     }
   }, [sourceOrg]);
 
@@ -181,7 +184,7 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ slaTestDataToUpdat
       <div className={classes.slaFormElementContainer}>
         <div className={classes.flexContainer}>
           <div>
-            <Typography className={classes.itemTitle}>{updateSlaTest ? 'Edit SLA Test' : 'Create SLA Test'}</Typography>
+            <span className={classes.itemTitle}>{updateSlaTest ? 'Edit SLA Test' : 'Create SLA Test'}</span>
           </div>
           {popup && (
             <div style={{ cursor: 'pointer' }} onClick={() => closeSlaTest()}>
@@ -212,9 +215,7 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ slaTestDataToUpdat
             onClick={updateSlaTest ? handleFormUpdate : handleFormSubmit}
             disableElevation
           >
-            <Typography className={classes.slaTestButtonText} noWrap>
-              {updateSlaTest ? 'EDIT SLA TEST' : 'CREATE SLA TEST'}
-            </Typography>
+            <span className={classes.slaTestButtonText}>{updateSlaTest ? 'EDIT SLA TEST' : 'CREATE SLA TEST'}</span>
           </Button>
         </div>
       </div>

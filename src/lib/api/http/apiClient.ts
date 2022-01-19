@@ -1,10 +1,10 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { IMetrickQueryParam } from '../ApiModels/Metrics/apiModel';
+import { ITopologyMapData } from '../ApiModels/Topology/apiModels';
 import {
   CreateSLATestRequest,
   CreateSLATestResponse,
   DeleteSLATestResponse,
-  GetOrganizationResponse,
   GetSLATestResponse,
   HeatMapResponse,
   SLATest,
@@ -23,7 +23,7 @@ import {
 const BASE_URL = process.env.REACT_APP_API_ENDPOINT_PRODUCTION;
 
 interface ApiClient {
-  readonly getOrganizations: () => Promise<GetOrganizationResponse>;
+  readonly getOrganizations: () => Promise<ITopologyMapData>;
   readonly getSLATests: () => Promise<GetSLATestResponse>;
   readonly createSLATest: (request: CreateSLATestRequest) => Promise<CreateSLATestResponse>;
   readonly getPacketLossMetrics: (deviceId: string, destination: string, startTime: string, testId: string) => Promise<SLATestMetricsResponse>;
@@ -74,12 +74,12 @@ export const createApiClient = (token: string): ApiClient => {
     },
   };
 
-  async function getOrganizations(): Promise<GetOrganizationResponse> {
+  async function getOrganizations(): Promise<ITopologyMapData> {
     try {
-      const response = await axios.get<GetOrganizationResponse>(PATHS.GET_ORGANIZATIONS, config);
+      const response = await axios.get<ITopologyMapData>(PATHS.GET_ORGANIZATIONS, config);
       return response.data;
     } catch (error) {
-      return {};
+      return { count: 0, organizations: [] };
     }
   }
 

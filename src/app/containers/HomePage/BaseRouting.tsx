@@ -8,6 +8,7 @@ import SettingsPage from 'app/containers/Pages/SettingsPage';
 // import SessionsPage from 'app/containers/Pages/SessionsPage';
 import AutomationPage from 'app/containers/Pages/AutomationPage';
 import PolicyPage from '../Pages/PolicyPage';
+import MetricsPage from '../Pages/MetricsPage';
 // import Edges from 'app/containers/Pages/Edges';
 
 export default function BaseRouting() {
@@ -17,6 +18,7 @@ export default function BaseRouting() {
       <Switch>
         <Route exact path={`${match.path}${ROUTE.dashboard}`} component={DashboardPage} />
         <Route exact path={`${match.path}${ROUTE.topology}`} component={TopologyPage} />
+        <Route exact path={`${match.path}${ROUTE.metrics}`} component={MetricsPage} />
         <Route exact path={`${match.path}${ROUTE.policy}`} component={PolicyPage} />
         {/* <Route exact path={`${match.path}${ROUTE.transit}`} component={Edges} /> */}
         <Route exact path={`${match.path}${ROUTE.analytics}`} component={AnalyticsPage} />

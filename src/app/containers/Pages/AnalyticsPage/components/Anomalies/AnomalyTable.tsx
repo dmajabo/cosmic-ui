@@ -5,7 +5,7 @@ import { AnomalyCostTableData, AnomalyExperienceTableData, Column, ColumnAccesso
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import { AnalyticsStyles } from '../../AnalyticsStyles';
-import SortIcon from '../../icons/performance dashboard/sort';
+import SortIcon from '../../../MetricsPage/icons/performance dashboard/sort';
 
 const Styles = styled.div`
   table {
