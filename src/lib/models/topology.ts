@@ -12,6 +12,7 @@ export interface ITopologyPreparedMapData {
 export enum TopologyPanelTypes {
   ENTITIES = 'entities',
   GROUPS = 'groups',
+  SEGMENTS = 'segments',
   FILTERS = 'filters',
   VPC = 'Vpc',
   Device = ' device',

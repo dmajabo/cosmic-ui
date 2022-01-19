@@ -13,10 +13,12 @@ export const TransitionGContainer = styled.g<Props>`
   &.entered {
     opacity: 1;
     transform: none;
+    zoom: 1;
   }
   &.exit,
   &.exited {
     opacity: 0;
+    zoom: 0;
     transform: ${props => props.transformStyle || 'scale(0)'};
   }
 `;

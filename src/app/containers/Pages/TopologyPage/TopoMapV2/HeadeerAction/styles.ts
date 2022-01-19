@@ -7,6 +7,7 @@ export const Wrapper = styled.div`
   height: 70px;
   width: 100%;
   background: var(--_primaryBg);
+  z-index: 1;
 `;
 
 interface ISideProps {
@@ -26,7 +27,7 @@ export const ZoomValue = styled.span`
   margin: auto 0;
   flex-shrink: 0;
   width: 60px;
-  display: inline-block;
+  display: block;
   font-family: 'DMSans';
   font-style: normal;
   font-weight: 500;
@@ -37,4 +38,21 @@ export const ZoomValue = styled.span`
   overflow: hidden;
   text-overflow: ellipsis;
   color: var(--_primaryTextColor);
+  position: relative;
+  input {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border: none;
+    outline: 0;
+    background: var(--_primaryBg);
+    color: var(--_primaryBg);
+  }
+  span {
+    /* position: absolute;
+    top: 0;
+    left: 0; */
+    width: 100%;
+    pointer-events: none;
+  }
 `;

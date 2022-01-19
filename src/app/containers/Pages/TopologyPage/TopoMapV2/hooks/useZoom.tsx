@@ -1,7 +1,7 @@
 import React from 'react';
 import * as d3 from 'd3';
 import { ITransform, ZoomRange } from 'lib/models/general';
-import { ITopoNode, ITopoRegionNode } from 'lib/hooks/Topology/models';
+import { ITopoAccountNode, ITopoRegionNode, ITopoSitesNode } from 'lib/hooks/Topology/models';
 import { STANDART_DISPLAY_RESOLUTION_V2 } from 'lib/models/general';
 
 interface IProps {
@@ -43,7 +43,7 @@ export function useZoom(props: IProps) {
 
   const onZoomIn = () => {
     const svg = d3.select(`#${svgId}`);
-    let _k = transform.k + 0.1;
+    let _k = transform.k + 0.01;
     if (_k >= ZoomRange.max) {
       _k = ZoomRange.max;
     }
@@ -55,7 +55,7 @@ export function useZoom(props: IProps) {
 
   const onZoomOut = () => {
     const svg = d3.select(`#${svgId}`);
-    let _k = transform.k - 0.1;
+    let _k = transform.k - 0.01;
     if (_k <= ZoomRange.min) {
       _k = ZoomRange.min;
     }
@@ -65,7 +65,13 @@ export function useZoom(props: IProps) {
     zoom.scaleTo(svg, _k);
   };
 
-  const onCentered = (nodes: (ITopoNode<any, any> | ITopoRegionNode)[], _disabledTransition?: boolean) => {
+  const onZoomChange = (v: number) => {
+    if (v === transform.k) return;
+    const svg = d3.select(`#${svgId}`);
+    zoom.scaleTo(svg, v);
+  };
+
+  const onCentered = (nodes: (ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[], _disabledTransition?: boolean) => {
     const svg = d3.select(`#${svgId}`);
     const rootSize = getMapSize(nodes);
     const scale = getScaleSizeHelper(rootSize.width, rootSize.height);
@@ -100,18 +106,18 @@ export function useZoom(props: IProps) {
     if (!event.sourceEvent) {
       if (disabledTransition) {
         disabledTransition = false;
-        g.attr('transform', `translate(${x}, ${y}) scale(${k})`);
+        g.attr('transform', `translate(${x}, ${y}) scale(${k})`).attr('data-k', k);
         return;
       }
-      g.transition().attr('transform', `translate(${x}, ${y}) scale(${k})`);
+      g.transition().attr('transform', `translate(${x}, ${y}) scale(${k})`).attr('data-k', k);
       return;
     }
     if (disabledTransition) {
       disabledTransition = false;
-      g.attr('transform', `translate(${x}, ${y}) scale(${k})`);
+      g.attr('transform', `translate(${x}, ${y}) scale(${k})`).attr('data-k', k);
       return;
     }
-    g.transition().duration(0).attr('transform', `translate(${x}, ${y}) scale(${k})`);
+    g.transition().duration(0).attr('transform', `translate(${x}, ${y}) scale(${k})`).attr('data-k', k);
   };
 
   const zoomEnd = event => {
@@ -123,7 +129,7 @@ export function useZoom(props: IProps) {
     setTransform({ x, y, k });
   };
 
-  const getMapSize = (nodes: (ITopoNode<any, any> | ITopoRegionNode)[]) => {
+  const getMapSize = (nodes: (ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[]) => {
     let left = 0;
     let right = 0;
     let top = 0;
@@ -160,6 +166,7 @@ export function useZoom(props: IProps) {
     onZoomInit,
     onZoomIn,
     onZoomOut,
+    onZoomChange,
     onCentered,
     onUnsubscribe,
   };

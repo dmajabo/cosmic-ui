@@ -1,4 +1,7 @@
 export const getChunksFromArray = (items: any[], chunkSize: number) => {
+  if (items && items.length && items.length <= chunkSize) {
+    return [[...items]];
+  }
   const _arr = [];
   for (let i = 0, j = items.length; i < j; i += chunkSize) {
     const temporary = items.slice(i, i + chunkSize);

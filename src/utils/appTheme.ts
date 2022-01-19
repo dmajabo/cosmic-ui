@@ -114,6 +114,7 @@ export const APP_THEME: ITheme = {
     '--_accountBg': '#232F3D',
     '--_dataCenterBg': '#95A6C0',
     '--_sitesCiscoBg': '#7AC142',
+    '--_vnetIconBg': '#7BAB4E',
   },
   dark: {
     '--_primaryBg': 'black',
@@ -215,6 +216,7 @@ export const APP_THEME: ITheme = {
     '--_accountBg': '#232F3D',
     '--_dataCenterBg': '#95A6C0',
     '--_sitesCiscoBg': '#7AC142',
+    '--_vnetIconBg': '#7BAB4E',
   },
 };
 

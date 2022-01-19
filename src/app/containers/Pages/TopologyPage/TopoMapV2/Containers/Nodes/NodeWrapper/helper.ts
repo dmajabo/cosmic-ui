@@ -1,8 +1,8 @@
 import { ICollapseStyles, IExpandedStyles, TOPOLOGY_IDS } from '../../../model';
 import { ISize } from 'lib/models/general';
-import { ITGWNode, ITopoNode, TopoNodeTypes } from 'lib/hooks/Topology/models';
+import { ITGWNode, ITopoAccountNode, TopoNodeTypes } from 'lib/hooks/Topology/models';
 import * as d3 from 'd3';
-export const getExpandedAccountSize = (item: ITopoNode<any, ITGWNode>, expanded: IExpandedStyles, chStyles: ICollapseStyles): ISize => {
+export const getExpandedAccountSize = (item: ITopoAccountNode, expanded: IExpandedStyles, chStyles: ICollapseStyles): ISize => {
   const width = !item.children || !item.children.length ? expanded.minWidth : calculateWedgesRowWidth(item.children, expanded, chStyles);
   return { width: width, height: expanded.minHeight };
 };

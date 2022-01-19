@@ -26,7 +26,7 @@ const RuleSelect: React.FC<Props> = (props: Props) => {
       value={props.selectedValue || ''}
       options={props.possibleValues}
       styles={{ width: 'calc(50% - 5px)', margin: '0 5px 20px 0' }}
-      selectStyles={{ width: '100%' }}
+      selectStyles={{ width: '100%', background: 'var(--_primaryBg)' }}
       required
       onChange={onChange}
       renderValue={(v: ITopologyGroup) => <ValueLabel>{v.name}</ValueLabel>}

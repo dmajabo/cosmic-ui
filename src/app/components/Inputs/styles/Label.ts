@@ -18,4 +18,5 @@ export const InputLabel = styled.label<Props>`
   display: block;
   opacity: ${props => (props.disabled ? '0.5' : '1')};
   margin-bottom: 6px;
+  min-height: 16px;
 `;

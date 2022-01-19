@@ -1,11 +1,12 @@
-import { INetworkDevice, INetworkRegion, INetworkVNetwork, INetworkVNetworkPeeringConnection, INetworkWebAcl, INetworkwEdge, VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
+import { INetworkDevice, INetworkRegion, INetworkVNetwork, INetworkVNetworkPeeringConnection, INetworkWebAcl, INetworkwEdge, ITopologyGroup, VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
 import { AlertSeverity } from 'lib/api/ApiModels/Workflow/apiModel';
 import { IBaseEntity, ICollapsed, ICoord, IFilterOption, ISize, IVisible } from 'lib/models/general';
 
 export const VPCS_IN_ROW = 12;
 export const PEER_CONNECTION_IN_ROW = 11;
 export const WEB_ACL_IN_ROW = 11;
-export const DEV_IN_ROW = 100;
+export const DEV_IN_PAGE = 60;
+export const DEV_IN_ROW = 12;
 
 export enum TopoNodeTypes {
   ACCOUNT = 'account',
@@ -27,30 +28,38 @@ export enum DirectionType {
   BOTTOM = 'bottom',
 }
 
-export interface IMappedNode extends IVisible {
-  childIndex: number;
+export interface IOrganizationNode {
   orgIndex: number;
   orgId: string;
   vendorType: VendorTypes | string;
+}
+export interface IMappedNode extends IOrganizationNode, IVisible {
+  childIndex: number;
+  rowIndex: number;
   nodeType: TopoNodeTypes;
   uiId: string;
 }
 
-export interface IDeviceNode extends INetworkDevice, IMappedNode, ICoord {}
+export interface IFilteredNetworkDevice extends INetworkDevice, IOrganizationNode {}
 
-export interface INetworkVNetworkPeeringConnectionNode extends INetworkVNetworkPeeringConnection, IMappedNode, ICoord {}
-
-export interface INetworkVNetNode extends INetworkVNetwork, IMappedNode, ICoord {}
-
-export interface INetworkWebAclNode extends INetworkWebAcl, IMappedNode, ICoord {}
-
-export interface ITGWNode extends INetworkwEdge, IMappedNode, ICoord {}
-
-export interface IChildrenCount {
-  rows: number;
-  childrenCount: number;
-  totalHeight: number;
+export interface IDeviceNode extends IFilteredNetworkDevice, IMappedNode, ICoord {
+  page: number;
+  itemsInRow: number;
 }
+
+export interface INetworkVNetworkPeeringConnectionNode extends INetworkVNetworkPeeringConnection, IOrganizationNode, IMappedNode, ICoord {
+  itemsInRow: number;
+}
+
+export interface INetworkVNetNode extends INetworkVNetwork, IOrganizationNode, IMappedNode, ICoord {
+  itemsInRow: number;
+}
+
+export interface INetworkWebAclNode extends INetworkWebAcl, IOrganizationNode, IMappedNode, ICoord {
+  itemsInRow: number;
+}
+
+export interface ITGWNode extends INetworkwEdge, IOrganizationNode, IMappedNode, ICoord {}
 
 export enum TopoLinkTypes {
   NetworkNetworkLink = 'NetworkNetworkLink',
@@ -66,42 +75,52 @@ export interface ITopoLink<PP, P, PC, C, L> extends IVisible, IBaseEntity<string
   fromNode: ITopoLinkNode<PP, P>;
   toNode: ITopoLinkNode<PC, C>;
   data: L;
-  x1: number;
-  y1: number;
-  x2: number;
-  y2: number;
+  fromX: number;
+  fromY: number;
+  toX: number;
+  toY: number;
 }
 
-export interface ITopoNode<P, C> extends ICoord, ICollapsed, IVisible, IBaseEntity<string> {
-  dataItem: P;
+export interface IAccountNode extends IBaseEntity<string> {
   name: string;
+}
+
+export interface ITopoAccountNode extends ICoord, ICollapsed, IVisible {
+  dataItem: IAccountNode;
   uiId: string;
   orgId: string;
   type: TopoNodeTypes;
   expandedSize: ISize;
   collapsedSize: ISize;
-  children: C[];
-  childrenRows: IChildrenCount;
+  children: ITGWNode[];
 }
 
-export interface ITopoRegionNode extends ICoord, ICollapsed, IVisible, IBaseEntity<string> {
+export interface ITopoSitesNode extends ICoord, ICollapsed, IVisible {
+  dataItem: ITopologyGroup;
+  uiId: string;
+  type: TopoNodeTypes;
+  expandedSize: ISize;
+  collapsedSize: ISize;
+  children: IDeviceNode[][];
+  links: ITopoLink<any, any, any, any, any>[];
+  currentPage: number;
+}
+
+export interface ITopoRegionNode extends ICoord, ICollapsed, IVisible {
   dataItem: INetworkRegion;
-  name: string;
   uiId: string;
   orgId: string;
   type: TopoNodeTypes;
   expandedSize: ISize;
   collapsedSize: ISize;
-  children: INetworkVNetNode[];
-  childrenRows: IChildrenCount;
-  peerConnections: INetworkVNetworkPeeringConnectionNode[];
-  peerConnectionsRows: IChildrenCount;
-  webAcls: INetworkWebAclNode[];
-  webAclsRows: IChildrenCount;
+  children: INetworkVNetNode[][];
+  peerConnections: INetworkVNetworkPeeringConnectionNode[][];
+  webAcls: INetworkWebAclNode[][];
+  vnetLinks: ITopoLink<any, any, any, any, any>[];
 }
 
 export interface ITopologyPreparedMapDataV2 {
-  nodes: (ITopoNode<any, any> | ITopoRegionNode)[];
+  nodes: (ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[];
   links: ITopoLink<any, any, any, any, any>[];
 }
 

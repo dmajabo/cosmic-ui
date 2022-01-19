@@ -1,26 +1,17 @@
 import React from 'react';
-import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
 
 interface Props {
-  showWebAcls: boolean;
-  webAclTotalHeight: number;
+  id: string;
+  offsetY: number;
   children: React.ReactNode;
 }
 
-const PeerContainer: React.FC<Props> = (props: Props) => {
-  const [offsetTop, setOffsetTop] = React.useState<number>(NODES_CONSTANTS.REGION.expanded.contentPadding + NODES_CONSTANTS.REGION.headerHeight);
-
-  React.useEffect(() => {
-    if (props.showWebAcls) {
-      const _off = NODES_CONSTANTS.REGION.expanded.contentPadding * 2 + NODES_CONSTANTS.REGION.headerHeight + props.webAclTotalHeight;
-      setOffsetTop(_off);
-    } else {
-      const _off = NODES_CONSTANTS.REGION.expanded.contentPadding + NODES_CONSTANTS.REGION.headerHeight;
-      setOffsetTop(_off);
-    }
-  }, [props.showWebAcls]);
-
-  return <g transform={`translate(${NODES_CONSTANTS.REGION.expanded.contentPadding}, ${offsetTop})`}>{props.children}</g>;
+const PeerContainer: React.FC<Props> = ({ id, children, offsetY }) => {
+  return (
+    <g id={id} transform={`translate(0, ${offsetY})`} data-y={offsetY}>
+      {children}
+    </g>
+  );
 };
 
 export default React.memo(PeerContainer);

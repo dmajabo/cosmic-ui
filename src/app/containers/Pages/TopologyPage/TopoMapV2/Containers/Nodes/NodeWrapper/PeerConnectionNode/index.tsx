@@ -1,52 +1,56 @@
 import React from 'react';
-import { NODES_CONSTANTS } from '../../../../model';
+import { ICollapseStyles, ILabelHtmlStyles, NODES_CONSTANTS } from '../../../../model';
 import { INetworkVNetworkPeeringConnectionNode, ITopoRegionNode } from 'lib/hooks/Topology/models';
 import { buildPeerLinks, IPeerLink } from './helper';
 import PeerConnectionLink from './PeerConnectionLink';
 import * as d3 from 'd3';
+import HtmlNodeLabel from '../../Containers/HtmlNodeLabel';
+import { IRefionContainersOffsets } from '../RegionNode/ExpandNodeContent/helper';
 
 interface Props {
-  item: INetworkVNetworkPeeringConnectionNode;
   dataItem: ITopoRegionNode;
-  parentId: string;
+  item: INetworkVNetworkPeeringConnectionNode;
+  regionUiId: string;
+  x: number;
+  y: number;
+  offsetData: IRefionContainersOffsets;
+  nodeStyles: ICollapseStyles;
+  vnetCollapseStyles?: ICollapseStyles;
+  labelStyles?: ILabelHtmlStyles;
+  showLabel?: boolean;
 }
 
 const PeerConnectionNode: React.FC<Props> = (props: Props) => {
   const [links, setLinks] = React.useState<IPeerLink[]>([]);
-  const [vpsOffsetY, setVpcOffsetY] = React.useState<number>(0);
   const nodeRef = React.useRef(null);
 
   React.useEffect(() => {
     const _links = buildPeerLinks(props.item, props.dataItem);
-    const _offsetY = props.dataItem.peerConnectionsRows.totalHeight + NODES_CONSTANTS.REGION.expanded.contentPadding;
-    setVpcOffsetY(_offsetY);
     setLinks(_links);
-  }, []);
+  }, [props.dataItem]);
 
   const onMouseEnter = () => {
     const _node = d3.select(nodeRef.current);
-    const _parentG = d3.select(`#${props.parentId}`);
-    const _peerChildren = _parentG.selectAll('.peerConnectionNodeWrapper');
-    const _vnetChildren = _parentG.selectAll('.vnetNodeWrapper:not(.selectedTopoLevel1)');
-    _vnetChildren.attr('opacity', 0.5);
-    _peerChildren.attr('opacity', 0.5);
+    const _regG = d3.select(`#${props.regionUiId}`);
+    _regG.selectAll('.peerConnectionNodeWrapper').attr('opacity', 0.5);
+    _regG.selectAll('.webaclNodeWrapper').attr('opacity', 0.5);
+    _regG.selectAll('.vnetNodeWrapper').attr('opacity', 0.5);
     _node.attr('opacity', 1).classed('peerConnectionNodeWrapperHover', true);
     links.forEach(link => {
-      const _vps = d3.select(`#${link.from.nodeType}${link.from.id}`);
+      const _vps = _regG.select(`g[data-id='${link.to.nodeType}${link.to.id}']`);
       _vps.attr('opacity', 1).classed('vpsHoverStroke', true);
     });
   };
 
   const onMouseLeave = () => {
     const _node = d3.select(nodeRef.current);
-    const _parentG = d3.select(`#${props.parentId}`);
-    const _peerChildren = _parentG.selectAll('.peerConnectionNodeWrapper');
-    const _vnetChildren = _parentG.selectAll('.vnetNodeWrapper');
-    _vnetChildren.attr('opacity', 1);
-    _peerChildren.attr('opacity', 1);
+    const _regG = d3.select(`#${props.regionUiId}`);
+    _regG.selectAll('.peerConnectionNodeWrapper').attr('opacity', 1);
+    _regG.selectAll('.webaclNodeWrapper').attr('opacity', 1);
+    _regG.selectAll('.vnetNodeWrapper').attr('opacity', 1);
     _node.classed('peerConnectionNodeWrapperHover', null);
     links.forEach(link => {
-      const _vps = d3.select(`#${link.from.nodeType}${link.from.id}`);
+      const _vps = _regG.select(`g[data-id='${link.to.nodeType}${link.to.id}']`);
       _vps.classed('vpsHoverStroke', null);
     });
   };
@@ -54,27 +58,30 @@ const PeerConnectionNode: React.FC<Props> = (props: Props) => {
   return (
     <g ref={nodeRef} className="peerConnectionNodeWrapper">
       {links.map(it => (
-        <PeerConnectionLink key={`${it.from.id}${it.to.id}peerLink`} peerConnectionId={props.item.id} from={it.from} to={it.to} offsetY={vpsOffsetY} />
-      ))}
-      <g transform={`translate(${props.item.x}, ${props.item.y})`} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
-        <circle
-          fill={NODES_CONSTANTS.PEERING_CONNECTION.collapse.bgColor}
-          r={NODES_CONSTANTS.PEERING_CONNECTION.collapse.r}
-          cx={NODES_CONSTANTS.PEERING_CONNECTION.collapse.r}
-          cy={NODES_CONSTANTS.PEERING_CONNECTION.collapse.r}
-          className="peerConnectionNode"
-          pointerEvents="all"
+        <PeerConnectionLink
+          key={`${it.from.id}${it.to.id}peerLink`}
+          fromCenterX={props.x + props.nodeStyles.r}
+          fromCenterY={props.y + props.nodeStyles.r}
+          peerConnectionId={props.item.id}
+          from={it.from}
+          to={it.to}
+          offsetData={props.offsetData}
+          vnetCollapseStyles={props.vnetCollapseStyles}
         />
+      ))}
+      <g transform={`translate(${props.x}, ${props.y})`} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
+        <circle fill={props.nodeStyles.bgColor} r={props.nodeStyles.r} cx={props.nodeStyles.r} cy={props.nodeStyles.r} className="peerConnectionNode" pointerEvents="all" />
         <use
           href={`#${NODES_CONSTANTS.PEERING_CONNECTION.type}`}
-          width={NODES_CONSTANTS.PEERING_CONNECTION.collapse.iconWidth}
-          height={NODES_CONSTANTS.PEERING_CONNECTION.collapse.iconHeight}
-          x={0}
-          y={0}
+          width={props.nodeStyles.iconWidth}
+          height={props.nodeStyles.iconHeight}
+          x={props.nodeStyles.iconOffsetX}
+          y={props.nodeStyles.iconOffsetY}
           color="#4D27AA"
           pointerEvents="none"
           className="peerConnectionNodeIcon"
         />
+        {props.showLabel && <HtmlNodeLabel name={props.item.name || props.item.extId} labelStyles={props.labelStyles} />}
       </g>
     </g>
   );
