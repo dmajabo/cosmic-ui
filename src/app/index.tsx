@@ -19,7 +19,7 @@ export function App() {
   const { i18n } = useTranslation();
   return (
     <BrowserRouter>
-      <Helmet titleTemplate="%s" defaultTitle="Okulis.io" htmlAttributes={{ lang: i18n.language }}>
+      <Helmet titleTemplate="%s" defaultTitle="Okulis.ai" htmlAttributes={{ lang: i18n.language }}>
         <meta name="description" content="" />
       </Helmet>
       <Router history={history}>

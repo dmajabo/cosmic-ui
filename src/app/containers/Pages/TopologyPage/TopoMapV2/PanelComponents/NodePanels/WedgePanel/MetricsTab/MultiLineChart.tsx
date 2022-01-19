@@ -42,6 +42,8 @@ export const MultiLineChart: React.FC<LineChartProps> = ({ dataValueSuffix, inpu
       },
     },
     tooltip: {
+      shared: true,
+      crosshairs: true,
       valueSuffix: dataValueSuffix ? ` ${dataValueSuffix}` : '',
     },
     yAxis: {
