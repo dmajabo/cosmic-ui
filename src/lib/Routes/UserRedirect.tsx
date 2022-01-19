@@ -33,6 +33,7 @@ export const UserRedirect: React.FC = () => {
   ) : isEmpty(policyControllers) ? (
     <Redirect to={ROUTE.app} />
   ) : (
-    <AddEdges />
+    //TODO: AddEdges screen to be brought back later on.
+    <Redirect to={ROUTE.app} />
   );
 };
