@@ -4,6 +4,7 @@ import { IIconSize, IMinSize, ISize, ISpace } from 'lib/models/general';
 export const TOPOLOGY_IDS = {
   SVG: 'svgTopologyMap',
   G_ROOT: 'gRoot',
+  STRUCTURE_ROOT: 'structureRoot',
   LINKS_ROOT: 'linksRoot',
   NODES_ROOT: 'nodesRoot',
 };
@@ -50,17 +51,20 @@ export interface ICollapseExpandBtn extends ISize {
 export interface ICollapseStyles extends ISize, IIconSize, ISpace {
   r?: number;
   bgColor: string;
+  stroke?: string;
   borderRadius: number;
 }
 
 export interface IMarker extends ISize, IIconSize {
   bgColor: string;
+  iconColor?: string;
   borderRadius: number;
   viewBox: string;
 }
 export interface IExpandedStyles extends IMinSize, ISpace {
   marker: IMarker;
   bgColor: string;
+  stroke?: string;
   borderRadius: number;
   contentPadding: number;
 }
@@ -116,20 +120,28 @@ export interface INetworkVNetworkNode extends INode<TopoNodeTypes>, ICollapseExp
   labelHtmlStyles: ILabelHtmlStyles;
 }
 
-export interface IPeeringConnectionNode extends INode<TopoNodeTypes>, ICollapseExpandState {
+export interface IPeeringConnectionStyles extends INode<TopoNodeTypes>, ICollapseExpandState {
   iconId: string;
   countStyles: ICounterStyle;
   labelCollapsedStyles: ICollapseLabelStyle;
   labelExpandedStyles: IExpandLabelStyle;
+  labelHtmlStyles: ILabelHtmlStyles;
+  structureStyles: IStructureNodeStyles;
+}
+
+export interface IStructureNodeStyles {
+  nodeStyles: ICollapseStyles;
+  countStyles: ICounterStyle;
   labelHtmlStyles: ILabelHtmlStyles;
 }
 
-export interface IWebAcl extends INode<TopoNodeTypes>, ICollapseExpandState {
+export interface IWebAclStyles extends INode<TopoNodeTypes>, ICollapseExpandState {
   iconId: string;
   countStyles: ICounterStyle;
   labelCollapsedStyles: ICollapseLabelStyle;
   labelExpandedStyles: IExpandLabelStyle;
   labelHtmlStyles: ILabelHtmlStyles;
+  structureStyles: IStructureNodeStyles;
 }
 
 export interface ISiteNode extends INode<TopoNodeTypes>, ICollapseExpandState {
@@ -152,8 +164,8 @@ export interface INodes_Types {
   NETWORK_WEDGE: INetworkWEdgeNode;
   NETWORK_VNET: INetworkVNetworkNode;
   DEVICE: ISiteNode;
-  PEERING_CONNECTION: IPeeringConnectionNode;
-  WEB_ACL: IWebAcl;
+  PEERING_CONNECTION: IPeeringConnectionStyles;
+  WEB_ACL: IWebAclStyles;
   // GENERAL
   COLLAPSE_EXPAND: ICollapseExpandBtn;
 }
@@ -166,7 +178,7 @@ export const NODES_CONSTANTS: INodes_Types = {
     collapse: {
       width: 62,
       height: 62,
-      spaceX: 50,
+      spaceX: 100,
       spaceY: 175,
       iconWidth: 28,
       iconHeight: 28,
@@ -475,10 +487,34 @@ export const NODES_CONSTANTS: INodes_Types = {
       iconHeight: 18,
       iconOffsetX: 5.5, // 30 / 2 - 19 / 2
       iconOffsetY: 6, // 30 / 2 - 18 / 2
-      bgColor: 'transparent',
+      bgColor: 'var(--_primaryBg)',
+      stroke: 'var(--_primaryBg)',
       borderRadius: 6,
     },
-    expanded: null,
+    expanded: {
+      marker: {
+        width: 30,
+        height: 30,
+        viewBox: '0 0 30 30',
+        iconWidth: 19,
+        iconHeight: 18,
+        iconOffsetX: 5.5, // 30 / 2 - 19 / 2
+        iconOffsetY: 6, // 30 / 2 - 18 / 2
+        bgColor: 'var(--_vnetIconBg)',
+        iconColor: 'var(--_primaryBg)',
+        borderRadius: 6,
+      },
+      spaceX: 30,
+      spaceY: 30,
+      minWidth: 208,
+      minHeight: 120,
+      minOffsetX: 0,
+      minOffsetY: 0,
+      bgColor: 'var(--_primaryBg)',
+      stroke: 'var(--_primaryBg)',
+      borderRadius: 6,
+      contentPadding: 15,
+    },
     countStyles: {
       x: 8,
       y: 25,
@@ -493,7 +529,15 @@ export const NODES_CONSTANTS: INodes_Types = {
       cMinWidth: '100%',
     },
     labelCollapsedStyles: null,
-    labelExpandedStyles: null,
+    labelExpandedStyles: {
+      x: 33, // 25 + 8
+      y: 0,
+      strBtnColor: 'var(--_highlightColor)',
+      strBtnFontSize: 10,
+      textAnchor: 'unset',
+      fill: 'var(--_primaryTextColor)',
+      fontSize: 12,
+    },
     labelHtmlStyles: {
       x: -7.5,
       y: 34,
@@ -526,6 +570,32 @@ export const NODES_CONSTANTS: INodes_Types = {
     labelCollapsedStyles: null,
     labelExpandedStyles: null,
     labelHtmlStyles: null,
+    structureStyles: {
+      nodeStyles: {
+        spaceX: 40,
+        spaceY: 50,
+        width: 50,
+        height: 50,
+        r: 25,
+        iconWidth: 32,
+        iconHeight: 32,
+        iconOffsetX: 9, // 50 / 2 - 32 / 2
+        iconOffsetY: 9, // 30 / 2 - 18 / 2
+        bgColor: 'var(--_primaryBg)',
+        borderRadius: 6,
+      },
+      countStyles: null,
+      labelHtmlStyles: {
+        x: -20,
+        y: 56,
+        width: 90,
+        height: 16,
+        textAnchor: 'unset',
+        textAlign: 'center',
+        fill: 'var(--_primaryTextColor)',
+        fontSize: 10,
+      },
+    },
   },
   WEB_ACL: {
     type: TopoNodeTypes.WEB_ACL,
@@ -538,8 +608,8 @@ export const NODES_CONSTANTS: INodes_Types = {
       r: 15,
       iconWidth: 18,
       iconHeight: 18,
-      iconOffsetX: 6, // 30 / 2 - 18 / 2
-      iconOffsetY: 6, // 30 / 2 - 18 / 2
+      iconOffsetX: 6,
+      iconOffsetY: 6,
       bgColor: 'var(--_primaryBg)',
       borderRadius: 6,
     },
@@ -568,6 +638,44 @@ export const NODES_CONSTANTS: INodes_Types = {
       textAlign: 'center',
       fill: 'var(--_primaryTextColor)',
       fontSize: 8,
+    },
+    structureStyles: {
+      nodeStyles: {
+        spaceX: 40,
+        spaceY: 40,
+        width: 50,
+        height: 50,
+        r: 25,
+        iconWidth: 32,
+        iconHeight: 32,
+        iconOffsetX: 9, // 50 / 2 - 32 / 2
+        iconOffsetY: 9, // 30 / 2 - 18 / 2
+        bgColor: 'var(--_primaryBg)',
+        borderRadius: 6,
+      },
+      countStyles: {
+        x: 12.5, // 50 / 2 - 32 / 2
+        y: 44,
+        width: 25,
+        height: 12,
+        br: 8,
+        fill: 'var(--_pButtonBg)',
+        color: 'var(--_primaryBg)',
+        fontSize: '8px',
+        lineHeight: '12px',
+        cWidth: 'auto',
+        cMinWidth: '100%',
+      },
+      labelHtmlStyles: {
+        x: -20,
+        y: 56,
+        width: 90,
+        height: 16,
+        textAnchor: 'unset',
+        textAlign: 'center',
+        fill: 'var(--_primaryTextColor)',
+        fontSize: 10,
+      },
     },
   },
   DEVICE: {

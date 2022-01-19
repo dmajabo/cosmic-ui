@@ -6,7 +6,7 @@ interface Props {
   stateIn: boolean;
   origin?: string;
   transform?: string;
-  id: string;
+  id?: string;
   timing?: number;
   children: React.ReactNode;
 }

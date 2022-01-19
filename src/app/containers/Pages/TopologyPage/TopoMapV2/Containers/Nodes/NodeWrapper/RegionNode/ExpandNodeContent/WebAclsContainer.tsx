@@ -1,13 +1,16 @@
 import React from 'react';
-import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
 
 interface Props {
   offsetY: number;
   children: React.ReactNode;
 }
 
-const WebAclsContainer: React.FC<Props> = (props: Props) => {
-  return <g transform={`translate(${NODES_CONSTANTS.REGION.expanded.contentPadding}, ${props.offsetY + NODES_CONSTANTS.REGION.expanded.contentPadding})`}>{props.children}</g>;
+const WebAclsContainer: React.FC<Props> = ({ offsetY, children }) => {
+  return (
+    <g transform={`translate(0, ${offsetY})`} data-y={offsetY}>
+      {children}
+    </g>
+  );
 };
 
 export default React.memo(WebAclsContainer);

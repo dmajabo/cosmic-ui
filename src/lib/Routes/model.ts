@@ -4,14 +4,16 @@ import { topologyIcon } from 'app/components/SVGIcons/pagesIcons/topology';
 // import { performanceDashboard } from 'app/components/SVGIcons/pagesIcons/performanceDashboard';
 import { settingsIcon } from 'app/components/SVGIcons/pagesIcons/settings';
 import { analyticsIcon } from 'app/components/SVGIcons/pagesIcons/analytics';
+import { policyIcon } from 'app/components/SVGIcons/pagesIcons/policyIcon';
 // import { sessionsIcon } from 'app/components/SVGIcons/pagesIcons/sessions';
-import { edgesIcon } from 'app/components/SVGIcons/pagesIcons/edgesIcon';
+// import { edgesIcon } from 'app/components/SVGIcons/pagesIcons/edgesIcon';
 import { metricsIcon } from 'app/components/SVGIcons/pagesIcons/metrics';
 export const ROUTE = {
   base: '/',
   login: '/login',
   app: '/app',
   topology: '/topology',
+  policy: '/policy',
   transit: '/transit',
   dashboard: '/dashboard',
   performanceDashboard: '/performanceDashboard',
@@ -41,7 +43,8 @@ export interface IPage {
 export const APP_PAGES: IPage[] = [
   { id: 'dashboard', path: ROUTE.dashboard, pageName: 'Dashboard', icon: dashboardIcon, breadcrumb: null },
   { id: 'topology', path: ROUTE.topology, pageName: 'Topology', icon: topologyIcon, breadcrumb: null },
-  { id: 'transit', path: ROUTE.transit, pageName: 'Transit', icon: edgesIcon, breadcrumb: BreadCrumbTypes.TRANSIT },
+  { id: 'policy', path: ROUTE.policy, pageName: 'Policy', icon: policyIcon, breadcrumb: null },
+  // { id: 'transit', path: ROUTE.transit, pageName: 'Transit', icon: edgesIcon, breadcrumb: BreadCrumbTypes.TRANSIT },
   // { id: 'performanceDashboard', path: ROUTE.performanceDashboard, pageName: 'Performance Dashboard', icon: performanceDashboard, breadcrumb: null },
   // { id: 'sessions', path: ROUTE.sessions, pageName: 'Sessions', icon: sessionsIcon, breadcrumb: null },
   { id: 'metrics', path: ROUTE.metrics, pageName: 'Metrics', icon: metricsIcon, breadcrumb: null },

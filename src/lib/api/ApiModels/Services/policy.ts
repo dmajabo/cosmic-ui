@@ -13,4 +13,10 @@ export const PolicyApi = {
   deleteGroup: (id: string) => `policy/api/v1/policy/selector/groups/${id}`,
 
   getAlSlaTests: () => '/policy/api/v1/policy/performance/sla-tests',
+
+  getSegments: () => 'policy/api/v1/policy/segments', // IPolicysvcListSegmentPsResponse
+  postSegments: () => 'policy/api/v1/policy/segments', // body: { segment: ISegmentSegmentP, dry_run?: boolean }  => res: baseBaseResponse
+  getSegmentsById: (id: string) => 'api/v1/policy/segments/' + id, // ISegmentSegmentP
+  deleteSegmentsById: (id: string) => 'api/v1/policy/segments/' + id, // empty
+  putSegmentsById: (id: string) => 'api/v1/policy/segments/' + id, // baseBaseResponse
 };

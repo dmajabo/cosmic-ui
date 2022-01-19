@@ -13,9 +13,9 @@ const NetworkWEdgeNode: React.FC<Props> = (props: Props) => {
   const [isNodeSelected, setIsNodeSelected] = React.useState<boolean>(false);
 
   React.useEffect(() => {
-    if (topology.selectedNode && topology.selectedNode.uiId === props.item.uiId && !isNodeSelected) {
+    if (topology.selectedNode && topology.selectedNode.id === props.item.id && !isNodeSelected) {
       setIsNodeSelected(true);
-    } else if (!topology.selectedNode || (topology.selectedNode && topology.selectedNode !== props.item.uiId && isNodeSelected)) {
+    } else if (!topology.selectedNode || (topology.selectedNode && topology.selectedNode !== props.item.id && isNodeSelected)) {
       setIsNodeSelected(false);
     }
   }, [topology.selectedNode]);

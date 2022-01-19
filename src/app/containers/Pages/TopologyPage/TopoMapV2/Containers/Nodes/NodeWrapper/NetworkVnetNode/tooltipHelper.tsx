@@ -3,7 +3,7 @@ import { INetworkLoadBalancer, CloudLoadBalancerTypeP } from 'lib/api/ApiModels/
 import { INetworkVNetNode, ITopoRegionNode } from 'lib/hooks/Topology/models';
 import { NODES_CONSTANTS } from '../../../../model';
 
-export const buildVnetTooltip = (e: React.BaseSyntheticEvent<MouseEvent>, region: ITopoRegionNode, vnet: INetworkVNetNode, containerId: string) => {
+export const buildVnetTooltip = (e: React.BaseSyntheticEvent<MouseEvent>, region: ITopoRegionNode, vnet: INetworkVNetNode, containerId: string, x: number, y: number) => {
   if (!e || !e.target) return;
   const fo = d3.select(`#vnetTooltipFOContainer${containerId}`);
   const container = fo.select(`#vnetTooltipContainer${containerId}`);
@@ -12,13 +12,13 @@ export const buildVnetTooltip = (e: React.BaseSyntheticEvent<MouseEvent>, region
   const posY = Number(fo.attr('data-y'));
   fo.attr('width', '328px')
     .attr('height', '288px')
-    .attr('x', vnet.x + NODES_CONSTANTS.NETWORK_VNET.collapse.r * 2 + NODES_CONSTANTS.REGION.expanded.contentPadding + 10)
-    .attr('y', posY + vnet.y);
+    .attr('x', x + NODES_CONSTANTS.NETWORK_VNET.collapse.r * 2 + NODES_CONSTANTS.REGION.expanded.contentPadding + 10)
+    .attr('y', posY + y);
   const vnetName = container.append('div').classed('textOverflowEllips', true);
   vnetName.style('width', '100%').style('margin', '0 0 10px 0').style('font-weight', 500).style('font-size', '16px').style('line-height', '21px').style('color', 'var(--_primaryTextColor)');
   vnetName.text(vnet.name || vnet.extId);
-  buildTooltipSubTitle(container, 'Account', region.name, '0 0 8px 0');
-  buildTooltipSubTitle(container, 'Region', region.name, '0 0 20px 0');
+  buildTooltipSubTitle(container, 'Account', region.dataItem.name, '0 0 8px 0');
+  buildTooltipSubTitle(container, 'Region', region.dataItem.name, '0 0 20px 0');
   const _nlb = getFilteredBalancerByType(vnet.loadBalancers);
   buildTooltipContentRow(container, getIcon('virtualmachine'), 'Virtual Machines', vnet.vms.length);
   const _igcount = vnet.internetGateway ? 1 : 0;

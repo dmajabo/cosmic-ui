@@ -29,8 +29,6 @@ const TopoMapV2: React.FC<IProps> = (props: IProps) => {
 
   React.useEffect(() => {
     if (response !== null) {
-      // console.log(mock);
-      // topology.onSetData({ ...response, organizations: mock });
       topology.onSetData(response);
     }
   }, [response]);
@@ -42,12 +40,12 @@ const TopoMapV2: React.FC<IProps> = (props: IProps) => {
   const onTryLoadData = async () => {
     const _st = topology.selectedTime || null;
     const param: ITopologyQueryParam = createTopologyQueryParam(_st);
-    await onGetChainData([PolicyApi.getAllGroups(), TopoApi.getAllOrganizations()], ['groups', 'organizations'], userContext.accessToken!, param);
+    await onGetChainData([PolicyApi.getSegments(), PolicyApi.getAllGroups(), TopoApi.getAllOrganizations()], ['segments', 'groups', 'organizations'], userContext.accessToken!, param);
   };
 
   const onReloadData = async (startTime: Date | null) => {
     const param: ITopologyQueryParam = createTopologyQueryParam(startTime);
-    await onGetChainData([PolicyApi.getAllGroups(), TopoApi.getAllOrganizations()], ['groups', 'organizations'], userContext.accessToken!, param);
+    await onGetChainData([PolicyApi.getSegments(), PolicyApi.getAllGroups(), TopoApi.getAllOrganizations()], ['segments', 'groups', 'organizations'], userContext.accessToken!, param);
   };
 
   return (
