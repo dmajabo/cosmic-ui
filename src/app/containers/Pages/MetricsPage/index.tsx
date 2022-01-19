@@ -2,6 +2,7 @@ import { Tab, Tabs } from '@mui/material';
 import React, { useState } from 'react';
 import { TabsWrapperStyles } from '../Shared/styles';
 import { PerformanceDashboard } from './components/Performance Dashboard/PerformanceDashboard';
+import { Sites } from './components/Sites';
 import { MetricsStyles } from './MetricsStyles';
 
 enum TabName {
@@ -49,11 +50,20 @@ const MetricsPage: React.FC = () => {
               wrapped
               {...a11yProps(TabName.Performance)}
             />
+            <Tab
+              value={TabName.Sites}
+              label={<span className={selectedTabName === TabName.Sites ? classes.activeTabLabel : classes.tabLabel}>{TabName.Sites}</span>}
+              wrapped
+              {...a11yProps(TabName.Sites)}
+            />
           </Tabs>
         </TabsWrapperStyles>
       </div>
       <TabPanel value={selectedTabName} title={TabName.Performance}>
         <PerformanceDashboard />
+      </TabPanel>
+      <TabPanel value={selectedTabName} title={TabName.Sites}>
+        <Sites />
       </TabPanel>
     </div>
   );
