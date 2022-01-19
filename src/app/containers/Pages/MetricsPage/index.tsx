@@ -35,7 +35,7 @@ function a11yProps(title: string) {
 const MetricsPage: React.FC = () => {
   const classes = MetricsStyles();
 
-  const [selectedTabName, setSelectedTabName] = useState<TabName>(TabName.Performance);
+  const [selectedTabName, setSelectedTabName] = useState<TabName>(TabName.Sites);
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: TabName) => setSelectedTabName(newValue);
 

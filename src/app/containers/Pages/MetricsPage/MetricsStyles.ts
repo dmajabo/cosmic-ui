@@ -62,6 +62,17 @@ export const MetricsStyles = makeStyles(
         color: '#05143A',
         marginBottom: 30,
       },
+      legendContainer: {
+        display: 'flex',
+        justifyContent: 'center',
+        marginTop: 30,
+      },
+      legendText: {
+        fontSize: 16,
+        fontWeight: 500,
+        paddingLeft: 10,
+        paddingRight: '5vw',
+      },
     }),
   {
     index: 1,
