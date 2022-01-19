@@ -11,8 +11,6 @@ import {
   GetExperienceAnomaliesResponse,
   ExperienceAnomalies,
   HitsTableData,
-  GetOrganizationResponse,
-  Organization,
   SLATest,
 } from 'lib/api/http/SharedTypes';
 import { AnomalyTable } from './AnomalyTable';
@@ -30,9 +28,9 @@ import { createApiClient } from 'lib/api/http/apiClient';
 import countBy from 'lodash/countBy';
 import isEmpty from 'lodash/isEmpty';
 import { TopoApi } from 'lib/api/ApiModels/Services/topo';
-import { GetDevicesString, GetSelectedOrganization } from '../Performance Dashboard/filterFunctions';
 import { DateTime } from 'luxon';
-import { VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
+import { INetworkOrg, ITopologyMapData, VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
+import { GetDevicesString, GetSelectedOrganization } from 'app/containers/Pages/MetricsPage/components/Performance Dashboard/filterFunctions';
 
 interface ExperienceTabProps {
   readonly timeRange: AnomalyTimeRangeValue;
@@ -119,7 +117,7 @@ export const ExperienceTab: React.FC<ExperienceTabProps> = ({ timeRange }) => {
 
   const [alertMetadata, setAlertMetadata] = useState<AlertMetadata[]>([]);
   const [slaTests, setSlaTests] = useState<SLATest[]>([]);
-  const [organizations, setOrganizations] = useState<Organization[]>([]);
+  const [organizations, setOrganizations] = useState<INetworkOrg[]>([]);
   const [tableAlertMetadata, setTableAlertMetadata] = useState<AlertMetadata[]>([]);
   const [allExperienceAnomalies, setAllExperienceAnomalies] = useState<ExperienceAnomalies[]>([]);
   const [barChartData, setBarChartData] = useState<BarChartData[]>([]);
@@ -127,7 +125,7 @@ export const ExperienceTab: React.FC<ExperienceTabProps> = ({ timeRange }) => {
   const [selectedBarChartPoints, setSelectedBarChartPoints] = useState<string[]>([]);
 
   const { response: experienceTabAlertResponse, loading: alertLoading, error: alertError, onGet: getExperienceTableAlertMetadata } = useGet<GetAlertMetadataResponse>();
-  const { response: organizationResponse, onGet: getOrganizations } = useGet<GetOrganizationResponse>();
+  const { response: organizationResponse, onGet: getOrganizations } = useGet<ITopologyMapData>();
 
   const getSLATests = async () => {
     const response = await apiClient.getSLATests();

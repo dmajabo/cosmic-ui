@@ -3,7 +3,6 @@ import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
 import PrimaryButton from 'app/components/Buttons/PrimaryButton';
 import { ISegmentSegmentP, SegmentSegmentType } from 'lib/api/ApiModels/Policy/Segment';
-import { ModalContent, ModalFooter } from '../../SettingsPage/Accounts/styles/styles';
 import * as helper from './helper';
 import { ModalRow } from '../../Edges/Editor/Components/styles';
 import TextInput from 'app/components/Inputs/TextInput';
@@ -17,6 +16,7 @@ import { useGet } from 'lib/api/http/useAxiosHook';
 import { ICloudVNetworkP, IVnetworksRes } from 'lib/api/ApiModels/Topology/apiModels';
 import { TopoApi } from 'lib/api/ApiModels/Services/topo';
 import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
+import { ModalContent, ModalFooter } from '../../Edges/Editor/Components/styles';
 interface IProps {
   data?: ISegmentSegmentP;
   loading: boolean;

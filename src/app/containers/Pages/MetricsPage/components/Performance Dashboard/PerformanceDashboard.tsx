@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { PerformanceDashboardStyles } from './PerformanceDashboardStyles';
 import { SLATestList } from './SLATestList';
-import { CreateSLATestRequest, FinalTableData, Organization, UpdateSLATestRequest } from 'lib/api/http/SharedTypes';
+import { CreateSLATestRequest, FinalTableData, UpdateSLATestRequest } from 'lib/api/http/SharedTypes';
 import LoadingIndicator from 'app/components/Loading';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -13,6 +13,7 @@ import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import { GetDevicesString, GetSelectedOrganization } from './filterFunctions';
 import { CreateSLATest } from './CreateSLATest';
 import './Toastify.css';
+import { INetworkOrg } from 'lib/api/ApiModels/Topology/apiModels';
 
 export const PerformanceDashboard: React.FC = () => {
   const classes = PerformanceDashboardStyles();
@@ -20,8 +21,8 @@ export const PerformanceDashboard: React.FC = () => {
   const userContext = useContext<UserContextState>(UserContext);
   const apiClient = createApiClient(userContext.accessToken!);
   const [finalTableData, setFinalTableData] = useState<FinalTableData[]>([]);
-  const [merakiOrganizations, setMerakiOrganizations] = useState<Organization[]>([]);
-  const [awsOrganizations, setAwsOrganizations] = useState<Organization[]>([]);
+  const [merakiOrganizations, setMerakiOrganizations] = useState<INetworkOrg[]>([]);
+  const [awsOrganizations, setAwsOrganizations] = useState<INetworkOrg[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {

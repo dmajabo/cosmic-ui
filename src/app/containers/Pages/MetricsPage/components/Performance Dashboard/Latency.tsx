@@ -1,4 +1,3 @@
-import { Typography } from '@mui/material';
 import React, { useContext, useEffect, useState } from 'react';
 import { createApiClient } from 'lib/api/http/apiClient';
 import { PerformanceDashboardStyles } from './PerformanceDashboardStyles';
@@ -101,13 +100,13 @@ export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange }) => 
     <div>
       <div className={classes.flexContainer}>
         <div>
-          <Typography className={classes.itemTitle}>
+          <div className={classes.itemTitle}>
             Latency summary
             <span className={classes.sortIcon}>
               <InfoIcon />
             </span>
-          </Typography>
-          <Typography className={classes.subTitleText}>Shows aggregated latency between sources.</Typography>
+          </div>
+          <div className={classes.subTitleText}>Shows aggregated latency between sources.</div>
         </div>
       </div>
       <div className={classes.lineChartContainer}>
@@ -122,20 +121,20 @@ export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange }) => 
           )
         ) : (
           <div className={classes.noChartContainer}>
-            <Typography className={classes.noChartText}>To see the data select SLA Tests on top</Typography>
+            <span className={classes.noChartText}>To see the data select SLA Tests on top</span>
           </div>
         )}
       </div>
       <hr className={classes.hrLine} />
       <div className={classes.flexContainer}>
         <div>
-          <Typography className={classes.itemTitle}>
+          <div className={classes.itemTitle}>
             Median latency
             <span className={classes.sortIcon}>
               <InfoIcon />
             </span>
-          </Typography>
-          <Typography className={classes.subTitleText}>Shows aggregated latency between branches and applications.</Typography>
+          </div>
+          <div className={classes.subTitleText}>Shows aggregated latency between branches and applications.</div>
         </div>
       </div>
       <div className={classes.lineChartContainer}>
@@ -149,7 +148,7 @@ export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange }) => 
           )
         ) : (
           <div className={classes.noChartContainer}>
-            <Typography className={classes.noChartText}>To see the data select SLA Tests on top</Typography>
+            <span className={classes.noChartText}>To see the data select SLA Tests on top</span>
           </div>
         )}
       </div>

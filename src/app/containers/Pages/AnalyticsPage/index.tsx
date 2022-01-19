@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import { AnalyticsStyles } from './AnalyticsStyles';
 import { Anomalies } from './components/Anomalies/Anomalies';
 // import { MetricsExplorer } from './components/Metrics Explorer/MetricsExplorer';
-// import { PerformanceDashboard } from './components/Performance Dashboard/PerformanceDashboard';
 import { PolicyLogs } from './components/PolicyLogs/PolicyLogs';
 import SessionPage from './SessionPage';
 
@@ -32,7 +31,6 @@ function a11yProps(title: string) {
 
 enum TabName {
   SessionLogs = 'Session Logs',
-  // Performance = 'Performance',
   Anomalies = 'Anomalies',
   PolicyLogs = 'Policy Logs',
   // MetricsExplorer = 'Metrics Explorer',
@@ -41,7 +39,7 @@ enum TabName {
 const AnalyticsPage: React.FC = () => {
   const classes = AnalyticsStyles();
   const sessionsActions = useSessionsActions();
-  const [selectedTabName, setSelectedTabName] = useState<TabName>(TabName.Anomalies);
+  const [selectedTabName, setSelectedTabName] = useState<TabName>(TabName.SessionLogs);
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: TabName) => setSelectedTabName(newValue);
 
@@ -57,12 +55,6 @@ const AnalyticsPage: React.FC = () => {
               disableRipple
               {...a11yProps(TabName.SessionLogs)}
             />
-            {/* <Tab
-              value={TabName.Performance}
-              label={<span className={selectedTabName === TabName.Performance ? classes.activeTabLabel : classes.tabLabel}>{TabName.Performance}</span>}
-              wrapped
-              {...a11yProps(TabName.Performance)}
-            /> */}
             <Tab
               value={TabName.Anomalies}
               label={<span className={selectedTabName === TabName.Anomalies ? classes.activeTabLabel : classes.tabLabel}>{TabName.Anomalies}</span>}
@@ -88,9 +80,6 @@ const AnalyticsPage: React.FC = () => {
         <TabPanel value={selectedTabName} title={TabName.SessionLogs}>
           {selectedTabName === TabName.SessionLogs && <SessionPage />}
         </TabPanel>
-        {/* <TabPanel value={selectedTabName} title={TabName.Performance}>
-          <PerformanceDashboard />
-        </TabPanel> */}
         <TabPanel value={selectedTabName} title={TabName.Anomalies}>
           {selectedTabName === TabName.Anomalies && <Anomalies />}
         </TabPanel>

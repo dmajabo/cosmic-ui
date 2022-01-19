@@ -120,46 +120,6 @@ export const Anomalies: React.FC = () => {
 
   return (
     <div className={classes.anomalyContainer}>
-      {/* <div className={classes.tabTitleContainer}>
-        <div> */}
-      {/* <Tabs classes={{ root: classes.anomalyTabContainer, indicator: classes.indicator }} value={tab} onChange={handleTabChange}>
-            <Tab
-              classes={{ selected: classes.selectedTab }}
-              value={AnomalyTabValue.Experience}
-              label={<span className={classes.tableHeaderText}>{AnomalyTabValue.Experience.toUpperCase()}</span>}
-              wrapped
-              {...a11yProps(AnomalyTabValue.Experience)}
-            />
-            {/* <Tab
-              classes={{ selected: classes.selectedTab }}
-              value={AnomalyTabValue.Policy}
-              label={<span className={classes.tableHeaderText}>{AnomalyTabValue.Policy.toUpperCase()}</span>}
-              wrapped
-              {...a11yProps(AnomalyTabValue.Policy)}
-            />
-            <Tab
-              classes={{ selected: classes.selectedTab }}
-              value={AnomalyTabValue.Cost}
-              label={<span className={classes.tableHeaderText}>{AnomalyTabValue.Cost.toUpperCase()}</span>}
-              wrapped
-              {...a11yProps(AnomalyTabValue.Cost)}
-            /> 
-          </Tabs>
-        </div>
-        <div>
-          <span className={classes.anomalyTimeRangeText}>Show:</span>
-          <Select className={classes.inlineSelect} label="Single select" value={timeRange} options={TIME_RANGE_OPTIONS} onChange={handleTimeRangeChange} />
-        </div>
-      </div>
-      <TabPanel value={tab} name={AnomalyTabValue.Experience}>
-        <ExperienceTab timeRange={timeRange.value} />
-      </TabPanel>
-      <TabPanel value={tab} name={AnomalyTabValue.Policy}>
-        <PolicyTab />
-      </TabPanel>
-      <TabPanel value={tab} name={AnomalyTabValue.Cost}>
-        <CostTab />
-      </TabPanel> */}
       <TabsUnstyled value={tab} onChange={handleTabChange}>
         <div className={classes.tabTitleContainer}>
           <div className={classes.anomalyTabContainer}>

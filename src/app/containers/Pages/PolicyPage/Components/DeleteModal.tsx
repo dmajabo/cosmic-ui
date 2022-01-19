@@ -4,8 +4,8 @@ import LoadingIndicator from 'app/components/Loading';
 import SecondaryButton from 'app/components/Buttons/SecondaryButton';
 import PrimaryButton from 'app/components/Buttons/PrimaryButton';
 import { ISegmentSegmentP } from 'lib/api/ApiModels/Policy/Segment';
-import { ModalContent, ModalFooter } from '../../SettingsPage/Accounts/styles/styles';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
+import { ModalContent, ModalFooter } from '../../Edges/Editor/Components/styles';
 
 interface IProps {
   data: ISegmentSegmentP;

@@ -57,7 +57,6 @@ export const UserComponent: React.FC<Props> = (props: Props) => {
         <ClickAwayListener onClickAway={onClosePopup}>
           <span>
             <PopupContainer styles={{ position: 'absolute', top: 'calc(100% + 20px)', left: '0', padding: '6px 0' }}>
-              <Toogle simple selectedValue={general.theme} values={[Themes.DARK, Themes.LIGHT]} onChange={onSetTheme} />
               <PopupLinkItem onClick={onOpenAbout}>About</PopupLinkItem>
               <PopupLinkItem onClick={onLogOut}>Logout</PopupLinkItem>
             </PopupContainer>

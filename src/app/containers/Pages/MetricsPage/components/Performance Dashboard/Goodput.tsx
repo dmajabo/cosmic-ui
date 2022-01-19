@@ -11,6 +11,7 @@ import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import LoadingIndicator from 'app/components/Loading';
 import { HeatMapData } from 'lib/api/http/SharedTypes';
 import Heatmap, { LegendData } from './Heatmap';
+import { Divider } from 'app/containers/SignUpPage/ArticleComponents/Divider';
 
 interface GoodputProps {
   readonly selectedRows: Data[];
@@ -99,13 +100,13 @@ export const Goodput: React.FC<GoodputProps> = ({ selectedRows, timeRange }) => 
     <div>
       <div className={classes.flexContainer}>
         <div>
-          <Typography className={classes.itemTitle}>
+          <div className={classes.itemTitle}>
             Goodput summary
             <span className={classes.sortIcon}>
               <InfoIcon />
             </span>
-          </Typography>
-          <Typography className={classes.subTitleText}>Shows aggregated goodput between sources.</Typography>
+          </div>
+          <div className={classes.subTitleText}>Shows aggregated goodput between sources.</div>
         </div>
       </div>
       <div className={classes.lineChartContainer}>
@@ -120,20 +121,20 @@ export const Goodput: React.FC<GoodputProps> = ({ selectedRows, timeRange }) => 
           )
         ) : (
           <div className={classes.noChartContainer}>
-            <Typography className={classes.noChartText}>To see the data select SLA Tests on top</Typography>
+            <span className={classes.noChartText}>To see the data select SLA Tests on top</span>
           </div>
         )}
       </div>
       <hr className={classes.hrLine} />
       <div className={classes.flexContainer}>
         <div>
-          <Typography className={classes.itemTitle}>
+          <div className={classes.itemTitle}>
             Median Goodput
             <span className={classes.sortIcon}>
               <InfoIcon />
             </span>
-          </Typography>
-          <Typography className={classes.subTitleText}>Shows aggregated goodput between branches and applications.</Typography>
+          </div>
+          <div className={classes.subTitleText}>Shows aggregated goodput between branches and applications.</div>
         </div>
       </div>
       <div className={classes.lineChartContainer}>
@@ -147,7 +148,7 @@ export const Goodput: React.FC<GoodputProps> = ({ selectedRows, timeRange }) => 
           )
         ) : (
           <div className={classes.noChartContainer}>
-            <Typography className={classes.noChartText}>To see the data select SLA Tests on top</Typography>
+            <span className={classes.noChartText}>To see the data select SLA Tests on top</span>
           </div>
         )}
       </div>
