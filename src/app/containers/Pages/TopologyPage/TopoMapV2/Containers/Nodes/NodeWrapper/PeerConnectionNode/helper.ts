@@ -7,6 +7,7 @@ export interface IPeerLink {
 export const buildPeerLinks = (item: INetworkVNetworkPeeringConnectionNode, dataItem: ITopoRegionNode): IPeerLink[] => {
   const _from = getNeededItem(dataItem.children, item.requesterVnetwork.id);
   const _to = getNeededItem(dataItem.children, item.accepterVnetwork.id);
+  if (!_from || !_to) return [];
   return [
     { from: item, to: _from },
     { from: item, to: _to },
