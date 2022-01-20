@@ -149,11 +149,6 @@ export interface IObject<T> {
   [key: string]: T;
 }
 
-export interface ISelectionGridCellValue<F, V> {
-  field: F;
-  value: V;
-}
-
 export interface IFieldValuePair<V> {
   field: string;
   value: V;
@@ -164,9 +159,4 @@ export interface IFilterOption<T> {
   selected: boolean;
   label: string;
   hide?: boolean;
-}
-
-export interface IKeyValuePair<T> {
-  key: string;
-  value: T;
 }

@@ -11,7 +11,7 @@ export const TopoApi = {
   postCreateEdge: () => 'topo/api/v1/topology/cloud/edges',
   putUpdateEdge: (id: string) => 'topo/api/v1/topology/cloud/edges/' + id,
   getSites: () => 'topo/api/v1/topology/onprem/devices',
-  getApps: () => 'topo/api/v1/topology/cloud/apps',
+  getVms: () => 'topo/api/v1/topology/inventory/cloud/vms', // => IVmsRes
   getWedges: () => 'topo/api/v1/topology/wedges', // => IWEdgesRes
-  getVnetworks: () => 'topo/api/v1/topology/cloud/vnetworks', // => IVnetworksRes
+  getVnetworks: () => 'topo/api/v1/topology/inventory/cloud/vnetworks', // => IVnetworksRes
 };

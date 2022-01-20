@@ -105,6 +105,7 @@ const TextInput: React.FC<IProps> = (props: IProps) => {
           readOnly={props.readOnly}
           disabled={props.disabled}
           placeholder={props.placeholder}
+          style={props.inputStyles}
         />
       )}
       {props.error && (

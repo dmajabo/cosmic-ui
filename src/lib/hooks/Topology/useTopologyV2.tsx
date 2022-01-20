@@ -82,7 +82,7 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     web_acls: {
       type: FilterEntityTypes.WEB_ACLS,
       selected: true,
-      label: 'Web Acl',
+      label: 'AWS WAF',
     },
   });
   const [severity, setSeverity] = React.useState<FilterSeverityOptions>({

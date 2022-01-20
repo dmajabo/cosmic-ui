@@ -1,5 +1,4 @@
-import { INetworkDevice, INetworkVM, INetworkwEdge } from 'lib/api/ApiModels/Topology/apiModels';
-import { IBasePages, IBaseTotalCount } from 'lib/api/ApiModels/generalApiModel';
+import { IBaseTotalCount } from 'lib/api/ApiModels/generalApiModel';
 
 export enum SegmentTargetT {
   SITE_GROUP = 'SITE_GROUP',
@@ -94,18 +93,6 @@ export interface IEdgeP {
   appGroupIds: string[];
   deploymentPolicy: IDeploymentP[];
   segmentPolicy: ISegmentP[];
-}
-
-export interface ISitesRes extends IBaseTotalCount, IBasePages {
-  devices: INetworkDevice[];
-}
-
-export interface IAppsRes extends IBaseTotalCount, IBasePages {
-  apps: INetworkVM[];
-}
-
-export interface IWEdgesRes extends IBaseTotalCount, IBasePages {
-  wEdges: INetworkwEdge[];
 }
 
 export interface IEdgesRes extends IBaseTotalCount {
