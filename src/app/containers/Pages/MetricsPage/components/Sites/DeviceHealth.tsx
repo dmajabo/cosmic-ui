@@ -1,4 +1,3 @@
-import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import { MetricsData, MultiLineMetricsData } from 'app/containers/Pages/TopologyPage/TopologyMetrics/SharedTypes';
 import { TelemetryApi } from 'lib/api/ApiModels/Services/telemetry';
 import { useGetChainData } from 'lib/api/http/useAxiosHook';
@@ -52,7 +51,7 @@ export const DeviceHealth: React.FC<DeviceHealthProps> = ({ devices, timeRange }
   return (
     <div className={classes.pageComponentBackground}>
       <div className={classes.pageComponentTitle}>Device Health</div>
-      <div>
+      <ChartContainerStyles style={{ maxWidth: '100%', minHeight: 420, maxHeight: 420 }}>
         {loading ? (
           <LoadingIndicator margin="auto" />
         ) : error ? (
@@ -60,13 +59,11 @@ export const DeviceHealth: React.FC<DeviceHealthProps> = ({ devices, timeRange }
         ) : isMetricsEmpty(metricsData) ? (
           <EmptyText>No Data</EmptyText>
         ) : (
-          <ChartContainerStyles style={{ maxWidth: '100%', maxHeight: 420 }}>
-            <Chart>
-              <MultiLineChart inputData={metricsData} yAxisText="score" xAxisText={timeRange.label} />
-            </Chart>
-          </ChartContainerStyles>
+          <Chart>
+            <MultiLineChart inputData={metricsData} yAxisText="score" xAxisText={timeRange.label} />
+          </Chart>
         )}
-      </div>
+      </ChartContainerStyles>
     </div>
   );
 };
