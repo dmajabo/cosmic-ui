@@ -1,7 +1,7 @@
 import React from 'react';
 import { NODES_CONSTANTS } from '../../../../model';
 import { INetworkVNetNode, ITopoRegionNode } from 'lib/hooks/Topology/models';
-import NodeCounter from '../../Containers/NodeCounter';
+// import NodeCounter from '../../Containers/NodeCounter';
 import { select } from 'd3-selection';
 import { buildVnetTooltip, removeVnetTooltip } from './tooltipHelper';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
@@ -57,9 +57,9 @@ const NetworkVnetNode: React.FC<Props> = (props: Props) => {
         r={NODES_CONSTANTS.NETWORK_VNET.collapse.r - 1}
         cx={NODES_CONSTANTS.NETWORK_VNET.collapse.r}
         cy={NODES_CONSTANTS.NETWORK_VNET.collapse.r}
-        stroke={isNodeSelected ? 'var(--_highlightColor)' : NODES_CONSTANTS.NETWORK_VNET.collapse.stroke}
+        stroke={isNodeSelected ? 'var(--_highlightColor)' : props.item.segmentColor}
         strokeWidth="1"
-        fill={isNodeSelected ? 'var(--_highlightColor)' : NODES_CONSTANTS.NETWORK_VNET.collapse.bgColor}
+        fill={isNodeSelected ? 'var(--_highlightColor)' : props.item.segmentColor}
         className="vpcCollapsedBg transitionStyle"
         pointerEvents="all"
       />
@@ -69,11 +69,11 @@ const NetworkVnetNode: React.FC<Props> = (props: Props) => {
         height={NODES_CONSTANTS.NETWORK_VNET.collapse.iconHeight}
         x={NODES_CONSTANTS.NETWORK_VNET.collapse.iconOffsetX}
         y={NODES_CONSTANTS.NETWORK_VNET.collapse.iconOffsetY}
-        color={isNodeSelected ? 'var(--_primaryWhiteColor)' : 'var(--_vnetIconBg)'}
+        color={isNodeSelected ? 'var(--_primaryWhiteColor)' : props.item.nodeIconColor}
         pointerEvents="none"
         className="vpsBgIcon transitionStyle"
       />
-      <NodeCounter pointerEvents="none" label={`${props.item.vms && props.item.vms.length ? props.item.vms.length : 0}`} stylesObj={NODES_CONSTANTS.NETWORK_VNET.countStyles} />
+      {/* <NodeCounter pointerEvents="none" label={`${props.item.vms && props.item.vms.length ? props.item.vms.length : 0}`} stylesObj={NODES_CONSTANTS.NETWORK_VNET.countStyles} /> */}
       <HtmlNodeLabel name={props.item.name} labelStyles={NODES_CONSTANTS.NETWORK_VNET.labelHtmlStyles} />
     </g>
   );

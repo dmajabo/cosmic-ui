@@ -1,5 +1,6 @@
+import { INetworkDevice } from './../../../api/ApiModels/Topology/apiModels';
 import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
-import { INetworkOrg, INetworkwEdge, INetworkVNetwork, INetworkVNetworkPeeringConnection, INetworkRegion, INetworkWebAcl, ITopologyGroup } from 'lib/api/ApiModels/Topology/apiModels';
+import { INetworkOrg, INetworkwEdge, INetworkVNetwork, INetworkVNetworkPeeringConnection, INetworkRegion, INetworkWebAcl } from 'lib/api/ApiModels/Topology/apiModels';
 import {
   ITGWNode,
   INetworkVNetNode,
@@ -11,7 +12,7 @@ import {
   INetworkWebAclNode,
   FilterEntityOptions,
   ITopoSitesNode,
-  IFilteredNetworkDevice,
+  ISitesNode,
 } from '../models';
 import uuid from 'react-uuid';
 import { getChildContainerHeight, getTotalNodeHeight } from './sizeHelpers';
@@ -42,9 +43,9 @@ export const createAccountNode = (_id: string, _name: string, _orgId: string): I
   return _obj;
 };
 
-export const createSitesNode = (_dataItem: ITopologyGroup): ITopoSitesNode => {
+export const createSitesNode = (item: ISitesNode): ITopoSitesNode => {
   const _obj: ITopoSitesNode = {
-    dataItem: _dataItem,
+    dataItem: item,
     uiId: uuid(),
     type: TopoNodeTypes.SITES,
     expandedSize: {
@@ -88,6 +89,7 @@ export const createTopoRegionNode = (_dataItem: INetworkRegion, _orgId: string):
     peerConnections: [],
     webAcls: [],
     vnetLinks: [],
+    peeringLinks: [],
   };
   return _obj;
 };
@@ -109,7 +111,7 @@ export const createWedgeNode = (org: INetworkOrg, orgIndex: number, rowIndex: nu
   };
 };
 
-export const createVPCNode = (org: INetworkOrg, itemsInRow: number, orgIndex: number, rowIndex: number, childIndex: number, node: INetworkVNetwork): INetworkVNetNode => {
+export const createVnetNode = (org: INetworkOrg, itemsInRow: number, orgIndex: number, rowIndex: number, childIndex: number, node: INetworkVNetwork, color: string): INetworkVNetNode => {
   const _x = childIndex * (NODES_CONSTANTS.NETWORK_VNET.collapse.width + NODES_CONSTANTS.NETWORK_VNET.collapse.spaceX);
   const _y = rowIndex * (NODES_CONSTANTS.NETWORK_VNET.collapse.height + NODES_CONSTANTS.NETWORK_VNET.collapse.spaceY);
   return {
@@ -125,6 +127,8 @@ export const createVPCNode = (org: INetworkOrg, itemsInRow: number, orgIndex: nu
     uiId: uuid(),
     vendorType: org.vendorType,
     nodeType: TopoNodeTypes.VNET,
+    segmentColor: color || NODES_CONSTANTS.NETWORK_VNET.nodeBgColor,
+    nodeIconColor: color ? 'var(--_primaryWhiteColor)' : 'var(--_vnetIconBg)',
   };
 };
 
@@ -173,18 +177,33 @@ export const createWebAclNode = (org: INetworkOrg, itemsInRow: number, orgIndex:
   };
 };
 
-export const createDeviceNode = (page: number, rowIndex: number, itemsInRow: number, childIndex: number, node: IFilteredNetworkDevice): IDeviceNode => {
+export const createDeviceNode = (org: INetworkOrg, orgIndex: number, node: INetworkDevice, color: string): IDeviceNode => {
   return {
     ...node,
     uiId: uuid(),
     visible: true,
+    childIndex: 0,
+    rowIndex: 0,
+    itemsInRow: 0,
+    page: 0,
+    x: 0,
+    y: 0,
+    orgIndex: orgIndex,
+    orgId: org.id,
+    vendorType: org.vendorType,
+    nodeType: TopoNodeTypes.DEVICE,
+    segmentColor: color || NODES_CONSTANTS.DEVICE.nodeBgColor,
+    nodeIconColor: color || '#000',
+  };
+};
+
+export const updateDeviceNode = (node: IDeviceNode, page: number, rowIndex: number, itemsInRow: number, childIndex: number): IDeviceNode => {
+  return {
+    ...node,
     childIndex: childIndex,
     rowIndex: rowIndex,
     itemsInRow: itemsInRow,
     page: page,
-    x: 0,
-    y: 0,
-    nodeType: TopoNodeTypes.DEVICE,
   };
 };
 

@@ -1,17 +1,13 @@
 import React from 'react';
 import { Side, Wrapper } from './styles';
-import {
-  TopologyPanelTypes,
-  // ITopologySelectTypes, TOPOLOGY_SELECT_VALUES,
-} from 'lib/models/topology';
 // import { ISelectedListItem } from 'lib/models/general';
 import IconButton from 'app/components/Buttons/IconButton';
 import { refreshIcon } from 'app/components/SVGIcons/refresh';
 import SecondaryButton from 'app/components/Buttons/SecondaryButton';
-import { zoomCenterIcon, zoomFullScreenIcon, zoomInIcon, zoomOutFullScreenMode, zoomOutIcon } from 'app/components/SVGIcons/zoom';
+import { zoomInIcon, zoomOutIcon } from 'app/components/SVGIcons/zoom';
 import { filterIcon } from 'app/components/SVGIcons/filter';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
-import { ITopoAccountNode, ITopoRegionNode, ITopoSitesNode } from 'lib/hooks/Topology/models';
+import { ITopoAccountNode, ITopoRegionNode, ITopoSitesNode, TopologyPanelTypes } from 'lib/hooks/Topology/models';
 import { ITransform, ZoomRange } from 'lib/models/general';
 import ZoomInput from './ZoomInput';
 import { segmentsIcon } from 'app/components/SVGIcons/segmentsIcon';
@@ -48,13 +44,13 @@ const HeadeerAction: React.FC<IProps> = (props: IProps) => {
   //   topology?.onSetSelectedType(_item.id);
   // };
 
-  const onOpenFullScreen = () => {
-    props.onOpenFullScreen();
-  };
+  // const onOpenFullScreen = () => {
+  //   props.onOpenFullScreen();
+  // };
 
-  const onCentered = () => {
-    props.onCentered(topology.nodes);
-  };
+  // const onCentered = () => {
+  //   props.onCentered(topology.nodes);
+  // };
 
   return (
     <Wrapper>
@@ -64,13 +60,13 @@ const HeadeerAction: React.FC<IProps> = (props: IProps) => {
             <IconButton iconStyles={{ verticalAlign: 'middle', height: '4px' }} styles={{ margin: '0 8px 0 0' }} icon={zoomOutIcon} title="Zoom out" onClick={props.onZoomOut} />
             <ZoomInput value={props.transform} min={ZoomRange.min} max={ZoomRange.max} onChange={props.onZoomChange} />
             <IconButton styles={{ margin: '0 20px 0 8px' }} icon={zoomInIcon} title="Zoom in" onClick={props.onZoomIn} />
-            <IconButton styles={{ margin: '0 20px 0 0' }} icon={zoomCenterIcon} title="Center" onClick={onCentered} />
-            <IconButton
+            {/* <IconButton styles={{ margin: '0 20px 0 0' }} icon={zoomCenterIcon} title="Center" onClick={onCentered} /> */}
+            {/* <IconButton
               styles={{ margin: '0' }}
               icon={props.isFullScreen ? zoomOutFullScreenMode : zoomFullScreenIcon}
               title={props.isFullScreen ? 'Close fullscreen mode' : 'Open fullscreen mode'}
               onClick={onOpenFullScreen}
-            />
+            /> */}
           </>
         )}
       </Side>

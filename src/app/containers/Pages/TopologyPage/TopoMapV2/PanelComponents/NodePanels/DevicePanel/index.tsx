@@ -1,6 +1,5 @@
 import React from 'react';
 import OverflowContainer from 'app/components/Basic/OverflowContainer/styles';
-import { IDeviceNode } from 'lib/models/topology';
 // import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 // import MetricsTab from './MetricsTab';
 import { PanelHeader, PanelTabWrapper, PanelTitle } from '../../styles';
@@ -9,6 +8,7 @@ import { TabComponentProps } from 'app/components/Tabs/TabComponentProps';
 import TabPanel from 'app/components/Tabs/TabPanel';
 import { TabsStyles } from 'app/components/Tabs/TabsStyles';
 import PolicyTab from './PolicyTab';
+import { IDeviceNode } from 'lib/hooks/Topology/models';
 
 interface IProps {
   dataItem: IDeviceNode;

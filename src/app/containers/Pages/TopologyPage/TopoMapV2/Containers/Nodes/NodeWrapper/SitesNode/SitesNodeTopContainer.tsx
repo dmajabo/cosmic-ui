@@ -9,8 +9,7 @@ import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataCont
 import SitesCollapsedNode from './SitesCollapsedNode';
 // import { onHoverNode, onUnHoverNode } from '../../../../Graph/helper';
 import SitesExpandNode from './SitesExpandNode';
-import { TopologyPanelTypes } from 'lib/models/topology';
-import { IDeviceNode, ITopoSitesNode } from 'lib/hooks/Topology/models';
+import { IDeviceNode, ITopoSitesNode, TopologyPanelTypes } from 'lib/hooks/Topology/models';
 import TransitionContainer from '../../../TransitionContainer';
 // import CollapseExpandButton from '../../Containers/CollapseExpandButton';
 

@@ -115,6 +115,7 @@ export interface INetworkWEdgeNode extends INode<TopoNodeTypes>, ICollapseExpand
 export interface INetworkVNetworkNode extends INode<TopoNodeTypes>, ICollapseExpandState {
   iconId: string;
   countStyles: ICounterStyle;
+  nodeBgColor: string;
   labelCollapsedStyles: ICollapseLabelStyle;
   labelExpandedStyles: IExpandLabelStyle;
   labelHtmlStyles: ILabelHtmlStyles;
@@ -148,6 +149,7 @@ export interface ISiteNode extends INode<TopoNodeTypes>, ICollapseExpandState {
   iconId: string;
   groupLinkIconId: string;
   countStyles: ICounterStyle;
+  nodeBgColor: string;
   labelCollapsedStyles: ICollapseLabelStyle;
   labelExpandedStyles: IExpandLabelStyle;
   labelHtmlStyles: ILabelHtmlStyles;
@@ -515,6 +517,7 @@ export const NODES_CONSTANTS: INodes_Types = {
       borderRadius: 6,
       contentPadding: 15,
     },
+    nodeBgColor: 'var(--_primaryBg)',
     countStyles: {
       x: 8,
       y: 25,
@@ -694,6 +697,7 @@ export const NODES_CONSTANTS: INodes_Types = {
       bgColor: 'transparent',
       borderRadius: 6,
     },
+    nodeBgColor: 'var(--_primaryBg)',
     expanded: null,
     countStyles: null,
     labelCollapsedStyles: null,

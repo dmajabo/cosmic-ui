@@ -43,7 +43,7 @@ export function useZoom(props: IProps) {
 
   const onZoomIn = () => {
     const svg = d3.select(`#${svgId}`);
-    let _k = transform.k + 0.01;
+    let _k = transform.k + 0.1;
     if (_k >= ZoomRange.max) {
       _k = ZoomRange.max;
     }
@@ -55,7 +55,7 @@ export function useZoom(props: IProps) {
 
   const onZoomOut = () => {
     const svg = d3.select(`#${svgId}`);
-    let _k = transform.k - 0.01;
+    let _k = transform.k - 0.1;
     if (_k <= ZoomRange.min) {
       _k = ZoomRange.min;
     }

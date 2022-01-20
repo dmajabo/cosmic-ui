@@ -83,20 +83,6 @@ const VpcPanel: React.FC<IProps> = (props: IProps) => {
       </PanelHeader>
       <OverflowContainer>
         <ExpandGroup
-          id={expandStateObj.vms.id}
-          expand={expandStateObj.vms.expand}
-          onToogleExpand={onToogleGroup}
-          headerChildren={<ChildrenCount count={vms.length} />}
-          disabled={!vms.length}
-          arrowStyles={!vms.length ? null : { margin: '0' }}
-          maxGroupHeight="none"
-          icon={VmIcon}
-          label="Virtual Machines"
-          styles={{ margin: '0 0 4px 0' }}
-        >
-          {vms && vms.length ? vms.map(it => <VmItem key={`vmLIstItem${it.id}`} dataItem={it} onClick={onSelectVm} />) : null}
-        </ExpandGroup>
-        <ExpandGroup
           id={expandStateObj.internetGatAway.id}
           expand={expandStateObj.internetGatAway.expand}
           headerChildren={<ChildrenCount count={internetGatAway ? 1 : 0} />}
@@ -105,7 +91,6 @@ const VpcPanel: React.FC<IProps> = (props: IProps) => {
           maxGroupHeight="none"
           icon={InternetGatawayIcon}
           label="Internet Gateway"
-          arrowStyles={!internetGatAway ? null : { margin: '0' }}
           styles={{ margin: '0 0 4px 0' }}
         >
           <InternetGetAwayItem dataItem={internetGatAway} />
@@ -120,7 +105,6 @@ const VpcPanel: React.FC<IProps> = (props: IProps) => {
           label="Network Load Balancers"
           disabled={!netLoaderBalancerList.length}
           styles={{ margin: '0 0 4px 0' }}
-          arrowStyles={!netLoaderBalancerList.length ? null : { margin: '0' }}
         >
           {netLoaderBalancerList && netLoaderBalancerList.length
             ? netLoaderBalancerList.map(it => <BalanceItem key={`netLB${it.id}`} icon={NetLoaderBalancerIcon} dataItem={it} onClick={() => {}} />)
@@ -135,11 +119,23 @@ const VpcPanel: React.FC<IProps> = (props: IProps) => {
           maxGroupHeight="none"
           icon={AppLoaderBalancerIcon}
           label="Application Load Balancers"
-          arrowStyles={!appLoaderBalancerList.length ? null : { margin: '0' }}
         >
           {appLoaderBalancerList && appLoaderBalancerList.length
             ? appLoaderBalancerList.map(it => <BalanceItem key={`appLB${it.id}`} icon={AppLoaderBalancerIcon} dataItem={it} onClick={() => {}} />)
             : null}
+        </ExpandGroup>
+        <ExpandGroup
+          id={expandStateObj.vms.id}
+          expand={expandStateObj.vms.expand}
+          onToogleExpand={onToogleGroup}
+          headerChildren={<ChildrenCount count={vms.length} />}
+          disabled={!vms.length}
+          maxGroupHeight="none"
+          icon={VmIcon}
+          label="Virtual Machines"
+          styles={{ margin: '0 0 4px 0' }}
+        >
+          {vms && vms.length ? vms.map(it => <VmItem key={`vmLIstItem${it.id}`} dataItem={it} onClick={onSelectVm} />) : null}
         </ExpandGroup>
       </OverflowContainer>
     </>

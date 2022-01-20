@@ -1,5 +1,4 @@
 import { IRotateCoord } from 'lib/models/general';
-import { ILink } from 'lib/models/topology';
 import * as geometric from 'geometric';
 
 export const getPointsData = (targetCoord, sourceCoord): number[][] => {
@@ -14,7 +13,7 @@ export const getPointsData = (targetCoord, sourceCoord): number[][] => {
     [sourceCoord.x, sourceCoord.y],
   ];
 };
-export const getVpsAttachedCoord = (item: ILink): IRotateCoord => {
+export const getVpsAttachedCoord = (item: any): IRotateCoord => {
   const points: number[][] = getPointsData(item.targetCoord, item.sourceCoord);
   return calculateAttachmentPosition(points);
 };

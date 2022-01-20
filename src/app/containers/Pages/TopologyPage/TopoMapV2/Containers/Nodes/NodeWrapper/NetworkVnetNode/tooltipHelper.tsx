@@ -16,7 +16,7 @@ export const buildVnetTooltip = (e: React.BaseSyntheticEvent<MouseEvent>, region
     .attr('y', posY + y);
   const vnetName = container.append('div').classed('textOverflowEllips', true);
   vnetName.style('width', '100%').style('margin', '0 0 10px 0').style('font-weight', 500).style('font-size', '16px').style('line-height', '21px').style('color', 'var(--_primaryTextColor)');
-  vnetName.text(vnet.name || vnet.extId);
+  vnetName.text(`VPC: ${vnet.name || vnet.extId}`);
   buildTooltipSubTitle(container, 'Account', region.dataItem.name, '0 0 8px 0');
   buildTooltipSubTitle(container, 'Region', region.dataItem.name, '0 0 20px 0');
   const _nlb = getFilteredBalancerByType(vnet.loadBalancers);

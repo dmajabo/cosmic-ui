@@ -1,7 +1,6 @@
-import { INetworkVNetNode, INetworkWebAclNode, ITopoRegionNode } from 'lib/hooks/Topology/models';
+import { INetworkVNetNode, INetworkWebAclNode, ITopoRegionNode, TopologyPanelTypes } from 'lib/hooks/Topology/models';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 import { STANDART_DISPLAY_RESOLUTION_V2 } from 'lib/models/general';
-import { TopologyPanelTypes } from 'lib/models/topology';
 import React from 'react';
 import { NODES_CONSTANTS } from '../../../model';
 import ExpandedNetworkVnetNode from '../NodeWrapper/NetworkVnetNode/ExpandedNetworkVnetNode';

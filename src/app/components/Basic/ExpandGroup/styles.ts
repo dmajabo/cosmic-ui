@@ -20,6 +20,7 @@ export const GroupHeader = styled.div<HeaderProps>`
   width: 100%;
   padding: 20px 0;
   align-items: center;
+  justify-content: space-between;
   cursor: ${props => (props.disabled ? 'default' : 'pointer')};
   * svg {
     cursor: ${props => (props.disabled ? 'default' : 'pointer')};

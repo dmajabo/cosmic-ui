@@ -4,7 +4,6 @@ import LoadingIndicator from 'app/components/Loading';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 // import PanelBar from 'app/components/Basic/PanelBar';
 // import Entities from './PanelComponents/EntitiesComponent/Entities';
-// import GroupsComponent from './PanelComponents/GroupsComponent/GroupsComponent';
 import { ITopologyDataRes } from 'lib/api/ApiModels/Topology/apiModels';
 import FooterAction from './FooterAction';
 import Graph from './Graph';
@@ -40,12 +39,12 @@ const TopoMapV2: React.FC<IProps> = (props: IProps) => {
   const onTryLoadData = async () => {
     const _st = topology.selectedTime || null;
     const param: ITopologyQueryParam = createTopologyQueryParam(_st);
-    await onGetChainData([PolicyApi.getSegments(), PolicyApi.getAllGroups(), TopoApi.getAllOrganizations()], ['segments', 'groups', 'organizations'], userContext.accessToken!, param);
+    await onGetChainData([PolicyApi.getSegments(), TopoApi.getAllOrganizations()], ['segments', 'organizations'], userContext.accessToken!, param);
   };
 
   const onReloadData = async (startTime: Date | null) => {
     const param: ITopologyQueryParam = createTopologyQueryParam(startTime);
-    await onGetChainData([PolicyApi.getSegments(), PolicyApi.getAllGroups(), TopoApi.getAllOrganizations()], ['segments', 'groups', 'organizations'], userContext.accessToken!, param);
+    await onGetChainData([PolicyApi.getSegments(), TopoApi.getAllOrganizations()], ['segments', 'organizations'], userContext.accessToken!, param);
   };
 
   return (

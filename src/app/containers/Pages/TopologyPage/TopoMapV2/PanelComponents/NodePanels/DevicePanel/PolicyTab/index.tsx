@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-import { IDeviceNode } from 'lib/models/topology';
 import { IResourceQueryParam, ControllerKeyTypes, SecurityGroupsResourceTypes, IPolicyRes, IDeviceRule, PolicyResKeyEnum } from 'lib/api/ApiModels/Metrics/apiModel';
 import PolicyTable from './PolicyTable';
 import { useGet } from 'lib/api/http/useAxiosHook';
@@ -8,6 +7,7 @@ import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataCont
 import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 import { TopoApi } from 'lib/api/ApiModels/Services/topo';
 import { toTimestamp } from 'lib/api/ApiModels/paramBuilders';
+import { IDeviceNode } from 'lib/hooks/Topology/models';
 
 interface IProps {
   dataItem: IDeviceNode;

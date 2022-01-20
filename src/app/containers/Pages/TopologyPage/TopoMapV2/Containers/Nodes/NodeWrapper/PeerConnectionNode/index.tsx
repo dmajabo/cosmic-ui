@@ -6,6 +6,7 @@ import PeerConnectionLink from './PeerConnectionLink';
 import * as d3 from 'd3';
 import HtmlNodeLabel from '../../Containers/HtmlNodeLabel';
 import { IRefionContainersOffsets } from '../RegionNode/ExpandNodeContent/helper';
+import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 
 interface Props {
   dataItem: ITopoRegionNode;
@@ -21,11 +22,12 @@ interface Props {
 }
 
 const PeerConnectionNode: React.FC<Props> = (props: Props) => {
+  const { topology } = useTopologyV2DataContext();
   const [links, setLinks] = React.useState<IPeerLink[]>([]);
   const nodeRef = React.useRef(null);
 
   React.useEffect(() => {
-    const _links = buildPeerLinks(props.item, props.dataItem);
+    const _links = buildPeerLinks(props.item, props.dataItem, topology.nodes);
     setLinks(_links);
   }, [props.dataItem]);
 
@@ -65,6 +67,7 @@ const PeerConnectionNode: React.FC<Props> = (props: Props) => {
           peerConnectionId={props.item.id}
           from={it.from}
           to={it.to}
+          toRegion={it.toRegion}
           offsetData={props.offsetData}
           vnetCollapseStyles={props.vnetCollapseStyles}
         />

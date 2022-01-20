@@ -1,7 +1,6 @@
 import React from 'react';
 import { TOPOLOGY_IDS } from '../model';
 import { ContainerWithMetrics, StyledMap } from '../styles';
-import { TopologyPanelTypes } from 'lib/models/topology';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 import { useZoom } from '../hooks/useZoom';
 import HeadeerAction from '../HeadeerAction';
@@ -11,12 +10,12 @@ import FilterComponent from '../PanelComponents/FilterComponent';
 import VpcPanel from '../PanelComponents/NodePanels/VpcPanel';
 import DevicePanel from '../PanelComponents/NodePanels/DevicePanel';
 import WedgePanel from '../PanelComponents/NodePanels/WedgePanel';
-import GroupsComponent from '../PanelComponents/GroupsComponent/GroupsComponent';
 import WebAclPanel from '../PanelComponents/NodePanels/WebAclPanel';
 import GContainer from '../Containers/GContainer/GContainer';
 import NodeWrapper from '../Containers/Nodes/NodeWrapper';
 import StructuresWrapper from '../Containers/Nodes/StructuresWrapper';
 import DefsComponent from '../Containers/Shared/DefsComponent';
+import { TopologyPanelTypes } from 'lib/hooks/Topology/models';
 // import SegmentsComponent from '../PanelComponents/Segments/SegmentsComponent';
 
 interface Props {
@@ -92,8 +91,6 @@ const Graph: React.FC<Props> = (props: Props) => {
           {topology.regionStructures && topology.regionStructures.length ? <StructuresWrapper nodes={topology.regionStructures} /> : null}
           <PanelBar show={topology.topoPanel.show} onHidePanel={onHidePanel} type={IPanelBarLayoutTypes.VERTICAL}>
             {topology.topoPanel.type === TopologyPanelTypes.FILTERS && <FilterComponent />}
-            {topology.topoPanel.type === TopologyPanelTypes.GROUPS && <GroupsComponent />}
-            {/* {topology.topoPanel.type === TopologyPanelTypes.SEGMENTS && <SegmentsComponent />} */}
             {topology.topoPanel.type === TopologyPanelTypes.VPC && <VpcPanel dataItem={topology.topoPanel.dataItem} />}
             {topology.topoPanel.type === TopologyPanelTypes.WebAcl && <WebAclPanel dataItem={topology.topoPanel.dataItem} />}
             {topology.topoPanel.type === TopologyPanelTypes.Device && <DevicePanel dataItem={topology.topoPanel.dataItem} />}

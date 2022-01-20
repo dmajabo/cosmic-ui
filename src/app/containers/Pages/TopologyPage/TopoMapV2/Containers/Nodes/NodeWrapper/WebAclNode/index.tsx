@@ -2,7 +2,7 @@ import React from 'react';
 import { ICollapseStyles, ICounterStyle, ILabelHtmlStyles, NODES_CONSTANTS } from '../../../../model';
 import { INetworkWebAclNode } from 'lib/hooks/Topology/models';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
-import NodeCounter from '../../Containers/NodeCounter';
+// import NodeCounter from '../../Containers/NodeCounter';
 import HtmlNodeLabel from '../../Containers/HtmlNodeLabel';
 
 interface Props {
@@ -51,7 +51,7 @@ const WebAclNode: React.FC<Props> = (props: Props) => {
         pointerEvents="none"
         className="webAclNodeIcon transitionStyle"
       />
-      <NodeCounter pointerEvents="none" label={`${props.item.loadBalancers && props.item.loadBalancers.length ? props.item.loadBalancers.length : 0}`} stylesObj={props.counterStyles} />
+      {/* <NodeCounter pointerEvents="none" label={`${props.item.loadBalancers && props.item.loadBalancers.length ? props.item.loadBalancers.length : 0}`} stylesObj={props.counterStyles} /> */}
       <HtmlNodeLabel name={props.item.name} labelStyles={props.labelStyles} />
     </g>
   );

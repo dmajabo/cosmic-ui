@@ -4,7 +4,7 @@ import { DirectionType, FilterEntityOptions, IDeviceNode, ITGWNode, ITopoAccount
 import { getCollapseExpandState } from './buildNodeHelpers';
 import { centeredTopLevelItemsInRow, getChildContainerWidth, getChildContainerHeight, getRowsWidth, getStartChildRowOffsetX, getTotalNodeHeight, getTotalNodeWidth } from './sizeHelpers';
 
-export const updateTopLevelItems = (filter: FilterEntityOptions, regions: ITopoRegionNode[], accounts: ITopoAccountNode[], groups: ITopoSitesNode[]) => {
+export const updateTopLevelItems = (filter: FilterEntityOptions, regions: ITopoRegionNode[], accounts: ITopoAccountNode[], sites: ITopoSitesNode[]) => {
   let offsetY = 0;
   let regionSizes: ISize = { width: 0, height: 0 };
   let accountSizes: ISize = { width: 0, height: 0 };
@@ -17,11 +17,11 @@ export const updateTopLevelItems = (filter: FilterEntityOptions, regions: ITopoR
     accountSizes = updateAccountItems(accounts, offsetY);
     offsetY = offsetY + accountSizes.height + NODES_CONSTANTS.ACCOUNT.expanded.spaceY;
   }
-  if (groups && groups.length) {
-    sitesSizes = updateSitesItems(accounts, groups, offsetY);
+  if (sites && sites.length) {
+    sitesSizes = updateSitesItems(sites, offsetY);
     offsetY += sitesSizes.height;
   }
-  centeredTopLevelNodes(regions, accounts, groups, regionSizes, accountSizes, sitesSizes);
+  centeredTopLevelNodes(regions, accounts, sites, regionSizes, accountSizes, sitesSizes);
 };
 
 const centeredTopLevelNodes = (regions: ITopoRegionNode[], accounts: ITopoAccountNode[], sites: ITopoSitesNode[], regionSize: ISize, accountSize: ISize, sitesSize: ISize) => {
@@ -67,7 +67,7 @@ export const updateRegionItems = (items: ITopoRegionNode[], filter: FilterEntity
   return { width: offsetX, height: maxNodeHeight };
 };
 
-export const updateSitesItems = (accounts: ITopoAccountNode[], items: ITopoSitesNode[], offsetY: number): ISize => {
+export const updateSitesItems = (items: ITopoSitesNode[], offsetY: number): ISize => {
   if (!items || !items.length) return { width: 0, height: 0 };
   let offsetX = 0;
   let maxNodeHeight = 0;

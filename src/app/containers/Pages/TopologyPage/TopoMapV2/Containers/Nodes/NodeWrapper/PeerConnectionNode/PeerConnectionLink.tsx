@@ -1,5 +1,5 @@
 import React from 'react';
-import { INetworkVNetNode, INetworkVNetworkPeeringConnectionNode } from 'lib/hooks/Topology/models';
+import { INetworkVNetNode, INetworkVNetworkPeeringConnectionNode, ITopoRegionNode } from 'lib/hooks/Topology/models';
 import { IPosition } from 'lib/models/general';
 import { IRefionContainersOffsets } from '../RegionNode/ExpandNodeContent/helper';
 import { ICollapseStyles } from '../../../../model';
@@ -9,6 +9,7 @@ interface Props {
   peerConnectionId: string;
   from: INetworkVNetworkPeeringConnectionNode;
   to: INetworkVNetNode;
+  toRegion: ITopoRegionNode;
   fromCenterX: number;
   fromCenterY: number;
   offsetData: IRefionContainersOffsets;
@@ -21,9 +22,15 @@ const PeerConnectionLink: React.FC<Props> = (props: Props) => {
 
   React.useEffect(() => {
     const { peerConnection_TotalHeight } = props.offsetData;
-    const _x = getVnetXPosition(props.to.x, props.vnetCollapseStyles.width);
-    const _y = getVnetYPosition(props.to.y, peerConnection_TotalHeight, props.vnetCollapseStyles.height);
-    setTocoord({ x: _x, y: _y });
+    if (!props.toRegion) {
+      const _x = getVnetXPosition(props.to.x, props.vnetCollapseStyles.width);
+      const _y = getVnetYPosition(props.to.y, peerConnection_TotalHeight, props.vnetCollapseStyles.height);
+      setTocoord({ x: _x, y: _y });
+    } else {
+      const _x = getVnetXPosition(props.to.x, props.vnetCollapseStyles.width);
+      const _y = getVnetYPosition(props.to.y, peerConnection_TotalHeight, props.vnetCollapseStyles.height);
+      setTocoord({ x: _x, y: _y });
+    }
   }, [props.offsetData]);
 
   return (
