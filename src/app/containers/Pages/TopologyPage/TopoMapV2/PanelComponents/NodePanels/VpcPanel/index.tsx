@@ -3,7 +3,7 @@ import { PanelHeader, PanelTitle } from '../../styles';
 import OverflowContainer from 'app/components/Basic/OverflowContainer/styles';
 import { CloudLoadBalancerTypeP, INetworkLoadBalancer, INetworkVM, INnetworkInternetGateway } from 'lib/api/ApiModels/Topology/apiModels';
 import { INetworkVNetNode } from 'lib/hooks/Topology/models';
-import SelectedItemPanel from './SelectedItemPanel';
+import SelectedVmPanel from './SelectedVmPanel';
 import ExpandGroup from 'app/components/Basic/ExpandGroup';
 import { AppLoaderBalancerIcon, InternetGatawayIcon, NetLoaderBalancerIcon, VmIcon } from 'app/components/SVGIcons/topologyIcons/TopoMapV2Icons/VnetPanelIcons/vnetPanelIcons';
 import VmItem from './List/VmItem';
@@ -71,14 +71,14 @@ const VpcPanel: React.FC<IProps> = (props: IProps) => {
   if (!vnet) return null;
 
   if (selectedSubItem) {
-    return <SelectedItemPanel vnetExtId={props.dataItem.extId} dataItem={selectedSubItem} onReturnBack={onReturn} />;
+    return <SelectedVmPanel vnetExtId={props.dataItem.extId} dataItem={selectedSubItem} onReturnBack={onReturn} />;
   }
 
   return (
     <>
-      <PanelHeader direction="row" align="center">
+      <PanelHeader margin="0 0 10px 0" direction="row" align="center">
         <PanelTitle margin="0" maxWidth="calc(100% - 32px)">
-          {props.dataItem.name ? props.dataItem.name : props.dataItem.extId}
+          VPC: {props.dataItem.name ? props.dataItem.name : props.dataItem.extId}
         </PanelTitle>
       </PanelHeader>
       <OverflowContainer>

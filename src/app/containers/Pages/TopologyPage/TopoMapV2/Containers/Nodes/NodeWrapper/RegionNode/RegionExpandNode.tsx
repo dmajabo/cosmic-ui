@@ -70,12 +70,12 @@ const RegionExpandNode: React.FC<Props> = (props: Props) => {
           <NodeMarker iconId={NODES_CONSTANTS.REGION.iconId} stylesObj={NODES_CONSTANTS.REGION.expanded.marker} />
           <NodeExpandedName
             name={props.region.dataItem.name}
-            strBtnLabel="Open Region"
+            // strBtnLabel="Open Region"
             nodeWidth={props.region.expandedSize.width}
             markerWidth={NODES_CONSTANTS.REGION.expanded.marker.width}
             height={NODES_CONSTANTS.REGION.expanded.marker.height}
             stylesObj={NODES_CONSTANTS.REGION.labelExpandedStyles}
-            onClick={props.onShowFullStructure}
+            // onClick={props.onShowFullStructure}
           />
         </g>
       </g>

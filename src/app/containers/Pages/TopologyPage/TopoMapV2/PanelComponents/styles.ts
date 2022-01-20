@@ -12,13 +12,14 @@ export const PanelTabWrapper = styled.div<Props>`
 interface Props {
   direction?: 'row' | 'column';
   align?: 'center' | 'unset';
+  margin?: string;
 }
 export const PanelHeader = styled.div<Props>`
   display: flex;
   flex-direction: ${props => props.direction || 'row'};
   white-space: nowrap;
   width: 100%;
-  margin-bottom: 20px;
+  margin: ${props => props.margin || '0 0 20px 0'};
   align-items: ${props => props.align || 'center'};
   ${InputSearch} {
     border-color: var(--_disabledButtonColor);

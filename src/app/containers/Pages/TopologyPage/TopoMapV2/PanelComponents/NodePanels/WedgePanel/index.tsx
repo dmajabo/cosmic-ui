@@ -20,7 +20,7 @@ const WedgePanel: React.FC<IProps> = (props: IProps) => {
   return (
     <>
       <PanelHeader direction="column" align="unset">
-        <PanelTitle>{props.dataItem.name ? props.dataItem.name : props.dataItem.extId}</PanelTitle>
+        <PanelTitle>TGW: {props.dataItem.name ? props.dataItem.name : props.dataItem.extId}</PanelTitle>
         {props.dataItem.description && <SubPanelTitle>{props.dataItem.description}</SubPanelTitle>}
       </PanelHeader>
       <PanelTabWrapper>
