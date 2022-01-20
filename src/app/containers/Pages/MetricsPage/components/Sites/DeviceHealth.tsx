@@ -10,9 +10,12 @@ import LoadingIndicator from 'app/components/Loading';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import { EmptyText } from 'app/components/Basic/NoDataStyles/NoDataStyles';
 import { MultiLineChart } from 'app/containers/Pages/TopologyPage/TopoMapV2/PanelComponents/NodePanels/WedgePanel/MetricsTab/MultiLineChart';
+import { Chart, ChartContainerStyles } from 'app/components/ChartContainer/styles';
+import { LookbackSelectOption } from 'app/containers/Pages/AnalyticsPage/components/Metrics Explorer/LookbackTimeTab';
 
 interface DeviceHealthProps {
   readonly devices: string[];
+  readonly timeRange: LookbackSelectOption;
 }
 
 const isMetricsEmpty = (metrics: MultiLineMetricsData[]) => {
@@ -20,7 +23,7 @@ const isMetricsEmpty = (metrics: MultiLineMetricsData[]) => {
   return isEmpty(reducedMetrics) ? true : false;
 };
 
-export const DeviceHealth: React.FC<DeviceHealthProps> = ({ devices }) => {
+export const DeviceHealth: React.FC<DeviceHealthProps> = ({ devices, timeRange }) => {
   const classes = MetricsStyles();
   const userContext = useContext<UserContextState>(UserContext);
   const { response, loading, error, onGetChainData } = useGetChainData();
@@ -51,15 +54,17 @@ export const DeviceHealth: React.FC<DeviceHealthProps> = ({ devices }) => {
       <div className={classes.pageComponentTitle}>Device Health</div>
       <div>
         {loading ? (
-          <AbsLoaderWrapper width="100%" height="100%">
-            <LoadingIndicator margin="auto" />
-          </AbsLoaderWrapper>
+          <LoadingIndicator margin="auto" />
         ) : error ? (
           <ErrorMessage>{error}</ErrorMessage>
         ) : isMetricsEmpty(metricsData) ? (
           <EmptyText>No Data</EmptyText>
         ) : (
-          <MultiLineChart dataValueSuffix="score" inputData={metricsData} />
+          <ChartContainerStyles style={{ maxWidth: '100%', maxHeight: 420 }}>
+            <Chart>
+              <MultiLineChart inputData={metricsData} yAxisText="score" xAxisText={timeRange.label} />
+            </Chart>
+          </ChartContainerStyles>
         )}
       </div>
     </div>

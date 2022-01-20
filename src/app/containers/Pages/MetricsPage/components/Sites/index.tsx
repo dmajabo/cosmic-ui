@@ -116,7 +116,7 @@ export const Sites: React.FC<SitesProps> = ({ orgMap }) => {
           <Select styles={dropdownStyle} className={classes.inlineSelect} label="Single select" value={timeRange} options={TIME_RANGE_OPTIONS} onChange={handleTimeRangeChange} />
         </div>
       </div>
-      <DeviceHealth devices={getDeviceIds()} />
+      <DeviceHealth devices={getDeviceIds()} timeRange={timeRange} />
     </>
   );
 };

@@ -9,6 +9,8 @@ interface LineChartProps {
   readonly inputData: MultiLineMetricsData[];
   readonly chartWidth?: string | number | null;
   readonly chartHeight?: string | number | null;
+  readonly xAxisText?: string;
+  readonly yAxisText?: string;
   readonly timeFormat?: string;
 }
 
@@ -71,7 +73,7 @@ const COLOURS = [
   '#1A237E',
 ];
 
-export const MultiLineChart: React.FC<LineChartProps> = ({ dataValueSuffix, inputData }) => {
+export const MultiLineChart: React.FC<LineChartProps> = ({ dataValueSuffix, inputData, xAxisText, yAxisText }) => {
   const series = inputData.map(item => {
     const metrics = item.metrics.map(metric => {
       const time = DateTime.fromFormat(metric.time, INPUT_TIME_FORMAT).toUTC();
@@ -93,6 +95,10 @@ export const MultiLineChart: React.FC<LineChartProps> = ({ dataValueSuffix, inpu
       labels: {
         autoRotation: 0,
       },
+      title: {
+        text: xAxisText,
+      },
+      tickInterval: 24 * 3600 * 1000,
     },
     tooltip: {
       shared: true,
@@ -100,7 +106,9 @@ export const MultiLineChart: React.FC<LineChartProps> = ({ dataValueSuffix, inpu
       valueSuffix: dataValueSuffix ? ` ${dataValueSuffix}` : '',
     },
     yAxis: {
-      title: false,
+      title: {
+        text: yAxisText,
+      },
       labels: {
         format: dataValueSuffix ? `{text} ${dataValueSuffix}` : `{text}`,
       },
