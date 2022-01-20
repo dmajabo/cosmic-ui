@@ -98,9 +98,17 @@ const Segments: React.FC<Props> = (props: Props) => {
     onTryDeleteSegment(deleteModalData.dataItem.id);
   };
 
-  const onAddSegment = (item: ISegmentSegmentP) => {};
-
-  const onUpdateSegment = (item: ISegmentSegmentP) => {};
+  const onAddSegment = (item: ISegmentSegmentP) => {
+    const _items: ISegmentSegmentP[] = dataRows.slice();
+    const _index = _items.findIndex(it => it.id === item.id);
+    if (_index !== -1) {
+      _items.splice(_index, 1, item);
+    } else {
+      _items.push(item);
+    }
+    setDataRows(_items);
+    setEditModalData({ show: false, dataItem: null });
+  };
 
   const onTryDeleteSegment = async (id: string) => {
     await onDeleteSegmentById(PolicyApi.deleteSegmentsById(id), userContext.accessToken!);
@@ -140,13 +148,13 @@ const Segments: React.FC<Props> = (props: Props) => {
             showHeader
             title={editModalData && editModalData.dataItem ? 'Update Segment' : 'Create Segment'}
             showCloseButton
-            modalStyles={{ maxWidth: '800px', maxHeight: '800px' }}
+            modalStyles={{ maxWidth: '800px', maxHeight: '840px' }}
             useFadeAnimation
             id="editModalWindow"
             open={editModalData && editModalData.show}
             onClose={onCloseEditModal}
           >
-            <EditModal data={editModalData.dataItem} loading={false} error={null} onCreate={onAddSegment} onUpdate={onUpdateSegment} />
+            <EditModal data={editModalData.dataItem} onSaveSegmnet={onAddSegment} />
           </ModalComponent>
         )}
         {deleteModalData && deleteModalData.show && (

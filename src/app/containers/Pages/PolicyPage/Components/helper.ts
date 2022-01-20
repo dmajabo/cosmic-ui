@@ -45,6 +45,32 @@ const changeSegmentType = (segment: ISegmentSegmentP, type: SegmentSegmentType):
   return _s;
 };
 
+const prepareNewSegment = (segment: ISegmentSegmentP): ISegmentSegmentP => {
+  const _s: ISegmentSegmentP = jsonClone(segment);
+  if (_s.segType === SegmentSegmentType.NETWORK) {
+    _s.appSegPol = null;
+    _s.extSegPol = null;
+    _s.paasSegPol = null;
+    _s.serviceSegPol = null;
+    _s.siteSegPol = null;
+  }
+  if (_s.segType === SegmentSegmentType.APPLICATION && !_s.appSegPol) {
+    _s.networkSegPol = null;
+    _s.extSegPol = null;
+    _s.paasSegPol = null;
+    _s.serviceSegPol = null;
+    _s.siteSegPol = null;
+  }
+  if (_s.segType === SegmentSegmentType.SITE && !_s.siteSegPol) {
+    _s.networkSegPol = null;
+    _s.extSegPol = null;
+    _s.paasSegPol = null;
+    _s.serviceSegPol = null;
+    _s.appSegPol = null;
+  }
+  return _s;
+};
+
 const updateMatchRule = (segment: ISegmentSegmentP, item: INetworkVM | INetworkDevice | INetworkVNetwork): ISegmentSegmentP => {
   const _s: ISegmentSegmentP = jsonClone(segment);
   if (_s.segType === SegmentSegmentType.NETWORK) {
@@ -179,4 +205,4 @@ const onValidateSegment = (_s: ISegmentSegmentP): ISegmentComplete => {
   return _obj;
 };
 
-export { createNewSegment, onValidateSegment, changeSegmentType, updateMatchRule, updateMatchRules };
+export { createNewSegment, onValidateSegment, changeSegmentType, updateMatchRule, updateMatchRules, prepareNewSegment };

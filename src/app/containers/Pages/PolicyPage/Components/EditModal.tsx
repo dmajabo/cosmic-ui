@@ -11,8 +11,8 @@ import { jsonClone } from 'lib/helpers/cloneHelper';
 import MatSelect from 'app/components/Inputs/MatSelect';
 import ColorPiker from 'app/components/Inputs/ColorPiker';
 import { ValueLabel } from 'app/components/Inputs/MatSelect/styles';
-// import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
-import { useGet } from 'lib/api/http/useAxiosHook';
+import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
+import { useGet, usePost, usePut } from 'lib/api/http/useAxiosHook';
 import { INetworkDevice, INetworkVM, INetworkVNetwork, ISitesRes, IVmsRes, IVnetworksRes } from 'lib/api/ApiModels/Topology/apiModels';
 import { TopoApi } from 'lib/api/ApiModels/Services/topo';
 import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
@@ -27,13 +27,12 @@ import Step from '@mui/material/Step';
 import { StepButton } from '@mui/material';
 import { FORM_STEPS, ISegmentComplete } from './models';
 import { StepperStyles } from 'app/components/Stepper/StepperMuiStyles';
+import { PolicyApi } from 'lib/api/ApiModels/Services/policy';
+import { IBaseEntity } from 'lib/models/general';
 
 interface IProps {
   data?: ISegmentSegmentP;
-  loading: boolean;
-  error: string;
-  onCreate: (item: ISegmentSegmentP) => void;
-  onUpdate: (item: ISegmentSegmentP) => void;
+  onSaveSegmnet: (item: ISegmentSegmentP) => void;
 }
 
 const EditModal: React.FC<IProps> = (props: IProps) => {
@@ -42,6 +41,9 @@ const EditModal: React.FC<IProps> = (props: IProps) => {
   const { loading: vnetsLoading, response: vnetsRes, error: vnetsError, onGet: onGetVnets } = useGet<IVnetworksRes>();
   const { loading: vmsLoading, response: vmsRes, error: vmsError, onGet: onGetVms } = useGet<IVmsRes>();
   const { loading: deviceLoading, response: deviceRes, error: deviceError, onGet: onGetDevices } = useGet<ISitesRes>();
+  const { response: postRes, loading: postLoading, error: postError, onPost } = usePost<ISegmentSegmentP, IBaseEntity<string>>();
+  const { response: putRes, loading: putLoading, error: putError, onPut } = usePut<ISegmentSegmentP, IBaseEntity<string>>();
+  const { loading: getLoading, response: getRes, error: getError, onGet: onGetSegment } = useGet<ISegmentSegmentP>();
   const [vnets, setVnets] = React.useState<INetworkVNetwork[]>([]);
   const [vms, setVms] = React.useState<INetworkVM[]>([]);
   const [devices, setDevices] = React.useState<INetworkDevice[]>([]);
@@ -109,6 +111,24 @@ const EditModal: React.FC<IProps> = (props: IProps) => {
       }
     }
   }, [deviceRes]);
+
+  React.useEffect(() => {
+    if (postRes && postRes.id) {
+      onTryLoadSegment(postRes.id);
+    }
+  }, [postRes]);
+
+  React.useEffect(() => {
+    if (putRes && putRes.id) {
+      onTryLoadSegment(putRes.id);
+    }
+  }, [putRes]);
+
+  React.useEffect(() => {
+    if (getRes && getRes.id) {
+      props.onSaveSegmnet(getRes);
+    }
+  }, [getRes]);
 
   const onChangeField = (_value: string | null, field: ITopologySegmentFields, err?: string) => {
     const _s: ISegmentSegmentP = jsonClone(segment);
@@ -220,9 +240,11 @@ const EditModal: React.FC<IProps> = (props: IProps) => {
 
   const onSave = () => {
     if (segment.id) {
-      props.onUpdate(segment);
+      onTryUpdateSegment(segment);
+      return;
     }
-    props.onCreate(segment);
+    const _s: ISegmentSegmentP = helper.prepareNewSegment(segment);
+    onTryCreateSegment(_s);
   };
 
   const handleStep = (step: number) => () => {
@@ -242,6 +264,18 @@ const EditModal: React.FC<IProps> = (props: IProps) => {
   const onTryLoadDevices = async (pageData: IUiPagingData) => {
     const _param = paramBuilder(pageData.pageSize, pageData.pageOffset);
     await onGetDevices(TopoApi.getSites(), userContext.accessToken!, _param);
+  };
+
+  const onTryCreateSegment = async (item: ISegmentSegmentP) => {
+    await onPost(PolicyApi.postSegments(), { segment: item }, userContext.accessToken!);
+  };
+
+  const onTryUpdateSegment = async (item: ISegmentSegmentP) => {
+    await onPut(PolicyApi.putSegmentsById(item.id), { segment: item, segmentId: item.id }, userContext.accessToken!);
+  };
+
+  const onTryLoadSegment = async (id: string) => {
+    await onGetSegment(PolicyApi.getSegmentsById(id), userContext.accessToken!);
   };
 
   return (
@@ -286,7 +320,6 @@ const EditModal: React.FC<IProps> = (props: IProps) => {
                 label="Description"
                 onChange={_value => onChangeField(_value, ITopologySegmentFields.DESCRIPTION)}
                 type="textarea"
-                inputStyles={{ height: '100px' }}
               />
             </ModalRow>
             <ModalRow margin="0 0 20px 0">
@@ -349,12 +382,14 @@ const EditModal: React.FC<IProps> = (props: IProps) => {
             )}
           </>
         )}
-        {/* {validationError && <ErrorMessage>{validationError}</ErrorMessage>} */}
+        {postError && postError.message && <ErrorMessage>{postError.message}</ErrorMessage>}
+        {putError && putError.message && <ErrorMessage>{putError.message}</ErrorMessage>}
+        {getError && getError.message && <ErrorMessage>{getError.message}</ErrorMessage>}
       </ModalContent>
       <ModalFooter style={{ height: '60px' }}>
         <PrimaryButton styles={{ width: '100%', height: '100%' }} label={segment.id ? 'Update segment' : 'Add segment'} onClick={onSave} disabled={!completed.step_1 || !completed.step_2} />
       </ModalFooter>
-      {props.loading && (
+      {(postLoading || putLoading || getLoading) && (
         <AbsLoaderWrapper width="100%" height="100%">
           <LoadingIndicator margin="auto" />
         </AbsLoaderWrapper>
