@@ -31,12 +31,15 @@ export const useGet = <T = any>(): IApiRes<T> => {
   const [error, setError] = React.useState<AxiosError>(null);
   const [loading, setloading] = React.useState<boolean>(false);
 
-  const onGet = React.useCallback((url: string, token: string, param?: any) => {
+  const onGet = React.useCallback(async (url: string, token: string, param?: any) => {
     let isSubscribed = true;
     setloading(true);
     setError(null);
-    getDataAsync(isSubscribed, url, token, param);
+    const source = axios.CancelToken.source();
+    await getDataAsync(isSubscribed, url, token, param);
     return () => {
+      source.cancel('Cancelling in cleanup');
+      console.log('Cancelling in cleanup');
       setloading(false);
       setError(null);
       setResponse(null);
@@ -74,11 +77,14 @@ export const usePost = <T = any, R = any>(): IApiRes<R> => {
   const [error, setError] = React.useState<AxiosError>(null);
   const [loading, setloading] = React.useState<boolean>(false);
 
-  const onPost = React.useCallback((url: string, _data: T, token: string, param?: any) => {
+  const onPost = React.useCallback(async (url: string, _data: T, token: string, param?: any) => {
     let isSubscribed = true;
     setloading(true);
-    postDataAsync(isSubscribed, url, _data, token, param);
+    const source = axios.CancelToken.source();
+    await postDataAsync(isSubscribed, url, _data, token, param);
     return () => {
+      source.cancel('Cancelling in cleanup');
+      console.log('Cancelling in cleanup');
       setloading(false);
       setError(null);
       setResponse(null);
@@ -117,11 +123,14 @@ export const usePut = <T = any, R = any>(): IApiRes<R> => {
   const [error, setError] = React.useState<AxiosError>(null);
   const [loading, setloading] = React.useState<boolean>(false);
 
-  const onPut = React.useCallback((url: string, _data: T, token: string, param?: any) => {
+  const onPut = React.useCallback(async (url: string, _data: T, token: string, param?: any) => {
     let isSubscribed = true;
     setloading(true);
-    putDataAsync(isSubscribed, url, _data, token, param);
+    const source = axios.CancelToken.source();
+    await putDataAsync(isSubscribed, url, _data, token, param);
     return () => {
+      source.cancel('Cancelling in cleanup');
+      console.log('Cancelling in cleanup');
       setloading(false);
       setError(null);
       setResponse(null);
@@ -160,11 +169,14 @@ export const usePatch = <T = any, R = any>(): IApiRes<R> => {
   const [error, setError] = React.useState<AxiosError>(null);
   const [loading, setloading] = React.useState<boolean>(false);
 
-  const onPatch = React.useCallback((url: string, _data: T, token: string, param?: any) => {
+  const onPatch = React.useCallback(async (url: string, _data: T, token: string, param?: any) => {
     let isSubscribed = true;
     setloading(true);
-    patchDataAsync(isSubscribed, url, _data, token, param);
+    const source = axios.CancelToken.source();
+    await patchDataAsync(isSubscribed, url, _data, token, param);
     return () => {
+      source.cancel('Cancelling in cleanup');
+      console.log('Cancelling in cleanup');
       setloading(false);
       setError(null);
       setResponse(null);
@@ -203,11 +215,14 @@ export const useDelete = <T = any>(): IApiRes<T> => {
   const [error, setError] = React.useState<AxiosError>(null);
   const [loading, setloading] = React.useState<boolean>(false);
 
-  const onDelete = React.useCallback((url: string, token: string, param?: any) => {
+  const onDelete = React.useCallback(async (url: string, token: string, param?: any) => {
     let isSubscribed = true;
     setloading(true);
-    deleteDataAsync(isSubscribed, url, token, param);
+    const source = axios.CancelToken.source();
+    await deleteDataAsync(isSubscribed, url, token, param);
     return () => {
+      source.cancel('Cancelling in cleanup');
+      console.log('Cancelling in cleanup');
       setloading(false);
       setError(null);
       setResponse(null);
