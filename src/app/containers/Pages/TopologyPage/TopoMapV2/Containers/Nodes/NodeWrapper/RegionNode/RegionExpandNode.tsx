@@ -15,6 +15,7 @@ import { IRefionContainersOffsets } from './ExpandNodeContent/helper';
 import { removeVnetTooltip } from '../NetworkVnetNode/tooltipHelper';
 import TransitionContainer from '../../../TransitionContainer';
 import NetworkNetworkLink from '../../../Links/NetworkNetworkLink';
+import { onReiseNode } from '../../../../Graph/helper';
 
 interface Props {
   x: number;
@@ -37,6 +38,14 @@ const RegionExpandNode: React.FC<Props> = (props: Props) => {
     return () => removeVnetTooltip(`${NODES_CONSTANTS.REGION.type}${props.region.uiId}`);
   }, []);
 
+  const onMouseEnter = () => {
+    onReiseNode(`g${NODES_CONSTANTS.REGION.type}${props.region.uiId}`);
+  };
+
+  // const onMouseLeave = () => {
+  //   onUnHoverNode(`${NODES_CONSTANTS.REGION.type}${props.region.uiId}`);
+  // };
+
   return (
     <>
       <g
@@ -45,6 +54,8 @@ const RegionExpandNode: React.FC<Props> = (props: Props) => {
         id={`${NODES_CONSTANTS.REGION.type}${props.region.uiId}`}
         transform={`translate(${props.x}, ${props.y})`}
         data-type={NODES_CONSTANTS.REGION.type}
+        onMouseEnter={onMouseEnter}
+        // onMouseLeave={onMouseLeave}
       >
         <rect
           id={props.dragId}
@@ -68,15 +79,17 @@ const RegionExpandNode: React.FC<Props> = (props: Props) => {
           />
         </g>
       </g>
-      {props.region.vnetLinks && props.region.vnetLinks.length ? (
-        <TransitionContainer stateIn={props.showTransits} origin="unset" transform="none">
-          <>
-            {props.region.vnetLinks.map(it => (
-              <NetworkNetworkLink key={`link${NODES_CONSTANTS.REGION.type}${props.region.uiId}${it.id}`} dataItem={it} offsetY={props.offsetsData.vnetOffsetY} />
-            ))}
-          </>
-        </TransitionContainer>
-      ) : null}
+      <g id={`${NODES_CONSTANTS.REGION.type}${props.region.uiId}linksLayer`}>
+        {props.region.vnetLinks && props.region.vnetLinks.length ? (
+          <TransitionContainer stateIn={props.showTransits} origin="unset" transform="none">
+            <>
+              {props.region.vnetLinks.map(it => (
+                <NetworkNetworkLink key={`link${NODES_CONSTANTS.REGION.type}${props.region.uiId}${it.id}`} dataItem={it} offsetY={props.offsetsData.vnetOffsetY} />
+              ))}
+            </>
+          </TransitionContainer>
+        ) : null}
+      </g>
       <g id={`${NODES_CONSTANTS.REGION.type}${props.region.uiId}childrensLayer`} className="topologyNode" data-type={NODES_CONSTANTS.REGION.type} transform={`translate(${props.x}, ${props.y})`}>
         {props.showWebAcls && props.region.webAcls && props.region.webAcls.length ? (
           <WebAclsContainer offsetY={props.offsetsData.topOffset}>

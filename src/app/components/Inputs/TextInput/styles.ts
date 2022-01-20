@@ -48,6 +48,7 @@ export const TextArea = styled.textarea<Props>`
   height: 172px;
   padding: 20px;
   resize: none;
+  display: block;
 `;
 
 export const TagsWrapper = styled.div`

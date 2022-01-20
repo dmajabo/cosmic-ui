@@ -48,8 +48,8 @@ const DevicePanel: React.FC<IProps> = (props: IProps) => {
             },
           }}
         >
-          <Tab label="Metrics" classes={{ selected: classes.tabSelected }} {...TabComponentProps(0)} className={classes.tab} />
-          <Tab disabled={policyDisabled} label="Policy" classes={{ selected: classes.tabSelected }} {...TabComponentProps(1)} className={classes.tab} />
+          <Tab disableRipple label="Metrics" classes={{ selected: classes.tabSelected }} {...TabComponentProps(0)} className={classes.tab} />
+          <Tab disableRipple disabled={policyDisabled} label="Policy" classes={{ selected: classes.tabSelected }} {...TabComponentProps(1)} className={classes.tab} />
         </Tabs>
       </PanelTabWrapper>
       <PanelHeader direction="column" align="unset">

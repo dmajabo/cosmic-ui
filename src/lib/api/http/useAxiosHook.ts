@@ -245,12 +245,15 @@ export const useGetChainData = <T = any>(): IApiRes<T> => {
   const [error, setError] = React.useState<AxiosError>(null);
   const [loading, setloading] = React.useState<boolean>(false);
 
-  const onGetChainData = React.useCallback((url: string[], keys: string[], token: string, param?: any) => {
+  const onGetChainData = React.useCallback(async (url: string[], keys: string[], token: string, param?: any) => {
     let isSubscribed = true;
     setloading(true);
     setError(null);
-    getDataAsync(isSubscribed, url, keys, token, param);
+    const source = axios.CancelToken.source();
+    await getDataAsync(isSubscribed, url, keys, token, param);
     return () => {
+      source.cancel('Cancelling in cleanup');
+      console.log('Cancelling in cleanup');
       setloading(false);
       setError(null);
       setResponse(null);

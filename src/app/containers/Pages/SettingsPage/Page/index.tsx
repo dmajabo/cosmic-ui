@@ -36,7 +36,7 @@ const Page: React.FC<IProps> = (props: IProps) => {
           }}
         >
           {SETTINGS_TABS.map(it => (
-            <Tab key={`settingsTab${it.id}`} label={it.label} classes={{ selected: classes.tabSelected }} {...TabComponentProps(0)} className={classes.tabBigSize} />
+            <Tab disableRipple key={`settingsTab${it.id}`} label={it.label} classes={{ selected: classes.tabSelected }} {...TabComponentProps(0)} className={classes.tabBigSize} />
           ))}
         </Tabs>
       </TabsWrapperStyles>

@@ -57,3 +57,59 @@ export const GridCellTotalTag = styled.span`
   margin: auto auto auto 0;
   padding: 0 10px;
 `;
+
+interface PropsCellColor {
+  color?: string;
+  margin?: string;
+}
+export const ColorValue = styled.span<PropsCellColor>`
+  background: ${props => props.color || 'transparent'};
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  margin: ${props => props.margin || 'auto'};
+`;
+
+export const CellValue = styled.span<PropsCellColor>`
+  color: ${props => props.color || 'var(--_primaryTextColor)'};
+  max-width: 100%;
+  display: inline-block;
+  font-family: 'DMSans';
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 21px;
+  margin: auto 0;
+`;
+
+interface PropsCellButton {
+  margin?: string;
+  hoverColor?: string;
+}
+
+export const GridButton = styled.button<PropsCellButton>`
+  background: transparent;
+  display: inline-flex;
+  width: 20px;
+  height: 20px;
+  margin: ${props => props.margin || '0'};
+  border: none;
+  outline: none;
+  padding: 0;
+  cursor: pointer;
+  svg {
+    vertical-align: top;
+    width: 16px;
+    height: 16px;
+    margin: auto;
+  }
+  &:hover:not(:disabled) {
+    .inheritFill {
+      fill: ${props => props.hoverColor || 'var(--_highlightColor)'};
+    }
+  }
+  &:disabled {
+    cursor: default;
+  }
+`;

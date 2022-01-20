@@ -36,7 +36,7 @@ const MainPage: React.FC<IProps> = (props: IProps) => {
           }}
         >
           {AUTOMATIONS_TABS.map(it => (
-            <Tab key={`automationKey${it.id}`} label={it.label} classes={{ selected: classes.tabSelected }} {...TabComponentProps(0)} className={classes.tabBigSize} />
+            <Tab disableRipple key={`automationKey${it.id}`} label={it.label} classes={{ selected: classes.tabSelected }} {...TabComponentProps(0)} className={classes.tabBigSize} />
           ))}
         </Tabs>
       </TabsWrapperStyles>
