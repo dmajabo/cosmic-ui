@@ -1,6 +1,6 @@
 import React from 'react';
 import { TOPOLOGY_IDS } from '../model';
-import { ContainerWithMetrics, StyledMap } from '../styles';
+import { ContainerWithLegend, ContainerWithMetrics, StyledMap } from '../styles';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 import { useZoom } from '../hooks/useZoom';
 import HeadeerAction from '../HeadeerAction';
@@ -16,6 +16,7 @@ import NodeWrapper from '../Containers/Nodes/NodeWrapper';
 import StructuresWrapper from '../Containers/Nodes/StructuresWrapper';
 import DefsComponent from '../Containers/Shared/DefsComponent';
 import { TopologyPanelTypes } from 'lib/hooks/Topology/models';
+import SegmentsLegend from '../Containers/SegmentsLegend';
 // import SegmentsComponent from '../PanelComponents/Segments/SegmentsComponent';
 
 interface Props {
@@ -73,21 +74,24 @@ const Graph: React.FC<Props> = (props: Props) => {
       />
       {topology.originData && (
         <ContainerWithMetrics>
-          <StyledMap
-            id={TOPOLOGY_IDS.SVG}
-            width="100%"
-            height="100%"
-            viewBox={`0 0 ${STANDART_DISPLAY_RESOLUTION_V2.width} ${STANDART_DISPLAY_RESOLUTION_V2.height}`}
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlnsXlink="http://www.w3.org/1999/xlink"
-            onDoubleClick={onUnselectNode}
-          >
-            <DefsComponent />
-            <GContainer id={TOPOLOGY_IDS.G_ROOT}>
-              <NodeWrapper nodes={topology.nodes} />
-            </GContainer>
-          </StyledMap>
+          <ContainerWithLegend>
+            <StyledMap
+              id={TOPOLOGY_IDS.SVG}
+              width="100%"
+              height="100%"
+              viewBox={`0 0 ${STANDART_DISPLAY_RESOLUTION_V2.width} ${STANDART_DISPLAY_RESOLUTION_V2.height}`}
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlnsXlink="http://www.w3.org/1999/xlink"
+              onDoubleClick={onUnselectNode}
+            >
+              <DefsComponent />
+              <GContainer id={TOPOLOGY_IDS.G_ROOT}>
+                <NodeWrapper nodes={topology.nodes} />
+              </GContainer>
+            </StyledMap>
+            {topology.originSegmentsData && topology.originSegmentsData.length ? <SegmentsLegend /> : null}
+          </ContainerWithLegend>
           {topology.regionStructures && topology.regionStructures.length ? <StructuresWrapper nodes={topology.regionStructures} /> : null}
           <PanelBar show={topology.topoPanel.show} onHidePanel={onHidePanel} type={IPanelBarLayoutTypes.VERTICAL}>
             {topology.topoPanel.type === TopologyPanelTypes.FILTERS && <FilterComponent />}

@@ -9,6 +9,7 @@ export const BoxWrapper = styled.div`
   min-height: 40px;
   border: none;
   border-bottom: 1px solid var(--_borderColor);
+  flex-wrap: nowrap;
 `;
 
 interface HeaderProps {
@@ -21,6 +22,7 @@ export const GroupHeader = styled.div<HeaderProps>`
   padding: 20px 0;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: nowrap;
   cursor: ${props => (props.disabled ? 'default' : 'pointer')};
   * svg {
     cursor: ${props => (props.disabled ? 'default' : 'pointer')};
@@ -40,6 +42,7 @@ export const GroupLabel = styled.div`
   text-transform: uppercase;
   color: var(--_disabledTextColor);
   margin: auto 12px auto 0;
+  white-space: nowrap;
 `;
 
 interface ContentWrapperProps {
