@@ -263,7 +263,7 @@ const VnetsTable: React.FC<Props> = (props: Props) => {
         />
       </ModalRow>
       <ModalRow margin="0 0 10px 0" align="center">
-        <ModalLabel>Vnets</ModalLabel>
+        <ModalLabel>VPCs</ModalLabel>
         {/* <SecondaryButtonWithPopup styles={{ padding: '0', width: '50px' }} wrapStyles={{ margin: '0 0 0 auto' }} icon={filterIcon} direction="rtl">
           <PopupContainer
             styles={{

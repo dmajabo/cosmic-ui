@@ -18,6 +18,7 @@ export enum SegmentExternalSegMatchKey {
 export interface ISegmentExternalSegMatchRuleP {
   matchKey: SegmentExternalSegMatchKey;
   matchValue: string;
+  uiId?: string;
 }
 
 export interface ISegmentExternalSegmentP {

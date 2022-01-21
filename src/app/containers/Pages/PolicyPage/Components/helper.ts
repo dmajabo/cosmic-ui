@@ -1,31 +1,40 @@
 import {
   ISegmentApplicationSegMatchRuleP,
+  ISegmentExternalSegMatchRuleP,
   ISegmentNetworkSegMatchRuleP,
   ISegmentSegmentP,
   ISegmentSiteSegmentMatchRuleP,
   SegmentApplicationSegMatchKey,
   SegmentApplicationSegMatchScope,
+  SegmentExternalSegMatchKey,
   SegmentNetworkSegMatchKey,
   SegmentSegmentType,
   SegmentSiteSegmentMatchKey,
 } from 'lib/api/ApiModels/Policy/Segment';
 import { INetworkDevice, INetworkTag, INetworkVM, INetworkVNetwork } from 'lib/api/ApiModels/Topology/apiModels';
 import { jsonClone } from 'lib/helpers/cloneHelper';
-import { ISegmentComplete } from './models';
+import { DEFAULT_SEGMENTS_COLORS_SCHEMA, ISegmentComplete } from './models';
+import { Validator } from 'ip-num/Validator';
+import uuid from 'react-uuid';
 
-const createNewSegment = (): ISegmentSegmentP => ({
-  id: '',
-  name: '',
-  description: '',
-  segType: null,
-  networkSegPol: null,
-  appSegPol: null,
-  extSegPol: null,
-  serviceSegPol: null,
-  paasSegPol: null,
-  siteSegPol: null,
-  color: '',
-});
+const createNewSegment = (): ISegmentSegmentP => {
+  const _col = Math.floor(Math.random() * DEFAULT_SEGMENTS_COLORS_SCHEMA[0].length);
+  const _row = Math.floor(Math.random() * DEFAULT_SEGMENTS_COLORS_SCHEMA.length);
+  const randomColor = DEFAULT_SEGMENTS_COLORS_SCHEMA[_row][_col] || '#000000';
+  return {
+    id: '',
+    name: '',
+    description: '',
+    segType: null,
+    networkSegPol: null,
+    appSegPol: null,
+    extSegPol: null,
+    serviceSegPol: null,
+    paasSegPol: null,
+    siteSegPol: null,
+    color: randomColor,
+  };
+};
 
 const changeSegmentType = (segment: ISegmentSegmentP, type: SegmentSegmentType): ISegmentSegmentP => {
   const _s: ISegmentSegmentP = jsonClone(segment);
@@ -46,10 +55,33 @@ const changeSegmentType = (segment: ISegmentSegmentP, type: SegmentSegmentType):
       matchRules: [],
     };
   }
+  if (type === SegmentSegmentType.EXTERNAL && !_s.extSegPol) {
+    _s.extSegPol = {
+      matchRules: [],
+    };
+  }
   return _s;
 };
 
-const prepareNewSegment = (segment: ISegmentSegmentP): ISegmentSegmentP => {
+const onCreateExtRule = (): ISegmentExternalSegMatchRuleP => {
+  return {
+    matchKey: SegmentExternalSegMatchKey.EXT_SEG_MATCH_KEY_IP_PREFIXES,
+    matchValue: null,
+    uiId: uuid(),
+  };
+};
+
+const updateSegmentDataToEdit = (item: ISegmentSegmentP): ISegmentSegmentP => {
+  if (!item.segType || item.segType !== SegmentSegmentType.EXTERNAL) return item;
+  if (!item.extSegPol.matchRules || !item.extSegPol.matchRules.length) return item;
+  const _s: ISegmentSegmentP = jsonClone(item);
+  _s.extSegPol.matchRules.forEach(it => {
+    it.uiId = uuid();
+  });
+  return _s;
+};
+
+const prepareNewSegmentForSave = (segment: ISegmentSegmentP): ISegmentSegmentP => {
   const _s: ISegmentSegmentP = jsonClone(segment);
   if (_s.segType === SegmentSegmentType.NETWORK) {
     _s.appSegPol = null;
@@ -58,24 +90,38 @@ const prepareNewSegment = (segment: ISegmentSegmentP): ISegmentSegmentP => {
     _s.serviceSegPol = null;
     _s.siteSegPol = null;
   }
-  if (_s.segType === SegmentSegmentType.APPLICATION && !_s.appSegPol) {
+  if (_s.segType === SegmentSegmentType.APPLICATION) {
     _s.networkSegPol = null;
     _s.extSegPol = null;
     _s.paasSegPol = null;
     _s.serviceSegPol = null;
     _s.siteSegPol = null;
   }
-  if (_s.segType === SegmentSegmentType.SITE && !_s.siteSegPol) {
+  if (_s.segType === SegmentSegmentType.SITE) {
     _s.networkSegPol = null;
     _s.extSegPol = null;
     _s.paasSegPol = null;
     _s.serviceSegPol = null;
     _s.appSegPol = null;
   }
+  if (_s.segType === SegmentSegmentType.EXTERNAL) {
+    _s.networkSegPol = null;
+    _s.siteSegPol = null;
+    _s.paasSegPol = null;
+    _s.serviceSegPol = null;
+    _s.appSegPol = null;
+    _s.extSegPol.matchRules.forEach(rule => {
+      delete rule.uiId;
+    });
+  }
   return _s;
 };
 
-const updateMatchRule = (segment: ISegmentSegmentP, rule: ISegmentSiteSegmentMatchRuleP | ISegmentApplicationSegMatchRuleP | ISegmentNetworkSegMatchRuleP): ISegmentSegmentP => {
+const updateMatchRule = (
+  segment: ISegmentSegmentP,
+  rule: ISegmentSiteSegmentMatchRuleP | ISegmentApplicationSegMatchRuleP | ISegmentNetworkSegMatchRuleP | ISegmentExternalSegMatchRuleP,
+  index?: number,
+): ISegmentSegmentP => {
   const _s: ISegmentSegmentP = jsonClone(segment);
   if (_s.segType === SegmentSegmentType.NETWORK) {
     const _arr: ISegmentNetworkSegMatchRuleP[] = segment.networkSegPol.matchRules.slice();
@@ -110,6 +156,29 @@ const updateMatchRule = (segment: ISegmentSegmentP, rule: ISegmentSiteSegmentMat
     }
     _s.siteSegPol = { matchRules: _arr };
   }
+  if (_s.segType === SegmentSegmentType.EXTERNAL) {
+    const _arr: ISegmentExternalSegMatchRuleP[] = segment.extSegPol.matchRules.slice();
+    if (!index && index !== 0) {
+      _arr.push(rule as ISegmentExternalSegMatchRuleP);
+    } else {
+      _arr.splice(index, 1, rule as ISegmentExternalSegMatchRuleP);
+    }
+    _s.extSegPol = { matchRules: _arr };
+  }
+  return _s;
+};
+
+const removeMatchRule = (
+  segment: ISegmentSegmentP,
+  index: number,
+  rule?: ISegmentSiteSegmentMatchRuleP | ISegmentApplicationSegMatchRuleP | ISegmentNetworkSegMatchRuleP | ISegmentExternalSegMatchRuleP,
+): ISegmentSegmentP => {
+  const _s: ISegmentSegmentP = jsonClone(segment);
+  if (_s.segType === SegmentSegmentType.EXTERNAL) {
+    const _arr: ISegmentExternalSegMatchRuleP[] = segment.extSegPol.matchRules.slice();
+    _arr.splice(index, 1);
+    _s.extSegPol = { matchRules: _arr };
+  }
   return _s;
 };
 
@@ -124,7 +193,6 @@ const updateMatchRules = (segment: ISegmentSegmentP, rules: (ISegmentSiteSegment
   if (_s.segType === SegmentSegmentType.SITE) {
     updateSitesMatchRules(_s, rules as ISegmentSiteSegmentMatchRuleP[]);
   }
-
   return _s;
 };
 
@@ -242,7 +310,31 @@ const onValidateSegment = (_s: ISegmentSegmentP): ISegmentComplete => {
       _obj.step_2 = true;
     }
   }
+  if (_s.segType && _s.segType === SegmentSegmentType.EXTERNAL) {
+    if (!_s.extSegPol || (_s.extSegPol && (!_s.extSegPol.matchRules || !_s.extSegPol.matchRules.length || !checkExtRules(_s.extSegPol.matchRules)))) {
+      _obj.step_2 = false;
+    } else {
+      _obj.step_2 = true;
+    }
+  }
   return _obj;
+};
+
+const checkExtRules = (items: ISegmentExternalSegMatchRuleP[]): boolean => {
+  let valid = true;
+  for (let i = 0; i < items.length; i++) {
+    const element = items[i];
+    if (!element.matchValue) {
+      valid = false;
+      break;
+    }
+    const _obj: [boolean, string[]] = Validator.isValidIPv4CidrNotation(element.matchValue);
+    if (!_obj[0]) {
+      valid = false;
+      break;
+    }
+  }
+  return valid;
 };
 
 const getVmsFieldFromRuleKey = (key: SegmentApplicationSegMatchKey): string => {
@@ -342,13 +434,17 @@ export {
   createNewSegment,
   onValidateSegment,
   changeSegmentType,
+  removeMatchRule,
   updateMatchRule,
   updateMatchRules,
-  prepareNewSegment,
+  prepareNewSegmentForSave,
   getSelectedTagFromVms,
   getVmsFieldFromRuleKey,
   getSitesFieldFromRuleKey,
   getSitesFieldValueFromRuleKey,
   getVisibleVnetData,
   getSelectedTagFromVpcs,
+  onCreateExtRule,
+  checkExtRules,
+  updateSegmentDataToEdit,
 };

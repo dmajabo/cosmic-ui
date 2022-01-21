@@ -9,7 +9,7 @@ import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { eyeHideIcon, eyeIcon } from 'app/components/SVGIcons/eyeIcon';
 
 interface IProps {
-  id: string;
+  id?: string;
   name: string;
   type?: 'text' | 'password' | 'email' | 'textarea';
   value: string | null;

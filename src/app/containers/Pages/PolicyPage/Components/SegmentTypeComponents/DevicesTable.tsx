@@ -218,13 +218,13 @@ const DevicesTable: React.FC<Props> = (props: Props) => {
           selectClaassName="withLabel"
           onChange={onChangeMatchKey}
           renderValue={(v: SegmentSiteSegmentMatchKey) => {
-            if (v === SegmentSiteSegmentMatchKey.SITE_SEG_MATCH_KEY_NETWORK) return <ValueLabel>Network</ValueLabel>;
+            if (v === SegmentSiteSegmentMatchKey.SITE_SEG_MATCH_KEY_NETWORK) return <ValueLabel>On-Prem Network</ValueLabel>;
             if (v === SegmentSiteSegmentMatchKey.SITE_SEG_MATCH_KEY_MODEL) return <ValueLabel>Model</ValueLabel>;
             if (v === SegmentSiteSegmentMatchKey.SITE_SEG_MATCH_KEY_SERIAL_NUM) return <ValueLabel>Serial number</ValueLabel>;
             return <ValueLabel>{v}</ValueLabel>;
           }}
           renderOption={(v: SegmentSiteSegmentMatchKey) => {
-            if (v === SegmentSiteSegmentMatchKey.SITE_SEG_MATCH_KEY_NETWORK) return 'Network';
+            if (v === SegmentSiteSegmentMatchKey.SITE_SEG_MATCH_KEY_NETWORK) return 'On-Prem Network';
             if (v === SegmentSiteSegmentMatchKey.SITE_SEG_MATCH_KEY_MODEL) return 'Model';
             if (v === SegmentSiteSegmentMatchKey.SITE_SEG_MATCH_KEY_SERIAL_NUM) return 'Serial number';
             return v;
@@ -232,7 +232,7 @@ const DevicesTable: React.FC<Props> = (props: Props) => {
         />
       </ModalRow>
       <ModalRow margin="0 0 10px 0" align="center">
-        <ModalLabel>Sites</ModalLabel>
+        <ModalLabel>DEVICES</ModalLabel>
         {/* <SecondaryButtonWithPopup styles={{ padding: '0', width: '50px' }} wrapStyles={{ margin: '0 0 0 auto' }} icon={filterIcon} direction="rtl">
           <PopupContainer
             styles={{

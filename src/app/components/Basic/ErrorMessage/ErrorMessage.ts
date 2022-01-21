@@ -6,6 +6,7 @@ interface ErrorMesProps {
   color?: string;
   textAlign?: string;
   padding?: string;
+  maxWidth?: string;
 }
 export const ErrorMessage = styled.div<ErrorMesProps>`
   font-style: normal;
@@ -16,4 +17,5 @@ export const ErrorMessage = styled.div<ErrorMesProps>`
   margin: ${props => props.margin || '12px 0'};
   padding: ${props => props.padding || '0'};
   text-align: ${props => props.textAlign || 'center'};
+  max-width: ${props => props.maxWidth || 'unset'};
 `;

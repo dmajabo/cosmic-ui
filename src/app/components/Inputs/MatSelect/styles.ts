@@ -13,7 +13,7 @@ export const TextInputWrapper = styled.div`
     border-radius: 6px;
     width: 100%;
     color: var(--_primaryTextColor);
-    background: var(--_primaryBg);
+    background: var(--_primaryBg) !important;
     border: 1px solid var(--_defaultInputBorder) !important;
     box-sizing: border-box;
     & .icon svg {
@@ -30,12 +30,28 @@ export const TextInputWrapper = styled.div`
       height: 100%;
       & .MuiSelect-select {
         height: 100% !important;
+        background: var(--_primaryBg) !important;
+        &.Mui-disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+          * {
+            cursor: not-allowed;
+          }
+        }
       }
     }
     &.withLabel {
       height: calc(100% - 22px);
       & .MuiSelect-select {
         height: 100% !important;
+        background: var(--_primaryBg) !important;
+        &.Mui-disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+          * {
+            cursor: not-allowed;
+          }
+        }
       }
     }
     &.Mui-disabled {
@@ -61,8 +77,16 @@ export const TextInputWrapper = styled.div`
     font-family: 'DMSans' !important;
     font-weight: 500 !important;
     line-height: 20px;
+    background: var(--_primaryBg) !important;
     &:focus {
       background: transparent !important;
+    }
+    &.Mui-disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      * {
+        cursor: not-allowed;
+      }
     }
   }
 `;

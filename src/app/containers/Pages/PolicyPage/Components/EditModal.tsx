@@ -2,7 +2,14 @@ import React from 'react';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
 import PrimaryButton from 'app/components/Buttons/PrimaryButton';
-import { ISegmentApplicationSegMatchRuleP, ISegmentNetworkSegMatchRuleP, ISegmentSegmentP, ISegmentSiteSegmentMatchRuleP, SegmentSegmentType } from 'lib/api/ApiModels/Policy/Segment';
+import {
+  ISegmentApplicationSegMatchRuleP,
+  ISegmentExternalSegMatchRuleP,
+  ISegmentNetworkSegMatchRuleP,
+  ISegmentSegmentP,
+  ISegmentSiteSegmentMatchRuleP,
+  SegmentSegmentType,
+} from 'lib/api/ApiModels/Policy/Segment';
 import * as helper from './helper';
 import { ModalRow } from '../../Edges/Editor/Components/styles';
 import TextInput from 'app/components/Inputs/TextInput';
@@ -30,6 +37,7 @@ import { IBaseEntity } from 'lib/models/general';
 import _ from 'lodash';
 import SecondaryButton from 'app/components/Buttons/SecondaryButton';
 import ModalStepper from 'app/components/Stepper/ModalStepper';
+import ExternalStep from './SegmentTypeComponents/ExternalStep';
 
 interface IProps {
   data: ISegmentSegmentP;
@@ -38,7 +46,7 @@ interface IProps {
 
 const EditModal: React.FC<IProps> = (props: IProps) => {
   const userContext = React.useContext<UserContextState>(UserContext);
-  const [segment, setSegment] = React.useState<ISegmentSegmentP>(props.data);
+  const [segment, setSegment] = React.useState<ISegmentSegmentP>(helper.updateSegmentDataToEdit(props.data));
   const { loading: vnetsLoading, response: vnetsRes, error: vnetsError, onGet: onGetVnets } = useGet<IVnetworksRes>();
   const { loading: vmsLoading, response: vmsRes, error: vmsError, onGet: onGetVms } = useGet<IVmsRes>();
   const { loading: deviceLoading, response: deviceRes, error: deviceError, onGet: onGetDevices } = useGet<ISitesRes>();
@@ -247,12 +255,36 @@ const EditModal: React.FC<IProps> = (props: IProps) => {
     }
   };
 
+  const onUpdateExtRule = (rule: ISegmentExternalSegMatchRuleP, index?: number) => {
+    const _s: ISegmentSegmentP = helper.updateMatchRule(segment, rule, index);
+    const completed: ISegmentComplete = helper.onValidateSegment(_s);
+    setSegment(_s);
+    setCompleted(completed);
+    if (_.isEqual(_s, props.data)) {
+      setHasChanges(false);
+    } else {
+      setHasChanges(true);
+    }
+  };
+
+  const onRemoveExtRule = (rule: ISegmentExternalSegMatchRuleP, index: number) => {
+    const _s: ISegmentSegmentP = helper.removeMatchRule(segment, index, rule);
+    const completed: ISegmentComplete = helper.onValidateSegment(_s);
+    setSegment(_s);
+    setCompleted(completed);
+    if (_.isEqual(_s, props.data)) {
+      setHasChanges(false);
+    } else {
+      setHasChanges(true);
+    }
+  };
+
   const onSave = () => {
     if (segment.id) {
       onTryUpdateSegment(segment);
       return;
     }
-    const _s: ISegmentSegmentP = helper.prepareNewSegment(segment);
+    const _s: ISegmentSegmentP = helper.prepareNewSegmentForSave(segment);
     onTryCreateSegment(_s);
   };
 
@@ -331,14 +363,27 @@ const EditModal: React.FC<IProps> = (props: IProps) => {
                 id="groupType"
                 label="Type"
                 value={segment.segType}
-                options={[SegmentSegmentType.NETWORK, SegmentSegmentType.SITE, SegmentSegmentType.APPLICATION]}
+                options={[SegmentSegmentType.NETWORK, SegmentSegmentType.SITE, SegmentSegmentType.APPLICATION, SegmentSegmentType.EXTERNAL]}
                 styles={{ height: '72px', minHeight: '72px', margin: '0' }}
                 selectStyles={{ height: '50px', width: '100%' }}
                 required
                 selectClaassName="withLabel"
                 onChange={onChangeType}
                 readOnly={!!segment.id}
-                renderValue={(v: string) => <ValueLabel>{v}</ValueLabel>}
+                renderValue={(v: string) => {
+                  if (v === SegmentSegmentType.NETWORK) return <ValueLabel>VPC</ValueLabel>;
+                  if (v === SegmentSegmentType.SITE) return <ValueLabel>Site</ValueLabel>;
+                  if (v === SegmentSegmentType.APPLICATION) return <ValueLabel>VM</ValueLabel>;
+                  if (v === SegmentSegmentType.EXTERNAL) return <ValueLabel>External</ValueLabel>;
+                  return <ValueLabel>{v}</ValueLabel>;
+                }}
+                renderOption={(v: string) => {
+                  if (v === SegmentSegmentType.NETWORK) return <ValueLabel>VPC</ValueLabel>;
+                  if (v === SegmentSegmentType.SITE) return <ValueLabel>Site</ValueLabel>;
+                  if (v === SegmentSegmentType.APPLICATION) return <ValueLabel>VM</ValueLabel>;
+                  if (v === SegmentSegmentType.EXTERNAL) return <ValueLabel>External</ValueLabel>;
+                  return <ValueLabel>{v}</ValueLabel>;
+                }}
               />
             </ModalRow>
           </>
@@ -383,6 +428,9 @@ const EditModal: React.FC<IProps> = (props: IProps) => {
                 loading={deviceLoading}
                 error={deviceError && deviceError.message ? deviceError.message : null}
               />
+            )}
+            {segment.segType === SegmentSegmentType.EXTERNAL && (
+              <ExternalStep matchRules={segment.extSegPol && segment.extSegPol.matchRules ? segment.extSegPol.matchRules : []} onUpdateExtRule={onUpdateExtRule} onRemoveExtRule={onRemoveExtRule} />
             )}
           </>
         )}
