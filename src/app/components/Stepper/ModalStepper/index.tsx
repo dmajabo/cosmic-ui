@@ -29,7 +29,7 @@ const ModalStepper: React.FC<Props> = (props: Props) => {
             disabled={index !== 0 && !props.completed[props.steps[0].completedFieldName]}
             onClick={() => handleStep(step)}
           >
-            <StepButtonIcon>{!props.completed[step.completedFieldName] ? <span>{step.index + 1}</span> : checkMark}</StepButtonIcon>
+            <StepButtonIcon>{!props.completed[step.completedFieldName] || props.activeStep === step.index ? <span>{step.index + 1}</span> : checkMark}</StepButtonIcon>
             <StepButtonLabel>{step.label}</StepButtonLabel>
           </StepButton>
         </Step>
