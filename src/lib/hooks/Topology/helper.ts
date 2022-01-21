@@ -109,7 +109,7 @@ export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[]
         if (region.vnets && region.vnets.length && org.vendorType !== 'MERAKI') {
           // const _arr = getChunksFromArray(customVnetData, Math.min(VPCS_IN_ROW, max));
           const _arr: INetworkVNetwork[][] = getChunksFromArray(region.vnets, Math.min(VPCS_IN_ROW, max));
-          _objR.children = _arr.map((row, ri) => row.map((v, i) => createVnetNode(org, row.length, orgI, ri, i, v, _segmentsObj[v.segmentId])));
+          _objR.children = _arr.map((row, ri) => row.map((v, i) => createVnetNode(org, row.length, orgI, ri, i, v, _segmentsObj)));
         }
         if (region.vNetworkPeeringConnections && region.vNetworkPeeringConnections.length) {
           // const _arr = getChunksFromArray(customPeerData, Math.min(PEER_CONNECTION_IN_ROW, max));
@@ -130,7 +130,7 @@ export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[]
           //   // devicesInGroup.push(objE);
           // }
           region.devices.forEach((d, i) => {
-            const _device: IDeviceNode = createDeviceNode(org, orgI, d, _segmentsObj[d.segmentId]);
+            const _device: IDeviceNode = createDeviceNode(org, orgI, d, _segmentsObj);
             devices.push(_device);
           });
         }

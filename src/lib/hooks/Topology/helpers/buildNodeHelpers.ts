@@ -111,9 +111,10 @@ export const createWedgeNode = (org: INetworkOrg, orgIndex: number, rowIndex: nu
   };
 };
 
-export const createVnetNode = (org: INetworkOrg, itemsInRow: number, orgIndex: number, rowIndex: number, childIndex: number, node: INetworkVNetwork, color: string): INetworkVNetNode => {
+export const createVnetNode = (org: INetworkOrg, itemsInRow: number, orgIndex: number, rowIndex: number, childIndex: number, node: INetworkVNetwork, _segmentsObj: Object | null): INetworkVNetNode => {
   const _x = childIndex * (NODES_CONSTANTS.NETWORK_VNET.collapse.width + NODES_CONSTANTS.NETWORK_VNET.collapse.spaceX);
   const _y = rowIndex * (NODES_CONSTANTS.NETWORK_VNET.collapse.height + NODES_CONSTANTS.NETWORK_VNET.collapse.spaceY);
+  const isPresentSegmentColor = !!(_segmentsObj && _segmentsObj[node.segmentId]);
   return {
     ...node,
     visible: true,
@@ -127,8 +128,8 @@ export const createVnetNode = (org: INetworkOrg, itemsInRow: number, orgIndex: n
     uiId: uuid(),
     vendorType: org.vendorType,
     nodeType: TopoNodeTypes.VNET,
-    segmentColor: color || NODES_CONSTANTS.NETWORK_VNET.nodeBgColor,
-    nodeIconColor: color ? 'var(--_primaryWhiteColor)' : 'var(--_vnetIconBg)',
+    segmentColor: isPresentSegmentColor ? _segmentsObj[node.segmentId] : NODES_CONSTANTS.NETWORK_VNET.nodeBgColor,
+    nodeIconColor: isPresentSegmentColor ? 'var(--_primaryWhiteColor)' : 'var(--_vnetIconBg)',
   };
 };
 
@@ -177,7 +178,8 @@ export const createWebAclNode = (org: INetworkOrg, itemsInRow: number, orgIndex:
   };
 };
 
-export const createDeviceNode = (org: INetworkOrg, orgIndex: number, node: INetworkDevice, color: string): IDeviceNode => {
+export const createDeviceNode = (org: INetworkOrg, orgIndex: number, node: INetworkDevice, _segmentsObj: Object | null): IDeviceNode => {
+  const isPresentSegmentColor = !!(_segmentsObj && _segmentsObj[node.segmentId]);
   return {
     ...node,
     uiId: uuid(),
@@ -192,9 +194,9 @@ export const createDeviceNode = (org: INetworkOrg, orgIndex: number, node: INetw
     orgId: org.id,
     vendorType: org.vendorType,
     nodeType: TopoNodeTypes.DEVICE,
-    segmentColor: color || NODES_CONSTANTS.DEVICE.nodeBgColor,
-    nodeCiscoColor: color ? 'var(--_primaryWhiteColor)' : NODES_CONSTANTS.DEVICE.nodeCiscoColor,
-    nodeMerakiColor: color ? 'var(--_primaryWhiteColor)' : NODES_CONSTANTS.DEVICE.nodeMerakiColor,
+    segmentColor: isPresentSegmentColor ? _segmentsObj[node.segmentId] : NODES_CONSTANTS.NETWORK_VNET.nodeBgColor,
+    nodeCiscoColor: isPresentSegmentColor ? 'var(--_primaryWhiteColor)' : NODES_CONSTANTS.DEVICE.nodeCiscoColor,
+    nodeMerakiColor: isPresentSegmentColor ? 'var(--_primaryWhiteColor)' : NODES_CONSTANTS.DEVICE.nodeMerakiColor,
   };
 };
 
