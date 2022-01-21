@@ -20,6 +20,9 @@ export function useZoom(props: IProps) {
   const zoom = d3
     .zoom()
     .scaleExtent([ZoomRange.min, ZoomRange.max])
+    .wheelDelta(function wheelDelta(event) {
+      return -event.deltaY * (event.deltaMode === 1 ? 0.01 : event.deltaMode ? 1 : 0.002);
+    })
     .on('zoom', e => zoomed(e))
     .on('end', e => zoomEnd(e));
 

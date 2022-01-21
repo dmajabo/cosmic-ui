@@ -41,13 +41,13 @@ const ExpandGroup: React.FC<Props> = (props: Props) => {
         {props.headerChildren && <>{props.headerChildren}</>}
         {!props.disabled ? (
           <IconWrapper
-            styles={{ margin: 'auto 0 auto 12px', transform: `${expanded ? 'rotate(-180deg)' : 'rotate(0)'}`, transition: `transform ${DEFAULT_TRANSITION}` }}
+            styles={{ margin: 'auto 0', transform: `${expanded ? 'rotate(-180deg)' : 'rotate(0)'}`, transition: `transform ${DEFAULT_TRANSITION}` }}
             width="12px"
             height="12px"
             icon={arrowBottomIcon}
           />
         ) : (
-          <span style={{ width: '12px', height: '12px', display: 'inline-block', margin: 'auto 0 auto 10px' }} />
+          <span style={{ width: '12px', height: '12px', display: 'inline-block', margin: 'auto 0' }} />
         )}
       </GroupHeader>
       <Collapse in={expanded} timeout="auto" unmountOnExit>

@@ -30,6 +30,7 @@ import { StepperStyles } from 'app/components/Stepper/StepperMuiStyles';
 import { PolicyApi } from 'lib/api/ApiModels/Services/policy';
 import { IBaseEntity } from 'lib/models/general';
 import _ from 'lodash';
+import SecondaryButton from 'app/components/Buttons/SecondaryButton';
 
 interface IProps {
   data: ISegmentSegmentP;
@@ -410,12 +411,18 @@ const EditModal: React.FC<IProps> = (props: IProps) => {
         )}
       </ModalContent>
       <ModalFooter style={{ height: '60px' }}>
-        <PrimaryButton
-          styles={{ width: '100%', height: '100%' }}
-          label={segment.id ? 'Update segment' : 'Add segment'}
-          onClick={onSave}
-          disabled={!hasChanges || !completed.step_1 || !completed.step_2}
-        />
+        {activeStep === 0 && <PrimaryButton disabled={!completed.step_1} styles={{ width: '100%', height: '100%' }} label="Next" onClick={() => setActiveStep(1)} />}
+        {activeStep === 1 && (
+          <>
+            <SecondaryButton styles={{ width: 'calc(50% - 10px)', height: '100%', margin: '0 10px 0 0' }} label="Back" onClick={() => setActiveStep(0)} />
+            <PrimaryButton
+              styles={{ width: 'calc(50% - 10px)', height: '100%', margin: '0 0px 0 10px' }}
+              label={segment.id ? 'Update segment' : 'Add segment'}
+              onClick={onSave}
+              disabled={!hasChanges || !completed.step_1 || !completed.step_2}
+            />
+          </>
+        )}
       </ModalFooter>
       {(postLoading || putLoading || getLoading) && (
         <AbsLoaderWrapper width="100%" height="100%">

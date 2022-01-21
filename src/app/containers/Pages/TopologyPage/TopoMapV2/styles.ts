@@ -40,7 +40,7 @@ export const ContainerWithFooter = styled.div`
 export const ContainerWithMetrics = styled.div`
   display: flex;
   width: 100%;
-  height: calc(100% - 70px);
+  height: calc(100% - 60px);
   position: relative;
   .rndTooltip {
     .resize {

@@ -57,9 +57,15 @@ const HeadeerAction: React.FC<IProps> = (props: IProps) => {
       <Side margin="0 auto 0 0">
         {!props.onlyRefreshAvaible && (
           <>
-            <IconButton iconStyles={{ verticalAlign: 'middle', height: '4px' }} styles={{ margin: '0 8px 0 0' }} icon={zoomOutIcon} title="Zoom out" onClick={props.onZoomOut} />
+            <IconButton
+              iconStyles={{ verticalAlign: 'middle', height: '4px' }}
+              styles={{ margin: '0 10px 0 0', width: '40px', height: '40px' }}
+              icon={zoomOutIcon}
+              title="Zoom out"
+              onClick={props.onZoomOut}
+            />
             <ZoomInput value={props.transform} min={ZoomRange.min} max={ZoomRange.max} onChange={props.onZoomChange} />
-            <IconButton styles={{ margin: '0 20px 0 8px' }} icon={zoomInIcon} title="Zoom in" onClick={props.onZoomIn} />
+            <IconButton styles={{ margin: '0 20px 0 10px', width: '40px', height: '40px' }} icon={zoomInIcon} title="Zoom in" onClick={props.onZoomIn} />
             {/* <IconButton styles={{ margin: '0 20px 0 0' }} icon={zoomCenterIcon} title="Center" onClick={onCentered} /> */}
             {/* <IconButton
               styles={{ margin: '0' }}
@@ -71,11 +77,11 @@ const HeadeerAction: React.FC<IProps> = (props: IProps) => {
         )}
       </Side>
       <Side margin="0 0 0 auto">
-        <IconButton disabled={props.disabledReload} styles={{ margin: '0' }} icon={refreshIcon} title="Refresh Topology" onClick={props.onRefresh} />
+        <IconButton disabled={props.disabledReload} styles={{ margin: '0', width: '40px', height: '40px' }} icon={refreshIcon} title="Refresh Topology" onClick={props.onRefresh} />
         {!props.onlyRefreshAvaible && (
           <>
-            <SecondaryButton label="FILTER" icon={filterIcon} onClick={() => onClick(TopologyPanelTypes.FILTERS)} disabled={false} styles={{ margin: '0 0 0 20px' }} />
-            <SecondaryButton label="Segments" icon={segmentsIcon} onClick={onGoToSegments} disabled={false} styles={{ margin: '0 0 0 20px' }} />
+            <SecondaryButton label="FILTER" icon={filterIcon} onClick={() => onClick(TopologyPanelTypes.FILTERS)} disabled={false} styles={{ margin: '0 0 0 20px' }} height="40px" />
+            <SecondaryButton label="Segments" icon={segmentsIcon} onClick={onGoToSegments} disabled={false} styles={{ margin: '0 0 0 20px' }} height="40px" />
             {/* <Filter onChange={onFilter} searchQuery={topology?.searchQuery || ''} /> */}
             {/* <SecondaryButton label="Edit Topology" icon={editIcon} onClick={() => onClick(TopologyPanelTypes.SEGMENTS)} disabled={false} styles={{ margin: '0 0 0 20px' }} /> */}
           </>

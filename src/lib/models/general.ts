@@ -93,7 +93,7 @@ export interface IVisible {
 }
 
 export const ZoomRange = {
-  max: 100,
+  max: 10,
   min: 0.01,
 };
 
