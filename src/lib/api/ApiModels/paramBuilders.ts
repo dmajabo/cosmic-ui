@@ -36,15 +36,11 @@ export interface IParam {
   filterSuffics?: ElasticFilterSuffics;
 }
 
-export const paramBuilder = (size?: number, currentPage?: number, time_range?: AUTOMATION_TIME_RANGE_QUERY_TYPES | AUDIT_LOGS_TIME_RANGE_QUERY_TYPES): IParam => {
+export const paramBuilder = (size: number, currentPage: number, time_range?: AUTOMATION_TIME_RANGE_QUERY_TYPES | AUDIT_LOGS_TIME_RANGE_QUERY_TYPES): IParam => {
   let param: IParam = {};
-  if (currentPage !== 1) {
-    const _size = size || PAGING_DEFAULT_PAGE_SIZE;
-    param.start_from = (currentPage - 1) * _size;
-  }
-  if (size && size !== PAGING_DEFAULT_PAGE_SIZE) {
-    param.page_size = size;
-  }
+  const _size = size || PAGING_DEFAULT_PAGE_SIZE;
+  param.start_from = (currentPage - 1) * _size;
+  param.page_size = size;
   if (time_range) {
     if (time_range !== AUTOMATION_TIME_RANGE_QUERY_TYPES.LAST_HOUR) {
       param.time_range = time_range;
@@ -56,13 +52,9 @@ export const paramBuilder = (size?: number, currentPage?: number, time_range?: A
 
 export const sessionsParamBuilder = ({ size, currentPage, time_range, stitchOnly, filters, filterSuffics }): IParam => {
   let param: IParam = {};
-  if (currentPage !== null && currentPage !== undefined && currentPage !== 1) {
-    const _size = size || PAGING_DEFAULT_PAGE_SIZE;
-    param.start_from = (currentPage - 1) * _size;
-  }
-  if (size !== null && size !== undefined && size !== PAGING_DEFAULT_PAGE_SIZE) {
-    param.page_size = size;
-  }
+  const _size = size || PAGING_DEFAULT_PAGE_SIZE;
+  param.start_from = (currentPage - 1) * _size;
+  param.page_size = size;
   if (time_range && time_range !== SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_HOUR) {
     param.time_range = time_range;
   }
