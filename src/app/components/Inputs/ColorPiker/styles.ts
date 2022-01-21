@@ -14,12 +14,11 @@ export const PreviewWrapper = styled.div`
   cursor: pointer;
 `;
 
-export const PreviewColor = styled.div<Props>`
+export const PreviewColor = styled.div`
   width: 100%;
   height: 100%;
   margin: auto;
   border-radius: 6px;
-  background: ${props => props.color || 'transparent'};
 `;
 
 export const Paper = styled.div`
