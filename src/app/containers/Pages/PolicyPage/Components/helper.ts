@@ -56,8 +56,9 @@ const changeSegmentType = (segment: ISegmentSegmentP, type: SegmentSegmentType):
     };
   }
   if (type === SegmentSegmentType.EXTERNAL && !_s.extSegPol) {
+    const _rule = onCreateExtRule();
     _s.extSegPol = {
-      matchRules: [],
+      matchRules: [_rule],
     };
   }
   return _s;
