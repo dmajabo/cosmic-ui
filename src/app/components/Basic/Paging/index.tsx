@@ -46,14 +46,6 @@ const Paging: React.FC<Props> = (props: Props) => {
 
   const onPageSizeChange = (size: number) => {
     if (props.disabled || size === props.pageSize) return;
-    if (size < props.pageSize) {
-      const _currentOffset = props.pageSize * props.currentPage;
-      const cp = Math.floor(_currentOffset / size) + 1;
-      const maxTotal = Math.ceil(props.count / size);
-      const _newP = Math.max(1, Math.min(maxTotal, cp));
-      props.onChangePageSize(size, _newP);
-      return;
-    }
     const _currentOffset = props.pageSize * props.currentPage;
     const cp = Math.floor(_currentOffset / size) + 1;
     const maxTotal = Math.ceil(props.count / size);
