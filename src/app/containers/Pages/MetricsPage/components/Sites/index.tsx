@@ -9,6 +9,7 @@ import { DeviceHealth } from './DeviceHealth';
 import { INetworkDevice, INetworkRegion, ITopologyMapData, VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
+import { NetworkUsageHealth } from './NetworkUsageHealth';
 
 interface SitesProps {
   readonly orgMap: ITopologyMapData;
@@ -116,6 +117,7 @@ export const Sites: React.FC<SitesProps> = ({ orgMap }) => {
           <Select styles={dropdownStyle} className={classes.inlineSelect} label="Single select" value={timeRange} options={TIME_RANGE_OPTIONS} onChange={handleTimeRangeChange} />
         </div>
       </div>
+      <NetworkUsageHealth networks={getNetworkIds()} timeRange={timeRange} />
       <DeviceHealth devices={getDeviceIds()} timeRange={timeRange} />
     </>
   );
