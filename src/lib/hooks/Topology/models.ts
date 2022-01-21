@@ -62,7 +62,8 @@ export interface IDeviceNode extends INetworkDevice, IOrganizationNode, IMappedN
   page: number;
   itemsInRow: number;
   segmentColor: string;
-  nodeIconColor: string;
+  nodeCiscoColor: string;
+  nodeMerakiColor: string;
 }
 
 export interface INetworkVNetworkPeeringConnectionNode extends INetworkVNetworkPeeringConnection, IOrganizationNode, IMappedNode, ICoord {

@@ -6,12 +6,14 @@ import { HexColorPicker } from 'react-colorful';
 import { Required } from '../FormTextInput/styles';
 import { InputLabel } from '../styles/Label';
 import { TextInputWrapper } from '../TextInput/styles';
+import ColorSchema from './ColorSchema';
 import { PoperStyles } from './PoperStyles';
-import { PreviewColor, PreviewWrapper } from './styles';
+import { Paper, PreviewColor, PreviewWrapper } from './styles';
 interface Props {
   id: string;
   label?: string;
   color: string;
+  colorSchema?: string[][];
   styles?: Object;
   required?: boolean;
   labelStyles?: Object;
@@ -42,6 +44,12 @@ const ColorPiker: React.FC<Props> = (props: Props) => {
   }, [props.color]);
 
   const onChange = (v: string) => {
+    setColor(v);
+    setIsTyping(true);
+  };
+
+  const onQuickSelect = (v: string) => {
+    onClose();
     setColor(v);
     setIsTyping(true);
   };
@@ -82,7 +90,10 @@ const ColorPiker: React.FC<Props> = (props: Props) => {
         }}
         classes={{ root: poperStyles.root, paper: poperStyles.paper }}
       >
-        <HexColorPicker color={props.color} onChange={onChange} />
+        <Paper>
+          <HexColorPicker color={props.color} onChange={onChange} />
+          {props.colorSchema && props.colorSchema.length ? <ColorSchema id={props.id} schema={props.colorSchema} onClick={onQuickSelect} /> : null}
+        </Paper>
       </Popover>
     </TextInputWrapper>
   );

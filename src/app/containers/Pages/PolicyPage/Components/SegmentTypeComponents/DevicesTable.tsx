@@ -1,6 +1,6 @@
 import React from 'react';
 import { GridWrapper, ModalLabel, ModalRow } from 'app/containers/Pages/Edges/Editor/Components/styles';
-import { DataGrid, GridColDef, GridColumnHeaderParams, GridRenderCellParams, GridRowParams, GridSelectionModel } from '@mui/x-data-grid';
+import { DataGrid, GridColDef, GridColumnHeaderParams, GridRowParams, GridSelectionModel } from '@mui/x-data-grid';
 import SimpleCheckbox from 'app/components/Inputs/Checkbox/SimpleCheckbox';
 import { GridStyles } from 'app/components/Grid/GridStyles';
 import Paging from 'app/components/Basic/Paging';
@@ -13,15 +13,18 @@ import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 // import { filterIcon } from 'app/components/SVGIcons/filter';
 import { INetworkDevice } from 'lib/api/ApiModels/Topology/apiModels';
 import { IUiPagingData } from 'lib/api/ApiModels/generalApiModel';
-import { SegmentSegmentType } from 'lib/api/ApiModels/Policy/Segment';
-import { GridCellWrapper } from 'app/components/Grid/styles';
+import { ISegmentSiteSegmentMatchRuleP, SegmentSegmentType, SegmentSiteSegmentMatchKey } from 'lib/api/ApiModels/Policy/Segment';
+// import { GridCellWrapper } from 'app/components/Grid/styles';
+import MatSelect from 'app/components/Inputs/MatSelect';
+import { ValueLabel } from 'app/components/Inputs/MatSelect/styles';
+import * as helper from '../helper';
 
 interface Props {
   data: INetworkDevice[];
   pageData: IUiPagingData;
-  selectedIds: string[];
-  onSelectChange: (type: SegmentSegmentType, item: INetworkDevice) => void;
-  onSelectAll: (type: SegmentSegmentType, item: INetworkDevice[]) => void;
+  matchRules: ISegmentSiteSegmentMatchRuleP[];
+  onSelectChange: (type: SegmentSegmentType, rule: ISegmentSiteSegmentMatchRuleP) => void;
+  onSelectAll: (type: SegmentSegmentType, rules: ISegmentSiteSegmentMatchRuleP[]) => void;
   onChangeCurrentPage: (type: SegmentSegmentType, _page: number) => void;
   onChangePageSize: (type: SegmentSegmentType, size: number, page?: number) => void;
   loading: boolean;
@@ -29,11 +32,25 @@ interface Props {
 }
 
 const DevicesTable: React.FC<Props> = (props: Props) => {
-  const [columns] = React.useState<GridColDef[]>([
+  const [selectedSiteMatchKey, setSelectedSiteMatchKey] = React.useState<SegmentSiteSegmentMatchKey>(SegmentSiteSegmentMatchKey.SITE_SEG_MATCH_KEY_NETWORK);
+  const [columns, setColumns] = React.useState<GridColDef[]>([
+    // {
+    //   field: 'name',
+    //   headerName: 'Name',
+    //   width: 200,
+    //   disableColumnMenu: true,
+    //   resizable: false,
+    //   editable: false,
+    //   sortable: false,
+    //   hideSortIcons: true,
+    //   filterable: false,
+    //   disableReorder: true,
+    //   disableExport: true,
+    // },
     {
-      field: 'name',
-      headerName: 'Name',
-      width: 200,
+      field: 'networkId',
+      headerName: 'Network ID',
+      width: 220,
       disableColumnMenu: true,
       resizable: false,
       editable: false,
@@ -42,6 +59,35 @@ const DevicesTable: React.FC<Props> = (props: Props) => {
       filterable: false,
       disableReorder: true,
       disableExport: true,
+      hide: false,
+    },
+    {
+      field: 'serial',
+      headerName: 'Serial',
+      width: 220,
+      disableColumnMenu: true,
+      resizable: false,
+      editable: false,
+      sortable: false,
+      hideSortIcons: true,
+      filterable: false,
+      disableReorder: true,
+      disableExport: true,
+      hide: true,
+    },
+    {
+      field: 'model',
+      headerName: 'Model',
+      width: 220,
+      disableColumnMenu: true,
+      resizable: false,
+      editable: false,
+      sortable: false,
+      hideSortIcons: true,
+      filterable: false,
+      disableReorder: true,
+      disableExport: true,
+      hide: true,
     },
     {
       field: 'extId',
@@ -69,40 +115,41 @@ const DevicesTable: React.FC<Props> = (props: Props) => {
       disableReorder: true,
       disableExport: true,
     },
-    {
-      field: 'tags',
-      headerName: 'Tags',
-      minWidth: 300,
-      flex: 1,
-      disableColumnMenu: true,
-      resizable: false,
-      editable: false,
-      sortable: false,
-      hideSortIcons: true,
-      filterable: false,
-      disableReorder: true,
-      disableExport: true,
-      renderCell: (param: GridRenderCellParams) => {
-        if (!param.value || !param.value.length) return null;
-        return <GridCellWrapper>{param.value.map(it => it.value).join(', ')}</GridCellWrapper>;
-      },
-    },
+    // {
+    //   field: 'tags',
+    //   headerName: 'Tags',
+    //   minWidth: 300,
+    //   flex: 1,
+    //   disableColumnMenu: true,
+    //   resizable: false,
+    //   editable: false,
+    //   sortable: false,
+    //   hideSortIcons: true,
+    //   filterable: false,
+    //   disableReorder: true,
+    //   disableExport: true,
+    //   renderCell: (param: GridRenderCellParams) => {
+    //     if (!param.value || !param.value.length) return null;
+    //     return <GridCellWrapper>{param.value.map(it => it.value).join(', ')}</GridCellWrapper>;
+    //   },
+    // },
   ]);
   const gridStyles = GridStyles();
   const [selectionModel, setSelectionModel] = React.useState<GridSelectionModel>([]);
 
   React.useEffect(() => {
     const _ids = [];
-    if (props.data && props.data.length && props.selectedIds && props.selectedIds.length) {
-      props.selectedIds.forEach(it => {
-        const _el = props.data.find(item => item.extId === it);
+    if (props.data && props.data.length && props.matchRules && props.matchRules.length) {
+      props.matchRules.forEach(it => {
+        const field = helper.getSitesFieldFromRuleKey(it.matchKey);
+        const _el = props.data.find(item => it.matchKey === selectedSiteMatchKey && item[field] === it.matchValuePrimary);
         if (_el) {
           _ids.push(_el.id);
         }
       });
     }
     setSelectionModel(_ids);
-  }, [props.selectedIds, props.data]);
+  }, [props.matchRules, props.data, selectedSiteMatchKey]);
 
   // const onChangeColumn = (col: GridColDef) => {
   //   const _items: GridColDef[] = columns.slice();
@@ -112,12 +159,27 @@ const DevicesTable: React.FC<Props> = (props: Props) => {
   // };
 
   const onRowClick = (params: GridRowParams) => {
-    props.onSelectChange(SegmentSegmentType.SITE, params.row as INetworkDevice);
+    const _item = params.row as INetworkDevice;
+    const _value = helper.getSitesFieldValueFromRuleKey(selectedSiteMatchKey, _item);
+    const rule: ISegmentSiteSegmentMatchRuleP = {
+      matchKey: selectedSiteMatchKey,
+      matchValuePrimary: _value,
+    };
+    props.onSelectChange(SegmentSegmentType.SITE, rule);
   };
 
   const onColumnHeaderClick = (params: GridColumnHeaderParams) => {
     if (params.field === '__check__') {
-      props.onSelectAll(SegmentSegmentType.SITE, props.data);
+      const _items: ISegmentSiteSegmentMatchRuleP[] = [];
+      const _field = helper.getSitesFieldFromRuleKey(selectedSiteMatchKey);
+      props.data.forEach(it => {
+        const rule: ISegmentSiteSegmentMatchRuleP = {
+          matchKey: selectedSiteMatchKey,
+          matchValuePrimary: it[_field],
+        };
+        _items.push(rule);
+      });
+      props.onSelectAll(SegmentSegmentType.SITE, _items);
     }
   };
 
@@ -127,8 +189,48 @@ const DevicesTable: React.FC<Props> = (props: Props) => {
   const onChangePageSize = (size: number, page?: number) => {
     props.onChangePageSize(SegmentSegmentType.SITE, size, page);
   };
+  const onChangeMatchKey = (v: SegmentSiteSegmentMatchKey) => {
+    const _items: GridColDef[] = columns.map(col => {
+      if (col.field === 'model') {
+        col.hide = v === SegmentSiteSegmentMatchKey.SITE_SEG_MATCH_KEY_MODEL ? false : true;
+      }
+      if (col.field === 'serial') {
+        col.hide = v === SegmentSiteSegmentMatchKey.SITE_SEG_MATCH_KEY_SERIAL_NUM ? false : true;
+      }
+      if (col.field === 'networkId') {
+        col.hide = v === SegmentSiteSegmentMatchKey.SITE_SEG_MATCH_KEY_NETWORK ? false : true;
+      }
+      return col;
+    });
+    setColumns(_items);
+    setSelectedSiteMatchKey(v);
+  };
   return (
     <>
+      <ModalRow margin="0 0 20px 0">
+        <MatSelect
+          id="siteMatchKeyType"
+          label="Key"
+          value={selectedSiteMatchKey}
+          options={[SegmentSiteSegmentMatchKey.SITE_SEG_MATCH_KEY_NETWORK, SegmentSiteSegmentMatchKey.SITE_SEG_MATCH_KEY_MODEL, SegmentSiteSegmentMatchKey.SITE_SEG_MATCH_KEY_SERIAL_NUM]}
+          styles={{ height: '72px', minHeight: '72px', margin: '0' }}
+          selectStyles={{ height: '50px', width: '100%' }}
+          selectClaassName="withLabel"
+          onChange={onChangeMatchKey}
+          renderValue={(v: SegmentSiteSegmentMatchKey) => {
+            if (v === SegmentSiteSegmentMatchKey.SITE_SEG_MATCH_KEY_NETWORK) return <ValueLabel>Network</ValueLabel>;
+            if (v === SegmentSiteSegmentMatchKey.SITE_SEG_MATCH_KEY_MODEL) return <ValueLabel>Model</ValueLabel>;
+            if (v === SegmentSiteSegmentMatchKey.SITE_SEG_MATCH_KEY_SERIAL_NUM) return <ValueLabel>Serial number</ValueLabel>;
+            return <ValueLabel>{v}</ValueLabel>;
+          }}
+          renderOption={(v: SegmentSiteSegmentMatchKey) => {
+            if (v === SegmentSiteSegmentMatchKey.SITE_SEG_MATCH_KEY_NETWORK) return 'Network';
+            if (v === SegmentSiteSegmentMatchKey.SITE_SEG_MATCH_KEY_MODEL) return 'Model';
+            if (v === SegmentSiteSegmentMatchKey.SITE_SEG_MATCH_KEY_SERIAL_NUM) return 'Serial number';
+            return v;
+          }}
+        />
+      </ModalRow>
       <ModalRow margin="0 0 10px 0" align="center">
         <ModalLabel>Sites</ModalLabel>
         {/* <SecondaryButtonWithPopup styles={{ padding: '0', width: '50px' }} wrapStyles={{ margin: '0 0 0 auto' }} icon={filterIcon} direction="rtl">

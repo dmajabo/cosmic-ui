@@ -61,7 +61,19 @@ export interface ISegmentPaasSegementP {
   // "title": "Policy for Cloud Natve Paas Services"
 }
 
-export interface ISegmentSiteSegmentP {}
+export enum SegmentSiteSegmentMatchKey {
+  SITE_SEG_MATCH_KEY_NETWORK = 'SITE_SEG_MATCH_KEY_NETWORK',
+  SITE_SEG_MATCH_KEY_MODEL = 'SITE_SEG_MATCH_KEY_MODEL',
+  SITE_SEG_MATCH_KEY_SERIAL_NUM = 'SITE_SEG_MATCH_KEY_SERIAL_NUM',
+}
+
+export interface ISegmentSiteSegmentMatchRuleP {
+  matchKey: SegmentSiteSegmentMatchKey; //  "default": "SITE_SEG_MATCH_KEY_NETWORK",
+  matchValuePrimary: string;
+}
+export interface ISegmentSiteSegmentP {
+  matchRules: ISegmentSiteSegmentMatchRuleP[];
+}
 
 export interface ISegmentSegmentP extends IBaseEntity<string> {
   name: string;

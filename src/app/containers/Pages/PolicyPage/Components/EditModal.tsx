@@ -2,7 +2,7 @@ import React from 'react';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
 import PrimaryButton from 'app/components/Buttons/PrimaryButton';
-import { ISegmentSegmentP, SegmentSegmentType } from 'lib/api/ApiModels/Policy/Segment';
+import { ISegmentApplicationSegMatchRuleP, ISegmentNetworkSegMatchRuleP, ISegmentSegmentP, ISegmentSiteSegmentMatchRuleP, SegmentSegmentType } from 'lib/api/ApiModels/Policy/Segment';
 import * as helper from './helper';
 import { ModalRow } from '../../Edges/Editor/Components/styles';
 import TextInput from 'app/components/Inputs/TextInput';
@@ -25,19 +25,20 @@ import DevicesTable from './SegmentTypeComponents/DevicesTable';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import { StepButton } from '@mui/material';
-import { FORM_STEPS, ISegmentComplete } from './models';
+import { DEFAULT_SEGMENTS_COLORS_SCHEMA, FORM_STEPS, ISegmentComplete } from './models';
 import { StepperStyles } from 'app/components/Stepper/StepperMuiStyles';
 import { PolicyApi } from 'lib/api/ApiModels/Services/policy';
 import { IBaseEntity } from 'lib/models/general';
+import _ from 'lodash';
 
 interface IProps {
-  data?: ISegmentSegmentP;
+  data: ISegmentSegmentP;
   onSaveSegmnet: (item: ISegmentSegmentP) => void;
 }
 
 const EditModal: React.FC<IProps> = (props: IProps) => {
   const userContext = React.useContext<UserContextState>(UserContext);
-  const [segment, setSegment] = React.useState<ISegmentSegmentP>(props.data ? { ...props.data } : helper.createNewSegment());
+  const [segment, setSegment] = React.useState<ISegmentSegmentP>(props.data);
   const { loading: vnetsLoading, response: vnetsRes, error: vnetsError, onGet: onGetVnets } = useGet<IVnetworksRes>();
   const { loading: vmsLoading, response: vmsRes, error: vmsError, onGet: onGetVms } = useGet<IVmsRes>();
   const { loading: deviceLoading, response: deviceRes, error: deviceError, onGet: onGetDevices } = useGet<ISitesRes>();
@@ -64,6 +65,7 @@ const EditModal: React.FC<IProps> = (props: IProps) => {
   });
   const [activeStep, setActiveStep] = React.useState<number>(0);
   const [completed, setCompleted] = React.useState<ISegmentComplete>({ step_1: false, step_2: false });
+  const [hasChanges, setHasChanges] = React.useState<boolean>(false);
 
   const stepperStyles = StepperStyles();
   React.useEffect(() => {
@@ -136,17 +138,10 @@ const EditModal: React.FC<IProps> = (props: IProps) => {
     const completed: ISegmentComplete = helper.onValidateSegment(_s);
     setCompleted(completed);
     setSegment(_s);
-    if (completed.step_1) {
-      setActiveStep(1);
-      if (_s.segType === SegmentSegmentType.NETWORK && (!vnets || !vnets.length)) {
-        onTryLoadVnets(vnetsPagingData);
-      }
-      if (_s.segType === SegmentSegmentType.APPLICATION && (!vms || !vms.length)) {
-        onTryLoadVms(vmsPagingData);
-      }
-      if (_s.segType === SegmentSegmentType.SITE && (!devices || !devices.length)) {
-        onTryLoadDevices(devicesPagingData);
-      }
+    if (_.isEqual(_s, props.data)) {
+      setHasChanges(false);
+    } else {
+      setHasChanges(true);
     }
   };
 
@@ -155,17 +150,22 @@ const EditModal: React.FC<IProps> = (props: IProps) => {
     const completed: ISegmentComplete = helper.onValidateSegment(_s);
     setSegment(_s);
     setCompleted(completed);
+    if (_.isEqual(_s, props.data)) {
+      setHasChanges(false);
+    } else {
+      setHasChanges(true);
+    }
     if (completed.step_1) {
       setActiveStep(1);
-      if (_s.segType === SegmentSegmentType.NETWORK && (!vnets || !vnets.length)) {
-        onTryLoadVnets(vnetsPagingData);
-      }
-      if (_s.segType === SegmentSegmentType.APPLICATION && (!vms || !vms.length)) {
-        onTryLoadVms(vmsPagingData);
-      }
-      if (_s.segType === SegmentSegmentType.SITE && (!devices || !devices.length)) {
-        onTryLoadDevices(devicesPagingData);
-      }
+    }
+    if (_s.segType === SegmentSegmentType.NETWORK && (!vnets || !vnets.length)) {
+      onTryLoadVnets(vnetsPagingData);
+    }
+    if (_s.segType === SegmentSegmentType.APPLICATION && (!vms || !vms.length)) {
+      onTryLoadVms(vmsPagingData);
+    }
+    if (_s.segType === SegmentSegmentType.SITE && (!devices || !devices.length)) {
+      onTryLoadDevices(devicesPagingData);
     }
   };
 
@@ -224,18 +224,28 @@ const EditModal: React.FC<IProps> = (props: IProps) => {
     }
   };
 
-  const onSelectItem = (type: SegmentSegmentType, item: INetworkVM | INetworkDevice | INetworkVNetwork) => {
-    const _s: ISegmentSegmentP = helper.updateMatchRule(segment, item);
+  const onSelectItem = (type: SegmentSegmentType, rule: ISegmentSiteSegmentMatchRuleP | ISegmentApplicationSegMatchRuleP | ISegmentNetworkSegMatchRuleP) => {
+    const _s: ISegmentSegmentP = helper.updateMatchRule(segment, rule);
     const completed: ISegmentComplete = helper.onValidateSegment(_s);
     setSegment(_s);
     setCompleted(completed);
+    if (_.isEqual(_s, props.data)) {
+      setHasChanges(false);
+    } else {
+      setHasChanges(true);
+    }
   };
 
-  const onSelectAllItems = (type: SegmentSegmentType, items: (INetworkVM | INetworkDevice | INetworkVNetwork)[]) => {
-    const _s: ISegmentSegmentP = helper.updateMatchRules(segment, items);
+  const onSelectAllItems = (type: SegmentSegmentType, rules: (ISegmentSiteSegmentMatchRuleP | ISegmentApplicationSegMatchRuleP | ISegmentNetworkSegMatchRuleP)[]) => {
+    const _s: ISegmentSegmentP = helper.updateMatchRules(segment, rules);
     const completed: ISegmentComplete = helper.onValidateSegment(_s);
     setSegment(_s);
     setCompleted(completed);
+    if (_.isEqual(_s, props.data)) {
+      setHasChanges(false);
+    } else {
+      setHasChanges(true);
+    }
   };
 
   const onSave = () => {
@@ -309,6 +319,7 @@ const EditModal: React.FC<IProps> = (props: IProps) => {
                 styles={{ width: '50px', margin: '0 auto 0 10px' }}
                 id="segmentColorPiker"
                 color={segment.color}
+                colorSchema={DEFAULT_SEGMENTS_COLORS_SCHEMA}
                 onChange={_value => onChangeField(_value, ITopologySegmentFields.COLOR)}
               />
             </ModalRow>
@@ -345,7 +356,7 @@ const EditModal: React.FC<IProps> = (props: IProps) => {
               <VmsTable
                 data={vms}
                 pageData={vmsPagingData}
-                selectedIds={segment.appSegPol && segment.appSegPol.matchRules ? segment.appSegPol.matchRules.map(it => it.matchValuePrimary) : []}
+                matchRules={segment.appSegPol && segment.appSegPol.matchRules ? segment.appSegPol.matchRules : []}
                 onSelectChange={onSelectItem}
                 onSelectAll={onSelectAllItems}
                 onChangeCurrentPage={onChangeCurrentPage}
@@ -358,7 +369,7 @@ const EditModal: React.FC<IProps> = (props: IProps) => {
               <VnetsTable
                 data={vnets}
                 pageData={vnetsPagingData}
-                selectedIds={segment.networkSegPol && segment.networkSegPol.matchRules ? segment.networkSegPol.matchRules.map(it => it.matchValuePrimary) : []}
+                matchRules={segment.networkSegPol && segment.networkSegPol.matchRules ? segment.networkSegPol.matchRules : []}
                 onSelectChange={onSelectItem}
                 onSelectAll={onSelectAllItems}
                 onChangeCurrentPage={onChangeCurrentPage}
@@ -371,7 +382,7 @@ const EditModal: React.FC<IProps> = (props: IProps) => {
               <DevicesTable
                 data={devices}
                 pageData={devicesPagingData}
-                selectedIds={[]}
+                matchRules={segment.siteSegPol && segment.siteSegPol.matchRules ? segment.siteSegPol.matchRules : []}
                 onSelectChange={onSelectItem}
                 onSelectAll={onSelectAllItems}
                 onChangeCurrentPage={onChangeCurrentPage}
@@ -382,12 +393,29 @@ const EditModal: React.FC<IProps> = (props: IProps) => {
             )}
           </>
         )}
-        {postError && postError.message && <ErrorMessage>{postError.message}</ErrorMessage>}
-        {putError && putError.message && <ErrorMessage>{putError.message}</ErrorMessage>}
-        {getError && getError.message && <ErrorMessage>{getError.message}</ErrorMessage>}
+        {postError && postError.message && (
+          <ErrorMessage margin="auto 0 0 0" padding="20px 0 0 0">
+            {postError.message}
+          </ErrorMessage>
+        )}
+        {putError && putError.message && (
+          <ErrorMessage margin="auto 0 0 0" padding="20px 0 0 0">
+            {putError.message}
+          </ErrorMessage>
+        )}
+        {getError && getError.message && (
+          <ErrorMessage margin="auto 0 0 0" padding="20px 0 0 0">
+            {getError.message}
+          </ErrorMessage>
+        )}
       </ModalContent>
       <ModalFooter style={{ height: '60px' }}>
-        <PrimaryButton styles={{ width: '100%', height: '100%' }} label={segment.id ? 'Update segment' : 'Add segment'} onClick={onSave} disabled={!completed.step_1 || !completed.step_2} />
+        <PrimaryButton
+          styles={{ width: '100%', height: '100%' }}
+          label={segment.id ? 'Update segment' : 'Add segment'}
+          onClick={onSave}
+          disabled={!hasChanges || !completed.step_1 || !completed.step_2}
+        />
       </ModalFooter>
       {(postLoading || putLoading || getLoading) && (
         <AbsLoaderWrapper width="100%" height="100%">

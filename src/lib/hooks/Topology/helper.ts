@@ -125,7 +125,7 @@ export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[]
           // for test
           // for (let j = 0; j < 200; j++) {
           //   // const objE: IDeviceNode = createDeviceNode(org, orgI, region.devices[1], 100 + j);
-          //   const _device: IDeviceNode = createDeviceNode(org, orgI, region.devices[0], _segmentsObj[region.devices[0].segmentId]);
+          //   const _device: IDeviceNode = createDeviceNode(org, orgI, region.devices[0], _segmentsObj[region.devices[1].segmentId]);
           //   devices.push(_device);
           //   // devicesInGroup.push(objE);
           // }

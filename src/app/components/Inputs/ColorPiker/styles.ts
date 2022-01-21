@@ -22,4 +22,24 @@ export const PreviewColor = styled.div<Props>`
   background: ${props => props.color || 'transparent'};
 `;
 
-export const Paper = styled.div``;
+export const Paper = styled.div`
+  display: flex;
+  .react-colorful {
+    width: 210px;
+    height: 210px;
+    margin-right: 20px;
+  }
+`;
+
+export const SchemaTable = styled.table`
+  flex-shrink: 0;
+  border-collapse: separate;
+  border-spacing: 3px;
+`;
+
+export const ColorItemStyles = styled.td<Props>`
+  background: ${props => props.color || 'transparent'};
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+`;

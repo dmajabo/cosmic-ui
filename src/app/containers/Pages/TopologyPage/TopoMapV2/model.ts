@@ -150,6 +150,8 @@ export interface ISiteNode extends INode<TopoNodeTypes>, ICollapseExpandState {
   groupLinkIconId: string;
   countStyles: ICounterStyle;
   nodeBgColor: string;
+  nodeCiscoColor: string;
+  nodeMerakiColor: string;
   labelCollapsedStyles: ICollapseLabelStyle;
   labelExpandedStyles: IExpandLabelStyle;
   labelHtmlStyles: ILabelHtmlStyles;
@@ -698,6 +700,8 @@ export const NODES_CONSTANTS: INodes_Types = {
       borderRadius: 6,
     },
     nodeBgColor: 'var(--_primaryBg)',
+    nodeCiscoColor: '#919295',
+    nodeMerakiColor: '#7AC142',
     expanded: null,
     countStyles: null,
     labelCollapsedStyles: null,

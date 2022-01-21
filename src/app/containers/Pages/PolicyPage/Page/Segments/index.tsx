@@ -15,6 +15,7 @@ import SectionHeader from '../../Components/SectionHeader';
 import TableComponent from './TableComponent';
 import { EmptyContainer, EmptyMessagePrimary, EmptyMessageSecondary } from '../../Components/styles';
 import EditModal from '../../Components/EditModal';
+import * as helper from '../../Components/helper';
 interface Props {}
 
 const Segments: React.FC<Props> = (props: Props) => {
@@ -63,7 +64,8 @@ const Segments: React.FC<Props> = (props: Props) => {
     setEditModalData({ show: true, dataItem: item });
   };
   const onCreateSegment = () => {
-    setEditModalData({ show: true, dataItem: null });
+    const _item: ISegmentSegmentP = helper.createNewSegment();
+    setEditModalData({ show: true, dataItem: _item });
   };
 
   const onCloseEditModal = () => {

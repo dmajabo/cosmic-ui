@@ -2,12 +2,14 @@ import {
   ISegmentApplicationSegMatchRuleP,
   ISegmentNetworkSegMatchRuleP,
   ISegmentSegmentP,
+  ISegmentSiteSegmentMatchRuleP,
   SegmentApplicationSegMatchKey,
   SegmentApplicationSegMatchScope,
   SegmentNetworkSegMatchKey,
   SegmentSegmentType,
+  SegmentSiteSegmentMatchKey,
 } from 'lib/api/ApiModels/Policy/Segment';
-import { INetworkVM, INetworkDevice, INetworkVNetwork } from 'lib/api/ApiModels/Topology/apiModels';
+import { INetworkDevice, INetworkTag, INetworkVM, INetworkVNetwork } from 'lib/api/ApiModels/Topology/apiModels';
 import { jsonClone } from 'lib/helpers/cloneHelper';
 import { ISegmentComplete } from './models';
 
@@ -40,7 +42,9 @@ const changeSegmentType = (segment: ISegmentSegmentP, type: SegmentSegmentType):
     };
   }
   if (type === SegmentSegmentType.SITE && !_s.siteSegPol) {
-    _s.siteSegPol = {};
+    _s.siteSegPol = {
+      matchRules: [],
+    };
   }
   return _s;
 };
@@ -71,104 +75,140 @@ const prepareNewSegment = (segment: ISegmentSegmentP): ISegmentSegmentP => {
   return _s;
 };
 
-const updateMatchRule = (segment: ISegmentSegmentP, item: INetworkVM | INetworkDevice | INetworkVNetwork): ISegmentSegmentP => {
+const updateMatchRule = (segment: ISegmentSegmentP, rule: ISegmentSiteSegmentMatchRuleP | ISegmentApplicationSegMatchRuleP | ISegmentNetworkSegMatchRuleP): ISegmentSegmentP => {
   const _s: ISegmentSegmentP = jsonClone(segment);
   if (_s.segType === SegmentSegmentType.NETWORK) {
     const _arr: ISegmentNetworkSegMatchRuleP[] = segment.networkSegPol.matchRules.slice();
-    const index = _arr.findIndex(it => it.matchKey === SegmentNetworkSegMatchKey.KEY_VNETWORK_EXTID && it.matchValuePrimary === item.extId);
+    const _r = rule as ISegmentNetworkSegMatchRuleP;
+    const index = _arr.findIndex(it => it.matchKey === _r.matchKey && it.matchValuePrimary === _r.matchValuePrimary && it.matchValueSecondary === _r.matchValueSecondary);
     if (index !== -1) {
       _arr.splice(index, 1);
     } else {
-      const _rule = {
-        matchKey: SegmentNetworkSegMatchKey.KEY_VNETWORK_EXTID,
-        matchValuePrimary: item.extId,
-        matchValueSecondary: null,
-      };
-      _arr.push(_rule);
+      _arr.push(rule as ISegmentNetworkSegMatchRuleP);
     }
-    _s.networkSegPol = {
-      matchRules: _arr,
-    };
+    _s.networkSegPol = { matchRules: _arr };
   }
   if (_s.segType === SegmentSegmentType.APPLICATION) {
     const _arr: ISegmentApplicationSegMatchRuleP[] = segment.appSegPol.matchRules.slice();
-    const index = _arr.findIndex(it => it.matchKey === SegmentApplicationSegMatchKey.APP_SEG_MATCH_KEY_TAG && it.matchValuePrimary === item.extId);
+    const _r = rule as ISegmentApplicationSegMatchRuleP;
+    const index = _arr.findIndex(it => it.matchKey === _r.matchKey && it.matchValuePrimary === _r.matchValuePrimary && it.matchValueSecondary === _r.matchValueSecondary);
     if (index !== -1) {
       _arr.splice(index, 1);
     } else {
-      const _rule = {
-        matchKey: SegmentApplicationSegMatchKey.APP_SEG_MATCH_KEY_TAG,
-        matchValuePrimary: item.extId,
-        matchValueSecondary: null,
-      };
-      _arr.push(_rule);
+      _arr.push(rule as ISegmentApplicationSegMatchRuleP);
     }
-    _s.appSegPol = {
-      matchScope: SegmentApplicationSegMatchScope.APP_SEG_MATCH_SCOPE_VM,
-      matchRules: _arr,
-    };
+    _s.appSegPol = { matchScope: segment.appSegPol.matchScope, matchRules: _arr };
   }
   if (_s.segType === SegmentSegmentType.SITE) {
-    _s.siteSegPol = {};
+    const _arr: ISegmentSiteSegmentMatchRuleP[] = segment.siteSegPol.matchRules.slice();
+    const _r = rule as ISegmentSiteSegmentMatchRuleP;
+    const index = _arr.findIndex(it => it.matchKey === _r.matchKey && it.matchValuePrimary === _r.matchValuePrimary);
+    if (index !== -1) {
+      _arr.splice(index, 1);
+    } else {
+      _arr.push(rule as ISegmentSiteSegmentMatchRuleP);
+    }
+    _s.siteSegPol = { matchRules: _arr };
   }
   return _s;
 };
 
-const updateMatchRules = (segment: ISegmentSegmentP, items: (INetworkVM | INetworkDevice | INetworkVNetwork)[]): ISegmentSegmentP => {
+const updateMatchRules = (segment: ISegmentSegmentP, rules: (ISegmentSiteSegmentMatchRuleP | ISegmentApplicationSegMatchRuleP | ISegmentNetworkSegMatchRuleP)[]): ISegmentSegmentP => {
   const _s: ISegmentSegmentP = jsonClone(segment);
   if (_s.segType === SegmentSegmentType.NETWORK) {
-    const _rules: ISegmentNetworkSegMatchRuleP[] = segment.networkSegPol.matchRules.slice();
-    const SetRules = new Set<string>(_rules.map(it => it.matchValuePrimary));
-    const idsArr = _rules.filter(rule => items.find(item => item.extId === rule.matchValuePrimary));
-    if (idsArr.length === items.length) {
-      items.forEach(it => {
-        SetRules.delete(it.extId);
-      });
-    }
-    if (idsArr.length !== items.length) {
-      items.forEach(it => {
-        SetRules.add(it.extId);
-      });
-    }
-    _s.networkSegPol = {
-      matchRules: [],
-    };
-    SetRules.forEach(v => {
-      _s.networkSegPol.matchRules.push({
-        matchKey: SegmentNetworkSegMatchKey.KEY_VNETWORK_EXTID,
-        matchValuePrimary: v,
-        matchValueSecondary: null,
-      });
-    });
+    updateNetworkMatchRules(_s, rules as ISegmentNetworkSegMatchRuleP[]);
   }
   if (_s.segType === SegmentSegmentType.APPLICATION) {
-    const _rules: ISegmentApplicationSegMatchRuleP[] = segment.appSegPol.matchRules.slice();
-    const SetRules = new Set<string>(_rules.map(it => it.matchValuePrimary));
-    const idsArr = _rules.filter(rule => items.find(item => item.extId === rule.matchValuePrimary));
-    if (idsArr.length === items.length) {
-      items.forEach(it => {
-        SetRules.delete(it.extId);
-      });
-    }
-    if (idsArr.length !== items.length) {
-      items.forEach(it => {
-        SetRules.add(it.extId);
-      });
-    }
-    _s.appSegPol = {
-      matchScope: SegmentApplicationSegMatchScope.APP_SEG_MATCH_SCOPE_VM,
-      matchRules: [],
-    };
-    SetRules.forEach(v => {
-      _s.appSegPol.matchRules.push({
-        matchKey: SegmentApplicationSegMatchKey.APP_SEG_MATCH_KEY_TAG,
-        matchValuePrimary: v,
-        matchValueSecondary: null,
-      });
-    });
+    updateAppMatchRules(_s, rules as ISegmentApplicationSegMatchRuleP[]);
   }
   if (_s.segType === SegmentSegmentType.SITE) {
-    _s.siteSegPol = {};
+    updateSitesMatchRules(_s, rules as ISegmentSiteSegmentMatchRuleP[]);
+  }
+
+  return _s;
+};
+
+const updateNetworkMatchRules = (_s: ISegmentSegmentP, rules: ISegmentNetworkSegMatchRuleP[]) => {
+  if (!_s.networkSegPol.matchRules || !_s.networkSegPol.matchRules.length) {
+    _s.networkSegPol = {
+      matchRules: rules,
+    };
+  } else {
+    const _all: ISegmentNetworkSegMatchRuleP[] = _s.networkSegPol.matchRules.slice();
+    const SetRules = new Map();
+    _all.forEach(it => {
+      SetRules.set(`${it.matchKey}${it.matchValuePrimary}${it.matchValueSecondary ? it.matchValueSecondary : ''}`, it);
+    });
+    const current = _all.filter(rule =>
+      rules.find(item => item.matchKey === rule.matchKey && item.matchValuePrimary === rule.matchValuePrimary && item.matchValueSecondary === rule.matchValueSecondary),
+    );
+
+    if (current.length === rules.length) {
+      rules.forEach(it => {
+        SetRules.delete(`${it.matchKey}${it.matchValuePrimary}${it.matchValueSecondary ? it.matchValueSecondary : ''}`);
+      });
+    } else {
+      rules.forEach(it => {
+        SetRules.set(`${it.matchKey}${it.matchValuePrimary}${it.matchValueSecondary ? it.matchValueSecondary : ''}`, it);
+      });
+    }
+    const _arr = Array.from(SetRules, ([name, value]) => value);
+    _s.networkSegPol = { matchRules: _arr };
+  }
+};
+
+const updateAppMatchRules = (_s: ISegmentSegmentP, rules: ISegmentApplicationSegMatchRuleP[]) => {
+  if (!_s.appSegPol.matchRules || !_s.appSegPol.matchRules.length) {
+    _s.appSegPol = {
+      matchScope: _s.appSegPol.matchScope,
+      matchRules: rules,
+    };
+  } else {
+    const _all: ISegmentApplicationSegMatchRuleP[] = _s.appSegPol.matchRules.slice();
+    const SetRules = new Map();
+    _all.forEach(it => {
+      SetRules.set(`${it.matchKey}${it.matchValuePrimary}${it.matchValueSecondary ? it.matchValueSecondary : ''}`, it);
+    });
+    const current = _all.filter(rule =>
+      rules.find(item => item.matchKey === rule.matchKey && item.matchValuePrimary === rule.matchValuePrimary && item.matchValueSecondary === rule.matchValueSecondary),
+    );
+
+    if (current.length === rules.length) {
+      rules.forEach(it => {
+        SetRules.delete(`${it.matchKey}${it.matchValuePrimary}${it.matchValueSecondary ? it.matchValueSecondary : ''}`);
+      });
+    } else {
+      rules.forEach(it => {
+        SetRules.set(`${it.matchKey}${it.matchValuePrimary}${it.matchValueSecondary ? it.matchValueSecondary : ''}`, it);
+      });
+    }
+    const _arr = Array.from(SetRules, ([name, value]) => value);
+    _s.appSegPol = { matchScope: _s.appSegPol.matchScope, matchRules: _arr };
+  }
+};
+
+const updateSitesMatchRules = (_s: ISegmentSegmentP, rules: ISegmentSiteSegmentMatchRuleP[]) => {
+  if (!_s.siteSegPol.matchRules || !_s.siteSegPol.matchRules.length) {
+    _s.siteSegPol = { matchRules: rules };
+  } else {
+    const _all: ISegmentSiteSegmentMatchRuleP[] = _s.siteSegPol.matchRules.slice();
+    const SetRules = new Map();
+    _all.forEach(it => {
+      SetRules.set(`${it.matchKey}${it.matchValuePrimary}`, it);
+    });
+    const current = _all.filter(rule => rules.find(item => item.matchKey === rule.matchKey && item.matchValuePrimary === rule.matchValuePrimary));
+
+    if (current.length === rules.length) {
+      rules.forEach(it => {
+        SetRules.delete(`${it.matchKey}${it.matchValuePrimary}`);
+      });
+    } else {
+      rules.forEach(it => {
+        SetRules.set(`${it.matchKey}${it.matchValuePrimary}`, it);
+      });
+    }
+    const _arr = Array.from(SetRules, ([name, value]) => value);
+    _s.siteSegPol = { matchRules: _arr };
   }
   return _s;
 };
@@ -196,7 +236,7 @@ const onValidateSegment = (_s: ISegmentSegmentP): ISegmentComplete => {
     }
   }
   if (_s.segType && _s.segType === SegmentSegmentType.SITE) {
-    if (!_s.siteSegPol) {
+    if (!_s.siteSegPol || (_s.siteSegPol && (!_s.siteSegPol.matchRules || !_s.siteSegPol.matchRules.length))) {
       _obj.step_2 = false;
     } else {
       _obj.step_2 = true;
@@ -205,4 +245,110 @@ const onValidateSegment = (_s: ISegmentSegmentP): ISegmentComplete => {
   return _obj;
 };
 
-export { createNewSegment, onValidateSegment, changeSegmentType, updateMatchRule, updateMatchRules, prepareNewSegment };
+const getVmsFieldFromRuleKey = (key: SegmentApplicationSegMatchKey): string => {
+  if (key === SegmentApplicationSegMatchKey.APP_SEG_MATCH_KEY_TAG) return 'tags';
+  return 'tags';
+};
+
+const getSelectedTagFromVms = (vms: INetworkVM[], rule: ISegmentApplicationSegMatchRuleP): INetworkTag => {
+  if (!vms || !vms.length) return null;
+  let tag = null;
+  for (let i = 0; i < vms.length; i++) {
+    if (!vms[i].tags || !vms[i].tags.length) continue;
+    const _tag = getSelectedTagFromVm(vms[i], rule);
+    if (_tag) {
+      tag = _tag;
+      break;
+    }
+  }
+  return tag;
+};
+
+const getSelectedTagFromVm = (vm: INetworkVM, rule: ISegmentApplicationSegMatchRuleP): INetworkTag => {
+  let tag = null;
+  for (let i = 0; i < vm.tags.length; i++) {
+    const _tag = vm.tags[i];
+    if (_tag.key === rule.matchValuePrimary && _tag.value === rule.matchValueSecondary) {
+      tag = _tag;
+      break;
+    }
+  }
+  return tag;
+};
+
+const getSitesFieldFromRuleKey = (key: SegmentSiteSegmentMatchKey): string => {
+  if (key === SegmentSiteSegmentMatchKey.SITE_SEG_MATCH_KEY_NETWORK) return 'networkId';
+  if (key === SegmentSiteSegmentMatchKey.SITE_SEG_MATCH_KEY_SERIAL_NUM) return 'serial';
+  if (key === SegmentSiteSegmentMatchKey.SITE_SEG_MATCH_KEY_MODEL) return 'model';
+  return 'networkId';
+};
+
+const getSitesFieldValueFromRuleKey = (key: SegmentSiteSegmentMatchKey, item: INetworkDevice): string => {
+  if (key === SegmentSiteSegmentMatchKey.SITE_SEG_MATCH_KEY_NETWORK) return item.networkId;
+  if (key === SegmentSiteSegmentMatchKey.SITE_SEG_MATCH_KEY_SERIAL_NUM) return item.serial;
+  if (key === SegmentSiteSegmentMatchKey.SITE_SEG_MATCH_KEY_MODEL) return item.model;
+  return item.networkId;
+};
+
+const getVisibleVnetData = (data: INetworkVNetwork[], metchKey: SegmentNetworkSegMatchKey) => {
+  if (!data || !data.length) return [];
+  if (metchKey === SegmentNetworkSegMatchKey.KEY_VNETWORK_EXTID) {
+    return data;
+  }
+  if (metchKey === SegmentNetworkSegMatchKey.KEY_VNETWORK_TAG) {
+    const _arr = new Map();
+    data.forEach(it => {
+      if (it.tags && it.tags.length) {
+        it.tags.forEach(tag => {
+          if (tag.key && tag.value && !_arr.has(`${tag.key}${tag.value}`)) {
+            const _item: INetworkTag = tag.id ? { ...tag } : { ...tag, id: `${tag.key}${tag.value}` };
+            _arr.set(`${tag.key}${tag.value}`, _item);
+          }
+        });
+      }
+    });
+    return Array.from(_arr, ([name, value]) => value);
+  }
+  return data;
+};
+
+const getSelectedTagFromVpcs = (items: INetworkVNetwork[], rule: ISegmentNetworkSegMatchRuleP): INetworkTag => {
+  if (!items || !items.length) return null;
+  let tag = null;
+  for (let i = 0; i < items.length; i++) {
+    if (!items[i].tags || !items[i].tags.length) continue;
+    const _tag = getSelectedTagFromVpc(items[i], rule);
+    if (_tag) {
+      tag = _tag;
+      break;
+    }
+  }
+  return tag;
+};
+
+const getSelectedTagFromVpc = (vm: INetworkVNetwork, rule: ISegmentNetworkSegMatchRuleP): INetworkTag => {
+  let tag = null;
+  for (let i = 0; i < vm.tags.length; i++) {
+    const _tag = vm.tags[i];
+    if (_tag.key === rule.matchValuePrimary && _tag.value === rule.matchValueSecondary) {
+      tag = _tag;
+      break;
+    }
+  }
+  return tag;
+};
+
+export {
+  createNewSegment,
+  onValidateSegment,
+  changeSegmentType,
+  updateMatchRule,
+  updateMatchRules,
+  prepareNewSegment,
+  getSelectedTagFromVms,
+  getVmsFieldFromRuleKey,
+  getSitesFieldFromRuleKey,
+  getSitesFieldValueFromRuleKey,
+  getVisibleVnetData,
+  getSelectedTagFromVpcs,
+};

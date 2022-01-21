@@ -11,17 +11,20 @@ import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 // import PopupContainer from 'app/components/PopupContainer';
 // import { PopupTitle, OverflowContainer, FilteredColumnItem, FilteredColumnLabel } from 'app/components/PopupContainer/styles';
 // import { filterIcon } from 'app/components/SVGIcons/filter';
-import { INetworkVNetwork } from 'lib/api/ApiModels/Topology/apiModels';
+import { INetworkTag, INetworkVNetwork } from 'lib/api/ApiModels/Topology/apiModels';
 import { IUiPagingData } from 'lib/api/ApiModels/generalApiModel';
-import { SegmentSegmentType } from 'lib/api/ApiModels/Policy/Segment';
+import { ISegmentNetworkSegMatchRuleP, SegmentNetworkSegMatchKey, SegmentSegmentType } from 'lib/api/ApiModels/Policy/Segment';
 import { GridCellWrapper } from 'app/components/Grid/styles';
+import MatSelect from 'app/components/Inputs/MatSelect';
+import { ValueLabel } from 'app/components/Inputs/MatSelect/styles';
+import * as helper from '../helper';
 
 interface Props {
   data: INetworkVNetwork[];
   pageData: IUiPagingData;
-  selectedIds: string[];
-  onSelectChange: (type: SegmentSegmentType, item: INetworkVNetwork) => void;
-  onSelectAll: (type: SegmentSegmentType, item: INetworkVNetwork[]) => void;
+  matchRules: ISegmentNetworkSegMatchRuleP[];
+  onSelectChange: (type: SegmentSegmentType, item: ISegmentNetworkSegMatchRuleP) => void;
+  onSelectAll: (type: SegmentSegmentType, item: ISegmentNetworkSegMatchRuleP[]) => void;
   onChangeCurrentPage: (type: SegmentSegmentType, _page: number) => void;
   onChangePageSize: (type: SegmentSegmentType, size: number, page?: number) => void;
   loading: boolean;
@@ -88,21 +91,86 @@ const VnetsTable: React.FC<Props> = (props: Props) => {
       },
     },
   ]);
+  const [tagsColumns] = React.useState<GridColDef[]>([
+    {
+      field: 'key',
+      headerName: 'Key',
+      width: 220,
+      flex: 0.5,
+      disableColumnMenu: true,
+      resizable: false,
+      editable: false,
+      sortable: false,
+      hideSortIcons: true,
+      filterable: false,
+      disableReorder: true,
+      disableExport: true,
+    },
+    {
+      field: 'value',
+      headerName: 'Value',
+      width: 220,
+      flex: 0.5,
+      disableColumnMenu: true,
+      resizable: false,
+      editable: false,
+      sortable: false,
+      hideSortIcons: true,
+      filterable: false,
+      disableReorder: true,
+      disableExport: true,
+    },
+    {
+      field: 'ownerId',
+      headerName: 'Owner ID',
+      width: 140,
+      disableColumnMenu: true,
+      resizable: false,
+      editable: false,
+      sortable: false,
+      hideSortIcons: true,
+      filterable: false,
+      disableReorder: true,
+      disableExport: true,
+    },
+  ]);
   const gridStyles = GridStyles();
   const [selectionModel, setSelectionModel] = React.useState<GridSelectionModel>([]);
+  const [selectedVnetworkMatchKey, setSelectedVnetworkMatchKey] = React.useState<SegmentNetworkSegMatchKey>(SegmentNetworkSegMatchKey.KEY_VNETWORK_EXTID);
+  const [visibleData, setVisibleData] = React.useState<(INetworkVNetwork | INetworkTag)[]>([]);
+
+  React.useEffect(() => {
+    if (props.data && props.data.length) {
+      const _vData: (INetworkVNetwork | INetworkTag)[] = helper.getVisibleVnetData(props.data, selectedVnetworkMatchKey);
+      setVisibleData(_vData);
+    } else {
+      setVisibleData([]);
+    }
+  }, [props.data, selectedVnetworkMatchKey]);
 
   React.useEffect(() => {
     const _ids = [];
-    if (props.data && props.data.length && props.selectedIds && props.selectedIds.length) {
-      props.selectedIds.forEach(it => {
-        const _el = props.data.find(item => item.extId === it);
-        if (_el) {
-          _ids.push(_el.id);
+    if (props.data && props.data.length && props.matchRules && props.matchRules.length) {
+      props.matchRules.forEach(it => {
+        if (selectedVnetworkMatchKey === SegmentNetworkSegMatchKey.KEY_VNETWORK_EXTID) {
+          const _el = props.data.find(item => it.matchKey === selectedVnetworkMatchKey && item.extId === it.matchValuePrimary);
+          if (_el) {
+            _ids.push(_el.id);
+          }
+        }
+        if (selectedVnetworkMatchKey === SegmentNetworkSegMatchKey.KEY_VNETWORK_TAG) {
+          props.matchRules.forEach(it => {
+            const _el: INetworkTag = helper.getSelectedTagFromVpcs(props.data, it);
+            if (_el) {
+              const _id = _el.id || `${_el.key}${_el.value}`;
+              _ids.push(_id);
+            }
+          });
         }
       });
     }
     setSelectionModel(_ids);
-  }, [props.selectedIds, props.data]);
+  }, [props.matchRules, props.data, selectedVnetworkMatchKey]);
 
   // const onChangeColumn = (col: GridColDef) => {
   //   const _items: GridColDef[] = columns.slice();
@@ -112,12 +180,50 @@ const VnetsTable: React.FC<Props> = (props: Props) => {
   // };
 
   const onRowClick = (params: GridRowParams) => {
-    props.onSelectChange(SegmentSegmentType.NETWORK, params.row as INetworkVNetwork);
+    if (selectedVnetworkMatchKey === SegmentNetworkSegMatchKey.KEY_VNETWORK_TAG) {
+      const _item = params.row as INetworkTag;
+      const rule: ISegmentNetworkSegMatchRuleP = {
+        matchKey: selectedVnetworkMatchKey,
+        matchValuePrimary: _item.key,
+        matchValueSecondary: _item.value,
+      };
+      props.onSelectChange(SegmentSegmentType.NETWORK, rule);
+      return;
+    }
+    const _item = params.row as INetworkVNetwork;
+    const rule: ISegmentNetworkSegMatchRuleP = {
+      matchKey: selectedVnetworkMatchKey,
+      matchValuePrimary: _item.extId,
+      matchValueSecondary: null,
+    };
+    props.onSelectChange(SegmentSegmentType.NETWORK, rule);
   };
 
   const onColumnHeaderClick = (params: GridColumnHeaderParams) => {
     if (params.field === '__check__') {
-      props.onSelectAll(SegmentSegmentType.NETWORK, props.data);
+      const _items: ISegmentNetworkSegMatchRuleP[] = [];
+      if (selectedVnetworkMatchKey === SegmentNetworkSegMatchKey.KEY_VNETWORK_TAG) {
+        visibleData.forEach(it => {
+          let _tag = it as INetworkTag;
+          const rule: ISegmentNetworkSegMatchRuleP = {
+            matchKey: selectedVnetworkMatchKey,
+            matchValuePrimary: _tag.key,
+            matchValueSecondary: _tag.value,
+          };
+          _items.push(rule);
+        });
+      } else if (selectedVnetworkMatchKey === SegmentNetworkSegMatchKey.KEY_VNETWORK_EXTID) {
+        visibleData.forEach(it => {
+          let _item = it as INetworkVNetwork;
+          const rule: ISegmentNetworkSegMatchRuleP = {
+            matchKey: selectedVnetworkMatchKey,
+            matchValuePrimary: _item.extId,
+            matchValueSecondary: null,
+          };
+          _items.push(rule);
+        });
+      }
+      props.onSelectAll(SegmentSegmentType.NETWORK, _items);
     }
   };
 
@@ -127,8 +233,35 @@ const VnetsTable: React.FC<Props> = (props: Props) => {
   const onChangePageSize = (size: number, page?: number) => {
     props.onChangePageSize(SegmentSegmentType.NETWORK, size, page);
   };
+
+  const onChangeMatchKey = (v: SegmentNetworkSegMatchKey) => {
+    setSelectedVnetworkMatchKey(v);
+  };
+
   return (
     <>
+      <ModalRow margin="0 0 20px 0">
+        <MatSelect
+          id="networkMatchKeyType"
+          label="Key"
+          value={selectedVnetworkMatchKey}
+          options={[SegmentNetworkSegMatchKey.KEY_VNETWORK_EXTID, SegmentNetworkSegMatchKey.KEY_VNETWORK_TAG]}
+          styles={{ height: '72px', minHeight: '72px', margin: '0' }}
+          selectStyles={{ height: '50px', width: '100%' }}
+          selectClaassName="withLabel"
+          onChange={onChangeMatchKey}
+          renderValue={(v: SegmentNetworkSegMatchKey) => {
+            if (v === SegmentNetworkSegMatchKey.KEY_VNETWORK_EXTID) return <ValueLabel>VPC</ValueLabel>;
+            if (v === SegmentNetworkSegMatchKey.KEY_VNETWORK_TAG) return <ValueLabel>Tag</ValueLabel>;
+            return <ValueLabel>{v}</ValueLabel>;
+          }}
+          renderOption={(v: SegmentNetworkSegMatchKey) => {
+            if (v === SegmentNetworkSegMatchKey.KEY_VNETWORK_EXTID) return 'VPC';
+            if (v === SegmentNetworkSegMatchKey.KEY_VNETWORK_TAG) return 'Tag';
+            return v;
+          }}
+        />
+      </ModalRow>
       <ModalRow margin="0 0 10px 0" align="center">
         <ModalLabel>Vnets</ModalLabel>
         {/* <SecondaryButtonWithPopup styles={{ padding: '0', width: '50px' }} wrapStyles={{ margin: '0 0 0 auto' }} icon={filterIcon} direction="rtl">
@@ -176,8 +309,8 @@ const VnetsTable: React.FC<Props> = (props: Props) => {
           rowHeight={50}
           hideFooter
           rowCount={props.pageData.totalCount}
-          rows={props.data}
-          columns={columns}
+          rows={visibleData}
+          columns={selectedVnetworkMatchKey === SegmentNetworkSegMatchKey.KEY_VNETWORK_EXTID ? columns : tagsColumns}
           checkboxSelection
           onRowClick={onRowClick}
           onColumnHeaderClick={onColumnHeaderClick}

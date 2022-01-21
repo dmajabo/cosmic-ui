@@ -193,7 +193,8 @@ export const createDeviceNode = (org: INetworkOrg, orgIndex: number, node: INetw
     vendorType: org.vendorType,
     nodeType: TopoNodeTypes.DEVICE,
     segmentColor: color || NODES_CONSTANTS.DEVICE.nodeBgColor,
-    nodeIconColor: color || '#000',
+    nodeCiscoColor: color ? 'var(--_primaryWhiteColor)' : NODES_CONSTANTS.DEVICE.nodeCiscoColor,
+    nodeMerakiColor: color ? 'var(--_primaryWhiteColor)' : NODES_CONSTANTS.DEVICE.nodeMerakiColor,
   };
 };
 
