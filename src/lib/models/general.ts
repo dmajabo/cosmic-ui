@@ -160,3 +160,9 @@ export interface IFilterOption<T> {
   label: string;
   hide?: boolean;
 }
+
+export interface IStepperStep {
+  label: string;
+  completedFieldName: string;
+  index: number;
+}

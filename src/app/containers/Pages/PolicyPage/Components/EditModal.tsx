@@ -22,15 +22,14 @@ import { IUiPagingData } from 'lib/api/ApiModels/generalApiModel';
 import { paramBuilder } from 'lib/api/ApiModels/paramBuilders';
 import VnetsTable from './SegmentTypeComponents/VnetsTable';
 import DevicesTable from './SegmentTypeComponents/DevicesTable';
-import Stepper from '@mui/material/Stepper';
-import Step from '@mui/material/Step';
-import { StepButton } from '@mui/material';
+
 import { DEFAULT_SEGMENTS_COLORS_SCHEMA, FORM_STEPS, ISegmentComplete } from './models';
-import { StepperStyles } from 'app/components/Stepper/StepperMuiStyles';
+
 import { PolicyApi } from 'lib/api/ApiModels/Services/policy';
 import { IBaseEntity } from 'lib/models/general';
 import _ from 'lodash';
 import SecondaryButton from 'app/components/Buttons/SecondaryButton';
+import ModalStepper from 'app/components/Stepper/ModalStepper';
 
 interface IProps {
   data: ISegmentSegmentP;
@@ -68,7 +67,6 @@ const EditModal: React.FC<IProps> = (props: IProps) => {
   const [completed, setCompleted] = React.useState<ISegmentComplete>({ step_1: false, step_2: false });
   const [hasChanges, setHasChanges] = React.useState<boolean>(false);
 
-  const stepperStyles = StepperStyles();
   React.useEffect(() => {
     const completed: ISegmentComplete = helper.onValidateSegment(segment);
     setCompleted(completed);
@@ -258,7 +256,7 @@ const EditModal: React.FC<IProps> = (props: IProps) => {
     onTryCreateSegment(_s);
   };
 
-  const handleStep = (step: number) => () => {
+  const handlerStepChange = (step: number) => {
     setActiveStep(step);
   };
 
@@ -293,13 +291,7 @@ const EditModal: React.FC<IProps> = (props: IProps) => {
     <>
       <ModalContent style={{ height: 'calc(100% - 112px)', display: 'flex', flexDirection: 'column' }}>
         <ModalRow margin="0 0 20px 0">
-          <Stepper activeStep={activeStep} className={stepperStyles.root}>
-            {FORM_STEPS.map((label, index) => (
-              <Step key={label} completed={completed[label]}>
-                <StepButton color="inherit" disabled={index !== 0 && !completed.step_1} disableRipple disableTouchRipple focusRipple onClick={handleStep(index)} />
-              </Step>
-            ))}
-          </Stepper>
+          <ModalStepper activeStep={activeStep} steps={FORM_STEPS} completed={completed} onChange={handlerStepChange} />
         </ModalRow>
 
         {activeStep === 0 && (
