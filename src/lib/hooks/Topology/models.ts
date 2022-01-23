@@ -1,3 +1,4 @@
+import { ISegmentSegmentP } from 'lib/api/ApiModels/Policy/Segment';
 import { INetworkDevice, INetworkRegion, INetworkVNetwork, INetworkVNetworkPeeringConnection, INetworkWebAcl, INetworkwEdge, VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
 import { AlertSeverity } from 'lib/api/ApiModels/Workflow/apiModel';
 import { IBaseEntity, ICollapsed, ICoord, IFilterOption, ISize, IVisible } from 'lib/models/general';
@@ -116,12 +117,8 @@ export interface ITopoAccountNode extends ICoord, ICollapsed, IVisible {
   children: ITGWNode[];
 }
 
-export interface ISitesNode extends IBaseEntity<string> {
-  name: string;
-}
-
 export interface ITopoSitesNode extends ICoord, ICollapsed, IVisible {
-  dataItem: ISitesNode;
+  dataItem: ISegmentSegmentP;
   uiId: string;
   type: TopoNodeTypes;
   expandedSize: ISize;

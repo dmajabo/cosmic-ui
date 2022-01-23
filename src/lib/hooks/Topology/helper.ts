@@ -32,6 +32,7 @@ import { getBeautifulRowsCount, getRegionChildrenCounts } from './helpers/rowsHe
 import { getChunksFromArray } from 'lib/helpers/arrayHelper';
 import { ISegmentSegmentP } from 'lib/api/ApiModels/Policy/Segment';
 import { IObject } from 'lib/models/general';
+// import { jsonClone } from 'lib/helpers/cloneHelper';
 
 export const createAccounts = (_data: INetworkOrg[]): ITopoAccountNode[] => {
   if (!_data || !_data.length) return [];
@@ -58,24 +59,35 @@ export const createAccounts = (_data: INetworkOrg[]): ITopoAccountNode[] => {
   return _accounts;
 };
 
+interface ITempSegment {
+  id: string;
+  dataItem: ISegmentSegmentP;
+  children: IDeviceNode[];
+}
+interface ITempSegmentObjData {
+  [key: string]: ITempSegment;
+}
 export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[], _segments: ISegmentSegmentP[]): (ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[] => {
   const regions: ITopoRegionNode[] = [];
   let accounts: ITopoAccountNode[] = [];
   // const dataCenters: ITopoNode<any>[] = [];
   const sites: ITopoSitesNode[] = [];
-  const devices: IDeviceNode[] = [];
+  const devicesInDefaultSegment: IDeviceNode[] = [];
+  const segmentTempObject: ITempSegmentObjData = {};
+
   let _segmentsObj: IObject<string> = null;
   if (_segments && _segments.length) {
     _segmentsObj = _segments.reduce((obj, s, i) => {
       obj[s.id] = s.color;
+      const _segment: ITopoSitesNode = createSitesNode(s);
+      segmentTempObject[s.id] = { id: s.id, dataItem: s, children: [] };
+      sites.push(_segment);
       return obj;
     }, {});
   }
 
   if (_data && _data.length) {
     accounts = createAccounts(_data);
-    const _defGroup: ITopoSitesNode = createSitesNode({ id: DEFAULT_GROUP_ID, name: 'Default' });
-    sites.push(_defGroup);
     _data.forEach((org, orgI) => {
       if (!org.regions || !org.regions.length) return;
       org.regions.forEach((region, i) => {
@@ -123,15 +135,31 @@ export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[]
         }
         if (region.devices && region.devices.length) {
           // for test
-          // for (let j = 0; j < 200; j++) {
-          //   // const objE: IDeviceNode = createDeviceNode(org, orgI, region.devices[1], 100 + j);
-          //   const _device: IDeviceNode = createDeviceNode(org, orgI, region.devices[0], _segmentsObj[region.devices[1].segmentId]);
-          //   devices.push(_device);
-          //   // devicesInGroup.push(objE);
+          // for (let j = 0; j < 72; j++) {
+          //   const _item1 = jsonClone(region.devices[0]);
+          //   _item1.segmentId = '61eaccce820af10f872a9b16';
+          //   const _device1: IDeviceNode = createDeviceNode(org, orgI, _item1, _segmentsObj);
+          //   segmentTempObject[_device1.segmentId].children.push(_device1);
+          // }
+          // for (let j = 0; j < 45; j++) {
+          //   const _item2 = jsonClone(region.devices[0]);
+          //   _item2.segmentId = '61eacc5d820af10f872a9b15';
+          //   const _device2: IDeviceNode = createDeviceNode(org, orgI, _item2, _segmentsObj);
+          //   segmentTempObject[_device2.segmentId].children.push(_device2);
+          // }
+          // for (let j = 0; j < 300; j++) {
+          //   const _item3 = jsonClone(region.devices[0]);
+          //   _item3.segmentId = '61ea2c4f820af10f872a9b14';
+          //   const _device3: IDeviceNode = createDeviceNode(org, orgI, _item3, _segmentsObj);
+          //   segmentTempObject[_device3.segmentId].children.push(_device3);
           // }
           region.devices.forEach((d, i) => {
             const _device: IDeviceNode = createDeviceNode(org, orgI, d, _segmentsObj);
-            devices.push(_device);
+            if (_device.segmentId && segmentTempObject[_device.segmentId]) {
+              segmentTempObject[_device.segmentId].children.push(_device);
+            } else {
+              devicesInDefaultSegment.push(_device);
+            }
           });
         }
         if (_objR) {
@@ -141,12 +169,43 @@ export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[]
     });
   }
 
-  if (devices && devices.length) {
-    const _arr = getChunksFromArray(devices, DEV_IN_PAGE);
+  if (devicesInDefaultSegment && devicesInDefaultSegment.length) {
+    const _defGroup: ITopoSitesNode = createSitesNode({
+      id: DEFAULT_GROUP_ID,
+      name: 'Default',
+      description: '',
+      segType: null,
+      networkSegPol: null,
+      appSegPol: null,
+      extSegPol: null,
+      serviceSegPol: null,
+      paasSegPol: null,
+      siteSegPol: null,
+      color: 'var(--_primaryBg)',
+    });
+    sites.unshift(_defGroup);
+    const _arr = getChunksFromArray(devicesInDefaultSegment, DEV_IN_PAGE);
     const max = _arr && _arr.length ? getBeautifulRowsCount(_arr[0].length, DEV_IN_ROW) : 0;
     sites[0].children = _arr.map((page, pageI) => {
       const _pageRow = getChunksFromArray(page, max);
       return _pageRow.map((row, rowI) => row.map((v, i) => updateDeviceNode(v, pageI, rowI, row.length, i))).flat();
+    });
+  }
+
+  if (Object.keys(segmentTempObject).length) {
+    Object.keys(segmentTempObject).forEach(key => {
+      const _s = segmentTempObject[key];
+      const index = sites.findIndex(it => it.dataItem.id === _s.id);
+      if (!_s.children || !_s.children.length) {
+        sites.splice(index, 1);
+        return;
+      }
+      const _arr = getChunksFromArray(_s.children, DEV_IN_PAGE);
+      const max = _arr && _arr.length ? getBeautifulRowsCount(_arr[0].length, DEV_IN_ROW) : 0;
+      sites[index].children = _arr.map((page, pageI) => {
+        const _pageRow = getChunksFromArray(page, max);
+        return _pageRow.map((row, rowI) => row.map((v, i) => updateDeviceNode(v, pageI, rowI, row.length, i))).flat();
+      });
     });
   }
 

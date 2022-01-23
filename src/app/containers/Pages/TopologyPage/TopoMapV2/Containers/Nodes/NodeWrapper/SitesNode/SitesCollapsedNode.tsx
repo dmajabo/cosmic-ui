@@ -3,14 +3,14 @@ import React from 'react';
 import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
 import NodeCounter from '../../Containers/NodeCounter';
 import NodeCollapsedName from '../../Containers/NodeName/NodeCollapsedName';
-import { ISitesNode } from 'lib/hooks/Topology/models';
+import { ISegmentSegmentP } from 'lib/api/ApiModels/Policy/Segment';
 
 interface Props {
   uiId: string;
   x: number;
   y: number;
   dragId: string;
-  dataItem: ISitesNode;
+  dataItem: ISegmentSegmentP;
   show: boolean;
   childrenCount: number;
 }

@@ -10,7 +10,7 @@ export const HeaderStyles = styled.div<HeaderStyleProps>`
   position: fixed;
   top: 0;
   left: ${props => (props.isOpenSidebar ? sideBarOpenWidth : sideBarCloseWidth)};
-  height: ${APP_HEADER_HEIGHT + 'px'};
+  height: ${APP_HEADER_HEIGHT};
   width: ${props => (props.isOpenSidebar ? `calc(100% - ${sideBarOpenWidth})` : `calc(100% - ${sideBarCloseWidth})`)};
   flex-wrap: nowrap;
   padding: 20px 30px;

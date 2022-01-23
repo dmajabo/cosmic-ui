@@ -12,10 +12,10 @@ import {
   INetworkWebAclNode,
   FilterEntityOptions,
   ITopoSitesNode,
-  ISitesNode,
 } from '../models';
 import uuid from 'react-uuid';
 import { getChildContainerHeight, getTotalNodeHeight } from './sizeHelpers';
+import { ISegmentSegmentP } from 'lib/api/ApiModels/Policy/Segment';
 
 export const createAccountNode = (_id: string, _name: string, _orgId: string): ITopoAccountNode => {
   const _obj: ITopoAccountNode = {
@@ -43,7 +43,7 @@ export const createAccountNode = (_id: string, _name: string, _orgId: string): I
   return _obj;
 };
 
-export const createSitesNode = (item: ISitesNode): ITopoSitesNode => {
+export const createSitesNode = (item: ISegmentSegmentP): ITopoSitesNode => {
   const _obj: ITopoSitesNode = {
     dataItem: item,
     uiId: uuid(),
