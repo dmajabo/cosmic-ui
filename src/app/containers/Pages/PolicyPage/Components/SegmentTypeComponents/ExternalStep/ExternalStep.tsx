@@ -4,8 +4,8 @@ import { ISegmentExternalSegMatchRuleP } from 'lib/api/ApiModels/Policy/Segment'
 import ExternalRule from './ExternalRule';
 import SecondaryButton from 'app/components/Buttons/SecondaryButton';
 import { addIcon } from 'app/components/SVGIcons/addIcon';
-import * as helper from '../helper';
-import { RulesContainer } from '../styles';
+import * as helper from '../../helper';
+import { RulesContainer } from '../../styles';
 interface Props {
   matchRules: ISegmentExternalSegMatchRuleP[];
   onUpdateExtRule: (rule: ISegmentExternalSegMatchRuleP, index?: number) => void;

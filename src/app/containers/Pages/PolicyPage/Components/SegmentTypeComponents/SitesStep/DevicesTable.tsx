@@ -7,46 +7,27 @@ import Paging from 'app/components/Basic/Paging';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import LoadingIndicator from 'app/components/Loading';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
-// import SecondaryButtonWithPopup from 'app/components/Buttons/SecondaryButton/SecondaryButtonWithPopup';
-// import PopupContainer from 'app/components/PopupContainer';
-// import { PopupTitle, OverflowContainer, FilteredColumnItem, FilteredColumnLabel } from 'app/components/PopupContainer/styles';
-// import { filterIcon } from 'app/components/SVGIcons/filter';
-import { INetworkDevice } from 'lib/api/ApiModels/Topology/apiModels';
+import { INetworkDevice, ISitesRes } from 'lib/api/ApiModels/Topology/apiModels';
 import { IUiPagingData } from 'lib/api/ApiModels/generalApiModel';
 import { ISegmentSiteSegmentMatchRuleP, SegmentSegmentType, SegmentSiteSegmentMatchKey } from 'lib/api/ApiModels/Policy/Segment';
-// import { GridCellWrapper } from 'app/components/Grid/styles';
 import MatSelect from 'app/components/Inputs/MatSelect';
 import { ValueLabel } from 'app/components/Inputs/MatSelect/styles';
-import * as helper from '../helper';
+import * as helper from '../../helper';
+import { paramBuilder } from 'lib/api/ApiModels/paramBuilders';
+import { TopoApi } from 'lib/api/ApiModels/Services/topo';
+import { useGet } from 'lib/api/http/useAxiosHook';
+import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 
 interface Props {
-  data: INetworkDevice[];
-  pageData: IUiPagingData;
   matchRules: ISegmentSiteSegmentMatchRuleP[];
   onSelectChange: (type: SegmentSegmentType, rule: ISegmentSiteSegmentMatchRuleP) => void;
   onSelectAll: (type: SegmentSegmentType, rules: ISegmentSiteSegmentMatchRuleP[]) => void;
-  onChangeCurrentPage: (type: SegmentSegmentType, _page: number) => void;
-  onChangePageSize: (type: SegmentSegmentType, size: number, page?: number) => void;
-  loading: boolean;
-  error: string;
 }
 
 const DevicesTable: React.FC<Props> = (props: Props) => {
-  const [selectedSiteMatchKey, setSelectedSiteMatchKey] = React.useState<SegmentSiteSegmentMatchKey>(SegmentSiteSegmentMatchKey.SITE_SEG_MATCH_KEY_NETWORK);
+  const userContext = React.useContext<UserContextState>(UserContext);
+  const { loading: deviceLoading, response: deviceRes, error: deviceError, onGet: onGetDevices } = useGet<ISitesRes>();
   const [columns, setColumns] = React.useState<GridColDef[]>([
-    // {
-    //   field: 'name',
-    //   headerName: 'Name',
-    //   width: 200,
-    //   disableColumnMenu: true,
-    //   resizable: false,
-    //   editable: false,
-    //   sortable: false,
-    //   hideSortIcons: true,
-    //   filterable: false,
-    //   disableReorder: true,
-    //   disableExport: true,
-    // },
     {
       field: 'networkId',
       headerName: 'Network ID',
@@ -115,48 +96,44 @@ const DevicesTable: React.FC<Props> = (props: Props) => {
       disableReorder: true,
       disableExport: true,
     },
-    // {
-    //   field: 'tags',
-    //   headerName: 'Tags',
-    //   minWidth: 300,
-    //   flex: 1,
-    //   disableColumnMenu: true,
-    //   resizable: false,
-    //   editable: false,
-    //   sortable: false,
-    //   hideSortIcons: true,
-    //   filterable: false,
-    //   disableReorder: true,
-    //   disableExport: true,
-    //   renderCell: (param: GridRenderCellParams) => {
-    //     if (!param.value || !param.value.length) return null;
-    //     return <GridCellWrapper>{param.value.map(it => it.value).join(', ')}</GridCellWrapper>;
-    //   },
-    // },
   ]);
+  const [selectedSiteMatchKey, setSelectedSiteMatchKey] = React.useState<SegmentSiteSegmentMatchKey>(SegmentSiteSegmentMatchKey.SITE_SEG_MATCH_KEY_NETWORK);
+  const [devices, setDevices] = React.useState<INetworkDevice[]>([]);
+  const [devicesPagingData, setDevicesPagingData] = React.useState<IUiPagingData>({
+    totalCount: 0,
+    pageOffset: 1,
+    pageSize: 10,
+  });
   const gridStyles = GridStyles();
   const [selectionModel, setSelectionModel] = React.useState<GridSelectionModel>([]);
 
   React.useEffect(() => {
+    onTryLoadDevices(devicesPagingData);
+  }, []);
+
+  React.useEffect(() => {
+    if (deviceRes) {
+      if (deviceRes.devices && deviceRes.devices.length) {
+        setDevices(deviceRes.devices);
+      } else {
+        setDevices([]);
+      }
+    }
+  }, [deviceRes]);
+
+  React.useEffect(() => {
     const _ids = [];
-    if (props.data && props.data.length && props.matchRules && props.matchRules.length) {
+    if (devices && devices.length && props.matchRules && props.matchRules.length) {
       props.matchRules.forEach(it => {
         const field = helper.getSitesFieldFromRuleKey(it.matchKey);
-        const _el = props.data.find(item => it.matchKey === selectedSiteMatchKey && item[field] === it.matchValuePrimary);
+        const _el = devices.find(item => it.matchKey === selectedSiteMatchKey && item[field] === it.matchValuePrimary);
         if (_el) {
           _ids.push(_el.id);
         }
       });
     }
     setSelectionModel(_ids);
-  }, [props.matchRules, props.data, selectedSiteMatchKey]);
-
-  // const onChangeColumn = (col: GridColDef) => {
-  //   const _items: GridColDef[] = columns.slice();
-  //   const _index = _items.findIndex(it => it.field === col.field);
-  //   _items[_index].hide = !col.hide;
-  //   setGridColumns(_items);
-  // };
+  }, [props.matchRules, devices, selectedSiteMatchKey]);
 
   const onRowClick = (params: GridRowParams) => {
     const _item = params.row as INetworkDevice;
@@ -172,7 +149,7 @@ const DevicesTable: React.FC<Props> = (props: Props) => {
     if (params.field === '__check__') {
       const _items: ISegmentSiteSegmentMatchRuleP[] = [];
       const _field = helper.getSitesFieldFromRuleKey(selectedSiteMatchKey);
-      props.data.forEach(it => {
+      devices.forEach(it => {
         const rule: ISegmentSiteSegmentMatchRuleP = {
           matchKey: selectedSiteMatchKey,
           matchValuePrimary: it[_field],
@@ -184,10 +161,17 @@ const DevicesTable: React.FC<Props> = (props: Props) => {
   };
 
   const onChangePage = (page: number) => {
-    props.onChangeCurrentPage(SegmentSegmentType.SITE, page);
+    const _obj: IUiPagingData = { ...devicesPagingData, pageOffset: page };
+    setDevicesPagingData(_obj);
+    onTryLoadDevices(_obj);
   };
   const onChangePageSize = (size: number, page?: number) => {
-    props.onChangePageSize(SegmentSegmentType.SITE, size, page);
+    const _obj: IUiPagingData = { ...devicesPagingData, pageSize: size };
+    if (page) {
+      _obj.pageOffset = page;
+    }
+    setDevicesPagingData(_obj);
+    onTryLoadDevices(_obj);
   };
   const onChangeMatchKey = (v: SegmentSiteSegmentMatchKey) => {
     const _items: GridColDef[] = columns.map(col => {
@@ -204,6 +188,11 @@ const DevicesTable: React.FC<Props> = (props: Props) => {
     });
     setColumns(_items);
     setSelectedSiteMatchKey(v);
+  };
+
+  const onTryLoadDevices = async (pageData: IUiPagingData) => {
+    const _param = paramBuilder(pageData.pageSize, pageData.pageOffset);
+    await onGetDevices(TopoApi.getSites(), userContext.accessToken!, _param);
   };
   return (
     <>
@@ -233,42 +222,6 @@ const DevicesTable: React.FC<Props> = (props: Props) => {
       </ModalRow>
       <ModalRow margin="0 0 10px 0" align="center">
         <ModalLabel>DEVICES</ModalLabel>
-        {/* <SecondaryButtonWithPopup styles={{ padding: '0', width: '50px' }} wrapStyles={{ margin: '0 0 0 auto' }} icon={filterIcon} direction="rtl">
-          <PopupContainer
-            styles={{
-              overflow: 'hidden',
-              position: 'absolute',
-              top: 'calc(100% + 2px)',
-              right: '0',
-              width: '80vw',
-              height: 'auto',
-              minWidth: '180px',
-              maxWidth: '340px',
-              minHeight: '120px',
-              maxHeight: '420px',
-              direction: 'rtl',
-              padding: '20px',
-              boxShadow: '0px 10px 30px rgba(5, 20, 58, 0.1)',
-              borderRadius: '6px',
-              display: 'flex',
-              flexDirection: 'column',
-              background: 'var(--_primaryBg)',
-            }}
-          >
-            <PopupTitle>Columns</PopupTitle>
-            <OverflowContainer>
-              {columns.map(col => {
-                if (col.field === 'rowIndex' || !col.field) return null;
-                return (
-                  <FilteredColumnItem key={`filteredColumnMEnuItem${col.field}`} onClick={() => onChangeColumn(col)}>
-                    <SimpleCheckbox wrapStyles={{ marginRight: '12px' }} isChecked={!col.hide} />
-                    <FilteredColumnLabel>{col.headerName}</FilteredColumnLabel>
-                  </FilteredColumnItem>
-                );
-              })}
-            </OverflowContainer>
-          </PopupContainer>
-        </SecondaryButtonWithPopup> */}
       </ModalRow>
       <GridWrapper>
         <DataGrid
@@ -277,15 +230,15 @@ const DevicesTable: React.FC<Props> = (props: Props) => {
           headerHeight={50}
           rowHeight={50}
           hideFooter
-          rowCount={props.pageData.totalCount}
-          rows={props.data}
+          rowCount={devicesPagingData.totalCount}
+          rows={devices}
           columns={columns}
           checkboxSelection
           onRowClick={onRowClick}
           onColumnHeaderClick={onColumnHeaderClick}
           selectionModel={selectionModel}
-          loading={props.loading}
-          error={props.error}
+          loading={deviceLoading}
+          error={deviceError ? deviceError.message : null}
           components={{
             NoRowsOverlay: () => (
               <AbsLoaderWrapper width="100%" height="100%">
@@ -294,7 +247,7 @@ const DevicesTable: React.FC<Props> = (props: Props) => {
                 </ErrorMessage>
               </AbsLoaderWrapper>
             ),
-            ErrorOverlay: () => <ErrorMessage margin="auto">{props.error}</ErrorMessage>,
+            ErrorOverlay: () => <ErrorMessage margin="auto">{deviceError ? deviceError.message : null}</ErrorMessage>,
             LoadingOverlay: () => (
               <AbsLoaderWrapper width="100%" height="calc(100% - 50px)" top="50px">
                 <LoadingIndicator margin="auto" />
@@ -307,10 +260,10 @@ const DevicesTable: React.FC<Props> = (props: Props) => {
         />
       </GridWrapper>
       <Paging
-        count={props.pageData.totalCount}
-        disabled={!props.data.length || props.pageData.totalCount === 0}
-        pageSize={props.pageData.pageSize}
-        currentPage={props.pageData.pageOffset}
+        count={devicesPagingData.totalCount}
+        disabled={!devices.length || devicesPagingData.totalCount === 0}
+        pageSize={devicesPagingData.pageSize}
+        currentPage={devicesPagingData.pageOffset}
         onChangePage={onChangePage}
         onChangePageSize={onChangePageSize}
         boundaryCount={0}

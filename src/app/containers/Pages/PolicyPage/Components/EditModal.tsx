@@ -20,15 +20,11 @@ import ColorPiker from 'app/components/Inputs/ColorPiker';
 import { ValueLabel } from 'app/components/Inputs/MatSelect/styles';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import { useGet, usePost, usePut } from 'lib/api/http/useAxiosHook';
-import { INetworkDevice, INetworkVM, INetworkVNetwork, ISitesRes, IVmsRes, IVnetworksRes } from 'lib/api/ApiModels/Topology/apiModels';
-import { TopoApi } from 'lib/api/ApiModels/Services/topo';
 import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 import { ModalContent, ModalFooter } from '../../Edges/Editor/Components/styles';
-import VmsTable from './SegmentTypeComponents/VmsTable';
-import { IUiPagingData } from 'lib/api/ApiModels/generalApiModel';
-import { paramBuilder } from 'lib/api/ApiModels/paramBuilders';
-import VnetsTable from './SegmentTypeComponents/VnetsTable';
-import DevicesTable from './SegmentTypeComponents/DevicesTable';
+import VmsTable from './SegmentTypeComponents/VmStep/VmsTable';
+import VnetsTable from './SegmentTypeComponents/NetworkStep/VnetsTable';
+import DevicesTable from './SegmentTypeComponents/SitesStep/DevicesTable';
 
 import { DEFAULT_SEGMENTS_COLORS_SCHEMA, FORM_STEPS, ISegmentComplete } from './models';
 
@@ -37,7 +33,7 @@ import { IBaseEntity } from 'lib/models/general';
 import _ from 'lodash';
 import SecondaryButton from 'app/components/Buttons/SecondaryButton';
 import ModalStepper from 'app/components/Stepper/ModalStepper';
-import ExternalStep from './SegmentTypeComponents/ExternalStep';
+import ExternalStep from './SegmentTypeComponents/ExternalStep/ExternalStep';
 
 interface IProps {
   data: ISegmentSegmentP;
@@ -47,30 +43,9 @@ interface IProps {
 const EditModal: React.FC<IProps> = (props: IProps) => {
   const userContext = React.useContext<UserContextState>(UserContext);
   const [segment, setSegment] = React.useState<ISegmentSegmentP>(helper.updateSegmentDataToEdit(props.data));
-  const { loading: vnetsLoading, response: vnetsRes, error: vnetsError, onGet: onGetVnets } = useGet<IVnetworksRes>();
-  const { loading: vmsLoading, response: vmsRes, error: vmsError, onGet: onGetVms } = useGet<IVmsRes>();
-  const { loading: deviceLoading, response: deviceRes, error: deviceError, onGet: onGetDevices } = useGet<ISitesRes>();
   const { response: postRes, loading: postLoading, error: postError, onPost } = usePost<ISegmentSegmentP, IBaseEntity<string>>();
   const { response: putRes, loading: putLoading, error: putError, onPut } = usePut<ISegmentSegmentP, IBaseEntity<string>>();
   const { loading: getLoading, response: getRes, error: getError, onGet: onGetSegment } = useGet<ISegmentSegmentP>();
-  const [vnets, setVnets] = React.useState<INetworkVNetwork[]>([]);
-  const [vms, setVms] = React.useState<INetworkVM[]>([]);
-  const [devices, setDevices] = React.useState<INetworkDevice[]>([]);
-  const [vnetsPagingData, setVnetsPagingData] = React.useState<IUiPagingData>({
-    totalCount: 0,
-    pageOffset: 1,
-    pageSize: 10,
-  });
-  const [vmsPagingData, setVmsPagingData] = React.useState<IUiPagingData>({
-    totalCount: 0,
-    pageOffset: 1,
-    pageSize: 10,
-  });
-  const [devicesPagingData, setDevicesPagingData] = React.useState<IUiPagingData>({
-    totalCount: 0,
-    pageOffset: 1,
-    pageSize: 10,
-  });
   const [activeStep, setActiveStep] = React.useState<number>(0);
   const [completed, setCompleted] = React.useState<ISegmentComplete>({ step_1: false, step_2: false });
   const [hasChanges, setHasChanges] = React.useState<boolean>(false);
@@ -78,48 +53,7 @@ const EditModal: React.FC<IProps> = (props: IProps) => {
   React.useEffect(() => {
     const completed: ISegmentComplete = helper.onValidateSegment(segment);
     setCompleted(completed);
-    if (segment && segment.segType) {
-      if (segment.segType === SegmentSegmentType.NETWORK) {
-        onTryLoadVnets(vnetsPagingData);
-      }
-      if (segment.segType === SegmentSegmentType.APPLICATION) {
-        onTryLoadVms(vmsPagingData);
-      }
-      if (segment.segType === SegmentSegmentType.SITE) {
-        onTryLoadDevices(devicesPagingData);
-      }
-    }
   }, []);
-
-  React.useEffect(() => {
-    if (vnetsRes) {
-      if (vnetsRes.vnets && vnetsRes.vnets.length) {
-        setVnets(vnetsRes.vnets);
-      } else {
-        setVnets([]);
-      }
-    }
-  }, [vnetsRes]);
-
-  React.useEffect(() => {
-    if (vmsRes) {
-      if (vmsRes.vms && vmsRes.vms.length) {
-        setVms(vmsRes.vms);
-      } else {
-        setVms([]);
-      }
-    }
-  }, [vmsRes]);
-
-  React.useEffect(() => {
-    if (deviceRes) {
-      if (deviceRes.devices && deviceRes.devices.length) {
-        setDevices(deviceRes.devices);
-      } else {
-        setDevices([]);
-      }
-    }
-  }, [deviceRes]);
 
   React.useEffect(() => {
     if (postRes && postRes.id) {
@@ -164,70 +98,6 @@ const EditModal: React.FC<IProps> = (props: IProps) => {
     }
     if (completed.step_1) {
       setActiveStep(1);
-    }
-    if (_s.segType === SegmentSegmentType.NETWORK && (!vnets || !vnets.length)) {
-      onTryLoadVnets(vnetsPagingData);
-    }
-    if (_s.segType === SegmentSegmentType.APPLICATION && (!vms || !vms.length)) {
-      onTryLoadVms(vmsPagingData);
-    }
-    if (_s.segType === SegmentSegmentType.SITE && (!devices || !devices.length)) {
-      onTryLoadDevices(devicesPagingData);
-    }
-  };
-
-  const onChangeCurrentPage = (type: SegmentSegmentType, _page: number) => {
-    if (type === SegmentSegmentType.SITE) {
-      const _obj: IUiPagingData = jsonClone(devicesPagingData);
-      _obj.pageOffset = _page;
-      setDevicesPagingData(_obj);
-      onTryLoadDevices(_obj);
-      return;
-    }
-    if (type === SegmentSegmentType.APPLICATION) {
-      const _obj: IUiPagingData = jsonClone(vmsPagingData);
-      _obj.pageOffset = _page;
-      setVmsPagingData(_obj);
-      onTryLoadVms(_obj);
-      return;
-    }
-    if (type === SegmentSegmentType.NETWORK) {
-      const _obj: IUiPagingData = jsonClone(vnetsPagingData);
-      _obj.pageOffset = _page;
-      setVnetsPagingData(_obj);
-      onTryLoadVnets(_obj);
-    }
-  };
-
-  const onChangePageSize = (type: SegmentSegmentType, _size: number, _page?: number) => {
-    if (type === SegmentSegmentType.SITE) {
-      const _obj: IUiPagingData = jsonClone(devicesPagingData);
-      if (_page) {
-        _obj.pageOffset = _page;
-      }
-      _obj.pageSize = _size;
-      setDevicesPagingData(_obj);
-      onTryLoadDevices(_obj);
-      return;
-    }
-    if (type === SegmentSegmentType.APPLICATION) {
-      const _obj: IUiPagingData = jsonClone(vmsPagingData);
-      if (_page) {
-        _obj.pageOffset = _page;
-      }
-      _obj.pageSize = _size;
-      setVmsPagingData(_obj);
-      onTryLoadVms(_obj);
-      return;
-    }
-    if (type === SegmentSegmentType.NETWORK) {
-      const _obj: IUiPagingData = jsonClone(vnetsPagingData);
-      if (_page) {
-        _obj.pageOffset = _page;
-      }
-      _obj.pageSize = _size;
-      setVnetsPagingData(_obj);
-      onTryLoadVnets(_obj);
     }
   };
 
@@ -290,21 +160,6 @@ const EditModal: React.FC<IProps> = (props: IProps) => {
 
   const handlerStepChange = (step: number) => {
     setActiveStep(step);
-  };
-
-  const onTryLoadVnets = async (pageData: IUiPagingData) => {
-    const _param = paramBuilder(pageData.pageSize, pageData.pageOffset);
-    await onGetVnets(TopoApi.getVnetworks(), userContext.accessToken!, _param);
-  };
-
-  const onTryLoadVms = async (pageData: IUiPagingData) => {
-    const _param = paramBuilder(pageData.pageSize, pageData.pageOffset);
-    await onGetVms(TopoApi.getVms(), userContext.accessToken!, _param);
-  };
-
-  const onTryLoadDevices = async (pageData: IUiPagingData) => {
-    const _param = paramBuilder(pageData.pageSize, pageData.pageOffset);
-    await onGetDevices(TopoApi.getSites(), userContext.accessToken!, _param);
   };
 
   const onTryCreateSegment = async (item: ISegmentSegmentP) => {
@@ -391,43 +246,13 @@ const EditModal: React.FC<IProps> = (props: IProps) => {
         {activeStep === 1 && (
           <>
             {segment.segType === SegmentSegmentType.APPLICATION && (
-              <VmsTable
-                data={vms}
-                pageData={vmsPagingData}
-                matchRules={segment.appSegPol && segment.appSegPol.matchRules ? segment.appSegPol.matchRules : []}
-                onSelectChange={onSelectItem}
-                onSelectAll={onSelectAllItems}
-                onChangeCurrentPage={onChangeCurrentPage}
-                onChangePageSize={onChangePageSize}
-                loading={vmsLoading}
-                error={vmsError && vmsError.message ? vmsError.message : null}
-              />
+              <VmsTable matchRules={segment.appSegPol && segment.appSegPol.matchRules ? segment.appSegPol.matchRules : []} onSelectChange={onSelectItem} onSelectAll={onSelectAllItems} />
             )}
             {segment.segType === SegmentSegmentType.NETWORK && (
-              <VnetsTable
-                data={vnets}
-                pageData={vnetsPagingData}
-                matchRules={segment.networkSegPol && segment.networkSegPol.matchRules ? segment.networkSegPol.matchRules : []}
-                onSelectChange={onSelectItem}
-                onSelectAll={onSelectAllItems}
-                onChangeCurrentPage={onChangeCurrentPage}
-                onChangePageSize={onChangePageSize}
-                loading={vnetsLoading}
-                error={vnetsError && vnetsError.message ? vnetsError.message : null}
-              />
+              <VnetsTable matchRules={segment.networkSegPol && segment.networkSegPol.matchRules ? segment.networkSegPol.matchRules : []} onSelectChange={onSelectItem} onSelectAll={onSelectAllItems} />
             )}
             {segment.segType === SegmentSegmentType.SITE && (
-              <DevicesTable
-                data={devices}
-                pageData={devicesPagingData}
-                matchRules={segment.siteSegPol && segment.siteSegPol.matchRules ? segment.siteSegPol.matchRules : []}
-                onSelectChange={onSelectItem}
-                onSelectAll={onSelectAllItems}
-                onChangeCurrentPage={onChangeCurrentPage}
-                onChangePageSize={onChangePageSize}
-                loading={deviceLoading}
-                error={deviceError && deviceError.message ? deviceError.message : null}
-              />
+              <DevicesTable matchRules={segment.siteSegPol && segment.siteSegPol.matchRules ? segment.siteSegPol.matchRules : []} onSelectChange={onSelectItem} onSelectAll={onSelectAllItems} />
             )}
             {segment.segType === SegmentSegmentType.EXTERNAL && (
               <ExternalStep matchRules={segment.extSegPol && segment.extSegPol.matchRules ? segment.extSegPol.matchRules : []} onUpdateExtRule={onUpdateExtRule} onRemoveExtRule={onRemoveExtRule} />

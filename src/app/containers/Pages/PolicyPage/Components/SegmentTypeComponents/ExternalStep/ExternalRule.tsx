@@ -3,7 +3,7 @@ import { ISegmentExternalSegMatchRuleP } from 'lib/api/ApiModels/Policy/Segment'
 import { Validator } from 'ip-num/Validator';
 import TextInput from 'app/components/Inputs/TextInput';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
-import { RuleInputsWrapper, RuleWrapper } from '../styles';
+import { RuleInputsWrapper, RuleWrapper } from '../../styles';
 import { deleteIcon } from 'app/components/SVGIcons/delete';
 import { useDebounce } from 'use-debounce';
 import IconWrapper from 'app/components/Buttons/IconWrapper';

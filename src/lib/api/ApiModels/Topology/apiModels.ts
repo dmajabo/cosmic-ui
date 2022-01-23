@@ -449,6 +449,11 @@ export interface ICloudVNetworkP extends IBaseEntity<string> {
   cidrBlock: string;
   extId: string;
 }
+
+export interface INetworkTagsRes extends IBaseTotalCount {
+  tags: INetworkTag[];
+}
+
 export interface IVnetworksRes extends IBaseTotalCount, IBasePages {
   vnets: INetworkVNetwork[];
 }
