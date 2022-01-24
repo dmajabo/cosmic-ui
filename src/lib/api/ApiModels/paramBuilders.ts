@@ -27,6 +27,18 @@ export enum STITCHED_TYPES {
   STITCHED_ONLY = 'STITCHED_ONLY',
 }
 
+export enum TAGS_RESOURCE_TYPE {
+  UNKNOWN_RESOURCE_TYPE = 'UNKNOWN_RESOURCE_TYPE',
+  VNetwork = 'VNetwork',
+  Subnet = 'Subnet',
+  Vm = 'Vm',
+  Nic = 'Nic',
+  VpnLink = 'VpnLink',
+  NetworkLink = 'NetworkLink',
+  WEdge = 'WEdge',
+  WedgePeeringConnection = 'WedgePeeringConnection',
+  ClientVpnEndpoint = 'ClientVpnEndpoint',
+}
 export interface IParam {
   start_from?: number;
   page_size?: number;
@@ -34,17 +46,25 @@ export interface IParam {
   search_type?: STITCHED_TYPES;
   filters?: string;
   filterSuffics?: ElasticFilterSuffics;
+  resourceType?: string;
 }
 
-export const paramBuilder = (size: number, currentPage: number, time_range?: AUTOMATION_TIME_RANGE_QUERY_TYPES | AUDIT_LOGS_TIME_RANGE_QUERY_TYPES): IParam => {
+export const paramBuilder = (size?: number, currentPage?: number, time_range?: AUTOMATION_TIME_RANGE_QUERY_TYPES | AUDIT_LOGS_TIME_RANGE_QUERY_TYPES, resourceType?: string): IParam => {
   let param: IParam = {};
-  const _size = size || PAGING_DEFAULT_PAGE_SIZE;
-  param.start_from = (currentPage - 1) * _size;
-  param.page_size = size;
+  if (currentPage || currentPage === 0) {
+    const _size = size || PAGING_DEFAULT_PAGE_SIZE;
+    param.start_from = (currentPage - 1) * _size;
+  }
+  if (size || size === 0) {
+    param.page_size = size;
+  }
   if (time_range) {
     if (time_range !== AUTOMATION_TIME_RANGE_QUERY_TYPES.LAST_HOUR) {
       param.time_range = time_range;
     }
+  }
+  if (resourceType) {
+    param.resourceType = resourceType;
   }
   if (!Object.keys(param).length) return null;
   return param;

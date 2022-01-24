@@ -6,7 +6,7 @@ import { ISegmentNetworkSegMatchRuleP, SegmentNetworkSegMatchKey, SegmentSegment
 import MatSelect from 'app/components/Inputs/MatSelect';
 import { ValueLabel } from 'app/components/Inputs/MatSelect/styles';
 import { useGet } from 'lib/api/http/useAxiosHook';
-import { paramBuilder } from 'lib/api/ApiModels/paramBuilders';
+import { paramBuilder, TAGS_RESOURCE_TYPE } from 'lib/api/ApiModels/paramBuilders';
 import { TopoApi } from 'lib/api/ApiModels/Services/topo';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import VnetsTableComponent from './VnetsTableComponent';
@@ -153,7 +153,7 @@ const VnetsTable: React.FC<Props> = (props: Props) => {
   };
 
   const onTryLoadTags = async (pageData: IUiPagingData) => {
-    const _param = paramBuilder(pageData.pageSize, pageData.pageOffset);
+    const _param = paramBuilder(pageData.pageSize, pageData.pageOffset, null, TAGS_RESOURCE_TYPE.VNetwork);
     await onGetTags(TopoApi.getTags(), userContext.accessToken!, _param);
   };
 

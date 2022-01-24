@@ -14,7 +14,7 @@ import MatSelect from 'app/components/Inputs/MatSelect';
 import { ValueLabel } from 'app/components/Inputs/MatSelect/styles';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { useGet } from 'lib/api/http/useAxiosHook';
-import { paramBuilder } from 'lib/api/ApiModels/paramBuilders';
+import { paramBuilder, TAGS_RESOURCE_TYPE } from 'lib/api/ApiModels/paramBuilders';
 import { TopoApi } from 'lib/api/ApiModels/Services/topo';
 
 interface Props {
@@ -148,7 +148,7 @@ const VmsTable: React.FC<Props> = (props: Props) => {
   };
 
   const onTryLoadTags = async (pageData: IUiPagingData) => {
-    const _param = paramBuilder(pageData.pageSize, pageData.pageOffset);
+    const _param = paramBuilder(pageData.pageSize, pageData.pageOffset, null, TAGS_RESOURCE_TYPE.Vm);
     await onGetTags(TopoApi.getTags(), userContext.accessToken!, _param);
   };
 
