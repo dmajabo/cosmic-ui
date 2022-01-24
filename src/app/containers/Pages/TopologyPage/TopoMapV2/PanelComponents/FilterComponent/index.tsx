@@ -8,6 +8,7 @@ import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataCont
 import { TopoFilterTypes } from 'lib/hooks/Topology/models';
 import FilterEntityGroup from './FilterEntityGroup';
 import FilterSeverityGroup from './FilterSeverityGroup';
+import FilterNodesGroup from './FilterNodesGroup';
 
 interface IProps {}
 
@@ -30,6 +31,9 @@ const FilterComponent: React.FC<IProps> = (props: IProps) => {
           </FilterGroup>
           <FilterGroup maxGroupHeight="260px" defaultOpen label="Health Severity" styles={{ margin: '0 0 5px 0' }}>
             <FilterSeverityGroup type={TopoFilterTypes.Severity} data={topology.severity} onClick={onSelectFilterOption} />
+          </FilterGroup>
+          <FilterGroup maxGroupHeight="unset" label="Regions" styles={{ margin: '0 0 5px 0' }}>
+            <FilterNodesGroup type={TopoFilterTypes.Regions} data={topology.nodes} onClick={onSelectFilterOption} />
           </FilterGroup>
         </PanelContent>
       </OverflowContainer>

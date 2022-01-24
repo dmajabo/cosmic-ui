@@ -19,15 +19,15 @@ const FilterSeverityGroup: React.FC<Props> = (props: Props) => {
       {Object.keys(props.data).map((key, index) => {
         if (props.data[key].hide) return null;
         return (
-          <FilterGroupItem key={`${props.type}${props.data[key].type}`} onClick={() => onClick(props.data[key])}>
+          <FilterGroupItem key={`${props.type}${props.data[key].type}`}>
             <SimpleCheckbox
               isChecked={props.data[key].selected}
               wrapStyles={{ margin: '0 10px 0 0' }}
               // width?: string;
               // height?: string;
               // iconSize?: number;
+              toggleCheckboxChange={() => onClick(props.data[key])}
               inputStyles={{ pointerEvents: 'none' }}
-              readOnly
             />
             <GroupItemLabel>{props.data[key].label}</GroupItemLabel>
           </FilterGroupItem>

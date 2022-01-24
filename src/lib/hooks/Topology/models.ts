@@ -155,11 +155,13 @@ export interface ITempSegmentObjData {
 export interface ITopologyPreparedMapDataV2 {
   nodes: (ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[];
   links: ITopoLink<any, any, any, any, any>[];
+  segments: ITempSegmentObjData;
 }
 
 export enum TopoFilterTypes {
   Entities = 'Entities',
   Severity = 'Severity',
+  Regions = 'Regions',
 }
 
 export enum FilterEntityTypes {

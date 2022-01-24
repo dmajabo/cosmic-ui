@@ -14,6 +14,7 @@ import {
   DEV_IN_ROW,
   DEFAULT_GROUP_ID,
   ITempSegmentObjData,
+  ITopologyPreparedMapDataV2,
 } from './models';
 import {
   createDeviceNode,
@@ -60,7 +61,7 @@ export const createAccounts = (_data: INetworkOrg[]): ITopoAccountNode[] => {
   return _accounts;
 };
 
-export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[], _segments: ISegmentSegmentP[]): (ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[] => {
+export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[], _segments: ISegmentSegmentP[]): ITopologyPreparedMapDataV2 => {
   const regions: ITopoRegionNode[] = [];
   let accounts: ITopoAccountNode[] = [];
   // const dataCenters: ITopoNode<any>[] = [];
@@ -202,7 +203,7 @@ export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[]
   updateTopLevelItems(filter, regions, accounts, sites);
   buildLinks(regions, accounts, sites);
   const _nodes: (ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[] = [...accounts, ...regions, ...sites];
-  return _nodes;
+  return { nodes: _nodes, links: [], segments: segmentTempObject };
 };
 
 const buildRegionName = (org: INetworkOrg, region: INetworkRegion): string => {

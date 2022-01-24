@@ -10,7 +10,10 @@ import {
   FilterEntityTypes,
   FilterSeverityOptions,
   IPanelBar,
+  ITempSegmentObjData,
   ITopoAccountNode,
+  ITopoLink,
+  ITopologyPreparedMapDataV2,
   ITopoRegionNode,
   ITopoSitesNode,
   TopoFilterTypes,
@@ -30,7 +33,8 @@ export interface TopologyV2ContextType {
   originSegmentsData: ISegmentSegmentP[] | null;
   searchQuery: string | null;
   selectedType: string | null;
-  // links: ITopoLink<any, any, any, any, any>[];
+  links: ITopoLink<any, any, any, any, any>[];
+  segments: ITempSegmentObjData;
   nodes: (ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[];
   selectedNode: any;
   onUnselectNode: () => void;
@@ -61,7 +65,8 @@ export function useTopologyV2Context(): TopologyV2ContextType {
   const [originData, setOriginData] = React.useState<INetworkOrg[] | null>(null);
   const [originSegmentsData, setOriginSegmentsData] = React.useState<ISegmentSegmentP[] | null>(null);
   const [nodes, setNodes] = React.useState<(ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[]>([]);
-  // const [links, setLinks] = React.useState<ITopoLink<any, any, any, any, any>[]>([]);
+  const [links, setLinks] = React.useState<ITopoLink<any, any, any, any, any>[]>([]);
+  const [segments, setSegments] = React.useState<ITempSegmentObjData>(null);
   const [selectedNode, setSelectedNode] = React.useState<ITopoAccountNode | ITopoSitesNode | ITopoRegionNode>(null);
   const [regionStructures, setRegionStructures] = React.useState<ITopoRegionNode[]>([]);
   const [entities, setEntities] = React.useState<FilterEntityOptions>({
@@ -113,33 +118,33 @@ export function useTopologyV2Context(): TopologyV2ContextType {
   const [timeRange, setTimeRange] = React.useState<ITimeMinMaxRange | null>(null);
   const [searchQuery, setSearchQuery] = React.useState<string | null>(null);
   const [selectedType, setSelectedType] = React.useState<string | null>(null);
-  // const linksRef = React.useRef<ITopoLink<any, any, any, any, any>[]>(links);
+  const linksRef = React.useRef<ITopoLink<any, any, any, any, any>[]>(links);
+  const segmentsRef = React.useRef<ITempSegmentObjData>(segments);
   const nodesRef = React.useRef<(ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[]>(nodes);
-  const segmentsRef = React.useRef<ISegmentSegmentP[] | null>(originSegmentsData);
   const onSetData = (res: ITopologyDataRes) => {
     if (!res) {
-      // setLinks([]);
+      setLinks([]);
+      setSegments(null);
       setNodes([]);
       setOriginSegmentsData(null);
       setOriginData(null);
-      segmentsRef.current = null;
       nodesRef.current = null;
-      // linksRef.current = null;
+      linksRef.current = null;
+      segmentsRef.current = null;
       return;
     }
     const _orgObj: INetworkOrg[] = res.organizations && res.organizations.organizations ? jsonClone(res.organizations.organizations) : null;
     const _segmentsObj: ISegmentSegmentP[] = res.segments && res.segments.segments ? jsonClone(res.segments.segments) : [];
-    segmentsRef.current = _segmentsObj;
-    const _data: (ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[] = createTopology(entities, _orgObj, segmentsRef.current);
-    // if (_data.links) {
-    //   setLinks(_data.links);
-    //   linksRef.current = _data.links;
-    // }
+    const _data: ITopologyPreparedMapDataV2 = createTopology(entities, _orgObj, _segmentsObj);
     if (_data) {
-      setNodes(_data);
-      nodesRef.current = _data;
+      setLinks(_data.links);
+      setSegments(_data.segments);
+      setNodes(_data.nodes);
+      linksRef.current = _data.links;
+      segmentsRef.current = _data.segments;
+      nodesRef.current = _data.nodes;
     }
-    setOriginSegmentsData(segmentsRef.current);
+    setOriginSegmentsData(_segmentsObj);
     setOriginData(_orgObj);
   };
 
@@ -338,8 +343,9 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     timeRange,
     originData,
     originSegmentsData,
-    // links,
+    links,
     nodes,
+    segments,
     selectedNode,
     searchQuery,
     selectedType,
