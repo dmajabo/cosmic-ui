@@ -3,9 +3,9 @@ import { NODES_CONSTANTS } from '../../../../model';
 import { INetworkVNetNode, ITopoRegionNode } from 'lib/hooks/Topology/models';
 // import NodeCounter from '../../Containers/NodeCounter';
 import { select } from 'd3-selection';
-import { buildVnetTooltip, removeVnetTooltip } from './tooltipHelper';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 import HtmlNodeLabel from '../../Containers/HtmlNodeLabel';
+import HtmlVpcTooltip from '../../Containers/HtmlNodeTooltip/HtmlVpcTooltip';
 
 interface Props {
   x: number;
@@ -32,13 +32,18 @@ const NetworkVnetNode: React.FC<Props> = (props: Props) => {
   const onClick = () => {
     props.onClick(props.item);
   };
-  const onMouseEnter = (e: React.BaseSyntheticEvent<MouseEvent>) => {
+
+  const onMouseEnter = () => {
     const _node = select(nodeRef.current);
     _node.raise();
-    buildVnetTooltip(e, props.region, props.item, props.parentId, props.x, props.y);
+    const tooltip = _node.select(`#tooltip${props.item.uiId}`);
+    tooltip.style('display', 'initial');
   };
+
   const onMouseLeave = () => {
-    removeVnetTooltip(props.parentId);
+    const _node = select(nodeRef.current);
+    const tooltip = _node.select(`#tooltip${props.item.uiId}`);
+    tooltip.style('display', 'none');
   };
   return (
     <g
@@ -75,6 +80,7 @@ const NetworkVnetNode: React.FC<Props> = (props: Props) => {
       />
       {/* <NodeCounter pointerEvents="none" label={`${props.item.vms && props.item.vms.length ? props.item.vms.length : 0}`} stylesObj={NODES_CONSTANTS.NETWORK_VNET.countStyles} /> */}
       <HtmlNodeLabel name={props.item.name} labelStyles={NODES_CONSTANTS.NETWORK_VNET.labelHtmlStyles} />
+      <HtmlVpcTooltip id={`tooltip${props.item.uiId}`} x={NODES_CONSTANTS.NETWORK_VNET.collapse.r * 2 + 5} y="0" minWidth="328px" vnet={props.item} region={props.region} />
     </g>
   );
 };

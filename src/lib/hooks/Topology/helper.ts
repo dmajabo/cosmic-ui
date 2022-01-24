@@ -13,6 +13,7 @@ import {
   ITopoAccountNode,
   DEV_IN_ROW,
   DEFAULT_GROUP_ID,
+  ITempSegmentObjData,
 } from './models';
 import {
   createDeviceNode,
@@ -31,7 +32,6 @@ import { updateTopLevelItems } from './helpers/coordinateHelper';
 import { getBeautifulRowsCount, getRegionChildrenCounts } from './helpers/rowsHelper';
 import { getChunksFromArray } from 'lib/helpers/arrayHelper';
 import { ISegmentSegmentP } from 'lib/api/ApiModels/Policy/Segment';
-import { IObject } from 'lib/models/general';
 // import { jsonClone } from 'lib/helpers/cloneHelper';
 
 export const createAccounts = (_data: INetworkOrg[]): ITopoAccountNode[] => {
@@ -59,14 +59,6 @@ export const createAccounts = (_data: INetworkOrg[]): ITopoAccountNode[] => {
   return _accounts;
 };
 
-interface ITempSegment {
-  id: string;
-  dataItem: ISegmentSegmentP;
-  children: IDeviceNode[];
-}
-interface ITempSegmentObjData {
-  [key: string]: ITempSegment;
-}
 export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[], _segments: ISegmentSegmentP[]): (ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[] => {
   const regions: ITopoRegionNode[] = [];
   let accounts: ITopoAccountNode[] = [];
@@ -75,15 +67,12 @@ export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[]
   const devicesInDefaultSegment: IDeviceNode[] = [];
   const segmentTempObject: ITempSegmentObjData = {};
 
-  let _segmentsObj: IObject<string> = null;
   if (_segments && _segments.length) {
-    _segmentsObj = _segments.reduce((obj, s, i) => {
-      obj[s.id] = s.color;
+    _segments.forEach((s, i) => {
       const _segment: ITopoSitesNode = createSitesNode(s);
       segmentTempObject[s.id] = { id: s.id, dataItem: s, children: [] };
       sites.push(_segment);
-      return obj;
-    }, {});
+    });
   }
 
   if (_data && _data.length) {
@@ -121,7 +110,7 @@ export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[]
         if (region.vnets && region.vnets.length && org.vendorType !== 'MERAKI') {
           // const _arr = getChunksFromArray(customVnetData, Math.min(VPCS_IN_ROW, max));
           const _arr: INetworkVNetwork[][] = getChunksFromArray(region.vnets, Math.min(VPCS_IN_ROW, max));
-          _objR.children = _arr.map((row, ri) => row.map((v, i) => createVnetNode(org, row.length, orgI, ri, i, v, _segmentsObj)));
+          _objR.children = _arr.map((row, ri) => row.map((v, i) => createVnetNode(org, row.length, orgI, ri, i, v, segmentTempObject)));
         }
         if (region.vNetworkPeeringConnections && region.vNetworkPeeringConnections.length) {
           // const _arr = getChunksFromArray(customPeerData, Math.min(PEER_CONNECTION_IN_ROW, max));
@@ -154,7 +143,7 @@ export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[]
           //   segmentTempObject[_device3.segmentId].children.push(_device3);
           // }
           region.devices.forEach((d, i) => {
-            const _device: IDeviceNode = createDeviceNode(org, orgI, d, _segmentsObj);
+            const _device: IDeviceNode = createDeviceNode(org, orgI, d, segmentTempObject);
             if (_device.segmentId && segmentTempObject[_device.segmentId]) {
               segmentTempObject[_device.segmentId].children.push(_device);
             } else {

@@ -48,11 +48,13 @@ export interface ICollapseExpandBtn extends ISize {
   r: number;
 }
 
-export interface ICollapseStyles extends ISize, IIconSize, ISpace {
+export interface ICollapseStyles extends ISize, IIconSize {
   r?: number;
   bgColor: string;
   stroke?: string;
   borderRadius: number;
+  spaceX?: number;
+  spaceY?: number;
 }
 
 export interface IMarker extends ISize, IIconSize {
@@ -61,18 +63,20 @@ export interface IMarker extends ISize, IIconSize {
   borderRadius: number;
   viewBox: string;
 }
-export interface IExpandedStyles extends IMinSize, ISpace {
+export interface IExpandedStyles extends IMinSize {
   marker: IMarker;
   bgColor: string;
   stroke?: string;
   borderRadius: number;
   contentPadding: number;
+  spaceX?: number;
+  spaceY?: number;
 }
 export interface ICollapseExpandState {
   collapse: ICollapseStyles;
   expanded: IExpandedStyles;
 }
-export interface IRegionNode extends INode<TopoNodeTypes>, ICollapseExpandState {
+export interface IRegionNode extends INode<TopoNodeTypes>, ICollapseExpandState, ISpace {
   iconId: string;
   headerHeight: number;
   countStyles: ICounterStyle;
@@ -80,7 +84,7 @@ export interface IRegionNode extends INode<TopoNodeTypes>, ICollapseExpandState 
   labelExpandedStyles: IExpandLabelStyle;
 }
 
-export interface IAccountNode extends INode<TopoNodeTypes>, ICollapseExpandState {
+export interface IAccountNode extends INode<TopoNodeTypes>, ICollapseExpandState, ISpace {
   iconId: string;
   headerHeight: number;
   countStyles: ICounterStyle;
@@ -88,14 +92,14 @@ export interface IAccountNode extends INode<TopoNodeTypes>, ICollapseExpandState
   labelExpandedStyles: IExpandLabelStyle;
 }
 
-export interface IDataCenterNode extends INode<TopoNodeTypes>, ICollapseExpandState {
+export interface IDataCenterNode extends INode<TopoNodeTypes>, ICollapseExpandState, ISpace {
   iconId: string;
   countStyles: ICounterStyle;
   labelCollapsedStyles: ICollapseLabelStyle;
   labelExpandedStyles: IExpandLabelStyle;
 }
 
-export interface ISitesNode extends INode<TopoNodeTypes>, ICollapseExpandState {
+export interface ISitesNode extends INode<TopoNodeTypes>, ICollapseExpandState, ISpace {
   iconId: string;
   headerHeight: number;
   countStyles: ICounterStyle;
@@ -179,11 +183,11 @@ export const NODES_CONSTANTS: INodes_Types = {
     type: TopoNodeTypes.REGION,
     iconId: TopoNodeTypes.REGION,
     headerHeight: 30,
+    spaceX: 150,
+    spaceY: 175,
     collapse: {
       width: 62,
       height: 62,
-      spaceX: 100,
-      spaceY: 175,
       iconWidth: 28,
       iconHeight: 28,
       iconOffsetX: 18, // 62 / 2 - 28 / 2
@@ -203,8 +207,6 @@ export const NODES_CONSTANTS: INodes_Types = {
         bgColor: 'var(--_regionBg)',
         borderRadius: 6,
       },
-      spaceX: 50,
-      spaceY: 175,
       minWidth: 300,
       minHeight: 128,
       minOffsetX: -119, // 62 / 2 - 300 / 2
@@ -247,6 +249,8 @@ export const NODES_CONSTANTS: INodes_Types = {
     type: TopoNodeTypes.ACCOUNT,
     iconId: TopoNodeTypes.ACCOUNT,
     headerHeight: 30,
+    spaceX: 100,
+    spaceY: 175,
     countStyles: {
       x: 4,
       y: -8,
@@ -261,8 +265,6 @@ export const NODES_CONSTANTS: INodes_Types = {
       cMinWidth: '100%',
     },
     collapse: {
-      spaceX: 50,
-      spaceY: 175,
       width: 62,
       height: 62,
       iconWidth: 32,
@@ -284,8 +286,6 @@ export const NODES_CONSTANTS: INodes_Types = {
         bgColor: 'var(--_accountBg)',
         borderRadius: 6,
       },
-      spaceX: 50,
-      spaceY: 175,
       minWidth: 240,
       minHeight: 128,
       minOffsetX: -89, // 62 / 2 - 240 / 2
@@ -314,9 +314,9 @@ export const NODES_CONSTANTS: INodes_Types = {
   DATA_CENTER: {
     type: TopoNodeTypes.DATA_CENTER,
     iconId: TopoNodeTypes.DATA_CENTER,
+    spaceX: 40,
+    spaceY: 175,
     collapse: {
-      spaceX: 40,
-      spaceY: 175,
       width: 62,
       height: 62,
       iconWidth: 18,
@@ -338,8 +338,6 @@ export const NODES_CONSTANTS: INodes_Types = {
         bgColor: 'var(--_dataCenterBg)',
         borderRadius: 6,
       },
-      spaceX: 20,
-      spaceY: 175,
       minWidth: 240,
       minHeight: 128,
       minOffsetX: -89, // 62 / 2 - 240 / 2
@@ -382,9 +380,9 @@ export const NODES_CONSTANTS: INodes_Types = {
     type: TopoNodeTypes.SITES,
     iconId: TopoNodeTypes.SITES,
     headerHeight: 30,
+    spaceX: 100,
+    spaceY: 175,
     collapse: {
-      spaceX: 40,
-      spaceY: 175,
       width: 62,
       height: 62,
       iconWidth: 34,
@@ -406,8 +404,6 @@ export const NODES_CONSTANTS: INodes_Types = {
         bgColor: 'var(--_sitesCiscoBg)',
         borderRadius: 6,
       },
-      spaceX: 20,
-      spaceY: 175,
       minWidth: 240,
       minHeight: 128,
       minOffsetX: -89, // 62 / 2 - 240 / 2

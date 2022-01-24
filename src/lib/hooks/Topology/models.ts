@@ -74,6 +74,7 @@ export interface INetworkVNetworkPeeringConnectionNode extends INetworkVNetworkP
 export interface INetworkVNetNode extends INetworkVNetwork, IOrganizationNode, IMappedNode, ICoord {
   itemsInRow: number;
   segmentColor: string;
+  segmentName: string;
   nodeIconColor: string;
 }
 
@@ -140,6 +141,15 @@ export interface ITopoRegionNode extends ICoord, ICollapsed, IVisible {
   webAcls: INetworkWebAclNode[][];
   vnetLinks: ITopoLink<any, any, any, any, any>[];
   peeringLinks: ITopoLink<any, any, any, any, any>[];
+}
+
+export interface ITempSegment {
+  id: string;
+  dataItem: ISegmentSegmentP;
+  children: IDeviceNode[];
+}
+export interface ITempSegmentObjData {
+  [key: string]: ITempSegment;
 }
 
 export interface ITopologyPreparedMapDataV2 {
