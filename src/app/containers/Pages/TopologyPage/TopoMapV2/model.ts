@@ -465,7 +465,7 @@ export const NODES_CONSTANTS: INodes_Types = {
     labelExpandedStyles: null,
     labelHtmlStyles: {
       x: -5,
-      y: 54,
+      y: 50,
       width: 60,
       height: 18,
       textAnchor: 'unset',
@@ -541,7 +541,7 @@ export const NODES_CONSTANTS: INodes_Types = {
     },
     labelHtmlStyles: {
       x: -7.5,
-      y: 34,
+      y: 30,
       width: 45,
       height: 18,
       textAnchor: 'unset',
@@ -632,7 +632,7 @@ export const NODES_CONSTANTS: INodes_Types = {
     labelExpandedStyles: null,
     labelHtmlStyles: {
       x: -3,
-      y: 34,
+      y: 30,
       width: 36,
       height: 14,
       textAnchor: 'unset',
@@ -704,7 +704,7 @@ export const NODES_CONSTANTS: INodes_Types = {
     labelExpandedStyles: null,
     labelHtmlStyles: {
       x: -5,
-      y: 34,
+      y: 30,
       width: 40,
       height: 12,
       textAnchor: 'unset',
