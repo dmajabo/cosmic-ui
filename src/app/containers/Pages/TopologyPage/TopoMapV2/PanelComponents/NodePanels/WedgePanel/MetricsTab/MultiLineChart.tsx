@@ -85,7 +85,12 @@ export const MultiLineChart: React.FC<LineChartProps> = ({ dataValueSuffix, inpu
     };
   });
 
+  const turboThreshold = inputData.reduce((acc, nextValue) => acc + nextValue.metrics.length, 0);
+
   const lineChartOptions = {
+    chart: {
+      zoomType: 'x',
+    },
     time: {
       useUTC: false,
     },
@@ -104,6 +109,11 @@ export const MultiLineChart: React.FC<LineChartProps> = ({ dataValueSuffix, inpu
       shared: true,
       crosshairs: true,
       valueSuffix: dataValueSuffix ? ` ${dataValueSuffix}` : '',
+    },
+    plotOptions: {
+      series: {
+        turboThreshold: turboThreshold,
+      },
     },
     yAxis: {
       title: {

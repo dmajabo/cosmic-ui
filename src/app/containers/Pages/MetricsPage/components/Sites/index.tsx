@@ -35,34 +35,6 @@ const INITIAL_ANOMALY_TIME_RANGE_VALUE: LookbackSelectOption = {
 
 const TIME_RANGE_OPTIONS: LookbackSelectOption[] = [
   {
-    label: LookbackLabel.fiveMinutes,
-    value: LookbackValue.fiveMinutes,
-  },
-  {
-    label: LookbackLabel.fifteenMinutes,
-    value: LookbackValue.fifteenMinutes,
-  },
-  {
-    label: LookbackLabel.thirtyMinutes,
-    value: LookbackValue.thirtyMinutes,
-  },
-  {
-    label: LookbackLabel.oneHour,
-    value: LookbackValue.oneHour,
-  },
-  {
-    label: LookbackLabel.sixHours,
-    value: LookbackValue.sixHours,
-  },
-  {
-    label: LookbackLabel.twelveHours,
-    value: LookbackValue.twelveHours,
-  },
-  {
-    label: LookbackLabel.twentyFourHours,
-    value: LookbackValue.twentyFourHours,
-  },
-  {
     label: LookbackLabel.oneDay,
     value: LookbackValue.oneDay,
   },
