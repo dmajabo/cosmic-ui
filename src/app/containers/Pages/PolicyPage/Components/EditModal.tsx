@@ -8,7 +8,10 @@ import {
   ISegmentNetworkSegMatchRuleP,
   ISegmentSegmentP,
   ISegmentSiteSegmentMatchRuleP,
+  SegmentApplicationSegMatchKey,
+  SegmentNetworkSegMatchKey,
   SegmentSegmentType,
+  SegmentSiteSegmentMatchKey,
 } from 'lib/api/ApiModels/Policy/Segment';
 import * as helper from './helper';
 import { ModalRow } from '../../Edges/Editor/Components/styles';
@@ -49,7 +52,9 @@ const EditModal: React.FC<IProps> = (props: IProps) => {
   const [activeStep, setActiveStep] = React.useState<number>(0);
   const [completed, setCompleted] = React.useState<ISegmentComplete>({ step_1: false, step_2: false });
   const [hasChanges, setHasChanges] = React.useState<boolean>(false);
-
+  const [selectedVnetworkMatchKey, setSelectedVnetworkMatchKey] = React.useState<SegmentNetworkSegMatchKey>(SegmentNetworkSegMatchKey.KEY_VNETWORK_EXTID);
+  const [selectedSiteMatchKey, setSelectedSiteMatchKey] = React.useState<SegmentSiteSegmentMatchKey>(SegmentSiteSegmentMatchKey.SITE_SEG_MATCH_KEY_NETWORK);
+  const [selectedAppMatchKey, setSelectedAppMatchKey] = React.useState<SegmentApplicationSegMatchKey>(SegmentApplicationSegMatchKey.APP_SEG_MATCH_KEY_TAG);
   React.useEffect(() => {
     const completed: ISegmentComplete = helper.onValidateSegment(segment);
     setCompleted(completed);
@@ -162,6 +167,21 @@ const EditModal: React.FC<IProps> = (props: IProps) => {
     setActiveStep(step);
   };
 
+  const onChangeMatchKey = (type: SegmentSegmentType, v: any) => {
+    if (type === SegmentSegmentType.NETWORK) {
+      setSelectedVnetworkMatchKey(v);
+      return;
+    }
+    if (type === SegmentSegmentType.SITE) {
+      setSelectedSiteMatchKey(v);
+      return;
+    }
+    if (type === SegmentSegmentType.APPLICATION) {
+      setSelectedAppMatchKey(v);
+      return;
+    }
+  };
+
   const onTryCreateSegment = async (item: ISegmentSegmentP) => {
     await onPost(PolicyApi.postSegments(), { segment: item }, userContext.accessToken!);
   };
@@ -246,13 +266,31 @@ const EditModal: React.FC<IProps> = (props: IProps) => {
         {activeStep === 1 && (
           <>
             {segment.segType === SegmentSegmentType.APPLICATION && (
-              <VmsTable matchRules={segment.appSegPol && segment.appSegPol.matchRules ? segment.appSegPol.matchRules : []} onSelectChange={onSelectItem} onSelectAll={onSelectAllItems} />
+              <VmsTable
+                matchRules={segment.appSegPol && segment.appSegPol.matchRules ? segment.appSegPol.matchRules : []}
+                selectedMatchKey={selectedAppMatchKey}
+                onChangeMatchKey={onChangeMatchKey}
+                onSelectChange={onSelectItem}
+                onSelectAll={onSelectAllItems}
+              />
             )}
             {segment.segType === SegmentSegmentType.NETWORK && (
-              <VnetsTable matchRules={segment.networkSegPol && segment.networkSegPol.matchRules ? segment.networkSegPol.matchRules : []} onSelectChange={onSelectItem} onSelectAll={onSelectAllItems} />
+              <VnetsTable
+                matchRules={segment.networkSegPol && segment.networkSegPol.matchRules ? segment.networkSegPol.matchRules : []}
+                selectedMatchKey={selectedVnetworkMatchKey}
+                onChangeMatchKey={onChangeMatchKey}
+                onSelectChange={onSelectItem}
+                onSelectAll={onSelectAllItems}
+              />
             )}
             {segment.segType === SegmentSegmentType.SITE && (
-              <DevicesTable matchRules={segment.siteSegPol && segment.siteSegPol.matchRules ? segment.siteSegPol.matchRules : []} onSelectChange={onSelectItem} onSelectAll={onSelectAllItems} />
+              <DevicesTable
+                matchRules={segment.siteSegPol && segment.siteSegPol.matchRules ? segment.siteSegPol.matchRules : []}
+                selectedMatchKey={selectedSiteMatchKey}
+                onChangeMatchKey={onChangeMatchKey}
+                onSelectChange={onSelectItem}
+                onSelectAll={onSelectAllItems}
+              />
             )}
             {segment.segType === SegmentSegmentType.EXTERNAL && (
               <ExternalStep matchRules={segment.extSegPol && segment.extSegPol.matchRules ? segment.extSegPol.matchRules : []} onUpdateExtRule={onUpdateExtRule} onRemoveExtRule={onRemoveExtRule} />

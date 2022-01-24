@@ -14,6 +14,8 @@ import TagsTableComponent from './TagsTableComponent';
 
 interface Props {
   matchRules: ISegmentNetworkSegMatchRuleP[];
+  selectedMatchKey: SegmentNetworkSegMatchKey;
+  onChangeMatchKey: (type: SegmentSegmentType, v: SegmentNetworkSegMatchKey) => void;
   onSelectChange: (type: SegmentSegmentType, item: ISegmentNetworkSegMatchRuleP) => void;
   onSelectAll: (type: SegmentSegmentType, item: ISegmentNetworkSegMatchRuleP[]) => void;
 }
@@ -35,15 +37,13 @@ const VnetsTable: React.FC<Props> = (props: Props) => {
     pageSize: 50,
   });
 
-  const [selectedVnetworkMatchKey, setSelectedVnetworkMatchKey] = React.useState<SegmentNetworkSegMatchKey>(SegmentNetworkSegMatchKey.KEY_VNETWORK_EXTID);
-
   React.useEffect(() => {
-    if (selectedVnetworkMatchKey === SegmentNetworkSegMatchKey.KEY_VNETWORK_EXTID) {
+    if (props.selectedMatchKey === SegmentNetworkSegMatchKey.KEY_VNETWORK_EXTID) {
       onTryLoadVnets(vnetsPagingData);
     } else {
       onTryLoadTags(tagsPagingData);
     }
-  }, [selectedVnetworkMatchKey]);
+  }, [props.selectedMatchKey]);
 
   React.useEffect(() => {
     if (vnetsRes) {
@@ -60,7 +60,12 @@ const VnetsTable: React.FC<Props> = (props: Props) => {
     if (tagsRes) {
       if (tagsRes.tags && tagsRes.tags.length) {
         setTagsPagingData({ ...tagsPagingData, totalCount: tagsRes.totalCount });
-        setTags(tagsRes.tags);
+        setTags(
+          tagsRes.tags.map((it, index) => {
+            if (it.id) return it;
+            return { ...it, id: `${index}${it.key}${it.value}` };
+          }),
+        );
       } else {
         setTags([]);
       }
@@ -71,7 +76,7 @@ const VnetsTable: React.FC<Props> = (props: Props) => {
     if (type === SegmentNetworkSegMatchKey.KEY_VNETWORK_TAG) {
       const _item = item as INetworkTag;
       const rule: ISegmentNetworkSegMatchRuleP = {
-        matchKey: selectedVnetworkMatchKey,
+        matchKey: props.selectedMatchKey,
         matchValuePrimary: _item.key,
         matchValueSecondary: _item.value,
       };
@@ -80,7 +85,7 @@ const VnetsTable: React.FC<Props> = (props: Props) => {
     }
     const _item = item as INetworkVNetwork;
     const rule: ISegmentNetworkSegMatchRuleP = {
-      matchKey: selectedVnetworkMatchKey,
+      matchKey: props.selectedMatchKey,
       matchValuePrimary: _item.extId,
       matchValueSecondary: null,
     };
@@ -93,7 +98,7 @@ const VnetsTable: React.FC<Props> = (props: Props) => {
       items.forEach(it => {
         let _tag = it as INetworkTag;
         const rule: ISegmentNetworkSegMatchRuleP = {
-          matchKey: selectedVnetworkMatchKey,
+          matchKey: props.selectedMatchKey,
           matchValuePrimary: _tag.key,
           matchValueSecondary: _tag.value,
         };
@@ -104,7 +109,7 @@ const VnetsTable: React.FC<Props> = (props: Props) => {
       items.forEach(it => {
         let _item = it as INetworkVNetwork;
         const rule: ISegmentNetworkSegMatchRuleP = {
-          matchKey: selectedVnetworkMatchKey,
+          matchKey: props.selectedMatchKey,
           matchValuePrimary: _item.extId,
           matchValueSecondary: null,
         };
@@ -144,7 +149,7 @@ const VnetsTable: React.FC<Props> = (props: Props) => {
   };
 
   const onChangeMatchKey = (v: SegmentNetworkSegMatchKey) => {
-    setSelectedVnetworkMatchKey(v);
+    props.onChangeMatchKey(SegmentSegmentType.NETWORK, v);
   };
 
   const onTryLoadVnets = async (pageData: IUiPagingData) => {
@@ -163,7 +168,7 @@ const VnetsTable: React.FC<Props> = (props: Props) => {
         <MatSelect
           id="networkMatchKeyType"
           label="Key"
-          value={selectedVnetworkMatchKey}
+          value={props.selectedMatchKey}
           options={[SegmentNetworkSegMatchKey.KEY_VNETWORK_EXTID, SegmentNetworkSegMatchKey.KEY_VNETWORK_TAG]}
           styles={{ height: '72px', minHeight: '72px', margin: '0' }}
           selectStyles={{ height: '50px', width: '100%' }}
@@ -181,7 +186,7 @@ const VnetsTable: React.FC<Props> = (props: Props) => {
           }}
         />
       </ModalRow>
-      {selectedVnetworkMatchKey === SegmentNetworkSegMatchKey.KEY_VNETWORK_EXTID && (
+      {props.selectedMatchKey === SegmentNetworkSegMatchKey.KEY_VNETWORK_EXTID && (
         <VnetsTableComponent
           data={vnets}
           matchRules={props.matchRules}
@@ -194,7 +199,7 @@ const VnetsTable: React.FC<Props> = (props: Props) => {
           loading={vnetsLoading}
         />
       )}
-      {selectedVnetworkMatchKey === SegmentNetworkSegMatchKey.KEY_VNETWORK_TAG && (
+      {props.selectedMatchKey === SegmentNetworkSegMatchKey.KEY_VNETWORK_TAG && (
         <TagsTableComponent
           data={tags}
           matchRules={props.matchRules}
