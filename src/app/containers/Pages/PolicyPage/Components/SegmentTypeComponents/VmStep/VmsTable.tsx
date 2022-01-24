@@ -102,7 +102,12 @@ const VmsTable: React.FC<Props> = (props: Props) => {
     if (tagsRes) {
       if (tagsRes.tags && tagsRes.tags.length) {
         setTagsPagingData({ ...tagsPagingData, totalCount: tagsRes.totalCount });
-        setTags(tagsRes.tags);
+        setTags(
+          tagsRes.tags.map((it, index) => {
+            if (it.id) return it;
+            return { ...it, id: `${index}${it.key}${it.value}` };
+          }),
+        );
       } else {
         setTags([]);
       }
