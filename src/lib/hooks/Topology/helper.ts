@@ -32,6 +32,7 @@ import { updateTopLevelItems } from './helpers/coordinateHelper';
 import { getBeautifulRowsCount, getRegionChildrenCounts } from './helpers/rowsHelper';
 import { getChunksFromArray } from 'lib/helpers/arrayHelper';
 import { ISegmentSegmentP } from 'lib/api/ApiModels/Policy/Segment';
+import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
 // import { jsonClone } from 'lib/helpers/cloneHelper';
 
 export const createAccounts = (_data: INetworkOrg[]): ITopoAccountNode[] => {
@@ -170,7 +171,7 @@ export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[]
       serviceSegPol: null,
       paasSegPol: null,
       siteSegPol: null,
-      color: 'var(--_primaryBg)',
+      color: NODES_CONSTANTS.SITES.expanded.marker.bgColor,
     });
     sites.unshift(_defGroup);
     const _arr = getChunksFromArray(devicesInDefaultSegment, DEV_IN_PAGE);
