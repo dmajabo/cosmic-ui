@@ -10,9 +10,13 @@ import { INetworkDevice, INetworkRegion, ITopologyMapData, VendorTypes } from 'l
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
 import { NetworkUsageHealth } from './NetworkUsageHealth';
+import { AxiosError } from 'axios';
+import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 
 interface SitesProps {
   readonly orgMap: ITopologyMapData;
+  readonly orgLoading: boolean;
+  readonly orgError: AxiosError;
 }
 
 const dropdownStyle = {
@@ -48,7 +52,7 @@ const TIME_RANGE_OPTIONS: LookbackSelectOption[] = [
   },
 ];
 
-export const Sites: React.FC<SitesProps> = ({ orgMap }) => {
+export const Sites: React.FC<SitesProps> = ({ orgMap, orgError, orgLoading }) => {
   const classes = MetricsStyles();
   const [devices, setDevices] = useState<INetworkDevice[]>([]);
   const [timeRange, setTimeRange] = useState<LookbackSelectOption>(INITIAL_ANOMALY_TIME_RANGE_VALUE);
@@ -68,9 +72,15 @@ export const Sites: React.FC<SitesProps> = ({ orgMap }) => {
     }
   }, [orgMap]);
 
-  return isEmpty(orgMap.organizations) ? (
+  return orgLoading ? (
     <AbsLoaderWrapper width="100%" height="100%">
       <LoadingIndicator margin="auto" />
+    </AbsLoaderWrapper>
+  ) : orgError ? (
+    <AbsLoaderWrapper width="100%" height="100%">
+      <ErrorMessage fontSize={28} margin="auto">
+        {orgError.message}
+      </ErrorMessage>
     </AbsLoaderWrapper>
   ) : (
     <>
