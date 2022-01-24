@@ -1,4 +1,5 @@
-import { INetworkDevice, INetworkRegion, INetworkVNetwork, INetworkVNetworkPeeringConnection, INetworkWebAcl, INetworkwEdge, ITopologyGroup, VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
+import { ISegmentSegmentP } from 'lib/api/ApiModels/Policy/Segment';
+import { INetworkDevice, INetworkRegion, INetworkVNetwork, INetworkVNetworkPeeringConnection, INetworkWebAcl, INetworkwEdge, VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
 import { AlertSeverity } from 'lib/api/ApiModels/Workflow/apiModel';
 import { IBaseEntity, ICollapsed, ICoord, IFilterOption, ISize, IVisible } from 'lib/models/general';
 
@@ -7,6 +8,24 @@ export const PEER_CONNECTION_IN_ROW = 11;
 export const WEB_ACL_IN_ROW = 11;
 export const DEV_IN_PAGE = 60;
 export const DEV_IN_ROW = 12;
+export const DEFAULT_GROUP_ID = 'default_group_id';
+
+export interface IPanelBar<T> {
+  show: boolean;
+  type: T;
+  dataItem?: any;
+}
+
+export enum TopologyPanelTypes {
+  ENTITIES = 'entities',
+  GROUPS = 'groups',
+  SEGMENTS = 'segments',
+  FILTERS = 'filters',
+  VPC = 'Vpc',
+  Device = ' device',
+  Wedge = 'wedge',
+  WebAcl = 'webAcl',
+}
 
 export enum TopoNodeTypes {
   ACCOUNT = 'account',
@@ -40,11 +59,12 @@ export interface IMappedNode extends IOrganizationNode, IVisible {
   uiId: string;
 }
 
-export interface IFilteredNetworkDevice extends INetworkDevice, IOrganizationNode {}
-
-export interface IDeviceNode extends IFilteredNetworkDevice, IMappedNode, ICoord {
+export interface IDeviceNode extends INetworkDevice, IOrganizationNode, IMappedNode, ICoord {
   page: number;
   itemsInRow: number;
+  segmentColor: string;
+  nodeCiscoColor: string;
+  nodeMerakiColor: string;
 }
 
 export interface INetworkVNetworkPeeringConnectionNode extends INetworkVNetworkPeeringConnection, IOrganizationNode, IMappedNode, ICoord {
@@ -53,6 +73,9 @@ export interface INetworkVNetworkPeeringConnectionNode extends INetworkVNetworkP
 
 export interface INetworkVNetNode extends INetworkVNetwork, IOrganizationNode, IMappedNode, ICoord {
   itemsInRow: number;
+  segmentColor: string;
+  segmentName: string;
+  nodeIconColor: string;
 }
 
 export interface INetworkWebAclNode extends INetworkWebAcl, IOrganizationNode, IMappedNode, ICoord {
@@ -96,7 +119,7 @@ export interface ITopoAccountNode extends ICoord, ICollapsed, IVisible {
 }
 
 export interface ITopoSitesNode extends ICoord, ICollapsed, IVisible {
-  dataItem: ITopologyGroup;
+  dataItem: ISegmentSegmentP;
   uiId: string;
   type: TopoNodeTypes;
   expandedSize: ISize;
@@ -117,6 +140,16 @@ export interface ITopoRegionNode extends ICoord, ICollapsed, IVisible {
   peerConnections: INetworkVNetworkPeeringConnectionNode[][];
   webAcls: INetworkWebAclNode[][];
   vnetLinks: ITopoLink<any, any, any, any, any>[];
+  peeringLinks: ITopoLink<any, any, any, any, any>[];
+}
+
+export interface ITempSegment {
+  id: string;
+  dataItem: ISegmentSegmentP;
+  children: IDeviceNode[];
+}
+export interface ITempSegmentObjData {
+  [key: string]: ITempSegment;
 }
 
 export interface ITopologyPreparedMapDataV2 {

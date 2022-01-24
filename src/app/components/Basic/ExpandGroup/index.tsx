@@ -15,7 +15,6 @@ interface Props {
   styles?: Object;
   maxGroupHeight?: string;
   headerChildren?: React.ReactNode;
-  arrowStyles?: Object;
   onToogleExpand: (id: string, state: boolean) => void;
 }
 
@@ -40,13 +39,15 @@ const ExpandGroup: React.FC<Props> = (props: Props) => {
         {props.icon && <IconWrapper styles={{ margin: 'auto 12px auto 0' }} width="20px" height="20px" icon={props.icon} />}
         <GroupLabel>{props.label}</GroupLabel>
         {props.headerChildren && <>{props.headerChildren}</>}
-        {!props.disabled && (
+        {!props.disabled ? (
           <IconWrapper
-            styles={{ margin: '0 0 0 auto', transform: `${expanded ? 'rotate(-180deg)' : 'rotate(0)'}`, transition: `transform ${DEFAULT_TRANSITION}`, ...props.arrowStyles }}
+            styles={{ margin: 'auto 0', transform: `${expanded ? 'rotate(-180deg)' : 'rotate(0)'}`, transition: `transform ${DEFAULT_TRANSITION}` }}
             width="12px"
             height="12px"
             icon={arrowBottomIcon}
           />
+        ) : (
+          <span style={{ width: '12px', height: '12px', display: 'inline-block', margin: 'auto 0' }} />
         )}
       </GroupHeader>
       <Collapse in={expanded} timeout="auto" unmountOnExit>

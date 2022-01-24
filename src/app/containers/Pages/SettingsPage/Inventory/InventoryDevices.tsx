@@ -5,7 +5,6 @@ import Paging from 'app/components/Basic/Paging';
 import { gridAscArrow, gridDescArrow } from 'app/components/SVGIcons/arrows';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { useGet } from 'lib/api/http/useAxiosHook';
-import { ISitesRes } from 'lib/api/ApiModels/Edges/apiModel';
 import { PAGING_DEFAULT_PAGE_SIZE } from 'lib/hooks/Sessions/model';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import LoadingIndicator from 'app/components/Loading';
@@ -15,7 +14,7 @@ import { getSearchedList } from 'lib/helpers/listHelper';
 import { IColumn } from 'lib/models/grid';
 import { paramBuilder } from 'lib/api/ApiModels/paramBuilders';
 import { TopoApi } from 'lib/api/ApiModels/Services/topo';
-import { INetworkDevice } from 'lib/api/ApiModels/Topology/apiModels';
+import { INetworkDevice, ISitesRes } from 'lib/api/ApiModels/Topology/apiModels';
 
 interface Props {
   searchValue: string;

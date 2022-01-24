@@ -1,5 +1,5 @@
 import React from 'react';
-import { INetworkVNetNode, INetworkWebAclNode, ITopoRegionNode } from 'lib/hooks/Topology/models';
+import { INetworkVNetNode, INetworkWebAclNode, ITopoRegionNode, TopologyPanelTypes } from 'lib/hooks/Topology/models';
 import {
   // CollapseExpandState,
   // CollapseExpandState,
@@ -11,7 +11,6 @@ import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataCont
 import RegionCollapsedNode from './RegionCollapsedNode';
 import RegionExpandNode from './RegionExpandNode';
 import TransitionContainer from '../../../TransitionContainer';
-import { TopologyPanelTypes } from 'lib/models/topology';
 import { getRegionChildrenContainersOffsets, IRefionContainersOffsets } from './ExpandNodeContent/helper';
 // import CollapseExpandButton from '../../Containers/CollapseExpandButton';
 // import CollapseExpandButton from '../../Containers/CollapseExpandButton';

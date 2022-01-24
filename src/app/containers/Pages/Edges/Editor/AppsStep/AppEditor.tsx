@@ -6,7 +6,7 @@ import { InputLabel } from 'app/components/Inputs/styles/Label';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import PrimaryButton from 'app/components/Buttons/PrimaryButton';
 import { awsIcon } from 'app/components/SVGIcons/topologyIcons/aws';
-import { INetworkVM, ITopologyGroup, SelectorEvalType } from 'lib/api/ApiModels/Topology/apiModels';
+import { INetworkVM, ITopologyGroup, IVmsRes, SelectorEvalType } from 'lib/api/ApiModels/Topology/apiModels';
 import RadioButton from 'app/components/Inputs/RadioButton';
 import ExpresionWrapper from '../Components/ExpresionWrapper';
 import { ModalContent, ModalFooter, ModalRow } from '../Components/styles';
@@ -14,7 +14,6 @@ import { useGet, usePost, usePut } from 'lib/api/http/useAxiosHook';
 import { IBaseEntity, IObject } from 'lib/models/general';
 import AppsGridWrapper from '../Components/AppsGridWrapper';
 import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
-import { IAppsRes } from 'lib/api/ApiModels/Edges/apiModel';
 import LoadingIndicator from 'app/components/Loading';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import { paramBuilder } from 'lib/api/ApiModels/paramBuilders';
@@ -33,7 +32,7 @@ const AppEditor: React.FC<Props> = (props: Props) => {
   const { response: loadGroupRes, loading, onGet: onLoadGroup } = useGet<ITopologyGroup>();
   const { response: postRes, error: postError, loading: postLoading, onPost } = usePost<ITopologyGroup, IBaseEntity<string>>();
   const { response: postUpdateRes, error: putError, loading: postUpdateLoading, onPut: onUpdate } = usePut<ITopologyGroup, ITopologyGroup>();
-  const { loading: loadingDev, error: errorDev, response: responseApps, onGet: onLoadApps } = useGet<IAppsRes>();
+  const { loading: loadingDev, error: errorDev, response: responseApps, onGet: onLoadApps } = useGet<IVmsRes>();
   const [exprError, setExprError] = React.useState<string | null>(null);
   const [devices, setDevices] = React.useState<INetworkVM[]>([]);
   const [totalCount, setTotalCount] = React.useState<number>(0);
@@ -46,8 +45,8 @@ const AppEditor: React.FC<Props> = (props: Props) => {
   }, []);
 
   React.useEffect(() => {
-    if (responseApps && responseApps.apps) {
-      setDevices(responseApps.apps);
+    if (responseApps && responseApps.vms) {
+      setDevices(responseApps.vms);
       setTotalCount(responseApps.totalCount);
     }
   }, [responseApps]);
@@ -188,7 +187,7 @@ const AppEditor: React.FC<Props> = (props: Props) => {
 
   const onTryLoadApps = async (pageSize: number, currentPage: number) => {
     const _param = paramBuilder(pageSize, currentPage);
-    await onLoadApps(TopoApi.getApps(), userContext.accessToken!, _param);
+    await onLoadApps(TopoApi.getVms(), userContext.accessToken!, _param);
   };
 
   return (

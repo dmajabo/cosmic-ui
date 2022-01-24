@@ -1,7 +1,4 @@
 import React from 'react';
-import { getPossibleKeys } from 'app/components/Map/PanelComponents/GroupsComponent/helpers';
-import { PossibleJoins, PossibleOperators } from 'app/components/Map/PanelComponents/GroupsComponent/model';
-import { jsonClone } from 'lib/helpers/cloneHelper';
 import { ISelectedListItem } from 'lib/models/general';
 import { TopologyGroupTypesAsNumber, TopologyGroupTypesAsString } from 'lib/models/topology';
 import ExpresionComponent from 'app/components/Inputs/ExpresionComponent';
@@ -13,9 +10,9 @@ interface Props {
   onChangeField: (_value: string | null, err?: string) => void;
 }
 const ExpresionWrapper: React.FC<Props> = (props: Props) => {
-  const [possibleKeys] = React.useState<ISelectedListItem<any>[] | null>(props.type ? getPossibleKeys(props.type) : null);
-  const [possibleOperators] = React.useState<ISelectedListItem<any>[] | null>(jsonClone(PossibleOperators));
-  const [possibleJoins] = React.useState<ISelectedListItem<any>[] | null>(jsonClone(PossibleJoins));
+  const [possibleKeys] = React.useState<ISelectedListItem<any>[] | null>(props.type ? [] : null);
+  const [possibleOperators] = React.useState<ISelectedListItem<any>[] | null>(null);
+  const [possibleJoins] = React.useState<ISelectedListItem<any>[] | null>(null);
 
   const onChangeField = (_value: string | null, err?: string) => {
     props.onChangeField(_value, err);

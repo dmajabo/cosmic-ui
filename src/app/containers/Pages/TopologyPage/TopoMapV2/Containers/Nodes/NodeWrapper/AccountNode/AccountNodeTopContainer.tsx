@@ -1,5 +1,5 @@
 import React from 'react';
-import { ITGWNode, ITopoAccountNode } from 'lib/hooks/Topology/models';
+import { ITGWNode, ITopoAccountNode, TopologyPanelTypes } from 'lib/hooks/Topology/models';
 import {
   // CollapseExpandState,
   IPosition,
@@ -11,7 +11,6 @@ import AccountCollapsedNode from './AccountCollapsedNode';
 import { onHoverNode, onUnHoverNode } from '../../../../Graph/helper';
 import AccountExpandNode from './AccountExpandNode';
 import TransitionContainer from '../../../TransitionContainer';
-import { TopologyPanelTypes } from 'lib/models/topology';
 // import CollapseExpandButton from '../../Containers/CollapseExpandButton';
 
 interface Props {

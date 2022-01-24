@@ -22,6 +22,7 @@ export const VmWrapStyles = styled.div`
   align-items: center;
   flex-shrink: 0;
   color: var(--_primaryTextColor);
+  flex-wrap: nowrap;
   cursor: pointer;
   .inheritFill {
     fill: var(--_defaultIconColor);
@@ -47,6 +48,7 @@ export const BalanceWrapStyles = styled.div`
   align-items: center;
   flex-shrink: 0;
   color: var(--_primaryTextColor);
+  flex-wrap: nowrap;
 `;
 
 export const GroupWrapper = styled.div`
@@ -59,6 +61,7 @@ export const GroupWrapper = styled.div`
   flex-shrink: 0;
   border-radius: 6px;
   padding-bottom: 16px;
+  flex-wrap: nowrap;
   ${VmWrapStyles} {
     background: var(--_primaryBg);
     margin: 0 auto 4px auto;
@@ -88,6 +91,7 @@ export const GroupWrapStyles = styled.div`
   align-items: center;
   flex-shrink: 0;
   color: var(--_primaryTextColor);
+  flex-wrap: nowrap;
   cursor: pointer;
   ${Label} {
     max-width: calc(100% - 52px);
@@ -124,6 +128,7 @@ export const InternetGetAwayRow = styled.div<IIGARowProps>`
   align-items: center;
   font-size: 16px;
   line-height: 20px;
+  flex-wrap: nowrap;
 `;
 export const InternetGetAwayLabel = styled.span`
   color: var(--_primaryTextColor);
@@ -131,6 +136,7 @@ export const InternetGetAwayLabel = styled.span`
   margin: auto 4px auto 0;
   flex-shrink: 0;
   font-weight: 500;
+  white-space: nowrap;
 `;
 export const InternetGetAwayValue = styled.div`
   color: var(--_disabledTextColor);

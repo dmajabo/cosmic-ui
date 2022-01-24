@@ -1,4 +1,4 @@
-import { INetworkOrg, INetworkRegion, ITopologyGroup, SelectorEvalType } from 'lib/api/ApiModels/Topology/apiModels';
+import { INetworkOrg, INetworkRegion, INetworkVNetwork, VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
 
 import {
   ITopoRegionNode,
@@ -9,17 +9,30 @@ import {
   WEB_ACL_IN_ROW,
   ITopoSitesNode,
   DEV_IN_PAGE,
-  IFilteredNetworkDevice,
+  IDeviceNode,
   ITopoAccountNode,
   DEV_IN_ROW,
+  DEFAULT_GROUP_ID,
+  ITempSegmentObjData,
 } from './models';
-import { createDeviceNode, createPeerConnectionNode, createSitesNode, createAccountNode, createTopoRegionNode, createVPCNode, createWebAclNode, createWedgeNode } from './helpers/buildNodeHelpers';
-import { DEFAULT_GROUP_ID, TopologyGroupTypesAsNumber, TopologyGroupTypesAsString } from 'lib/models/topology';
+import {
+  createDeviceNode,
+  createPeerConnectionNode,
+  createSitesNode,
+  createAccountNode,
+  createTopoRegionNode,
+  createVnetNode,
+  createWebAclNode,
+  createWedgeNode,
+  updateDeviceNode,
+} from './helpers/buildNodeHelpers';
 import { buildLinks } from './helpers/buildlinkHelper';
 import { capitalizeFirstLetter } from 'lib/helpers/stringHelper';
 import { updateTopLevelItems } from './helpers/coordinateHelper';
 import { getBeautifulRowsCount, getRegionChildrenCounts } from './helpers/rowsHelper';
 import { getChunksFromArray } from 'lib/helpers/arrayHelper';
+import { ISegmentSegmentP } from 'lib/api/ApiModels/Policy/Segment';
+// import { jsonClone } from 'lib/helpers/cloneHelper';
 
 export const createAccounts = (_data: INetworkOrg[]): ITopoAccountNode[] => {
   if (!_data || !_data.length) return [];
@@ -46,26 +59,31 @@ export const createAccounts = (_data: INetworkOrg[]): ITopoAccountNode[] => {
   return _accounts;
 };
 
-export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[], _groups: ITopologyGroup[]): (ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[] => {
+export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[], _segments: ISegmentSegmentP[]): (ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[] => {
   const regions: ITopoRegionNode[] = [];
   let accounts: ITopoAccountNode[] = [];
   // const dataCenters: ITopoNode<any>[] = [];
-  const groups: ITopoSitesNode[] = [];
-  const devicesInGroup: IFilteredNetworkDevice[] = [];
-  const devicesInDefaultGroup: IFilteredNetworkDevice[] = [];
-  console.log(_data);
-  const sitesGroups = _groups.filter(group => group.type === TopologyGroupTypesAsString.BRANCH_NETWORKS || group.type === TopologyGroupTypesAsNumber.BRANCH_NETWORKS);
-  for (let i = 0; i < sitesGroups.length; i++) {
-    // const _orgId = _data && _data.length ? _data[0].id : 'unknown';
-    const _objS: ITopoSitesNode = createSitesNode(sitesGroups[i]);
-    groups.push(_objS);
+  const sites: ITopoSitesNode[] = [];
+  const devicesInDefaultSegment: IDeviceNode[] = [];
+  const segmentTempObject: ITempSegmentObjData = {};
+
+  if (_segments && _segments.length) {
+    _segments.forEach((s, i) => {
+      const _segment: ITopoSitesNode = createSitesNode(s);
+      segmentTempObject[s.id] = { id: s.id, dataItem: s, children: [] };
+      sites.push(_segment);
+    });
   }
+
   if (_data && _data.length) {
     accounts = createAccounts(_data);
     _data.forEach((org, orgI) => {
       if (!org.regions || !org.regions.length) return;
       org.regions.forEach((region, i) => {
-        const _objR: ITopoRegionNode = createTopoRegionNode(region, org.id);
+        let _objR: ITopoRegionNode = null;
+        if (org.vendorType !== VendorTypes.MERAKI) {
+          _objR = createTopoRegionNode(region, org.id);
+        }
         // // for test
         // let customPeerData = region.vNetworkPeeringConnections && region.vNetworkPeeringConnections.length ? [...region.vNetworkPeeringConnections] : [];
         // let customWebData = region.webAcls && region.webAcls.length ? [...region.webAcls] : [];
@@ -91,8 +109,8 @@ export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[]
         const max = getRegionChildrenCounts(region.vnets, region.vNetworkPeeringConnections, region.webAcls);
         if (region.vnets && region.vnets.length && org.vendorType !== 'MERAKI') {
           // const _arr = getChunksFromArray(customVnetData, Math.min(VPCS_IN_ROW, max));
-          const _arr = getChunksFromArray(region.vnets, Math.min(VPCS_IN_ROW, max));
-          _objR.children = _arr.map((row, ri) => row.map((v, i) => createVPCNode(org, row.length, orgI, ri, i, v)));
+          const _arr: INetworkVNetwork[][] = getChunksFromArray(region.vnets, Math.min(VPCS_IN_ROW, max));
+          _objR.children = _arr.map((row, ri) => row.map((v, i) => createVnetNode(org, row.length, orgI, ri, i, v, segmentTempObject)));
         }
         if (region.vNetworkPeeringConnections && region.vNetworkPeeringConnections.length) {
           // const _arr = getChunksFromArray(customPeerData, Math.min(PEER_CONNECTION_IN_ROW, max));
@@ -105,66 +123,84 @@ export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[]
           _objR.webAcls = _arr.map((row, ri) => row.map((v, i) => createWebAclNode(org, row.length, orgI, ri, i, v)));
         }
         if (region.devices && region.devices.length) {
-          // // for test
-          // for (let j = 0; j < 20; j++) {
-          //   // const objE: IDeviceNode = createDeviceNode(org, orgI, region.devices[1], 100 + j);
-          //   devicesInDefaultGroup.push({ ...region.devices[0], name: `${j + 1}`, selectorGroup: DEFAULT_GROUP_ID, orgIndex: orgI, orgId: org.id, vendorType: org.vendorType });
-          //   // devicesInGroup.push(objE);
+          // for test
+          // for (let j = 0; j < 72; j++) {
+          //   const _item1 = jsonClone(region.devices[0]);
+          //   _item1.segmentId = '61eaccce820af10f872a9b16';
+          //   const _device1: IDeviceNode = createDeviceNode(org, orgI, _item1, _segmentsObj);
+          //   segmentTempObject[_device1.segmentId].children.push(_device1);
+          // }
+          // for (let j = 0; j < 45; j++) {
+          //   const _item2 = jsonClone(region.devices[0]);
+          //   _item2.segmentId = '61eacc5d820af10f872a9b15';
+          //   const _device2: IDeviceNode = createDeviceNode(org, orgI, _item2, _segmentsObj);
+          //   segmentTempObject[_device2.segmentId].children.push(_device2);
+          // }
+          // for (let j = 0; j < 300; j++) {
+          //   const _item3 = jsonClone(region.devices[0]);
+          //   _item3.segmentId = '61ea2c4f820af10f872a9b14';
+          //   const _device3: IDeviceNode = createDeviceNode(org, orgI, _item3, _segmentsObj);
+          //   segmentTempObject[_device3.segmentId].children.push(_device3);
           // }
           region.devices.forEach((d, i) => {
-            if (d.selectorGroup) {
-              if (d.selectorGroup === DEFAULT_GROUP_ID) {
-                devicesInDefaultGroup.push({ ...d, orgIndex: orgI, orgId: org.id, vendorType: org.vendorType });
-                return;
-              }
-              devicesInGroup.push({ ...d, orgIndex: orgI, orgId: org.id, vendorType: org.vendorType });
-              return;
+            const _device: IDeviceNode = createDeviceNode(org, orgI, d, segmentTempObject);
+            if (_device.segmentId && segmentTempObject[_device.segmentId]) {
+              segmentTempObject[_device.segmentId].children.push(_device);
+            } else {
+              devicesInDefaultSegment.push(_device);
             }
-            devicesInDefaultGroup.push({ ...d, orgIndex: orgI, orgId: org.id, vendorType: org.vendorType });
           });
         }
-        regions.push(_objR);
+        if (_objR) {
+          regions.push(_objR);
+        }
       });
     });
   }
 
-  const _defaultSitesGroup: ITopoSitesNode = createSitesNode({
-    id: DEFAULT_GROUP_ID,
-    name: 'Default',
-    type: TopologyGroupTypesAsString.BRANCH_NETWORKS,
-    expr: null,
-    evalType: SelectorEvalType.EXPR,
-    extIds: [],
-  });
-  if (devicesInDefaultGroup && devicesInDefaultGroup.length) {
-    const _arr = getChunksFromArray(devicesInDefaultGroup, DEV_IN_PAGE);
+  if (devicesInDefaultSegment && devicesInDefaultSegment.length) {
+    const _defGroup: ITopoSitesNode = createSitesNode({
+      id: DEFAULT_GROUP_ID,
+      name: 'Default',
+      description: '',
+      segType: null,
+      networkSegPol: null,
+      appSegPol: null,
+      extSegPol: null,
+      serviceSegPol: null,
+      paasSegPol: null,
+      siteSegPol: null,
+      color: 'var(--_primaryBg)',
+    });
+    sites.unshift(_defGroup);
+    const _arr = getChunksFromArray(devicesInDefaultSegment, DEV_IN_PAGE);
     const max = _arr && _arr.length ? getBeautifulRowsCount(_arr[0].length, DEV_IN_ROW) : 0;
-    _defaultSitesGroup.children = _arr.map((page, pageI) => {
+    sites[0].children = _arr.map((page, pageI) => {
       const _pageRow = getChunksFromArray(page, max);
-      return _pageRow.map((row, rowI) => row.map((v, i) => createDeviceNode(pageI, rowI, row.length, i, v))).flat();
+      return _pageRow.map((row, rowI) => row.map((v, i) => updateDeviceNode(v, pageI, rowI, row.length, i))).flat();
     });
-    groups.unshift(_defaultSitesGroup);
   }
 
-  if (sitesGroups && sitesGroups.length && devicesInGroup && devicesInGroup.length) {
-    sitesGroups.forEach((gr, index) => {
-      const _siteIndex = groups.findIndex(it => it.dataItem.id === gr.id || it.dataItem.name === gr.name);
-      if (_siteIndex !== -1) {
-        const _devs = devicesInGroup.filter(it => it.selectorGroup === gr.name || it.selectorGroup === gr.id);
-        // const max = getDevicesBeautifulRowsCount(_devs.length, DEV_IN_PAGE);
-
-        const _arr = getChunksFromArray(_devs, DEV_IN_PAGE);
-        const max = _arr && _arr.length ? getBeautifulRowsCount(_arr[0].length, DEV_IN_ROW) : 0;
-        groups[_siteIndex].children = _arr.map((page, pageI) => {
-          const _pageRow = getChunksFromArray(page, max);
-          return _pageRow.map((row, rowI) => row.map((v, i) => createDeviceNode(pageI, rowI, row.length, i, v))).flat();
-        });
+  if (Object.keys(segmentTempObject).length) {
+    Object.keys(segmentTempObject).forEach(key => {
+      const _s = segmentTempObject[key];
+      const index = sites.findIndex(it => it.dataItem.id === _s.id);
+      if (!_s.children || !_s.children.length) {
+        sites.splice(index, 1);
+        return;
       }
+      const _arr = getChunksFromArray(_s.children, DEV_IN_PAGE);
+      const max = _arr && _arr.length ? getBeautifulRowsCount(_arr[0].length, DEV_IN_ROW) : 0;
+      sites[index].children = _arr.map((page, pageI) => {
+        const _pageRow = getChunksFromArray(page, max);
+        return _pageRow.map((row, rowI) => row.map((v, i) => updateDeviceNode(v, pageI, rowI, row.length, i))).flat();
+      });
     });
   }
-  updateTopLevelItems(filter, regions, accounts, groups);
-  buildLinks(regions, accounts, groups);
-  const _nodes: (ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[] = [...accounts, ...regions, ...groups];
+
+  updateTopLevelItems(filter, regions, accounts, sites);
+  buildLinks(regions, accounts, sites);
+  const _nodes: (ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[] = [...accounts, ...regions, ...sites];
   return _nodes;
 };
 

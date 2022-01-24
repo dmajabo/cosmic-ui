@@ -11,9 +11,8 @@ import StructureNode from './StructureNode';
 import { CloseBtn, ContainerHeader, ContainerName, ContainerWrapperStyles, MarkerNode } from './styled';
 import { Rnd } from 'react-rnd';
 import { OverflowStructureMapContainer, StyledMap } from '../../../styles';
-import { ZoomButtonsWrapper } from 'app/components/Map/styles';
-import IconButton from 'app/components/Buttons/IconButton';
-import { zoomCenterIcon } from 'app/components/SVGIcons/zoom';
+// import IconButton from 'app/components/Buttons/IconButton';
+// import { zoomCenterIcon } from 'app/components/SVGIcons/zoom';
 
 interface Props {
   region: ITopoRegionNode;
@@ -26,7 +25,7 @@ const StructureContainer: React.FC<Props> = (props: Props) => {
   const { topology } = useTopologyV2DataContext();
   const [sizeData, setSize] = React.useState<ISize>({ width: '80%', height: '80%' });
   const [positionData, setPosition] = React.useState<IPosition>({ x: 40, y: 40 });
-  const { onZoomInit, onUnsubscribe, onCentered } = useStructureZoom({
+  const { onZoomInit, onUnsubscribe } = useStructureZoom({
     svgId: `structure${props.region.dataItem.id}${TOPOLOGY_IDS.SVG}`,
     rootId: `structure${props.region.dataItem.id}${TOPOLOGY_IDS.G_ROOT}`,
   });
@@ -41,9 +40,9 @@ const StructureContainer: React.FC<Props> = (props: Props) => {
     topology.onToogleRegionStructure(props.region);
   };
 
-  const onCentering = () => {
-    onCentered();
-  };
+  // const onCentering = () => {
+  //   onCentered();
+  // };
 
   return (
     <Rnd
@@ -97,9 +96,9 @@ const StructureContainer: React.FC<Props> = (props: Props) => {
               <StructureNode region={props.region} />
             </GContainer>
           </StyledMap>
-          <ZoomButtonsWrapper>
+          {/* <ZoomButtonsWrapper>
             <IconButton styles={{ width: '40px', height: '40px' }} icon={zoomCenterIcon} title="Center" onClick={onCentering} />
-          </ZoomButtonsWrapper>
+          </ZoomButtonsWrapper> */}
         </OverflowStructureMapContainer>
       </ContainerWrapperStyles>
     </Rnd>

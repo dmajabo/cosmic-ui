@@ -1,22 +1,36 @@
 import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
-import { INetworkNetworkLink, INetworkVpnLink, INetworkVpnLinkState } from 'lib/api/ApiModels/Topology/apiModels';
-import { INetworkVNetNode, ITGWNode, ITopoLink, ITopoAccountNode, ITopoRegionNode, IDeviceNode, TopoLinkTypes, ITopoSitesNode } from '../models';
+import { INetworkNetworkLink, INetworkVNetworkPeeringConnection, INetworkVpnLink, INetworkVpnLinkState } from 'lib/api/ApiModels/Topology/apiModels';
+import { INetworkVNetNode, ITGWNode, ITopoLink, ITopoAccountNode, ITopoRegionNode, IDeviceNode, TopoLinkTypes, ITopoSitesNode, INetworkVNetworkPeeringConnectionNode } from '../models';
 import uuid from 'react-uuid';
 
 export const buildLinks = (regions: ITopoRegionNode[], accounts: ITopoAccountNode[], groups: ITopoSitesNode[]) => {
   if (regions && regions.length) {
     regions.forEach(r => {
-      let links: ITopoLink<ITopoRegionNode, INetworkVNetNode, ITopoAccountNode, ITGWNode, INetworkNetworkLink>[] = [];
-      if (!r.children || !r.children.length) return;
-      r.children.forEach(row => {
-        row.forEach((vnet: INetworkVNetNode) => {
-          if (!vnet.name && !vnet.extId) return;
-          const _links: ITopoLink<ITopoRegionNode, INetworkVNetNode, ITopoAccountNode, ITGWNode, INetworkNetworkLink>[] = buildNetworkNetworkConnection(accounts, r, vnet);
-          if (!_links || !_links.length) return;
-          links = links.concat(_links);
+      if (r.children && r.children.length) {
+        let links: ITopoLink<ITopoRegionNode, INetworkVNetNode, ITopoAccountNode, ITGWNode, INetworkNetworkLink>[] = [];
+        r.children.forEach(row => {
+          row.forEach((vnet: INetworkVNetNode) => {
+            if (!vnet.name && !vnet.extId) return;
+            const _links: ITopoLink<ITopoRegionNode, INetworkVNetNode, ITopoAccountNode, ITGWNode, INetworkNetworkLink>[] = buildNetworkNetworkConnection(accounts, r, vnet);
+            if (!_links || !_links.length) return;
+            links = links.concat(_links);
+          });
         });
-      });
-      r.vnetLinks = links;
+
+        r.vnetLinks = links;
+      }
+      if (r.peerConnections && r.peerConnections.length) {
+        let links: ITopoLink<ITopoRegionNode, INetworkVNetNode, ITopoRegionNode, INetworkVNetNode, INetworkVNetworkPeeringConnection>[] = [];
+        r.peerConnections.forEach(row => {
+          row.forEach((peer: INetworkVNetworkPeeringConnectionNode) => {
+            if (!peer.requesterVnetwork || !peer.requesterVnetwork.extId || !peer.accepterVnetwork || !peer.accepterVnetwork.extId) return;
+            const _links: ITopoLink<ITopoRegionNode, INetworkVNetNode, ITopoRegionNode, INetworkVNetNode, INetworkVNetworkPeeringConnection>[] = buildPeerLinks(peer, r, regions);
+            if (!_links || !_links.length) return;
+            links = links.concat(_links);
+          });
+        });
+        r.peeringLinks = links;
+      }
     });
   }
   if (groups && groups.length) {
@@ -30,6 +44,61 @@ export const buildLinks = (regions: ITopoRegionNode[], accounts: ITopoAccountNod
       });
     });
   }
+};
+
+const buildPeerLinks = (item: INetworkVNetworkPeeringConnectionNode, region: ITopoRegionNode, regions: ITopoRegionNode[]): any => {
+  let _from = getNeededItem(region.children, item.requesterVnetwork.extId);
+  let _to = getNeededItem(region.children, item.accepterVnetwork.extId);
+  let fromRegion = null;
+  let toRegion = null;
+  if (!_from) {
+    const _fromObj = getNeededItemFromNodes(regions, item.requesterVnetwork.extId);
+    _from = _fromObj.node;
+    fromRegion = _fromObj.region;
+  }
+  if (!_to) {
+    const _toObj = getNeededItemFromNodes(regions, item.accepterVnetwork.extId);
+    _to = _toObj.node;
+    toRegion = _toObj.region;
+  }
+  if (!_from || !_to) return [];
+  return [
+    { from: item, to: _from, fromRegion: fromRegion, toRegion: toRegion },
+    { from: item, to: _to, fromRegion: region, toRegion: toRegion },
+  ];
+};
+
+const getNeededItem = (rows: INetworkVNetNode[][], extId: string): INetworkVNetNode => {
+  let item = null;
+  for (let i = 0; i < rows.length; i++) {
+    const el = rows[i].find(it => it.extId === extId);
+    if (el) {
+      item = el;
+      break;
+    }
+  }
+  return item;
+};
+
+const getNeededItemFromNodes = (nodes: ITopoRegionNode[], extId: string) => {
+  let item = null;
+  let region = null;
+  for (let i = 0; i < nodes.length; i++) {
+    if (!nodes[i].children || !nodes[i].children.length) continue;
+    const _region = nodes[i] as ITopoRegionNode;
+    for (let j = 0; j < _region.children.length; j++) {
+      const el = _region.children[j].find(it => it.extId === extId);
+      if (el) {
+        item = el;
+        break;
+      }
+    }
+    if (item) {
+      region = _region;
+      break;
+    }
+  }
+  return { node: item, region: region };
 };
 
 export const build_VPN_Links = (

@@ -1,12 +1,22 @@
 import * as React from 'react';
-import { IPanelBar, TopologyPanelTypes } from 'lib/models/topology';
 import { IPosition, ISelectedListItem, ITimeTypes, TIME_PERIOD } from 'lib/models/general';
 import { jsonClone } from 'lib/helpers/cloneHelper';
 // import { EntityTypes, IEntity } from 'lib/models/entites';
-import { INetworkOrg, ITopologyDataRes, ITopologyGroup } from 'lib/api/ApiModels/Topology/apiModels';
+import { INetworkOrg, ITopologyDataRes } from 'lib/api/ApiModels/Topology/apiModels';
 import { ITimeMinMaxRange } from 'app/components/Inputs/TimeSlider/helpers';
 import { createTopology } from './helper';
-import { FilterEntityOptions, FilterEntityTypes, FilterSeverityOptions, ITopoAccountNode, ITopoRegionNode, ITopoSitesNode, TopoFilterTypes, TopoNodeTypes } from './models';
+import {
+  FilterEntityOptions,
+  FilterEntityTypes,
+  FilterSeverityOptions,
+  IPanelBar,
+  ITopoAccountNode,
+  ITopoRegionNode,
+  ITopoSitesNode,
+  TopoFilterTypes,
+  TopologyPanelTypes,
+  TopoNodeTypes,
+} from './models';
 import { AlertSeverity } from 'lib/api/ApiModels/Workflow/apiModel';
 import { updateRegionHeight } from './helpers/buildNodeHelpers';
 import { ISegmentSegmentP } from 'lib/api/ApiModels/Policy/Segment';
@@ -17,7 +27,6 @@ export interface TopologyV2ContextType {
   selectedTime: Date | null;
   timeRange: ITimeMinMaxRange | null;
   originData: INetworkOrg[] | null;
-  originGroupsData: ITopologyGroup[] | null;
   originSegmentsData: ISegmentSegmentP[] | null;
   searchQuery: string | null;
   selectedType: string | null;
@@ -32,11 +41,9 @@ export interface TopologyV2ContextType {
   onChangeTimePeriod: (_value: ISelectedListItem<ITimeTypes>) => void;
   onSetData: (res: ITopologyDataRes) => void;
 
-  onUpdateSegments: (res: ISegmentSegmentP) => void;
-  onDeleteSegment: (_s: ISegmentSegmentP) => void;
+  // onUpdateSegments: (res: ISegmentSegmentP) => void;
+  // onDeleteSegment: (_s: ISegmentSegmentP) => void;
 
-  onUpdateGroups: (res: ITopologyGroup) => void;
-  onDeleteGroup: (_group: ITopologyGroup) => void;
   onFilterQueryChange: (value: string | null) => void;
   onSetSelectedType: (_value: string | number | null) => void;
 
@@ -52,7 +59,6 @@ export interface TopologyV2ContextType {
 export function useTopologyV2Context(): TopologyV2ContextType {
   const [topoPanel, setTopoPanel] = React.useState<IPanelBar<TopologyPanelTypes>>({ show: false, type: null });
   const [originData, setOriginData] = React.useState<INetworkOrg[] | null>(null);
-  const [originGroupsData, setOriginGroupsData] = React.useState<ITopologyGroup[] | null>(null);
   const [originSegmentsData, setOriginSegmentsData] = React.useState<ISegmentSegmentP[] | null>(null);
   const [nodes, setNodes] = React.useState<(ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[]>([]);
   // const [links, setLinks] = React.useState<ITopoLink<any, any, any, any, any>[]>([]);
@@ -82,7 +88,7 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     web_acls: {
       type: FilterEntityTypes.WEB_ACLS,
       selected: true,
-      label: 'Web Acl',
+      label: 'AWS WAF',
     },
   });
   const [severity, setSeverity] = React.useState<FilterSeverityOptions>({
@@ -109,27 +115,22 @@ export function useTopologyV2Context(): TopologyV2ContextType {
   const [selectedType, setSelectedType] = React.useState<string | null>(null);
   // const linksRef = React.useRef<ITopoLink<any, any, any, any, any>[]>(links);
   const nodesRef = React.useRef<(ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[]>(nodes);
-  const groupsRef = React.useRef<ITopologyGroup[] | null>(originGroupsData);
   const segmentsRef = React.useRef<ISegmentSegmentP[] | null>(originSegmentsData);
   const onSetData = (res: ITopologyDataRes) => {
     if (!res) {
       // setLinks([]);
       setNodes([]);
       setOriginSegmentsData(null);
-      setOriginGroupsData(null);
       setOriginData(null);
-      groupsRef.current = null;
       segmentsRef.current = null;
       nodesRef.current = null;
       // linksRef.current = null;
       return;
     }
     const _orgObj: INetworkOrg[] = res.organizations && res.organizations.organizations ? jsonClone(res.organizations.organizations) : null;
-    const _groupsObj: ITopologyGroup[] = res.groups && res.groups.groups ? jsonClone(res.groups.groups) : [];
     const _segmentsObj: ISegmentSegmentP[] = res.segments && res.segments.segments ? jsonClone(res.segments.segments) : [];
-    groupsRef.current = _groupsObj;
     segmentsRef.current = _segmentsObj;
-    const _data: (ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[] = createTopology(entities, _orgObj, groupsRef.current);
+    const _data: (ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[] = createTopology(entities, _orgObj, segmentsRef.current);
     // if (_data.links) {
     //   setLinks(_data.links);
     //   linksRef.current = _data.links;
@@ -139,7 +140,6 @@ export function useTopologyV2Context(): TopologyV2ContextType {
       nodesRef.current = _data;
     }
     setOriginSegmentsData(segmentsRef.current);
-    setOriginGroupsData(groupsRef.current);
     setOriginData(_orgObj);
   };
 
@@ -166,135 +166,20 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     setSelectedType(_value);
   };
 
-  const onUpdateSegments = (_s: ISegmentSegmentP) => {
-    const _gindex: number = originGroupsData.findIndex(it => it.id === _s.id);
-    if (_gindex === -1) {
-      onCreateSegment(_s);
-      return;
-    }
-    onUpdateSegment(_s, _gindex);
-  };
+  // const onUpdateSegments = (_s: ISegmentSegmentP) => {
+  //   const _gindex: number = originSegmentsData.findIndex(it => it.id === _s.id);
+  //   if (_gindex === -1) {
+  //     onCreateSegment(_s);
+  //     return;
+  //   }
+  //   onUpdateSegment(_s, _gindex);
+  // };
 
-  const onCreateSegment = (_s: ISegmentSegmentP) => {};
+  // const onCreateSegment = (_s: ISegmentSegmentP) => {};
 
-  const onUpdateSegment = (_s: ISegmentSegmentP, gindex: number) => {};
+  // const onUpdateSegment = (_s: ISegmentSegmentP, gindex: number) => {};
 
-  const onDeleteSegment = (_group: ISegmentSegmentP) => {};
-
-  const onUpdateGroups = (_group: ITopologyGroup) => {
-    const _gindex: number = originGroupsData.findIndex(it => it.id === _group.id);
-    if (_gindex === -1) {
-      onCreateGroup(_group);
-      return;
-    }
-    onUpdateGroup(_group, _gindex);
-  };
-
-  const onCreateGroup = (_group: ITopologyGroup) => {
-    // const _nodes: ITopoNode[] = jsonClone(nodesRef.current);
-    // const _groups: ITopologyGroup[] = jsonClone(groupsRef.current);
-    // _groups.push(_group);
-    // if (_group.type === TopologyGroupTypesAsNumber.BRANCH_NETWORKS || _group.type === TopologyGroupTypesAsString.BRANCH_NETWORKS) {
-    //   const _obg = createGroupNode(_group, null, _nodes.length - 1);
-    //   _nodes.push(_obg);
-    // } else {
-    //   const vnets: IVnetNode[] = _nodes.filter(node => node.nodeType === TOPOLOGY_NODE_TYPES.VNET) as IVnetNode[];
-    //   const vnetNodes = vnets && vnets.length && vnets.filter(it => it.applicationGroups && it.applicationGroups.length && it.applicationGroups.find(gr => gr.id === _group.id));
-    //   if (vnetNodes && vnetNodes.length) {
-    //     vnetNodes.forEach(vnet => {
-    //       const i = vnet.applicationGroups.findIndex(g => g.id === _group.id);
-    //       vnet.applicationGroups.splice(i, 1, _group);
-    //     });
-    //   }
-    // }
-    // const _networksGroups = _nodes.filter(it => it.nodeType === TOPOLOGY_NODE_TYPES.NETWORK_GROUP) as INetworkGroupNode[];
-    // setUpGroupsCoord(_networksGroups);
-    // const _sourceObj = NODES_CONSTANTS.NETWORK_GROUP;
-    // const _lData = onUpdateLinkPos(linksRef.current, _nodes, _sourceObj.r, _sourceObj.r, TOPOLOGY_LINKS_TYPES.NETWORK_BRENCH_LINK);
-    // setLinks(_lData);
-    // setNodes(_nodes);
-    // setOriginGroupsData(_groups);
-    // linksRef.current = _lData;
-    // nodesRef.current = _nodes;
-    // groupsRef.current = _groups;
-  };
-
-  const onUpdateGroup = (_group: ITopologyGroup, gindex: number) => {
-    // const _nodes: ITopoNode[] = jsonClone(nodesRef.current);
-    // const _groups: ITopologyGroup[] = jsonClone(groupsRef.current);
-    // _groups.splice(gindex, 1, _group);
-    // if (_group.type === TopologyGroupTypesAsNumber.BRANCH_NETWORKS || _group.type === TopologyGroupTypesAsString.BRANCH_NETWORKS) {
-    //   const _index: number = _nodes.findIndex(it => it.id === _group.id);
-    //   let _obj = null;
-    //   if (_index === -1) {
-    //     _obj = createGroupNode(_group, null, _nodes.length - 1);
-    //     _nodes.push(_obj);
-    //     const _networksGroups = _nodes.filter(it => it.nodeType === TOPOLOGY_NODE_TYPES.NETWORK_GROUP) as INetworkGroupNode[];
-    //     setUpGroupsCoord(_networksGroups);
-    //   } else {
-    //     _obj = createGroupNode(_group, _nodes[_index].vendorType, _index);
-    //     _obj.x = _nodes[_index].x;
-    //     _obj.y = _nodes[_index].y;
-    //     _nodes.splice(_index, 1, _obj);
-    //   }
-    // } else {
-    //   const _index: number = _nodes.findIndex(it => it.id === _group.id);
-    //   if (_index !== -1) {
-    //     _nodes.splice(_index, 1);
-    //   }
-    //   const vnets: IVnetNode[] = _nodes.filter(node => node.nodeType === TOPOLOGY_NODE_TYPES.VNET) as IVnetNode[];
-    //   const vnetNodes = vnets && vnets.length && vnets.filter(it => it.applicationGroups && it.applicationGroups.length && it.applicationGroups.find(gr => gr.id === _group.id));
-    //   if (vnetNodes && vnetNodes.length) {
-    //     vnetNodes.forEach(vnet => {
-    //       const i = vnet.applicationGroups.findIndex(g => g.id === _group.id);
-    //       vnet.applicationGroups.splice(i, 1, _group);
-    //     });
-    //   }
-    // }
-    // setNodes(_nodes);
-    // setOriginGroupsData(_groups);
-    // nodesRef.current = _nodes;
-    // groupsRef.current = _groups;
-  };
-
-  const onDeleteGroup = (_group: ITopologyGroup) => {
-    // let _nodes: ITopoNode[] = jsonClone(nodesRef.current);
-    // const _groups: ITopologyGroup[] = groupsRef.current.filter(it => it.id !== _group.id);
-    // // let _data: (ITGWNode | IVnetNode | IDeviceNode | INetworkGroupNode)[] = _nodes.findIndex(it => it.id === _group.id);
-    // if (_group.type === TopologyGroupTypesAsNumber.BRANCH_NETWORKS || _group.type === TopologyGroupTypesAsString.BRANCH_NETWORKS) {
-    //   const _nodeIndex: number = _nodes.findIndex(it => it.id === _group.id);
-    //   if (_nodeIndex === -1) {
-    //     setOriginGroupsData(_groups);
-    //     groupsRef.current = _groups;
-    //     return;
-    //   }
-    //   const _gr: INetworkGroupNode = _nodes[_nodeIndex] as INetworkGroupNode;
-    //   const _devices = _gr.devices && _gr.devices.length ? _gr.devices.map(dev => ({ ...dev, x: dev.x + _gr.x, y: dev.y + _gr.y, scaleFactor: 1 })) : [];
-    //   _nodes.splice(_nodeIndex, 1);
-    //   _nodes = _nodes.concat(_devices);
-    //   const dataL: ILink[] = jsonClone(linksRef.current);
-    //   const _links: ILink[] = dataL.filter(it => it.targetId !== _gr.uiId && it.sourceId !== _gr.uiId);
-    //   reCreateDeviceLinks(_nodes, _devices, _links);
-    //   setNodes(_nodes);
-    //   setLinks(_links);
-    //   setOriginGroupsData(_groups);
-    //   nodesRef.current = _nodes;
-    //   linksRef.current = _links;
-    //   groupsRef.current = _groups;
-    //   return;
-    // }
-    // const vnets: IVnetNode[] = _nodes.filter(node => node.nodeType === TOPOLOGY_NODE_TYPES.VNET) as IVnetNode[];
-    // const vnetNodes = vnets && vnets.length && vnets.filter(it => it.applicationGroups && it.applicationGroups.length && it.applicationGroups.find(gr => gr.id === _group.id));
-    // if (vnetNodes && vnetNodes.length) {
-    //   vnetNodes.forEach(vnet => {
-    //     vnet.applicationGroups = vnet.applicationGroups.filter(it => it.id !== _group.id);
-    //   });
-    // }
-    // setNodes(_nodes);
-    // setOriginGroupsData(_groups);
-    // groupsRef.current = _groups;
-    // nodesRef.current = _nodes;
-  };
+  // const onDeleteSegment = (_group: ISegmentSegmentP) => {};
 
   const onChangeTimePeriod = (period: ISelectedListItem<ITimeTypes>) => {
     if (period && period.value !== ITimeTypes.DAY && selectedTime) {
@@ -452,7 +337,6 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     selectedTime,
     timeRange,
     originData,
-    originGroupsData,
     originSegmentsData,
     // links,
     nodes,
@@ -468,11 +352,9 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     onFilterQueryChange,
     onSetSelectedType,
     // onSelectEntity,
-    onUpdateSegments,
-    onDeleteSegment,
+    // onUpdateSegments,
+    // onDeleteSegment,
 
-    onUpdateGroups,
-    onDeleteGroup,
     onChangeTimePeriod,
     onChangeTime,
     onUpdateTimeRange,

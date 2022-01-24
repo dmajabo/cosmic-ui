@@ -56,7 +56,7 @@ const WebAclPanel: React.FC<IProps> = (props: IProps) => {
     <>
       <PanelHeader direction="row" align="center">
         <PanelTitle margin="0" maxWidth="calc(100% - 32px)">
-          {props.dataItem.name ? props.dataItem.name : props.dataItem.extId}
+          AWS WAF: {props.dataItem.name ? props.dataItem.name : props.dataItem.extId}
         </PanelTitle>
       </PanelHeader>
       <OverflowContainer>
@@ -70,7 +70,6 @@ const WebAclPanel: React.FC<IProps> = (props: IProps) => {
           label="Network Load Balancers"
           disabled={!netLoaderBalancerList.length}
           styles={{ margin: '0 0 4px 0' }}
-          arrowStyles={!netLoaderBalancerList.length ? null : { margin: '0' }}
         >
           {netLoaderBalancerList && netLoaderBalancerList.length
             ? netLoaderBalancerList.map(it => <BalanceItem key={`netLB${it.id}`} icon={NetLoaderBalancerIcon} dataItem={it} onClick={() => {}} />)
@@ -85,7 +84,6 @@ const WebAclPanel: React.FC<IProps> = (props: IProps) => {
           maxGroupHeight="none"
           icon={AppLoaderBalancerIcon}
           label="Application Load Balancers"
-          arrowStyles={!appLoaderBalancerList.length ? null : { margin: '0' }}
         >
           {appLoaderBalancerList && appLoaderBalancerList.length
             ? appLoaderBalancerList.map(it => <BalanceItem key={`appLB${it.id}`} icon={AppLoaderBalancerIcon} dataItem={it} onClick={() => {}} />)

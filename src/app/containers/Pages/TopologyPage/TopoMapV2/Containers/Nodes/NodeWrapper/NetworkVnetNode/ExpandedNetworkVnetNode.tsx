@@ -2,7 +2,6 @@ import React from 'react';
 import { NODES_CONSTANTS } from '../../../../model';
 import { INetworkVNetNode, ITopoRegionNode } from 'lib/hooks/Topology/models';
 // import { select } from 'd3-selection';
-// import { buildVnetTooltip, removeVnetTooltip } from './tooltipHelper';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 import NodeMarker from '../../Containers/NodeMarker';
 import NodeExpandedName from '../../Containers/NodeName/NodeExpandedName';

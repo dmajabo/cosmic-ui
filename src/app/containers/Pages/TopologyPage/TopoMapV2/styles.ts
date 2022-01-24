@@ -40,9 +40,7 @@ export const ContainerWithFooter = styled.div`
 export const ContainerWithMetrics = styled.div`
   display: flex;
   width: 100%;
-  height: calc(100% - 70px);
-  flex-shrink: 1;
-  flex-grow: 1;
+  height: calc(100% - 60px);
   position: relative;
   .rndTooltip {
     .resize {
@@ -107,6 +105,14 @@ export const ContainerWithMetrics = styled.div`
       border-top-right-radius: 6px;
     }
   }
+`;
+
+export const ContainerWithLegend = styled.div`
+  flex-shrink: 1;
+  flex-grow: 1;
+  max-width: 100%;
+  height: 100%;
+  position: relative;
 `;
 
 interface MapContainerPRops {

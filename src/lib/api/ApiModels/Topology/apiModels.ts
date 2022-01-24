@@ -286,6 +286,7 @@ export interface INetworkVNetwork extends IBaseEntity<string> {
   internetGateway: INnetworkInternetGateway;
   egressOnlyInternetGateway: INetworkEgressOnlyGateway;
   segmentId: string;
+  tags: INetworkTag[];
 }
 
 export interface INetworkWedgePeeringConnection extends IBaseEntity<string> {
@@ -448,6 +449,23 @@ export interface ICloudVNetworkP extends IBaseEntity<string> {
   cidrBlock: string;
   extId: string;
 }
+
+export interface INetworkTagsRes extends IBaseTotalCount {
+  tags: INetworkTag[];
+}
+
 export interface IVnetworksRes extends IBaseTotalCount, IBasePages {
-  vnets: ICloudVNetworkP[];
+  vnets: INetworkVNetwork[];
+}
+
+export interface IVmsRes extends IBaseTotalCount, IBasePages {
+  vms: INetworkVM[];
+}
+
+export interface IWEdgesRes extends IBaseTotalCount, IBasePages {
+  wEdges: INetworkwEdge[];
+}
+
+export interface ISitesRes extends IBaseTotalCount, IBasePages {
+  devices: INetworkDevice[];
 }

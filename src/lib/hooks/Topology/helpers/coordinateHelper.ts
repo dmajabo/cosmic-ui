@@ -4,24 +4,24 @@ import { DirectionType, FilterEntityOptions, IDeviceNode, ITGWNode, ITopoAccount
 import { getCollapseExpandState } from './buildNodeHelpers';
 import { centeredTopLevelItemsInRow, getChildContainerWidth, getChildContainerHeight, getRowsWidth, getStartChildRowOffsetX, getTotalNodeHeight, getTotalNodeWidth } from './sizeHelpers';
 
-export const updateTopLevelItems = (filter: FilterEntityOptions, regions: ITopoRegionNode[], accounts: ITopoAccountNode[], groups: ITopoSitesNode[]) => {
+export const updateTopLevelItems = (filter: FilterEntityOptions, regions: ITopoRegionNode[], accounts: ITopoAccountNode[], sites: ITopoSitesNode[]) => {
   let offsetY = 0;
   let regionSizes: ISize = { width: 0, height: 0 };
   let accountSizes: ISize = { width: 0, height: 0 };
   let sitesSizes: ISize = { width: 0, height: 0 };
   if (regions && regions.length) {
     regionSizes = updateRegionItems(regions, filter);
-    offsetY = offsetY + regionSizes.height + NODES_CONSTANTS.REGION.expanded.spaceY;
+    offsetY = offsetY + regionSizes.height + NODES_CONSTANTS.REGION.spaceY;
   }
   if (accounts && accounts.length) {
     accountSizes = updateAccountItems(accounts, offsetY);
-    offsetY = offsetY + accountSizes.height + NODES_CONSTANTS.ACCOUNT.expanded.spaceY;
+    offsetY = offsetY + accountSizes.height + NODES_CONSTANTS.ACCOUNT.spaceY;
   }
-  if (groups && groups.length) {
-    sitesSizes = updateSitesItems(accounts, groups, offsetY);
+  if (sites && sites.length) {
+    sitesSizes = updateSitesItems(sites, offsetY);
     offsetY += sitesSizes.height;
   }
-  centeredTopLevelNodes(regions, accounts, groups, regionSizes, accountSizes, sitesSizes);
+  centeredTopLevelNodes(regions, accounts, sites, regionSizes, accountSizes, sitesSizes);
 };
 
 const centeredTopLevelNodes = (regions: ITopoRegionNode[], accounts: ITopoAccountNode[], sites: ITopoSitesNode[], regionSize: ISize, accountSize: ISize, sitesSize: ISize) => {
@@ -57,17 +57,17 @@ export const updateRegionItems = (items: ITopoRegionNode[], filter: FilterEntity
     if (a.collapsed) {
       maxNodeHeight = Math.max(maxNodeHeight, a.collapsedSize.height);
       a.x = offsetX;
-      offsetX = i !== items.length - 1 ? a.x + a.collapsedSize.width + NODES_CONSTANTS.REGION.collapse.spaceX : a.x + a.collapsedSize.width;
+      offsetX = i !== items.length - 1 ? a.x + a.collapsedSize.width + NODES_CONSTANTS.REGION.spaceX : a.x + a.collapsedSize.width;
     } else {
       a.x = offsetX;
       maxNodeHeight = Math.max(maxNodeHeight, _height);
-      offsetX = i !== items.length - 1 ? offsetX + a.expandedSize.width + NODES_CONSTANTS.REGION.expanded.spaceX : offsetX + a.expandedSize.width;
+      offsetX = i !== items.length - 1 ? offsetX + a.expandedSize.width + NODES_CONSTANTS.REGION.spaceX : offsetX + a.expandedSize.width;
     }
   });
   return { width: offsetX, height: maxNodeHeight };
 };
 
-export const updateSitesItems = (accounts: ITopoAccountNode[], items: ITopoSitesNode[], offsetY: number): ISize => {
+export const updateSitesItems = (items: ITopoSitesNode[], offsetY: number): ISize => {
   if (!items || !items.length) return { width: 0, height: 0 };
   let offsetX = 0;
   let maxNodeHeight = 0;
@@ -94,11 +94,11 @@ export const updateSitesItems = (accounts: ITopoAccountNode[], items: ITopoSites
     if (gr.collapsed) {
       maxNodeHeight = Math.max(maxNodeHeight, gr.collapsedSize.height);
       gr.x = offsetX;
-      offsetX = i !== items.length - 1 ? gr.x + gr.collapsedSize.width + NODES_CONSTANTS.SITES.collapse.spaceX : gr.x + gr.collapsedSize.width;
+      offsetX = i !== items.length - 1 ? gr.x + gr.collapsedSize.width + NODES_CONSTANTS.SITES.spaceX : gr.x + gr.collapsedSize.width;
     } else {
       gr.x = offsetX;
       maxNodeHeight = Math.max(maxNodeHeight, gr.expandedSize.height);
-      offsetX = i !== items.length - 1 ? offsetX + gr.expandedSize.width + NODES_CONSTANTS.SITES.expanded.spaceX : offsetX + gr.expandedSize.width;
+      offsetX = i !== items.length - 1 ? offsetX + gr.expandedSize.width + NODES_CONSTANTS.SITES.spaceX : offsetX + gr.expandedSize.width;
     }
   });
   return { width: offsetX, height: maxNodeHeight };
@@ -134,11 +134,11 @@ export const updateAccountItems = (items: ITopoAccountNode[], offsetY: number): 
     if (a.collapsed) {
       maxNodeHeight = Math.max(maxNodeHeight, a.collapsedSize.height);
       a.x = offsetX;
-      offsetX = i !== items.length - 1 ? a.x + a.collapsedSize.width + NODES_CONSTANTS.ACCOUNT.collapse.spaceX : a.x + a.collapsedSize.width;
+      offsetX = i !== items.length - 1 ? a.x + a.collapsedSize.width + NODES_CONSTANTS.ACCOUNT.spaceX : a.x + a.collapsedSize.width;
     } else {
       a.x = offsetX;
       maxNodeHeight = Math.max(maxNodeHeight, a.expandedSize.height);
-      offsetX = i !== items.length - 1 ? offsetX + a.expandedSize.width + NODES_CONSTANTS.ACCOUNT.expanded.spaceX : offsetX + a.expandedSize.width;
+      offsetX = i !== items.length - 1 ? offsetX + a.expandedSize.width + NODES_CONSTANTS.ACCOUNT.spaceX : offsetX + a.expandedSize.width;
     }
   });
   return { width: offsetX, height: maxNodeHeight };

@@ -32,6 +32,7 @@ export const SelectStyles = makeStyles(
           '& .MuiSelect-select': {
             height: '100% !important',
             boxSizing: 'border-box',
+            background: 'var(--_primaryBg) !important',
           },
         },
         '&.withLabel': {
@@ -39,10 +40,12 @@ export const SelectStyles = makeStyles(
           '& .MuiSelect-select': {
             height: '100% !important',
             boxSizing: 'border-box',
+            background: 'var(--_primaryBg) !important',
           },
         },
         '& .MuiSelect-select': {
           fontWeight: 500,
+          background: 'var(--_primaryBg) !important',
         },
       },
       select: {

@@ -20,6 +20,9 @@ export function useZoom(props: IProps) {
   const zoom = d3
     .zoom()
     .scaleExtent([ZoomRange.min, ZoomRange.max])
+    .wheelDelta(function wheelDelta(event) {
+      return -event.deltaY * (event.deltaMode === 1 ? 0.01 : event.deltaMode ? 1 : 0.002);
+    })
     .on('zoom', e => zoomed(e))
     .on('end', e => zoomEnd(e));
 
@@ -43,7 +46,7 @@ export function useZoom(props: IProps) {
 
   const onZoomIn = () => {
     const svg = d3.select(`#${svgId}`);
-    let _k = transform.k + 0.01;
+    let _k = transform.k + 0.1;
     if (_k >= ZoomRange.max) {
       _k = ZoomRange.max;
     }
@@ -55,7 +58,7 @@ export function useZoom(props: IProps) {
 
   const onZoomOut = () => {
     const svg = d3.select(`#${svgId}`);
-    let _k = transform.k - 0.01;
+    let _k = transform.k - 0.1;
     if (_k <= ZoomRange.min) {
       _k = ZoomRange.min;
     }

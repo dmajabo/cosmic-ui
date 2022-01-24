@@ -45,3 +45,31 @@ export const EmptyMessageSecondary = styled.div`
   color: var(--_disabledTextColor);
   opacity: 0.8;
 `;
+
+export const RulesContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+`;
+
+export const RuleWrapper = styled.div`
+  background: var(--_appBg);
+  padding: 20px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  flex-shrink: 0;
+  width: 100%;
+  &:last-child {
+    margin-bottom: 0;
+  }
+`;
+
+export const RuleInputsWrapper = styled.div`
+  display: flex;
+  flex-wrap: nowrap;
+  width: 100%;
+  flex-shrink: 0;
+`;

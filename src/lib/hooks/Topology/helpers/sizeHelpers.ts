@@ -16,8 +16,8 @@ export const getStartChildRowOffsetX = (nodeWidth: number, items: number, itemWi
   return nodeWidth / 2 - rowWidth / 2;
 };
 
-export const centeredTopLevelItemsInRow = (items: (ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[], size: ISize, width: number) => {
-  const hvw = width / 2;
+export const centeredTopLevelItemsInRow = (items: (ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[], size: ISize, svgWidth: number) => {
+  const hvw = svgWidth / 2;
   items.forEach(it => {
     it.x = it.x + hvw - size.width / 2;
     const itemh = it.collapsed ? it.collapsedSize.height : it.expandedSize.height;

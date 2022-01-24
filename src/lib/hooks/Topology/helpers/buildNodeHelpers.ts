@@ -1,5 +1,6 @@
+import { INetworkDevice } from './../../../api/ApiModels/Topology/apiModels';
 import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
-import { INetworkOrg, INetworkwEdge, INetworkVNetwork, INetworkVNetworkPeeringConnection, INetworkRegion, INetworkWebAcl, ITopologyGroup } from 'lib/api/ApiModels/Topology/apiModels';
+import { INetworkOrg, INetworkwEdge, INetworkVNetwork, INetworkVNetworkPeeringConnection, INetworkRegion, INetworkWebAcl } from 'lib/api/ApiModels/Topology/apiModels';
 import {
   ITGWNode,
   INetworkVNetNode,
@@ -11,10 +12,11 @@ import {
   INetworkWebAclNode,
   FilterEntityOptions,
   ITopoSitesNode,
-  IFilteredNetworkDevice,
+  ITempSegmentObjData,
 } from '../models';
 import uuid from 'react-uuid';
 import { getChildContainerHeight, getTotalNodeHeight } from './sizeHelpers';
+import { ISegmentSegmentP } from 'lib/api/ApiModels/Policy/Segment';
 
 export const createAccountNode = (_id: string, _name: string, _orgId: string): ITopoAccountNode => {
   const _obj: ITopoAccountNode = {
@@ -42,9 +44,9 @@ export const createAccountNode = (_id: string, _name: string, _orgId: string): I
   return _obj;
 };
 
-export const createSitesNode = (_dataItem: ITopologyGroup): ITopoSitesNode => {
+export const createSitesNode = (item: ISegmentSegmentP): ITopoSitesNode => {
   const _obj: ITopoSitesNode = {
-    dataItem: _dataItem,
+    dataItem: item,
     uiId: uuid(),
     type: TopoNodeTypes.SITES,
     expandedSize: {
@@ -88,6 +90,7 @@ export const createTopoRegionNode = (_dataItem: INetworkRegion, _orgId: string):
     peerConnections: [],
     webAcls: [],
     vnetLinks: [],
+    peeringLinks: [],
   };
   return _obj;
 };
@@ -109,9 +112,18 @@ export const createWedgeNode = (org: INetworkOrg, orgIndex: number, rowIndex: nu
   };
 };
 
-export const createVPCNode = (org: INetworkOrg, itemsInRow: number, orgIndex: number, rowIndex: number, childIndex: number, node: INetworkVNetwork): INetworkVNetNode => {
+export const createVnetNode = (
+  org: INetworkOrg,
+  itemsInRow: number,
+  orgIndex: number,
+  rowIndex: number,
+  childIndex: number,
+  node: INetworkVNetwork,
+  _segmentsObj: ITempSegmentObjData,
+): INetworkVNetNode => {
   const _x = childIndex * (NODES_CONSTANTS.NETWORK_VNET.collapse.width + NODES_CONSTANTS.NETWORK_VNET.collapse.spaceX);
   const _y = rowIndex * (NODES_CONSTANTS.NETWORK_VNET.collapse.height + NODES_CONSTANTS.NETWORK_VNET.collapse.spaceY);
+  const isPresentSegmentColor = !!(_segmentsObj && _segmentsObj[node.segmentId]);
   return {
     ...node,
     visible: true,
@@ -125,6 +137,9 @@ export const createVPCNode = (org: INetworkOrg, itemsInRow: number, orgIndex: nu
     uiId: uuid(),
     vendorType: org.vendorType,
     nodeType: TopoNodeTypes.VNET,
+    segmentColor: isPresentSegmentColor ? _segmentsObj[node.segmentId].dataItem.color : NODES_CONSTANTS.NETWORK_VNET.nodeBgColor,
+    segmentName: isPresentSegmentColor ? _segmentsObj[node.segmentId].dataItem.name : null,
+    nodeIconColor: isPresentSegmentColor ? 'var(--_primaryWhiteColor)' : 'var(--_vnetIconBg)',
   };
 };
 
@@ -173,18 +188,35 @@ export const createWebAclNode = (org: INetworkOrg, itemsInRow: number, orgIndex:
   };
 };
 
-export const createDeviceNode = (page: number, rowIndex: number, itemsInRow: number, childIndex: number, node: IFilteredNetworkDevice): IDeviceNode => {
+export const createDeviceNode = (org: INetworkOrg, orgIndex: number, node: INetworkDevice, _segmentsObj: ITempSegmentObjData): IDeviceNode => {
+  const isPresentSegmentColor = !!(_segmentsObj && _segmentsObj[node.segmentId]);
   return {
     ...node,
     uiId: uuid(),
     visible: true,
+    childIndex: 0,
+    rowIndex: 0,
+    itemsInRow: 0,
+    page: 0,
+    x: 0,
+    y: 0,
+    orgIndex: orgIndex,
+    orgId: org.id,
+    vendorType: org.vendorType,
+    nodeType: TopoNodeTypes.DEVICE,
+    segmentColor: isPresentSegmentColor ? _segmentsObj[node.segmentId].dataItem.color : NODES_CONSTANTS.NETWORK_VNET.nodeBgColor,
+    nodeCiscoColor: isPresentSegmentColor ? 'var(--_primaryWhiteColor)' : NODES_CONSTANTS.DEVICE.nodeCiscoColor,
+    nodeMerakiColor: isPresentSegmentColor ? 'var(--_primaryWhiteColor)' : NODES_CONSTANTS.DEVICE.nodeMerakiColor,
+  };
+};
+
+export const updateDeviceNode = (node: IDeviceNode, page: number, rowIndex: number, itemsInRow: number, childIndex: number): IDeviceNode => {
+  return {
+    ...node,
     childIndex: childIndex,
     rowIndex: rowIndex,
     itemsInRow: itemsInRow,
     page: page,
-    x: 0,
-    y: 0,
-    nodeType: TopoNodeTypes.DEVICE,
   };
 };
 

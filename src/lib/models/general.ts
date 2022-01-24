@@ -93,7 +93,7 @@ export interface IVisible {
 }
 
 export const ZoomRange = {
-  max: 100,
+  max: 10,
   min: 0.01,
 };
 
@@ -149,11 +149,6 @@ export interface IObject<T> {
   [key: string]: T;
 }
 
-export interface ISelectionGridCellValue<F, V> {
-  field: F;
-  value: V;
-}
-
 export interface IFieldValuePair<V> {
   field: string;
   value: V;
@@ -166,7 +161,8 @@ export interface IFilterOption<T> {
   hide?: boolean;
 }
 
-export interface IKeyValuePair<T> {
-  key: string;
-  value: T;
+export interface IStepperStep {
+  label: string;
+  completedFieldName: string;
+  index: number;
 }

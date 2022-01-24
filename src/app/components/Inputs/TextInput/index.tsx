@@ -9,7 +9,7 @@ import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { eyeHideIcon, eyeIcon } from 'app/components/SVGIcons/eyeIcon';
 
 interface IProps {
-  id: string;
+  id?: string;
   name: string;
   type?: 'text' | 'password' | 'email' | 'textarea';
   value: string | null;
@@ -105,6 +105,7 @@ const TextInput: React.FC<IProps> = (props: IProps) => {
           readOnly={props.readOnly}
           disabled={props.disabled}
           placeholder={props.placeholder}
+          style={props.inputStyles}
         />
       )}
       {props.error && (

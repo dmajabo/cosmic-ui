@@ -1,17 +1,19 @@
-import { Popover } from '@mui/material';
-import { DEBOUNCE_TIME } from 'lib/constants/general';
-import useDebounce from 'lib/hooks/useDebounce';
 import React from 'react';
 import { HexColorPicker } from 'react-colorful';
 import { Required } from '../FormTextInput/styles';
 import { InputLabel } from '../styles/Label';
 import { TextInputWrapper } from '../TextInput/styles';
+import ColorSchema from './ColorSchema';
 import { PoperStyles } from './PoperStyles';
-import { PreviewColor, PreviewWrapper } from './styles';
+import { Popover } from '@mui/material';
+import { Paper, PreviewColor, PreviewWrapper } from './styles';
+import { useDebounce } from 'use-debounce';
+import { DEBOUNCE_TIME } from 'lib/constants/general';
 interface Props {
   id: string;
   label?: string;
   color: string;
+  colorSchema?: string[][];
   styles?: Object;
   required?: boolean;
   labelStyles?: Object;
@@ -22,18 +24,16 @@ const ColorPiker: React.FC<Props> = (props: Props) => {
   const [color, setColor] = React.useState<string>(props.color || '');
   const [isOpen, setOpenPopup] = React.useState<boolean>(false);
   const [anchorEl, setAnchorEl] = React.useState<HTMLDivElement | null>(null);
-  const [isTyping, setIsTyping] = React.useState(false);
+  const [debounceColorValue] = useDebounce(color, DEBOUNCE_TIME);
+  const previewRef = React.useRef<HTMLDivElement>(null);
   const poperStyles = PoperStyles();
-
-  const debouncedSearchTerm = useDebounce(color, DEBOUNCE_TIME);
   React.useEffect(() => {
-    if ((debouncedSearchTerm || debouncedSearchTerm === '' || debouncedSearchTerm === null) && isTyping) {
-      setIsTyping(false);
+    if (debounceColorValue) {
       if (props.onChange) {
         props.onChange(color);
       }
     }
-  }, [debouncedSearchTerm]);
+  }, [debounceColorValue]);
 
   React.useEffect(() => {
     if (props.color !== color) {
@@ -42,8 +42,13 @@ const ColorPiker: React.FC<Props> = (props: Props) => {
   }, [props.color]);
 
   const onChange = (v: string) => {
+    previewRef.current.style.background = v;
     setColor(v);
-    setIsTyping(true);
+  };
+
+  const onQuickSelect = (v: string) => {
+    onClose();
+    setColor(v);
   };
 
   const onOpenPopup = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -65,7 +70,7 @@ const ColorPiker: React.FC<Props> = (props: Props) => {
         </InputLabel>
       )}
       <PreviewWrapper onClick={e => onOpenPopup(e)}>
-        <PreviewColor color={color} />
+        <PreviewColor ref={previewRef} style={{ background: debounceColorValue }} />
       </PreviewWrapper>
       <Popover
         id="color-piker"
@@ -82,7 +87,10 @@ const ColorPiker: React.FC<Props> = (props: Props) => {
         }}
         classes={{ root: poperStyles.root, paper: poperStyles.paper }}
       >
-        <HexColorPicker color={props.color} onChange={onChange} />
+        <Paper>
+          <HexColorPicker color={debounceColorValue} onChange={onChange} />
+          {props.colorSchema && props.colorSchema.length ? <ColorSchema id={props.id} schema={props.colorSchema} onClick={onQuickSelect} /> : null}
+        </Paper>
       </Popover>
     </TextInputWrapper>
   );

@@ -4,7 +4,6 @@ import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/mod
 import NodeMarker from '../../Containers/NodeMarker';
 import NodeExpandedName from '../../Containers/NodeName/NodeExpandedName';
 import { INetworkVNetNode, INetworkWebAclNode, ITopoRegionNode } from 'lib/hooks/Topology/models';
-import VnetTooltipContainer from '../../Containers/VnetTooltipContainer';
 import NetworkVnetNode from '../NetworkVnetNode';
 import PeerConnectionNode from '../PeerConnectionNode';
 import WebAclNode from '../WebAclNode';
@@ -12,7 +11,6 @@ import PeerContainer from './ExpandNodeContent/PeerContainer';
 import VpcContainer from './ExpandNodeContent/VpcContainer';
 import WebAclsContainer from './ExpandNodeContent/WebAclsContainer';
 import { IRefionContainersOffsets } from './ExpandNodeContent/helper';
-import { removeVnetTooltip } from '../NetworkVnetNode/tooltipHelper';
 import TransitionContainer from '../../../TransitionContainer';
 import NetworkNetworkLink from '../../../Links/NetworkNetworkLink';
 import { onReiseNode } from '../../../../Graph/helper';
@@ -33,11 +31,6 @@ interface Props {
 }
 
 const RegionExpandNode: React.FC<Props> = (props: Props) => {
-  React.useEffect(() => {
-    removeVnetTooltip(`${NODES_CONSTANTS.REGION.type}${props.region.uiId}`);
-    return () => removeVnetTooltip(`${NODES_CONSTANTS.REGION.type}${props.region.uiId}`);
-  }, []);
-
   const onMouseEnter = () => {
     onReiseNode(`g${NODES_CONSTANTS.REGION.type}${props.region.uiId}`);
   };
@@ -64,18 +57,18 @@ const RegionExpandNode: React.FC<Props> = (props: Props) => {
           height={props.region.expandedSize.height}
           rx={NODES_CONSTANTS.REGION.expanded.borderRadius}
           ry={NODES_CONSTANTS.REGION.expanded.borderRadius}
-          pointerEvents="all"
+          pointerEvents="none"
         />
         <g transform="translate(0, 0)">
           <NodeMarker iconId={NODES_CONSTANTS.REGION.iconId} stylesObj={NODES_CONSTANTS.REGION.expanded.marker} />
           <NodeExpandedName
             name={props.region.dataItem.name}
-            strBtnLabel="Open Region"
+            // strBtnLabel="Open Region"
             nodeWidth={props.region.expandedSize.width}
             markerWidth={NODES_CONSTANTS.REGION.expanded.marker.width}
             height={NODES_CONSTANTS.REGION.expanded.marker.height}
             stylesObj={NODES_CONSTANTS.REGION.labelExpandedStyles}
-            onClick={props.onShowFullStructure}
+            // onClick={props.onShowFullStructure}
           />
         </g>
       </g>
@@ -142,7 +135,6 @@ const RegionExpandNode: React.FC<Props> = (props: Props) => {
             })}
           </>
         </VpcContainer>
-        <VnetTooltipContainer id={`${NODES_CONSTANTS.REGION.type}${props.region.uiId}`} offsetData={props.offsetsData} offsetX={NODES_CONSTANTS.REGION.expanded.contentPadding} />
       </g>
     </>
   );

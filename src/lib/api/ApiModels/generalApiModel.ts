@@ -6,3 +6,5 @@ export interface IBasePages {
   pageOffset: number;
   pageSize: number;
 }
+
+export interface IUiPagingData extends IBaseTotalCount, IBasePages {}

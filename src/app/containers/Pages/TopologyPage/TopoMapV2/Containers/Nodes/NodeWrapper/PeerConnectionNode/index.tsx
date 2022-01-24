@@ -3,9 +3,11 @@ import { ICollapseStyles, ILabelHtmlStyles, NODES_CONSTANTS } from '../../../../
 import { INetworkVNetworkPeeringConnectionNode, ITopoRegionNode } from 'lib/hooks/Topology/models';
 import { buildPeerLinks, IPeerLink } from './helper';
 import PeerConnectionLink from './PeerConnectionLink';
-import * as d3 from 'd3';
+import { select } from 'd3-selection';
 import HtmlNodeLabel from '../../Containers/HtmlNodeLabel';
 import { IRefionContainersOffsets } from '../RegionNode/ExpandNodeContent/helper';
+import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
+import HtmlNodeTooltip from '../../Containers/HtmlNodeTooltip';
 
 interface Props {
   dataItem: ITopoRegionNode;
@@ -21,21 +23,25 @@ interface Props {
 }
 
 const PeerConnectionNode: React.FC<Props> = (props: Props) => {
+  const { topology } = useTopologyV2DataContext();
   const [links, setLinks] = React.useState<IPeerLink[]>([]);
   const nodeRef = React.useRef(null);
 
   React.useEffect(() => {
-    const _links = buildPeerLinks(props.item, props.dataItem);
+    const _links = buildPeerLinks(props.item, props.dataItem, topology.nodes);
     setLinks(_links);
   }, [props.dataItem]);
 
   const onMouseEnter = () => {
-    const _node = d3.select(nodeRef.current);
-    const _regG = d3.select(`#${props.regionUiId}`);
+    const _node = select(nodeRef.current);
+    _node.raise();
+    const _regG = select(`#${props.regionUiId}`);
     _regG.selectAll('.peerConnectionNodeWrapper').attr('opacity', 0.5);
     _regG.selectAll('.webaclNodeWrapper').attr('opacity', 0.5);
     _regG.selectAll('.vnetNodeWrapper').attr('opacity', 0.5);
     _node.attr('opacity', 1).classed('peerConnectionNodeWrapperHover', true);
+    const tooltip = _node.select(`#tooltip${props.item.uiId}`);
+    tooltip.style('display', 'initial');
     links.forEach(link => {
       const _vps = _regG.select(`g[data-id='${link.to.nodeType}${link.to.id}']`);
       _vps.attr('opacity', 1).classed('vpsHoverStroke', true);
@@ -43,12 +49,14 @@ const PeerConnectionNode: React.FC<Props> = (props: Props) => {
   };
 
   const onMouseLeave = () => {
-    const _node = d3.select(nodeRef.current);
-    const _regG = d3.select(`#${props.regionUiId}`);
+    const _node = select(nodeRef.current);
+    const _regG = select(`#${props.regionUiId}`);
     _regG.selectAll('.peerConnectionNodeWrapper').attr('opacity', 1);
     _regG.selectAll('.webaclNodeWrapper').attr('opacity', 1);
     _regG.selectAll('.vnetNodeWrapper').attr('opacity', 1);
     _node.classed('peerConnectionNodeWrapperHover', null);
+    const tooltip = _node.select(`#tooltip${props.item.uiId}`);
+    tooltip.style('display', 'none');
     links.forEach(link => {
       const _vps = _regG.select(`g[data-id='${link.to.nodeType}${link.to.id}']`);
       _vps.classed('vpsHoverStroke', null);
@@ -65,6 +73,7 @@ const PeerConnectionNode: React.FC<Props> = (props: Props) => {
           peerConnectionId={props.item.id}
           from={it.from}
           to={it.to}
+          toRegion={it.toRegion}
           offsetData={props.offsetData}
           vnetCollapseStyles={props.vnetCollapseStyles}
         />
@@ -82,6 +91,7 @@ const PeerConnectionNode: React.FC<Props> = (props: Props) => {
           className="peerConnectionNodeIcon"
         />
         {props.showLabel && <HtmlNodeLabel name={props.item.name || props.item.extId} labelStyles={props.labelStyles} />}
+        <HtmlNodeTooltip id={`tooltip${props.item.uiId}`} name="Peering Connection" x={props.nodeStyles.r * 2 + 5} y={props.nodeStyles.r} minWidth="140px" />
       </g>
     </g>
   );

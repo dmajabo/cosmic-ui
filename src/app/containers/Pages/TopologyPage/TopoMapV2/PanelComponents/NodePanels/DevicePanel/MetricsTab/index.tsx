@@ -1,10 +1,10 @@
 import React from 'react';
-import { IDeviceNode } from 'lib/models/topology';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 import ChartContainer from 'app/components/ChartContainer';
 import { getTimeQueryMetricsParamFromRange } from 'lib/api/ApiModels/Metrics/queryTimeRangeHelper';
 import { IMetrickQueryParam, MetricsKeyTypes } from 'lib/api/ApiModels/Metrics/apiModel';
 import { isEqual } from 'lodash';
+import { IDeviceNode } from 'lib/hooks/Topology/models';
 interface IProps {
   dataItem: IDeviceNode;
 }

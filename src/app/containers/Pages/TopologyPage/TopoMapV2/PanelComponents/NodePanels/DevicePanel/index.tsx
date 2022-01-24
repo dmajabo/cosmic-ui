@@ -1,14 +1,14 @@
 import React from 'react';
 import OverflowContainer from 'app/components/Basic/OverflowContainer/styles';
-import { IDeviceNode } from 'lib/models/topology';
 // import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
-import MetricsTab from './MetricsTab';
+// import MetricsTab from './MetricsTab';
 import { PanelHeader, PanelTabWrapper, PanelTitle } from '../../styles';
 import { Tabs, Tab } from '@mui/material';
 import { TabComponentProps } from 'app/components/Tabs/TabComponentProps';
 import TabPanel from 'app/components/Tabs/TabPanel';
 import { TabsStyles } from 'app/components/Tabs/TabsStyles';
 import PolicyTab from './PolicyTab';
+import { IDeviceNode } from 'lib/hooks/Topology/models';
 
 interface IProps {
   dataItem: IDeviceNode;
@@ -16,24 +16,27 @@ interface IProps {
 
 const DevicePanel: React.FC<IProps> = (props: IProps) => {
   const [value, setValue] = React.useState(0);
-  const [policyDisabled, setPolicyDisabled] = React.useState<boolean>(false);
+  // const [policyDisabled, setPolicyDisabled] = React.useState<boolean>(false);
   const classes = TabsStyles();
 
-  React.useEffect(() => {
-    if (props.dataItem && props.dataItem.vnetworks && props.dataItem.vnetworks.length && policyDisabled) {
-      setPolicyDisabled(false);
-    }
-    if (props.dataItem && (!props.dataItem.vnetworks || !props.dataItem.vnetworks.length) && !policyDisabled) {
-      setPolicyDisabled(true);
-      setValue(0);
-    }
-  }, [props.dataItem]);
+  // React.useEffect(() => {
+  //   if (props.dataItem && props.dataItem.vnetworks && props.dataItem.vnetworks.length && policyDisabled) {
+  //     setPolicyDisabled(false);
+  //   }
+  //   if (props.dataItem && (!props.dataItem.vnetworks || !props.dataItem.vnetworks.length) && !policyDisabled) {
+  //     setPolicyDisabled(true);
+  //     // setValue(0);
+  //   }
+  // }, [props.dataItem]);
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
   };
   return (
     <>
+      <PanelHeader direction="column" align="unset">
+        <PanelTitle>Site: {props.dataItem.name ? props.dataItem.name : props.dataItem.extId}</PanelTitle>
+      </PanelHeader>
       <PanelTabWrapper>
         <Tabs
           value={value}
@@ -47,20 +50,16 @@ const DevicePanel: React.FC<IProps> = (props: IProps) => {
             },
           }}
         >
-          <Tab disableRipple label="Metrics" classes={{ selected: classes.tabSelected }} {...TabComponentProps(0)} className={classes.tab} />
-          <Tab disableRipple disabled={policyDisabled} label="Policy" classes={{ selected: classes.tabSelected }} {...TabComponentProps(1)} className={classes.tab} />
+          {/* <Tab disableRipple label="Metrics" classes={{ selected: classes.tabSelected }} {...TabComponentProps(0)} className={classes.tab} /> */}
+          <Tab disableRipple label="Policy" classes={{ selected: classes.tabSelected }} {...TabComponentProps(0)} className={classes.tab} />
         </Tabs>
       </PanelTabWrapper>
-      <PanelHeader direction="column" align="unset">
-        <PanelTitle>{props.dataItem.name ? props.dataItem.name : props.dataItem.extId}</PanelTitle>
-      </PanelHeader>
+
       <OverflowContainer>
         <TabPanel value={value} index={0}>
-          <MetricsTab dataItem={props.dataItem} />
-        </TabPanel>
-        <TabPanel value={value} index={1}>
           <PolicyTab dataItem={props.dataItem} />
         </TabPanel>
+        {/* <MetricsTab dataItem={props.dataItem} /> */}
       </OverflowContainer>
     </>
   );

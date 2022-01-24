@@ -1,9 +1,8 @@
 import React from 'react';
-import { ITGWNode, ITopoAccountNode } from 'lib/hooks/Topology/models';
+import { ITGWNode, ITopoAccountNode, TopologyPanelTypes } from 'lib/hooks/Topology/models';
 import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 // import { onHoverNode, onUnHoverNode } from '../../../../Graph/helper';
-import { TopologyPanelTypes } from 'lib/models/topology';
 import TransitionContainer from '../../../TransitionContainer';
 import NetworkWEdgeNode from '../NetworkWEdgeNode';
 
