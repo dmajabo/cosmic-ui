@@ -2,7 +2,9 @@ import React from 'react';
 import { NODES_CONSTANTS } from '../../../../model';
 import { ITGWNode } from 'lib/hooks/Topology/models';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
-
+import HtmlNodeTooltip from '../../Containers/HtmlNodeTooltip';
+import HtmlNodeLabel from '../../Containers/HtmlNodeLabel';
+import { select } from 'd3-selection';
 interface Props {
   item: ITGWNode;
   onClick: (item: ITGWNode) => void;
@@ -10,6 +12,7 @@ interface Props {
 
 const NetworkWEdgeNode: React.FC<Props> = (props: Props) => {
   const { topology } = useTopologyV2DataContext();
+  const nodeRef = React.useRef(null);
   const [isNodeSelected, setIsNodeSelected] = React.useState<boolean>(false);
 
   React.useEffect(() => {
@@ -23,8 +26,25 @@ const NetworkWEdgeNode: React.FC<Props> = (props: Props) => {
   const onClick = () => {
     props.onClick(props.item);
   };
+
+  const onMouseEnter = () => {
+    const _node = select(nodeRef.current);
+    _node.raise();
+    const tooltip = _node.select(`#tooltip${props.item.uiId}`);
+    tooltip.style('display', 'initial');
+  };
+
+  const onMouseLeave = () => {
+    const _node = select(nodeRef.current);
+    const tooltip = _node.select(`#tooltip${props.item.uiId}`);
+    tooltip.style('display', 'none');
+  };
+
   return (
     <g
+      ref={nodeRef}
+      onMouseOver={onMouseEnter}
+      onMouseOut={onMouseLeave}
       transform={`translate(${props.item.x}, ${props.item.y})`}
       id={`${props.item.nodeType}${props.item.id}`}
       onClick={onClick}
@@ -49,38 +69,8 @@ const NetworkWEdgeNode: React.FC<Props> = (props: Props) => {
           fill="white"
         />
       </svg>
-      <foreignObject
-        width={NODES_CONSTANTS.NETWORK_WEDGE.labelHtmlStyles.width}
-        height={NODES_CONSTANTS.NETWORK_WEDGE.labelHtmlStyles.height}
-        x={NODES_CONSTANTS.NETWORK_WEDGE.labelHtmlStyles.x}
-        y={NODES_CONSTANTS.NETWORK_WEDGE.labelHtmlStyles.y}
-      >
-        <div
-          style={{
-            display: 'flex',
-            width: '100%',
-            height: '100%',
-          }}
-          title={props.item.name}
-        >
-          <span
-            style={{
-              display: 'inline-block',
-              maxWidth: '100%',
-              margin: 'auto',
-              color: NODES_CONSTANTS.NETWORK_WEDGE.labelHtmlStyles.fill,
-              fontSize: NODES_CONSTANTS.NETWORK_WEDGE.labelHtmlStyles.fontSize + 'px',
-              textAlign: 'center',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              fontWeight: 500,
-            }}
-          >
-            {props.item.name}
-          </span>
-        </div>
-      </foreignObject>
+      <HtmlNodeLabel name={props.item.name} labelStyles={NODES_CONSTANTS.NETWORK_WEDGE.labelHtmlStyles} />
+      <HtmlNodeTooltip id={`tooltip${props.item.uiId}`} name="TGW" x={NODES_CONSTANTS.NETWORK_WEDGE.collapse.r * 2 + 5} y={NODES_CONSTANTS.NETWORK_WEDGE.collapse.r} minWidth="60px" />
     </g>
   );
 };
