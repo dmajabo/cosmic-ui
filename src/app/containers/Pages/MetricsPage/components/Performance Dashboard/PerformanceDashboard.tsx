@@ -13,9 +13,13 @@ import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import { GetDevicesString, GetSelectedOrganization } from './filterFunctions';
 import { CreateSLATest } from './CreateSLATest';
 import './Toastify.css';
-import { INetworkOrg } from 'lib/api/ApiModels/Topology/apiModels';
+import { INetworkOrg, ITopologyMapData, VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
 
-export const PerformanceDashboard: React.FC = () => {
+interface PerformanceDashboardProps {
+  readonly orgMap: ITopologyMapData;
+}
+
+export const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ orgMap }) => {
   const classes = PerformanceDashboardStyles();
 
   const userContext = useContext<UserContextState>(UserContext);
@@ -26,19 +30,15 @@ export const PerformanceDashboard: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const getOrganizations = async () => {
-      const responseData = await apiClient.getOrganizations();
-      if (!isEmpty(responseData)) {
-        const merakiOrganizations = responseData.organizations.filter(organization => organization.vendorType === 'MERAKI');
-        const awsOrganizations = responseData.organizations.filter(organization => organization.vendorType === 'AWS');
-        setMerakiOrganizations(merakiOrganizations);
-        setAwsOrganizations(awsOrganizations);
-      } else {
-        setIsLoading(false);
-      }
-    };
-    getOrganizations();
-  }, []);
+    if (!isEmpty(orgMap)) {
+      const merakiOrganizations = orgMap.organizations.filter(organization => organization.vendorType === VendorTypes.MERAKI);
+      const awsOrganizations = orgMap.organizations.filter(organization => organization.vendorType === VendorTypes.AWS);
+      setMerakiOrganizations(merakiOrganizations);
+      setAwsOrganizations(awsOrganizations);
+    } else {
+      setIsLoading(false);
+    }
+  }, [orgMap]);
 
   const getSLATests = async () => {
     const responseData = await apiClient.getSLATests();
