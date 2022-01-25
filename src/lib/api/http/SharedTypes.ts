@@ -1,3 +1,4 @@
+import { MetricsData } from 'app/containers/Pages/TopologyPage/TopologyMetrics/SharedTypes';
 import { SeverityLevel } from './utils';
 
 interface Device {
@@ -483,4 +484,22 @@ interface Metrics {
 export interface GetMetricsResponse {
   readonly name: string;
   readonly metrics: Metrics;
+}
+
+export interface TransitMetricsParams {
+  readonly type: string;
+  readonly metricNames: string[];
+  readonly startTime: string;
+  readonly endTime: string;
+}
+
+interface TelemetryMetrics {
+  readonly key: string;
+  readonly resourceId: string;
+  readonly ts: MetricsData[];
+}
+
+export interface GetTelemetryMetricsResponse {
+  readonly type: string;
+  readonly metrics: TelemetryMetrics[];
 }
