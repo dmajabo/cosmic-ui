@@ -79,7 +79,7 @@ const NetworkVnetNode: React.FC<Props> = (props: Props) => {
         className="vpsBgIcon transitionStyle"
       />
       {/* <NodeCounter pointerEvents="none" label={`${props.item.vms && props.item.vms.length ? props.item.vms.length : 0}`} stylesObj={NODES_CONSTANTS.NETWORK_VNET.countStyles} /> */}
-      <HtmlNodeLabel name={props.item.name} labelStyles={NODES_CONSTANTS.NETWORK_VNET.labelHtmlStyles} />
+      <HtmlNodeLabel name={props.item.name || props.item.extId} labelStyles={NODES_CONSTANTS.NETWORK_VNET.labelHtmlStyles} />
       <HtmlVpcTooltip id={`tooltip${props.item.uiId}`} x={NODES_CONSTANTS.NETWORK_VNET.collapse.r * 2 + 5} y="0" minWidth="328px" vnet={props.item} region={props.region} />
     </g>
   );

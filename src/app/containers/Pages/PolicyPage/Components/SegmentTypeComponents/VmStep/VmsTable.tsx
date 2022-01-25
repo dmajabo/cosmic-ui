@@ -14,11 +14,13 @@ import MatSelect from 'app/components/Inputs/MatSelect';
 import { ValueLabel } from 'app/components/Inputs/MatSelect/styles';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { useGet } from 'lib/api/http/useAxiosHook';
-import { paramBuilder } from 'lib/api/ApiModels/paramBuilders';
+import { paramBuilder, TAGS_RESOURCE_TYPE } from 'lib/api/ApiModels/paramBuilders';
 import { TopoApi } from 'lib/api/ApiModels/Services/topo';
 
 interface Props {
   matchRules: ISegmentApplicationSegMatchRuleP[];
+  selectedMatchKey: SegmentApplicationSegMatchKey;
+  onChangeMatchKey: (type: SegmentSegmentType, v: SegmentApplicationSegMatchKey) => void;
   onSelectChange: (type: SegmentSegmentType, item: ISegmentApplicationSegMatchRuleP) => void;
   onSelectAll: (type: SegmentSegmentType, rules: ISegmentApplicationSegMatchRuleP[]) => void;
 }
@@ -70,7 +72,6 @@ const VmsTable: React.FC<Props> = (props: Props) => {
     },
   ]);
   const gridStyles = GridStyles();
-  const [selectedAppMatchKey, setSelectedAppMatchKey] = React.useState<SegmentApplicationSegMatchKey>(SegmentApplicationSegMatchKey.APP_SEG_MATCH_KEY_TAG);
   const [selectionModel, setSelectionModel] = React.useState<GridSelectionModel>([]);
   const [tags, setTags] = React.useState<INetworkTag[]>([]);
   const [tagsPagingData, setTagsPagingData] = React.useState<IUiPagingData>({
@@ -81,7 +82,7 @@ const VmsTable: React.FC<Props> = (props: Props) => {
 
   React.useEffect(() => {
     onTryLoadTags(tagsPagingData);
-  }, [selectedAppMatchKey]);
+  }, [props.selectedMatchKey]);
 
   React.useEffect(() => {
     const _ids = [];
@@ -101,7 +102,12 @@ const VmsTable: React.FC<Props> = (props: Props) => {
     if (tagsRes) {
       if (tagsRes.tags && tagsRes.tags.length) {
         setTagsPagingData({ ...tagsPagingData, totalCount: tagsRes.totalCount });
-        setTags(tagsRes.tags);
+        setTags(
+          tagsRes.tags.map((it, index) => {
+            if (it.id) return it;
+            return { ...it, id: `${index}${it.key}${it.value}` };
+          }),
+        );
       } else {
         setTags([]);
       }
@@ -111,7 +117,7 @@ const VmsTable: React.FC<Props> = (props: Props) => {
   const onRowClick = (params: GridRowParams) => {
     const _item = params.row as INetworkTag;
     const rule: ISegmentApplicationSegMatchRuleP = {
-      matchKey: selectedAppMatchKey,
+      matchKey: props.selectedMatchKey,
       matchValuePrimary: _item.key,
       matchValueSecondary: _item.value,
     };
@@ -123,7 +129,7 @@ const VmsTable: React.FC<Props> = (props: Props) => {
       const _items: ISegmentApplicationSegMatchRuleP[] = [];
       tags.forEach(it => {
         const rule: ISegmentApplicationSegMatchRuleP = {
-          matchKey: selectedAppMatchKey,
+          matchKey: props.selectedMatchKey,
           matchValuePrimary: it.key,
           matchValueSecondary: it.value,
         };
@@ -147,8 +153,12 @@ const VmsTable: React.FC<Props> = (props: Props) => {
     onTryLoadTags(_obj);
   };
 
+  const onChangeMatchKey = (v: SegmentApplicationSegMatchKey) => {
+    props.onChangeMatchKey(SegmentSegmentType.APPLICATION, v);
+  };
+
   const onTryLoadTags = async (pageData: IUiPagingData) => {
-    const _param = paramBuilder(pageData.pageSize, pageData.pageOffset);
+    const _param = paramBuilder(pageData.pageSize, pageData.pageOffset, null, TAGS_RESOURCE_TYPE.Vm);
     await onGetTags(TopoApi.getTags(), userContext.accessToken!, _param);
   };
 
@@ -158,12 +168,12 @@ const VmsTable: React.FC<Props> = (props: Props) => {
         <MatSelect
           id="appMatchKeyType"
           label="Key"
-          value={selectedAppMatchKey}
+          value={props.selectedMatchKey}
           options={[SegmentApplicationSegMatchKey.APP_SEG_MATCH_KEY_TAG]}
           styles={{ height: '72px', minHeight: '72px', margin: '0' }}
           selectStyles={{ height: '50px', width: '100%' }}
           selectClaassName="withLabel"
-          onChange={v => setSelectedAppMatchKey(v)}
+          onChange={onChangeMatchKey}
           readOnly
           renderValue={(v: SegmentApplicationSegMatchKey) => {
             if (v === SegmentApplicationSegMatchKey.APP_SEG_MATCH_KEY_TAG) return <ValueLabel>Tag</ValueLabel>;

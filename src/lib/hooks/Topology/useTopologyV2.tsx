@@ -6,11 +6,16 @@ import { INetworkOrg, ITopologyDataRes } from 'lib/api/ApiModels/Topology/apiMod
 import { ITimeMinMaxRange } from 'app/components/Inputs/TimeSlider/helpers';
 import { createTopology } from './helper';
 import {
+  DEFAULT_ENTITY_OPTIONS,
+  DEFAULT_SEVERITY_OPTIONS,
   FilterEntityOptions,
   FilterEntityTypes,
   FilterSeverityOptions,
   IPanelBar,
+  ITempSegmentObjData,
   ITopoAccountNode,
+  ITopoLink,
+  ITopologyPreparedMapDataV2,
   ITopoRegionNode,
   ITopoSitesNode,
   TopoFilterTypes,
@@ -20,6 +25,8 @@ import {
 import { AlertSeverity } from 'lib/api/ApiModels/Workflow/apiModel';
 import { updateRegionHeight } from './helpers/buildNodeHelpers';
 import { ISegmentSegmentP } from 'lib/api/ApiModels/Policy/Segment';
+import { OKULIS_LOCAL_STORAGE_KEYS } from 'lib/api/http/utils';
+import { getSessionStoragePreferences, StoragePreferenceKeys, updateSessionStoragePreference } from 'lib/helpers/localStorageHelpers';
 
 export interface TopologyV2ContextType {
   topoPanel: IPanelBar<TopologyPanelTypes>;
@@ -30,7 +37,8 @@ export interface TopologyV2ContextType {
   originSegmentsData: ISegmentSegmentP[] | null;
   searchQuery: string | null;
   selectedType: string | null;
-  // links: ITopoLink<any, any, any, any, any>[];
+  links: ITopoLink<any, any, any, any, any>[];
+  segments: ITempSegmentObjData;
   nodes: (ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[];
   selectedNode: any;
   onUnselectNode: () => void;
@@ -61,85 +69,62 @@ export function useTopologyV2Context(): TopologyV2ContextType {
   const [originData, setOriginData] = React.useState<INetworkOrg[] | null>(null);
   const [originSegmentsData, setOriginSegmentsData] = React.useState<ISegmentSegmentP[] | null>(null);
   const [nodes, setNodes] = React.useState<(ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[]>([]);
-  // const [links, setLinks] = React.useState<ITopoLink<any, any, any, any, any>[]>([]);
+  const [links, setLinks] = React.useState<ITopoLink<any, any, any, any, any>[]>([]);
+  const [segments, setSegments] = React.useState<ITempSegmentObjData>(null);
   const [selectedNode, setSelectedNode] = React.useState<ITopoAccountNode | ITopoSitesNode | ITopoRegionNode>(null);
   const [regionStructures, setRegionStructures] = React.useState<ITopoRegionNode[]>([]);
-  const [entities, setEntities] = React.useState<FilterEntityOptions>({
-    sites: {
-      type: FilterEntityTypes.SITES,
-      selected: true,
-      label: 'Site',
-    },
-    transit: {
-      type: FilterEntityTypes.TRANSIT,
-      selected: true,
-      label: 'Transit',
-    },
-    vpc: {
-      type: FilterEntityTypes.VPC,
-      selected: true,
-      label: 'VPC',
-    },
-    peer_connections: {
-      type: FilterEntityTypes.PEERING_CONNECTIONS,
-      selected: true,
-      label: 'Peering Connection',
-    },
-    web_acls: {
-      type: FilterEntityTypes.WEB_ACLS,
-      selected: true,
-      label: 'AWS WAF',
-    },
-  });
-  const [severity, setSeverity] = React.useState<FilterSeverityOptions>({
-    LOW: {
-      type: AlertSeverity.LOW,
-      selected: true,
-      label: 'Low',
-    },
-    MEDIUM: {
-      type: AlertSeverity.MEDIUM,
-      selected: true,
-      label: 'Medium',
-    },
-    HIGH: {
-      type: AlertSeverity.HIGH,
-      selected: true,
-      label: 'High',
-    },
-  });
+  const [entities, setEntities] = React.useState<FilterEntityOptions>(jsonClone(DEFAULT_ENTITY_OPTIONS));
+  const [severity, setSeverity] = React.useState<FilterSeverityOptions>(jsonClone(DEFAULT_SEVERITY_OPTIONS));
   const [selectedPeriod, setSelectedPeriod] = React.useState<ISelectedListItem<ITimeTypes>>(TIME_PERIOD[0]);
   const [selectedTime, setSelectedTime] = React.useState<Date | null>(null);
   const [timeRange, setTimeRange] = React.useState<ITimeMinMaxRange | null>(null);
   const [searchQuery, setSearchQuery] = React.useState<string | null>(null);
   const [selectedType, setSelectedType] = React.useState<string | null>(null);
-  // const linksRef = React.useRef<ITopoLink<any, any, any, any, any>[]>(links);
+  const linksRef = React.useRef<ITopoLink<any, any, any, any, any>[]>(links);
+  const segmentsRef = React.useRef<ITempSegmentObjData>(segments);
   const nodesRef = React.useRef<(ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[]>(nodes);
-  const segmentsRef = React.useRef<ISegmentSegmentP[] | null>(originSegmentsData);
+
+  React.useEffect(() => {
+    const _preference = getSessionStoragePreferences(OKULIS_LOCAL_STORAGE_KEYS.OKULIS_PREFERENCE, [
+      StoragePreferenceKeys.TOPOLOGY_FILTER_ENTITY_OPTIONS,
+      StoragePreferenceKeys.TOPOLOGY_FILTER_SEVERITY_OPTIONS,
+    ]);
+    if (_preference) {
+      if (_preference[StoragePreferenceKeys.TOPOLOGY_FILTER_ENTITY_OPTIONS]) {
+        const _entities = _preference[StoragePreferenceKeys.TOPOLOGY_FILTER_ENTITY_OPTIONS];
+        setEntities(_entities);
+      }
+      if (_preference[StoragePreferenceKeys.TOPOLOGY_FILTER_SEVERITY_OPTIONS]) {
+        const _severity = _preference[StoragePreferenceKeys.TOPOLOGY_FILTER_SEVERITY_OPTIONS];
+        setSeverity(_severity);
+      }
+    }
+  }, []);
+
   const onSetData = (res: ITopologyDataRes) => {
     if (!res) {
-      // setLinks([]);
+      setLinks([]);
+      setSegments(null);
       setNodes([]);
       setOriginSegmentsData(null);
       setOriginData(null);
-      segmentsRef.current = null;
       nodesRef.current = null;
-      // linksRef.current = null;
+      linksRef.current = null;
+      segmentsRef.current = null;
       return;
     }
     const _orgObj: INetworkOrg[] = res.organizations && res.organizations.organizations ? jsonClone(res.organizations.organizations) : null;
     const _segmentsObj: ISegmentSegmentP[] = res.segments && res.segments.segments ? jsonClone(res.segments.segments) : [];
-    segmentsRef.current = _segmentsObj;
-    const _data: (ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[] = createTopology(entities, _orgObj, segmentsRef.current);
-    // if (_data.links) {
-    //   setLinks(_data.links);
-    //   linksRef.current = _data.links;
-    // }
+    const _data: ITopologyPreparedMapDataV2 = createTopology(entities, _orgObj, _segmentsObj);
     if (_data) {
-      setNodes(_data);
-      nodesRef.current = _data;
+      setLinks(_data.links);
+      setSegments(_data.segments);
+      setNodes(_data.nodes);
+      linksRef.current = _data.links;
+      segmentsRef.current = _data.segments;
+      nodesRef.current = _data.nodes;
     }
-    setOriginSegmentsData(segmentsRef.current);
+    setOriginSegmentsData(_segmentsObj);
     setOriginData(_orgObj);
   };
 
@@ -237,6 +222,7 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     if (groupType === TopoFilterTypes.Entities) {
       const _obj: FilterEntityOptions = jsonClone(entities);
       _obj[type].selected = selected;
+      updateSessionStoragePreference(_obj, OKULIS_LOCAL_STORAGE_KEYS.OKULIS_PREFERENCE, StoragePreferenceKeys.TOPOLOGY_FILTER_ENTITY_OPTIONS);
       if (type === FilterEntityTypes.PEERING_CONNECTIONS || type === FilterEntityTypes.WEB_ACLS) {
         // const _links = linksRef.current.slice();
         const _nodes = updateRegionHeight(nodesRef.current, _obj);
@@ -308,8 +294,9 @@ export function useTopologyV2Context(): TopologyV2ContextType {
       return;
     }
     if (groupType === TopoFilterTypes.Severity) {
-      const _obj: FilterSeverityOptions = { ...severity };
+      const _obj: FilterSeverityOptions = jsonClone(severity);
       _obj[type].selected = selected;
+      updateSessionStoragePreference(_obj, OKULIS_LOCAL_STORAGE_KEYS.OKULIS_PREFERENCE, StoragePreferenceKeys.TOPOLOGY_FILTER_SEVERITY_OPTIONS);
       setSeverity(_obj);
       return;
     }
@@ -338,8 +325,9 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     timeRange,
     originData,
     originSegmentsData,
-    // links,
+    links,
     nodes,
+    segments,
     selectedNode,
     searchQuery,
     selectedType,

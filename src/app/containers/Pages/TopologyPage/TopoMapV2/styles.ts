@@ -190,7 +190,6 @@ export const StyledMap = styled.svg`
       stroke: var(--_highlightColor);
     }
     .wedgeBg {
-      fill: var(--_highlightColor);
       transition-property: fill;
       transition: 0.2s linear;
     }

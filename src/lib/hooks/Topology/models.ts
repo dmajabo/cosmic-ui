@@ -155,11 +155,13 @@ export interface ITempSegmentObjData {
 export interface ITopologyPreparedMapDataV2 {
   nodes: (ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[];
   links: ITopoLink<any, any, any, any, any>[];
+  segments: ITempSegmentObjData;
 }
 
 export enum TopoFilterTypes {
   Entities = 'Entities',
   Severity = 'Severity',
+  Regions = 'Regions',
 }
 
 export enum FilterEntityTypes {
@@ -183,3 +185,49 @@ export interface FilterSeverityOptions {
   MEDIUM: IFilterOption<AlertSeverity>;
   HIGH: IFilterOption<AlertSeverity>;
 }
+
+export const DEFAULT_ENTITY_OPTIONS: FilterEntityOptions = {
+  sites: {
+    type: FilterEntityTypes.SITES,
+    selected: true,
+    label: 'Site',
+  },
+  transit: {
+    type: FilterEntityTypes.TRANSIT,
+    selected: true,
+    label: 'Transit',
+  },
+  vpc: {
+    type: FilterEntityTypes.VPC,
+    selected: true,
+    label: 'VPC',
+  },
+  peer_connections: {
+    type: FilterEntityTypes.PEERING_CONNECTIONS,
+    selected: true,
+    label: 'Peering Connection',
+  },
+  web_acls: {
+    type: FilterEntityTypes.WEB_ACLS,
+    selected: true,
+    label: 'AWS WAF',
+  },
+};
+
+export const DEFAULT_SEVERITY_OPTIONS: FilterSeverityOptions = {
+  LOW: {
+    type: AlertSeverity.LOW,
+    selected: true,
+    label: 'Low',
+  },
+  MEDIUM: {
+    type: AlertSeverity.MEDIUM,
+    selected: true,
+    label: 'Medium',
+  },
+  HIGH: {
+    type: AlertSeverity.HIGH,
+    selected: true,
+    label: 'High',
+  },
+};

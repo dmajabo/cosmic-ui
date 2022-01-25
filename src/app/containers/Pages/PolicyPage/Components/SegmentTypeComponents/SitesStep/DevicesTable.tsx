@@ -20,6 +20,8 @@ import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 
 interface Props {
   matchRules: ISegmentSiteSegmentMatchRuleP[];
+  selectedMatchKey: SegmentSiteSegmentMatchKey;
+  onChangeMatchKey: (type: SegmentSegmentType, v: SegmentSiteSegmentMatchKey) => void;
   onSelectChange: (type: SegmentSegmentType, rule: ISegmentSiteSegmentMatchRuleP) => void;
   onSelectAll: (type: SegmentSegmentType, rules: ISegmentSiteSegmentMatchRuleP[]) => void;
 }
@@ -97,7 +99,6 @@ const DevicesTable: React.FC<Props> = (props: Props) => {
       disableExport: true,
     },
   ]);
-  const [selectedSiteMatchKey, setSelectedSiteMatchKey] = React.useState<SegmentSiteSegmentMatchKey>(SegmentSiteSegmentMatchKey.SITE_SEG_MATCH_KEY_NETWORK);
   const [devices, setDevices] = React.useState<INetworkDevice[]>([]);
   const [devicesPagingData, setDevicesPagingData] = React.useState<IUiPagingData>({
     totalCount: 0,
@@ -126,20 +127,20 @@ const DevicesTable: React.FC<Props> = (props: Props) => {
     if (devices && devices.length && props.matchRules && props.matchRules.length) {
       props.matchRules.forEach(it => {
         const field = helper.getSitesFieldFromRuleKey(it.matchKey);
-        const _el = devices.find(item => it.matchKey === selectedSiteMatchKey && item[field] === it.matchValuePrimary);
+        const _el = devices.find(item => it.matchKey === props.selectedMatchKey && item[field] === it.matchValuePrimary);
         if (_el) {
           _ids.push(_el.id);
         }
       });
     }
     setSelectionModel(_ids);
-  }, [props.matchRules, devices, selectedSiteMatchKey]);
+  }, [props.matchRules, devices, props.selectedMatchKey]);
 
   const onRowClick = (params: GridRowParams) => {
     const _item = params.row as INetworkDevice;
-    const _value = helper.getSitesFieldValueFromRuleKey(selectedSiteMatchKey, _item);
+    const _value = helper.getSitesFieldValueFromRuleKey(props.selectedMatchKey, _item);
     const rule: ISegmentSiteSegmentMatchRuleP = {
-      matchKey: selectedSiteMatchKey,
+      matchKey: props.selectedMatchKey,
       matchValuePrimary: _value,
     };
     props.onSelectChange(SegmentSegmentType.SITE, rule);
@@ -148,10 +149,10 @@ const DevicesTable: React.FC<Props> = (props: Props) => {
   const onColumnHeaderClick = (params: GridColumnHeaderParams) => {
     if (params.field === '__check__') {
       const _items: ISegmentSiteSegmentMatchRuleP[] = [];
-      const _field = helper.getSitesFieldFromRuleKey(selectedSiteMatchKey);
+      const _field = helper.getSitesFieldFromRuleKey(props.selectedMatchKey);
       devices.forEach(it => {
         const rule: ISegmentSiteSegmentMatchRuleP = {
-          matchKey: selectedSiteMatchKey,
+          matchKey: props.selectedMatchKey,
           matchValuePrimary: it[_field],
         };
         _items.push(rule);
@@ -187,7 +188,7 @@ const DevicesTable: React.FC<Props> = (props: Props) => {
       return col;
     });
     setColumns(_items);
-    setSelectedSiteMatchKey(v);
+    props.onChangeMatchKey(SegmentSegmentType.SITE, v);
   };
 
   const onTryLoadDevices = async (pageData: IUiPagingData) => {
@@ -200,7 +201,7 @@ const DevicesTable: React.FC<Props> = (props: Props) => {
         <MatSelect
           id="siteMatchKeyType"
           label="Key"
-          value={selectedSiteMatchKey}
+          value={props.selectedMatchKey}
           options={[SegmentSiteSegmentMatchKey.SITE_SEG_MATCH_KEY_NETWORK, SegmentSiteSegmentMatchKey.SITE_SEG_MATCH_KEY_MODEL, SegmentSiteSegmentMatchKey.SITE_SEG_MATCH_KEY_SERIAL_NUM]}
           styles={{ height: '72px', minHeight: '72px', margin: '0' }}
           selectStyles={{ height: '50px', width: '100%' }}
