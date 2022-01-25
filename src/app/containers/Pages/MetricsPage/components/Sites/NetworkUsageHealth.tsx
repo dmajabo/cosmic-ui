@@ -2,7 +2,6 @@ import { MetricsData, MultiLineMetricsData } from 'app/containers/Pages/Topology
 import { TelemetryApi } from 'lib/api/ApiModels/Services/telemetry';
 import { useGetChainData } from 'lib/api/http/useAxiosHook';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
-import isEmpty from 'lodash/isEmpty';
 import React, { useContext, useEffect, useState } from 'react';
 import { MetricsStyles } from '../../MetricsStyles';
 import LoadingIndicator from 'app/components/Loading';
@@ -12,20 +11,12 @@ import { MultiLineChart } from 'app/containers/Pages/TopologyPage/TopoMapV2/Pane
 import { Chart, ChartContainerStyles } from 'app/components/ChartContainer/styles';
 import { LookbackSelectOption } from 'app/containers/Pages/AnalyticsPage/components/Metrics Explorer/LookbackTimeTab';
 import { IMetrickQueryParam } from 'lib/api/ApiModels/Metrics/apiModel';
-import { DateTime } from 'luxon';
+import { getChartXAxisLabel, isMetricsEmpty } from '../Utils';
 
 interface NetworkUsageHealthProps {
   readonly networks: string[];
   readonly timeRange: LookbackSelectOption;
 }
-
-const INPUT_TIME_FORMAT: string = 'yyyy-MM-dd HH:mm:ss ZZZ z';
-const CHART_TIME_FORMAT = 'MMM dd';
-
-const isMetricsEmpty = (metrics: MultiLineMetricsData[]) => {
-  const reducedMetrics: MetricsData[] = metrics.reduce((acc, nextValue) => acc.concat(nextValue.metrics), []);
-  return isEmpty(reducedMetrics) ? true : false;
-};
 
 export const NetworkUsageHealth: React.FC<NetworkUsageHealthProps> = ({ networks, timeRange }) => {
   const classes = MetricsStyles();
@@ -60,19 +51,6 @@ export const NetworkUsageHealth: React.FC<NetworkUsageHealthProps> = ({ networks
     }
   }, [response]);
 
-  const getChartXAxisLabel = () => {
-    const startDate = metricsData.map(item => item.metrics[0]);
-    const endDate = metricsData.map(item => item.metrics[item.metrics.length - 1]);
-    if (startDate && endDate) {
-      const formattedStartDate = startDate.map(item => (item ? DateTime.fromFormat(item.time, INPUT_TIME_FORMAT).toUTC().toMillis() : Infinity));
-      const formattedEndDate = endDate.map(item => (item ? DateTime.fromFormat(item.time, INPUT_TIME_FORMAT).toUTC().toMillis() : 0));
-      return `${DateTime.fromMillis(Math.min(...formattedStartDate)).toFormat(CHART_TIME_FORMAT)} to ${DateTime.fromMillis(Math.max(...formattedEndDate)).toFormat(
-        CHART_TIME_FORMAT,
-      )} (1 day interval)`;
-    }
-    return '';
-  };
-
   return (
     <div className={classes.pageComponentBackground}>
       <div className={classes.pageComponentTitle}>Network Usage Health</div>
@@ -85,7 +63,7 @@ export const NetworkUsageHealth: React.FC<NetworkUsageHealthProps> = ({ networks
           <EmptyText>No Data</EmptyText>
         ) : (
           <Chart>
-            <MultiLineChart dataValueSuffix="bytes" inputData={metricsData} yAxisText="bytes" xAxisText={getChartXAxisLabel()} />
+            <MultiLineChart dataValueSuffix="bytes" inputData={metricsData} yAxisText="bytes" xAxisText={getChartXAxisLabel(metricsData)} />
           </Chart>
         )}
       </ChartContainerStyles>

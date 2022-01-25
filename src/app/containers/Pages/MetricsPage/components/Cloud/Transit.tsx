@@ -1,6 +1,6 @@
 import { Chart, ChartContainerStyles } from 'app/components/ChartContainer/styles';
 import { LookbackSelectOption } from 'app/containers/Pages/AnalyticsPage/components/Metrics Explorer/LookbackTimeTab';
-import { MetricsData, MultiLineMetricsData } from 'app/containers/Pages/TopologyPage/TopologyMetrics/SharedTypes';
+import { MultiLineMetricsData } from 'app/containers/Pages/TopologyPage/TopologyMetrics/SharedTypes';
 import { createApiClient } from 'lib/api/http/apiClient';
 import { TransitMetricsParams } from 'lib/api/http/SharedTypes';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
@@ -10,8 +10,7 @@ import LoadingIndicator from 'app/components/Loading';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import { EmptyText } from 'app/components/Basic/NoDataStyles/NoDataStyles';
 import { MultiLineChart } from 'app/containers/Pages/TopologyPage/TopoMapV2/PanelComponents/NodePanels/WedgePanel/MetricsTab/MultiLineChart';
-import { DateTime } from 'luxon';
-import { isEmpty } from 'lodash';
+import { getChartXAxisLabel, isMetricsEmpty } from '../Utils';
 
 interface TransitProps {
   readonly timeRange: LookbackSelectOption;
@@ -20,14 +19,6 @@ interface TransitProps {
 const TRANSIT_METRICNAMES = ['BytesIn', 'BytesOut'];
 
 const TRANSIT_METRIC_TYPES = ['NetworkLink', 'VpnLink', 'WedgePeeringConnection'];
-
-const INPUT_TIME_FORMAT: string = 'yyyy-MM-dd HH:mm:ss ZZZ z';
-const CHART_TIME_FORMAT = 'MMM dd';
-
-const isMetricsEmpty = (metrics: MultiLineMetricsData[]) => {
-  const reducedMetrics: MetricsData[] = metrics.reduce((acc, nextValue) => acc.concat(nextValue.metrics), []);
-  return isEmpty(reducedMetrics) ? true : false;
-};
 
 export const Transit: React.FC<TransitProps> = ({ timeRange }) => {
   const classes = MetricsStyles();
@@ -71,19 +62,6 @@ export const Transit: React.FC<TransitProps> = ({ timeRange }) => {
       });
   }, [timeRange]);
 
-  const getChartXAxisLabel = () => {
-    const startDate = metricsData.map(item => item.metrics[0]);
-    const endDate = metricsData.map(item => item.metrics[item.metrics.length - 1]);
-    if (startDate && endDate) {
-      const formattedStartDate = startDate.map(item => (item ? DateTime.fromFormat(item.time, INPUT_TIME_FORMAT).toUTC().toMillis() : Infinity));
-      const formattedEndDate = endDate.map(item => (item ? DateTime.fromFormat(item.time, INPUT_TIME_FORMAT).toUTC().toMillis() : 0));
-      return `${DateTime.fromMillis(Math.min(...formattedStartDate)).toFormat(CHART_TIME_FORMAT)} to ${DateTime.fromMillis(Math.max(...formattedEndDate)).toFormat(
-        CHART_TIME_FORMAT,
-      )} (1 day interval)`;
-    }
-    return '';
-  };
-
   return (
     <div className={classes.pageComponentBackground}>
       <div className={classes.pageComponentTitle}>Transit</div>
@@ -96,7 +74,7 @@ export const Transit: React.FC<TransitProps> = ({ timeRange }) => {
           <EmptyText>No Data</EmptyText>
         ) : (
           <Chart>
-            <MultiLineChart dataValueSuffix="bytes" inputData={metricsData} yAxisText="bytes" xAxisText={getChartXAxisLabel()} />
+            <MultiLineChart dataValueSuffix="bytes" inputData={metricsData} yAxisText="bytes" xAxisText={getChartXAxisLabel(metricsData)} />
           </Chart>
         )}
       </ChartContainerStyles>
