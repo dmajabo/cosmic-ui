@@ -500,6 +500,6 @@ interface TelemetryMetrics {
 }
 
 export interface GetTelemetryMetricsResponse {
-  readonly type: string;
+  readonly type?: string;
   readonly metrics: TelemetryMetrics[];
 }
