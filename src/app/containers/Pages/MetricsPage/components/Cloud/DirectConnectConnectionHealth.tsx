@@ -27,10 +27,6 @@ export const DirectConnectConnectionHealth: React.FC<DirectConnectConnectionHeal
     onGet(TelemetryApi.getAllMetrics(), userContext.accessToken!, params);
   }, [timeRange]);
 
-  useEffect(() => {
-    console.log(response);
-  }, [response]);
-
   return (
     <div className={classes.pageComponentBackground}>
       <div className={classes.pageComponentTitle}>Direct Connect Connection Health</div>
