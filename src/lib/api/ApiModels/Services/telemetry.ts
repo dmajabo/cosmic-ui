@@ -4,4 +4,6 @@ export const TelemetryApi = {
 
   getMetricsById: (id: string) => 'telemetry/api/v1/metrics/' + id,
   getAuditLogs: () => 'telemetry/api/v1/telemetry/audit-logs',
+  getDeviceLoad: (id: string) => `telemetry/api/v1/metrics/device/${id}/load`,
+  getNetworkUsage: (id: string) => `telemetry/api/v1/metrics/network/${id}/usage`,
 };

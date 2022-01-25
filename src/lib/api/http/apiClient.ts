@@ -18,6 +18,8 @@ import {
   PostPolicyControllerResponse,
   GetExperienceAnomaliesResponse,
   GetMetricsResponse,
+  TransitMetricsParams,
+  GetTelemetryMetricsResponse,
 } from './SharedTypes';
 
 const BASE_URL = process.env.REACT_APP_API_ENDPOINT_PRODUCTION;
@@ -42,6 +44,7 @@ interface ApiClient {
   readonly getHeatmapGoodput: (sourceNw: string, destination: string, startTime: string, testId: string) => Promise<HeatMapResponse>;
   readonly getExperienceAnomalies: (name: string, timeRange: string) => Promise<GetExperienceAnomaliesResponse>;
   readonly getMetricsResponse: (id: string, params: IMetrickQueryParam) => Promise<GetMetricsResponse>;
+  readonly getTelemetryMetrics: (type: string, params: TransitMetricsParams) => Promise<GetTelemetryMetricsResponse>;
 }
 
 const PATHS = Object.freeze({
@@ -64,6 +67,7 @@ const PATHS = Object.freeze({
   GOODPUT_LATENCY: (sourceNw: string, destination: string) => `/telemetry/api/v1/metrics/source_nw/${sourceNw}/device/destination/${destination}/avggoodput`,
   GET_EXPERIENCE_ANOMALIES: (name: string, timeRange: string) => `telemetry/api/v1/anomalyhistory/type/${name}/range/${timeRange}`,
   GET_METRICS_RESPONSE: (id: string) => `telemetry/api/v1/metrics/${id}`,
+  GET_TELEMETRY_METRICS: 'telemetry/api/v1/metrics',
 });
 
 export const createApiClient = (token: string): ApiClient => {
@@ -352,6 +356,21 @@ export const createApiClient = (token: string): ApiClient => {
     }
   }
 
+  async function getTelemetryMetrics(type: string, params: TransitMetricsParams): Promise<GetTelemetryMetricsResponse> {
+    try {
+      const response = await axios.get<GetTelemetryMetricsResponse>(PATHS.GET_TELEMETRY_METRICS, {
+        ...config,
+        params: params,
+      });
+      return { type: type, ...response.data };
+    } catch {
+      return {
+        type: type,
+        metrics: [],
+      };
+    }
+  }
+
   return {
     getOrganizations,
     getSLATests,
@@ -372,5 +391,6 @@ export const createApiClient = (token: string): ApiClient => {
     getHeatmapGoodput,
     getExperienceAnomalies,
     getMetricsResponse,
+    getTelemetryMetrics,
   };
 };
