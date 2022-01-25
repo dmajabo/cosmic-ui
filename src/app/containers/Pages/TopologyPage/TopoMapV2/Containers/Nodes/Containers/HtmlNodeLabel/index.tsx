@@ -9,32 +9,22 @@ interface Props {
 
 const HtmlNodeLabel: React.FC<Props> = ({ name, labelStyles, labelWidth }) => {
   return (
-    <foreignObject width={labelWidth || labelStyles.width} height={labelStyles.height} x={labelStyles.x} y={labelStyles.y}>
+    <foreignObject width="1" height="1" style={{ overflow: 'visible' }} x={labelStyles.x} y={labelStyles.y} pointerEvents="none">
       <div
         style={{
-          display: 'flex',
-          width: '100%',
-          height: '100%',
+          display: 'inline-block',
+          width: labelWidth ? labelWidth + 'px' : labelStyles.width + 'px',
+          textAlign: 'center',
+          color: labelStyles.fill,
+          fontSize: labelStyles.fontSize + 'px',
+          fontWeight: 500,
+          pointerEvents: 'none',
+          verticalAlign: 'top',
         }}
+        className="textOverflowEllips"
         title={name}
       >
-        <span
-          style={{
-            display: 'inline-block',
-            maxWidth: '100%',
-            margin: 'auto',
-            color: labelStyles.fill,
-            fontSize: labelStyles.fontSize + 'px',
-            textAlign: 'center',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            fontWeight: 500,
-            pointerEvents: 'none',
-          }}
-        >
-          {name}
-        </span>
+        {name}
       </div>
     </foreignObject>
   );

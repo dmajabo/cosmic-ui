@@ -103,6 +103,7 @@ export const HealthTable: React.FC = () => {
   }, {});
   const time = uniq(DUMMY_TABLE_DATA.map(item => item.time));
   const connection = uniq(DUMMY_TABLE_DATA.map(item => item.connection));
+
   return (
     <>
       <TableContainer>
@@ -115,10 +116,12 @@ export const HealthTable: React.FC = () => {
               ))}
             </tr>
             {connection.map(item => (
-              <tr>
+              <tr key={item}>
                 <td>{item}</td>
                 {time.map(timeItem => (
-                  <td className={getTableItemClassName(DUMMY_TABLE_OBJECT[`${timeItem}_${item}`])}>{DUMMY_TABLE_OBJECT[`${timeItem}_${item}`] || 'N/A'}</td>
+                  <td key={timeItem} className={getTableItemClassName(DUMMY_TABLE_OBJECT[`${timeItem}_${item}`])}>
+                    {DUMMY_TABLE_OBJECT[`${timeItem}_${item}`] || 'N/A'}
+                  </td>
                 ))}
               </tr>
             ))}
@@ -127,7 +130,7 @@ export const HealthTable: React.FC = () => {
       </TableContainer>
       <div className={classes.legendContainer}>
         {LEGEND_DATA.map(item => (
-          <span>
+          <span key={item.color}>
             <LegendIcon colour={item.color} />
             <span className={classes.legendText}>{`${item.low}-${item.high} drop(s)`}</span>
           </span>

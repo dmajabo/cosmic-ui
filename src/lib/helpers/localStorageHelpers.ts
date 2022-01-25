@@ -7,6 +7,8 @@ export enum StoragePreferenceKeys {
   SESSIONS_OVERVIEW_TIME_PERIOD = 'sessions_overview_time_period',
   AUDIT_LOG_TIME_PERIOD = 'audit_log_time_period',
   WORKFLOW_TRIGGERS_TIME_PERIOD = 'workflow_triggers_time_period',
+  TOPOLOGY_FILTER_ENTITY_OPTIONS = 'topology_filter_entity_options',
+  TOPOLOGY_FILTER_SEVERITY_OPTIONS = 'topology_filter_severity_options',
 }
 
 export const updateSessionStoragePreference = (_value: any, _key: OKULIS_LOCAL_STORAGE_KEYS, _subKey?: StoragePreferenceKeys) => {
