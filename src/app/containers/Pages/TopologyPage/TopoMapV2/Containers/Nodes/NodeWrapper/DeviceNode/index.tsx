@@ -31,8 +31,8 @@ const DeviceNode: React.FC<Props> = (props: Props) => {
         <use
           pointerEvents="all"
           href={`#bg${NODES_CONSTANTS.DEVICE.type}`}
-          fill={props.item.segmentColor || NODES_CONSTANTS.DEVICE.nodeBgColor}
-          stroke={isNodeSelected ? 'var(--_highlightColor)' : props.item.segmentColor}
+          fill={NODES_CONSTANTS.DEVICE.nodeBgColor}
+          stroke={isNodeSelected ? 'var(--_highlightColor)' : NODES_CONSTANTS.DEVICE.nodeBgColor}
           className="transitionStyle"
           width={NODES_CONSTANTS.DEVICE.collapse.width}
           height={NODES_CONSTANTS.DEVICE.collapse.height}
@@ -43,8 +43,8 @@ const DeviceNode: React.FC<Props> = (props: Props) => {
           height={NODES_CONSTANTS.DEVICE.collapse.iconHeight}
           x={NODES_CONSTANTS.DEVICE.collapse.iconOffsetX}
           y={NODES_CONSTANTS.DEVICE.collapse.iconOffsetY}
-          fill={props.item.nodeCiscoColor}
-          color={props.item.nodeMerakiColor}
+          fill={NODES_CONSTANTS.DEVICE.nodeCiscoColor}
+          color={NODES_CONSTANTS.DEVICE.nodeMerakiColor}
           pointerEvents="none"
         />
         <HtmlNodeLabel name={props.item.name || props.item.extId} labelStyles={NODES_CONSTANTS.DEVICE.labelHtmlStyles} />

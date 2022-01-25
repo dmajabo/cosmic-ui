@@ -35,7 +35,7 @@ const SitesExpandNode: React.FC<Props> = (props: Props) => {
           pointerEvents="all"
         />
         <g transform="translate(0, 0)">
-          <NodeMarker iconId={NODES_CONSTANTS.SITES.iconId} stylesObj={NODES_CONSTANTS.SITES.expanded.marker} />
+          <NodeMarker iconId={NODES_CONSTANTS.SITES.iconId} fill={props.site.dataItem.color} stylesObj={NODES_CONSTANTS.SITES.expanded.marker} />
           <NodeExpandedName
             name={props.site.dataItem.name}
             nodeWidth={props.site.expandedSize.width}

@@ -9,12 +9,15 @@ const SegmentsLegend: React.FC<Props> = (props: Props) => {
   return (
     <LegentWrapper>
       <LegendListContainer>
-        {topology.originSegmentsData.map(it => (
-          <LegendItem>
-            <LegendItemColor color={it.color} />
-            <LegendName>{it.name}</LegendName>
-          </LegendItem>
-        ))}
+        {Object.keys(topology.segments).map(key => {
+          if (!topology.segments[key].children || !topology.segments[key].children.length) return null;
+          return (
+            <LegendItem>
+              <LegendItemColor color={topology.segments[key].dataItem.color} />
+              <LegendName>{topology.segments[key].dataItem.name}</LegendName>
+            </LegendItem>
+          );
+        })}
       </LegendListContainer>
     </LegentWrapper>
   );
