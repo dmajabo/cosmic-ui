@@ -1,8 +1,6 @@
 import React from 'react';
 import { ICollapseStyles, ILabelHtmlStyles, NODES_CONSTANTS } from '../../../../model';
 import { INetworkVNetworkPeeringConnectionNode, ITopoRegionNode } from 'lib/hooks/Topology/models';
-import { buildPeerLinks, IPeerLink } from './helper';
-import PeerConnectionLink from './PeerConnectionLink';
 import HtmlNodeLabel from '../../Containers/HtmlNodeLabel';
 import HtmlNodeTooltip from '../../Containers/HtmlNodeTooltip';
 import * as helper from 'app/containers/Pages/TopologyPage/TopoMapV2/Containers/Nodes/NodeWrapper/RegionNode/helper';
@@ -10,8 +8,6 @@ interface Props {
   dataItem: ITopoRegionNode;
   item: INetworkVNetworkPeeringConnectionNode;
   parentId: string;
-  x: number;
-  y: number;
   nodeStyles: ICollapseStyles;
   vnetCollapseStyles?: ICollapseStyles;
   labelStyles?: ILabelHtmlStyles;
@@ -22,7 +18,7 @@ const PeerConnectionNode: React.FC<Props> = (props: Props) => {
   const nodeRef = React.useRef(null);
 
   const onMouseEnter = () => {
-    helper.onHoverRegionChildNode(nodeRef.current, props.parentId, props.item.uiId, 'peerConnectionNodeWrapperHover');
+    helper.onHoverPeerConnectionNode(nodeRef.current, props.item, props.parentId, 'peerConnectionNodeWrapperHover');
     // links.forEach(link => {
     //   const _vps = _regG.select(`g[data-id='${link.to.nodeType}${link.to.id}']`);
     //   _vps.attr('opacity', 1).classed('vpsHoverStroke', true);
@@ -30,7 +26,7 @@ const PeerConnectionNode: React.FC<Props> = (props: Props) => {
   };
 
   const onMouseLeave = () => {
-    helper.onUnHoverRegionChildNode(nodeRef.current, props.parentId, props.item.uiId, 'peerConnectionNodeWrapperHover');
+    helper.onUnHoverPeerConnectionNode(nodeRef.current, props.item, props.parentId, 'peerConnectionNodeWrapperHover');
     // links.forEach(link => {
     //   const _vps = _regG.select(`g[data-id='${link.to.nodeType}${link.to.id}']`);
     //   _vps.classed('vpsHoverStroke', null);
@@ -52,7 +48,7 @@ const PeerConnectionNode: React.FC<Props> = (props: Props) => {
           vnetCollapseStyles={props.vnetCollapseStyles}
         />
       ))} */}
-      <g transform={`translate(${props.x}, ${props.y})`} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
+      <g transform={`translate(${props.item.x}, ${props.item.y})`} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
         <circle fill={props.nodeStyles.bgColor} r={props.nodeStyles.r} cx={props.nodeStyles.r} cy={props.nodeStyles.r} className="peerConnectionNode" pointerEvents="all" />
         <use
           href={`#${NODES_CONSTANTS.PEERING_CONNECTION.type}`}

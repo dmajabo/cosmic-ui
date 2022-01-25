@@ -1,16 +1,13 @@
 import React from 'react';
-import { NODES_CONSTANTS, TOPOLOGY_IDS } from '../../../../model';
+import { NODES_CONSTANTS } from '../../../../model';
 import { INetworkVNetNode, ITopoRegionNode } from 'lib/hooks/Topology/models';
 // import NodeCounter from '../../Containers/NodeCounter';
-import { select } from 'd3-selection';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 import HtmlNodeLabel from '../../Containers/HtmlNodeLabel';
 import HtmlVpcTooltip from '../../Containers/HtmlNodeTooltip/HtmlVpcTooltip';
 import * as helper from 'app/containers/Pages/TopologyPage/TopoMapV2/Containers/Nodes/NodeWrapper/RegionNode/helper';
 
 interface Props {
-  x: number;
-  y: number;
   parentId: string;
   region: ITopoRegionNode;
   item: INetworkVNetNode;
@@ -69,12 +66,11 @@ const NetworkVnetNode: React.FC<Props> = (props: Props) => {
       onMouseOver={onMouseEnter}
       onMouseOut={onMouseLeave}
       className={`topoNodeLevel1 vnetNodeWrapper ${isNodeSelected ? 'selectedTopoLevel1' : ''}`}
-      transform={`translate(${props.x}, ${props.y})`}
-      data-id={`${props.item.nodeType}${props.item.id}`}
+      transform={`translate(${props.item.x}, ${props.item.y})`}
+      data-id={props.item.id}
+      data-uiId={props.item.uiId}
       onClick={onClick}
       cursor="pointer"
-      data-x={NODES_CONSTANTS.NETWORK_VNET.collapse.r + props.x}
-      data-y={NODES_CONSTANTS.NETWORK_VNET.collapse.r + props.y}
     >
       <circle
         r={NODES_CONSTANTS.NETWORK_VNET.collapse.r - 1}

@@ -1,15 +1,12 @@
 import React from 'react';
 import { NODES_CONSTANTS, TOPOLOGY_IDS } from '../../../../model';
-import { IDeviceNode } from 'lib/hooks/Topology/models';
+import { IDeviceNode, TopologyPanelTypes } from 'lib/hooks/Topology/models';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 import HtmlNodeLabel from '../../Containers/HtmlNodeLabel';
 import HtmlNodeTooltip from '../../Containers/HtmlNodeTooltip';
 import { select } from 'd3-selection';
 interface Props {
-  x: number;
-  y: number;
   item: IDeviceNode;
-  onClick: (item: IDeviceNode) => void;
 }
 
 const DeviceNode: React.FC<Props> = (props: Props) => {
@@ -25,7 +22,7 @@ const DeviceNode: React.FC<Props> = (props: Props) => {
   }, [topology.selectedNode]);
 
   const onClick = () => {
-    props.onClick(props.item);
+    topology.onToogleTopoPanel(TopologyPanelTypes.Device, true, props.item);
   };
 
   const onMouseEnter = () => {
@@ -45,7 +42,7 @@ const DeviceNode: React.FC<Props> = (props: Props) => {
   return (
     <>
       <g
-        transform={`translate(${props.x}, ${props.y})`}
+        transform={`translate(${props.item.x}, ${props.item.y})`}
         ref={nodeRef}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}

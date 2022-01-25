@@ -13,7 +13,6 @@ import {
   FilterSeverityOptions,
   IPanelBar,
   ITempSegmentObjData,
-  ITGWNode,
   ITopoAccountNode,
   ITopoLink,
   ITopologyPreparedMapDataV2,
@@ -21,10 +20,9 @@ import {
   ITopoSitesNode,
   TopoFilterTypes,
   TopologyPanelTypes,
-  TopoNodeTypes,
 } from './models';
 import { AlertSeverity } from 'lib/api/ApiModels/Workflow/apiModel';
-import { updateRegionHeight } from './helpers/buildNodeHelpers';
+// import { updateRegionHeight } from './helpers/buildNodeHelpers';
 import { ISegmentSegmentP } from 'lib/api/ApiModels/Policy/Segment';
 import { OKULIS_LOCAL_STORAGE_KEYS } from 'lib/api/http/utils';
 import { getSessionStoragePreferences, StoragePreferenceKeys, updateSessionStoragePreference } from 'lib/helpers/localStorageHelpers';
@@ -38,14 +36,12 @@ export interface TopologyV2ContextType {
   originSegmentsData: ISegmentSegmentP[] | null;
   searchQuery: string | null;
   selectedType: string | null;
-  links: ITopoLink<any, any, any, any, any>[];
-  segments: ITempSegmentObjData;
-  nodes: (ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[];
 
+  links: IObject<ITopoLink<any, any, any>>;
+  segments: ITempSegmentObjData;
   accounts: IObject<ITopoAccountNode>;
   sites: IObject<ITopoSitesNode>;
   regions: IObject<ITopoRegionNode>;
-  tgws: IObject<ITGWNode>;
 
   onChangeSitesPage: (sitesId: string, page: number) => void;
 
@@ -77,14 +73,12 @@ export function useTopologyV2Context(): TopologyV2ContextType {
   const [topoPanel, setTopoPanel] = React.useState<IPanelBar<TopologyPanelTypes>>({ show: false, type: null });
   const [originData, setOriginData] = React.useState<INetworkOrg[] | null>(null);
   const [originSegmentsData, setOriginSegmentsData] = React.useState<ISegmentSegmentP[] | null>(null);
-  const [nodes, setNodes] = React.useState<(ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[]>([]);
 
   const [accounts, setAccountsNodes] = React.useState<IObject<ITopoAccountNode>>(null);
   const [sites, setSitesNodes] = React.useState<IObject<ITopoSitesNode>>(null);
   const [regions, setRegionsNodes] = React.useState<IObject<ITopoRegionNode>>(null);
-  const [tgws, setTgwNodes] = React.useState<IObject<ITGWNode>>(null);
 
-  const [links, setLinks] = React.useState<ITopoLink<any, any, any, any, any>[]>([]);
+  const [links, setLinks] = React.useState<IObject<ITopoLink<any, any, any>>>(null);
   const [segments, setSegments] = React.useState<ITempSegmentObjData>(null);
   const [selectedNode, setSelectedNode] = React.useState<ITopoAccountNode | ITopoSitesNode | ITopoRegionNode>(null);
   const [regionStructures, setRegionStructures] = React.useState<ITopoRegionNode[]>([]);
@@ -95,9 +89,8 @@ export function useTopologyV2Context(): TopologyV2ContextType {
   const [timeRange, setTimeRange] = React.useState<ITimeMinMaxRange | null>(null);
   const [searchQuery, setSearchQuery] = React.useState<string | null>(null);
   const [selectedType, setSelectedType] = React.useState<string | null>(null);
-  const linksRef = React.useRef<ITopoLink<any, any, any, any, any>[]>(links);
+  const linksRef = React.useRef<IObject<ITopoLink<any, any, any>>>(links);
   const segmentsRef = React.useRef<ITempSegmentObjData>(segments);
-  const nodesRef = React.useRef<(ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[]>(nodes);
 
   React.useEffect(() => {
     const _preference = getSessionStoragePreferences(OKULIS_LOCAL_STORAGE_KEYS.OKULIS_PREFERENCE, [
@@ -121,14 +114,11 @@ export function useTopologyV2Context(): TopologyV2ContextType {
       setAccountsNodes(null);
       setSitesNodes(null);
       setRegionsNodes(null);
-      setTgwNodes(null);
 
-      setLinks([]);
+      setLinks(null);
       setSegments(null);
-      setNodes([]);
       setOriginSegmentsData(null);
       setOriginData(null);
-      nodesRef.current = null;
       linksRef.current = null;
       segmentsRef.current = null;
       return;
@@ -140,7 +130,6 @@ export function useTopologyV2Context(): TopologyV2ContextType {
       setAccountsNodes(_data.accounts);
       setSitesNodes(_data.sites);
       setRegionsNodes(_data.regions);
-      setTgwNodes(_data.tgws);
 
       setLinks(_data.links);
       setSegments(_data.segments);
@@ -212,20 +201,20 @@ export function useTopologyV2Context(): TopologyV2ContextType {
   };
 
   const onCollapseExpandNode = (node: ITopoAccountNode | ITopoSitesNode | ITopoRegionNode, state: boolean) => {
-    const _data: (ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[] = nodesRef.current.slice();
-    const index = _data.findIndex(it => it.dataItem.id === node.dataItem.id);
-    _data[index].collapsed = state;
-    nodesRef.current = _data;
-    setNodes(_data);
+    // const _data: (ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[] = nodesRef.current.slice();
+    // const index = _data.findIndex(it => it.dataItem.id === node.dataItem.id);
+    // _data[index].collapsed = state;
+    // nodesRef.current = _data;
+    // setNodes(_data);
   };
 
   const onUpdateNodeCoord = (node: ITopoAccountNode | ITopoSitesNode | ITopoRegionNode, _position: IPosition) => {
-    const _data: (ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[] = nodesRef.current.slice();
-    const index = _data.findIndex(it => it.dataItem.id === node.dataItem.id);
-    _data[index].x = _position.x;
-    _data[index].y = _position.y;
-    setNodes(_data);
-    nodesRef.current = _data;
+    // const _data: (ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[] = nodesRef.current.slice();
+    // const index = _data.findIndex(it => it.dataItem.id === node.dataItem.id);
+    // _data[index].x = _position.x;
+    // _data[index].y = _position.y;
+    // setNodes(_data);
+    // nodesRef.current = _data;
   };
 
   const onToogleTopoPanel = (_panel: TopologyPanelTypes, _show: boolean, _dataItem?: any) => {
@@ -307,12 +296,10 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     originData,
     originSegmentsData,
     links,
-    nodes,
 
     accounts,
     sites,
     regions,
-    tgws,
 
     onChangeSitesPage,
 

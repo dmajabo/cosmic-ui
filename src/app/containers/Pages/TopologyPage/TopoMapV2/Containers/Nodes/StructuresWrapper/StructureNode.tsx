@@ -52,18 +52,18 @@ const StructureNode: React.FC<Props> = (props: Props) => {
         <WebAclsContainer offsetY={offsetsData.topOffset}>
           <>
             {props.region.webAcls.map((row, ri) => {
-              const rowWidth =
-                row.length * (NODES_CONSTANTS.WEB_ACL.structureStyles.nodeStyles.width + NODES_CONSTANTS.WEB_ACL.structureStyles.nodeStyles.spaceX) -
-                NODES_CONSTANTS.WEB_ACL.structureStyles.nodeStyles.spaceX;
-              const rowY = ri * (NODES_CONSTANTS.WEB_ACL.structureStyles.nodeStyles.height + NODES_CONSTANTS.WEB_ACL.structureStyles.nodeStyles.spaceY);
-              const _offsetX = offsetsData.totalWidth / 2 - rowWidth / 2;
+              // const rowWidth =
+              //   row.length * (NODES_CONSTANTS.WEB_ACL.structureStyles.nodeStyles.width + NODES_CONSTANTS.WEB_ACL.structureStyles.nodeStyles.spaceX) -
+              //   NODES_CONSTANTS.WEB_ACL.structureStyles.nodeStyles.spaceX;
+              // const rowY = ri * (NODES_CONSTANTS.WEB_ACL.structureStyles.nodeStyles.height + NODES_CONSTANTS.WEB_ACL.structureStyles.nodeStyles.spaceY);
+              // const _offsetX = offsetsData.totalWidth / 2 - rowWidth / 2;
               return row.map(it => (
                 <WebAclNode
                   parentId={`wrapper${NODES_CONSTANTS.REGION.type}${props.region.uiId}structure`}
                   key={`${it.uiId}webacl`}
                   item={it}
-                  x={it.childIndex * (NODES_CONSTANTS.WEB_ACL.structureStyles.nodeStyles.width + NODES_CONSTANTS.WEB_ACL.structureStyles.nodeStyles.spaceX) + _offsetX}
-                  y={rowY}
+                  // x={it.childIndex * (NODES_CONSTANTS.WEB_ACL.structureStyles.nodeStyles.width + NODES_CONSTANTS.WEB_ACL.structureStyles.nodeStyles.spaceX) + _offsetX}
+                  // y={rowY}
                   onClick={onWebAclClick}
                   nodeStyles={NODES_CONSTANTS.WEB_ACL.structureStyles.nodeStyles}
                   counterStyles={NODES_CONSTANTS.WEB_ACL.structureStyles.countStyles}

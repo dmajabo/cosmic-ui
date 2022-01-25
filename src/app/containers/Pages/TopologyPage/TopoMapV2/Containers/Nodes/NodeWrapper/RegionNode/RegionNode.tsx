@@ -43,8 +43,6 @@ const RegionNode: React.FC<Props> = (props: Props) => {
                   key={`${it.uiId}webacl`}
                   parentId={`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}childrensLayer`}
                   item={it}
-                  x={it.x}
-                  y={it.y}
                   onClick={onWebAclClick}
                   nodeStyles={NODES_CONSTANTS.WEB_ACL.collapse}
                   counterStyles={NODES_CONSTANTS.WEB_ACL.countStyles}
@@ -61,8 +59,6 @@ const RegionNode: React.FC<Props> = (props: Props) => {
                 <PeerConnectionNode
                   key={`${it.uiId}peerConnection`}
                   parentId={`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}childrensLayer`}
-                  x={it.x}
-                  y={it.y}
                   item={it}
                   dataItem={props.dataItem}
                   nodeStyles={NODES_CONSTANTS.PEERING_CONNECTION.collapse}
@@ -77,15 +73,7 @@ const RegionNode: React.FC<Props> = (props: Props) => {
           <>
             {props.dataItem.children.map((row, ri) => {
               return row.map((it, i) => (
-                <NetworkVnetNode
-                  key={`${it.uiId}vnet`}
-                  x={it.x}
-                  y={it.y}
-                  parentId={`${NODES_CONSTANTS.SITES.type}${props.dataItem.uiId}childrensLayer`}
-                  region={props.dataItem}
-                  item={it}
-                  onClick={onVpcClick}
-                />
+                <NetworkVnetNode key={`${it.uiId}vnet`} parentId={`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}childrensLayer`} region={props.dataItem} item={it} onClick={onVpcClick} />
               ));
             })}
           </>

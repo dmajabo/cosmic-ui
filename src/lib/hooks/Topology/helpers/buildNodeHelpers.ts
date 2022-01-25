@@ -61,7 +61,6 @@ export const createSitesNode = (item: ISegmentSegmentP): ITopoSitesNode => {
     visible: true,
     collapsed: false,
     children: [],
-    links: [],
     currentPage: 0,
   };
   return _obj;
@@ -88,8 +87,6 @@ export const createTopoRegionNode = (_dataItem: INetworkRegion, _orgId: string):
     children: [],
     peerConnections: [],
     webAcls: [],
-    vnetLinks: [],
-    peeringLinks: [],
   };
   return _obj;
 };
@@ -112,12 +109,22 @@ export const createWedgeNode = (parentId: string, org: INetworkOrg, orgIndex: nu
   };
 };
 
-export const createVnetNode = (org: INetworkOrg, itemsInRow: number, orgIndex: number, rowIndex: number, childIndex: number, node: INetworkVNetwork, site: ITopoSitesNode): INetworkVNetNode => {
+export const createVnetNode = (
+  parentId: string,
+  org: INetworkOrg,
+  itemsInRow: number,
+  orgIndex: number,
+  rowIndex: number,
+  childIndex: number,
+  node: INetworkVNetwork,
+  site: ITopoSitesNode,
+): INetworkVNetNode => {
   const _x = childIndex * (NODES_CONSTANTS.NETWORK_VNET.collapse.width + NODES_CONSTANTS.NETWORK_VNET.collapse.spaceX);
   const _y = rowIndex * (NODES_CONSTANTS.NETWORK_VNET.collapse.height + NODES_CONSTANTS.NETWORK_VNET.collapse.spaceY);
   const isPresentSegmentColor = !!site;
   return {
     ...node,
+    parentId: parentId,
     visible: true,
     childIndex: childIndex,
     rowIndex: rowIndex,
@@ -136,6 +143,7 @@ export const createVnetNode = (org: INetworkOrg, itemsInRow: number, orgIndex: n
 };
 
 export const createPeerConnectionNode = (
+  parentId: string,
   org: INetworkOrg,
   itemsInRow: number,
   orgIndex: number,
@@ -147,6 +155,7 @@ export const createPeerConnectionNode = (
   const _y = rowIndex * (NODES_CONSTANTS.PEERING_CONNECTION.collapse.height + NODES_CONSTANTS.PEERING_CONNECTION.collapse.spaceY);
   return {
     ...node,
+    parentId: parentId,
     visible: true,
     childIndex: childIndex,
     rowIndex: rowIndex,
@@ -161,11 +170,12 @@ export const createPeerConnectionNode = (
   };
 };
 
-export const createWebAclNode = (org: INetworkOrg, itemsInRow: number, orgIndex: number, rowIndex: number, childIndex: number, node: INetworkWebAcl): INetworkWebAclNode => {
+export const createWebAclNode = (parentId: string, org: INetworkOrg, itemsInRow: number, orgIndex: number, rowIndex: number, childIndex: number, node: INetworkWebAcl): INetworkWebAclNode => {
   const _y = rowIndex * (NODES_CONSTANTS.WEB_ACL.collapse.height + NODES_CONSTANTS.WEB_ACL.collapse.spaceY);
   const _x = childIndex * (NODES_CONSTANTS.WEB_ACL.collapse.width + NODES_CONSTANTS.WEB_ACL.collapse.spaceX);
   return {
     ...node,
+    parentId: parentId,
     visible: true,
     childIndex: childIndex,
     rowIndex: rowIndex,
@@ -184,6 +194,7 @@ export const createDeviceNode = (org: INetworkOrg, orgIndex: number, node: INetw
   const isPresentSegmentColor = !!site;
   return {
     ...node,
+    parentId: null,
     uiId: uuid(),
     visible: true,
     childIndex: 0,
@@ -202,9 +213,10 @@ export const createDeviceNode = (org: INetworkOrg, orgIndex: number, node: INetw
   };
 };
 
-export const updateDeviceNode = (node: IDeviceNode, page: number, rowIndex: number, itemsInRow: number, childIndex: number): IDeviceNode => {
+export const updateDeviceNode = (parentId: string, node: IDeviceNode, page: number, rowIndex: number, itemsInRow: number, childIndex: number): IDeviceNode => {
   return {
     ...node,
+    parentId: parentId,
     childIndex: childIndex,
     rowIndex: rowIndex,
     itemsInRow: itemsInRow,

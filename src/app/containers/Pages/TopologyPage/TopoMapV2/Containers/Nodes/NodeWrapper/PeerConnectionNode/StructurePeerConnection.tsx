@@ -1,12 +1,12 @@
 import React from 'react';
 import { ICollapseStyles, IExpandedStyles, ILabelHtmlStyles, NODES_CONSTANTS } from '../../../../model';
 import { INetworkVNetworkPeeringConnectionNode, ITopoRegionNode } from 'lib/hooks/Topology/models';
-import { buildPeerLinks, IPeerLink } from './helper';
+// import { buildPeerLinks, IPeerLink } from './helper';
 import * as d3 from 'd3';
 import HtmlNodeLabel from '../../Containers/HtmlNodeLabel';
 import { IRefionContainersOffsets } from '../RegionNode/ExpandNodeContent/helper';
-import StructurePeerLink from './StructurePeerLink';
-import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
+// import StructurePeerLink from './StructurePeerLink';
+// import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 
 interface Props {
   dataItem: ITopoRegionNode;
@@ -22,14 +22,14 @@ interface Props {
 }
 
 const StructurePeerConnection: React.FC<Props> = (props: Props) => {
-  const { topology } = useTopologyV2DataContext();
-  const [links, setLinks] = React.useState<IPeerLink[]>([]);
+  // const { topology } = useTopologyV2DataContext();
+  // const [links, setLinks] = React.useState<IPeerLink[]>([]);
   const nodeRef = React.useRef(null);
 
-  React.useEffect(() => {
-    const _links = buildPeerLinks(props.item, props.dataItem, topology.nodes);
-    setLinks(_links);
-  }, [props.dataItem]);
+  // React.useEffect(() => {
+  //   const _links = buildPeerLinks(props.item, props.dataItem, topology.nodes);
+  //   setLinks(_links);
+  // }, [props.dataItem]);
 
   const onMouseEnter = () => {
     const _node = d3.select(nodeRef.current);
@@ -38,10 +38,10 @@ const StructurePeerConnection: React.FC<Props> = (props: Props) => {
     _regG.selectAll('.webaclNodeWrapper').attr('opacity', 0.5);
     _regG.selectAll('.vnetNodeWrapper').attr('opacity', 0.5);
     _node.attr('opacity', 1).classed('peerConnectionNodeWrapperHover', true);
-    links.forEach(link => {
-      const _vps = _regG.select(`g[data-id='structure${link.to.nodeType}${link.to.id}']`);
-      _vps.attr('opacity', 1).classed('vpsHoverStroke', true);
-    });
+    // links.forEach(link => {
+    //   const _vps = _regG.select(`g[data-id='structure${link.to.nodeType}${link.to.id}']`);
+    //   _vps.attr('opacity', 1).classed('vpsHoverStroke', true);
+    // });
   };
 
   const onMouseLeave = () => {
@@ -51,15 +51,15 @@ const StructurePeerConnection: React.FC<Props> = (props: Props) => {
     _regG.selectAll('.webaclNodeWrapper').attr('opacity', 1);
     _regG.selectAll('.vnetNodeWrapper').attr('opacity', 1);
     _node.classed('peerConnectionNodeWrapperHover', null);
-    links.forEach(link => {
-      const _vps = _regG.select(`g[data-id='structure${link.to.nodeType}${link.to.id}']`);
-      _vps.classed('vpsHoverStroke', null);
-    });
+    // links.forEach(link => {
+    //   const _vps = _regG.select(`g[data-id='structure${link.to.nodeType}${link.to.id}']`);
+    //   _vps.classed('vpsHoverStroke', null);
+    // });
   };
 
   return (
     <g ref={nodeRef} className="peerConnectionNodeWrapper">
-      {links.map(it => (
+      {/* {links.map(it => (
         <StructurePeerLink
           key={`${it.from.id}${it.to.id}peerLink`}
           fromCenterX={props.x + props.nodeStyles.r}
@@ -70,7 +70,7 @@ const StructurePeerConnection: React.FC<Props> = (props: Props) => {
           offsetData={props.offsetData}
           vnetExpandStyles={props.vnetExpandStyles}
         />
-      ))}
+      ))} */}
       <g transform={`translate(${props.x}, ${props.y})`} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
         <circle fill={props.nodeStyles.bgColor} r={props.nodeStyles.r} cx={props.nodeStyles.r} cy={props.nodeStyles.r} className="peerConnectionNode" pointerEvents="all" />
         <use

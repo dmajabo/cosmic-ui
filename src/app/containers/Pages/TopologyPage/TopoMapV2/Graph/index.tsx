@@ -12,11 +12,17 @@ import DevicePanel from '../PanelComponents/NodePanels/DevicePanel';
 import WedgePanel from '../PanelComponents/NodePanels/WedgePanel';
 import WebAclPanel from '../PanelComponents/NodePanels/WebAclPanel';
 import GContainer from '../Containers/GContainer/GContainer';
-import NodeWrapper from '../Containers/Nodes/NodeWrapper';
 import StructuresWrapper from '../Containers/Nodes/StructuresWrapper';
 import DefsComponent from '../Containers/Shared/DefsComponent';
 import { TopologyPanelTypes } from 'lib/hooks/Topology/models';
 import SegmentsLegend from '../Containers/SegmentsLegend';
+import AccountNodeTopContainer from '../Containers/Nodes/NodeWrapper/AccountNode/AccountNodeTopContainer';
+import RegionNodeTopContainer from '../Containers/Nodes/NodeWrapper/RegionNode/RegionNodeTopContainer';
+import AccountNode from '../Containers/Nodes/NodeWrapper/AccountNode/AccountNode';
+import RegionNode from '../Containers/Nodes/NodeWrapper/RegionNode/RegionNode';
+import SiteNode from '../Containers/Nodes/NodeWrapper/SitesNode/SiteNode';
+import SitesNodeTopContainer from '../Containers/Nodes/NodeWrapper/SitesNode/SitesNodeTopContainer';
+import LinksWrapper from '../Containers/Links';
 // import SegmentsComponent from '../PanelComponents/Segments/SegmentsComponent';
 
 interface Props {
@@ -87,7 +93,16 @@ const Graph: React.FC<Props> = (props: Props) => {
             >
               <DefsComponent />
               <GContainer id={TOPOLOGY_IDS.G_ROOT}>
-                <NodeWrapper nodes={topology.nodes} accounts={topology.accounts} sites={topology.sites} regions={topology.regions} tgws={topology.tgws} />
+                {topology.accounts
+                  ? Object.keys(topology.accounts).map(key => <AccountNodeTopContainer key={`nodeWrapperTopLayer${topology.accounts[key].uiId}`} account={topology.accounts[key]} />)
+                  : null}
+                {topology.sites ? Object.keys(topology.sites).map(key => <SitesNodeTopContainer key={`nodeWrapperTopLayer${topology.sites[key].uiId}`} site={topology.sites[key]} />) : null}
+                {topology.regions ? Object.keys(topology.regions).map(key => <RegionNodeTopContainer key={`nodeWrapperTopLayer${topology.regions[key].uiId}`} region={topology.regions[key]} />) : null}
+
+                {topology.links && Object.keys(topology.links).length ? <LinksWrapper links={topology.links} /> : null}
+                {topology.accounts ? Object.keys(topology.accounts).map(key => <AccountNode key={`accountChildren${topology.accounts[key].uiId}`} dataItem={topology.accounts[key]} />) : null}
+                {topology.sites ? Object.keys(topology.sites).map(key => <SiteNode key={`siteChildrenLayer${topology.sites[key].uiId}`} dataItem={topology.sites[key]} />) : null}
+                {topology.regions ? Object.keys(topology.regions).map(key => <RegionNode key={`regionChildrenLayer${topology.regions[key].uiId}`} dataItem={topology.regions[key]} />) : null}
               </GContainer>
             </StyledMap>
             {topology.originSegmentsData && topology.originSegmentsData.length ? <SegmentsLegend /> : null}

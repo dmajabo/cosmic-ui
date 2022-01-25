@@ -1,5 +1,5 @@
 import React from 'react';
-import { IDeviceNode, ITopoSitesNode, TopologyPanelTypes } from 'lib/hooks/Topology/models';
+import { ITopoSitesNode } from 'lib/hooks/Topology/models';
 import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 // import { onHoverNode, onUnHoverNode } from '../../../../Graph/helper';
@@ -13,9 +13,6 @@ interface Props {
 const SiteNode: React.FC<Props> = (props: Props) => {
   const { topology } = useTopologyV2DataContext();
 
-  const onDeviceClick = (item: IDeviceNode) => {
-    topology.onToogleTopoPanel(TopologyPanelTypes.Device, true, item);
-  };
   return (
     <TransitionContainer
       id={`${NODES_CONSTANTS.SITES.type}${props.dataItem.uiId}childrensLayer`}
@@ -34,7 +31,7 @@ const SiteNode: React.FC<Props> = (props: Props) => {
       props.dataItem.children[props.dataItem.currentPage] ? (
         <>
           {props.dataItem.children[props.dataItem.currentPage].map(it => (
-            <DeviceNode x={it.x} y={it.y} key={`${it.uiId}device`} item={it} onClick={onDeviceClick} />
+            <DeviceNode key={`${it.uiId}device`} item={it} />
           ))}
         </>
       ) : null}

@@ -9,8 +9,6 @@ import { select } from 'd3-selection';
 
 interface Props {
   parentId: string;
-  x: number;
-  y: number;
   item: INetworkWebAclNode;
   nodeStyles: ICollapseStyles;
   counterStyles: ICounterStyle;
@@ -50,7 +48,7 @@ const WebAclNode: React.FC<Props> = (props: Props) => {
 
   return (
     <g
-      transform={`translate(${props.x}, ${props.y})`}
+      transform={`translate(${props.item.x}, ${props.item.y})`}
       className={`topoNodeLevel1 webaclNodeWrapper ${isNodeSelected ? 'selectedTopoLevel1' : ''}`}
       onClick={onClick}
       cursor="pointer"

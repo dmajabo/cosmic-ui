@@ -7,6 +7,7 @@ export const LegentWrapper = styled.div`
   min-height: 30px;
   overflow: hidden;
   display: flex;
+  pointer-events: none;
 `;
 
 export const LegendListContainer = styled.div`

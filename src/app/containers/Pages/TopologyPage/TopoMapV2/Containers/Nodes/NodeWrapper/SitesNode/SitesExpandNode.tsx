@@ -5,7 +5,7 @@ import NodeMarker from '../../Containers/NodeMarker';
 import NodeExpandedName from '../../Containers/NodeName/NodeExpandedName';
 import { ITopoSitesNode } from 'lib/hooks/Topology/models';
 import SitePager from './SitePager';
-import VPNLink from '../../../Links/VPNLink';
+// import VPNLink from '../../../Links/VPNLink';
 
 interface Props {
   x: number;

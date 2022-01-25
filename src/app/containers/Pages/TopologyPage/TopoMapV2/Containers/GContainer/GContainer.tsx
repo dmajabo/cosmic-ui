@@ -2,7 +2,7 @@ import React from 'react';
 
 interface IProps {
   id: string;
-  children?: React.ReactChild | React.ReactChild[] | null;
+  children?: React.ReactNode | React.ReactNode[];
 }
 const GContainer: React.FC<IProps> = (props: IProps) => {
   return <g id={props.id}>{props.children}</g>;

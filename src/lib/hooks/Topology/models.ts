@@ -57,6 +57,7 @@ export interface IMappedNode extends IOrganizationNode, IVisible {
   rowIndex: number;
   nodeType: TopoNodeTypes;
   uiId: string;
+  parentId: string;
 }
 
 export interface IDeviceNode extends INetworkDevice, IOrganizationNode, IMappedNode, ICoord {
@@ -82,28 +83,19 @@ export interface INetworkWebAclNode extends INetworkWebAcl, IOrganizationNode, I
   itemsInRow: number;
 }
 
-export interface ITGWNode extends INetworkwEdge, IOrganizationNode, IMappedNode, ICoord {
-  parentId: string;
-}
+export interface ITGWNode extends INetworkwEdge, IOrganizationNode, IMappedNode, ICoord {}
 
 export enum TopoLinkTypes {
   NetworkNetworkLink = 'NetworkNetworkLink',
-  VPNLink = 'vpnLink',
+  VPNLink = 'VpnLink',
+  PeerConnectionLink = 'PeerConnectionLink',
 }
 
-interface ITopoLinkNode<P, C> {
-  parent: P;
-  child: C;
-}
-export interface ITopoLink<PP, P, PC, C, L> extends IVisible, IBaseEntity<string> {
+export interface ITopoLink<F, T, L> extends IVisible, IBaseEntity<string> {
   type: TopoLinkTypes;
-  fromNode: ITopoLinkNode<PP, P>;
-  toNode: ITopoLinkNode<PC, C>;
-  data: L;
-  fromX: number;
-  fromY: number;
-  toX: number;
-  toY: number;
+  from: F;
+  to: T;
+  connection: L;
 }
 
 export interface IAccountNode extends IBaseEntity<string> {
@@ -127,7 +119,6 @@ export interface ITopoSitesNode extends ICoord, ICollapsed, IVisible {
   expandedSize: ISize;
   collapsedSize: ISize;
   children: IDeviceNode[][];
-  links: ITopoLink<any, any, any, any, any>[];
   currentPage: number;
 }
 
@@ -141,8 +132,6 @@ export interface ITopoRegionNode extends ICoord, ICollapsed, IVisible {
   children: INetworkVNetNode[][];
   peerConnections: INetworkVNetworkPeeringConnectionNode[][];
   webAcls: INetworkWebAclNode[][];
-  vnetLinks: ITopoLink<any, any, any, any, any>[];
-  peeringLinks: ITopoLink<any, any, any, any, any>[];
 }
 
 export interface ITempSegment {
@@ -158,8 +147,8 @@ export interface ITopologyPreparedMapDataV2 {
   accounts: IObject<ITopoAccountNode>;
   sites: IObject<ITopoSitesNode>;
   regions: IObject<ITopoRegionNode>;
-  tgws: IObject<ITGWNode>;
-  links: ITopoLink<any, any, any, any, any>[];
+
+  links: IObject<ITopoLink<any, any, any>>;
   segments: ITempSegmentObjData;
 }
 
