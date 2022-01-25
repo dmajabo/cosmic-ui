@@ -59,6 +59,7 @@ const StructureNode: React.FC<Props> = (props: Props) => {
               const _offsetX = offsetsData.totalWidth / 2 - rowWidth / 2;
               return row.map(it => (
                 <WebAclNode
+                  parentId={`wrapper${NODES_CONSTANTS.REGION.type}${props.region.uiId}structure`}
                   key={`${it.uiId}webacl`}
                   item={it}
                   x={it.childIndex * (NODES_CONSTANTS.WEB_ACL.structureStyles.nodeStyles.width + NODES_CONSTANTS.WEB_ACL.structureStyles.nodeStyles.spaceX) + _offsetX}

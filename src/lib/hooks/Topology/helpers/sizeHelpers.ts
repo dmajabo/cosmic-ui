@@ -1,6 +1,3 @@
-import { ISize } from 'lib/models/general';
-import { ITopoAccountNode, ITopoRegionNode, ITopoSitesNode } from '../models';
-
 export const getRowsWidth = (_count: number, width: number, spaceX: number): number => {
   if (!_count || _count === 0) return 0;
   return _count * (width + spaceX) - spaceX;
@@ -14,17 +11,6 @@ export const getRowsHeight = (_count: number, height: number, spaceY: number): n
 export const getStartChildRowOffsetX = (nodeWidth: number, items: number, itemWidth: number, itemSpace: number): number => {
   const rowWidth = getRowsWidth(items, itemWidth, itemSpace);
   return nodeWidth / 2 - rowWidth / 2;
-};
-
-export const centeredTopLevelItemsInRow = (items: (ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[], size: ISize, svgWidth: number) => {
-  const hvw = svgWidth / 2;
-  items.forEach(it => {
-    it.x = it.x + hvw - size.width / 2;
-    const itemh = it.collapsed ? it.collapsedSize.height : it.expandedSize.height;
-    if (itemh < size.height) {
-      it.y = it.y + size.height / 2 - itemh / 2;
-    }
-  });
 };
 
 export const getTotalNodeHeight = (chsHeight: number, headerHeight: number, padding: number): number => {

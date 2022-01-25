@@ -7,7 +7,7 @@ import SecondaryButton from 'app/components/Buttons/SecondaryButton';
 import { zoomInIcon, zoomOutIcon } from 'app/components/SVGIcons/zoom';
 import { filterIcon } from 'app/components/SVGIcons/filter';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
-import { ITopoAccountNode, ITopoRegionNode, ITopoSitesNode, TopologyPanelTypes } from 'lib/hooks/Topology/models';
+import { TopologyPanelTypes } from 'lib/hooks/Topology/models';
 import { ITransform, ZoomRange } from 'lib/models/general';
 import ZoomInput from './ZoomInput';
 import { segmentsIcon } from 'app/components/SVGIcons/segmentsIcon';
@@ -23,8 +23,8 @@ interface IProps {
   onZoomIn: () => void;
   onZoomOut: () => void;
   onZoomChange: (v: number) => void;
-  onCentered: (nodes: (ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[]) => void;
-  onOpenFullScreen: () => void;
+  // onCentered: (nodes: (ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[]) => void;
+  // onOpenFullScreen: () => void;
   onRefresh: () => void;
 }
 

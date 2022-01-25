@@ -33,7 +33,13 @@ const FilterComponent: React.FC<IProps> = (props: IProps) => {
             <FilterSeverityGroup type={TopoFilterTypes.Severity} data={topology.severity} onClick={onSelectFilterOption} />
           </FilterGroup>
           <FilterGroup maxGroupHeight="unset" label="Regions" styles={{ margin: '0 0 5px 0' }}>
-            <FilterNodesGroup type={TopoFilterTypes.Regions} data={topology.nodes} onClick={onSelectFilterOption} />
+            <FilterNodesGroup type={TopoFilterTypes.Regions} data={topology.regions} onClick={onSelectFilterOption} />
+          </FilterGroup>
+          <FilterGroup maxGroupHeight="unset" label="Accounts" styles={{ margin: '0 0 5px 0' }}>
+            <FilterNodesGroup type={TopoFilterTypes.Accounts} data={topology.accounts} onClick={onSelectFilterOption} />
+          </FilterGroup>
+          <FilterGroup maxGroupHeight="unset" label="Sites" styles={{ margin: '0' }}>
+            <FilterNodesGroup type={TopoFilterTypes.Sites} data={topology.sites} onClick={onSelectFilterOption} />
           </FilterGroup>
         </PanelContent>
       </OverflowContainer>

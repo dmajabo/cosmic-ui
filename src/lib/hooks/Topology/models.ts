@@ -1,7 +1,7 @@
 import { ISegmentSegmentP } from 'lib/api/ApiModels/Policy/Segment';
 import { INetworkDevice, INetworkRegion, INetworkVNetwork, INetworkVNetworkPeeringConnection, INetworkWebAcl, INetworkwEdge, VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
 import { AlertSeverity } from 'lib/api/ApiModels/Workflow/apiModel';
-import { IBaseEntity, ICollapsed, ICoord, IFilterOption, ISize, IVisible } from 'lib/models/general';
+import { IBaseEntity, ICollapsed, ICoord, IFilterOption, IObject, ISize, IVisible } from 'lib/models/general';
 
 export const VPCS_IN_ROW = 12;
 export const PEER_CONNECTION_IN_ROW = 11;
@@ -82,7 +82,9 @@ export interface INetworkWebAclNode extends INetworkWebAcl, IOrganizationNode, I
   itemsInRow: number;
 }
 
-export interface ITGWNode extends INetworkwEdge, IOrganizationNode, IMappedNode, ICoord {}
+export interface ITGWNode extends INetworkwEdge, IOrganizationNode, IMappedNode, ICoord {
+  parentId: string;
+}
 
 export enum TopoLinkTypes {
   NetworkNetworkLink = 'NetworkNetworkLink',
@@ -153,7 +155,10 @@ export interface ITempSegmentObjData {
 }
 
 export interface ITopologyPreparedMapDataV2 {
-  nodes: (ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[];
+  accounts: IObject<ITopoAccountNode>;
+  sites: IObject<ITopoSitesNode>;
+  regions: IObject<ITopoRegionNode>;
+  tgws: IObject<ITGWNode>;
   links: ITopoLink<any, any, any, any, any>[];
   segments: ITempSegmentObjData;
 }
@@ -162,6 +167,8 @@ export enum TopoFilterTypes {
   Entities = 'Entities',
   Severity = 'Severity',
   Regions = 'Regions',
+  Accounts = 'Accounts',
+  Sites = 'Sites',
 }
 
 export enum FilterEntityTypes {

@@ -1,6 +1,6 @@
 import React from 'react';
 import * as d3 from 'd3';
-import { ITransform, ZoomRange } from 'lib/models/general';
+import { IObject, ITransform, ZoomRange } from 'lib/models/general';
 import { ITopoAccountNode, ITopoRegionNode, ITopoSitesNode } from 'lib/hooks/Topology/models';
 import { STANDART_DISPLAY_RESOLUTION_V2 } from 'lib/models/general';
 
@@ -74,9 +74,9 @@ export function useZoom(props: IProps) {
     zoom.scaleTo(svg, v);
   };
 
-  const onCentered = (nodes: (ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[], _disabledTransition?: boolean) => {
+  const onCentered = (accounts: IObject<ITopoAccountNode>, sites: IObject<ITopoSitesNode>, regions: IObject<ITopoRegionNode>, _disabledTransition?: boolean) => {
     const svg = d3.select(`#${svgId}`);
-    const rootSize = getMapSize(nodes);
+    const rootSize = getMapSize(accounts, sites, regions);
     const scale = getScaleSizeHelper(rootSize.width, rootSize.height);
     const centerX = STANDART_DISPLAY_RESOLUTION_V2.width / 2 - (rootSize.width * scale) / 2 - rootSize.left * scale;
     const centerY = STANDART_DISPLAY_RESOLUTION_V2.height / 2 - (rootSize.height * scale) / 2 - rootSize.top * scale;
@@ -132,32 +132,78 @@ export function useZoom(props: IProps) {
     setTransform({ x, y, k });
   };
 
-  const getMapSize = (nodes: (ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[]) => {
+  const getMapSize = (accounts: IObject<ITopoAccountNode>, sites: IObject<ITopoSitesNode>, regions: IObject<ITopoRegionNode>) => {
     let left = 0;
     let right = 0;
     let top = 0;
     let bottom = 0;
-    nodes.forEach((node, i) => {
-      const nodeW = node.collapsed ? node.collapsedSize.width : node.expandedSize.width;
-      const nodeH = node.collapsed ? node.collapsedSize.height : node.expandedSize.height;
+    Object.keys(accounts).forEach((key, i) => {
+      const nodeW = accounts[key].collapsed ? accounts[key].collapsedSize.width : accounts[key].expandedSize.width;
+      const nodeH = accounts[key].collapsed ? accounts[key].collapsedSize.height : accounts[key].expandedSize.height;
       if (i === 0) {
-        left = node.x;
-        right = node.x + nodeW;
-        top = node.y;
-        bottom = node.y + nodeH;
+        left = accounts[key].x;
+        right = accounts[key].x + nodeW;
+        top = accounts[key].y;
+        bottom = accounts[key].y + nodeH;
         return;
       }
-      if (node.x < left) {
-        left = node.x;
+      if (accounts[key].x < left) {
+        left = accounts[key].x;
       }
-      if (node.x + nodeW > right) {
-        right = node.x + nodeW;
+      if (accounts[key].x + nodeW > right) {
+        right = accounts[key].x + nodeW;
       }
-      if (node.y < top) {
-        top = node.y;
+      if (accounts[key].y < top) {
+        top = accounts[key].y;
       }
-      if (node.y + nodeH > bottom) {
-        bottom = node.y + nodeH;
+      if (accounts[key].y + nodeH > bottom) {
+        bottom = accounts[key].y + nodeH;
+      }
+    });
+    Object.keys(sites).forEach((key, i) => {
+      const nodeW = sites[key].collapsed ? sites[key].collapsedSize.width : sites[key].expandedSize.width;
+      const nodeH = sites[key].collapsed ? sites[key].collapsedSize.height : sites[key].expandedSize.height;
+      if (i === 0) {
+        left = Math.min(left, sites[key].x);
+        right = Math.max(right, sites[key].x + nodeW);
+        top = Math.min(top, sites[key].y);
+        bottom = Math.max(bottom, sites[key].y + nodeH);
+        return;
+      }
+      if (sites[key].x < left) {
+        left = sites[key].x;
+      }
+      if (sites[key].x + nodeW > right) {
+        right = sites[key].x + nodeW;
+      }
+      if (sites[key].y < top) {
+        top = sites[key].y;
+      }
+      if (sites[key].y + nodeH > bottom) {
+        bottom = sites[key].y + nodeH;
+      }
+    });
+    Object.keys(regions).forEach((key, i) => {
+      const nodeW = regions[key].collapsed ? regions[key].collapsedSize.width : regions[key].expandedSize.width;
+      const nodeH = regions[key].collapsed ? regions[key].collapsedSize.height : regions[key].expandedSize.height;
+      if (i === 0) {
+        left = Math.min(left, regions[key].x);
+        right = Math.max(right, regions[key].x + nodeW);
+        top = Math.min(top, regions[key].y);
+        bottom = Math.max(bottom, regions[key].y + nodeH);
+        return;
+      }
+      if (regions[key].x < left) {
+        left = regions[key].x;
+      }
+      if (regions[key].x + nodeW > right) {
+        right = regions[key].x + nodeW;
+      }
+      if (regions[key].y < top) {
+        top = regions[key].y;
+      }
+      if (regions[key].y + nodeH > bottom) {
+        bottom = regions[key].y + nodeH;
       }
     });
     return { width: right - left, height: bottom - top, left: left, rigth: right, top: top, bottom: bottom };

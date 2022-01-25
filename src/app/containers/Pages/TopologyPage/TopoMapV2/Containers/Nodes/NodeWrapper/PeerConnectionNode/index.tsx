@@ -3,19 +3,15 @@ import { ICollapseStyles, ILabelHtmlStyles, NODES_CONSTANTS } from '../../../../
 import { INetworkVNetworkPeeringConnectionNode, ITopoRegionNode } from 'lib/hooks/Topology/models';
 import { buildPeerLinks, IPeerLink } from './helper';
 import PeerConnectionLink from './PeerConnectionLink';
-import { select } from 'd3-selection';
 import HtmlNodeLabel from '../../Containers/HtmlNodeLabel';
-import { IRefionContainersOffsets } from '../RegionNode/ExpandNodeContent/helper';
-import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 import HtmlNodeTooltip from '../../Containers/HtmlNodeTooltip';
-
+import * as helper from 'app/containers/Pages/TopologyPage/TopoMapV2/Containers/Nodes/NodeWrapper/RegionNode/helper';
 interface Props {
   dataItem: ITopoRegionNode;
   item: INetworkVNetworkPeeringConnectionNode;
-  regionUiId: string;
+  parentId: string;
   x: number;
   y: number;
-  offsetData: IRefionContainersOffsets;
   nodeStyles: ICollapseStyles;
   vnetCollapseStyles?: ICollapseStyles;
   labelStyles?: ILabelHtmlStyles;
@@ -23,49 +19,27 @@ interface Props {
 }
 
 const PeerConnectionNode: React.FC<Props> = (props: Props) => {
-  const { topology } = useTopologyV2DataContext();
-  const [links, setLinks] = React.useState<IPeerLink[]>([]);
   const nodeRef = React.useRef(null);
 
-  React.useEffect(() => {
-    const _links = buildPeerLinks(props.item, props.dataItem, topology.nodes);
-    setLinks(_links);
-  }, [props.dataItem]);
-
   const onMouseEnter = () => {
-    const _node = select(nodeRef.current);
-    _node.raise();
-    const _regG = select(`#${props.regionUiId}`);
-    _regG.selectAll('.peerConnectionNodeWrapper').attr('opacity', 0.5);
-    _regG.selectAll('.webaclNodeWrapper').attr('opacity', 0.5);
-    _regG.selectAll('.vnetNodeWrapper').attr('opacity', 0.5);
-    _node.attr('opacity', 1).classed('peerConnectionNodeWrapperHover', true);
-    const tooltip = _node.select(`#tooltip${props.item.uiId}`);
-    tooltip.style('display', 'initial');
-    links.forEach(link => {
-      const _vps = _regG.select(`g[data-id='${link.to.nodeType}${link.to.id}']`);
-      _vps.attr('opacity', 1).classed('vpsHoverStroke', true);
-    });
+    helper.onHoverRegionChildNode(nodeRef.current, props.parentId, props.item.uiId, 'peerConnectionNodeWrapperHover');
+    // links.forEach(link => {
+    //   const _vps = _regG.select(`g[data-id='${link.to.nodeType}${link.to.id}']`);
+    //   _vps.attr('opacity', 1).classed('vpsHoverStroke', true);
+    // });
   };
 
   const onMouseLeave = () => {
-    const _node = select(nodeRef.current);
-    const _regG = select(`#${props.regionUiId}`);
-    _regG.selectAll('.peerConnectionNodeWrapper').attr('opacity', 1);
-    _regG.selectAll('.webaclNodeWrapper').attr('opacity', 1);
-    _regG.selectAll('.vnetNodeWrapper').attr('opacity', 1);
-    _node.classed('peerConnectionNodeWrapperHover', null);
-    const tooltip = _node.select(`#tooltip${props.item.uiId}`);
-    tooltip.style('display', 'none');
-    links.forEach(link => {
-      const _vps = _regG.select(`g[data-id='${link.to.nodeType}${link.to.id}']`);
-      _vps.classed('vpsHoverStroke', null);
-    });
+    helper.onUnHoverRegionChildNode(nodeRef.current, props.parentId, props.item.uiId, 'peerConnectionNodeWrapperHover');
+    // links.forEach(link => {
+    //   const _vps = _regG.select(`g[data-id='${link.to.nodeType}${link.to.id}']`);
+    //   _vps.classed('vpsHoverStroke', null);
+    // });
   };
 
   return (
     <g ref={nodeRef} className="peerConnectionNodeWrapper">
-      {links.map(it => (
+      {/* {links.map(it => (
         <PeerConnectionLink
           key={`${it.from.id}${it.to.id}peerLink`}
           fromCenterX={props.x + props.nodeStyles.r}
@@ -77,7 +51,7 @@ const PeerConnectionNode: React.FC<Props> = (props: Props) => {
           offsetData={props.offsetData}
           vnetCollapseStyles={props.vnetCollapseStyles}
         />
-      ))}
+      ))} */}
       <g transform={`translate(${props.x}, ${props.y})`} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
         <circle fill={props.nodeStyles.bgColor} r={props.nodeStyles.r} cx={props.nodeStyles.r} cy={props.nodeStyles.r} className="peerConnectionNode" pointerEvents="all" />
         <use

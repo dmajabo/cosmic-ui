@@ -1,11 +1,12 @@
 import React from 'react';
-import { NODES_CONSTANTS } from '../../../../model';
+import { NODES_CONSTANTS, TOPOLOGY_IDS } from '../../../../model';
 import { INetworkVNetNode, ITopoRegionNode } from 'lib/hooks/Topology/models';
 // import NodeCounter from '../../Containers/NodeCounter';
 import { select } from 'd3-selection';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 import HtmlNodeLabel from '../../Containers/HtmlNodeLabel';
 import HtmlVpcTooltip from '../../Containers/HtmlNodeTooltip/HtmlVpcTooltip';
+import * as helper from 'app/containers/Pages/TopologyPage/TopoMapV2/Containers/Nodes/NodeWrapper/RegionNode/helper';
 
 interface Props {
   x: number;
@@ -34,17 +35,34 @@ const NetworkVnetNode: React.FC<Props> = (props: Props) => {
   };
 
   const onMouseEnter = () => {
-    const _node = select(nodeRef.current);
-    _node.raise();
-    const tooltip = _node.select(`#tooltip${props.item.uiId}`);
-    tooltip.style('display', 'initial');
+    helper.onHoverRegionChildNode(nodeRef.current, props.parentId, props.item.uiId);
+    // links.forEach(link => {
+    //   const _vps = _regG.select(`g[data-id='${link.to.nodeType}${link.to.id}']`);
+    //   _vps.attr('opacity', 1).classed('vpsHoverStroke', true);
+    // });
   };
 
   const onMouseLeave = () => {
-    const _node = select(nodeRef.current);
-    const tooltip = _node.select(`#tooltip${props.item.uiId}`);
-    tooltip.style('display', 'none');
+    helper.onUnHoverRegionChildNode(nodeRef.current, props.parentId, props.item.uiId);
+    // links.forEach(link => {
+    //   const _vps = _regG.select(`g[data-id='${link.to.nodeType}${link.to.id}']`);
+    //   _vps.classed('vpsHoverStroke', null);
+    // });
   };
+
+  // const onMouseEnter = () => {
+  //   select(`#${TOPOLOGY_IDS.SVG}`).selectAll('.htmlNodeTooltip').style('display', 'none');
+  //   const _node = select(nodeRef.current);
+  //   _node.raise();
+  //   const tooltip = _node.select(`#tooltip${props.item.uiId}`);
+  //   tooltip.style('display', 'initial');
+  // };
+
+  // const onMouseLeave = () => {
+  //   const _node = select(nodeRef.current);
+  //   const tooltip = _node.select(`#tooltip${props.item.uiId}`);
+  //   tooltip.style('display', 'none');
+  // };
   return (
     <g
       ref={nodeRef}

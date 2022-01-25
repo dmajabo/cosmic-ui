@@ -135,7 +135,11 @@ const TimeSlider: React.FC<Props> = (props: Props) => {
         onSetConfig(props.currentPeriod, props.selectedCalendarDay);
       }, 60000);
     }
-    return () => clearInterval(interval);
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
   }, [props.currentPeriod, props.selectedCalendarDay]);
 
   const onSetConfig = (_period: ITimeTypes, startDate: Date | null) => {

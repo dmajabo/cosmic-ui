@@ -3,8 +3,7 @@ import TransitionContainer from 'app/containers/Pages/TopologyPage/TopoMapV2/Con
 import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
 import NodeMarker from '../../Containers/NodeMarker';
 import NodeExpandedName from '../../Containers/NodeName/NodeExpandedName';
-import { IDeviceNode, ITopoSitesNode } from 'lib/hooks/Topology/models';
-import DeviceNode from '../DeviceNode';
+import { ITopoSitesNode } from 'lib/hooks/Topology/models';
 import SitePager from './SitePager';
 import VPNLink from '../../../Links/VPNLink';
 
@@ -14,17 +13,15 @@ interface Props {
   dragId: string;
   site: ITopoSitesNode;
   show: boolean;
-  currentPage: number;
   showTransits: boolean;
-  onDeviceClick: (item: IDeviceNode) => void;
   onPrev: () => void;
   onNext: () => void;
 }
 
 const SitesExpandNode: React.FC<Props> = (props: Props) => {
   return (
-    <>
-      <g style={{ cursor: 'pointer' }} id={`${NODES_CONSTANTS.SITES.type}${props.site.uiId}`} data-type={NODES_CONSTANTS.SITES.type} transform={`translate(${props.x}, ${props.y})`}>
+    <TransitionContainer id={`expandNodeWrapper${props.site.dataItem.id}`} stateIn={props.show} origin="unset" transform="none">
+      <g style={{ cursor: 'pointer' }}>
         <rect
           id={props.dragId}
           fill={NODES_CONSTANTS.SITES.expanded.bgColor}
@@ -44,8 +41,18 @@ const SitesExpandNode: React.FC<Props> = (props: Props) => {
             stylesObj={NODES_CONSTANTS.SITES.labelExpandedStyles}
           />
         </g>
+        {props.site.children.length > 1 ? (
+          <SitePager
+            y={props.site.expandedSize.height - 20}
+            width={props.site.expandedSize.width}
+            currentPage={props.site.currentPage}
+            totalPages={props.site.children.length}
+            onPrev={props.onPrev}
+            onNext={props.onNext}
+          />
+        ) : null}
       </g>
-      {props.site.links && props.site.links.length ? (
+      {/* {props.site.links && props.site.links.length ? (
         <TransitionContainer id={`linksWrapper${NODES_CONSTANTS.SITES.type}${props.site.uiId}`} stateIn={props.showTransits} transform="none">
           <>
             {props.site.links.map(it => {
@@ -54,27 +61,8 @@ const SitesExpandNode: React.FC<Props> = (props: Props) => {
             })}
           </>
         </TransitionContainer>
-      ) : null}
-      <g id={`${NODES_CONSTANTS.SITES.type}${props.site.uiId}childrensLayer`} className="topologyNode" data-type={NODES_CONSTANTS.SITES.type} transform={`translate(${props.x}, ${props.y})`}>
-        {props.site.children && props.site.children.length && props.site.children[props.currentPage] ? (
-          <g transform={`translate(0, ${NODES_CONSTANTS.SITES.headerHeight + NODES_CONSTANTS.SITES.expanded.contentPadding})`}>
-            {props.site.children[props.currentPage].map(it => (
-              <DeviceNode x={it.x} y={it.y} key={`${it.uiId}device`} item={it} onClick={props.onDeviceClick} />
-            ))}
-          </g>
-        ) : null}
-        {props.site.children.length > 1 ? (
-          <SitePager
-            y={props.site.expandedSize.height - 20}
-            width={props.site.expandedSize.width}
-            currentPage={props.currentPage}
-            totalPages={props.site.children.length}
-            onPrev={props.onPrev}
-            onNext={props.onNext}
-          />
-        ) : null}
-      </g>
-    </>
+      ) : null} */}
+    </TransitionContainer>
   );
 };
 

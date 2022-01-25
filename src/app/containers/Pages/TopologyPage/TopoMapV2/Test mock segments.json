@@ -1,0 +1,105 @@
+{
+  "segments": [
+    {
+      "id": "61edeee57d43afefa8e1f216",
+      "name": "test 12223",
+      "description": "vpc",
+      "segType": "NETWORK",
+      "networkSegPol": {
+        "matchRules": [
+          {
+            "matchKey": "KEY_VNETWORK_EXTID",
+            "matchValuePrimary": "N_624311498344312656",
+            "matchValueSecondary": ""
+          },
+          {
+            "matchKey": "KEY_VNETWORK_EXTID",
+            "matchValuePrimary": "vpc-04b2f5b13c800f8ed",
+            "matchValueSecondary": ""
+          },
+          {
+            "matchKey": "KEY_VNETWORK_EXTID",
+            "matchValuePrimary": "vpc-093134f00c6c4c333",
+            "matchValueSecondary": ""
+          },
+          {
+            "matchKey": "KEY_VNETWORK_EXTID",
+            "matchValuePrimary": "vpc-0093825c470cbfc6f",
+            "matchValueSecondary": ""
+          },
+          {
+            "matchKey": "KEY_VNETWORK_EXTID",
+            "matchValuePrimary": "vpc-048ec00df73e141db",
+            "matchValueSecondary": ""
+          }
+        ]
+      },
+      "color": "#9C27B0"
+    },
+    {
+      "id": "61eaccce820af10f872a9b16",
+      "name": "test 12345",
+      "description": "",
+      "segType": "APPLICATION",
+      "appSegPol": {
+        "matchScope": "APP_SEG_MATCH_SCOPE_VM",
+        "matchRules": [
+          {
+            "matchKey": "APP_SEG_MATCH_KEY_TAG",
+            "matchValuePrimary": "kubernetes.io/cluster/okl-intg-eks-dev01",
+            "matchValueSecondary": "owned"
+          },
+          {
+            "matchKey": "APP_SEG_MATCH_KEY_TAG",
+            "matchValuePrimary": "Name",
+            "matchValueSecondary": "okl-intg-eks-dev01-okl-intg-eks-nodegroup-16-50-gbs-dev01-Node"
+          },
+          {
+            "matchKey": "APP_SEG_MATCH_KEY_TAG",
+            "matchValuePrimary": "k8s.io/cluster-autoscaler/okl-intg-eks-dev01",
+            "matchValueSecondary": "owned"
+          },
+          {
+            "matchKey": "APP_SEG_MATCH_KEY_TAG",
+            "matchValuePrimary": "eks:nodegroup-name",
+            "matchValueSecondary": "okl-intg-eks-nodegroup-16-50-gbs-dev01"
+          }
+        ]
+      },
+      "color": "#03A9F4"
+    },
+    {
+      "id": "61eacc5d820af10f872a9b15",
+      "name": "test 2",
+      "description": "",
+      "segType": "SITE",
+      "siteSegPol": {
+        "matchRules": [
+          {
+            "matchKey": "SITE_SEG_MATCH_KEY_NETWORK",
+            "matchValuePrimary": "N_624311498344312656"
+          }
+        ]
+      },
+      "color": "#7B1FA2"
+    },
+    {
+      "id": "61ea2c4f820af10f872a9b14",
+      "name": "test 45",
+      "description": "dev in segment 45",
+      "segType": "SITE",
+      "siteSegPol": {
+        "matchRules": [
+          {
+            "matchKey": "SITE_SEG_MATCH_KEY_NETWORK",
+            "matchValuePrimary": "N_624311498344312656"
+          }
+        ]
+      },
+      "color": "#1A237E"
+    }
+  ],
+  "totalCount": 4,
+  "pageSize": 4,
+  "pageOffset": 0
+}

@@ -439,7 +439,6 @@ export interface ITopologyMapData {
 
 export interface ITopologyDataRes {
   segments: IPolicysvcListSegmentPsResponse;
-  groups: ITopologyGroupsData;
   organizations: ITopologyMapData;
 }
 

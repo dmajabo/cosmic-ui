@@ -4,6 +4,8 @@ import LoadingIndicator from 'app/components/Loading';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 // import PanelBar from 'app/components/Basic/PanelBar';
 // import Entities from './PanelComponents/EntitiesComponent/Entities';
+import data from './Test mock data.json';
+import segmentsData from './Test mock segments.json';
 import { ITopologyDataRes } from 'lib/api/ApiModels/Topology/apiModels';
 import FooterAction from './FooterAction';
 import Graph from './Graph';
@@ -31,6 +33,25 @@ const TopoMapV2: React.FC<IProps> = (props: IProps) => {
       topology.onSetData(response);
     }
   }, [response]);
+
+  React.useEffect(() => {
+    if (error) {
+      topology.onSetData({ organizations: data, segments: segmentsData as any });
+    }
+    // let interval = null;
+    // if (error) {
+    //   interval = setInterval(() => {
+    //     onTryLoadData();
+    //   }, 15000);
+    // } else if (interval) {
+    //   clearInterval(interval);
+    // }
+    // return () => {
+    //   if (interval) {
+    //     clearInterval(interval);
+    //   }
+    // };
+  }, [error]);
 
   const onOpenFullScreen = () => {
     setIsFullScreen(!isFullScreen);

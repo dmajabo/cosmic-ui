@@ -1,13 +1,12 @@
 import React from 'react';
-import { NODES_CONSTANTS } from '../../../../model';
-import { ITGWNode } from 'lib/hooks/Topology/models';
+import { NODES_CONSTANTS, TOPOLOGY_IDS } from '../../../../model';
+import { ITGWNode, TopologyPanelTypes } from 'lib/hooks/Topology/models';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 import HtmlNodeTooltip from '../../Containers/HtmlNodeTooltip';
 import HtmlNodeLabel from '../../Containers/HtmlNodeLabel';
 import { select } from 'd3-selection';
 interface Props {
   item: ITGWNode;
-  onClick: (item: ITGWNode) => void;
 }
 
 const NetworkWEdgeNode: React.FC<Props> = (props: Props) => {
@@ -24,10 +23,11 @@ const NetworkWEdgeNode: React.FC<Props> = (props: Props) => {
   }, [topology.selectedNode]);
 
   const onClick = () => {
-    props.onClick(props.item);
+    topology.onToogleTopoPanel(TopologyPanelTypes.Wedge, true, props.item);
   };
 
   const onMouseEnter = () => {
+    select(`#${TOPOLOGY_IDS.SVG}`).selectAll('.htmlNodeTooltip').style('display', 'none');
     const _node = select(nodeRef.current);
     _node.raise();
     const tooltip = _node.select(`#tooltip${props.item.uiId}`);
@@ -47,11 +47,11 @@ const NetworkWEdgeNode: React.FC<Props> = (props: Props) => {
       onMouseOut={onMouseLeave}
       transform={`translate(${props.item.x}, ${props.item.y})`}
       id={`${props.item.nodeType}${props.item.id}`}
-      onClick={onClick}
       className={`topoNodeLevel1 wedgeNodeWrapper ${isNodeSelected ? 'selectedTopoLevel1' : ''}`}
       cursor="pointer"
     >
       <svg
+        onClick={onClick}
         width={NODES_CONSTANTS.NETWORK_WEDGE.collapse.r * 2}
         height={NODES_CONSTANTS.NETWORK_WEDGE.collapse.r * 2}
         viewBox="0 0 50 50"

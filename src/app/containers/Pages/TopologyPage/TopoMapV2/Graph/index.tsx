@@ -42,13 +42,13 @@ const Graph: React.FC<Props> = (props: Props) => {
 
   React.useEffect(() => {
     if (topology.originData) {
-      onCentered(topology.nodes);
+      onCentered(topology.accounts, topology.sites, topology.regions);
     }
   }, [topology.originData]);
 
-  const onOpenFullScreen = () => {
-    props.onOpenFullScreen();
-  };
+  // const onOpenFullScreen = () => {
+  //   props.onOpenFullScreen();
+  // };
 
   const onHidePanel = () => {
     topology.onToogleTopoPanel(null, false);
@@ -68,8 +68,8 @@ const Graph: React.FC<Props> = (props: Props) => {
         onZoomIn={onZoomIn}
         onZoomOut={onZoomOut}
         onZoomChange={onZoomChange}
-        onCentered={onCentered}
-        onOpenFullScreen={onOpenFullScreen}
+        // onCentered={onCentered}
+        // onOpenFullScreen={onOpenFullScreen}
         onRefresh={props.onReload}
       />
       {topology.originData && (
@@ -87,7 +87,7 @@ const Graph: React.FC<Props> = (props: Props) => {
             >
               <DefsComponent />
               <GContainer id={TOPOLOGY_IDS.G_ROOT}>
-                <NodeWrapper nodes={topology.nodes} />
+                <NodeWrapper nodes={topology.nodes} accounts={topology.accounts} sites={topology.sites} regions={topology.regions} tgws={topology.tgws} />
               </GContainer>
             </StyledMap>
             {topology.originSegmentsData && topology.originSegmentsData.length ? <SegmentsLegend /> : null}

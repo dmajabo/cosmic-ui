@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { IPosition, ISelectedListItem, ITimeTypes, TIME_PERIOD } from 'lib/models/general';
+import { IObject, IPosition, ISelectedListItem, ITimeTypes, TIME_PERIOD } from 'lib/models/general';
 import { jsonClone } from 'lib/helpers/cloneHelper';
 // import { EntityTypes, IEntity } from 'lib/models/entites';
 import { INetworkOrg, ITopologyDataRes } from 'lib/api/ApiModels/Topology/apiModels';
@@ -13,6 +13,7 @@ import {
   FilterSeverityOptions,
   IPanelBar,
   ITempSegmentObjData,
+  ITGWNode,
   ITopoAccountNode,
   ITopoLink,
   ITopologyPreparedMapDataV2,
@@ -40,6 +41,14 @@ export interface TopologyV2ContextType {
   links: ITopoLink<any, any, any, any, any>[];
   segments: ITempSegmentObjData;
   nodes: (ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[];
+
+  accounts: IObject<ITopoAccountNode>;
+  sites: IObject<ITopoSitesNode>;
+  regions: IObject<ITopoRegionNode>;
+  tgws: IObject<ITGWNode>;
+
+  onChangeSitesPage: (sitesId: string, page: number) => void;
+
   selectedNode: any;
   onUnselectNode: () => void;
   onToogleTopoPanel: (_panel: TopologyPanelTypes, show: boolean, dataItem?: any) => void;
@@ -69,6 +78,12 @@ export function useTopologyV2Context(): TopologyV2ContextType {
   const [originData, setOriginData] = React.useState<INetworkOrg[] | null>(null);
   const [originSegmentsData, setOriginSegmentsData] = React.useState<ISegmentSegmentP[] | null>(null);
   const [nodes, setNodes] = React.useState<(ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[]>([]);
+
+  const [accounts, setAccountsNodes] = React.useState<IObject<ITopoAccountNode>>(null);
+  const [sites, setSitesNodes] = React.useState<IObject<ITopoSitesNode>>(null);
+  const [regions, setRegionsNodes] = React.useState<IObject<ITopoRegionNode>>(null);
+  const [tgws, setTgwNodes] = React.useState<IObject<ITGWNode>>(null);
+
   const [links, setLinks] = React.useState<ITopoLink<any, any, any, any, any>[]>([]);
   const [segments, setSegments] = React.useState<ITempSegmentObjData>(null);
   const [selectedNode, setSelectedNode] = React.useState<ITopoAccountNode | ITopoSitesNode | ITopoRegionNode>(null);
@@ -103,6 +118,11 @@ export function useTopologyV2Context(): TopologyV2ContextType {
 
   const onSetData = (res: ITopologyDataRes) => {
     if (!res) {
+      setAccountsNodes(null);
+      setSitesNodes(null);
+      setRegionsNodes(null);
+      setTgwNodes(null);
+
       setLinks([]);
       setSegments(null);
       setNodes([]);
@@ -117,12 +137,16 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     const _segmentsObj: ISegmentSegmentP[] = res.segments && res.segments.segments ? jsonClone(res.segments.segments) : [];
     const _data: ITopologyPreparedMapDataV2 = createTopology(entities, _orgObj, _segmentsObj);
     if (_data) {
+      setAccountsNodes(_data.accounts);
+      setSitesNodes(_data.sites);
+      setRegionsNodes(_data.regions);
+      setTgwNodes(_data.tgws);
+
       setLinks(_data.links);
       setSegments(_data.segments);
-      setNodes(_data.nodes);
       linksRef.current = _data.links;
       segmentsRef.current = _data.segments;
-      nodesRef.current = _data.nodes;
+      // nodesRef.current = _data.nodes;
     }
     setOriginSegmentsData(_segmentsObj);
     setOriginData(_orgObj);
@@ -218,78 +242,11 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     setTopoPanel(_obj);
   };
 
-  const onSelectFilterOption = (groupType: TopoFilterTypes, type: FilterEntityTypes | AlertSeverity, selected: boolean) => {
+  const onSelectFilterOption = (groupType: TopoFilterTypes, type: FilterEntityTypes | AlertSeverity | string, selected: boolean) => {
     if (groupType === TopoFilterTypes.Entities) {
       const _obj: FilterEntityOptions = jsonClone(entities);
       _obj[type].selected = selected;
       updateSessionStoragePreference(_obj, OKULIS_LOCAL_STORAGE_KEYS.OKULIS_PREFERENCE, StoragePreferenceKeys.TOPOLOGY_FILTER_ENTITY_OPTIONS);
-      if (type === FilterEntityTypes.PEERING_CONNECTIONS || type === FilterEntityTypes.WEB_ACLS) {
-        // const _links = linksRef.current.slice();
-        const _nodes = updateRegionHeight(nodesRef.current, _obj);
-        // _links.forEach(it => {
-        //   if (it.type !== TopoLinkTypes.NetworkNetworkLink) return;
-        //   const _offsetVpcY = getVnetOffsetTop(it.fromNode.parent, _obj.peer_connections.selected, _obj.web_acls.selected);
-        //   const _coord = getVnetCoord(it.fromNode.parent, it.fromNode.child, _offsetVpcY, NODES_CONSTANTS.REGION, NODES_CONSTANTS.NETWORK_VNET);
-        //   it.y1 = _coord.y;
-        // });
-        nodesRef.current = _nodes;
-        // linksRef.current = _links;
-        setNodes(_nodes);
-        // setLinks(_links);
-      }
-      if (type === FilterEntityTypes.SITES) {
-        const _nodes = nodesRef.current.slice();
-        // const _links = linksRef.current.slice();
-        _nodes.forEach(it => {
-          if (it.type !== TopoNodeTypes.SITES) return;
-          it.visible = _obj[type].selected;
-        });
-        // _links.forEach(it => {
-        //   if (it.type !== TopoLinkTypes.VPNLink) return;
-        //   it.visible = !!(_obj[type].selected && _obj.transit.selected);
-        // });
-        nodesRef.current = _nodes;
-        // linksRef.current = _links;
-        setNodes(_nodes);
-        // setLinks(_links);
-      }
-      if (type === FilterEntityTypes.TRANSIT) {
-        const _nodes = nodesRef.current.slice();
-        // const _links = linksRef.current.slice();
-        _nodes.forEach(it => {
-          if (it.type !== TopoNodeTypes.ACCOUNT) return;
-          it.visible = _obj[type].selected;
-        });
-        // _links.forEach(it => {
-        //   if (it.type === TopoLinkTypes.VPNLink) {
-        //     it.visible = !!(_obj.sites.selected && _obj[type].selected);
-        //   }
-        //   if (it.type === TopoLinkTypes.NetworkNetworkLink) {
-        //     it.visible = !!(_obj.vpc.selected && _obj[type].selected);
-        //   }
-        // });
-        nodesRef.current = _nodes;
-        // linksRef.current = _links;
-        setNodes(_nodes);
-        // setLinks(_links);
-      }
-      if (type === FilterEntityTypes.VPC) {
-        const _nodes = nodesRef.current.slice();
-        // const _links = linksRef.current.slice();
-        _nodes.forEach(it => {
-          if (it.type !== TopoNodeTypes.REGION) return;
-          it.visible = _obj[type].selected;
-        });
-        // _links.forEach(it => {
-        //   if (it.type === TopoLinkTypes.NetworkNetworkLink) {
-        //     it.visible = !!(_obj[type].selected && _obj.transit.selected);
-        //   }
-        // });
-        nodesRef.current = _nodes;
-        // linksRef.current = _links;
-        setNodes(_nodes);
-        // setLinks(_links);
-      }
       setEntities(_obj);
       return;
     }
@@ -298,6 +255,24 @@ export function useTopologyV2Context(): TopologyV2ContextType {
       _obj[type].selected = selected;
       updateSessionStoragePreference(_obj, OKULIS_LOCAL_STORAGE_KEYS.OKULIS_PREFERENCE, StoragePreferenceKeys.TOPOLOGY_FILTER_SEVERITY_OPTIONS);
       setSeverity(_obj);
+      return;
+    }
+    if (groupType === TopoFilterTypes.Accounts) {
+      const _obj: IObject<ITopoAccountNode> = jsonClone(accounts);
+      _obj[type].visible = selected;
+      setAccountsNodes(_obj);
+      return;
+    }
+    if (groupType === TopoFilterTypes.Sites) {
+      const _obj: IObject<ITopoSitesNode> = jsonClone(sites);
+      _obj[type].visible = selected;
+      setSitesNodes(_obj);
+      return;
+    }
+    if (groupType === TopoFilterTypes.Regions) {
+      const _obj: IObject<ITopoRegionNode> = jsonClone(regions);
+      _obj[type].visible = selected;
+      setRegionsNodes(_obj);
       return;
     }
   };
@@ -318,6 +293,12 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     setRegionStructures(_strs);
   };
 
+  const onChangeSitesPage = (siteId: string, page: number) => {
+    const _obj: IObject<ITopoSitesNode> = jsonClone(sites);
+    _obj[siteId].currentPage = page;
+    setSitesNodes(_obj);
+  };
+
   return {
     topoPanel,
     selectedPeriod,
@@ -327,6 +308,14 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     originSegmentsData,
     links,
     nodes,
+
+    accounts,
+    sites,
+    regions,
+    tgws,
+
+    onChangeSitesPage,
+
     segments,
     selectedNode,
     searchQuery,

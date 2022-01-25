@@ -1,14 +1,14 @@
 import React from 'react';
-import { ITGWNode, ITopoAccountNode, TopologyPanelTypes } from 'lib/hooks/Topology/models';
+import { ITopoAccountNode } from 'lib/hooks/Topology/models';
 import {
   // CollapseExpandState,
   IPosition,
 } from 'lib/models/general';
 // import { useDrag } from 'app/containers/Pages/TopologyPage/TopoMapV2/hooks/useDrag';
 import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
-import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
+// import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 import AccountCollapsedNode from './AccountCollapsedNode';
-import { onHoverNode, onUnHoverNode } from '../../../../Graph/helper';
+// import { onHoverNode, onUnHoverNode } from '../../../../Graph/helper';
 import AccountExpandNode from './AccountExpandNode';
 import TransitionContainer from '../../../TransitionContainer';
 // import CollapseExpandButton from '../../Containers/CollapseExpandButton';
@@ -18,7 +18,7 @@ interface Props {
 }
 
 const AccountNodeTopContainer: React.FC<Props> = (props: Props) => {
-  const { topology } = useTopologyV2DataContext();
+  // const { topology } = useTopologyV2DataContext();
   // const { onUpdate, onUnsubscribeDrag } = useDrag(
   //   {
   //     id: `${NODES_CONSTANTS.ACCOUNT.type}${props.account.uiId}`,
@@ -82,39 +82,37 @@ const AccountNodeTopContainer: React.FC<Props> = (props: Props) => {
   //   topology.onCollapseExpandNode(props.dataItem, false);
   // };
 
-  const onTgwClick = (item: ITGWNode) => {
-    topology.onToogleTopoPanel(TopologyPanelTypes.Wedge, true, item);
-  };
+  // const onTgwClick = (item: ITGWNode) => {
+  //   topology.onToogleTopoPanel(TopologyPanelTypes.Wedge, true, item);
+  // };
 
-  const onMouseEnter = () => {
-    onHoverNode(`${NODES_CONSTANTS.ACCOUNT.type}${props.account.uiId}`);
-  };
+  // const onMouseEnter = () => {
+  //   onHoverNode(`${NODES_CONSTANTS.ACCOUNT.type}${props.account.uiId}`);
+  // };
 
-  const onMouseLeave = () => {
-    onUnHoverNode(`${NODES_CONSTANTS.ACCOUNT.type}${props.account.uiId}`);
-  };
+  // const onMouseLeave = () => {
+  //   onUnHoverNode(`${NODES_CONSTANTS.ACCOUNT.type}${props.account.uiId}`);
+  // };
 
   if (!pos) return null;
   return (
     <TransitionContainer id={`wrapper${NODES_CONSTANTS.ACCOUNT.type}${props.account.uiId}`} stateIn={props.account.visible} origin="unset" transform="none">
       <g
         id={`${NODES_CONSTANTS.ACCOUNT.type}${props.account.uiId}`}
-        onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}
+        // onMouseEnter={onMouseEnter}
+        // onMouseLeave={onMouseLeave}
         className="topologyNode"
         transform={`translate(${pos.x}, ${pos.y})`}
         data-type={NODES_CONSTANTS.ACCOUNT.type}
       >
-        {props.account.collapsed && (
-          <AccountCollapsedNode
-            dragId={`drag${NODES_CONSTANTS.ACCOUNT.type}${props.account.uiId}`}
-            id={props.account.dataItem.id}
-            name={props.account.dataItem.name}
-            childrenCount={props.account.children.length}
-            show={props.account.collapsed}
-          />
-        )}
-        <AccountExpandNode dragId={`drag${NODES_CONSTANTS.ACCOUNT.type}${props.account.uiId}`} account={props.account} show={!props.account.collapsed} onTgwClick={onTgwClick} />
+        <AccountCollapsedNode
+          dragId={`drag${NODES_CONSTANTS.ACCOUNT.type}${props.account.uiId}`}
+          id={props.account.dataItem.id}
+          name={props.account.dataItem.name}
+          childrenCount={props.account.children.length}
+          show={props.account.collapsed}
+        />
+        <AccountExpandNode dragId={`drag${NODES_CONSTANTS.ACCOUNT.type}${props.account.uiId}`} account={props.account} show={!props.account.collapsed} />
         {/* <CollapseExpandButton
           id={`expandCollapse${props.dataItem.id}`}
           isCollapse={!props.dataItem.collapsed}

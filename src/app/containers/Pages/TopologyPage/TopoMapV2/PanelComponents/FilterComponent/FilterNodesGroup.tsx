@@ -2,32 +2,33 @@ import React from 'react';
 import { FilterGroupItem, GroupItemLabel } from 'app/components/Basic/FilterComponents/styles';
 import SimpleCheckbox from 'app/components/Inputs/Checkbox/SimpleCheckbox';
 import { TopoFilterTypes } from 'lib/hooks/Topology/models';
+import { IObject } from 'lib/models/general';
 
 interface Props {
   type: TopoFilterTypes;
-  data: any[];
-  onClick: (type: TopoFilterTypes, item: any, selected: boolean) => void;
+  data: IObject<any>;
+  onClick: (type: TopoFilterTypes, id: string, selected: boolean) => void;
 }
 
 const FilterNodesGroup: React.FC<Props> = (props: Props) => {
   const onClick = (node: any) => {
-    props.onClick(props.type, node, !node.visible);
+    props.onClick(props.type, node.dataItem.id, !node.visible);
   };
   return (
     <>
-      {props.data.map((node, index) => {
+      {Object.keys(props.data).map((key, index) => {
         return (
-          <FilterGroupItem key={`${props.type}${node.uiId}`}>
+          <FilterGroupItem key={`${props.type}${props.data[key].uiId}`}>
             <SimpleCheckbox
-              isChecked={node.visible}
+              isChecked={props.data[key].visible}
               wrapStyles={{ margin: '0 10px 0 0' }}
               // width?: string;
               // height?: string;
               // iconSize?: number;
-              toggleCheckboxChange={() => onClick(node)}
+              toggleCheckboxChange={() => onClick(props.data[key])}
               inputStyles={{ pointerEvents: 'none' }}
             />
-            <GroupItemLabel>{node.dataItem.name}</GroupItemLabel>
+            <GroupItemLabel>{props.data[key].dataItem.name}</GroupItemLabel>
           </FilterGroupItem>
         );
       })}

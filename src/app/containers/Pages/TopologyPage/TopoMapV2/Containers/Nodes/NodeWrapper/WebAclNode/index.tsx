@@ -1,5 +1,5 @@
 import React from 'react';
-import { ICollapseStyles, ICounterStyle, ILabelHtmlStyles, NODES_CONSTANTS } from '../../../../model';
+import { ICollapseStyles, ICounterStyle, ILabelHtmlStyles, NODES_CONSTANTS, TOPOLOGY_IDS } from '../../../../model';
 import { INetworkWebAclNode } from 'lib/hooks/Topology/models';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 // import NodeCounter from '../../Containers/NodeCounter';
@@ -8,6 +8,7 @@ import HtmlNodeTooltip from '../../Containers/HtmlNodeTooltip';
 import { select } from 'd3-selection';
 
 interface Props {
+  parentId: string;
   x: number;
   y: number;
   item: INetworkWebAclNode;
@@ -30,6 +31,7 @@ const WebAclNode: React.FC<Props> = (props: Props) => {
   }, [topology.selectedNode]);
 
   const onMouseEnter = () => {
+    select(`#${TOPOLOGY_IDS.SVG}`).selectAll('.htmlNodeTooltip').style('display', 'none');
     const _node = select(nodeRef.current);
     _node.raise();
     const tooltip = _node.select(`#tooltip${props.item.uiId}`);

@@ -1,121 +1,189 @@
 import { ICollapseStyles, NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
-import { IPosition, ISize, STANDART_DISPLAY_RESOLUTION_V2 } from 'lib/models/general';
-import { DirectionType, FilterEntityOptions, IDeviceNode, ITGWNode, ITopoAccountNode, ITopoRegionNode, ITopoSitesNode } from '../models';
+import { IObject, IPosition, ISize, STANDART_DISPLAY_RESOLUTION_V2 } from 'lib/models/general';
+import { DirectionType, FilterEntityOptions, IDeviceNode, ITopoAccountNode, ITopoRegionNode, ITopoSitesNode } from '../models';
 import { getCollapseExpandState } from './buildNodeHelpers';
-import { centeredTopLevelItemsInRow, getChildContainerWidth, getChildContainerHeight, getRowsWidth, getStartChildRowOffsetX, getTotalNodeHeight, getTotalNodeWidth } from './sizeHelpers';
+import { getChildContainerWidth, getChildContainerHeight, getRowsWidth, getStartChildRowOffsetX, getTotalNodeHeight, getTotalNodeWidth } from './sizeHelpers';
 
-export const updateTopLevelItems = (filter: FilterEntityOptions, regions: ITopoRegionNode[], accounts: ITopoAccountNode[], sites: ITopoSitesNode[]) => {
+export const updateTopLevelItems = (filter: FilterEntityOptions, regions: IObject<ITopoRegionNode>, accounts: IObject<ITopoAccountNode>, sites: IObject<ITopoSitesNode>) => {
   let offsetY = 0;
   let regionSizes: ISize = { width: 0, height: 0 };
   let accountSizes: ISize = { width: 0, height: 0 };
   let sitesSizes: ISize = { width: 0, height: 0 };
-  if (regions && regions.length) {
+  if (regions && Object.keys(regions).length) {
     regionSizes = updateRegionItems(regions, filter);
     offsetY = offsetY + regionSizes.height + NODES_CONSTANTS.REGION.spaceY;
   }
-  if (accounts && accounts.length) {
+  if (accounts && Object.keys(accounts).length) {
     accountSizes = updateAccountItems(accounts, offsetY);
     offsetY = offsetY + accountSizes.height + NODES_CONSTANTS.ACCOUNT.spaceY;
   }
-  if (sites && sites.length) {
+  if (sites && Object.keys(sites).length) {
     sitesSizes = updateSitesItems(sites, offsetY);
     offsetY += sitesSizes.height;
   }
-  centeredTopLevelNodes(regions, accounts, sites, regionSizes, accountSizes, sitesSizes);
+  setRegionsCoord(filter, regions, regionSizes, STANDART_DISPLAY_RESOLUTION_V2.width);
+  setAccountsCoord(accounts, accountSizes, STANDART_DISPLAY_RESOLUTION_V2.width);
+  setSitesCoord(sites, sitesSizes, STANDART_DISPLAY_RESOLUTION_V2.width);
 };
 
-const centeredTopLevelNodes = (regions: ITopoRegionNode[], accounts: ITopoAccountNode[], sites: ITopoSitesNode[], regionSize: ISize, accountSize: ISize, sitesSize: ISize) => {
-  centeredTopLevelItemsInRow(regions, regionSize, STANDART_DISPLAY_RESOLUTION_V2.width);
-  centeredTopLevelItemsInRow(accounts, accountSize, STANDART_DISPLAY_RESOLUTION_V2.width);
-  centeredTopLevelItemsInRow(sites, sitesSize, STANDART_DISPLAY_RESOLUTION_V2.width);
-};
-
-export const updateRegionItems = (items: ITopoRegionNode[], filter: FilterEntityOptions): ISize => {
-  if (!items || !items.length) return { width: 0, height: 0 };
-  let offsetX = 0;
-  let maxNodeHeight = 0;
-  items.forEach((a, i) => {
-    a.expandedSize.width = NODES_CONSTANTS.REGION.expanded.minWidth;
-    a.expandedSize.height = NODES_CONSTANTS.REGION.expanded.minHeight;
-    a.collapsed = getCollapseExpandState(filter, a.children, a.peerConnections, a.webAcls);
-    const { webHeight, peerHeight, childrenHeight } = getRegionChildContainersHeight(a, filter);
-    const { webWidth, peerWidth, childrenWidth } = getRegionChildContainersWidth(a);
-    const _height = getTotalNodeHeight(webHeight + peerHeight + childrenHeight, NODES_CONSTANTS.REGION.headerHeight, NODES_CONSTANTS.REGION.expanded.contentPadding);
-    const _width = getTotalNodeWidth(Math.max(webWidth, peerWidth, childrenWidth), NODES_CONSTANTS.REGION.expanded.contentPadding * 2);
-    a.y = 0;
-    a.expandedSize.width = Math.max(NODES_CONSTANTS.REGION.expanded.minWidth, _width);
-    a.expandedSize.height = Math.max(NODES_CONSTANTS.REGION.expanded.minHeight, _height);
-    if (a.children && a.children.length) {
-      setUpRegionChildCoord(a.children, a.expandedSize.width, NODES_CONSTANTS.NETWORK_VNET.collapse);
+export const setRegionsCoord = (filter: FilterEntityOptions, items: IObject<any>, size: ISize, svgWidth: number) => {
+  if (!items || !Object.keys(items).length) return;
+  const hvw = svgWidth / 2;
+  Object.keys(items).forEach(key => {
+    items[key].x = items[key].x + hvw - size.width / 2;
+    const itemh = items[key].collapsed ? items[key].collapsedSize.height : items[key].expandedSize.height;
+    if (itemh < size.height) {
+      items[key].y = items[key].y + size.height / 2 - itemh / 2;
     }
-    if (a.peerConnections && a.peerConnections.length) {
-      setUpRegionChildCoord(a.peerConnections, a.expandedSize.width, NODES_CONSTANTS.PEERING_CONNECTION.collapse);
+    let _offsetY = 0;
+    if (items[key].webAcls && items[key].webAcls.length) {
+      setUpRegionChildCoord(items[key], items[key].webAcls, items[key].expandedSize.width, NODES_CONSTANTS.WEB_ACL.collapse, _offsetY);
+      if (filter.web_acls.selected) {
+        _offsetY += getRegionChildrenOffsetY(items[key].webAcls.length, NODES_CONSTANTS.WEB_ACL.collapse);
+      }
     }
-    if (a.webAcls && a.webAcls.length) {
-      setUpRegionChildCoord(a.webAcls, a.expandedSize.width, NODES_CONSTANTS.WEB_ACL.collapse);
+    if (items[key].peerConnections && items[key].peerConnections.length) {
+      setUpRegionChildCoord(items[key], items[key].peerConnections, items[key].expandedSize.width, NODES_CONSTANTS.PEERING_CONNECTION.collapse, _offsetY);
+      if (filter.peer_connections.selected) {
+        _offsetY += getRegionChildrenOffsetY(items[key].peerConnections.length, NODES_CONSTANTS.PEERING_CONNECTION.collapse);
+      }
     }
-    if (a.collapsed) {
-      maxNodeHeight = Math.max(maxNodeHeight, a.collapsedSize.height);
-      a.x = offsetX;
-      offsetX = i !== items.length - 1 ? a.x + a.collapsedSize.width + NODES_CONSTANTS.REGION.spaceX : a.x + a.collapsedSize.width;
-    } else {
-      a.x = offsetX;
-      maxNodeHeight = Math.max(maxNodeHeight, _height);
-      offsetX = i !== items.length - 1 ? offsetX + a.expandedSize.width + NODES_CONSTANTS.REGION.spaceX : offsetX + a.expandedSize.width;
+    if (items[key].children && items[key].children.length) {
+      setUpRegionChildCoord(items[key], items[key].children, items[key].expandedSize.width, NODES_CONSTANTS.NETWORK_VNET.collapse, _offsetY);
+      _offsetY += getRegionChildrenOffsetY(items[key].children.length, NODES_CONSTANTS.NETWORK_VNET.collapse);
     }
   });
-  return { width: offsetX, height: maxNodeHeight };
 };
 
-export const updateSitesItems = (items: ITopoSitesNode[], offsetY: number): ISize => {
-  if (!items || !items.length) return { width: 0, height: 0 };
-  let offsetX = 0;
-  let maxNodeHeight = 0;
-  items.forEach((gr, i) => {
-    gr.expandedSize.width = NODES_CONSTANTS.SITES.expanded.minWidth;
-    gr.expandedSize.height = NODES_CONSTANTS.SITES.expanded.minHeight;
-    if (!gr.children || !gr.children.length) {
-      gr.collapsed = true;
+const setUpRegionChildCoord = (region: ITopoRegionNode, items: any[], nodeWidth: number, styleObj: ICollapseStyles, offsetY: number) => {
+  if (!items || !items.length) return;
+  const w = styleObj.r ? styleObj.r * 2 : styleObj.width;
+  const h = styleObj.r ? styleObj.r * 2 : styleObj.height;
+  items.forEach((subArray, rowIndex) => {
+    const offsetX = getStartChildRowOffsetX(nodeWidth, subArray.length, styleObj.width, styleObj.spaceX);
+    subArray.forEach((it, index) => {
+      it.x = index === 0 ? region.x + offsetX : region.x + offsetX + (w + styleObj.spaceX) * index;
+      it.y =
+        rowIndex === 0
+          ? region.y + NODES_CONSTANTS.REGION.headerHeight + NODES_CONSTANTS.REGION.expanded.contentPadding + offsetY
+          : region.y + NODES_CONSTANTS.REGION.headerHeight + NODES_CONSTANTS.REGION.expanded.contentPadding + (h + styleObj.spaceY) * rowIndex + offsetY;
+    });
+  });
+};
+
+const getRegionChildrenOffsetY = (rows: number, styleObj: ICollapseStyles): number => {
+  const h = styleObj.r ? styleObj.r * 2 : styleObj.height;
+  const y = rows * (h + styleObj.spaceY) + NODES_CONSTANTS.REGION.expanded.contentPadding;
+  return y;
+};
+
+export const setAccountsCoord = (items: IObject<ITopoAccountNode>, size: ISize, svgWidth: number) => {
+  if (!items || !Object.keys(items).length) return;
+  const hvw = svgWidth / 2;
+  Object.keys(items).forEach(key => {
+    items[key].x = items[key].x + hvw - size.width / 2;
+    const itemh = items[key].collapsed ? items[key].collapsedSize.height : items[key].expandedSize.height;
+    if (itemh < size.height) {
+      items[key].y = items[key].y + size.height / 2 - itemh / 2;
     }
-    if (gr.children && gr.children.length && gr.children[0].length) {
-      const _rowWidth = getRowsWidth(gr.children[0][0].itemsInRow, NODES_CONSTANTS.DEVICE.collapse.width, NODES_CONSTANTS.DEVICE.collapse.spaceX);
-      const _width = getTotalNodeWidth(_rowWidth, NODES_CONSTANTS.SITES.expanded.contentPadding * 2);
-      const _rows = Math.max(1, Math.ceil(gr.children[0].length / gr.children[0][0].itemsInRow));
-      const _rowsHeight = getChildContainerHeight(true, _rows, NODES_CONSTANTS.SITES.expanded.contentPadding, NODES_CONSTANTS.DEVICE.collapse.height, NODES_CONSTANTS.DEVICE.collapse.spaceY);
-      const _height = getTotalNodeHeight(_rowsHeight, NODES_CONSTANTS.SITES.headerHeight, NODES_CONSTANTS.SITES.expanded.contentPadding);
-      gr.expandedSize.width = Math.max(_width, NODES_CONSTANTS.SITES.expanded.minWidth);
-      gr.expandedSize.height = Math.max(_height, NODES_CONSTANTS.SITES.expanded.minHeight);
-      const siteCenterX = gr.expandedSize.width / 2;
-      gr.children.forEach(page => {
-        setUpDevicesCoord(page, siteCenterX);
+    if (items[key].children && items[key].children.length) {
+      const accountCenterX = items[key].expandedSize.width / 2;
+      setUpTgwCoord(items[key], accountCenterX);
+    }
+  });
+};
+
+export const setSitesCoord = (items: IObject<ITopoSitesNode>, size: ISize, svgWidth: number) => {
+  if (!items || !Object.keys(items).length) return;
+  const hvw = svgWidth / 2;
+  Object.keys(items).forEach(key => {
+    items[key].x = items[key].x + hvw - size.width / 2;
+    const itemh = items[key].collapsed ? items[key].collapsedSize.height : items[key].expandedSize.height;
+    if (itemh < size.height) {
+      items[key].y = items[key].y + size.height / 2 - itemh / 2;
+    }
+    if (items[key].children && items[key].children.length && items[key].children[0].length) {
+      const siteCenterX = items[key].expandedSize.width / 2;
+      items[key].children.forEach(page => {
+        setUpDevicesCoord(items[key], page, siteCenterX);
       });
     }
-    gr.y = offsetY;
-    if (gr.collapsed) {
-      maxNodeHeight = Math.max(maxNodeHeight, gr.collapsedSize.height);
-      gr.x = offsetX;
-      offsetX = i !== items.length - 1 ? gr.x + gr.collapsedSize.width + NODES_CONSTANTS.SITES.spaceX : gr.x + gr.collapsedSize.width;
+  });
+};
+
+export const updateRegionItems = (items: IObject<ITopoRegionNode>, filter: FilterEntityOptions): ISize => {
+  if (!items || !Object.keys(items).length) return { width: 0, height: 0 };
+  let offsetX = 0;
+  let maxNodeHeight = 0;
+  Object.keys(items).forEach((key, i) => {
+    items[key].expandedSize.width = NODES_CONSTANTS.REGION.expanded.minWidth;
+    items[key].expandedSize.height = NODES_CONSTANTS.REGION.expanded.minHeight;
+    items[key].collapsed = getCollapseExpandState(filter, items[key].children, items[key].peerConnections, items[key].webAcls);
+    const { webHeight, peerHeight, childrenHeight } = getRegionChildContainersHeight(items[key], filter);
+    const { webWidth, peerWidth, childrenWidth } = getRegionChildContainersWidth(items[key]);
+    const _height = getTotalNodeHeight(webHeight + peerHeight + childrenHeight, NODES_CONSTANTS.REGION.headerHeight, NODES_CONSTANTS.REGION.expanded.contentPadding);
+    const _width = getTotalNodeWidth(Math.max(webWidth, peerWidth, childrenWidth), NODES_CONSTANTS.REGION.expanded.contentPadding * 2);
+    items[key].y = 0;
+    items[key].expandedSize.width = Math.max(NODES_CONSTANTS.REGION.expanded.minWidth, _width);
+    items[key].expandedSize.height = Math.max(NODES_CONSTANTS.REGION.expanded.minHeight, _height);
+    if (items[key].collapsed) {
+      maxNodeHeight = Math.max(maxNodeHeight, items[key].collapsedSize.height);
+      items[key].x = offsetX;
+      offsetX = i !== Object.keys(items).length - 1 ? items[key].x + items[key].collapsedSize.width + NODES_CONSTANTS.REGION.spaceX : items[key].x + items[key].collapsedSize.width;
     } else {
-      gr.x = offsetX;
-      maxNodeHeight = Math.max(maxNodeHeight, gr.expandedSize.height);
-      offsetX = i !== items.length - 1 ? offsetX + gr.expandedSize.width + NODES_CONSTANTS.SITES.spaceX : offsetX + gr.expandedSize.width;
+      items[key].x = offsetX;
+      maxNodeHeight = Math.max(maxNodeHeight, _height);
+      offsetX = i !== Object.keys(items).length - 1 ? offsetX + items[key].expandedSize.width + NODES_CONSTANTS.REGION.spaceX : offsetX + items[key].expandedSize.width;
     }
   });
   return { width: offsetX, height: maxNodeHeight };
 };
 
-export const updateAccountItems = (items: ITopoAccountNode[], offsetY: number): ISize => {
-  if (!items || !items.length) return { width: 0, height: 0 };
+export const updateSitesItems = (items: IObject<ITopoSitesNode>, offsetY: number): ISize => {
+  if (!items || !Object.keys(items).length) return { width: 0, height: 0 };
   let offsetX = 0;
   let maxNodeHeight = 0;
-  items.forEach((a, i) => {
-    a.expandedSize.width = NODES_CONSTANTS.ACCOUNT.expanded.minWidth;
-    a.expandedSize.height = NODES_CONSTANTS.ACCOUNT.expanded.minHeight;
-    if (!a.children || !a.children.length) {
-      a.collapsed = true;
+  Object.keys(items).forEach((key, i) => {
+    items[key].expandedSize.width = NODES_CONSTANTS.SITES.expanded.minWidth;
+    items[key].expandedSize.height = NODES_CONSTANTS.SITES.expanded.minHeight;
+    if (!items[key].children || !items[key].children.length) {
+      items[key].collapsed = true;
     }
-    if (a.children && a.children.length) {
-      const _rowWidth = getRowsWidth(a.children.length, NODES_CONSTANTS.NETWORK_WEDGE.collapse.width, NODES_CONSTANTS.NETWORK_WEDGE.collapse.spaceX);
+    if (items[key].children && items[key].children.length && items[key].children[0].length) {
+      const _rowWidth = getRowsWidth(items[key].children[0][0].itemsInRow, NODES_CONSTANTS.DEVICE.collapse.width, NODES_CONSTANTS.DEVICE.collapse.spaceX);
+      const _width = getTotalNodeWidth(_rowWidth, NODES_CONSTANTS.SITES.expanded.contentPadding * 2);
+      const _rows = Math.max(1, Math.ceil(items[key].children[0].length / items[key].children[0][0].itemsInRow));
+      const _rowsHeight = getChildContainerHeight(true, _rows, NODES_CONSTANTS.SITES.expanded.contentPadding, NODES_CONSTANTS.DEVICE.collapse.height, NODES_CONSTANTS.DEVICE.collapse.spaceY);
+      const _height = getTotalNodeHeight(_rowsHeight, NODES_CONSTANTS.SITES.headerHeight, NODES_CONSTANTS.SITES.expanded.contentPadding);
+      items[key].expandedSize.width = Math.max(_width, NODES_CONSTANTS.SITES.expanded.minWidth);
+      items[key].expandedSize.height = Math.max(_height, NODES_CONSTANTS.SITES.expanded.minHeight);
+    }
+    items[key].y = offsetY;
+    if (items[key].collapsed) {
+      maxNodeHeight = Math.max(maxNodeHeight, items[key].collapsedSize.height);
+      items[key].x = offsetX;
+      offsetX = i !== Object.keys(items).length - 1 ? items[key].x + items[key].collapsedSize.width + NODES_CONSTANTS.SITES.spaceX : items[key].x + items[key].collapsedSize.width;
+    } else {
+      items[key].x = offsetX;
+      maxNodeHeight = Math.max(maxNodeHeight, items[key].expandedSize.height);
+      offsetX = i !== Object.keys(items).length - 1 ? offsetX + items[key].expandedSize.width + NODES_CONSTANTS.SITES.spaceX : offsetX + items[key].expandedSize.width;
+    }
+  });
+  return { width: offsetX, height: maxNodeHeight };
+};
+
+export const updateAccountItems = (items: IObject<ITopoAccountNode>, offsetY: number): ISize => {
+  if (!items || !Object.keys(items).length) return { width: 0, height: 0 };
+  let offsetX = 0;
+  let maxNodeHeight = 0;
+  Object.keys(items).forEach((key, i) => {
+    items[key].expandedSize.width = NODES_CONSTANTS.ACCOUNT.expanded.minWidth;
+    items[key].expandedSize.height = NODES_CONSTANTS.ACCOUNT.expanded.minHeight;
+    if (!items[key].children || !items[key].children.length) {
+      items[key].collapsed = true;
+    }
+    if (items[key].children && items[key].children.length) {
+      const _rowWidth = getRowsWidth(items[key].children.length, NODES_CONSTANTS.NETWORK_WEDGE.collapse.width, NODES_CONSTANTS.NETWORK_WEDGE.collapse.spaceX);
       const _width = getTotalNodeWidth(_rowWidth, NODES_CONSTANTS.ACCOUNT.expanded.contentPadding * 2);
       const _rowsHeight = getChildContainerHeight(
         true,
@@ -125,56 +193,42 @@ export const updateAccountItems = (items: ITopoAccountNode[], offsetY: number): 
         NODES_CONSTANTS.NETWORK_WEDGE.collapse.spaceY,
       );
       const _height = getTotalNodeHeight(_rowsHeight, NODES_CONSTANTS.ACCOUNT.headerHeight, NODES_CONSTANTS.ACCOUNT.expanded.contentPadding);
-      a.expandedSize.width = Math.max(_width, NODES_CONSTANTS.ACCOUNT.expanded.minWidth);
-      a.expandedSize.height = Math.max(_height, NODES_CONSTANTS.ACCOUNT.expanded.minHeight);
-      const accountCenterX = a.expandedSize.width / 2;
-      setUpTgwCoord(a.children, accountCenterX);
+      items[key].expandedSize.width = Math.max(_width, NODES_CONSTANTS.ACCOUNT.expanded.minWidth);
+      items[key].expandedSize.height = Math.max(_height, NODES_CONSTANTS.ACCOUNT.expanded.minHeight);
     }
-    a.y = offsetY;
-    if (a.collapsed) {
-      maxNodeHeight = Math.max(maxNodeHeight, a.collapsedSize.height);
-      a.x = offsetX;
-      offsetX = i !== items.length - 1 ? a.x + a.collapsedSize.width + NODES_CONSTANTS.ACCOUNT.spaceX : a.x + a.collapsedSize.width;
+    items[key].y = offsetY;
+    if (items[key].collapsed) {
+      maxNodeHeight = Math.max(maxNodeHeight, items[key].collapsedSize.height);
+      items[key].x = offsetX;
+      offsetX = i !== Object.keys(items).length - 1 ? items[key].x + items[key].collapsedSize.width + NODES_CONSTANTS.ACCOUNT.spaceX : items[key].x + items[key].collapsedSize.width;
     } else {
-      a.x = offsetX;
-      maxNodeHeight = Math.max(maxNodeHeight, a.expandedSize.height);
-      offsetX = i !== items.length - 1 ? offsetX + a.expandedSize.width + NODES_CONSTANTS.ACCOUNT.spaceX : offsetX + a.expandedSize.width;
+      items[key].x = offsetX;
+      maxNodeHeight = Math.max(maxNodeHeight, items[key].expandedSize.height);
+      offsetX = i !== Object.keys(items).length - 1 ? offsetX + items[key].expandedSize.width + NODES_CONSTANTS.ACCOUNT.spaceX : offsetX + items[key].expandedSize.width;
     }
   });
   return { width: offsetX, height: maxNodeHeight };
 };
 
-const setUpRegionChildCoord = (items: any[], nodeWidth: number, styleObj: ICollapseStyles) => {
-  const w = styleObj.r ? styleObj.r * 2 : styleObj.width;
-  const h = styleObj.r ? styleObj.r * 2 : styleObj.height;
-  items.forEach((subArray, rowIndex) => {
-    const offsetX = getStartChildRowOffsetX(nodeWidth, subArray.length, styleObj.width, styleObj.spaceX);
-    subArray.forEach((it, index) => {
-      it.x = index === 0 ? offsetX : offsetX + (w + styleObj.spaceX) * index;
-      it.y = rowIndex === 0 ? 0 : (h + styleObj.spaceY) * rowIndex;
-    });
-  });
-};
-
-const setUpDevicesCoord = (items: IDeviceNode[], siteCenterX: number) => {
+const setUpDevicesCoord = (site: ITopoSitesNode, items: IDeviceNode[], siteCenterX: number) => {
   if (!items || !items.length) return;
   const _offsetX = NODES_CONSTANTS.DEVICE.collapse.width + NODES_CONSTANTS.DEVICE.collapse.spaceX;
   const _offsetY = NODES_CONSTANTS.DEVICE.collapse.height + NODES_CONSTANTS.DEVICE.collapse.spaceY;
   items.forEach(it => {
     const _halfRowWidth = (it.itemsInRow * _offsetX - NODES_CONSTANTS.DEVICE.collapse.spaceX) / 2;
-    it.x = it.childIndex * _offsetX + siteCenterX - _halfRowWidth;
-    it.y = it.rowIndex * _offsetY;
+    it.x = site.x + it.childIndex * _offsetX + siteCenterX - _halfRowWidth;
+    it.y = site.y + NODES_CONSTANTS.SITES.headerHeight + NODES_CONSTANTS.SITES.expanded.contentPadding + it.rowIndex * _offsetY;
   });
 };
 
-const setUpTgwCoord = (items: ITGWNode[], accountCenterX: number) => {
-  if (!items || !items.length) return;
+const setUpTgwCoord = (account: ITopoAccountNode, accountCenterX: number) => {
+  if (!account.children || !account.children.length) return;
   const _offsetX = NODES_CONSTANTS.NETWORK_WEDGE.collapse.width + NODES_CONSTANTS.NETWORK_WEDGE.collapse.spaceX;
   const _offsetY = NODES_CONSTANTS.NETWORK_WEDGE.collapse.height + NODES_CONSTANTS.NETWORK_WEDGE.collapse.spaceY;
-  const _halfRowWidth = (items.length * _offsetX - NODES_CONSTANTS.NETWORK_WEDGE.collapse.spaceX) / 2;
-  items.forEach(it => {
-    it.x = it.childIndex * _offsetX + accountCenterX - _halfRowWidth;
-    it.y = it.rowIndex * _offsetY;
+  const _halfRowWidth = (account.children.length * _offsetX - NODES_CONSTANTS.NETWORK_WEDGE.collapse.spaceX) / 2;
+  account.children.forEach(it => {
+    it.x = account.x + it.childIndex * _offsetX + accountCenterX - _halfRowWidth;
+    it.y = account.y + NODES_CONSTANTS.ACCOUNT.headerHeight + NODES_CONSTANTS.ACCOUNT.expanded.contentPadding + it.rowIndex * _offsetY;
   });
 };
 

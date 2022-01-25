@@ -12,7 +12,6 @@ import {
   INetworkWebAclNode,
   FilterEntityOptions,
   ITopoSitesNode,
-  ITempSegmentObjData,
 } from '../models';
 import uuid from 'react-uuid';
 import { getChildContainerHeight, getTotalNodeHeight } from './sizeHelpers';
@@ -63,7 +62,7 @@ export const createSitesNode = (item: ISegmentSegmentP): ITopoSitesNode => {
     collapsed: false,
     children: [],
     links: [],
-    currentPage: 1,
+    currentPage: 0,
   };
   return _obj;
 };
@@ -95,10 +94,11 @@ export const createTopoRegionNode = (_dataItem: INetworkRegion, _orgId: string):
   return _obj;
 };
 
-export const createWedgeNode = (org: INetworkOrg, orgIndex: number, rowIndex: number, childIndex: number, node: INetworkwEdge): ITGWNode => {
+export const createWedgeNode = (parentId: string, org: INetworkOrg, orgIndex: number, rowIndex: number, childIndex: number, node: INetworkwEdge): ITGWNode => {
   const _x = childIndex * (NODES_CONSTANTS.NETWORK_WEDGE.collapse.width + NODES_CONSTANTS.NETWORK_WEDGE.collapse.spaceX);
   return {
     ...node,
+    parentId: parentId,
     uiId: uuid(),
     vendorType: org.vendorType,
     visible: true,
@@ -112,18 +112,10 @@ export const createWedgeNode = (org: INetworkOrg, orgIndex: number, rowIndex: nu
   };
 };
 
-export const createVnetNode = (
-  org: INetworkOrg,
-  itemsInRow: number,
-  orgIndex: number,
-  rowIndex: number,
-  childIndex: number,
-  node: INetworkVNetwork,
-  _segmentsObj: ITempSegmentObjData,
-): INetworkVNetNode => {
+export const createVnetNode = (org: INetworkOrg, itemsInRow: number, orgIndex: number, rowIndex: number, childIndex: number, node: INetworkVNetwork, site: ITopoSitesNode): INetworkVNetNode => {
   const _x = childIndex * (NODES_CONSTANTS.NETWORK_VNET.collapse.width + NODES_CONSTANTS.NETWORK_VNET.collapse.spaceX);
   const _y = rowIndex * (NODES_CONSTANTS.NETWORK_VNET.collapse.height + NODES_CONSTANTS.NETWORK_VNET.collapse.spaceY);
-  const isPresentSegmentColor = !!(_segmentsObj && _segmentsObj[node.segmentId]);
+  const isPresentSegmentColor = !!site;
   return {
     ...node,
     visible: true,
@@ -137,8 +129,8 @@ export const createVnetNode = (
     uiId: uuid(),
     vendorType: org.vendorType,
     nodeType: TopoNodeTypes.VNET,
-    segmentColor: isPresentSegmentColor ? _segmentsObj[node.segmentId].dataItem.color : NODES_CONSTANTS.NETWORK_VNET.nodeBgColor,
-    segmentName: isPresentSegmentColor ? _segmentsObj[node.segmentId].dataItem.name : null,
+    segmentColor: isPresentSegmentColor ? site.dataItem.color : NODES_CONSTANTS.NETWORK_VNET.nodeBgColor,
+    segmentName: isPresentSegmentColor ? site.dataItem.name : null,
     nodeIconColor: isPresentSegmentColor ? 'var(--_primaryWhiteColor)' : 'var(--_vnetIconBg)',
   };
 };
@@ -188,8 +180,8 @@ export const createWebAclNode = (org: INetworkOrg, itemsInRow: number, orgIndex:
   };
 };
 
-export const createDeviceNode = (org: INetworkOrg, orgIndex: number, node: INetworkDevice, _segmentsObj: ITempSegmentObjData): IDeviceNode => {
-  const isPresentSegmentColor = !!(_segmentsObj && _segmentsObj[node.segmentId]);
+export const createDeviceNode = (org: INetworkOrg, orgIndex: number, node: INetworkDevice, site: ITopoSitesNode): IDeviceNode => {
+  const isPresentSegmentColor = !!site;
   return {
     ...node,
     uiId: uuid(),
@@ -204,7 +196,7 @@ export const createDeviceNode = (org: INetworkOrg, orgIndex: number, node: INetw
     orgId: org.id,
     vendorType: org.vendorType,
     nodeType: TopoNodeTypes.DEVICE,
-    segmentColor: isPresentSegmentColor ? _segmentsObj[node.segmentId].dataItem.color : NODES_CONSTANTS.NETWORK_VNET.nodeBgColor,
+    segmentColor: isPresentSegmentColor ? site.dataItem.color : NODES_CONSTANTS.NETWORK_VNET.nodeBgColor,
     nodeCiscoColor: isPresentSegmentColor ? 'var(--_primaryWhiteColor)' : NODES_CONSTANTS.DEVICE.nodeCiscoColor,
     nodeMerakiColor: isPresentSegmentColor ? 'var(--_primaryWhiteColor)' : NODES_CONSTANTS.DEVICE.nodeMerakiColor,
   };

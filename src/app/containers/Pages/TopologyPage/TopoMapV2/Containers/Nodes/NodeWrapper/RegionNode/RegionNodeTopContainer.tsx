@@ -1,5 +1,5 @@
 import React from 'react';
-import { INetworkVNetNode, INetworkWebAclNode, ITopoRegionNode, TopologyPanelTypes } from 'lib/hooks/Topology/models';
+import { ITopoRegionNode } from 'lib/hooks/Topology/models';
 import {
   // CollapseExpandState,
   // CollapseExpandState,
@@ -101,52 +101,21 @@ const RegionNodeTopContainer: React.FC<Props> = (props: Props) => {
   //   topology.onCollapseExpandNode(props.dataItem, false);
   // };
 
-  const onVpcClick = (item: INetworkVNetNode) => {
-    topology.onToogleTopoPanel(TopologyPanelTypes.VPC, true, item);
-  };
-
-  const onWebAclClick = (item: INetworkWebAclNode) => {
-    topology.onToogleTopoPanel(TopologyPanelTypes.WebAcl, true, item);
-  };
-
-  const onShowFullStructure = () => {
-    topology.onToogleRegionStructure(props.region, true);
-  };
-
   if (!pos || !offsetsData) return null;
   return (
     <TransitionContainer id={`g${NODES_CONSTANTS.REGION.type}${props.region.uiId}`} stateIn={props.region.visible} transform="none">
-      <>
-        {props.region.collapsed && (
-          <RegionCollapsedNode
-            uiId={props.region.uiId}
-            x={pos.x}
-            y={pos.y}
-            dragId={`drag${NODES_CONSTANTS.REGION.type}${props.region.uiId}`}
-            id={props.region.dataItem.id}
-            name={props.region.dataItem.name}
-            childrenCount={props.region.children.length}
-            show={props.region.collapsed}
-          />
-        )}
+      <g id={`${NODES_CONSTANTS.REGION.type}${props.region.uiId}`} className="topologyNode" transform={`translate(${pos.x}, ${pos.y})`} data-type={NODES_CONSTANTS.REGION.type}>
+        <RegionCollapsedNode
+          uiId={props.region.uiId}
+          dragId={`drag${NODES_CONSTANTS.REGION.type}${props.region.uiId}`}
+          id={props.region.dataItem.id}
+          name={props.region.dataItem.name}
+          childrenCount={props.region.children.length}
+          show={props.region.collapsed}
+        />
 
-        {!props.region.collapsed && (
-          <RegionExpandNode
-            x={pos.x}
-            y={pos.y}
-            dragId={`drag${NODES_CONSTANTS.REGION.type}${props.region.uiId}`}
-            region={props.region}
-            show={!props.region.collapsed}
-            onShowFullStructure={onShowFullStructure}
-            offsetsData={offsetsData}
-            showPeerConnections={topology.entities && topology.entities.peer_connections && topology.entities.peer_connections.selected}
-            showWebAcls={topology.entities && topology.entities.web_acls && topology.entities.web_acls.selected}
-            showTransits={topology.entities && topology.entities.transit && topology.entities.transit.selected}
-            onWebAclClick={onWebAclClick}
-            onVpcClick={onVpcClick}
-          />
-        )}
-      </>
+        <RegionExpandNode dragId={`drag${NODES_CONSTANTS.REGION.type}${props.region.uiId}`} region={props.region} show={!props.region.collapsed} />
+      </g>
       {/* <g onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} className="topologyNode">
         <CollapseExpandButton
           id={`expandCollapse${props.dataItem.uiId}`}
