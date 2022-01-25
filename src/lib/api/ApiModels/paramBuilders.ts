@@ -1,11 +1,11 @@
 import { PAGING_DEFAULT_PAGE_SIZE } from 'lib/hooks/Sessions/model';
 import { ElasticFilterSuffics, IElasticFilterModel, IQuryFieldtype } from 'lib/models/elastic';
 
-export enum AUTOMATION_TIME_RANGE_QUERY_TYPES {
-  LAST_HOUR = 'AUTOMATION_QUERY_LAST_HOUR',
-  LAST_DAY = 'AUTOMATION_QUERY_LAST_DAY',
-  LAST_WEEK = 'AUTOMATION_QUERY_LAST_WEEK',
-  LAST_MONTH = 'AUTOMATION_QUERY_LAST_MONTH',
+export enum ALERT_TIME_RANGE_QUERY_TYPES {
+  LAST_HOUR = 'ALERT_QUERY_LAST_HOUR',
+  LAST_DAY = 'ALERT_QUERY_LAST_DAY',
+  LAST_WEEK = 'ALERT_QUERY_LAST_WEEK',
+  LAST_MONTH = 'ALERT_QUERY_LAST_MONTH',
 }
 
 export enum AUDIT_LOGS_TIME_RANGE_QUERY_TYPES {
@@ -42,14 +42,14 @@ export enum TAGS_RESOURCE_TYPE {
 export interface IParam {
   start_from?: number;
   page_size?: number;
-  time_range?: AUTOMATION_TIME_RANGE_QUERY_TYPES | AUDIT_LOGS_TIME_RANGE_QUERY_TYPES | SESSIONS_TIME_RANGE_QUERY_TYPES;
+  time_range?: ALERT_TIME_RANGE_QUERY_TYPES | AUDIT_LOGS_TIME_RANGE_QUERY_TYPES | SESSIONS_TIME_RANGE_QUERY_TYPES;
   search_type?: STITCHED_TYPES;
   filters?: string;
   filterSuffics?: ElasticFilterSuffics;
   resourceType?: string;
 }
 
-export const paramBuilder = (size?: number, currentPage?: number, time_range?: AUTOMATION_TIME_RANGE_QUERY_TYPES | AUDIT_LOGS_TIME_RANGE_QUERY_TYPES, resourceType?: string): IParam => {
+export const paramBuilder = (size?: number, currentPage?: number, time_range?: ALERT_TIME_RANGE_QUERY_TYPES | AUDIT_LOGS_TIME_RANGE_QUERY_TYPES, resourceType?: string): IParam => {
   let param: IParam = {};
   if (currentPage || currentPage === 0) {
     const _size = size || PAGING_DEFAULT_PAGE_SIZE;
@@ -59,7 +59,7 @@ export const paramBuilder = (size?: number, currentPage?: number, time_range?: A
     param.page_size = size;
   }
   if (time_range) {
-    if (time_range !== AUTOMATION_TIME_RANGE_QUERY_TYPES.LAST_HOUR) {
+    if (time_range !== ALERT_TIME_RANGE_QUERY_TYPES.LAST_HOUR) {
       param.time_range = time_range;
     }
   }
