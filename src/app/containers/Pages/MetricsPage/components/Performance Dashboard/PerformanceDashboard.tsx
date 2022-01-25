@@ -14,12 +14,15 @@ import { GetDevicesString, GetSelectedOrganization } from './filterFunctions';
 import { CreateSLATest } from './CreateSLATest';
 import './Toastify.css';
 import { INetworkOrg, ITopologyMapData, VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
+import { AxiosError } from 'axios';
 
 interface PerformanceDashboardProps {
   readonly orgMap: ITopologyMapData;
+  readonly orgLoading: boolean;
+  readonly orgError: AxiosError;
 }
 
-export const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ orgMap }) => {
+export const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ orgMap, orgLoading, orgError }) => {
   const classes = PerformanceDashboardStyles();
 
   const userContext = useContext<UserContextState>(UserContext);
@@ -35,8 +38,6 @@ export const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ orgM
       const awsOrganizations = orgMap.organizations.filter(organization => organization.vendorType === VendorTypes.AWS);
       setMerakiOrganizations(merakiOrganizations);
       setAwsOrganizations(awsOrganizations);
-    } else {
-      setIsLoading(false);
     }
   }, [orgMap]);
 
@@ -108,7 +109,17 @@ export const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ orgM
 
   return (
     <>
-      {isLoading ? (
+      {orgLoading ? (
+        <div className={classes.pageCenter}>
+          <LoadingIndicator />
+        </div>
+      ) : orgError ? (
+        <AbsLoaderWrapper width="100%" height="100%">
+          <ErrorMessage fontSize={28} margin="auto">
+            {orgError.message}
+          </ErrorMessage>
+        </AbsLoaderWrapper>
+      ) : isLoading ? (
         <div className={classes.pageCenter}>
           <LoadingIndicator />
         </div>

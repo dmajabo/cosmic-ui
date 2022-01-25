@@ -10,6 +10,7 @@ import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import { createApiClient } from 'lib/api/http/apiClient';
 import { MultiLineChart } from './MultiLineChart';
 import isEmpty from 'lodash/isEmpty';
+import { isMetricsEmpty } from 'app/containers/Pages/MetricsPage/components/Utils';
 
 interface MultiLineChartContainerProps {
   readonly title: string;
@@ -22,11 +23,6 @@ interface MultiLineChartContainerProps {
 }
 
 const ERROR_TEXT = 'Something went wrong.Please try again';
-
-const isMetricsEmpty = (metrics: MultiLineMetricsData[]) => {
-  const reducedMetrics: MetricsData[] = metrics.reduce((acc, nextValue) => acc.concat(nextValue.metrics), []);
-  return isEmpty(reducedMetrics) ? true : false;
-};
 
 const MultiLineChartContainer: React.FC<MultiLineChartContainerProps> = (props: MultiLineChartContainerProps) => {
   const userContext = useContext<UserContextState>(UserContext);
