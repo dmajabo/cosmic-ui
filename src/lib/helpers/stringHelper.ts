@@ -1,4 +1,4 @@
-export const capitalizeFirstLetter = (str: string) => {
+export const capitalizeSubstring = (str: string, count: number) => {
   if (!str || !str.length) return str;
-  return str.charAt(0).toUpperCase() + str.slice(1);
+  return str.substring(0, count).toUpperCase() + str.slice(count);
 };

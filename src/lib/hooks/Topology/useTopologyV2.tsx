@@ -26,7 +26,7 @@ import { AlertSeverity } from 'lib/api/ApiModels/Workflow/apiModel';
 import { ISegmentSegmentP } from 'lib/api/ApiModels/Policy/Segment';
 import { OKULIS_LOCAL_STORAGE_KEYS } from 'lib/api/http/utils';
 import { getSessionStoragePreferences, StoragePreferenceKeys, updateSessionStoragePreference } from 'lib/helpers/localStorageHelpers';
-import { updateLinkNodesPosition, updateLinkVisibleState, updateVpnLinks } from './helpers/buildlinkHelper';
+import { updateLinkNodesPosition, updateLinksVisibleStateBySpecificNode, updateLinkVisibleState, updateVpnLinks } from './helpers/buildlinkHelper';
 import { updateCollapseExpandAccounts, updateCollapseExpandSites, updateRegionNodes } from './helpers/buildNodeHelpers';
 import _ from 'lodash';
 
@@ -271,18 +271,24 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     if (groupType === TopoFilterTypes.Accounts) {
       const _obj: IObject<ITopoAccountNode> = _.cloneDeep(accounts);
       _obj[type].visible = selected;
+      const _links: IObject<ITopoLink<any, any, any>> = updateLinksVisibleStateBySpecificNode(links, _obj[type].dataItem.id, regions, sites, _obj);
+      setLinks(_links);
       setAccountsNodes(_obj);
       return;
     }
     if (groupType === TopoFilterTypes.Sites) {
       const _obj: IObject<ITopoSitesNode> = _.cloneDeep(sites);
       _obj[type].visible = selected;
+      const _links: IObject<ITopoLink<any, any, any>> = updateLinksVisibleStateBySpecificNode(links, _obj[type].dataItem.id, regions, _obj, accounts);
+      setLinks(_links);
       setSitesNodes(_obj);
       return;
     }
     if (groupType === TopoFilterTypes.Regions) {
       const _obj: IObject<ITopoRegionNode> = _.cloneDeep(regions);
       _obj[type].visible = selected;
+      const _links: IObject<ITopoLink<any, any, any>> = updateLinksVisibleStateBySpecificNode(links, _obj[type].dataItem.id, _obj, sites, accounts);
+      setLinks(_links);
       setRegionsNodes(_obj);
       return;
     }

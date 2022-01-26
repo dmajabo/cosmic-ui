@@ -23,6 +23,8 @@ export const SecondaryButtonStyles = styled.button<BProps>`
   flex-shrink: 0;
   outline: 0;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
   .inheritFill {
     transition-property: fill;
     transition: 0.2s linear;

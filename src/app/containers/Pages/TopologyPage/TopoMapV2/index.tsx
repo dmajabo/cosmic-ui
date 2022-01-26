@@ -82,7 +82,7 @@ const TopoMapV2: React.FC<IProps> = (props: IProps) => {
             {error && (
               <AbsLoaderWrapper width="100%" height="100%">
                 <ErrorMessage fontSize={28} margin="auto">
-                  {error && error.message ? error.message : 'Something went wrong. Please refresh page'}
+                  {error && error.message ? 'Something went wrong' : 'Something went wrong'}
                 </ErrorMessage>
               </AbsLoaderWrapper>
             )}

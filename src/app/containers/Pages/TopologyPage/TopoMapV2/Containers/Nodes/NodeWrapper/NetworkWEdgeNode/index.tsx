@@ -64,7 +64,7 @@ const NetworkWEdgeNode: React.FC<Props> = (props: Props) => {
       </svg>
       <use href={`#${NODES_CONSTANTS.NETWORK_WEDGE.type}`} />
       <HtmlNodeLabel name={props.item.name || props.item.extId} labelStyles={NODES_CONSTANTS.NETWORK_WEDGE.labelHtmlStyles} />
-      <HtmlNodeTooltip id={`tooltip${props.item.uiId}`} name="TGW" x={NODES_CONSTANTS.NETWORK_WEDGE.collapse.r * 2 + 5} y={NODES_CONSTANTS.NETWORK_WEDGE.collapse.r} minWidth="60px" />
+      <HtmlNodeTooltip id={`tooltip${props.item.uiId}`} name="Transit Gateway" x={NODES_CONSTANTS.NETWORK_WEDGE.collapse.r * 2 + 5} y={NODES_CONSTANTS.NETWORK_WEDGE.collapse.r} minWidth="120px" />
     </g>
   );
 };

@@ -243,6 +243,33 @@ export const updateLinkVisibleState = (links: IObject<ITopoLink<any, any, any>>,
   return _links;
 };
 
+export const updateLinksVisibleStateBySpecificNode = (
+  links: IObject<ITopoLink<any, any, any>>,
+  nodeId: string,
+  regions: IObject<ITopoRegionNode>,
+  sites: IObject<ITopoSitesNode>,
+  accounts: IObject<ITopoAccountNode>,
+): IObject<ITopoLink<any, any, any>> => {
+  if (!links || !Object.keys(links).length) return null;
+  const _links: IObject<ITopoLink<any, any, any>> = _.clone(links);
+  for (let key in _links) {
+    if (_links[key].fromParentId === nodeId || _links[key].toParentId === nodeId) {
+      const from = getTopoParentNode(regions, sites, accounts, _links[key].fromParentId);
+      const to = getTopoParentNode(regions, sites, accounts, _links[key].toParentId);
+      _links[key].visible = from.visible && to.visible ? true : false;
+      continue;
+    }
+  }
+  return _links;
+};
+
+const getTopoParentNode = (regions: IObject<ITopoRegionNode>, sites: IObject<ITopoSitesNode>, accounts: IObject<ITopoAccountNode>, id: string) => {
+  if (regions && regions[id]) return regions[id];
+  if (sites && sites[id]) return sites[id];
+  if (accounts && accounts[id]) return accounts[id];
+  return null;
+};
+
 export const updateVpnLinks = (links: IObject<ITopoLink<any, any, any>>, site: ITopoSitesNode): IObject<ITopoLink<any, any, any>> => {
   if (!links || !Object.keys(links).length) return null;
   const _links: IObject<ITopoLink<any, any, any>> = _.clone(links);

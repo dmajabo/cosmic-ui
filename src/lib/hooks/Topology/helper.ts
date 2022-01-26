@@ -29,7 +29,6 @@ import {
   updateDeviceNode,
 } from './helpers/buildNodeHelpers';
 import { buildLinks } from './helpers/buildlinkHelper';
-import { capitalizeFirstLetter } from 'lib/helpers/stringHelper';
 import { updateTopLevelItems } from './helpers/coordinateHelper';
 import { getBeautifulRowsCount, getRegionChildrenCounts } from './helpers/rowsHelper';
 import { getChunksFromArray } from 'lib/helpers/arrayHelper';
@@ -182,7 +181,7 @@ const buildRegionName = (org: INetworkOrg, region: INetworkRegion): string => {
   const { extId: regExtId, name } = region;
   let str = '';
   if (ctrlrName) {
-    str = capitalizeFirstLetter(ctrlrName) + ' ';
+    str = ctrlrName.toUpperCase() + ' ';
   }
   if (extId) {
     str += `(${extId})`;

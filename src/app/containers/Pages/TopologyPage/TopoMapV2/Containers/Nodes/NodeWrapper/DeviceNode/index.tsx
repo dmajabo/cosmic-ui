@@ -70,7 +70,7 @@ const DeviceNode: React.FC<Props> = (props: Props) => {
           pointerEvents="none"
         />
         <HtmlNodeLabel name={props.item.name || props.item.extId} labelStyles={NODES_CONSTANTS.DEVICE.labelHtmlStyles} />
-        <HtmlNodeTooltip id={`tooltip${props.item.uiId}`} name="Device" x={NODES_CONSTANTS.DEVICE.collapse.width + 5} y={NODES_CONSTANTS.DEVICE.collapse.height / 2} minWidth="80px" />
+        <HtmlNodeTooltip id={`tooltip${props.item.uiId}`} name="Meraki Device" x={NODES_CONSTANTS.DEVICE.collapse.width + 5} y={NODES_CONSTANTS.DEVICE.collapse.height / 2} minWidth="120px" />
       </g>
     </>
   );

@@ -4,7 +4,7 @@ export const Wrapper = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 10px 40px;
-  height: 60px;
+  height: 50px;
   width: 100%;
   background: var(--_primaryBg);
   z-index: 1;
@@ -27,7 +27,7 @@ export const ZoomValue = styled.span`
   margin: auto 0;
   flex-shrink: 0;
   width: 80px;
-  height: 40px;
+  height: 30px;
   display: block;
   font-family: 'DMSans';
   font-style: normal;

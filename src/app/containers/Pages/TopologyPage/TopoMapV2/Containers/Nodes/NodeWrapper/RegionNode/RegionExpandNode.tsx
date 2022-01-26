@@ -27,7 +27,7 @@ const RegionExpandNode: React.FC<Props> = (props: Props) => {
         <g transform="translate(0, 0)">
           <NodeMarker iconId={NODES_CONSTANTS.REGION.iconId} stylesObj={NODES_CONSTANTS.REGION.expanded.marker} />
           <NodeExpandedName
-            name={props.region.dataItem.name}
+            name={props.region.dataItem.name ? props.region.dataItem.name.toUpperCase() : props.region.dataItem.name}
             // strBtnLabel="Open Region"
             nodeWidth={props.region.expandedSize.width}
             markerWidth={NODES_CONSTANTS.REGION.expanded.marker.width}

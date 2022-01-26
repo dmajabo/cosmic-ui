@@ -32,7 +32,7 @@ const FilterNodesGroup: React.FC<Props> = (props: Props) => {
                 inputStyles={{ pointerEvents: 'none' }}
               />
               <GroupItemIcon style={props.iconStyles}>{props.icon}</GroupItemIcon>
-              <GroupItemLabel maxWidth="calc(100% - 58px)">{props.data[key].dataItem.name}</GroupItemLabel>
+              <GroupItemLabel maxWidth="calc(100% - 58px)">{props.data[key].dataItem.name ? props.data[key].dataItem.name.toUpperCase() : props.data[key].dataItem.name}</GroupItemLabel>
             </ItemWrapper>
           </FilterGroupItem>
         );
