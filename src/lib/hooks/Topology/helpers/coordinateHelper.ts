@@ -268,7 +268,13 @@ const getRegionChildContainersHeight = (a: ITopoRegionNode, filter: FilterEntity
       : 0;
   const cHeight =
     a.children && a.children.length
-      ? getChildContainerHeight(true, a.children.length, NODES_CONSTANTS.REGION.expanded.contentPadding, NODES_CONSTANTS.NETWORK_VNET.collapse.height, NODES_CONSTANTS.NETWORK_VNET.collapse.spaceY)
+      ? getChildContainerHeight(
+          filter.vpc.selected,
+          a.children.length,
+          NODES_CONSTANTS.REGION.expanded.contentPadding,
+          NODES_CONSTANTS.NETWORK_VNET.collapse.height,
+          NODES_CONSTANTS.NETWORK_VNET.collapse.spaceY,
+        )
       : 0;
   return { webHeight: wHeight, peerHeight: pHeight, childrenHeight: cHeight };
 };
