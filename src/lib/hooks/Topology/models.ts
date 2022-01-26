@@ -174,9 +174,9 @@ export enum FilterEntityTypes {
 export interface FilterEntityOptions {
   sites: IFilterOption<FilterEntityTypes>;
   transit: IFilterOption<FilterEntityTypes>;
-  vpc: IFilterOption<FilterEntityTypes>;
-  peer_connections: IFilterOption<FilterEntityTypes>;
   web_acls: IFilterOption<FilterEntityTypes>;
+  peer_connections: IFilterOption<FilterEntityTypes>;
+  vpc: IFilterOption<FilterEntityTypes>;
 }
 
 export interface FilterSeverityOptions {
@@ -190,26 +190,31 @@ export const DEFAULT_ENTITY_OPTIONS: FilterEntityOptions = {
     type: FilterEntityTypes.SITES,
     selected: true,
     label: 'Site',
+    index: 0,
   },
   transit: {
     type: FilterEntityTypes.TRANSIT,
     selected: true,
     label: 'Transit',
-  },
-  vpc: {
-    type: FilterEntityTypes.VPC,
-    selected: true,
-    label: 'VPC',
-  },
-  peer_connections: {
-    type: FilterEntityTypes.PEERING_CONNECTIONS,
-    selected: true,
-    label: 'Peering Connection',
+    index: 1,
   },
   web_acls: {
     type: FilterEntityTypes.WEB_ACLS,
     selected: true,
     label: 'AWS WAF',
+    index: 2,
+  },
+  peer_connections: {
+    type: FilterEntityTypes.PEERING_CONNECTIONS,
+    selected: true,
+    label: 'Peering Connection',
+    index: 3,
+  },
+  vpc: {
+    type: FilterEntityTypes.VPC,
+    selected: true,
+    label: 'VPC',
+    index: 4,
   },
 };
 

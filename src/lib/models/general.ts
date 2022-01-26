@@ -158,6 +158,7 @@ export interface IFilterOption<T> {
   type: T;
   selected: boolean;
   label: string;
+  index?: number;
   hide?: boolean;
 }
 

@@ -13,18 +13,26 @@ interface Props {
 }
 
 const FilterEntityGroup: React.FC<Props> = (props: Props) => {
+  const [visibleEntities, setVisibleEntities] = React.useState<IFilterOption<FilterEntityTypes>[]>([]);
+
+  React.useEffect(() => {
+    const _arr = Object.keys(props.data)
+      .map(key => props.data[key])
+      .sort((a, b) => a.index - b.index);
+    setVisibleEntities(_arr);
+  }, [props.data]);
   const onClick = (item: IFilterOption<any>) => {
     props.onClick(props.type, item.type, !item.selected);
   };
   return (
     <>
-      {Object.keys(props.data).map((key, index) => {
-        if (props.data[key].hide) return null;
+      {visibleEntities.map((value, index) => {
+        if (value.hide) return null;
         return (
-          <FilterGroupItem key={`${props.type}${props.data[key].type}`}>
-            <ItemWrapper onClick={() => onClick(props.data[key])}>
+          <FilterGroupItem key={`${props.type}${value.type}`}>
+            <ItemWrapper onClick={() => onClick(value)}>
               <SimpleCheckbox
-                isChecked={props.data[key].selected}
+                isChecked={value.selected}
                 wrapStyles={{ margin: '0 10px 0 0' }}
                 // width?: string;
                 // height?: string;
@@ -32,12 +40,12 @@ const FilterEntityGroup: React.FC<Props> = (props: Props) => {
                 readOnly
                 inputStyles={{ pointerEvents: 'none' }}
               />
-              {props.data[key].type === FilterEntityTypes.SITES && <GroupItemIcon style={{ width: '20px', height: '20px' }}>{ciscoMerakiLogoIcon(20)}</GroupItemIcon>}
-              {props.data[key].type === FilterEntityTypes.TRANSIT && <GroupItemIcon>{transitFilterIcon}</GroupItemIcon>}
-              {props.data[key].type === FilterEntityTypes.WEB_ACLS && <GroupItemIcon>{awsWafFilterIcon}</GroupItemIcon>}
-              {props.data[key].type === FilterEntityTypes.PEERING_CONNECTIONS && <GroupItemIcon style={{ width: '20px', height: '20px' }}>{peerConnectionFilterIcon}</GroupItemIcon>}
-              {props.data[key].type === FilterEntityTypes.VPC && <GroupItemIcon>{vpcFilterIcon}</GroupItemIcon>}
-              <GroupItemLabel>{props.data[key].label}</GroupItemLabel>
+              {value.type === FilterEntityTypes.SITES && <GroupItemIcon style={{ width: '20px', height: '20px' }}>{ciscoMerakiLogoIcon(20)}</GroupItemIcon>}
+              {value.type === FilterEntityTypes.TRANSIT && <GroupItemIcon>{transitFilterIcon}</GroupItemIcon>}
+              {value.type === FilterEntityTypes.WEB_ACLS && <GroupItemIcon>{awsWafFilterIcon}</GroupItemIcon>}
+              {value.type === FilterEntityTypes.PEERING_CONNECTIONS && <GroupItemIcon style={{ width: '20px', height: '20px' }}>{peerConnectionFilterIcon}</GroupItemIcon>}
+              {value.type === FilterEntityTypes.VPC && <GroupItemIcon>{vpcFilterIcon}</GroupItemIcon>}
+              <GroupItemLabel>{value.label}</GroupItemLabel>
             </ItemWrapper>
           </FilterGroupItem>
         );
