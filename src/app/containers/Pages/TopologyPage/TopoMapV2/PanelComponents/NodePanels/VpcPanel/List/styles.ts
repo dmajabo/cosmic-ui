@@ -147,3 +147,14 @@ export const InternetGetAwayValue = styled.div`
   text-overflow: ellipsis;
   max-width: 100%;
 `;
+
+interface SColorProps {
+  color: string;
+}
+export const SegmentColorRect = styled.span<SColorProps>`
+  margin: auto 0 auto 12px;
+  width: 20px;
+  height: 20px;
+  background: ${props => props.color || 'transparent'};
+  border-radius: 6px;
+`;

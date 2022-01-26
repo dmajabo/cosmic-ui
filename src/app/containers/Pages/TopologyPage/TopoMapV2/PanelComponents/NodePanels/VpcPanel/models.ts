@@ -1,6 +1,13 @@
+export enum ExpandStateVNETIds {
+  NetLoadBalancer = 'netLoadBalancer',
+  AppLoadBalancer = 'appLoadBalancer',
+  Vms = 'vms',
+  InternetGatAway = 'internetGatAway',
+}
+
 export interface IExpandState {
   expand: boolean;
-  id: string;
+  id: ExpandStateVNETIds;
 }
 export interface IVnetFields {
   netLoadBalancer: IExpandState;
@@ -11,18 +18,18 @@ export interface IVnetFields {
 export const DEFAULT_VNET_EXPAND_FIELDS: IVnetFields = {
   netLoadBalancer: {
     expand: false,
-    id: 'netLoadBalancer',
+    id: ExpandStateVNETIds.NetLoadBalancer,
   },
   appLoadBalancer: {
     expand: false,
-    id: 'appLoadBalancer',
+    id: ExpandStateVNETIds.AppLoadBalancer,
   },
   vms: {
     expand: false,
-    id: 'vms',
+    id: ExpandStateVNETIds.Vms,
   },
   internetGatAway: {
     expand: false,
-    id: 'internetGatAway',
+    id: ExpandStateVNETIds.InternetGatAway,
   },
 };

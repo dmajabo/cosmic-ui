@@ -24,7 +24,7 @@ export const buildLinks = (filter: FilterEntityOptions, regions: IObject<ITopoRe
         regions[key].children.forEach(row => {
           row.forEach((vnet: INetworkVNetNode) => {
             if (!vnet.name && !vnet.extId) return;
-            buildNetworkNetworkConnection(filter, accounts, vnet, _links);
+            buildNetworkNetworkConnection(filter, regions[key], accounts, vnet, _links);
           });
         });
       }
@@ -44,7 +44,7 @@ export const buildLinks = (filter: FilterEntityOptions, regions: IObject<ITopoRe
       sites[key].children.forEach(row => {
         row.forEach(dev => {
           if (!dev.vpnlinks || !dev.vpnlinks.length) return;
-          build_VPN_Links(filter, dev, accounts, _links);
+          build_VPN_Links(filter, sites[key], dev, accounts, _links);
         });
       });
     });
@@ -62,16 +62,28 @@ const buildPeerLinks = (
 ) => {
   let _from = getNeededItem(region.children, item.requesterVnetwork.extId);
   let _to = getNeededItem(region.children, item.accepterVnetwork.extId);
+  let _fromParentId = region.dataItem.id;
+  let _toParentId = region.dataItem.id;
   if (!_from) {
     const _fromObj = getNeededItemFromNodes(regions, item.requesterVnetwork.extId);
     _from = _fromObj.node;
+    _fromParentId = _fromObj.region.dataItem.id;
   }
   if (!_to) {
     const _toObj = getNeededItemFromNodes(regions, item.accepterVnetwork.extId);
     _to = _toObj.node;
+    _toParentId = _toObj.region.dataItem.id;
   }
   if (!_from || !_to) return;
-  const pl: ITopoLink<INetworkVNetNode, INetworkVNetNode, INetworkVNetworkPeeringConnectionNode> = createTopoLink(TopoLinkTypes.PeerConnectionLink, _from, _to, item);
+  const pl: ITopoLink<INetworkVNetNode, INetworkVNetNode, INetworkVNetworkPeeringConnectionNode> = createTopoLink(
+    TopoLinkTypes.PeerConnectionLink,
+    _from,
+    _to,
+    _fromParentId,
+    _toParentId,
+    region.dataItem.id,
+    item,
+  );
   pl.visible = filter.peer_connections.selected && filter.vpc.selected;
   links[pl.id] = pl;
 };
@@ -93,23 +105,22 @@ const getNeededItemFromNodes = (nodes: IObject<ITopoRegionNode>, extId: string) 
   let region = null;
   for (let key in nodes) {
     if (!nodes[key].children || !nodes[key].children.length) continue;
-    const _region = nodes[key] as ITopoRegionNode;
-    for (let j = 0; j < _region.children.length; j++) {
-      const el = _region.children[j].find(it => it.extId === extId);
+    for (let j = 0; j < nodes[key].children.length; j++) {
+      const el = nodes[key].children[j].find(it => it.extId === extId);
       if (el) {
         item = el;
         break;
       }
     }
     if (item) {
-      region = _region;
+      region = nodes[key];
       break;
     }
   }
   return { node: item, region: region };
 };
 
-export const build_VPN_Links = (filter: FilterEntityOptions, device: IDeviceNode, accounts: IObject<ITopoAccountNode>, links: IObject<ITopoLink<any, any, any>>) => {
+export const build_VPN_Links = (filter: FilterEntityOptions, site: ITopoSitesNode, device: IDeviceNode, accounts: IObject<ITopoAccountNode>, links: IObject<ITopoLink<any, any, any>>) => {
   if (!device.vpnlinks || !device.vpnlinks.length) return;
   device.vpnlinks.forEach(vpn => {
     if (!vpn.linkStates || !vpn.linkStates.length) return;
@@ -117,14 +128,20 @@ export const build_VPN_Links = (filter: FilterEntityOptions, device: IDeviceNode
       const _id = it.id || it.name;
       const obj = getWedge(accounts, _id);
       if (!obj.wedge) return;
-      const vl: ITopoLink<IDeviceNode, ITGWNode, INetworkVpnLinkState> = createTopoLink(TopoLinkTypes.VPNLink, device, obj.wedge, it);
+      const vl: ITopoLink<IDeviceNode, ITGWNode, INetworkVpnLinkState> = createTopoLink(TopoLinkTypes.VPNLink, device, obj.wedge, site.dataItem.id, obj.account.dataItem.id, site.dataItem.id, it);
       vl.visible = filter.sites.selected && filter.transit.selected;
       links[vl.id] = vl;
     });
   });
 };
 
-const buildNetworkNetworkConnection = (filter: FilterEntityOptions, accounts: IObject<ITopoAccountNode>, vnet: INetworkVNetNode, links: IObject<ITopoLink<any, ITGWNode, any>>) => {
+const buildNetworkNetworkConnection = (
+  filter: FilterEntityOptions,
+  region: ITopoRegionNode,
+  accounts: IObject<ITopoAccountNode>,
+  vnet: INetworkVNetNode,
+  links: IObject<ITopoLink<any, ITGWNode, any>>,
+) => {
   if (!accounts || !Object.keys(accounts).length) return;
   Object.keys(accounts).forEach(key => {
     if (!accounts[key].children || !accounts[key].children.length) return;
@@ -132,7 +149,15 @@ const buildNetworkNetworkConnection = (filter: FilterEntityOptions, accounts: IO
       if (!tgw.networkLinks || !tgw.networkLinks.length) return;
       const _link: INetworkNetworkLink = tgw.networkLinks.find(it => (it.vnet ? vnet.name === it.vnet.name : vnet.extId === it.peerExtId));
       if (!_link) return;
-      const nl: ITopoLink<INetworkVNetNode, ITGWNode, INetworkNetworkLink> = createTopoLink(TopoLinkTypes.NetworkNetworkLink, vnet, tgw, _link);
+      const nl: ITopoLink<INetworkVNetNode, ITGWNode, INetworkNetworkLink> = createTopoLink(
+        TopoLinkTypes.NetworkNetworkLink,
+        vnet,
+        tgw,
+        region.dataItem.id,
+        accounts[key].dataItem.id,
+        region.dataItem.id,
+        _link,
+      );
       nl.visible = filter.vpc.selected && filter.transit.selected;
       links[nl.id] = nl;
     });
@@ -164,7 +189,7 @@ const getWedge = (accounts: IObject<ITopoAccountNode>, connectedTo: string) => {
   return { account: a, wedge: tgw };
 };
 
-const createTopoLink = (type: TopoLinkTypes, from, to, link): ITopoLink<any, any, any> => {
+const createTopoLink = (type: TopoLinkTypes, from, to, fromParentId: string, toParentId: string, connectionParentId, link): ITopoLink<any, any, any> => {
   return {
     id: uuid(),
     type: type,
@@ -172,6 +197,9 @@ const createTopoLink = (type: TopoLinkTypes, from, to, link): ITopoLink<any, any
     from: from,
     to: to,
     connection: link,
+    fromParentId: fromParentId,
+    toParentId: toParentId,
+    connectionParentId: connectionParentId,
   };
 };
 
@@ -213,4 +241,63 @@ export const updateLinkVisibleState = (links: IObject<ITopoLink<any, any, any>>,
     }
   }
   return _links;
+};
+
+export const updateVpnLinks = (links: IObject<ITopoLink<any, any, any>>, site: ITopoSitesNode): IObject<ITopoLink<any, any, any>> => {
+  if (!links || !Object.keys(links).length) return null;
+  const _links: IObject<ITopoLink<any, any, any>> = _.clone(links);
+  for (let key in _links) {
+    if (_links[key].type !== TopoLinkTypes.VPNLink) continue;
+    if (_links[key].fromParentId !== site.dataItem.id) continue;
+    if (_links[key].from.page !== site.currentPage) {
+      _links[key].visible = false;
+    } else {
+      _links[key].visible = true;
+    }
+  }
+  return _links;
+};
+
+export const updateLinkNodesPosition = (links: IObject<ITopoLink<any, any, any>>, regions: IObject<ITopoRegionNode>) => {
+  if (!links || !Object.keys(links).length) return null;
+  for (let key in links) {
+    if (links[key].type === TopoLinkTypes.NetworkNetworkLink) {
+      const _region = regions[links[key].fromParentId];
+      const vnet = getNode(_region.children, links[key].from.id);
+      links[key].from.x = vnet.x;
+      links[key].from.y = vnet.y;
+      continue;
+    }
+    if (links[key].type === TopoLinkTypes.PeerConnectionLink) {
+      const _regionFrom = regions[links[key].fromParentId];
+      const _regionTo = regions[links[key].toParentId];
+      const _regionConnection = regions[links[key].connectionParentId];
+      const vnetFrom = getNode(_regionFrom.children, links[key].from.id);
+      const vnetTo = getNode(_regionTo.children, links[key].to.id);
+      const connection = getNode(_regionConnection.peerConnections, links[key].connection.id);
+      links[key].from.x = vnetFrom.x;
+      links[key].to.x = vnetTo.x;
+      links[key].connection.x = connection.x;
+      links[key].from.y = vnetFrom.y;
+      links[key].to.y = vnetTo.y;
+      links[key].connection.y = connection.y;
+      continue;
+    }
+    continue;
+  }
+  return links;
+};
+
+const getNode = (nodes: any[][], id: string) => {
+  let node = null;
+  for (let i = 0; i < nodes.length; i++) {
+    for (let j = 0; j < nodes[i].length; j++) {
+      if (nodes[i][j].id === id) {
+        node = nodes[i][j];
+        break;
+      }
+    }
+    if (node) break;
+  }
+  return node;
 };

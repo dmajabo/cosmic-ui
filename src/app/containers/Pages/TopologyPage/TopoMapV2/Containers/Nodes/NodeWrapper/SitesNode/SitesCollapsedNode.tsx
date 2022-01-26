@@ -3,22 +3,20 @@ import TransitionContainer from 'app/containers/Pages/TopologyPage/TopoMapV2/Con
 import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
 import NodeCounter from '../../Containers/NodeCounter';
 import NodeCollapsedName from '../../Containers/NodeName/NodeCollapsedName';
-import { ISegmentSegmentP } from 'lib/api/ApiModels/Policy/Segment';
+import { ITopoSitesNode } from 'lib/hooks/Topology/models';
 
 interface Props {
-  uiId: string;
-  x: number;
-  y: number;
+  site: ITopoSitesNode;
   dragId: string;
-  dataItem: ISegmentSegmentP;
   show: boolean;
-  childrenCount: number;
 }
 
 const SitesCollapsedNode: React.FC<Props> = (props: Props) => {
+  const dx = props.site.expandedSize.width / 2 - NODES_CONSTANTS.SITES.collapse.width / 2;
+  const dy = props.site.expandedSize.height / 2 - NODES_CONSTANTS.SITES.collapse.height / 2;
   return (
-    <TransitionContainer id={`collapseNodeWrapper${props.dataItem.id}`} stateIn={props.show} origin="unset" transform="none">
-      <g style={{ cursor: 'pointer' }}>
+    <TransitionContainer id={`collapseNodeWrapper${props.site.dataItem.id}`} stateIn={props.show} origin="unset" transform="none">
+      <g style={{ cursor: 'pointer' }} transform={`translate(${dx}, ${dy})`}>
         <rect
           id={props.dragId}
           fill={NODES_CONSTANTS.SITES.collapse.bgColor}
@@ -27,6 +25,7 @@ const SitesCollapsedNode: React.FC<Props> = (props: Props) => {
           rx={NODES_CONSTANTS.SITES.collapse.borderRadius}
           ry={NODES_CONSTANTS.SITES.collapse.borderRadius}
           pointerEvents="all"
+          cursor="pointer"
         />
         <use
           pointerEvents="none"
@@ -36,8 +35,8 @@ const SitesCollapsedNode: React.FC<Props> = (props: Props) => {
           x={NODES_CONSTANTS.SITES.collapse.iconOffsetX}
           y={NODES_CONSTANTS.SITES.collapse.iconOffsetY}
         />
-        <NodeCounter label={`${props.childrenCount} Dev`} stylesObj={NODES_CONSTANTS.SITES.countStyles} />
-        <NodeCollapsedName id={props.dataItem.id} label={props.dataItem.name} stylesObj={NODES_CONSTANTS.SITES.labelCollapsedStyles} />
+        <NodeCounter label={`${props.site.children.length} Dev`} stylesObj={NODES_CONSTANTS.SITES.countStyles} />
+        <NodeCollapsedName id={props.site.dataItem.id} label={props.site.dataItem.name} stylesObj={NODES_CONSTANTS.SITES.labelCollapsedStyles} />
       </g>
     </TransitionContainer>
   );

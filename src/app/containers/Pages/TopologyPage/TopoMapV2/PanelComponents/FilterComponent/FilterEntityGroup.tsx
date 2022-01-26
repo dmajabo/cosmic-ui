@@ -1,8 +1,10 @@
 import React from 'react';
-import { FilterGroupItem, GroupItemLabel } from 'app/components/Basic/FilterComponents/styles';
+import { FilterGroupItem, GroupItemIcon, GroupItemLabel, ItemWrapper } from 'app/components/Basic/FilterComponents/styles';
 import SimpleCheckbox from 'app/components/Inputs/Checkbox/SimpleCheckbox';
 import { IFilterOption } from 'lib/models/general';
-import { FilterEntityOptions, TopoFilterTypes } from 'lib/hooks/Topology/models';
+import { FilterEntityOptions, FilterEntityTypes, TopoFilterTypes } from 'lib/hooks/Topology/models';
+import { ciscoMerakiLogoIcon } from 'app/components/SVGIcons/topologyIcons/ciscoMerakiLogo';
+import { awsWafFilterIcon, peerConnectionFilterIcon, transitFilterIcon, vpcFilterIcon } from 'app/components/SVGIcons/topologyIcons/TopoMapV2Icons/filterPanelIcon';
 
 interface Props {
   type: TopoFilterTypes;
@@ -20,16 +22,23 @@ const FilterEntityGroup: React.FC<Props> = (props: Props) => {
         if (props.data[key].hide) return null;
         return (
           <FilterGroupItem key={`${props.type}${props.data[key].type}`}>
-            <SimpleCheckbox
-              isChecked={props.data[key].selected}
-              wrapStyles={{ margin: '0 10px 0 0' }}
-              // width?: string;
-              // height?: string;
-              // iconSize?: number;
-              toggleCheckboxChange={() => onClick(props.data[key])}
-              inputStyles={{ pointerEvents: 'none' }}
-            />
-            <GroupItemLabel>{props.data[key].label}</GroupItemLabel>
+            <ItemWrapper onClick={() => onClick(props.data[key])}>
+              <SimpleCheckbox
+                isChecked={props.data[key].selected}
+                wrapStyles={{ margin: '0 10px 0 0' }}
+                // width?: string;
+                // height?: string;
+                // iconSize?: number;
+                readOnly
+                inputStyles={{ pointerEvents: 'none' }}
+              />
+              {props.data[key].type === FilterEntityTypes.SITES && <GroupItemIcon style={{ width: '20px', height: '20px' }}>{ciscoMerakiLogoIcon(20)}</GroupItemIcon>}
+              {props.data[key].type === FilterEntityTypes.TRANSIT && <GroupItemIcon>{transitFilterIcon}</GroupItemIcon>}
+              {props.data[key].type === FilterEntityTypes.WEB_ACLS && <GroupItemIcon>{awsWafFilterIcon}</GroupItemIcon>}
+              {props.data[key].type === FilterEntityTypes.PEERING_CONNECTIONS && <GroupItemIcon style={{ width: '20px', height: '20px' }}>{peerConnectionFilterIcon}</GroupItemIcon>}
+              {props.data[key].type === FilterEntityTypes.VPC && <GroupItemIcon>{vpcFilterIcon}</GroupItemIcon>}
+              <GroupItemLabel>{props.data[key].label}</GroupItemLabel>
+            </ItemWrapper>
           </FilterGroupItem>
         );
       })}

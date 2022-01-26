@@ -3,20 +3,20 @@ import TransitionContainer from 'app/containers/Pages/TopologyPage/TopoMapV2/Con
 import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
 import NodeCounter from '../../Containers/NodeCounter';
 import NodeCollapsedName from '../../Containers/NodeName/NodeCollapsedName';
+import { ITopoRegionNode } from 'lib/hooks/Topology/models';
 
 interface Props {
-  id: string;
-  uiId: string;
+  region: ITopoRegionNode;
   dragId: string;
-  name: string;
-  childrenCount: number;
   show: boolean;
 }
 
 const RegionCollapsedNode: React.FC<Props> = (props: Props) => {
+  const dx = props.region.expandedSize.width / 2 - NODES_CONSTANTS.REGION.collapse.width / 2;
+  const dy = props.region.expandedSize.height / 2 - NODES_CONSTANTS.REGION.collapse.height / 2;
   return (
-    <TransitionContainer id={`collapseNodeWrapper${props.id}`} stateIn={props.show} origin="unset" transform="none">
-      <>
+    <TransitionContainer id={`collapseNodeWrapper${props.region.dataItem.id}`} stateIn={props.show} origin="unset" transform="none">
+      <g transform={`translate(${dx}, ${dy})`}>
         <rect
           id={props.dragId}
           fill={NODES_CONSTANTS.REGION.collapse.bgColor}
@@ -34,9 +34,9 @@ const RegionCollapsedNode: React.FC<Props> = (props: Props) => {
           x={NODES_CONSTANTS.REGION.collapse.iconOffsetX}
           y={NODES_CONSTANTS.REGION.collapse.iconOffsetY}
         />
-        <NodeCounter label={`${props.childrenCount} VPC`} stylesObj={NODES_CONSTANTS.REGION.countStyles} />
-        <NodeCollapsedName id={props.id} label={props.name} stylesObj={NODES_CONSTANTS.REGION.labelCollapsedStyles} />
-      </>
+        <NodeCounter label={`${props.region.children.length} VPC`} stylesObj={NODES_CONSTANTS.REGION.countStyles} />
+        <NodeCollapsedName id={props.region.dataItem.id} label={props.region.dataItem.name} stylesObj={NODES_CONSTANTS.REGION.labelCollapsedStyles} />
+      </g>
     </TransitionContainer>
   );
 };

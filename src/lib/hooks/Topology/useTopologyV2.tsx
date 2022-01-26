@@ -26,8 +26,9 @@ import { AlertSeverity } from 'lib/api/ApiModels/Workflow/apiModel';
 import { ISegmentSegmentP } from 'lib/api/ApiModels/Policy/Segment';
 import { OKULIS_LOCAL_STORAGE_KEYS } from 'lib/api/http/utils';
 import { getSessionStoragePreferences, StoragePreferenceKeys, updateSessionStoragePreference } from 'lib/helpers/localStorageHelpers';
-import { updateLinkVisibleState } from './helpers/buildlinkHelper';
-import { updateCollapseExpandAccounts, updateCollapseExpandSites } from './helpers/buildNodeHelpers';
+import { updateLinkNodesPosition, updateLinkVisibleState, updateVpnLinks } from './helpers/buildlinkHelper';
+import { updateCollapseExpandAccounts, updateCollapseExpandSites, updateRegionNodes } from './helpers/buildNodeHelpers';
+import _ from 'lodash';
 
 export interface TopologyV2ContextType {
   topoPanel: IPanelBar<TopologyPanelTypes>;
@@ -84,8 +85,8 @@ export function useTopologyV2Context(): TopologyV2ContextType {
   const [segments, setSegments] = React.useState<ITempSegmentObjData>(null);
   const [selectedNode, setSelectedNode] = React.useState<ITopoAccountNode | ITopoSitesNode | ITopoRegionNode>(null);
   const [regionStructures, setRegionStructures] = React.useState<ITopoRegionNode[]>([]);
-  const [entities, setEntities] = React.useState<FilterEntityOptions>(jsonClone(DEFAULT_ENTITY_OPTIONS));
-  const [severity, setSeverity] = React.useState<FilterSeverityOptions>(jsonClone(DEFAULT_SEVERITY_OPTIONS));
+  const [entities, setEntities] = React.useState<FilterEntityOptions>(_.cloneDeep(DEFAULT_ENTITY_OPTIONS));
+  const [severity, setSeverity] = React.useState<FilterSeverityOptions>(_.cloneDeep(DEFAULT_SEVERITY_OPTIONS));
   const [selectedPeriod, setSelectedPeriod] = React.useState<ISelectedListItem<ITimeTypes>>(TIME_PERIOD[0]);
   const [selectedTime, setSelectedTime] = React.useState<Date | null>(null);
   const [timeRange, setTimeRange] = React.useState<ITimeMinMaxRange | null>(null);
@@ -235,46 +236,52 @@ export function useTopologyV2Context(): TopologyV2ContextType {
 
   const onSelectFilterOption = (groupType: TopoFilterTypes, type: FilterEntityTypes | AlertSeverity | string, selected: boolean) => {
     if (groupType === TopoFilterTypes.Entities) {
-      const _obj: FilterEntityOptions = jsonClone(entities);
+      const _obj: FilterEntityOptions = _.cloneDeep(entities);
       _obj[type].selected = selected;
-      if (type !== FilterEntityTypes.WEB_ACLS) {
-        const _links: IObject<ITopoLink<any, any, any>> = updateLinkVisibleState(links, _obj, type as FilterEntityTypes);
-        setLinks(_links);
-      }
       if (type === FilterEntityTypes.SITES) {
         const _data: IObject<ITopoSitesNode> = updateCollapseExpandSites(sites, !_obj[type].selected);
+        const _links: IObject<ITopoLink<any, any, any>> = updateLinkVisibleState(links, _obj, type as FilterEntityTypes);
+        setLinks(_links);
         setSitesNodes(_data);
       }
       if (type === FilterEntityTypes.TRANSIT) {
         const data: IObject<ITopoAccountNode> = updateCollapseExpandAccounts(accounts, !_obj[type].selected);
+        const _links: IObject<ITopoLink<any, any, any>> = updateLinkVisibleState(links, _obj, type as FilterEntityTypes);
+        setLinks(_links);
         setAccountsNodes(data);
       }
-      // setRegionsNodes(data.regions);
+      if (type === FilterEntityTypes.PEERING_CONNECTIONS || type === FilterEntityTypes.VPC || type === FilterEntityTypes.WEB_ACLS) {
+        const data: IObject<ITopoRegionNode> = updateRegionNodes(regions, _obj);
+        const _links: IObject<ITopoLink<any, any, any>> = updateLinkVisibleState(links, _obj, type as FilterEntityTypes);
+        updateLinkNodesPosition(_links, data);
+        setLinks(_links);
+        setRegionsNodes(data);
+      }
       updateSessionStoragePreference(_obj, OKULIS_LOCAL_STORAGE_KEYS.OKULIS_PREFERENCE, StoragePreferenceKeys.TOPOLOGY_FILTER_ENTITY_OPTIONS);
       setEntities(_obj);
       return;
     }
     if (groupType === TopoFilterTypes.Severity) {
-      const _obj: FilterSeverityOptions = jsonClone(severity);
+      const _obj: FilterSeverityOptions = _.cloneDeep(severity);
       _obj[type].selected = selected;
       updateSessionStoragePreference(_obj, OKULIS_LOCAL_STORAGE_KEYS.OKULIS_PREFERENCE, StoragePreferenceKeys.TOPOLOGY_FILTER_SEVERITY_OPTIONS);
       setSeverity(_obj);
       return;
     }
     if (groupType === TopoFilterTypes.Accounts) {
-      const _obj: IObject<ITopoAccountNode> = jsonClone(accounts);
+      const _obj: IObject<ITopoAccountNode> = _.cloneDeep(accounts);
       _obj[type].visible = selected;
       setAccountsNodes(_obj);
       return;
     }
     if (groupType === TopoFilterTypes.Sites) {
-      const _obj: IObject<ITopoSitesNode> = jsonClone(sites);
+      const _obj: IObject<ITopoSitesNode> = _.cloneDeep(sites);
       _obj[type].visible = selected;
       setSitesNodes(_obj);
       return;
     }
     if (groupType === TopoFilterTypes.Regions) {
-      const _obj: IObject<ITopoRegionNode> = jsonClone(regions);
+      const _obj: IObject<ITopoRegionNode> = _.cloneDeep(regions);
       _obj[type].visible = selected;
       setRegionsNodes(_obj);
       return;
@@ -300,6 +307,8 @@ export function useTopologyV2Context(): TopologyV2ContextType {
   const onChangeSitesPage = (siteId: string, page: number) => {
     const _obj: IObject<ITopoSitesNode> = jsonClone(sites);
     _obj[siteId].currentPage = page;
+    const _links: IObject<ITopoLink<any, any, any>> = updateVpnLinks(links, _obj[siteId]);
+    setLinks(_links);
     setSitesNodes(_obj);
   };
 
@@ -348,7 +357,4 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     severity,
     onSelectFilterOption,
   };
-}
-function updateNodes(selected: boolean, sites: IObject<ITopoSitesNode>) {
-  throw new Error('Function not implemented.');
 }

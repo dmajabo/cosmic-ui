@@ -19,16 +19,10 @@ const SiteNode: React.FC<Props> = (props: Props) => {
       className="topologyNode"
       transform="none"
       data-type={NODES_CONSTANTS.SITES.type}
-      stateIn={props.dataItem.visible && !props.dataItem.collapsed}
+      stateIn={props.dataItem.visible && !props.dataItem.collapsed && topology.entities.sites.selected}
       origin="unset"
-      timing={50}
     >
-      {topology.entities &&
-      topology.entities.sites &&
-      topology.entities.sites.selected &&
-      props.dataItem.children &&
-      props.dataItem.children.length &&
-      props.dataItem.children[props.dataItem.currentPage] ? (
+      {props.dataItem.children && props.dataItem.children.length && props.dataItem.children[props.dataItem.currentPage] ? (
         <>
           {props.dataItem.children[props.dataItem.currentPage].map(it => (
             <DeviceNode key={`${it.uiId}device`} item={it} />

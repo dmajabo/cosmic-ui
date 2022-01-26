@@ -31,8 +31,6 @@ const InventoryTab: React.FC<IProps> = (props: IProps) => {
       setAppLoaderBalancerList(_obj.app);
       setInternetGetAway(props.dataItem.internetGateway);
       setSelectedSubItem(null);
-      const _expObj: IVnetFields = jsonClone(DEFAULT_VNET_EXPAND_FIELDS);
-      setExpandStateObj(_expObj);
       setVnet(props.dataItem);
     }
   }, [props.dataItem]);
@@ -76,7 +74,7 @@ const InventoryTab: React.FC<IProps> = (props: IProps) => {
     <>
       <ExpandGroup
         id={expandStateObj.internetGatAway.id}
-        expand={expandStateObj.internetGatAway.expand}
+        expand={expandStateObj.internetGatAway.expand && !!internetGatAway}
         headerChildren={<ChildrenCount count={internetGatAway ? 1 : 0} />}
         disabled={!internetGatAway}
         onToogleExpand={onToogleGroup}
@@ -89,7 +87,7 @@ const InventoryTab: React.FC<IProps> = (props: IProps) => {
       </ExpandGroup>
       <ExpandGroup
         id={expandStateObj.netLoadBalancer.id}
-        expand={expandStateObj.netLoadBalancer.expand}
+        expand={expandStateObj.netLoadBalancer.expand && !!(netLoaderBalancerList && netLoaderBalancerList.length)}
         onToogleExpand={onToogleGroup}
         headerChildren={<ChildrenCount count={netLoaderBalancerList.length} />}
         maxGroupHeight="none"
@@ -104,7 +102,7 @@ const InventoryTab: React.FC<IProps> = (props: IProps) => {
       </ExpandGroup>
       <ExpandGroup
         id={expandStateObj.appLoadBalancer.id}
-        expand={expandStateObj.appLoadBalancer.expand}
+        expand={expandStateObj.appLoadBalancer.expand && !!(appLoaderBalancerList && appLoaderBalancerList.length)}
         onToogleExpand={onToogleGroup}
         headerChildren={<ChildrenCount count={appLoaderBalancerList.length} />}
         disabled={!appLoaderBalancerList.length}
@@ -118,7 +116,7 @@ const InventoryTab: React.FC<IProps> = (props: IProps) => {
       </ExpandGroup>
       <ExpandGroup
         id={expandStateObj.vms.id}
-        expand={expandStateObj.vms.expand}
+        expand={expandStateObj.vms.expand && !!(vms && vms.length)}
         onToogleExpand={onToogleGroup}
         headerChildren={<ChildrenCount count={vms.length} />}
         disabled={!vms.length}

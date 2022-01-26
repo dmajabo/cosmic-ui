@@ -110,16 +110,8 @@ const SitesNodeTopContainer: React.FC<Props> = (props: Props) => {
         transform={`translate(${pos.x}, ${pos.y})`}
         data-type={NODES_CONSTANTS.SITES.type}
       >
-        <SitesCollapsedNode
-          uiId={props.site.uiId}
-          x={pos.x}
-          y={pos.y}
-          dragId={`drag${NODES_CONSTANTS.SITES.type}${props.site.uiId}`}
-          dataItem={props.site.dataItem}
-          childrenCount={props.site.children.length}
-          show={props.site.collapsed}
-        />
-        <SitesExpandNode x={pos.x} y={pos.y} dragId={`drag${NODES_CONSTANTS.SITES.type}${props.site.uiId}`} site={props.site} show={!props.site.collapsed} onPrev={onPrev} onNext={onNext} />
+        <SitesCollapsedNode site={props.site} dragId={`drag${NODES_CONSTANTS.SITES.type}${props.site.uiId}`} show={props.site.collapsed} />
+        <SitesExpandNode dragId={`drag${NODES_CONSTANTS.SITES.type}${props.site.uiId}`} site={props.site} show={!props.site.collapsed} onPrev={onPrev} onNext={onNext} />
         {/* <CollapseExpandButton
           id={`expandCollapse${props.dataItem.uiId}`}
           isCollapse={!props.dataItem.collapsed}

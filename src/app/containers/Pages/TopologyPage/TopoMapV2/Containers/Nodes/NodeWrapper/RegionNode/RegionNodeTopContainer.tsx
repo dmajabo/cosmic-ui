@@ -105,15 +105,7 @@ const RegionNodeTopContainer: React.FC<Props> = (props: Props) => {
   return (
     <TransitionContainer id={`g${NODES_CONSTANTS.REGION.type}${props.region.uiId}`} stateIn={props.region.visible} transform="none">
       <g id={`${NODES_CONSTANTS.REGION.type}${props.region.uiId}`} className="topologyNode" transform={`translate(${pos.x}, ${pos.y})`} data-type={NODES_CONSTANTS.REGION.type}>
-        <RegionCollapsedNode
-          uiId={props.region.uiId}
-          dragId={`drag${NODES_CONSTANTS.REGION.type}${props.region.uiId}`}
-          id={props.region.dataItem.id}
-          name={props.region.dataItem.name}
-          childrenCount={props.region.children.length}
-          show={props.region.collapsed}
-        />
-
+        <RegionCollapsedNode dragId={`drag${NODES_CONSTANTS.REGION.type}${props.region.uiId}`} region={props.region} show={props.region.collapsed} />
         <RegionExpandNode dragId={`drag${NODES_CONSTANTS.REGION.type}${props.region.uiId}`} region={props.region} show={!props.region.collapsed} />
       </g>
       {/* <g onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} className="topologyNode">

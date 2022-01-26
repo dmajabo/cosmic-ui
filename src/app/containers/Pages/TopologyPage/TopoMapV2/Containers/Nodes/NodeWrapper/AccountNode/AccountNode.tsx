@@ -21,7 +21,7 @@ const AccountNode: React.FC<Props> = (props: Props) => {
       data-type={NODES_CONSTANTS.ACCOUNT.type}
       stateIn={props.dataItem.visible && !props.dataItem.collapsed && topology.entities.transit.selected}
       origin="unset"
-      timing={50}
+      timing={100}
     >
       {props.dataItem.children && props.dataItem.children.length ? props.dataItem.children.map(it => <NetworkWEdgeNode key={`${it.uiId}wedge`} item={it} />) : null}
     </TransitionContainer>

@@ -15,7 +15,7 @@ interface Props {
 
 const AccountExpandNode: React.FC<Props> = (props: Props) => {
   return (
-    <TransitionContainer id={`expandNodeWrapper${props.account.dataItem.id}`} stateIn={props.show} origin="unset" transform="none">
+    <TransitionContainer id={`expandNodeWrapper${props.account.dataItem.id}`} stateIn={props.show} origin="unset" transform="none" timing={50}>
       <g style={{ cursor: 'pointer' }}>
         <rect
           id={props.dragId}

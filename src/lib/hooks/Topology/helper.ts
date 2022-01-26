@@ -109,13 +109,13 @@ export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[]
           // for (let j = 0; j < 45; j++) {
           //   const _item2 = jsonClone(region.devices[0]);
           //   _item2.segmentId = '61eacc5d820af10f872a9b15';
-          //   const _device2: IDeviceNode = createDeviceNode(org, orgI, _item2, _segmentsObj);
+          //   const _device2: IDeviceNode = createDeviceNode(org, orgI, _item2, sites[region.devices[0].segmentId]);
           //   segmentTempObject[_device2.segmentId].children.push(_device2);
           // }
           // for (let j = 0; j < 300; j++) {
           //   const _item3 = jsonClone(region.devices[0]);
           //   _item3.segmentId = '61ea2c4f820af10f872a9b14';
-          //   const _device3: IDeviceNode = createDeviceNode(org, orgI, _item3, _segmentsObj);
+          //   const _device3: IDeviceNode = createDeviceNode(org, orgI, _item3, sites[region.devices[0].segmentId]);
           //   segmentTempObject[_device3.segmentId].children.push(_device3);
           // }
           region.devices.forEach((d, i) => {

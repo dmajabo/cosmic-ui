@@ -8,8 +8,6 @@ import SitePager from './SitePager';
 // import VPNLink from '../../../Links/VPNLink';
 
 interface Props {
-  x: number;
-  y: number;
   dragId: string;
   site: ITopoSitesNode;
   show: boolean;

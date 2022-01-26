@@ -105,13 +105,7 @@ const AccountNodeTopContainer: React.FC<Props> = (props: Props) => {
         transform={`translate(${pos.x}, ${pos.y})`}
         data-type={NODES_CONSTANTS.ACCOUNT.type}
       >
-        <AccountCollapsedNode
-          dragId={`drag${NODES_CONSTANTS.ACCOUNT.type}${props.account.uiId}`}
-          id={props.account.dataItem.id}
-          name={props.account.dataItem.name}
-          childrenCount={props.account.children.length}
-          show={props.account.collapsed}
-        />
+        <AccountCollapsedNode dragId={`drag${NODES_CONSTANTS.ACCOUNT.type}${props.account.uiId}`} account={props.account} show={props.account.collapsed} />
         <AccountExpandNode dragId={`drag${NODES_CONSTANTS.ACCOUNT.type}${props.account.uiId}`} account={props.account} show={!props.account.collapsed} />
         {/* <CollapseExpandButton
           id={`expandCollapse${props.dataItem.id}`}

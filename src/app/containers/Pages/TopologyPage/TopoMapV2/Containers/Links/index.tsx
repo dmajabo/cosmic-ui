@@ -20,7 +20,7 @@ const LinksWrapper: React.FC<Props> = (props: Props) => {
           return <VPNLink key={props.links[key].id} dataItem={props.links[key]} visible={props.links[key].visible} />;
         }
         if (props.links[key].type === TopoLinkTypes.PeerConnectionLink) {
-          return <PeerConnectionLink key={props.links[key].id} dataItem={props.links[key]} visible={props.links[key].visible} />;
+          return <PeerConnectionLink key={props.links[key].id} dataItem={{ ...props.links[key] }} visible={props.links[key].visible} />;
         }
         return null;
       })}

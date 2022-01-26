@@ -14,9 +14,10 @@ import {
   ITopoSitesNode,
 } from '../models';
 import uuid from 'react-uuid';
-// import { getChildContainerHeight, getTotalNodeHeight } from './sizeHelpers';
 import { ISegmentSegmentP } from 'lib/api/ApiModels/Policy/Segment';
 import { IObject } from 'lib/models/general';
+import { setRegionChildrenCoords, setRegionSizes } from './coordinateHelper';
+import _ from 'lodash';
 
 export const createAccountNode = (_id: string, _name: string, _orgId: string): ITopoAccountNode => {
   const _obj: ITopoAccountNode = {
@@ -290,7 +291,7 @@ export const getCollapseExpandState = (
 
 export const updateCollapseExpandAccounts = (nodes: IObject<ITopoAccountNode>, collapsed: boolean): IObject<ITopoAccountNode> => {
   if (!nodes || !Object.keys(nodes).length) return null;
-  const _nodes: IObject<ITopoAccountNode> = Object.assign({}, nodes);
+  const _nodes: IObject<ITopoAccountNode> = _.cloneDeep(nodes);
   for (let key in _nodes) {
     _nodes[key].collapsed = collapsed;
   }
@@ -299,9 +300,22 @@ export const updateCollapseExpandAccounts = (nodes: IObject<ITopoAccountNode>, c
 
 export const updateCollapseExpandSites = (nodes: IObject<ITopoSitesNode>, collapsed: boolean): IObject<ITopoSitesNode> => {
   if (!nodes || !Object.keys(nodes).length) return null;
-  const _nodes: IObject<ITopoSitesNode> = Object.assign({}, nodes);
+  const _nodes: IObject<ITopoSitesNode> = _.cloneDeep(nodes);
   for (let key in _nodes) {
     _nodes[key].collapsed = collapsed;
+  }
+  return _nodes;
+};
+
+export const updateRegionNodes = (nodes: IObject<ITopoRegionNode>, filter: FilterEntityOptions): IObject<ITopoRegionNode> => {
+  if (!nodes || !Object.keys(nodes).length) return null;
+  const _nodes: IObject<ITopoRegionNode> = _.cloneDeep(nodes);
+  for (let key in _nodes) {
+    _nodes[key].collapsed = getCollapseExpandState(filter, _nodes[key].children, _nodes[key].peerConnections, _nodes[key].webAcls);
+    if (!_nodes[key].collapsed) {
+      setRegionSizes(_nodes[key], filter);
+      setRegionChildrenCoords(filter, _nodes[key].children, _nodes[key].peerConnections, _nodes[key].webAcls, _nodes[key]);
+    }
   }
   return _nodes;
 };

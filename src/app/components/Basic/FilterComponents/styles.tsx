@@ -66,25 +66,47 @@ export const FilterGroupItem = styled.div`
   display: flex;
   margin: 0 0 18px 0;
   flex-shrink: 0;
-  align-items: center;
-  cursor: pointer;
   &:last-child {
     margin-bottom: 0;
   }
 `;
 
-export const GroupItemLabel = styled.div`
+export const ItemWrapper = styled.div`
+  display: inline-flex;
+  align-items: center;
+  margin: 0 auto 0 0;
+  cursor: pointer;
+`;
+
+interface GLabelProps {
+  maxWidth?: string;
+}
+
+export const GroupItemLabel = styled.span<GLabelProps>`
+  display: inline-block;
   font-family: 'DMSans';
   font-style: normal;
   font-weight: normal;
   font-size: 14px;
   line-height: 24px;
-  max-width: calc(100% - 30px);
+  max-width: ${props => props.maxWidth || 'calc(100% - 30px)'};
   text-transform: capitalize;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
   color: var(--_primaryTextColor);
+`;
+
+export const GroupItemIcon = styled.span`
+  display: inline-block;
+  margin: auto 10px auto 0;
+  width: 18px;
+  height: 18px;
+  svg {
+    vertical-align: top;
+    width: 100%;
+    height: 100%;
+  }
 `;
 
 interface CircleProps {
