@@ -101,7 +101,7 @@ const SitesNodeTopContainer: React.FC<Props> = (props: Props) => {
 
   if (!pos) return null;
   return (
-    <TransitionContainer stateIn={props.site.visible} transform="none">
+    <TransitionContainer stateIn={props.site.visible} origin="unset" transform="none">
       <g
         id={`${NODES_CONSTANTS.SITES.type}${props.site.uiId}`}
         // onMouseEnter={onMouseEnter}
@@ -119,16 +119,7 @@ const SitesNodeTopContainer: React.FC<Props> = (props: Props) => {
           childrenCount={props.site.children.length}
           show={props.site.collapsed}
         />
-        <SitesExpandNode
-          x={pos.x}
-          y={pos.y}
-          dragId={`drag${NODES_CONSTANTS.SITES.type}${props.site.uiId}`}
-          site={props.site}
-          show={!props.site.collapsed}
-          showTransits={topology.entities && topology.entities.transit && topology.entities.transit.selected}
-          onPrev={onPrev}
-          onNext={onNext}
-        />
+        <SitesExpandNode x={pos.x} y={pos.y} dragId={`drag${NODES_CONSTANTS.SITES.type}${props.site.uiId}`} site={props.site} show={!props.site.collapsed} onPrev={onPrev} onNext={onNext} />
         {/* <CollapseExpandButton
           id={`expandCollapse${props.dataItem.uiId}`}
           isCollapse={!props.dataItem.collapsed}

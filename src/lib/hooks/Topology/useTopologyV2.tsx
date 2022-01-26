@@ -26,6 +26,8 @@ import { AlertSeverity } from 'lib/api/ApiModels/Workflow/apiModel';
 import { ISegmentSegmentP } from 'lib/api/ApiModels/Policy/Segment';
 import { OKULIS_LOCAL_STORAGE_KEYS } from 'lib/api/http/utils';
 import { getSessionStoragePreferences, StoragePreferenceKeys, updateSessionStoragePreference } from 'lib/helpers/localStorageHelpers';
+import { updateLinkVisibleState } from './helpers/buildlinkHelper';
+import { updateCollapseExpandAccounts, updateCollapseExpandSites } from './helpers/buildNodeHelpers';
 
 export interface TopologyV2ContextType {
   topoPanel: IPanelBar<TopologyPanelTypes>;
@@ -235,6 +237,19 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     if (groupType === TopoFilterTypes.Entities) {
       const _obj: FilterEntityOptions = jsonClone(entities);
       _obj[type].selected = selected;
+      if (type !== FilterEntityTypes.WEB_ACLS) {
+        const _links: IObject<ITopoLink<any, any, any>> = updateLinkVisibleState(links, _obj, type as FilterEntityTypes);
+        setLinks(_links);
+      }
+      if (type === FilterEntityTypes.SITES) {
+        const _data: IObject<ITopoSitesNode> = updateCollapseExpandSites(sites, !_obj[type].selected);
+        setSitesNodes(_data);
+      }
+      if (type === FilterEntityTypes.TRANSIT) {
+        const data: IObject<ITopoAccountNode> = updateCollapseExpandAccounts(accounts, !_obj[type].selected);
+        setAccountsNodes(data);
+      }
+      // setRegionsNodes(data.regions);
       updateSessionStoragePreference(_obj, OKULIS_LOCAL_STORAGE_KEYS.OKULIS_PREFERENCE, StoragePreferenceKeys.TOPOLOGY_FILTER_ENTITY_OPTIONS);
       setEntities(_obj);
       return;
@@ -333,4 +348,7 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     severity,
     onSelectFilterOption,
   };
+}
+function updateNodes(selected: boolean, sites: IObject<ITopoSitesNode>) {
+  throw new Error('Function not implemented.');
 }

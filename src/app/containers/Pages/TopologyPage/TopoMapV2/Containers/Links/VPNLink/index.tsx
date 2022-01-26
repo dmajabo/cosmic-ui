@@ -8,6 +8,7 @@ import { NODES_CONSTANTS } from '../../../model';
 import { select } from 'd3-selection';
 
 interface IProps {
+  visible: boolean;
   dataItem: ITopoLink<IDeviceNode, ITGWNode, INetworkVpnLinkState>;
 }
 const VPNLink: React.FC<IProps> = (props: IProps) => {
@@ -22,7 +23,7 @@ const VPNLink: React.FC<IProps> = (props: IProps) => {
     }
   }, [topology.selectedNode]);
   return (
-    <TransitionContainer stateIn={props.dataItem.visible} id={`vpnLink${props.dataItem.id}`}>
+    <TransitionContainer stateIn={props.visible} id={`vpnLink${props.dataItem.id}`} transform="none" origin="unset" timing={50}>
       <line
         className={`topologyLink ${isSelected ? 'selectedTopoLevel1Link' : ''}`}
         fill="var(--_defaultLinkFill)"

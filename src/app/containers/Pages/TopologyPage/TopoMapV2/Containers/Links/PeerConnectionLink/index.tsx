@@ -6,6 +6,7 @@ import TransitionContainer from '../../TransitionContainer';
 import { NODES_CONSTANTS } from '../../../model';
 
 interface IProps {
+  visible: boolean;
   dataItem: ITopoLink<INetworkVNetNode, INetworkVNetNode, INetworkVNetworkPeeringConnectionNode>;
 }
 const PeerConnectionLink: React.FC<IProps> = (props: IProps) => {
@@ -19,7 +20,7 @@ const PeerConnectionLink: React.FC<IProps> = (props: IProps) => {
   //   }
   // }, [topology.selectedNode]);
   return (
-    <TransitionContainer stateIn={props.dataItem.visible} id={`vpnLink${props.dataItem.id}`}>
+    <TransitionContainer stateIn={props.visible} id={`peerConnectionLink${props.dataItem.id}`} transform="none" origin="unset" timing={50}>
       <line
         className="peerConnectionLink"
         stroke="#BBCDE7"

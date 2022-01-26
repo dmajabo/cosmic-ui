@@ -38,19 +38,14 @@ export const setRegionsCoord = (filter: FilterEntityOptions, items: IObject<any>
     let _offsetY = 0;
     if (items[key].webAcls && items[key].webAcls.length) {
       setUpRegionChildCoord(items[key], items[key].webAcls, items[key].expandedSize.width, NODES_CONSTANTS.WEB_ACL.collapse, _offsetY);
-      if (filter.web_acls.selected) {
-        _offsetY += getRegionChildrenOffsetY(items[key].webAcls.length, NODES_CONSTANTS.WEB_ACL.collapse);
-      }
+      _offsetY += getRegionChildrenOffsetY(items[key].webAcls.length, NODES_CONSTANTS.WEB_ACL.collapse);
     }
     if (items[key].peerConnections && items[key].peerConnections.length) {
       setUpRegionChildCoord(items[key], items[key].peerConnections, items[key].expandedSize.width, NODES_CONSTANTS.PEERING_CONNECTION.collapse, _offsetY);
-      if (filter.peer_connections.selected) {
-        _offsetY += getRegionChildrenOffsetY(items[key].peerConnections.length, NODES_CONSTANTS.PEERING_CONNECTION.collapse);
-      }
+      _offsetY += getRegionChildrenOffsetY(items[key].peerConnections.length, NODES_CONSTANTS.PEERING_CONNECTION.collapse);
     }
     if (items[key].children && items[key].children.length) {
       setUpRegionChildCoord(items[key], items[key].children, items[key].expandedSize.width, NODES_CONSTANTS.NETWORK_VNET.collapse, _offsetY);
-      _offsetY += getRegionChildrenOffsetY(items[key].children.length, NODES_CONSTANTS.NETWORK_VNET.collapse);
     }
   });
 };

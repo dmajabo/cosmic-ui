@@ -28,9 +28,9 @@ const RegionNode: React.FC<Props> = (props: Props) => {
     <TransitionContainer
       id={`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}childrensLayer`}
       className="topologyNode"
-      transform="none"
       data-type={NODES_CONSTANTS.REGION.type}
       stateIn={props.dataItem.visible && !props.dataItem.collapsed}
+      transform="none"
       origin="unset"
       timing={50}
     >

@@ -14,13 +14,13 @@ const LinksWrapper: React.FC<Props> = (props: Props) => {
     <g>
       {Object.keys(props.links).map((key, i) => {
         if (props.links[key].type === TopoLinkTypes.NetworkNetworkLink) {
-          return <NetworkNetworkLink key={props.links[key].id} dataItem={props.links[key]} />;
+          return <NetworkNetworkLink key={props.links[key].id} dataItem={props.links[key]} visible={props.links[key].visible} />;
         }
         if (props.links[key].type === TopoLinkTypes.VPNLink) {
-          return <VPNLink key={props.links[key].id} dataItem={props.links[key]} />;
+          return <VPNLink key={props.links[key].id} dataItem={props.links[key]} visible={props.links[key].visible} />;
         }
         if (props.links[key].type === TopoLinkTypes.PeerConnectionLink) {
-          return <PeerConnectionLink key={props.links[key].id} dataItem={props.links[key]} />;
+          return <PeerConnectionLink key={props.links[key].id} dataItem={props.links[key]} visible={props.links[key].visible} />;
         }
         return null;
       })}

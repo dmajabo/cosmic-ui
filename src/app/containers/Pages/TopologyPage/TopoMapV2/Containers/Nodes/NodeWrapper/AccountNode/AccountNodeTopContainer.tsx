@@ -96,7 +96,7 @@ const AccountNodeTopContainer: React.FC<Props> = (props: Props) => {
 
   if (!pos) return null;
   return (
-    <TransitionContainer id={`wrapper${NODES_CONSTANTS.ACCOUNT.type}${props.account.uiId}`} stateIn={props.account.visible} origin="unset" transform="none">
+    <TransitionContainer stateIn={props.account.visible} origin="unset" transform="none">
       <g
         id={`${NODES_CONSTANTS.ACCOUNT.type}${props.account.uiId}`}
         // onMouseEnter={onMouseEnter}

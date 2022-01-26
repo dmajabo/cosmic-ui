@@ -13,7 +13,6 @@ interface Props {
   dragId: string;
   site: ITopoSitesNode;
   show: boolean;
-  showTransits: boolean;
   onPrev: () => void;
   onNext: () => void;
 }
@@ -52,16 +51,6 @@ const SitesExpandNode: React.FC<Props> = (props: Props) => {
           />
         ) : null}
       </g>
-      {/* {props.site.links && props.site.links.length ? (
-        <TransitionContainer id={`linksWrapper${NODES_CONSTANTS.SITES.type}${props.site.uiId}`} stateIn={props.showTransits} transform="none">
-          <>
-            {props.site.links.map(it => {
-              if (it.fromNode.child.page !== props.currentPage) return null;
-              return <VPNLink key={`link${NODES_CONSTANTS.SITES.type}${props.site.uiId}${it.id}`} dataItem={it} />;
-            })}
-          </>
-        </TransitionContainer>
-      ) : null} */}
     </TransitionContainer>
   );
 };

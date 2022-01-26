@@ -1,4 +1,4 @@
-import { INetworkVNetNode, INetworkVNetworkPeeringConnectionNode, INetworkWebAclNode } from 'lib/hooks/Topology/models';
+import { INetworkVNetNode, INetworkVNetworkPeeringConnectionNode, INetworkWebAclNode, ITopoLink } from 'lib/hooks/Topology/models';
 import { INetworkOrg, INetworkRegion, VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
 
 import {
@@ -36,7 +36,6 @@ import { getChunksFromArray } from 'lib/helpers/arrayHelper';
 import { ISegmentSegmentP } from 'lib/api/ApiModels/Policy/Segment';
 import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
 import { IObject } from 'lib/models/general';
-import { jsonClone } from 'lib/helpers/cloneHelper';
 // import { jsonClone } from 'lib/helpers/cloneHelper';
 
 export const createAccounts = (accounts: IObject<ITopoAccountNode>, _data: INetworkOrg[]) => {
@@ -174,7 +173,7 @@ export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[]
   }
 
   updateTopLevelItems(filter, regions, accounts, sites);
-  const _links = buildLinks(regions, accounts, sites);
+  const _links: IObject<ITopoLink<any, any, any>> = buildLinks(filter, regions, accounts, sites);
   return { accounts: accounts, sites: sites, regions: regions, links: _links, segments: segmentTempObject };
 };
 

@@ -7,6 +7,7 @@ import TransitionContainer from '../../TransitionContainer';
 import { NODES_CONSTANTS } from '../../../model';
 
 interface IProps {
+  visible: boolean;
   dataItem: ITopoLink<INetworkVNetNode, ITGWNode, INetworkNetworkLink>;
 }
 const NetworkNetworkLink: React.FC<IProps> = (props: IProps) => {
@@ -21,7 +22,7 @@ const NetworkNetworkLink: React.FC<IProps> = (props: IProps) => {
     }
   }, [topology.selectedNode]);
   return (
-    <TransitionContainer id={`networkNetworkLink${props.dataItem.id}`} stateIn={props.dataItem.visible}>
+    <TransitionContainer id={`networkNetworkLink${props.dataItem.id}`} stateIn={props.visible} transform="none" origin="unset" timing={50}>
       <line
         className={`topologyLink ${isSelected ? 'selectedTopoLevel1Link' : ''}`}
         fill="var(--_defaultLinkFill)"
