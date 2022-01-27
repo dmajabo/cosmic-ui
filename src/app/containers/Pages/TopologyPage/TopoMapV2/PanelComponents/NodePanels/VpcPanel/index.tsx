@@ -11,6 +11,8 @@ import RoutesTab from './Tabs/RoutesTab';
 import PolicyTab from './Tabs/PolicyTab';
 import SelectedVmPanel from './SelectedVmPanel';
 import { INetworkVM } from 'lib/api/ApiModels/Topology/apiModels';
+import { DEFAULT_VNET_EXPAND_FIELDS, IVnetFields } from './models';
+import { jsonClone } from 'lib/helpers/cloneHelper';
 
 interface IProps {
   dataItem: INetworkVNetNode;
@@ -18,17 +20,33 @@ interface IProps {
 
 const VpcPanel: React.FC<IProps> = (props: IProps) => {
   const [value, setValue] = React.useState(0);
+  const [vnet, setVnet] = React.useState<INetworkVNetNode>(null);
   const [selectedSubItem, setSelectedSubItem] = React.useState<INetworkVM | null>(null);
+  const [expandStateObj, setExpandStateObj] = React.useState<IVnetFields>(jsonClone(DEFAULT_VNET_EXPAND_FIELDS));
   // const [policyDisabled, setPolicyDisabled] = React.useState<boolean>(false);
   const classes = TabsStyles();
+
+  React.useEffect(() => {
+    if (!vnet || (props.dataItem && props.dataItem.extId !== vnet.extId)) {
+      setExpandStateObj(jsonClone(DEFAULT_VNET_EXPAND_FIELDS));
+      setSelectedSubItem(null);
+      setVnet(props.dataItem);
+    }
+  }, [props.dataItem]);
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
   };
 
   const onSelectVm = (_item: INetworkVM) => {
-    if (selectedSubItem && selectedSubItem.id === _item.id) return;
+    if (selectedSubItem && selectedSubItem.extId === _item.extId) return;
     setSelectedSubItem(_item);
+  };
+
+  const onToogleExpandState = (fieldId: string, state: boolean) => {
+    const _obj: IVnetFields = jsonClone(expandStateObj);
+    _obj[fieldId].expand = state;
+    setExpandStateObj(_obj);
   };
 
   const onReturn = () => {
@@ -75,7 +93,7 @@ const VpcPanel: React.FC<IProps> = (props: IProps) => {
               <PolicyTab dataItem={props.dataItem} />
             </TabPanel>
             <TabPanel value={value} index={2}>
-              <InventoryTab dataItem={props.dataItem} onSelectedVm={onSelectVm} />
+              <InventoryTab dataItem={props.dataItem} expandStateObj={expandStateObj} onSelectedVm={onSelectVm} onToogleExpandState={onToogleExpandState} />
             </TabPanel>
           </OverflowContainer>
         </>

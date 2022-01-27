@@ -5,33 +5,30 @@ import ExpandGroup from 'app/components/Basic/ExpandGroup';
 import { AppLoaderBalancerIcon, InternetGatawayIcon, NetLoaderBalancerIcon, VmIcon } from 'app/components/SVGIcons/topologyIcons/TopoMapV2Icons/VnetPanelIcons/vnetPanelIcons';
 import VmItem from '../List/VmItem';
 import ChildrenCount from '../ChildrenCount';
-import { DEFAULT_VNET_EXPAND_FIELDS, IVnetFields } from '../models';
-import { jsonClone } from 'lib/helpers/cloneHelper';
 import BalanceItem from '../List/BalanceItem';
 import InternetGetAwayItem from '../List/InternetGetAwayItem';
+import { IVnetFields } from '../models';
 
 interface IProps {
   dataItem: INetworkVNetNode;
+  expandStateObj: IVnetFields;
   onSelectedVm: (item: INetworkVM) => void;
+  onToogleExpandState: (fieldId: string, state: boolean) => void;
 }
 
 const InventoryTab: React.FC<IProps> = (props: IProps) => {
-  const [vnet, setVnet] = React.useState<INetworkVNetNode>(null);
-
   const [vms, setVms] = React.useState<INetworkVM[]>([]);
   const [netLoaderBalancerList, setNetLoaderBalancerList] = React.useState<INetworkLoadBalancer[]>([]);
   const [appLoaderBalancerList, setAppLoaderBalancerList] = React.useState<INetworkLoadBalancer[]>([]);
   const [internetGatAway, setInternetGetAway] = React.useState<INnetworkInternetGateway>(null);
-  const [expandStateObj, setExpandStateObj] = React.useState<IVnetFields>(jsonClone(DEFAULT_VNET_EXPAND_FIELDS));
+
   React.useEffect(() => {
-    if (!vnet || (props.dataItem && props.dataItem.id !== vnet.id)) {
+    if (props.dataItem) {
       const _obj = getFilteredBalancerByType(props.dataItem.loadBalancers);
       setVms(props.dataItem.vms);
       setNetLoaderBalancerList(_obj.net);
       setAppLoaderBalancerList(_obj.app);
       setInternetGetAway(props.dataItem.internetGateway);
-      props.onSelectedVm(null);
-      setVnet(props.dataItem);
     }
   }, [props.dataItem]);
 
@@ -53,22 +50,18 @@ const InventoryTab: React.FC<IProps> = (props: IProps) => {
     props.onSelectedVm(_item);
   };
 
-  const onToogleGroup = (fieldId: string, state: boolean) => {
-    const _obj: IVnetFields = { ...expandStateObj };
-    _obj[fieldId].expand = state;
-    setExpandStateObj(_obj);
+  const onToogleExpandState = (id: string, state: boolean) => {
+    props.onToogleExpandState(id, state);
   };
-
-  if (!vnet) return null;
 
   return (
     <>
       <ExpandGroup
-        id={expandStateObj.internetGatAway.id}
-        expand={expandStateObj.internetGatAway.expand && !!internetGatAway}
+        id={props.expandStateObj.internetGatAway.id}
+        expand={props.expandStateObj.internetGatAway.expand && !!internetGatAway}
         headerChildren={<ChildrenCount count={internetGatAway ? 1 : 0} />}
         disabled={!internetGatAway}
-        onToogleExpand={onToogleGroup}
+        onToogleExpand={onToogleExpandState}
         maxGroupHeight="none"
         icon={InternetGatawayIcon}
         label="Internet Gateway"
@@ -77,9 +70,9 @@ const InventoryTab: React.FC<IProps> = (props: IProps) => {
         <InternetGetAwayItem dataItem={internetGatAway} />
       </ExpandGroup>
       <ExpandGroup
-        id={expandStateObj.netLoadBalancer.id}
-        expand={expandStateObj.netLoadBalancer.expand && !!(netLoaderBalancerList && netLoaderBalancerList.length)}
-        onToogleExpand={onToogleGroup}
+        id={props.expandStateObj.netLoadBalancer.id}
+        expand={props.expandStateObj.netLoadBalancer.expand && !!(netLoaderBalancerList && netLoaderBalancerList.length)}
+        onToogleExpand={onToogleExpandState}
         headerChildren={<ChildrenCount count={netLoaderBalancerList.length} />}
         maxGroupHeight="none"
         icon={NetLoaderBalancerIcon}
@@ -92,9 +85,9 @@ const InventoryTab: React.FC<IProps> = (props: IProps) => {
           : null}
       </ExpandGroup>
       <ExpandGroup
-        id={expandStateObj.appLoadBalancer.id}
-        expand={expandStateObj.appLoadBalancer.expand && !!(appLoaderBalancerList && appLoaderBalancerList.length)}
-        onToogleExpand={onToogleGroup}
+        id={props.expandStateObj.appLoadBalancer.id}
+        expand={props.expandStateObj.appLoadBalancer.expand && !!(appLoaderBalancerList && appLoaderBalancerList.length)}
+        onToogleExpand={onToogleExpandState}
         headerChildren={<ChildrenCount count={appLoaderBalancerList.length} />}
         disabled={!appLoaderBalancerList.length}
         maxGroupHeight="none"
@@ -106,9 +99,9 @@ const InventoryTab: React.FC<IProps> = (props: IProps) => {
           : null}
       </ExpandGroup>
       <ExpandGroup
-        id={expandStateObj.vms.id}
-        expand={expandStateObj.vms.expand && !!(vms && vms.length)}
-        onToogleExpand={onToogleGroup}
+        id={props.expandStateObj.vms.id}
+        expand={props.expandStateObj.vms.expand && !!(vms && vms.length)}
+        onToogleExpand={onToogleExpandState}
         headerChildren={<ChildrenCount count={vms.length} />}
         disabled={!vms.length}
         maxGroupHeight="none"
