@@ -49,11 +49,13 @@ export const createAccounts = (accounts: IObject<ITopoAccountNode>, _data: INetw
         if (account) {
           const _wNode: ITGWNode = createWedgeNode(`${region.name}${org.extId}`, org, orgI, 0, index, w);
           accounts[`${region.name}${org.extId}`].children.push(_wNode);
+          accounts[`${region.name}${org.extId}`].totalChildrenCount = accounts[`${region.name}${org.extId}`].children.length;
           return;
         }
         const _a: ITopoAccountNode = createAccountNode(`${region.name}${org.extId}`, _name, org.id);
         const _wNode: ITGWNode = createWedgeNode(`${region.name}${org.extId}`, org, orgI, 0, index, w);
         _a.children.push(_wNode);
+        _a.totalChildrenCount = _a.children.length;
         accounts[_a.dataItem.id] = _a;
       });
     });
@@ -86,6 +88,7 @@ export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[]
         }
         const max = getRegionChildrenCounts(region.vnets, region.vNetworkPeeringConnections, region.webAcls);
         if (region.vnets && region.vnets.length && org.vendorType !== 'MERAKI') {
+          _objR.totalChildrenCount = region.vnets.length;
           const _arr: INetworkVNetNode[][] = getChunksFromArray(region.vnets, Math.min(VPCS_IN_ROW, max));
           _objR.children = _arr.map((row, ri) => row.map((v, i) => createVnetNode(_objR.dataItem.id, org, row.length, orgI, ri, i, v, sites[v.segmentId])));
         }
@@ -148,6 +151,7 @@ export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[]
       color: NODES_CONSTANTS.SITES.expanded.marker.bgColor,
     });
     sites[DEFAULT_GROUP_ID] = _defGroup;
+    sites[DEFAULT_GROUP_ID].totalChildrenCount = devicesInDefaultSegment.length;
     const _arr = getChunksFromArray(devicesInDefaultSegment, DEV_IN_PAGE);
     const max = _arr && _arr.length ? getBeautifulRowsCount(_arr[0].length, DEV_IN_ROW) : 0;
     sites[DEFAULT_GROUP_ID].children = _arr.map((page, pageI) => {
@@ -162,6 +166,7 @@ export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[]
         delete sites[_s.dataItem.id];
         return;
       }
+      sites[_s.dataItem.id].totalChildrenCount = _s.children.length;
       const _arr = getChunksFromArray(_s.children, DEV_IN_PAGE);
       const max = _arr && _arr.length ? getBeautifulRowsCount(_arr[0].length, DEV_IN_ROW) : 0;
       sites[_s.dataItem.id].children = _arr.map((page, pageI) => {

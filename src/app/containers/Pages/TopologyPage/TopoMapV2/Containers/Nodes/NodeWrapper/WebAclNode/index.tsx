@@ -21,9 +21,9 @@ const WebAclNode: React.FC<Props> = (props: Props) => {
   const [isNodeSelected, setIsNodeSelected] = React.useState<boolean>(false);
   const nodeRef = React.useRef(null);
   React.useEffect(() => {
-    if (topology.selectedNode && topology.selectedNode.uiId === props.item.uiId && !isNodeSelected) {
+    if (topology.selectedNode && topology.selectedNode.extId === props.item.extId && !isNodeSelected) {
       setIsNodeSelected(true);
-    } else if (!topology.selectedNode || (topology.selectedNode && topology.selectedNode !== props.item.uiId)) {
+    } else if (!topology.selectedNode || (topology.selectedNode && topology.selectedNode !== props.item.extId)) {
       setIsNodeSelected(false);
     }
   }, [topology.selectedNode]);

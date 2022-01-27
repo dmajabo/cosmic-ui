@@ -27,9 +27,9 @@ const ExpandedNetworkVnetNode: React.FC<Props> = (props: Props) => {
   const nodeRef = React.useRef(null);
 
   React.useEffect(() => {
-    if (topology.selectedNode && topology.selectedNode.id === props.item.id && !isNodeSelected) {
+    if (topology.selectedNode && topology.selectedNode.extId === props.item.extId && !isNodeSelected) {
       setIsNodeSelected(true);
-    } else if (!topology.selectedNode || (topology.selectedNode && topology.selectedNode !== props.item.id)) {
+    } else if (!topology.selectedNode || (topology.selectedNode && topology.selectedNode !== props.item.extId)) {
       setIsNodeSelected(false);
     }
   }, [topology.selectedNode]);

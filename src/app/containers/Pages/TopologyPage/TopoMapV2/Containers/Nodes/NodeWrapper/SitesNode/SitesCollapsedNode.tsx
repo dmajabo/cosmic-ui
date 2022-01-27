@@ -12,8 +12,8 @@ interface Props {
 }
 
 const SitesCollapsedNode: React.FC<Props> = (props: Props) => {
-  const dx = props.site.expandedSize.width / 2 - NODES_CONSTANTS.SITES.collapse.width / 2;
-  const dy = props.site.expandedSize.height / 2 - NODES_CONSTANTS.SITES.collapse.height / 2;
+  const dx = props.site.width / 2 - NODES_CONSTANTS.SITES.collapse.width / 2;
+  const dy = props.site.height / 2 - NODES_CONSTANTS.SITES.collapse.height / 2;
   return (
     <TransitionContainer id={`collapseNodeWrapper${props.site.dataItem.id}`} stateIn={props.show} origin="unset" transform="none">
       <g style={{ cursor: 'pointer' }} transform={`translate(${dx}, ${dy})`}>
@@ -35,7 +35,7 @@ const SitesCollapsedNode: React.FC<Props> = (props: Props) => {
           x={NODES_CONSTANTS.SITES.collapse.iconOffsetX}
           y={NODES_CONSTANTS.SITES.collapse.iconOffsetY}
         />
-        <NodeCounter label={`${props.site.children.length} Dev`} stylesObj={NODES_CONSTANTS.SITES.countStyles} />
+        <NodeCounter label={`${props.site.totalChildrenCount} Dev`} stylesObj={NODES_CONSTANTS.SITES.countStyles} />
         <NodeCollapsedName id={props.site.dataItem.id} label={props.site.dataItem.name} stylesObj={NODES_CONSTANTS.SITES.labelCollapsedStyles} />
       </g>
     </TransitionContainer>

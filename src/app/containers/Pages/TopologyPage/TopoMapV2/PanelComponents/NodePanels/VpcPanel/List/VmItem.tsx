@@ -26,7 +26,7 @@ const VmItem: React.FC<Props> = (props: Props) => {
     props.onClick(props.dataItem);
   };
   return (
-    <VmWrapStyles onClick={onClick} title={props.dataItem.extId}>
+    <VmWrapStyles onClick={onClick} title={props.dataItem.name || props.dataItem.extId}>
       <IconWrapper icon={vmIcon} width="20px" height="20px" styles={{ margin: '0 12px 0 0' }} />
       <Label style={{ maxWidth: segmentColor ? 'calc(100% - 64px)' : null, margin: segmentColor ? '0 auto 0 0' : '0' }}>{props.dataItem.name ? props.dataItem.name : props.dataItem.extId}</Label>
       {segmentColor && <SegmentColorRect color={segmentColor} />}

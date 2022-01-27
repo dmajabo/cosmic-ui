@@ -1,7 +1,6 @@
 import React from 'react';
 import { CloudLoadBalancerTypeP, INetworkLoadBalancer, INetworkVM, INnetworkInternetGateway } from 'lib/api/ApiModels/Topology/apiModels';
 import { INetworkVNetNode } from 'lib/hooks/Topology/models';
-import SelectedVmPanel from '../SelectedVmPanel';
 import ExpandGroup from 'app/components/Basic/ExpandGroup';
 import { AppLoaderBalancerIcon, InternetGatawayIcon, NetLoaderBalancerIcon, VmIcon } from 'app/components/SVGIcons/topologyIcons/TopoMapV2Icons/VnetPanelIcons/vnetPanelIcons';
 import VmItem from '../List/VmItem';
@@ -13,11 +12,12 @@ import InternetGetAwayItem from '../List/InternetGetAwayItem';
 
 interface IProps {
   dataItem: INetworkVNetNode;
+  onSelectedVm: (item: INetworkVM) => void;
 }
 
 const InventoryTab: React.FC<IProps> = (props: IProps) => {
   const [vnet, setVnet] = React.useState<INetworkVNetNode>(null);
-  const [selectedSubItem, setSelectedSubItem] = React.useState<INetworkVM | null>(null);
+
   const [vms, setVms] = React.useState<INetworkVM[]>([]);
   const [netLoaderBalancerList, setNetLoaderBalancerList] = React.useState<INetworkLoadBalancer[]>([]);
   const [appLoaderBalancerList, setAppLoaderBalancerList] = React.useState<INetworkLoadBalancer[]>([]);
@@ -30,7 +30,7 @@ const InventoryTab: React.FC<IProps> = (props: IProps) => {
       setNetLoaderBalancerList(_obj.net);
       setAppLoaderBalancerList(_obj.app);
       setInternetGetAway(props.dataItem.internetGateway);
-      setSelectedSubItem(null);
+      props.onSelectedVm(null);
       setVnet(props.dataItem);
     }
   }, [props.dataItem]);
@@ -50,12 +50,7 @@ const InventoryTab: React.FC<IProps> = (props: IProps) => {
   };
 
   const onSelectVm = (_item: INetworkVM) => {
-    if (selectedSubItem && selectedSubItem.id === _item.id) return;
-    setSelectedSubItem(_item);
-  };
-
-  const onReturn = () => {
-    setSelectedSubItem(null);
+    props.onSelectedVm(_item);
   };
 
   const onToogleGroup = (fieldId: string, state: boolean) => {
@@ -65,10 +60,6 @@ const InventoryTab: React.FC<IProps> = (props: IProps) => {
   };
 
   if (!vnet) return null;
-
-  if (selectedSubItem) {
-    return <SelectedVmPanel vnetExtId={props.dataItem.extId} dataItem={selectedSubItem} onReturnBack={onReturn} />;
-  }
 
   return (
     <>

@@ -22,8 +22,8 @@ const SitesExpandNode: React.FC<Props> = (props: Props) => {
         <rect
           id={props.dragId}
           fill={NODES_CONSTANTS.SITES.expanded.bgColor}
-          width={props.site.expandedSize.width}
-          height={props.site.expandedSize.height}
+          width={props.site.width}
+          height={props.site.height}
           rx={NODES_CONSTANTS.SITES.expanded.borderRadius}
           ry={NODES_CONSTANTS.SITES.expanded.borderRadius}
           pointerEvents="all"
@@ -32,21 +32,14 @@ const SitesExpandNode: React.FC<Props> = (props: Props) => {
           <NodeMarker iconId={NODES_CONSTANTS.SITES.iconId} fill={props.site.dataItem.color} stylesObj={NODES_CONSTANTS.SITES.expanded.marker} />
           <NodeExpandedName
             name={props.site.dataItem.name}
-            nodeWidth={props.site.expandedSize.width}
+            nodeWidth={props.site.width}
             markerWidth={NODES_CONSTANTS.SITES.expanded.marker.width}
             height={NODES_CONSTANTS.SITES.expanded.marker.height}
             stylesObj={NODES_CONSTANTS.SITES.labelExpandedStyles}
           />
         </g>
         {props.site.children.length > 1 ? (
-          <SitePager
-            y={props.site.expandedSize.height - 20}
-            width={props.site.expandedSize.width}
-            currentPage={props.site.currentPage}
-            totalPages={props.site.children.length}
-            onPrev={props.onPrev}
-            onNext={props.onNext}
-          />
+          <SitePager y={props.site.height - 20} width={props.site.width} currentPage={props.site.currentPage} totalPages={props.site.children.length} onPrev={props.onPrev} onNext={props.onNext} />
         ) : null}
       </g>
     </TransitionContainer>

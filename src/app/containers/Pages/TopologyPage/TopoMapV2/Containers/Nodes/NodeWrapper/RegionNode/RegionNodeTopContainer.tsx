@@ -7,11 +7,9 @@ import {
 } from 'lib/models/general';
 // import { useDrag } from 'app/containers/Pages/TopologyPage/TopoMapV2/hooks/useDrag';
 import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
-import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 import RegionCollapsedNode from './RegionCollapsedNode';
 import RegionExpandNode from './RegionExpandNode';
 import TransitionContainer from '../../../TransitionContainer';
-import { getRegionChildrenContainersOffsets, IRefionContainersOffsets } from './ExpandNodeContent/helper';
 // import CollapseExpandButton from '../../Containers/CollapseExpandButton';
 // import CollapseExpandButton from '../../Containers/CollapseExpandButton';
 
@@ -20,25 +18,8 @@ interface Props {
 }
 
 const RegionNodeTopContainer: React.FC<Props> = (props: Props) => {
-  const { topology } = useTopologyV2DataContext();
   const [pos, setPosition] = React.useState<IPosition>(null);
-  const [offsetsData, setOffsetsData] = React.useState<IRefionContainersOffsets>(null);
 
-  React.useEffect(() => {
-    const _offsests = getRegionChildrenContainersOffsets(
-      topology.entities,
-      props.region.webAcls.length,
-      props.region.peerConnections.length,
-      props.region.children.length,
-      NODES_CONSTANTS.REGION.headerHeight,
-      NODES_CONSTANTS.REGION.expanded.contentPadding,
-      NODES_CONSTANTS.WEB_ACL.collapse,
-      NODES_CONSTANTS.PEERING_CONNECTION.collapse,
-      NODES_CONSTANTS.NETWORK_VNET.collapse,
-      props.region.expandedSize.width,
-    );
-    setOffsetsData(_offsests);
-  }, [props.region, topology.entities]);
   // const { onUpdate, onUnsubscribeDrag } = useDrag(
   //   {
   //     id: `${NODES_CONSTANTS.REGION.type}${props.region.uiId}`,
@@ -101,7 +82,7 @@ const RegionNodeTopContainer: React.FC<Props> = (props: Props) => {
   //   topology.onCollapseExpandNode(props.dataItem, false);
   // };
 
-  if (!pos || !offsetsData) return null;
+  if (!pos) return null;
   return (
     <TransitionContainer id={`g${NODES_CONSTANTS.REGION.type}${props.region.uiId}`} stateIn={props.region.visible} transform="none">
       <g id={`${NODES_CONSTANTS.REGION.type}${props.region.uiId}`} className="topologyNode" transform={`translate(${pos.x}, ${pos.y})`} data-type={NODES_CONSTANTS.REGION.type}>

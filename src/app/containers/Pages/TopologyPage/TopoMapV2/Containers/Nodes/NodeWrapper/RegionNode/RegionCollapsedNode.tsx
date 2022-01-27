@@ -12,10 +12,10 @@ interface Props {
 }
 
 const RegionCollapsedNode: React.FC<Props> = (props: Props) => {
-  const dx = props.region.expandedSize.width / 2 - NODES_CONSTANTS.REGION.collapse.width / 2;
-  const dy = props.region.expandedSize.height / 2 - NODES_CONSTANTS.REGION.collapse.height / 2;
+  const dx = props.region.width / 2 - NODES_CONSTANTS.REGION.collapse.width / 2;
+  const dy = props.region.height / 2 - NODES_CONSTANTS.REGION.collapse.height / 2;
   return (
-    <TransitionContainer id={`collapseNodeWrapper${props.region.dataItem.id}`} stateIn={props.show} origin="unset" transform="none">
+    <TransitionContainer id={`collapseNodeWrapper${props.region.dataItem.extId}`} stateIn={props.show} origin="unset" transform="none">
       <g transform={`translate(${dx}, ${dy})`}>
         <rect
           id={props.dragId}
@@ -34,8 +34,8 @@ const RegionCollapsedNode: React.FC<Props> = (props: Props) => {
           x={NODES_CONSTANTS.REGION.collapse.iconOffsetX}
           y={NODES_CONSTANTS.REGION.collapse.iconOffsetY}
         />
-        <NodeCounter label={`${props.region.children.length} VPC`} stylesObj={NODES_CONSTANTS.REGION.countStyles} />
-        <NodeCollapsedName id={props.region.dataItem.id} label={props.region.dataItem.name} stylesObj={NODES_CONSTANTS.REGION.labelCollapsedStyles} />
+        <NodeCounter label={`${props.region.totalChildrenCount} VPC`} stylesObj={NODES_CONSTANTS.REGION.countStyles} />
+        <NodeCollapsedName id={props.region.dataItem.extId} label={props.region.dataItem.name} stylesObj={NODES_CONSTANTS.REGION.labelCollapsedStyles} />
       </g>
     </TransitionContainer>
   );

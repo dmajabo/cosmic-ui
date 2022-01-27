@@ -105,33 +105,24 @@ export interface IAccountNode extends IBaseEntity<string> {
   name: string;
 }
 
-export interface ITopoAccountNode extends ICoord, ICollapsed, IVisible {
-  dataItem: IAccountNode;
+export interface ITopoNode<T> {
+  dataItem: T;
   uiId: string;
-  orgId: string;
   type: TopoNodeTypes;
-  expandedSize: ISize;
-  collapsedSize: ISize;
+  totalChildrenCount: number;
+}
+export interface ITopoAccountNode extends ITopoNode<IAccountNode>, ICoord, ISize, ICollapsed, IVisible {
+  orgId: string;
   children: ITGWNode[];
 }
 
-export interface ITopoSitesNode extends ICoord, ICollapsed, IVisible {
-  dataItem: ISegmentSegmentP;
-  uiId: string;
-  type: TopoNodeTypes;
-  expandedSize: ISize;
-  collapsedSize: ISize;
+export interface ITopoSitesNode extends ITopoNode<ISegmentSegmentP>, ICoord, ISize, ICollapsed, IVisible {
   children: IDeviceNode[][];
   currentPage: number;
 }
 
-export interface ITopoRegionNode extends ICoord, ICollapsed, IVisible {
-  dataItem: INetworkRegion;
-  uiId: string;
+export interface ITopoRegionNode extends ITopoNode<INetworkRegion>, ICoord, ISize, ICollapsed, IVisible {
   orgId: string;
-  type: TopoNodeTypes;
-  expandedSize: ISize;
-  collapsedSize: ISize;
   children: INetworkVNetNode[][];
   peerConnections: INetworkVNetworkPeeringConnectionNode[][];
   webAcls: INetworkWebAclNode[][];
@@ -195,7 +186,7 @@ export const DEFAULT_ENTITY_OPTIONS: FilterEntityOptions = {
   transit: {
     type: FilterEntityTypes.TRANSIT,
     selected: true,
-    label: 'Transit',
+    label: 'Transit Gateway',
     index: 1,
   },
   web_acls: {

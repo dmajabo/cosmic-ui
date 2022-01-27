@@ -7,7 +7,7 @@ import { TabComponentProps } from 'app/components/Tabs/TabComponentProps';
 import TabPanel from 'app/components/Tabs/TabPanel';
 import { returnArrow } from 'app/components/SVGIcons/arrows';
 import IconButton from 'app/components/Buttons/IconButton';
-// import MetricsTab from './VmTabs/MetricsTab';
+import MetricsTab from './VmTabs/MetricsTab';
 import RoutesTab from './VmTabs/RoutesTab';
 import PolicyTab from './VmTabs/PolicyTab';
 import { INetworkVM } from 'lib/api/ApiModels/Topology/apiModels';
@@ -49,19 +49,19 @@ const SelectedItemPanel: React.FC<IProps> = (props: IProps) => {
             },
           }}
         >
-          {/* <Tab disableRipple label="Metrics" classes={{ selected: classes.tabSelected }} {...TabComponentProps(0)} className={classes.tab} /> */}
-          <Tab disableRipple label="Routes" classes={{ selected: classes.tabSelected }} {...TabComponentProps(0)} className={classes.tab} />
-          <Tab disableRipple label="Policy" classes={{ selected: classes.tabSelected }} {...TabComponentProps(1)} className={classes.tab} />
+          <Tab disableRipple label="Metrics" classes={{ selected: classes.tabSelected }} {...TabComponentProps(0)} className={classes.tab} />
+          <Tab disableRipple label="Routes" classes={{ selected: classes.tabSelected }} {...TabComponentProps(1)} className={classes.tab} />
+          <Tab disableRipple label="Policy" classes={{ selected: classes.tabSelected }} {...TabComponentProps(2)} className={classes.tab} />
         </Tabs>
       </PanelTabWrapper>
       <OverflowContainer>
-        {/* <TabPanel value={value} index={0}>
-          <MetricsTab dataItem={props.dataItem} />
-        </TabPanel> */}
         <TabPanel value={value} index={0}>
-          <RoutesTab extId={props.vnetExtId} />
+          <MetricsTab dataItem={props.dataItem} />
         </TabPanel>
         <TabPanel value={value} index={1}>
+          <RoutesTab extId={props.vnetExtId} />
+        </TabPanel>
+        <TabPanel value={value} index={2}>
           <PolicyTab dataItem={props.dataItem} />
         </TabPanel>
       </OverflowContainer>

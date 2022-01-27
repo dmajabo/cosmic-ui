@@ -12,8 +12,8 @@ interface Props {
 }
 
 const AccountCollapsedNode: React.FC<Props> = (props: Props) => {
-  const dx = props.account.expandedSize.width / 2 - NODES_CONSTANTS.ACCOUNT.collapse.width / 2;
-  const dy = props.account.expandedSize.height / 2 - NODES_CONSTANTS.ACCOUNT.collapse.height / 2;
+  const dx = props.account.width / 2 - NODES_CONSTANTS.ACCOUNT.collapse.width / 2;
+  const dy = props.account.height / 2 - NODES_CONSTANTS.ACCOUNT.collapse.height / 2;
   return (
     <TransitionContainer id={`collapseNodeWrapper${props.account.dataItem.id}`} stateIn={props.show} origin="unset" transform="none" timing={50}>
       <g transform={`translate(${dx}, ${dy})`}>
@@ -35,7 +35,7 @@ const AccountCollapsedNode: React.FC<Props> = (props: Props) => {
           x={NODES_CONSTANTS.ACCOUNT.collapse.iconOffsetX}
           y={NODES_CONSTANTS.ACCOUNT.collapse.iconOffsetY}
         />
-        {props.account.children && props.account.children.length > 0 && <NodeCounter label={`${props.account.children.length} TGW`} stylesObj={NODES_CONSTANTS.ACCOUNT.countStyles} />}
+        {props.account.children && props.account.children.length > 0 && <NodeCounter label={`${props.account.totalChildrenCount} TGW`} stylesObj={NODES_CONSTANTS.ACCOUNT.countStyles} />}
         <NodeCollapsedName id={props.account.dataItem.id} label={props.account.dataItem.name} stylesObj={NODES_CONSTANTS.ACCOUNT.labelCollapsedStyles} />
       </g>
     </TransitionContainer>
