@@ -3,11 +3,12 @@ import { IPanelBarLayoutTypes } from 'lib/models/general';
 import styled, { css } from 'styled-components';
 
 interface Props {
-  type: IPanelBarLayoutTypes;
+  type?: IPanelBarLayoutTypes;
   show: boolean;
-  height: string;
+  height?: string;
+  width?: string;
   position?: 'absolute' | 'relative';
-  maxWidth: string;
+  maxWidth?: string;
 }
 
 const layout = (props: Props) => {
@@ -41,6 +42,46 @@ export const PanelWrapperStyles = styled.div<Props>`
   transition: ${DEFAULT_TRANSITION};
 `;
 
+export const ResizableHandler = styled.div`
+  display: inline-block;
+  position: absolute;
+  z-index: 1;
+  width: 4px;
+  height: 50px;
+  left: -2px;
+  background: var(--_disabledTextColor);
+  top: calc(50% - 25px);
+  transition: ${DEFAULT_TRANSITION};
+  transition-property: left, width;
+  cursor: w-resize;
+  border-radius: 4px;
+  &:hover,
+  &:active {
+    left: -5px;
+    width: 10px;
+  }
+`;
+
+export const ResizablePanelWrapperStyles = styled.div`
+  border: none;
+  z-index: 10;
+  position: relative;
+  height: 100%;
+  border-top: 2px solid;
+  flex-shrink: 0;
+  border-top-color: var(--_appBg);
+  display: none;
+  &.open {
+    display: flex;
+  }
+  & .dragStart {
+    user-select: none !important;
+    * {
+      user-select: none !important;
+    }
+  }
+`;
+
 export const Panel = styled.div`
   display: flex;
   flex-direction: column;
@@ -49,6 +90,7 @@ export const Panel = styled.div`
   height: 100%;
   background: var(--_primaryBg);
   padding: 40px;
+  overflow: hidden;
 `;
 
 export const PanelLabel = styled.div`

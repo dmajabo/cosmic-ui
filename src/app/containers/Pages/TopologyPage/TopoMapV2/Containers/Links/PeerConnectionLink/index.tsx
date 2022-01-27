@@ -27,8 +27,8 @@ const PeerConnectionLink: React.FC<IProps> = (props: IProps) => {
         strokeDasharray="4, 2"
         fill="var(--_defaultLinkFill)"
         strokeWidth="1"
-        data-connectionuiId={props.dataItem.connection.uiId}
-        data-vnetuiId={props.dataItem.from.uiId}
+        data-connectionuiid={props.dataItem.connection.uiId}
+        data-vnetuiid={props.dataItem.from.uiId}
         x1={props.dataItem.connection.x + NODES_CONSTANTS.PEERING_CONNECTION.collapse.r}
         y1={props.dataItem.connection.y + NODES_CONSTANTS.PEERING_CONNECTION.collapse.r}
         x2={props.dataItem.from.x + NODES_CONSTANTS.NETWORK_VNET.collapse.r}
@@ -40,8 +40,8 @@ const PeerConnectionLink: React.FC<IProps> = (props: IProps) => {
         strokeDasharray="4, 2"
         fill="var(--_defaultLinkFill)"
         strokeWidth="1"
-        data-connectionuiId={props.dataItem.connection.uiId}
-        data-vnetuiId={props.dataItem.to.uiId}
+        data-connectionuiid={props.dataItem.connection.uiId}
+        data-vnetuiid={props.dataItem.to.uiId}
         x1={props.dataItem.connection.x + NODES_CONSTANTS.PEERING_CONNECTION.collapse.r}
         y1={props.dataItem.connection.y + NODES_CONSTANTS.PEERING_CONNECTION.collapse.r}
         x2={props.dataItem.to.x + NODES_CONSTANTS.NETWORK_VNET.collapse.r}

@@ -68,7 +68,7 @@ const NetworkVnetNode: React.FC<Props> = (props: Props) => {
       className={`topoNodeLevel1 vnetNodeWrapper ${isNodeSelected ? 'selectedTopoLevel1' : ''}`}
       transform={`translate(${props.item.x}, ${props.item.y})`}
       data-id={props.item.extId}
-      data-uiId={props.item.uiId}
+      data-uiid={props.item.uiId}
       onClick={onClick}
       cursor="pointer"
     >

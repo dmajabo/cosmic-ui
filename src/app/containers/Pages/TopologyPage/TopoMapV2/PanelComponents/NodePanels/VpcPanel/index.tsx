@@ -10,7 +10,7 @@ import InventoryTab from './Tabs/InventoryTab';
 import RoutesTab from './Tabs/RoutesTab';
 import PolicyTab from './Tabs/PolicyTab';
 import SelectedVmPanel from './SelectedVmPanel';
-import { INetworkVM } from 'lib/api/ApiModels/Topology/apiModels';
+import { CloudLoadBalancerTypeP, INetworkVM } from 'lib/api/ApiModels/Topology/apiModels';
 import { DEFAULT_VNET_EXPAND_FIELDS, IVnetFields } from './models';
 import { jsonClone } from 'lib/helpers/cloneHelper';
 
@@ -28,7 +28,22 @@ const VpcPanel: React.FC<IProps> = (props: IProps) => {
 
   React.useEffect(() => {
     if (!vnet || (props.dataItem && props.dataItem.extId !== vnet.extId)) {
-      setExpandStateObj(jsonClone(DEFAULT_VNET_EXPAND_FIELDS));
+      const _obj: IVnetFields = jsonClone(expandStateObj);
+      if (_obj.vms.expand && (!props.dataItem.vms || !props.dataItem.vms.length)) {
+        _obj.vms.expand = false;
+      }
+      if (_obj.netLoadBalancer.expand) {
+        const open = !!(props.dataItem.loadBalancers && props.dataItem.loadBalancers.length && props.dataItem.loadBalancers.some(it => it.type === CloudLoadBalancerTypeP.NETWORK));
+        _obj.netLoadBalancer.expand = open;
+      }
+      if (_obj.appLoadBalancer.expand) {
+        const open = !!(props.dataItem.loadBalancers && props.dataItem.loadBalancers.length && props.dataItem.loadBalancers.some(it => it.type === CloudLoadBalancerTypeP.APPLICATION));
+        _obj.appLoadBalancer.expand = open;
+      }
+      if (_obj.internetGatAway.expand && !props.dataItem.internetGateway) {
+        _obj.internetGatAway.expand = false;
+      }
+      setExpandStateObj(_obj);
       setSelectedSubItem(null);
       setVnet(props.dataItem);
     }

@@ -16,13 +16,13 @@ const onHoverPeerConnectionNode = (ref: any, node: INetworkVNetworkPeeringConnec
   _regG.selectAll('.vnetNodeWrapper').transition().attr('opacity', 0.5);
   _node.interrupt();
   _node.attr('opacity', 1).classed(highLightNodeClass, true);
-  const _links = root.selectAll(`line[data-connectionuiId='${node.uiId}']`);
+  const _links = root.selectAll(`line[data-connectionuiid='${node.uiId}']`);
   _links.classed('selectedTopoLevel1Link', true);
   const items = _links.nodes();
   if (items && items.length) {
     items.forEach(link => {
-      const _vnetid = link.getAttribute('data-vnetuiId');
-      const _vps = root.select(`g[data-uiId='${_vnetid}']`);
+      const _vnetid = link.getAttribute('data-vnetuiid');
+      const _vps = root.select(`g[data-uiid='${_vnetid}']`);
       _vps.interrupt();
       _vps.attr('opacity', 1).classed('vpsHoverStroke', true);
     });
@@ -39,13 +39,13 @@ const onUnHoverPeerConnectionNode = (ref: any, node: INetworkVNetworkPeeringConn
   _regG.selectAll('.webaclNodeWrapper').transition().attr('opacity', 1);
   _regG.selectAll('.vnetNodeWrapper').transition().attr('opacity', 1);
   _node.classed(highLightNodeClass, null);
-  const _links = root.selectAll(`line[data-connectionuiId='${node.uiId}']`);
+  const _links = root.selectAll(`line[data-connectionuiid='${node.uiId}']`);
   _links.classed('selectedTopoLevel1Link', null);
   const items = _links.nodes();
   if (items && items.length) {
     items.forEach(link => {
-      const _vnetid = link.getAttribute('data-vnetuiId');
-      const _vps = root.select(`g[data-uiId='${_vnetid}']`);
+      const _vnetid = link.getAttribute('data-vnetuiid');
+      const _vps = root.select(`g[data-uiid='${_vnetid}']`);
       _vps.interrupt();
       _vps.attr('opacity', 1).classed('vpsHoverStroke', null);
     });

@@ -67,7 +67,7 @@ const InventoryTab: React.FC<IProps> = (props: IProps) => {
         label="Internet Gateway"
         styles={{ margin: '0 0 4px 0' }}
       >
-        <InternetGetAwayItem dataItem={internetGatAway} />
+        {internetGatAway && <InternetGetAwayItem dataItem={internetGatAway} />}
       </ExpandGroup>
       <ExpandGroup
         id={props.expandStateObj.netLoadBalancer.id}

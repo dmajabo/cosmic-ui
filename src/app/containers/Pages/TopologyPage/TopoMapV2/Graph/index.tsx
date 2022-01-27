@@ -4,8 +4,7 @@ import { ContainerWithLegend, ContainerWithMetrics, StyledMap } from '../styles'
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 import { useZoom } from '../hooks/useZoom';
 import HeadeerAction from '../HeadeerAction';
-import { IPanelBarLayoutTypes, STANDART_DISPLAY_RESOLUTION_V2 } from 'lib/models/general';
-import PanelBar from 'app/components/Basic/PanelBar';
+import { STANDART_DISPLAY_RESOLUTION_V2 } from 'lib/models/general';
 import FilterComponent from '../PanelComponents/FilterComponent';
 import VpcPanel from '../PanelComponents/NodePanels/VpcPanel';
 import DevicePanel from '../PanelComponents/NodePanels/DevicePanel';
@@ -23,6 +22,7 @@ import RegionNode from '../Containers/Nodes/NodeWrapper/RegionNode/RegionNode';
 import SiteNode from '../Containers/Nodes/NodeWrapper/SitesNode/SiteNode';
 import SitesNodeTopContainer from '../Containers/Nodes/NodeWrapper/SitesNode/SitesNodeTopContainer';
 import LinksWrapper from '../Containers/Links';
+import ResizablePanel from 'app/components/Basic/PanelBar/ResizablePanel';
 // import SegmentsComponent from '../PanelComponents/Segments/SegmentsComponent';
 
 interface Props {
@@ -108,13 +108,13 @@ const Graph: React.FC<Props> = (props: Props) => {
             {/* {topology.originSegmentsData && topology.originSegmentsData.length ? <SegmentsLegend /> : null} */}
           </ContainerWithLegend>
           {topology.regionStructures && topology.regionStructures.length ? <StructuresWrapper nodes={topology.regionStructures} /> : null}
-          <PanelBar show={topology.topoPanel.show} onHidePanel={onHidePanel} type={IPanelBarLayoutTypes.VERTICAL}>
+          <ResizablePanel show={topology.topoPanel.show} onHidePanel={onHidePanel}>
             {topology.topoPanel.type === TopologyPanelTypes.FILTERS && <FilterComponent />}
             {topology.topoPanel.type === TopologyPanelTypes.VPC && <VpcPanel dataItem={topology.topoPanel.dataItem} />}
             {topology.topoPanel.type === TopologyPanelTypes.WebAcl && <WebAclPanel dataItem={topology.topoPanel.dataItem} />}
             {topology.topoPanel.type === TopologyPanelTypes.Device && <DevicePanel dataItem={topology.topoPanel.dataItem} />}
             {topology.topoPanel.type === TopologyPanelTypes.Wedge && <WedgePanel dataItem={topology.topoPanel.dataItem} />}
-          </PanelBar>
+          </ResizablePanel>
         </ContainerWithMetrics>
       )}
     </>
