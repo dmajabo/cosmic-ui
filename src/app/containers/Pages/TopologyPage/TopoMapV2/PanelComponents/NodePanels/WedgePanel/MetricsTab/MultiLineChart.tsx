@@ -73,7 +73,7 @@ const COLOURS = [
   '#1A237E',
 ];
 
-export const MultiLineChart: React.FC<LineChartProps> = ({ dataValueSuffix, inputData, xAxisText, yAxisText }) => {
+export const MultiLineChart: React.FC<LineChartProps> = ({ dataValueSuffix, inputData, xAxisText, yAxisText, chartHeight, chartWidth }) => {
   const series = inputData.map(item => {
     const metrics = item.metrics.map(metric => {
       const time = DateTime.fromFormat(metric.time, INPUT_TIME_FORMAT).toUTC();
@@ -90,6 +90,8 @@ export const MultiLineChart: React.FC<LineChartProps> = ({ dataValueSuffix, inpu
   const lineChartOptions = {
     chart: {
       zoomType: 'x',
+      height: chartHeight || null,
+      width: chartWidth || null,
     },
     time: {
       useUTC: false,
