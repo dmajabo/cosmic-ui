@@ -72,8 +72,8 @@ export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[]
   if (_segments && _segments.length) {
     _segments.forEach((s, i) => {
       const _segment: ITopoSitesNode = createSitesNode(s);
-      segmentTempObject[s.extId] = { id: s.id, extId: s.id, dataItem: s, children: [] };
-      sites[s.id] = _segment;
+      segmentTempObject[_segment.dataItem.extId] = { id: s.id, extId: s.id, dataItem: s, children: [] };
+      sites[_segment.dataItem.extId] = _segment;
     });
   }
 
@@ -122,7 +122,6 @@ export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[]
           // }
           region.devices.forEach((d, i) => {
             const _device: IDeviceNode = createDeviceNode(org, orgI, d, sites[d.segmentId]);
-            debugger;
             if (_device.segmentId && segmentTempObject[_device.segmentId]) {
               segmentTempObject[_device.segmentId].children.push(_device);
             } else {
@@ -165,15 +164,15 @@ export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[]
     Object.keys(segmentTempObject).forEach(key => {
       const _s = segmentTempObject[key];
       if (!_s.children || !_s.children.length) {
-        delete sites[_s.dataItem.extId];
+        delete sites[_s.extId];
         return;
       }
-      sites[_s.dataItem.extId].totalChildrenCount = _s.children.length;
+      sites[_s.extId].totalChildrenCount = _s.children.length;
       const _arr = getChunksFromArray(_s.children, DEV_IN_PAGE);
       const max = _arr && _arr.length ? getBeautifulRowsCount(_arr[0].length, DEV_IN_ROW) : 0;
-      sites[_s.dataItem.extId].children = _arr.map((page, pageI) => {
+      sites[_s.extId].children = _arr.map((page, pageI) => {
         const _pageRow = getChunksFromArray(page, max);
-        return _pageRow.map((row, rowI) => row.map((v, i) => updateDeviceNode(_s.dataItem.extId, v, pageI, rowI, row.length, i))).flat();
+        return _pageRow.map((row, rowI) => row.map((v, i) => updateDeviceNode(_s.extId, v, pageI, rowI, row.length, i))).flat();
       });
     });
   }
