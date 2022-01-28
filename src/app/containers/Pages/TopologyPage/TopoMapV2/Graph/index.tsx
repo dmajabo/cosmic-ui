@@ -4,8 +4,7 @@ import { ContainerWithLegend, ContainerWithMetrics, StyledMap } from '../styles'
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 import { useZoom } from '../hooks/useZoom';
 import HeadeerAction from '../HeadeerAction';
-import { IPanelBarLayoutTypes, STANDART_DISPLAY_RESOLUTION_V2 } from 'lib/models/general';
-import PanelBar from 'app/components/Basic/PanelBar';
+import { STANDART_DISPLAY_RESOLUTION_V2 } from 'lib/models/general';
 import FilterComponent from '../PanelComponents/FilterComponent';
 import VpcPanel from '../PanelComponents/NodePanels/VpcPanel';
 import DevicePanel from '../PanelComponents/NodePanels/DevicePanel';
@@ -15,7 +14,7 @@ import GContainer from '../Containers/GContainer/GContainer';
 import StructuresWrapper from '../Containers/Nodes/StructuresWrapper';
 import DefsComponent from '../Containers/Shared/DefsComponent';
 import { TopologyPanelTypes } from 'lib/hooks/Topology/models';
-import SegmentsLegend from '../Containers/SegmentsLegend';
+// import SegmentsLegend from '../Containers/SegmentsLegend';
 import AccountNodeTopContainer from '../Containers/Nodes/NodeWrapper/AccountNode/AccountNodeTopContainer';
 import RegionNodeTopContainer from '../Containers/Nodes/NodeWrapper/RegionNode/RegionNodeTopContainer';
 import AccountNode from '../Containers/Nodes/NodeWrapper/AccountNode/AccountNode';
@@ -23,6 +22,7 @@ import RegionNode from '../Containers/Nodes/NodeWrapper/RegionNode/RegionNode';
 import SiteNode from '../Containers/Nodes/NodeWrapper/SitesNode/SiteNode';
 import SitesNodeTopContainer from '../Containers/Nodes/NodeWrapper/SitesNode/SitesNodeTopContainer';
 import LinksWrapper from '../Containers/Links';
+import ResizablePanel from 'app/components/Basic/PanelBar/ResizablePanel';
 // import SegmentsComponent from '../PanelComponents/Segments/SegmentsComponent';
 
 interface Props {
@@ -105,16 +105,16 @@ const Graph: React.FC<Props> = (props: Props) => {
                 {topology.regions ? Object.keys(topology.regions).map(key => <RegionNode key={`regionChildrenLayer${topology.regions[key].uiId}`} dataItem={topology.regions[key]} />) : null}
               </GContainer>
             </StyledMap>
-            {topology.originSegmentsData && topology.originSegmentsData.length ? <SegmentsLegend /> : null}
+            {/* {topology.originSegmentsData && topology.originSegmentsData.length ? <SegmentsLegend /> : null} */}
           </ContainerWithLegend>
           {topology.regionStructures && topology.regionStructures.length ? <StructuresWrapper nodes={topology.regionStructures} /> : null}
-          <PanelBar show={topology.topoPanel.show} onHidePanel={onHidePanel} type={IPanelBarLayoutTypes.VERTICAL}>
+          <ResizablePanel show={topology.topoPanel.show} onHidePanel={onHidePanel}>
             {topology.topoPanel.type === TopologyPanelTypes.FILTERS && <FilterComponent />}
             {topology.topoPanel.type === TopologyPanelTypes.VPC && <VpcPanel dataItem={topology.topoPanel.dataItem} />}
             {topology.topoPanel.type === TopologyPanelTypes.WebAcl && <WebAclPanel dataItem={topology.topoPanel.dataItem} />}
             {topology.topoPanel.type === TopologyPanelTypes.Device && <DevicePanel dataItem={topology.topoPanel.dataItem} />}
             {topology.topoPanel.type === TopologyPanelTypes.Wedge && <WedgePanel dataItem={topology.topoPanel.dataItem} />}
-          </PanelBar>
+          </ResizablePanel>
         </ContainerWithMetrics>
       )}
     </>

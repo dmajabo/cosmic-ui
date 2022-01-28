@@ -138,8 +138,8 @@ export function useZoom(props: IProps) {
     let top = 0;
     let bottom = 0;
     Object.keys(accounts).forEach((key, i) => {
-      const nodeW = accounts[key].collapsed ? accounts[key].collapsedSize.width : accounts[key].expandedSize.width;
-      const nodeH = accounts[key].collapsed ? accounts[key].collapsedSize.height : accounts[key].expandedSize.height;
+      const nodeW = accounts[key].width;
+      const nodeH = accounts[key].height;
       if (i === 0) {
         left = accounts[key].x;
         right = accounts[key].x + nodeW;
@@ -161,8 +161,8 @@ export function useZoom(props: IProps) {
       }
     });
     Object.keys(sites).forEach((key, i) => {
-      const nodeW = sites[key].collapsed ? sites[key].collapsedSize.width : sites[key].expandedSize.width;
-      const nodeH = sites[key].collapsed ? sites[key].collapsedSize.height : sites[key].expandedSize.height;
+      const nodeW = sites[key].width;
+      const nodeH = sites[key].height;
       if (i === 0) {
         left = Math.min(left, sites[key].x);
         right = Math.max(right, sites[key].x + nodeW);
@@ -184,8 +184,8 @@ export function useZoom(props: IProps) {
       }
     });
     Object.keys(regions).forEach((key, i) => {
-      const nodeW = regions[key].collapsed ? regions[key].collapsedSize.width : regions[key].expandedSize.width;
-      const nodeH = regions[key].collapsed ? regions[key].collapsedSize.height : regions[key].expandedSize.height;
+      const nodeW = regions[key].width;
+      const nodeH = regions[key].height;
       if (i === 0) {
         left = Math.min(left, regions[key].x);
         right = Math.max(right, regions[key].x + nodeW);

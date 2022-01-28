@@ -14,9 +14,9 @@ const DeviceNode: React.FC<Props> = (props: Props) => {
   const nodeRef = React.useRef(null);
   const [isNodeSelected, setIsNodeSelected] = React.useState<boolean>(false);
   React.useEffect(() => {
-    if (topology.selectedNode && topology.selectedNode.id === props.item.id && !isNodeSelected) {
+    if (topology.selectedNode && topology.selectedNode.extId === props.item.extId && !isNodeSelected) {
       setIsNodeSelected(true);
-    } else if (!topology.selectedNode || (topology.selectedNode && topology.selectedNode !== props.item.id)) {
+    } else if (!topology.selectedNode || (topology.selectedNode && topology.selectedNode !== props.item.extId)) {
       setIsNodeSelected(false);
     }
   }, [topology.selectedNode]);

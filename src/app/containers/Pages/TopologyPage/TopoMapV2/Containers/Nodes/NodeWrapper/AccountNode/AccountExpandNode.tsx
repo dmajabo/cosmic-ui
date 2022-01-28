@@ -20,8 +20,8 @@ const AccountExpandNode: React.FC<Props> = (props: Props) => {
         <rect
           id={props.dragId}
           fill={NODES_CONSTANTS.ACCOUNT.expanded.bgColor}
-          width={props.account.expandedSize.width}
-          height={props.account.expandedSize.height}
+          width={props.account.width}
+          height={props.account.height}
           rx={NODES_CONSTANTS.ACCOUNT.expanded.borderRadius}
           ry={NODES_CONSTANTS.ACCOUNT.expanded.borderRadius}
           pointerEvents="all"
@@ -30,7 +30,7 @@ const AccountExpandNode: React.FC<Props> = (props: Props) => {
           <NodeMarker iconId={NODES_CONSTANTS.ACCOUNT.iconId} stylesObj={NODES_CONSTANTS.ACCOUNT.expanded.marker} />
           <NodeExpandedName
             name={props.account.dataItem.name}
-            nodeWidth={props.account.expandedSize.width}
+            nodeWidth={props.account.width}
             markerWidth={NODES_CONSTANTS.ACCOUNT.expanded.marker.width}
             height={NODES_CONSTANTS.ACCOUNT.headerHeight}
             stylesObj={NODES_CONSTANTS.ACCOUNT.labelExpandedStyles}

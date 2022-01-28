@@ -20,9 +20,9 @@ const NetworkVnetNode: React.FC<Props> = (props: Props) => {
   const nodeRef = React.useRef(null);
 
   React.useEffect(() => {
-    if (topology.selectedNode && topology.selectedNode.id === props.item.id && !isNodeSelected) {
+    if (topology.selectedNode && topology.selectedNode.extId === props.item.extId && !isNodeSelected) {
       setIsNodeSelected(true);
-    } else if (!topology.selectedNode || (topology.selectedNode && topology.selectedNode !== props.item.id)) {
+    } else if (!topology.selectedNode || (topology.selectedNode && topology.selectedNode !== props.item.extId)) {
       setIsNodeSelected(false);
     }
   }, [topology.selectedNode]);
@@ -67,8 +67,8 @@ const NetworkVnetNode: React.FC<Props> = (props: Props) => {
       onMouseOut={onMouseLeave}
       className={`topoNodeLevel1 vnetNodeWrapper ${isNodeSelected ? 'selectedTopoLevel1' : ''}`}
       transform={`translate(${props.item.x}, ${props.item.y})`}
-      data-id={props.item.id}
-      data-uiId={props.item.uiId}
+      data-id={props.item.extId}
+      data-uiid={props.item.uiId}
       onClick={onClick}
       cursor="pointer"
     >

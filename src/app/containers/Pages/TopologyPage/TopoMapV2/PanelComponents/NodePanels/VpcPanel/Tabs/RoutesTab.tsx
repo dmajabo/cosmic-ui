@@ -5,11 +5,11 @@ interface Props {
   dataItem: INetworkVNetNode;
 }
 
-const MetricsTab: React.FC<Props> = (props: Props) => {
+const RoutesTab: React.FC<Props> = (props: Props) => {
   return (
     <>
-      <>Metrics tab</>
+      <>Routes tab</>
     </>
   );
 };
-export default React.memo(MetricsTab);
+export default React.memo(RoutesTab);

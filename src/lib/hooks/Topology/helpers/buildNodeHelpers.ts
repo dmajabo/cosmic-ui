@@ -16,7 +16,7 @@ import {
 import uuid from 'react-uuid';
 import { ISegmentSegmentP } from 'lib/api/ApiModels/Policy/Segment';
 import { IObject } from 'lib/models/general';
-import { setRegionChildrenCoords, setRegionSizes } from './coordinateHelper';
+import { centeredTopoNodesInRow, setRegionChildrenCoords, setRegionSizes } from './coordinateHelper';
 import _ from 'lodash';
 
 export const createAccountNode = (_id: string, _name: string, _orgId: string): ITopoAccountNode => {
@@ -28,14 +28,9 @@ export const createAccountNode = (_id: string, _name: string, _orgId: string): I
     uiId: uuid(),
     type: TopoNodeTypes.ACCOUNT,
     orgId: _orgId,
-    expandedSize: {
-      width: NODES_CONSTANTS.ACCOUNT.expanded.minWidth,
-      height: NODES_CONSTANTS.ACCOUNT.expanded.minHeight,
-    },
-    collapsedSize: {
-      width: NODES_CONSTANTS.ACCOUNT.collapse.width,
-      height: NODES_CONSTANTS.ACCOUNT.collapse.height,
-    },
+    totalChildrenCount: 0,
+    width: 0,
+    height: 0,
     x: 0,
     y: 0,
     visible: true,
@@ -50,14 +45,9 @@ export const createSitesNode = (item: ISegmentSegmentP): ITopoSitesNode => {
     dataItem: item,
     uiId: uuid(),
     type: TopoNodeTypes.SITES,
-    expandedSize: {
-      width: NODES_CONSTANTS.SITES.expanded.minWidth,
-      height: NODES_CONSTANTS.SITES.expanded.minHeight,
-    },
-    collapsedSize: {
-      width: NODES_CONSTANTS.SITES.collapse.width,
-      height: NODES_CONSTANTS.SITES.collapse.height,
-    },
+    totalChildrenCount: 0,
+    width: 0,
+    height: 0,
     x: 0,
     y: 0,
     visible: true,
@@ -74,14 +64,9 @@ export const createTopoRegionNode = (_dataItem: INetworkRegion, _orgId: string):
     uiId: uuid(),
     type: TopoNodeTypes.REGION,
     orgId: _orgId,
-    expandedSize: {
-      width: NODES_CONSTANTS.REGION.expanded.minWidth,
-      height: NODES_CONSTANTS.REGION.expanded.minHeight,
-    },
-    collapsedSize: {
-      width: NODES_CONSTANTS.REGION.collapse.width,
-      height: NODES_CONSTANTS.REGION.collapse.height,
-    },
+    totalChildrenCount: 0,
+    width: 0,
+    height: 0,
     x: 0,
     y: 0,
     visible: true,
@@ -104,7 +89,7 @@ export const createWedgeNode = (parentId: string, org: INetworkOrg, orgIndex: nu
     childIndex: childIndex,
     rowIndex: rowIndex,
     orgIndex: orgIndex,
-    orgId: org.id,
+    orgId: org.extId,
     x: _x,
     y: 0,
     nodeType: TopoNodeTypes.WEDGE,
@@ -132,7 +117,7 @@ export const createVnetNode = (
     rowIndex: rowIndex,
     itemsInRow: itemsInRow,
     orgIndex: orgIndex,
-    orgId: org.id,
+    orgId: org.extId,
     x: _x,
     y: _y,
     uiId: uuid(),
@@ -163,7 +148,7 @@ export const createPeerConnectionNode = (
     rowIndex: rowIndex,
     itemsInRow: itemsInRow,
     orgIndex: orgIndex,
-    orgId: org.id,
+    orgId: org.extId,
     x: _x,
     y: _y,
     uiId: uuid(),
@@ -183,7 +168,7 @@ export const createWebAclNode = (parentId: string, org: INetworkOrg, itemsInRow:
     rowIndex: rowIndex,
     itemsInRow: itemsInRow,
     orgIndex: orgIndex,
-    orgId: org.id,
+    orgId: org.extId,
     x: _x,
     y: _y,
     uiId: uuid(),
@@ -206,7 +191,7 @@ export const createDeviceNode = (org: INetworkOrg, orgIndex: number, node: INetw
     x: 0,
     y: 0,
     orgIndex: orgIndex,
-    orgId: org.id,
+    orgId: org.extId,
     vendorType: org.vendorType,
     nodeType: TopoNodeTypes.DEVICE,
     segmentColor: isPresentSegmentColor ? site.dataItem.color : NODES_CONSTANTS.NETWORK_VNET.nodeBgColor,
@@ -224,56 +209,6 @@ export const updateDeviceNode = (parentId: string, node: IDeviceNode, page: numb
     itemsInRow: itemsInRow,
     page: page,
   };
-};
-
-// export const updateRegionHeight = (nodes: (ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[], filter: FilterEntityOptions): (ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[] => {
-//   const _nodes: (ITopoAccountNode | ITopoSitesNode | ITopoRegionNode)[] = nodes.map(node => {
-//     if (node.type !== TopoNodeTypes.REGION) return node;
-//     const _n = { ...node } as ITopoRegionNode;
-//     const pHeight =
-//       filter && filter.peer_connections && !filter.peer_connections.selected
-//         ? 0
-//         : getChildContainerHeight(
-//             true,
-//             _n.peerConnections.length,
-//             NODES_CONSTANTS.REGION.expanded.contentPadding,
-//             NODES_CONSTANTS.PEERING_CONNECTION.collapse.height,
-//             NODES_CONSTANTS.PEERING_CONNECTION.collapse.spaceY,
-//           );
-//     const wHeight =
-//       filter && filter.web_acls && !filter.web_acls.selected
-//         ? 0
-//         : getChildContainerHeight(true, _n.webAcls.length, NODES_CONSTANTS.REGION.expanded.contentPadding, NODES_CONSTANTS.WEB_ACL.collapse.height, NODES_CONSTANTS.WEB_ACL.collapse.spaceY);
-//     if (pHeight === 0 && wHeight === 0 && !_n.children.length && !_n.collapsed) {
-//       setCollapseState(_n, NODES_CONSTANTS.REGION.collapse.width, NODES_CONSTANTS.REGION.collapse.height, node.expandedSize.width, node.expandedSize.height);
-//       return _n;
-//     } else if (_n.collapsed && (pHeight !== 0 || wHeight !== 0 || _n.children.length)) {
-//       setExpandState(_n, NODES_CONSTANTS.REGION.collapse.width, NODES_CONSTANTS.REGION.collapse.height, node.expandedSize.width, node.expandedSize.height);
-//     }
-//     const cHeight = getChildContainerHeight(
-//       true,
-//       _n.children.length,
-//       NODES_CONSTANTS.REGION.expanded.contentPadding,
-//       NODES_CONSTANTS.NETWORK_VNET.collapse.height,
-//       NODES_CONSTANTS.NETWORK_VNET.collapse.spaceY,
-//     );
-//     const _height = getTotalNodeHeight(pHeight + wHeight + cHeight, NODES_CONSTANTS.REGION.headerHeight, NODES_CONSTANTS.REGION.expanded.contentPadding);
-//     _n.expandedSize = { ...node.expandedSize, height: Math.max(NODES_CONSTANTS.REGION.expanded.minHeight, _height) };
-//     return _n;
-//   });
-//   return _nodes;
-// };
-
-export const setCollapseState = (node: ITopoAccountNode | ITopoSitesNode | ITopoRegionNode, containerWidth: number, containerHeight: number, width: number, height: number) => {
-  node.x = node.x + node.expandedSize.width / 2 - NODES_CONSTANTS.REGION.collapse.width / 2;
-  node.y = node.y + node.expandedSize.height / 2 - NODES_CONSTANTS.REGION.collapse.height / 2;
-  node.collapsed = true;
-};
-
-export const setExpandState = (node: ITopoAccountNode | ITopoSitesNode | ITopoRegionNode, containerWidth: number, containerHeight: number, width: number, height: number) => {
-  node.x = node.x + containerWidth / 2 - width / 2;
-  node.y = node.y + containerHeight / 2 - height / 2;
-  node.collapsed = false;
 };
 
 export const getCollapseExpandState = (
@@ -317,5 +252,6 @@ export const updateRegionNodes = (nodes: IObject<ITopoRegionNode>, filter: Filte
       setRegionChildrenCoords(filter, _nodes[key].children, _nodes[key].peerConnections, _nodes[key].webAcls, _nodes[key]);
     }
   }
+  // centeredTopoNodesInRow(nodes);
   return _nodes;
 };

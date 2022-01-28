@@ -24,16 +24,18 @@ export const VmWrapStyles = styled.div`
   color: var(--_primaryTextColor);
   flex-wrap: nowrap;
   cursor: pointer;
+  opacity: 0.7;
   .inheritFill {
     fill: var(--_defaultIconColor);
   }
 
   &:hover {
-    background: var(--_hoverButtonBg);
+    opacity: 1;
+    /* background: var(--_hoverButtonBg);
     color: var(--_primaryWhiteColor);
     .inheritFill {
       fill: var(--_primaryWhiteColor);
-    }
+    } */
   }
 `;
 
