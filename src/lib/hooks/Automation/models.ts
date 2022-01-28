@@ -9,9 +9,9 @@ export enum AutomationTabTypes {
 }
 
 export const AUTOMATIONS_TABS: ITab<AutomationTabTypes>[] = [
-  { id: AutomationTabTypes.Connectors, label: 'Connectors', index: 0 },
-  { id: AutomationTabTypes.Triggers, label: 'Triggers', index: 1 },
-  { id: AutomationTabTypes.Configuration, label: 'Configuration', index: 2 },
+  { id: AutomationTabTypes.Triggers, label: 'Triggers', index: 0 },
+  { id: AutomationTabTypes.Configuration, label: 'Configuration', index: 1 },
+  { id: AutomationTabTypes.Connectors, label: 'Connectors', index: 2 },
 ];
 
 export const ALERT_SELECT_VALUES: ISelectedListItem<ALERT_TIME_RANGE_QUERY_TYPES>[] = [
