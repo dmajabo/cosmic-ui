@@ -6,7 +6,7 @@ export const Wrapper = styled.div`
   flex-shrink: 0;
   width: 260px;
   height: 50px;
-  background: var(--_tableBg);
+  background: var(--_primaryBg);
   border-radius: 6px;
   padding: 10px 20px;
 `;

@@ -196,8 +196,8 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
   };
 
   return (
-    <PageContentWrapper margin="20px 0 0 0" style={{ minHeight: 'calc(100% - 20px)' }}>
-      <ActionRowStyles margin="0 0 40px 0" zIndex={2}>
+    <>
+      <ActionRowStyles margin="0 0 30px 0" zIndex={2}>
         <ActionPart margin="0 auto 0 0">
           <SessionsSwitch checked={sessions.sessionsStitch} onChange={onSwitchChange} />
         </ActionPart>
@@ -212,55 +212,57 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
           <IconButton styles={{ margin: '0 0 0 20px' }} icon={refreshIcon} title="Reload" onClick={onRefresh} />
         </ActionPart>
       </ActionRowStyles>
-      <ElasticFilter
-        placeholder="Search Filter"
-        applayedFilterItems={sessions.sessionsFilter}
-        fields={SessionElasticFieldItems}
-        onRemoveFilteredItem={onClearFilteredItem}
-        onUpdateFilter={onUpdateFilter}
-        onAddFilter={onAddFilter}
-        onClearAllFilter={onClearFilter}
-        onChangeOperator={onChangeOperator}
-        url={!sessions.sessionsStitch ? TesseractApi.getAllSessions() : TesseractApi.getAggregatedSessions()}
-        timePeriod={sessions.sessionsPeriod}
-        stitch={sessions.sessionsStitch}
-        onLoadDataEnd={onLoadDataEnd}
-        onMapRes={onGetPossibleValues}
-        onRefresh={onRefresh}
-        paramBuilder={sessionsParamBuilder}
-      />
-      <ContentWrapper style={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
-        <TableWrapper style={{ minHeight: 'unset', height: '100%', flexGrow: 1 }}>
-          {!sessions.sessionsStitch && (
-            <Table
-              currentPage={sessions.sessionsCurrentPage}
-              onChangeCurrentPage={onChangeCurrentPage}
-              logCount={totalCount}
-              error={error && error.message ? error.message : null}
-              data={sessionsData}
-              pageSize={sessions.sessionsPageSize}
-              onChangePageSize={onChangePageSize}
-            />
-          )}
-          {sessions.sessionsStitch && (
-            <AggregateTable
-              currentPage={sessions.sessionsCurrentPage}
-              onChangeCurrentPage={onChangeCurrentPage}
-              error={errorAggreg && errorAggreg.message ? errorAggreg.message : null}
-              data={aggregatedData && aggregatedData.buckets ? aggregatedData.buckets : []}
-              logCount={aggregCount}
-              pageSize={sessions.sessionsPageSize}
-              onChangePageSize={onChangePageSize}
-            />
-          )}
-          {(loading || loadingAggreg) && (
-            <AbsLoaderWrapper width="100%" height="calc(100% - 50px)" top="50px" zIndex={1}>
-              <LoadingIndicator margin="auto" />
-            </AbsLoaderWrapper>
-          )}
-        </TableWrapper>
-      </ContentWrapper>
-    </PageContentWrapper>
+      <PageContentWrapper>
+        <ElasticFilter
+          placeholder="Search Filter"
+          applayedFilterItems={sessions.sessionsFilter}
+          fields={SessionElasticFieldItems}
+          onRemoveFilteredItem={onClearFilteredItem}
+          onUpdateFilter={onUpdateFilter}
+          onAddFilter={onAddFilter}
+          onClearAllFilter={onClearFilter}
+          onChangeOperator={onChangeOperator}
+          url={!sessions.sessionsStitch ? TesseractApi.getAllSessions() : TesseractApi.getAggregatedSessions()}
+          timePeriod={sessions.sessionsPeriod}
+          stitch={sessions.sessionsStitch}
+          onLoadDataEnd={onLoadDataEnd}
+          onMapRes={onGetPossibleValues}
+          onRefresh={onRefresh}
+          paramBuilder={sessionsParamBuilder}
+        />
+        <ContentWrapper style={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+          <TableWrapper style={{ minHeight: 'unset', height: '100%', flexGrow: 1 }}>
+            {!sessions.sessionsStitch && (
+              <Table
+                currentPage={sessions.sessionsCurrentPage}
+                onChangeCurrentPage={onChangeCurrentPage}
+                logCount={totalCount}
+                error={error && error.message ? error.message : null}
+                data={sessionsData}
+                pageSize={sessions.sessionsPageSize}
+                onChangePageSize={onChangePageSize}
+              />
+            )}
+            {sessions.sessionsStitch && (
+              <AggregateTable
+                currentPage={sessions.sessionsCurrentPage}
+                onChangeCurrentPage={onChangeCurrentPage}
+                error={errorAggreg && errorAggreg.message ? errorAggreg.message : null}
+                data={aggregatedData && aggregatedData.buckets ? aggregatedData.buckets : []}
+                logCount={aggregCount}
+                pageSize={sessions.sessionsPageSize}
+                onChangePageSize={onChangePageSize}
+              />
+            )}
+            {(loading || loadingAggreg) && (
+              <AbsLoaderWrapper width="100%" height="calc(100% - 50px)" top="50px" zIndex={1}>
+                <LoadingIndicator margin="auto" />
+              </AbsLoaderWrapper>
+            )}
+          </TableWrapper>
+        </ContentWrapper>
+      </PageContentWrapper>
+    </>
   );
 };
 

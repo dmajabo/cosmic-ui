@@ -320,7 +320,7 @@ const Table: React.FC<Props> = (props: Props) => {
         className={gridStyles.container}
         disableColumnMenu
         hideFooter
-        headerHeight={50}
+        headerHeight={70}
         rowHeight={props.rowHeight || 70}
         rowCount={props.logCount}
         disableColumnFilter
