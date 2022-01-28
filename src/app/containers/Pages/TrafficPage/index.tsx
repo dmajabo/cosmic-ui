@@ -1,16 +1,20 @@
 import React from 'react';
-// import { usePolicyActions, PolicyProvider } from 'lib/hooks/Policy/usePolicyDataContext';
-// import MainPage from './MainPage';
+import { SessionsProvider, useSessionsActions } from 'lib/hooks/Sessions/useSessionsDataContext';
+import MainPage from './MainPage';
+import { TrafficProvider, useTrafficActions } from 'lib/hooks/Traffic/useTrafficDataCont';
 
 interface Props {}
 
 const TrafficPage: React.FC<Props> = (props: Props) => {
-  // const policyActions = usePolicyActions();
+  const trafficActions = useTrafficActions();
+  const sessionsActions = useSessionsActions();
+
   return (
-    <>Traffic</>
-    // <PolicyProvider actions={policyActions}>
-    // <MainPage />
-    // </PolicyProvider>
+    <TrafficProvider actions={trafficActions}>
+      <SessionsProvider actions={sessionsActions}>
+        <MainPage />
+      </SessionsProvider>
+    </TrafficProvider>
   );
 };
 
