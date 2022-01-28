@@ -81,7 +81,7 @@ const InventoryTab: React.FC<IProps> = (props: IProps) => {
         styles={{ margin: '0 0 4px 0' }}
       >
         {netLoaderBalancerList && netLoaderBalancerList.length
-          ? netLoaderBalancerList.map(it => <BalanceItem key={`netLB${it.id}`} icon={NetLoaderBalancerIcon} dataItem={it} onClick={() => {}} />)
+          ? netLoaderBalancerList.map(it => <BalanceItem key={`netLB${it.extId}`} icon={NetLoaderBalancerIcon} dataItem={it} onClick={() => {}} />)
           : null}
       </ExpandGroup>
       <ExpandGroup
@@ -95,7 +95,7 @@ const InventoryTab: React.FC<IProps> = (props: IProps) => {
         label="Application Load Balancers"
       >
         {appLoaderBalancerList && appLoaderBalancerList.length
-          ? appLoaderBalancerList.map(it => <BalanceItem key={`appLB${it.id}`} icon={AppLoaderBalancerIcon} dataItem={it} onClick={() => {}} />)
+          ? appLoaderBalancerList.map(it => <BalanceItem key={`appLB${it.extId}`} icon={AppLoaderBalancerIcon} dataItem={it} onClick={() => {}} />)
           : null}
       </ExpandGroup>
       <ExpandGroup
@@ -109,7 +109,7 @@ const InventoryTab: React.FC<IProps> = (props: IProps) => {
         label="Virtual Machines"
         styles={{ margin: '0 0 4px 0' }}
       >
-        {vms && vms.length ? vms.map(it => <VmItem key={`vmLIstItem${it.id}`} dataItem={it} onClick={onSelectVm} />) : null}
+        {vms && vms.length ? vms.map(it => <VmItem key={`vmLIstItem${it.extId}`} dataItem={it} onClick={onSelectVm} />) : null}
       </ExpandGroup>
     </>
   );

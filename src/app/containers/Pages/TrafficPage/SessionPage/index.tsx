@@ -17,9 +17,8 @@ import { convertStringToNumber } from 'lib/helpers/general';
 import { useSessionsDataContext } from 'lib/hooks/Sessions/useSessionsDataContext';
 import IconButton from 'app/components/Buttons/IconButton';
 import { refreshIcon } from 'app/components/SVGIcons/refresh';
-import { sessionsParamBuilder, SESSIONS_TIME_RANGE_QUERY_TYPES } from 'lib/api/ApiModels/paramBuilders';
+import { ElasticFilterSuffics, IElasticField, IElasticFilterModel, sessionsParamBuilder, SESSIONS_TIME_RANGE_QUERY_TYPES } from 'lib/api/ApiModels/paramBuilders';
 import { TesseractApi } from 'lib/api/ApiModels/Services/tesseract';
-import { ElasticFilterSuffics, IElasticField, IElasticFilterModel } from 'lib/models/elastic';
 
 interface IProps {}
 

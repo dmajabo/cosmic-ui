@@ -62,20 +62,20 @@ const buildPeerLinks = (
 ) => {
   let _from = getNeededItem(region.children, item.requesterVnetwork.extId);
   let _to = getNeededItem(region.children, item.accepterVnetwork.extId);
-  let _fromParentId = region.dataItem.id;
-  let _toParentId = region.dataItem.id;
+  let _fromParentId = region.dataItem.extId;
+  let _toParentId = region.dataItem.extId;
   if (!_from) {
     const _fromObj = getNeededItemFromNodes(regions, item.requesterVnetwork.extId);
     if (_fromObj.node && _fromObj.region) {
       _from = _fromObj.node;
-      _fromParentId = _fromObj.region.dataItem.id;
+      _fromParentId = _fromObj.region.dataItem.extId;
     }
   }
   if (!_to) {
     const _toObj = getNeededItemFromNodes(regions, item.accepterVnetwork.extId);
     if (_toObj.node && _toObj.region) {
       _to = _toObj.node;
-      _toParentId = _toObj.region.dataItem.id;
+      _toParentId = _toObj.region.dataItem.extId;
     }
   }
   if (!_from || !_to) return;
@@ -85,11 +85,11 @@ const buildPeerLinks = (
     _to,
     _fromParentId,
     _toParentId,
-    region.dataItem.id,
+    region.dataItem.extId,
     item,
   );
   pl.visible = filter.peer_connections.selected && filter.vpc.selected;
-  links[pl.id] = pl;
+  links[pl.extId] = pl;
 };
 
 const getNeededItem = (rows: (INetworkVNetNode | INetworkVNetworkPeeringConnectionNode)[][], extId: string): INetworkVNetNode => {
@@ -132,9 +132,17 @@ export const build_VPN_Links = (filter: FilterEntityOptions, site: ITopoSitesNod
       const _id = it.id || it.name;
       const obj = getWedge(accounts, _id);
       if (!obj.wedge) return;
-      const vl: ITopoLink<IDeviceNode, ITGWNode, INetworkVpnLinkState> = createTopoLink(TopoLinkTypes.VPNLink, device, obj.wedge, site.dataItem.id, obj.account.dataItem.id, site.dataItem.id, it);
+      const vl: ITopoLink<IDeviceNode, ITGWNode, INetworkVpnLinkState> = createTopoLink(
+        TopoLinkTypes.VPNLink,
+        device,
+        obj.wedge,
+        site.dataItem.extId,
+        obj.account.dataItem.extId,
+        site.dataItem.extId,
+        it,
+      );
       vl.visible = filter.sites.selected && filter.transit.selected;
-      links[vl.id] = vl;
+      links[vl.extId] = vl;
     });
   });
 };
@@ -157,13 +165,13 @@ const buildNetworkNetworkConnection = (
         TopoLinkTypes.NetworkNetworkLink,
         vnet,
         tgw,
-        region.dataItem.id,
-        accounts[key].dataItem.id,
-        region.dataItem.id,
+        region.dataItem.extId,
+        accounts[key].dataItem.extId,
+        region.dataItem.extId,
         _link,
       );
       nl.visible = filter.vpc.selected && filter.transit.selected;
-      links[nl.id] = nl;
+      links[nl.extId] = nl;
     });
   });
 };
@@ -194,8 +202,10 @@ const getWedge = (accounts: IObject<ITopoAccountNode>, connectedTo: string) => {
 };
 
 const createTopoLink = (type: TopoLinkTypes, from, to, fromParentId: string, toParentId: string, connectionParentId, link): ITopoLink<any, any, any> => {
-  return {
-    id: uuid(),
+  const _new_id = uuid();
+  const _obj = {
+    id: _new_id,
+    extId: _new_id,
     type: type,
     visible: true,
     from: from,
@@ -205,6 +215,7 @@ const createTopoLink = (type: TopoLinkTypes, from, to, fromParentId: string, toP
     toParentId: toParentId,
     connectionParentId: connectionParentId,
   };
+  return _obj;
 };
 
 export const updateLinkVisibleState = (links: IObject<ITopoLink<any, any, any>>, filter: FilterEntityOptions, filterOption: FilterEntityTypes): IObject<ITopoLink<any, any, any>> => {
@@ -267,10 +278,10 @@ export const updateLinksVisibleStateBySpecificNode = (
   return _links;
 };
 
-const getTopoParentNode = (regions: IObject<ITopoRegionNode>, sites: IObject<ITopoSitesNode>, accounts: IObject<ITopoAccountNode>, id: string) => {
-  if (regions && regions[id]) return regions[id];
-  if (sites && sites[id]) return sites[id];
-  if (accounts && accounts[id]) return accounts[id];
+const getTopoParentNode = (regions: IObject<ITopoRegionNode>, sites: IObject<ITopoSitesNode>, accounts: IObject<ITopoAccountNode>, extId: string) => {
+  if (regions && regions[extId]) return regions[extId];
+  if (sites && sites[extId]) return sites[extId];
+  if (accounts && accounts[extId]) return accounts[extId];
   return null;
 };
 

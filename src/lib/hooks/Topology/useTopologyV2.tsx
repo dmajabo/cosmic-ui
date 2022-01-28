@@ -271,7 +271,7 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     if (groupType === TopoFilterTypes.Accounts) {
       const _obj: IObject<ITopoAccountNode> = _.cloneDeep(accounts);
       _obj[type].visible = selected;
-      const _links: IObject<ITopoLink<any, any, any>> = updateLinksVisibleStateBySpecificNode(links, _obj[type].dataItem.id, regions, sites, _obj);
+      const _links: IObject<ITopoLink<any, any, any>> = updateLinksVisibleStateBySpecificNode(links, _obj[type].dataItem.extId, regions, sites, _obj);
       setLinks(_links);
       setAccountsNodes(_obj);
       return;
@@ -287,7 +287,7 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     if (groupType === TopoFilterTypes.Regions) {
       const _obj: IObject<ITopoRegionNode> = _.cloneDeep(regions);
       _obj[type].visible = selected;
-      const _links: IObject<ITopoLink<any, any, any>> = updateLinksVisibleStateBySpecificNode(links, _obj[type].dataItem.id, _obj, sites, accounts);
+      const _links: IObject<ITopoLink<any, any, any>> = updateLinksVisibleStateBySpecificNode(links, _obj[type].dataItem.extId, _obj, sites, accounts);
       setLinks(_links);
       setRegionsNodes(_obj);
       return;
@@ -301,12 +301,12 @@ export function useTopologyV2Context(): TopologyV2ContextType {
 
   const onToogleRegionStructure = (region: ITopoRegionNode, show?: boolean) => {
     if (show) {
-      const structure = regionStructures.find(it => it.dataItem.id === region.dataItem.id);
+      const structure = regionStructures.find(it => it.dataItem.extId === region.dataItem.extId);
       if (structure) return;
       setRegionStructures([...regionStructures, region]);
       return;
     }
-    const _strs = regionStructures.filter(it => it.dataItem.id !== region.dataItem.id);
+    const _strs = regionStructures.filter(it => it.dataItem.extId !== region.dataItem.extId);
     setRegionStructures(_strs);
   };
 

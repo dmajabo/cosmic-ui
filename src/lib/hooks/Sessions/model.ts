@@ -2,8 +2,6 @@ import { SESSIONS_TIME_RANGE_QUERY_TYPES } from 'lib/api/ApiModels/paramBuilders
 import { ISelectedListItem } from 'lib/models/general';
 import { ITab } from 'lib/models/tabs';
 
-export const PAGING_DEFAULT_PAGE_SIZE: number = 50;
-
 export enum SessionsTabTypes {
   Overview = 'overview',
   Trends = 'trends',

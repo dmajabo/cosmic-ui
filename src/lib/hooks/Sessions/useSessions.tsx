@@ -1,13 +1,12 @@
 import React from 'react';
 import { ITab } from 'lib/models/tabs';
-import { SessionsTabTypes, PAGING_DEFAULT_PAGE_SIZE, SESSIONS_SELECT_VALUES, SESSIONS_TABS } from './model';
-import { ISelectedListItem } from 'lib/models/general';
+import { SessionsTabTypes, SESSIONS_SELECT_VALUES, SESSIONS_TABS } from './model';
+import { ISelectedListItem, PAGING_DEFAULT_PAGE_SIZE } from 'lib/models/general';
 import { ISession } from 'lib/api/ApiModels/Sessions/apiModel';
 import { OKULIS_LOCAL_STORAGE_KEYS } from 'lib/api/http/utils';
 import { getSessionStoragePreferences, StoragePreferenceKeys, updateSessionStoragePreference } from 'lib/helpers/localStorageHelpers';
 import { convertStringToNumber } from 'lib/helpers/general';
-import { SESSIONS_TIME_RANGE_QUERY_TYPES } from 'lib/api/ApiModels/paramBuilders';
-import { IElasticFilterModel } from 'lib/models/elastic';
+import { IElasticFilterModel, SESSIONS_TIME_RANGE_QUERY_TYPES } from 'lib/api/ApiModels/paramBuilders';
 
 export interface SessionsContextType {
   selectedTab: ITab<SessionsTabTypes>;

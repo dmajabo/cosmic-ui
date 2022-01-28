@@ -1,14 +1,13 @@
 import React from 'react';
 import { PageContentWrapper } from 'app/containers/Pages/Shared/styles';
 import { useDelete, useGet } from 'lib/api/http/useAxiosHook';
-import { PAGING_DEFAULT_PAGE_SIZE } from 'lib/hooks/Sessions/model';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { IPolicysvcListSegmentPsResponse, ISegmentSegmentP } from 'lib/api/ApiModels/Policy/Segment';
 import { paramBuilder } from 'lib/api/ApiModels/paramBuilders';
 import { convertStringToNumber } from 'lib/helpers/general';
 import { PolicyApi } from 'lib/api/ApiModels/Services/policy';
 import ModalComponent from 'app/components/Modal';
-import { DATA_READY_STATE, IModal } from 'lib/models/general';
+import { DATA_READY_STATE, IModal, PAGING_DEFAULT_PAGE_SIZE } from 'lib/models/general';
 import DeleteModal from '../../Components/DeleteModal';
 import { toast, ToastContainer } from 'react-toastify';
 import SectionHeader from '../../Components/SectionHeader';

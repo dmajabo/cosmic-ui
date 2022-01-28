@@ -4,8 +4,7 @@ import { webhookIcon } from 'app/components/SVGIcons/automationIcons/configurati
 import { ChannelHeaderRow, ChannelItemWrapper, ConfigurationSubTitle, ConfigurationTitle, LabelsWrapper } from '../styles';
 import SecondaryButton from 'app/components/Buttons/SecondaryButton';
 import { plusIcon } from 'app/components/SVGIcons/plusIcon';
-import { AlertChannelType, IAlertChannel } from 'lib/api/ApiModels/Workflow/apiModel';
-import { createChannel } from '../../helpers';
+import { AlertChannelType, IAlertChannel, createChannel } from 'lib/api/ApiModels/Workflow/apiModel';
 import { deleteIcon } from 'app/components/SVGIcons/delete';
 import SettingsButton from 'app/components/Buttons/SettingsButton';
 import { PopupContent } from 'app/components/Buttons/SettingsButton/PopupItemStyles';

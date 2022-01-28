@@ -92,6 +92,7 @@ export enum TopoLinkTypes {
 }
 
 export interface ITopoLink<F, T, L> extends IVisible, IBaseEntity<string> {
+  extId: string;
   type: TopoLinkTypes;
   from: F;
   to: T;
@@ -102,6 +103,7 @@ export interface ITopoLink<F, T, L> extends IVisible, IBaseEntity<string> {
 }
 
 export interface IAccountNode extends IBaseEntity<string> {
+  extId: string;
   name: string;
 }
 
@@ -130,6 +132,7 @@ export interface ITopoRegionNode extends ITopoNode<INetworkRegion>, ICoord, ISiz
 
 export interface ITempSegment {
   id: string;
+  extId: string;
   dataItem: ISegmentSegmentP;
   children: IDeviceNode[];
 }

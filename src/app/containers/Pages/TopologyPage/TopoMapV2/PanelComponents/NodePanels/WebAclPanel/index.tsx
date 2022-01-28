@@ -20,7 +20,7 @@ const WebAclPanel: React.FC<IProps> = (props: IProps) => {
   const [appLoaderBalancerList, setAppLoaderBalancerList] = React.useState<INetworkLoadBalancer[]>([]);
   const [expandStateObj, setExpandStateObj] = React.useState<IVnetFields>(jsonClone(DEFAULT_WEB_ACL_EXPAND_FIELDS));
   React.useEffect(() => {
-    if (!webAcl || (props.dataItem && props.dataItem.id !== webAcl.id)) {
+    if (!webAcl || (props.dataItem && props.dataItem.extId !== webAcl.extId)) {
       const _obj = getFilteredBalancerByType(props.dataItem.loadBalancers);
       setNetLoaderBalancerList(_obj.net);
       setAppLoaderBalancerList(_obj.app);
@@ -72,7 +72,7 @@ const WebAclPanel: React.FC<IProps> = (props: IProps) => {
           styles={{ margin: '0 0 4px 0' }}
         >
           {netLoaderBalancerList && netLoaderBalancerList.length
-            ? netLoaderBalancerList.map(it => <BalanceItem key={`netLB${it.id}`} icon={NetLoaderBalancerIcon} dataItem={it} onClick={() => {}} />)
+            ? netLoaderBalancerList.map(it => <BalanceItem key={`netLB${it.extId}`} icon={NetLoaderBalancerIcon} dataItem={it} onClick={() => {}} />)
             : null}
         </ExpandGroup>
         <ExpandGroup
@@ -86,7 +86,7 @@ const WebAclPanel: React.FC<IProps> = (props: IProps) => {
           label="Application Load Balancers"
         >
           {appLoaderBalancerList && appLoaderBalancerList.length
-            ? appLoaderBalancerList.map(it => <BalanceItem key={`appLB${it.id}`} icon={AppLoaderBalancerIcon} dataItem={it} onClick={() => {}} />)
+            ? appLoaderBalancerList.map(it => <BalanceItem key={`appLB${it.extId}`} icon={AppLoaderBalancerIcon} dataItem={it} onClick={() => {}} />)
             : null}
         </ExpandGroup>
       </OverflowContainer>

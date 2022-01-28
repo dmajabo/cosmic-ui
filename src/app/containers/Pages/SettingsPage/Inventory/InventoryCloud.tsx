@@ -4,7 +4,6 @@ import { GridStyles } from 'app/components/Grid/GridStyles';
 import Paging from 'app/components/Basic/Paging';
 import { gridAscArrow, gridDescArrow } from 'app/components/SVGIcons/arrows';
 import { InventoryCloudGridColumns } from './model';
-import { PAGING_DEFAULT_PAGE_SIZE } from 'lib/hooks/Sessions/model';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { useGet } from 'lib/api/http/useAxiosHook';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
@@ -15,6 +14,7 @@ import { INetworkwEdge, IWEdgesRes } from 'lib/api/ApiModels/Topology/apiModels'
 import { IColumn } from 'lib/models/grid';
 import { paramBuilder } from 'lib/api/ApiModels/paramBuilders';
 import { TopoApi } from 'lib/api/ApiModels/Services/topo';
+import { PAGING_DEFAULT_PAGE_SIZE } from 'lib/models/general';
 
 interface Props {
   searchValue: string;

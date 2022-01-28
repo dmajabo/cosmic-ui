@@ -87,6 +87,8 @@ export interface ISegmentSegmentP extends IBaseEntity<string> {
   paasSegPol: ISegmentPaasSegementP;
   siteSegPol: ISegmentSiteSegmentP;
   color: string;
+
+  extId?: string; // on ui
 }
 export interface IPolicysvcListSegmentPsResponse extends IBaseTotalCount, IBasePages {
   segments: ISegmentSegmentP[];

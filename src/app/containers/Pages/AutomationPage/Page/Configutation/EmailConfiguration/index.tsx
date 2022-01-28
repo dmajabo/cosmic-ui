@@ -5,8 +5,7 @@ import { emailIcon } from 'app/components/SVGIcons/automationIcons/configuration
 import IconContainer from 'app/components/Basic/IconContainer';
 import TextInputWithIcon from 'app/components/Inputs/TextInput/TextInputWithIcon';
 import { plusIcon } from 'app/components/SVGIcons/plusIcon';
-import { AlertChannelType, IAlertChannel } from 'lib/api/ApiModels/Workflow/apiModel';
-import { createChannel } from '../../helpers';
+import { AlertChannelType, IAlertChannel, createChannel } from 'lib/api/ApiModels/Workflow/apiModel';
 import Tag from 'app/components/Basic/Tag';
 import { jsonClone } from 'lib/helpers/cloneHelper';
 import SecondaryButton from 'app/components/Buttons/SecondaryButton';

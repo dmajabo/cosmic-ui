@@ -29,6 +29,11 @@ export enum AlertConfigState {
   OFF = 'OFF',
 }
 
+export enum AlertChannelType {
+  EMAIL = 'EMAIL', // default
+  WEBHOOK = 'WEBHOOK',
+}
+
 export interface IAlertMeta extends IBaseEntity<string> {
   name: string;
   type: ModelalertType;
@@ -41,11 +46,6 @@ export interface IAlertMeta extends IBaseEntity<string> {
 }
 export interface IAlertMetaDataRes extends IBaseTotalCount, IBasePages {
   alertMetadata: IAlertMeta[];
-}
-
-export enum AlertChannelType {
-  EMAIL = 'EMAIL', // default
-  WEBHOOK = 'WEBHOOK',
 }
 
 export interface IAlertEmailChannel {
@@ -61,3 +61,17 @@ export interface IAlertChannel extends IBaseEntity<string> {
 export interface IAlertChannelRes extends IBaseTotalCount, IBasePages {
   channels: IAlertChannel[];
 }
+
+export const createChannel = (type: AlertChannelType): IAlertChannel => {
+  const _obj: IAlertChannel = {
+    id: '',
+    name: '',
+    isDefault: false,
+    channelType: type,
+    emailPolicy: {
+      receiverEmailIds: [],
+      emailSubjectPrefix: '',
+    },
+  };
+  return _obj;
+};

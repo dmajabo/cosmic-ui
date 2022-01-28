@@ -1,6 +1,6 @@
-import { IElasticField } from 'lib/models/elastic';
 import React from 'react';
 import { ListItem } from './styles';
+import { IElasticField } from 'lib/api/ApiModels/paramBuilders';
 
 interface Props {
   item: IElasticField | string;

@@ -3,7 +3,7 @@ import { DataGrid, GridRenderCellParams, GridValueFormatterParams } from '@mui/x
 import { GridStyles } from 'app/components/Grid/GridStyles';
 import Drawer from '@mui/material/Drawer';
 import { GridCellLabel, GridCellStatusCircle, GridCellWrapper } from 'app/components/Grid/styles';
-import { IModal, ISelectedListItem } from 'lib/models/general';
+import { IModal, ISelectedListItem, PAGING_DEFAULT_PAGE_SIZE } from 'lib/models/general';
 import Paging from 'app/components/Basic/Paging';
 import { gridAscArrow, gridDescArrow } from 'app/components/SVGIcons/arrows';
 import Header from '../Components/Header';
@@ -15,7 +15,6 @@ import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import LoadingIndicator from 'app/components/Loading';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import { useGet } from 'lib/api/http/useAxiosHook';
-import { PAGING_DEFAULT_PAGE_SIZE } from 'lib/hooks/Sessions/model';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { IAuditLogsRes, INetworkAuditLog } from 'lib/api/ApiModels/Settings/apiModels';
 import { getSearchedList } from 'lib/helpers/listHelper';

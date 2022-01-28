@@ -14,7 +14,8 @@ interface Props {
 
 const FilterNodesGroup: React.FC<Props> = (props: Props) => {
   const onClick = (node: any) => {
-    props.onClick(props.type, node.dataItem.id, !node.visible);
+    const _id = node.dataItem.extId ? node.dataItem.extId : node.dataItem.id;
+    props.onClick(props.type, _id, !node.visible);
   };
   return (
     <>

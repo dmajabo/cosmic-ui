@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
+import RouteTableWrapper from './RouteTableWrapper';
 import { IResourceQueryParam, ControllerKeyTypes, RoutesResKeyEnum, RoutesResourceTypes, IRoutesResData, IRouteResDataItem } from 'lib/api/ApiModels/Metrics/apiModel';
 import { getQueryResourceParam } from 'lib/api/ApiModels/Metrics/queryRoutesHelper';
 import { useGet } from 'lib/api/http/useAxiosHook';
-import RouteTableWrapper from './RouteTableWrapper';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 import { toTimestamp } from 'lib/api/ApiModels/paramBuilders';
 import { UserContextState, UserContext } from 'lib/Routes/UserProvider';

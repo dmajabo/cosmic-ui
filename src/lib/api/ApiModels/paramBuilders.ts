@@ -1,5 +1,27 @@
-import { PAGING_DEFAULT_PAGE_SIZE } from 'lib/hooks/Sessions/model';
-import { ElasticFilterSuffics, IElasticFilterModel, IQuryFieldtype } from 'lib/models/elastic';
+import { PAGING_DEFAULT_PAGE_SIZE } from 'lib/models/general';
+
+export enum IQuryFieldtype {
+  STRING = 'string',
+  NUMBER = 'number',
+}
+
+export enum ElasticFilterSuffics {
+  AUTOCOMPLETE = 'autocomplete',
+  KEYWORD = 'keyword',
+}
+
+export interface IElasticField {
+  label: string;
+  resField: string;
+  searchField: string;
+  queryType: IQuryFieldtype;
+  isField: boolean;
+  valueTransform?: (v: string) => string;
+}
+export interface IElasticFilterModel {
+  value: string;
+  field: IElasticField;
+}
 
 export enum ALERT_TIME_RANGE_QUERY_TYPES {
   LAST_HOUR = 'ALERT_QUERY_LAST_HOUR',

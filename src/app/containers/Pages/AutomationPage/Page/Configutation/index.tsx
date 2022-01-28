@@ -1,7 +1,7 @@
 import React from 'react';
 import { useGet, usePut, usePost, useDelete } from 'lib/api/http/useAxiosHook';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
-import { AlertChannelType, IAlertChannel, IAlertChannelRes } from 'lib/api/ApiModels/Workflow/apiModel';
+import { AlertChannelType, createChannel, IAlertChannel, IAlertChannelRes } from 'lib/api/ApiModels/Workflow/apiModel';
 import LoadingIndicator from 'app/components/Loading';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import EmailConfiguration from './EmailConfiguration';
@@ -15,7 +15,6 @@ import { ActionPart, ActionRowStyles } from 'app/containers/Pages/Shared/styles'
 import PrimaryButton from 'app/components/Buttons/PrimaryButton';
 import { addIcon } from 'app/components/SVGIcons/addIcon';
 import NewChannel from './NewChannel';
-import { createChannel } from '../helpers';
 import { AlertApi } from 'lib/api/ApiModels/Services/alert';
 interface Props {}
 
