@@ -84,7 +84,7 @@ const Triggers: React.FC<Props> = (props: Props) => {
           <MatSelect
             id={`sevirity${param.row.id}`}
             value={param.value}
-            options={[AlertSeverity.LOW, AlertSeverity.MEDIUM, AlertSeverity.HIGH]}
+            options={[AlertSeverity.LOW, AlertSeverity.MEDIUM, AlertSeverity.HIGH, AlertSeverity.INFO]}
             onChange={v => onSeverityChange(v, param)}
             styles={{ maxWidth: '160px' }}
             selectStyles={{ height: '38px', width: '100%' }}
