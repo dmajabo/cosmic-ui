@@ -1,7 +1,7 @@
 import React from 'react';
 import { ITab } from 'lib/models/tabs';
-import { SessionsTabTypes, SESSIONS_SELECT_VALUES, SESSIONS_TABS } from './model';
-import { ISelectedListItem, PAGING_DEFAULT_PAGE_SIZE } from 'lib/models/general';
+import { SessionsTabTypes, SESSIONS_TABS } from './model';
+import { PAGING_DEFAULT_PAGE_SIZE } from 'lib/models/general';
 import { ISession } from 'lib/api/ApiModels/Sessions/apiModel';
 import { OKULIS_LOCAL_STORAGE_KEYS } from 'lib/api/http/utils';
 import { getSessionStoragePreferences, StoragePreferenceKeys, updateSessionStoragePreference } from 'lib/helpers/localStorageHelpers';
@@ -22,7 +22,7 @@ export interface SessionsContextType {
   onChangeCurrentPage: (_page: number) => void;
   onSetSessionsData: (_items: ISession[], _count: number | string) => void;
   onChangeSelectedTab: (_tabIndex: number) => void;
-  onChangeSelectedPeriod: (_value: ISelectedListItem<SESSIONS_TIME_RANGE_QUERY_TYPES>, _page: SessionsTabTypes) => void;
+  onChangeSelectedPeriod: (_value: SESSIONS_TIME_RANGE_QUERY_TYPES, _page: SessionsTabTypes) => void;
   onChangeSwitch: (_value: boolean, _page: SessionsTabTypes) => void;
   onChangeFilter: (_value: (IElasticFilterModel | string)[]) => void;
   onClearContext: () => void;
@@ -33,7 +33,7 @@ export function useSessionsContext(): SessionsContextType {
   const [sessionsCount, setSessionsCount] = React.useState<number>(0);
   const [sessionsPageSize, setSessionsPageSize] = React.useState<number>(PAGING_DEFAULT_PAGE_SIZE);
   const [sessionsCurrentPage, setSessionsCurrentPage] = React.useState<number>(1);
-  const [sessionsPeriod, setSessionsPeriod] = React.useState<SESSIONS_TIME_RANGE_QUERY_TYPES>(SESSIONS_SELECT_VALUES[0].value);
+  const [sessionsPeriod, setSessionsPeriod] = React.useState<SESSIONS_TIME_RANGE_QUERY_TYPES>(SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_HOUR);
   const [sessionsOverviewPeriod, setSessionsOverviewPeriod] = React.useState<SESSIONS_TIME_RANGE_QUERY_TYPES>(null);
   const [sessionsStitch, setSessionsStitch] = React.useState<boolean>(false);
   const [sessionsFilter, setSessionsFilterValue] = React.useState<(IElasticFilterModel | string)[]>([]);
@@ -60,7 +60,7 @@ export function useSessionsContext(): SessionsContextType {
       }
     }
     if (!_preference || !_preference[StoragePreferenceKeys.SESSIONS_OVERVIEW_TIME_PERIOD]) {
-      setSessionsOverviewPeriod(SESSIONS_SELECT_VALUES[3].value);
+      setSessionsOverviewPeriod(SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_MONTH);
     }
   }, []);
 
@@ -89,14 +89,14 @@ export function useSessionsContext(): SessionsContextType {
     setSessionsFilterValue(value);
   };
 
-  const onChangeSelectedPeriod = (_item: ISelectedListItem<SESSIONS_TIME_RANGE_QUERY_TYPES>, _page: SessionsTabTypes) => {
+  const onChangeSelectedPeriod = (value: SESSIONS_TIME_RANGE_QUERY_TYPES, _page: SessionsTabTypes) => {
     if (_page === SessionsTabTypes.Sessions) {
-      updateSessionStoragePreference(_item.value, OKULIS_LOCAL_STORAGE_KEYS.OKULIS_PREFERENCE, StoragePreferenceKeys.SESSIONS_TIME_PERIOD);
-      setSessionsPeriod(_item.value);
+      updateSessionStoragePreference(value, OKULIS_LOCAL_STORAGE_KEYS.OKULIS_PREFERENCE, StoragePreferenceKeys.SESSIONS_TIME_PERIOD);
+      setSessionsPeriod(value);
     }
     if (_page === SessionsTabTypes.Overview) {
-      updateSessionStoragePreference(_item.value, OKULIS_LOCAL_STORAGE_KEYS.OKULIS_PREFERENCE, StoragePreferenceKeys.SESSIONS_OVERVIEW_TIME_PERIOD);
-      setSessionsOverviewPeriod(_item.value);
+      updateSessionStoragePreference(value, OKULIS_LOCAL_STORAGE_KEYS.OKULIS_PREFERENCE, StoragePreferenceKeys.SESSIONS_OVERVIEW_TIME_PERIOD);
+      setSessionsOverviewPeriod(value);
     }
   };
 

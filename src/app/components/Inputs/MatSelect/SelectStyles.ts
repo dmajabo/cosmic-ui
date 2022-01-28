@@ -59,9 +59,6 @@ export const SelectStyles = makeStyles(
         fontFamily: 'DMSans !important',
         fontWeight: 500,
         height: '100% !important',
-        '&:focus': {
-          background: 'transparent !important',
-        },
       },
       menuRoot: {
         '&.MuiPaper-root': {
