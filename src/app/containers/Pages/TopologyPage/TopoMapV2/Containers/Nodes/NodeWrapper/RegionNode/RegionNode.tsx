@@ -2,8 +2,7 @@ import React from 'react';
 import { ITopoRegionNode, INetworkVNetNode, INetworkWebAclNode, TopologyPanelTypes } from 'lib/hooks/Topology/models';
 import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
-import TransitionContainer from 'app/containers/Pages/TopologyPage/TopoMapV2/Containers/TransitionContainer';
-// import { onHoverNode, onUnHoverNode } from '../../../../Graph/helper';
+// import TransitionContainer from 'app/containers/Pages/TopologyPage/TopoMapV2/Containers/TransitionContainer';
 import {} from 'lib/hooks/Topology/models';
 import NetworkVnetNode from '../NetworkVnetNode';
 import PeerConnectionNode from '../PeerConnectionNode';
@@ -24,16 +23,9 @@ const RegionNode: React.FC<Props> = (props: Props) => {
     topology.onToogleTopoPanel(TopologyPanelTypes.WebAcl, true, item);
   };
 
+  if (!props.dataItem.visible || props.dataItem.collapsed) return null;
   return (
-    <TransitionContainer
-      id={`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}childrensLayer`}
-      className="topologyNode"
-      data-type={NODES_CONSTANTS.REGION.type}
-      stateIn={props.dataItem.visible && !props.dataItem.collapsed}
-      transform="none"
-      origin="unset"
-      timing={50}
-    >
+    <g id={`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}childrensLayer`} className="topologyNode" data-type={NODES_CONSTANTS.REGION.type}>
       <>
         {topology.entities && topology.entities.web_acls && topology.entities.web_acls.selected && props.dataItem.webAcls && props.dataItem.webAcls.length ? (
           <>
@@ -79,7 +71,7 @@ const RegionNode: React.FC<Props> = (props: Props) => {
           </>
         ) : null}
       </>
-    </TransitionContainer>
+    </g>
   );
 };
 

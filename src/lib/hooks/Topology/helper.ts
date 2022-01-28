@@ -101,7 +101,7 @@ export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[]
           _objR.webAcls = _arr.map((row, ri) => row.map((v, i) => createWebAclNode(_objR.dataItem.id, org, row.length, orgI, ri, i, v)));
         }
         if (region.devices && region.devices.length) {
-          // for test
+          // // for test
           // for (let j = 0; j < 72; j++) {
           //   const _item1 = jsonClone(region.devices[0]);
           //   _item1.segmentId = '61eaccce820af10f872a9b16';
