@@ -39,6 +39,14 @@ const SeverityOption: React.FC<Props> = ({ value }) => {
       </OptionWrap>
     );
   }
+  if (value === AlertSeverity.INFO) {
+    return (
+      <OptionWrap>
+        <OptionCircle color="var(--_disabledTextColor)" />
+        <OptionLabel>Info</OptionLabel>
+      </OptionWrap>
+    );
+  }
   return null;
 };
 export default React.memo(SeverityOption);

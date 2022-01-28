@@ -20,6 +20,7 @@ export enum AlertSeverity {
   LOW = 'LOW',
   MEDIUM = 'MEDIUM',
   HIGH = 'HIGH',
+  INFO = 'INFO',
 }
 
 export enum AlertConfigState {

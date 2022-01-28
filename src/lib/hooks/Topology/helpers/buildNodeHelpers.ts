@@ -16,7 +16,7 @@ import {
 import uuid from 'react-uuid';
 import { ISegmentSegmentP } from 'lib/api/ApiModels/Policy/Segment';
 import { IObject } from 'lib/models/general';
-import { centeredTopoNodesInRow, setRegionChildrenCoords, setRegionSizes } from './coordinateHelper';
+import { centeredRegionNodes, setRegionSizes } from './coordinateHelper';
 import _ from 'lodash';
 
 export const createAccountNode = (_id: string, _name: string, _orgId: string): ITopoAccountNode => {
@@ -249,9 +249,8 @@ export const updateRegionNodes = (nodes: IObject<ITopoRegionNode>, filter: Filte
     _nodes[key].collapsed = getCollapseExpandState(filter, _nodes[key].children, _nodes[key].peerConnections, _nodes[key].webAcls);
     if (!_nodes[key].collapsed) {
       setRegionSizes(_nodes[key], filter);
-      setRegionChildrenCoords(filter, _nodes[key].children, _nodes[key].peerConnections, _nodes[key].webAcls, _nodes[key]);
     }
   }
-  // centeredTopoNodesInRow(nodes);
+  centeredRegionNodes(_nodes, filter);
   return _nodes;
 };

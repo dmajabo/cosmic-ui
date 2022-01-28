@@ -267,10 +267,20 @@ const setUpDevicesCoord = (site: ITopoSitesNode, items: IDeviceNode[][]) => {
 };
 // -------------------------------
 
-export const centeredTopoNodesInRow = (nodes: IObject<ITopoRegionNode>) => {
-  const maxHeight = Math.max(...Object.keys(nodes).map(key => nodes[key].height));
+export const centeredRegionNodes = (nodes: IObject<ITopoRegionNode>, filter: FilterEntityOptions) => {
+  let topNode: ITopoRegionNode = null;
   for (const key in nodes) {
-    nodes[key].y = nodes[key].y + maxHeight / 2 - nodes[key].height / 2;
+    if (!topNode) {
+      topNode = nodes[key];
+      continue;
+    }
+    if (nodes[key].height > topNode.height) {
+      topNode = nodes[key];
+    }
+  }
+  for (const key in nodes) {
+    nodes[key].y = topNode.y + topNode.height / 2 - nodes[key].height / 2;
+    setRegionChildrenCoords(filter, nodes[key].children, nodes[key].peerConnections, nodes[key].webAcls, nodes[key]);
   }
 };
 

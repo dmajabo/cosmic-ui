@@ -1,7 +1,7 @@
 import React from 'react';
 import Dropdown from '../Dropdown';
 import { ISelectedListItem } from 'lib/models/general';
-import { FilterOpperatorsList } from 'app/containers/Pages/AnalyticsPage/SessionPage/models';
+import { FilterOpperatorsList } from 'app/containers/Pages/TrafficPage/SessionPage/models';
 
 interface Props {
   item: string;
