@@ -6,6 +6,7 @@ export const ChartWrapContainer = styled.div`
   height: 100%;
   flex-shrink: 0;
   position: relative;
+  border-radius: 6px;
   .networkNode,
   .destinationNode,
   .applicationNode {
@@ -26,6 +27,6 @@ export const ChartWrapContainer = styled.div`
   & > svg {
     width: 100%;
     height: 100%;
-    background-color: var(--_chartBg);
+    border-radius: 6px;
   }
 `;
