@@ -18,7 +18,7 @@ export function useTrafficContext(): TrafficContextType {
   React.useEffect(() => {
     const _preference = getSessionStoragePreferences(OKULIS_LOCAL_STORAGE_KEYS.OKULIS_PREFERENCE, [StoragePreferenceKeys.TRAFFIC_TRENDS_TIME_PERIOD]);
     if (_preference && _preference[StoragePreferenceKeys.TRAFFIC_TRENDS_TIME_PERIOD]) {
-      setTrendsPeriod(_preference[StoragePreferenceKeys.SESSIONS_OVERVIEW_TIME_PERIOD]);
+      setTrendsPeriod(_preference[StoragePreferenceKeys.TRAFFIC_TRENDS_TIME_PERIOD]);
     }
   }, []);
 

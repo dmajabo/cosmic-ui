@@ -2,16 +2,15 @@ import React from 'react';
 import { ChartWrapContainer } from './style';
 import useResizeAware from 'react-resize-aware';
 import * as d3 from 'd3';
-type DataItem = {
+export interface PieDataItem {
   name: string;
   value: number;
-};
-
-interface Props {
-  readonly data: DataItem[];
+  color: string;
 }
 
-const colors = ['#98abc5', '#8a89a6', '#7b6888', '#6b486b', '#a05d56'];
+interface Props {
+  readonly data: PieDataItem[];
+}
 
 const DonutChart: React.FC<Props> = (props: Props) => {
   const [resizeListener, sizes] = useResizeAware();
@@ -19,7 +18,7 @@ const DonutChart: React.FC<Props> = (props: Props) => {
 
   const pie = React.useMemo(() => {
     const pieGenerator = d3
-      .pie<any, DataItem>()
+      .pie<any, PieDataItem>()
       .sort(null)
       .value(d => d.value);
     return pieGenerator(props.data);
@@ -48,12 +47,11 @@ const DonutChart: React.FC<Props> = (props: Props) => {
       <svg id="donutChartContainerSvg" width="100" height="100" fill="none" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
         <g transform={`translate(${sizes.width / 2}, ${sizes.height / 2})`}>
           {arcs.map((arc, i) => {
-            console.log(arc);
             return (
-              <g>
-                <path key={`path${i}`} d={arc.path} fill={colors[i]} stroke="var(--_primaryBg)" strokeWidth="5" />
+              <g data-value={arc.data.value}>
+                <path key={`path${i}`} d={arc.path} fill={arc.data.color} stroke="var(--_primaryBg)" strokeWidth="2.5" />
                 <g transform={`${arc.labelPos}`}>
-                  <text fontSize="20" fill={colors[i]} textAnchor={arc.textAnchor}>
+                  <text fontSize="20" fill={arc.data.color} textAnchor={arc.textAnchor}>
                     {arc.data.name}
                   </text>
                 </g>

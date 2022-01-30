@@ -25,6 +25,9 @@ export const Icon = styled.span<IProps>`
   &:hover .inheritHoverFill {
     fill: var(--_hoverButtonBg);
   }
+  &.inheritRemoveFill:hover .inheritFill {
+    fill: var(--_errorColor);
+  }
   &.arrow svg {
     transition: transform 0.5s linear;
     transform: rotate(0deg);

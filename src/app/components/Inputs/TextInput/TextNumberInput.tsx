@@ -1,21 +1,18 @@
 import React from 'react';
 import { DEBOUNCE_TIME } from 'lib/constants/general';
 import useDebounce from 'lib/hooks/useDebounce';
-import { Input, InputWrapper, TextArea, TextInputWrapper } from './styles';
+import { Input, InputWrapper, TextInputWrapper } from './styles';
 import { InputLabel } from '../styles/Label';
 import { Required } from '../FormTextInput/styles';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
-import IconWrapper from 'app/components/Buttons/IconWrapper';
-import { eyeHideIcon, eyeIcon } from 'app/components/SVGIcons/eyeIcon';
 
 interface IProps {
   id?: string;
   name: string;
-  type?: 'text' | 'password' | 'email' | 'textarea';
-  value: string | null;
+  value: number | string | null;
   label?: JSX.Element | string;
-  onChange?: (value: string | null) => void;
-  onBlurChange?: (value: string | null) => void;
+  onChange?: (value: string | number | null) => void;
+  onBlurChange?: (value: string | number | null) => void;
   disabled?: boolean;
   readOnly?: boolean;
   readOnlyField?: boolean;
@@ -25,11 +22,13 @@ interface IProps {
   inputStyles?: Object;
   labelStyles?: Object;
   error?: string;
+  min?: number | string;
+  max?: number | string;
+  step?: number | string;
 }
 
-const TextInput: React.FC<IProps> = (props: IProps) => {
-  const [type, setType] = React.useState<string>(props.type || 'text');
-  const [textValue, setTextValue] = React.useState<string>(props.value || '');
+const TextNumberInput: React.FC<IProps> = (props: IProps) => {
+  const [textValue, setTextValue] = React.useState<string | number>(props.value || '');
   const [isTyping, setIsTyping] = React.useState(false);
   const debouncedSearchTerm = useDebounce(textValue, DEBOUNCE_TIME);
   React.useEffect(() => {
@@ -44,28 +43,14 @@ const TextInput: React.FC<IProps> = (props: IProps) => {
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIsTyping(true);
-    const { value } = e.target;
-    setTextValue(value);
+    const { valueAsNumber } = e.target;
+    setTextValue(valueAsNumber);
   };
 
   const onBlur = () => {
     if (!props.onBlurChange) return;
     const value = textValue || null;
     props.onBlurChange(value);
-  };
-
-  const onTextAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setIsTyping(true);
-    const { value } = e.target;
-    setTextValue(value);
-  };
-
-  const onChangeType = () => {
-    if (type === 'password') {
-      setType('text');
-      return;
-    }
-    setType(props.type || 'password');
   };
 
   return (
@@ -76,40 +61,26 @@ const TextInput: React.FC<IProps> = (props: IProps) => {
           {props.required && <Required>*</Required>}
         </InputLabel>
       )}
-      {type !== 'textarea' ? (
-        <InputWrapper>
-          <Input
-            required={props.required}
-            id={props.id}
-            name={props.name}
-            type={type || 'text'}
-            value={textValue}
-            onChange={onChange}
-            onBlur={onBlur}
-            readOnly={props.readOnly || props.readOnlyField}
-            disabled={props.disabled}
-            placeholder={props.placeholder}
-            style={props.inputStyles}
-            autoComplete="new-password"
-          />
-          {props.type === 'password' && (
-            <IconWrapper onClick={onChangeType} styles={{ zIndex: 1, position: 'absolute', top: 'calc(50% - 8px)', right: '16px' }} icon={type === 'password' ? eyeIcon : eyeHideIcon} />
-          )}
-        </InputWrapper>
-      ) : (
-        <TextArea
+      <InputWrapper>
+        <Input
           required={props.required}
           id={props.id}
           name={props.name}
+          type="number"
           value={textValue}
+          onChange={onChange}
           onBlur={onBlur}
-          onChange={onTextAreaChange}
-          readOnly={props.readOnly}
+          readOnly={props.readOnly || props.readOnlyField}
           disabled={props.disabled}
           placeholder={props.placeholder}
           style={props.inputStyles}
+          autoComplete="new-password"
+          min={props.min}
+          max={props.max}
+          step={props.step}
+          padding="8px 0 8px 16px"
         />
-      )}
+      </InputWrapper>
       {props.error && (
         <ErrorMessage textAlign="left" margin="6px 0 0 0">
           {props.error}
@@ -119,4 +90,4 @@ const TextInput: React.FC<IProps> = (props: IProps) => {
   );
 };
 
-export default React.memo(TextInput);
+export default React.memo(TextNumberInput);

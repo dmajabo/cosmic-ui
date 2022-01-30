@@ -17,6 +17,8 @@ export const ChartContainer = styled.div<ContainerProps>`
 `;
 
 export const ChartHeader = styled.div`
+  display: flex;
+  align-items: center;
   margin-bottom: 30px;
   min-height: 30px;
   flex-shrink: 0;
@@ -39,4 +41,15 @@ export const ChartWrapper = styled.div`
   border-color: var(--_borderColor);
   border-radius: 6px;
   background: var(--_chartBg);
+  position: relative;
+`;
+
+export const PanelTitle = styled.div`
+  font-family: 'DMSans';
+  font-style: normal;
+  font-weight: bold;
+  font-size: 22px;
+  line-height: 29px;
+  color: var(--_primaryTextColor);
+  margin-bottom: 30px;
 `;
