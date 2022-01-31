@@ -22,7 +22,7 @@ import { awsIcon } from 'app/components/SVGIcons/topologyIcons/aws';
 import LoadingIndicator from 'app/components/Loading';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 
-// const REGEX = /[-[\]{}()*+?.,\\^$|#\s]/g;
+const REGEX = /[-[\]{}()*+?.,\\^$|#\s]/g;
 
 interface PolicyLogsSelectOption {
   readonly label: LookbackLabel;
@@ -131,6 +131,7 @@ export const PolicyLogs: React.FC = () => {
   const [selectedColumns, setSelectedColumns] = useState<Column[]>([]);
   const [columnAnchorEl, setColumnAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [policyLogsData, setPolicyLogsData] = useState<PolicyLogsData[]>([]);
+  const [filteredPolicyLogsData, setFilteredPolicyLogsData] = useState<PolicyLogsData[]>([]);
 
   const { response, loading, error, onGet } = useGet<PolicyLogsResponse>();
 
@@ -148,7 +149,16 @@ export const PolicyLogs: React.FC = () => {
 
   useEffect(() => {
     if (response && response.policyLogs) {
-      setPolicyLogsData(response.policyLogs);
+      const formattedPolicyLogsData: PolicyLogsData[] = response.policyLogs.map(item => {
+        const { timestamp, ...other } = item;
+        const garbagesubstring = timestamp.slice(item.timestamp.indexOf('.'), timestamp.indexOf('.') + 10);
+        const timeString = timestamp.replace(garbagesubstring, '');
+        return {
+          ...other,
+          timestamp: DateTime.fromFormat(timeString, INPUT_TIME_FORMAT).toUTC().toFormat(TABLE_TIME_FORMAT),
+        };
+      });
+      setPolicyLogsData(formattedPolicyLogsData);
     }
   }, [response]);
 
@@ -163,23 +173,36 @@ export const PolicyLogs: React.FC = () => {
       [event.target.name]: event.target.checked,
     });
 
+  useEffect(() => {
+    if (!searchText) {
+      setFilteredPolicyLogsData(policyLogsData);
+    }
+  }, [searchText, policyLogsData]);
+
   //adds \ before every special character of string to use in regular expression
-  // const escapeRegExp = (value: string) => value.replace(REGEX, '\\$&');
+  const escapeRegExp = (value: string) => value.replace(REGEX, '\\$&');
 
   const requestSearch = (searchValue: string) => {
     setSearchText(searchValue);
-    // const searchRegex = new RegExp(escapeRegExp(searchValue), 'i');
+    const searchRegex = new RegExp(escapeRegExp(searchValue), 'i');
+    const filteredRows: PolicyLogsData[] = policyLogsData.filter((row: any) => {
+      return Object.keys(row).some((field: any) => {
+        if (row[field]) {
+          return searchRegex.test(row[field].toString());
+        }
+        return false;
+      });
+    });
+    setFilteredPolicyLogsData(filteredRows);
   };
 
   const handleSearchTextChange = (event: React.ChangeEvent<HTMLInputElement>) => requestSearch(event.target.value);
 
   const handleTimeRangeChange = (value: PolicyLogsSelectOption) => setTimeRange(value);
 
-  const logsTableData: AnomalyPolicyLogsTableData[] = policyLogsData.map(item => {
-    const garbagesubstring = item.timestamp.slice(item.timestamp.indexOf('.'), item.timestamp.indexOf('.') + 10);
-    const timeString = item.timestamp.replace(garbagesubstring, '');
+  const logsTableData: AnomalyPolicyLogsTableData[] = filteredPolicyLogsData.map(item => {
     return {
-      time: DateTime.fromFormat(timeString, INPUT_TIME_FORMAT).toUTC().toFormat(TABLE_TIME_FORMAT),
+      time: item.timestamp,
       edge: (
         <div>
           <span>{item.vendor === VendorTypes.MERAKI ? ciscoMerakiLogoIcon(28) : awsIcon(28)}</span>
