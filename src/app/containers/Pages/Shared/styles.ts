@@ -12,13 +12,14 @@ export const PageWrapperStyles = styled.div`
 
 interface PageWrapProps {
   width?: string;
+  padding?: string;
 }
 export const PageWithPanelWrapperStyles = styled.div<PageWrapProps>`
   display: flex;
   flex-direction: column;
   width: ${props => props.width || '100%'};
   min-height: 100%;
-  padding: 20px;
+  padding: ${props => props.padding || '20px'};
   position: relative;
   transition: width ${DEFAULT_TRANSITION};
 `;

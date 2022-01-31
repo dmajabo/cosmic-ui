@@ -23,7 +23,7 @@ export const TrendsPage: React.FC<Props> = (props: Props) => {
   };
   return (
     <ContentPanelWrapper>
-      <PageWithPanelWrapperStyles width={showSettingsPanel ? 'calc(100% - 520px)' : '100%'}>
+      <PageWithPanelWrapperStyles padding="0" width={showSettingsPanel ? 'calc(100% - 520px)' : '100%'}>
         <HeaderActionsRow />
         <DroppedFlowsComponent />
         <BandwidthComponent />
