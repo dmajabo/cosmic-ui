@@ -1,8 +1,8 @@
 import React from 'react';
 import { ITab } from 'lib/models/tabs';
 import { SettingsTabTypes, SETTINGS_TABS } from './model';
-import { PAGING_DEFAULT_PAGE_SIZE } from '../Sessions/model';
 import { InventoryOptions } from 'app/containers/Pages/SettingsPage/Inventory/model';
+import { PAGING_DEFAULT_PAGE_SIZE } from 'lib/models/general';
 
 export interface SettingsContextType {
   selectedTab: ITab<SettingsTabTypes>;

@@ -22,7 +22,7 @@ const NetworkNetworkLink: React.FC<IProps> = (props: IProps) => {
     }
   }, [topology.selectedNode]);
   return (
-    <TransitionContainer id={`networkNetworkLink${props.dataItem.id}`} stateIn={props.visible} transform="none" origin="unset" timing={50}>
+    <TransitionContainer id={`networkNetworkLink${props.dataItem.extId}`} stateIn={props.visible} transform="none" origin="unset" timing={50}>
       <line
         className={`topologyLink ${isSelected ? 'selectedTopoLevel1Link' : ''}`}
         fill="var(--_defaultLinkFill)"

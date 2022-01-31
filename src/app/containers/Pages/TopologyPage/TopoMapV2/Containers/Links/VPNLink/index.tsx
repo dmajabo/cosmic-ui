@@ -16,14 +16,14 @@ const VPNLink: React.FC<IProps> = (props: IProps) => {
   const [isSelected, setIsSelected] = React.useState<boolean>(false);
   React.useEffect(() => {
     if (topology.selectedNode && (topology.selectedNode.uiId === props.dataItem.from.uiId || topology.selectedNode.uiId === props.dataItem.to.uiId)) {
-      select(`#vpnLink${props.dataItem.id}`).raise();
+      select(`#vpnLink${props.dataItem.extId}`).raise();
       setIsSelected(true);
     } else if (isSelected) {
       setIsSelected(false);
     }
   }, [topology.selectedNode]);
   return (
-    <TransitionContainer stateIn={props.visible} id={`vpnLink${props.dataItem.id}`} transform="none" origin="unset" timing={50}>
+    <TransitionContainer stateIn={props.visible} id={`vpnLink${props.dataItem.extId}`} transform="none" origin="unset" timing={50}>
       <line
         className={`topologyLink ${isSelected ? 'selectedTopoLevel1Link' : ''}`}
         fill="var(--_defaultLinkFill)"

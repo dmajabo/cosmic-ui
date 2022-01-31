@@ -1,4 +1,4 @@
-import { IElasticField } from 'lib/models/elastic';
+import { IElasticField } from 'lib/api/ApiModels/paramBuilders';
 
 export interface ISearchData {
   items: IElasticField[];

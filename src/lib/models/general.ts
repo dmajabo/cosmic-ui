@@ -26,6 +26,7 @@ export enum DATA_READY_STATE {
   LOADING = 'loading',
   SUCCESS = 'success',
 }
+
 export const STANDART_DISPLAY_RESOLUTION = {
   width: 1830,
   height: 800,
@@ -35,6 +36,8 @@ export const STANDART_DISPLAY_RESOLUTION_V2 = {
   width: 1830,
   height: 706,
 };
+
+export const PAGING_DEFAULT_PAGE_SIZE: number = 50;
 
 export interface IBaseEntity<T> {
   id: T;

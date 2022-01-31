@@ -7,6 +7,7 @@ import { PageWrapperStyles, TabsWrapperStyles } from '../Shared/styles';
 import SessionPage from './SessionPage';
 import { TRAFFIC_TABS } from 'lib/hooks/Traffic/models';
 import { useTrafficDataContext } from 'lib/hooks/Traffic/useTrafficDataCont';
+import { TrendsPage } from './Trends';
 // import Rules from './Page/Rules';
 
 interface IProps {}
@@ -44,7 +45,7 @@ const MainPage: React.FC<IProps> = (props: IProps) => {
         value={traffic.selectedTab.index}
         index={TRAFFIC_TABS[0].index}
       >
-        <>Trends</>
+        <TrendsPage />
       </TabPanel>
       <TabPanel
         styles={{ display: 'flex', flexDirection: 'column', flex: traffic.selectedTab.index === TRAFFIC_TABS[1].index ? '1 1 100%' : '0' }}

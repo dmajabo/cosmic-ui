@@ -13,7 +13,7 @@ interface IProps {
   name: string;
   type?: 'text' | 'password' | 'email' | 'textarea';
   value: string | null;
-  label: JSX.Element | string;
+  label?: JSX.Element | string;
   onChange?: (value: string | null) => void;
   onBlurChange?: (value: string | null) => void;
   disabled?: boolean;
@@ -70,10 +70,12 @@ const TextInput: React.FC<IProps> = (props: IProps) => {
 
   return (
     <TextInputWrapper style={props.styles}>
-      <InputLabel style={props.labelStyles} htmlFor={props.id} disabled={props.disabled || props.readOnly}>
-        {props.label}
-        {props.required && <Required>*</Required>}
-      </InputLabel>
+      {props.label && (
+        <InputLabel style={props.labelStyles} htmlFor={props.id} disabled={props.disabled || props.readOnly}>
+          {props.label}
+          {props.required && <Required>*</Required>}
+        </InputLabel>
+      )}
       {type !== 'textarea' ? (
         <InputWrapper>
           <Input

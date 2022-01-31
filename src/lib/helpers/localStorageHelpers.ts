@@ -5,6 +5,7 @@ export enum StoragePreferenceKeys {
   SESSIONS_TIME_PERIOD = 'sessions_time_period',
   SESSIONS_STITCH = 'sessions_stitch',
   SESSIONS_OVERVIEW_TIME_PERIOD = 'sessions_overview_time_period',
+  TRAFFIC_TRENDS_TIME_PERIOD = 'traffic_trends_time_period',
   AUDIT_LOG_TIME_PERIOD = 'audit_log_time_period',
   WORKFLOW_TRIGGERS_TIME_PERIOD = 'workflow_triggers_time_period',
   TOPOLOGY_FILTER_ENTITY_OPTIONS = 'topology_filter_entity_options',

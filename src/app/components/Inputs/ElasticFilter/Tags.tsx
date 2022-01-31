@@ -4,7 +4,7 @@ import FieldValueTag from './FieldValueTag';
 import OperatorTag from './OperatorTag';
 import { closeSmallIcon } from 'app/components/SVGIcons/close';
 import SecondaryButton from 'app/components/Buttons/SecondaryButton';
-import { IElasticFilterModel } from 'lib/models/elastic';
+import { IElasticFilterModel } from 'lib/api/ApiModels/paramBuilders';
 
 interface Props {
   items: (IElasticFilterModel | string)[];

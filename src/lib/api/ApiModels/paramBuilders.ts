@@ -1,5 +1,27 @@
-import { PAGING_DEFAULT_PAGE_SIZE } from 'lib/hooks/Sessions/model';
-import { ElasticFilterSuffics, IElasticFilterModel, IQuryFieldtype } from 'lib/models/elastic';
+import { PAGING_DEFAULT_PAGE_SIZE } from 'lib/models/general';
+
+export enum IQuryFieldtype {
+  STRING = 'string',
+  NUMBER = 'number',
+}
+
+export enum ElasticFilterSuffics {
+  AUTOCOMPLETE = 'autocomplete',
+  KEYWORD = 'keyword',
+}
+
+export interface IElasticField {
+  label: string;
+  resField: string;
+  searchField: string;
+  queryType: IQuryFieldtype;
+  isField: boolean;
+  valueTransform?: (v: string) => string;
+}
+export interface IElasticFilterModel {
+  value: string;
+  field: IElasticField;
+}
 
 export enum ALERT_TIME_RANGE_QUERY_TYPES {
   LAST_HOUR = 'ALERT_QUERY_LAST_HOUR',
@@ -16,6 +38,13 @@ export enum AUDIT_LOGS_TIME_RANGE_QUERY_TYPES {
 }
 
 export enum SESSIONS_TIME_RANGE_QUERY_TYPES {
+  LAST_HOUR = 'SESSION_QUERY_LAST_HOUR',
+  LAST_DAY = 'SESSION_QUERY_LAST_DAY',
+  LAST_WEEK = 'SESSION_QUERY_LAST_WEEK',
+  LAST_MONTH = 'SESSION_QUERY_LAST_MONTH',
+}
+
+export enum TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES {
   LAST_HOUR = 'SESSION_QUERY_LAST_HOUR',
   LAST_DAY = 'SESSION_QUERY_LAST_DAY',
   LAST_WEEK = 'SESSION_QUERY_LAST_WEEK',
@@ -122,4 +151,14 @@ export const toTimestamp = (date: Date): number => {
   }
   var datum = new Date(date.toUTCString());
   return Math.round(datum.getTime() / 1000);
+};
+
+export const convertTimePeriodToQueryDays = (value: string): string => {
+  if (!value) return null;
+  const _v: string = value.toUpperCase();
+  if (_v.includes('LAST_HOUR')) return '-1h';
+  if (_v.includes('LAST_DAY')) return '-24h';
+  if (_v.includes('LAST_WEEK')) return '-7d';
+  if (_v.includes('LAST_MONTH')) return '-30d';
+  return null;
 };

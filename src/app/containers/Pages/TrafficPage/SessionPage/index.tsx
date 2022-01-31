@@ -3,10 +3,10 @@ import { ActionPart, ActionRowStyles, ContentWrapper, PageContentWrapper, TableW
 import { useGet } from 'lib/api/http/useAxiosHook';
 import { IAllSessionsRes, ISession } from 'lib/api/ApiModels/Sessions/apiModel';
 import Table from './Table';
-import Dropdown from 'app/components/Inputs/Dropdown';
-import { SessionsTabTypes, SESSIONS_SELECT_VALUES } from 'lib/hooks/Sessions/model';
+// import Dropdown from 'app/components/Inputs/Dropdown';
+import { SessionsTabTypes } from 'lib/hooks/Sessions/model';
 import SessionsSwitch from './SessionsSwitch';
-import { ISelectedListItem } from 'lib/models/general';
+// import { ISelectedListItem } from 'lib/models/general';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
 import ElasticFilter from 'app/components/Inputs/ElasticFilter';
@@ -17,9 +17,9 @@ import { convertStringToNumber } from 'lib/helpers/general';
 import { useSessionsDataContext } from 'lib/hooks/Sessions/useSessionsDataContext';
 import IconButton from 'app/components/Buttons/IconButton';
 import { refreshIcon } from 'app/components/SVGIcons/refresh';
-import { sessionsParamBuilder, SESSIONS_TIME_RANGE_QUERY_TYPES } from 'lib/api/ApiModels/paramBuilders';
+import { ElasticFilterSuffics, IElasticField, IElasticFilterModel, sessionsParamBuilder, SESSIONS_TIME_RANGE_QUERY_TYPES } from 'lib/api/ApiModels/paramBuilders';
 import { TesseractApi } from 'lib/api/ApiModels/Services/tesseract';
-import { ElasticFilterSuffics, IElasticField, IElasticFilterModel } from 'lib/models/elastic';
+import MatSelect from 'app/components/Inputs/MatSelect';
 
 interface IProps {}
 
@@ -115,7 +115,7 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
     sessions.onChangeCurrentPage(_page);
   };
 
-  const onChangePeriod = (_value: ISelectedListItem<SESSIONS_TIME_RANGE_QUERY_TYPES>) => {
+  const onChangePeriod = (_value: SESSIONS_TIME_RANGE_QUERY_TYPES) => {
     sessions.onChangeSelectedPeriod(_value, SessionsTabTypes.Sessions);
   };
 
@@ -196,72 +196,97 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
     return Array.from(_arr) as string[];
   };
 
+  // export const SESSIONS_SELECT_VALUES: ISelectedListItem<SESSIONS_TIME_RANGE_QUERY_TYPES>[] = [
+  //   { id: SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_HOUR, value: SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_HOUR, label: '', data: '-1h' },
+  //   { id: SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_DAY, value: SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_DAY, label: '', data: '-24h' },
+  //   { id: SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_WEEK, value: SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_WEEK, label: '', data: '-7d' },
+  //   { id: SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_MONTH, value: SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_MONTH, label: '', data: '-30d' },
+  // ];
   return (
-    <PageContentWrapper margin="20px 0 0 0" style={{ minHeight: 'calc(100% - 20px)' }}>
-      <ActionRowStyles margin="0 0 40px 0" zIndex={2}>
+    <>
+      <ActionRowStyles margin="0 0 30px 0">
         <ActionPart margin="0 auto 0 0">
           <SessionsSwitch checked={sessions.sessionsStitch} onChange={onSwitchChange} />
         </ActionPart>
         <ActionPart margin="0 0 0 auto">
-          <Dropdown
-            wrapStyles={{ height: '50px', border: '1px solid var(--_primaryButtonBorder)', borderRadius: '6px' }}
+          <MatSelect
+            id="logsTimePeriod"
             label="Show"
-            selectedValue={sessions.sessionsPeriod}
-            values={SESSIONS_SELECT_VALUES}
-            onSelectValue={onChangePeriod}
+            labelStyles={{ margin: 'auto 10px auto 0' }}
+            value={sessions.sessionsPeriod}
+            options={[SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_HOUR, SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_DAY, SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_WEEK, SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_MONTH]}
+            onChange={onChangePeriod}
+            renderValue={(v: SESSIONS_TIME_RANGE_QUERY_TYPES) => {
+              if (v === SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_HOUR) return 'Last hour';
+              if (v === SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_DAY) return 'Last day';
+              if (v === SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_WEEK) return 'Last week';
+              if (v === SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_MONTH) return 'Last month';
+              return v;
+            }}
+            renderOption={(v: SESSIONS_TIME_RANGE_QUERY_TYPES) => {
+              if (v === SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_HOUR) return 'Last hour';
+              if (v === SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_DAY) return 'Last day';
+              if (v === SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_WEEK) return 'Last week';
+              if (v === SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_MONTH) return 'Last month';
+              return v;
+            }}
+            styles={{ height: '50px', minHeight: '50px', width: 'auto', display: 'inline-flex', alignItems: 'center' }}
+            selectStyles={{ height: '50px', width: 'auto', minWidth: '240px' }}
           />
-          <IconButton styles={{ margin: '0 0 0 20px' }} icon={refreshIcon} title="Reload" onClick={onRefresh} />
+          <IconButton styles={{ margin: '0 0 0 20px', flexShrink: 0 }} icon={refreshIcon} title="Reload" onClick={onRefresh} />
         </ActionPart>
       </ActionRowStyles>
-      <ElasticFilter
-        placeholder="Search Filter"
-        applayedFilterItems={sessions.sessionsFilter}
-        fields={SessionElasticFieldItems}
-        onRemoveFilteredItem={onClearFilteredItem}
-        onUpdateFilter={onUpdateFilter}
-        onAddFilter={onAddFilter}
-        onClearAllFilter={onClearFilter}
-        onChangeOperator={onChangeOperator}
-        url={!sessions.sessionsStitch ? TesseractApi.getAllSessions() : TesseractApi.getAggregatedSessions()}
-        timePeriod={sessions.sessionsPeriod}
-        stitch={sessions.sessionsStitch}
-        onLoadDataEnd={onLoadDataEnd}
-        onMapRes={onGetPossibleValues}
-        onRefresh={onRefresh}
-        paramBuilder={sessionsParamBuilder}
-      />
-      <ContentWrapper style={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
-        <TableWrapper style={{ minHeight: 'unset', height: '100%', flexGrow: 1 }}>
-          {!sessions.sessionsStitch && (
-            <Table
-              currentPage={sessions.sessionsCurrentPage}
-              onChangeCurrentPage={onChangeCurrentPage}
-              logCount={totalCount}
-              error={error && error.message ? error.message : null}
-              data={sessionsData}
-              pageSize={sessions.sessionsPageSize}
-              onChangePageSize={onChangePageSize}
-            />
-          )}
-          {sessions.sessionsStitch && (
-            <AggregateTable
-              currentPage={sessions.sessionsCurrentPage}
-              onChangeCurrentPage={onChangeCurrentPage}
-              error={errorAggreg && errorAggreg.message ? errorAggreg.message : null}
-              data={aggregatedData && aggregatedData.buckets ? aggregatedData.buckets : []}
-              logCount={aggregCount}
-              pageSize={sessions.sessionsPageSize}
-              onChangePageSize={onChangePageSize}
-            />
-          )}
-          {(loading || loadingAggreg) && (
-            <AbsLoaderWrapper width="100%" height="calc(100% - 50px)" top="50px" zIndex={1}>
-              <LoadingIndicator margin="auto" />
-            </AbsLoaderWrapper>
-          )}
-        </TableWrapper>
-      </ContentWrapper>
-    </PageContentWrapper>
+      <PageContentWrapper>
+        <ElasticFilter
+          placeholder="Search Filter"
+          applayedFilterItems={sessions.sessionsFilter}
+          fields={SessionElasticFieldItems}
+          onRemoveFilteredItem={onClearFilteredItem}
+          onUpdateFilter={onUpdateFilter}
+          onAddFilter={onAddFilter}
+          onClearAllFilter={onClearFilter}
+          onChangeOperator={onChangeOperator}
+          url={!sessions.sessionsStitch ? TesseractApi.getAllSessions() : TesseractApi.getAggregatedSessions()}
+          timePeriod={sessions.sessionsPeriod}
+          stitch={sessions.sessionsStitch}
+          onLoadDataEnd={onLoadDataEnd}
+          onMapRes={onGetPossibleValues}
+          onRefresh={onRefresh}
+          paramBuilder={sessionsParamBuilder}
+        />
+        <ContentWrapper style={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+          <TableWrapper style={{ minHeight: 'unset', height: '100%', flexGrow: 1 }}>
+            {!sessions.sessionsStitch && (
+              <Table
+                currentPage={sessions.sessionsCurrentPage}
+                onChangeCurrentPage={onChangeCurrentPage}
+                logCount={totalCount}
+                error={error && error.message ? error.message : null}
+                data={sessionsData}
+                pageSize={sessions.sessionsPageSize}
+                onChangePageSize={onChangePageSize}
+              />
+            )}
+            {sessions.sessionsStitch && (
+              <AggregateTable
+                currentPage={sessions.sessionsCurrentPage}
+                onChangeCurrentPage={onChangeCurrentPage}
+                error={errorAggreg && errorAggreg.message ? errorAggreg.message : null}
+                data={aggregatedData && aggregatedData.buckets ? aggregatedData.buckets : []}
+                logCount={aggregCount}
+                pageSize={sessions.sessionsPageSize}
+                onChangePageSize={onChangePageSize}
+              />
+            )}
+            {(loading || loadingAggreg) && (
+              <AbsLoaderWrapper width="100%" height="calc(100% - 50px)" top="50px" zIndex={1}>
+                <LoadingIndicator margin="auto" />
+              </AbsLoaderWrapper>
+            )}
+          </TableWrapper>
+        </ContentWrapper>
+      </PageContentWrapper>
+    </>
   );
 };
 

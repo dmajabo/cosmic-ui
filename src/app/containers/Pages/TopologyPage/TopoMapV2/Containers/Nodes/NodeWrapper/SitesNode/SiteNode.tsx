@@ -14,7 +14,7 @@ const SiteNode: React.FC<Props> = (props: Props) => {
 
   if (!props.dataItem.visible || props.dataItem.collapsed || !topology.entities.sites.selected) return null;
   return (
-    <g id={`${NODES_CONSTANTS.SITES.type}${props.dataItem.uiId}childrensLayer`} className="topologyNode" transform="none" data-type={NODES_CONSTANTS.SITES.type}>
+    <g id={`${NODES_CONSTANTS.SITES.type}${props.dataItem.uiId}childrensLayer`} className="topologyNode" data-type={NODES_CONSTANTS.SITES.type}>
       {props.dataItem.children && props.dataItem.children.length && props.dataItem.children[props.dataItem.currentPage] ? (
         <>
           {props.dataItem.children[props.dataItem.currentPage].map(it => (

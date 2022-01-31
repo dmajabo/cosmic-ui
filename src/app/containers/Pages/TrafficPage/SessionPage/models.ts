@@ -1,5 +1,5 @@
-import { IElasticField } from 'lib/models/elastic';
 import { ISelectedListItem } from 'lib/models/general';
+import { IElasticField } from 'lib/api/ApiModels/paramBuilders';
 
 export enum IQuryFieldtype {
   STRING = 'string',

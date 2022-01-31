@@ -52,11 +52,11 @@ export const createAccounts = (accounts: IObject<ITopoAccountNode>, _data: INetw
           accounts[`${region.name}${org.extId}`].totalChildrenCount = accounts[`${region.name}${org.extId}`].children.length;
           return;
         }
-        const _a: ITopoAccountNode = createAccountNode(`${region.name}${org.extId}`, _name, org.id);
+        const _a: ITopoAccountNode = createAccountNode(`${region.name}${org.extId}`, _name, org.extId);
         const _wNode: ITGWNode = createWedgeNode(`${region.name}${org.extId}`, org, orgI, 0, index, w);
         _a.children.push(_wNode);
         _a.totalChildrenCount = _a.children.length;
-        accounts[_a.dataItem.id] = _a;
+        accounts[_a.dataItem.extId] = _a;
       });
     });
   });
@@ -72,8 +72,8 @@ export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[]
   if (_segments && _segments.length) {
     _segments.forEach((s, i) => {
       const _segment: ITopoSitesNode = createSitesNode(s);
-      segmentTempObject[s.id] = { id: s.id, dataItem: s, children: [] };
-      sites[s.id] = _segment;
+      segmentTempObject[_segment.dataItem.extId] = { id: s.id, extId: s.id, dataItem: s, children: [] };
+      sites[_segment.dataItem.extId] = _segment;
     });
   }
 
@@ -84,21 +84,21 @@ export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[]
       org.regions.forEach((region, i) => {
         let _objR: ITopoRegionNode = null;
         if (org.vendorType !== VendorTypes.MERAKI) {
-          _objR = createTopoRegionNode(region, org.id);
+          _objR = createTopoRegionNode(region, org.extId);
         }
         const max = getRegionChildrenCounts(region.vnets, region.vNetworkPeeringConnections, region.webAcls);
         if (region.vnets && region.vnets.length && org.vendorType !== 'MERAKI') {
           _objR.totalChildrenCount = region.vnets.length;
           const _arr: INetworkVNetNode[][] = getChunksFromArray(region.vnets, Math.min(VPCS_IN_ROW, max));
-          _objR.children = _arr.map((row, ri) => row.map((v, i) => createVnetNode(_objR.dataItem.id, org, row.length, orgI, ri, i, v, sites[v.segmentId])));
+          _objR.children = _arr.map((row, ri) => row.map((v, i) => createVnetNode(_objR.dataItem.extId, org, row.length, orgI, ri, i, v, sites[v.segmentId])));
         }
         if (region.vNetworkPeeringConnections && region.vNetworkPeeringConnections.length) {
           const _arr: INetworkVNetworkPeeringConnectionNode[][] = getChunksFromArray(region.vNetworkPeeringConnections, Math.min(PEER_CONNECTION_IN_ROW, max));
-          _objR.peerConnections = _arr.map((row, ri) => row.map((v, i) => createPeerConnectionNode(_objR.dataItem.id, org, row.length, orgI, ri, i, v)));
+          _objR.peerConnections = _arr.map((row, ri) => row.map((v, i) => createPeerConnectionNode(_objR.dataItem.extId, org, row.length, orgI, ri, i, v)));
         }
         if (region.webAcls && region.webAcls.length) {
           const _arr: INetworkWebAclNode[][] = getChunksFromArray(region.webAcls, Math.min(WEB_ACL_IN_ROW, max));
-          _objR.webAcls = _arr.map((row, ri) => row.map((v, i) => createWebAclNode(_objR.dataItem.id, org, row.length, orgI, ri, i, v)));
+          _objR.webAcls = _arr.map((row, ri) => row.map((v, i) => createWebAclNode(_objR.dataItem.extId, org, row.length, orgI, ri, i, v)));
         }
         if (region.devices && region.devices.length) {
           // // for test
@@ -130,7 +130,7 @@ export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[]
           });
         }
         if (_objR) {
-          regions[_objR.dataItem.id] = _objR;
+          regions[_objR.dataItem.extId] = _objR;
         }
       });
     });
@@ -139,6 +139,7 @@ export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[]
   if (devicesInDefaultSegment && devicesInDefaultSegment.length) {
     const _defGroup: ITopoSitesNode = createSitesNode({
       id: DEFAULT_GROUP_ID,
+      extId: DEFAULT_GROUP_ID,
       name: 'Default',
       description: '',
       segType: null,
@@ -163,15 +164,15 @@ export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[]
     Object.keys(segmentTempObject).forEach(key => {
       const _s = segmentTempObject[key];
       if (!_s.children || !_s.children.length) {
-        delete sites[_s.dataItem.id];
+        delete sites[_s.extId];
         return;
       }
-      sites[_s.dataItem.id].totalChildrenCount = _s.children.length;
+      sites[_s.extId].totalChildrenCount = _s.children.length;
       const _arr = getChunksFromArray(_s.children, DEV_IN_PAGE);
       const max = _arr && _arr.length ? getBeautifulRowsCount(_arr[0].length, DEV_IN_ROW) : 0;
-      sites[_s.dataItem.id].children = _arr.map((page, pageI) => {
+      sites[_s.extId].children = _arr.map((page, pageI) => {
         const _pageRow = getChunksFromArray(page, max);
-        return _pageRow.map((row, rowI) => row.map((v, i) => updateDeviceNode(_s.dataItem.id, v, pageI, rowI, row.length, i))).flat();
+        return _pageRow.map((row, rowI) => row.map((v, i) => updateDeviceNode(_s.extId, v, pageI, rowI, row.length, i))).flat();
       });
     });
   }

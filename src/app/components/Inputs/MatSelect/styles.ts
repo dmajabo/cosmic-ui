@@ -78,9 +78,6 @@ export const TextInputWrapper = styled.div`
     font-weight: 500 !important;
     line-height: 20px;
     background: var(--_primaryBg) !important;
-    &:focus {
-      background: transparent !important;
-    }
     &.Mui-disabled {
       opacity: 0.5;
       cursor: not-allowed;

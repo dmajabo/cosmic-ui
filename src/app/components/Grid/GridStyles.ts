@@ -17,6 +17,7 @@ export const GridStyles = makeStyles(
         },
         '& .MuiDataGrid-main': {
           fontFamily: 'DMSans',
+          border: '1px solid var(--_rowBorder)',
           borderRadius: '6px 6px 0px 0px',
         },
         '& .MuiDataGrid-columnHeaderTitle': {
@@ -31,6 +32,7 @@ export const GridStyles = makeStyles(
           height: '100%',
         },
         '& .MuiDataGrid-columnHeaders': {
+          backgroundColor: 'var(--_rowBorder)',
           borderBottom: '1px solid var(--_rowBorder)',
           '& .MuiDataGrid-columnHeadersInner': {
             height: '100%',
@@ -65,6 +67,9 @@ export const GridStyles = makeStyles(
           '&:hover': {
             background: 'transparent !important',
           },
+          '&.Mui-selected': {
+            background: 'transparent !important',
+          },
         },
         '& .MuiDataGrid-cell': {
           outline: 'none !important',
@@ -90,7 +95,10 @@ export const GridStyles = makeStyles(
           border: 'none',
         },
         '& .MuiDataGrid-main': {
-          paddingBottom: '20px',
+          // paddingBottom: '20px',
+          '& .MuiDataGrid-virtualScroller': {
+            paddingBottom: '20px',
+          },
         },
         '&.MuiDataGrid-root .MuiDataGrid-overlay': {
           background: 'transparent',

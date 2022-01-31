@@ -14,7 +14,7 @@ const AccountNode: React.FC<Props> = (props: Props) => {
 
   if (!props.dataItem.visible || props.dataItem.collapsed || !topology.entities.transit.selected) return null;
   return (
-    <g id={`${NODES_CONSTANTS.ACCOUNT.type}${props.dataItem.uiId}childrensLayer`} className="topologyNode" transform="none" data-type={NODES_CONSTANTS.ACCOUNT.type}>
+    <g id={`${NODES_CONSTANTS.ACCOUNT.type}${props.dataItem.uiId}childrensLayer`} className="topologyNode" data-type={NODES_CONSTANTS.ACCOUNT.type}>
       {props.dataItem.children && props.dataItem.children.length ? props.dataItem.children.map(it => <NetworkWEdgeNode key={`${it.uiId}wedge`} item={it} />) : null}
     </g>
   );

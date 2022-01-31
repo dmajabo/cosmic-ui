@@ -19,10 +19,11 @@ import { IObject } from 'lib/models/general';
 import { centeredRegionNodes, setRegionSizes } from './coordinateHelper';
 import _ from 'lodash';
 
-export const createAccountNode = (_id: string, _name: string, _orgId: string): ITopoAccountNode => {
+export const createAccountNode = (extId: string, _name: string, _orgId: string): ITopoAccountNode => {
   const _obj: ITopoAccountNode = {
     dataItem: {
-      id: _id,
+      id: extId,
+      extId: extId,
       name: _name,
     },
     uiId: uuid(),
@@ -42,7 +43,7 @@ export const createAccountNode = (_id: string, _name: string, _orgId: string): I
 
 export const createSitesNode = (item: ISegmentSegmentP): ITopoSitesNode => {
   const _obj: ITopoSitesNode = {
-    dataItem: item,
+    dataItem: { ...item, extId: item.id },
     uiId: uuid(),
     type: TopoNodeTypes.SITES,
     totalChildrenCount: 0,

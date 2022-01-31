@@ -2,7 +2,7 @@ import React from 'react';
 import { TagBg, TagItem, TagItemLabel, TextWrapper } from './styles';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { closeSmallIcon } from 'app/components/SVGIcons/close';
-import { IElasticFilterModel } from 'lib/models/elastic';
+import { IElasticFilterModel } from 'lib/api/ApiModels/paramBuilders';
 
 interface Props {
   item: IElasticFilterModel;

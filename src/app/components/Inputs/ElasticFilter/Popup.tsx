@@ -2,7 +2,7 @@ import React from 'react';
 import { ListItemsWrapper, ItemsContainer } from './styles';
 import LoadingIndicator from 'app/components/Loading';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
-import { IElasticField } from 'lib/models/elastic';
+import { IElasticField } from 'lib/api/ApiModels/paramBuilders';
 import { KEYBOARD_KEYS } from 'lib/constants/general';
 import PopupItem from './PopupItem';
 interface Props {
