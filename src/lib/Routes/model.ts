@@ -9,6 +9,7 @@ import { policyIcon } from 'app/components/SVGIcons/pagesIcons/policyIcon';
 // import { edgesIcon } from 'app/components/SVGIcons/pagesIcons/edgesIcon';
 import { metricsIcon } from 'app/components/SVGIcons/pagesIcons/metrics';
 import { trafficIcon } from 'app/components/SVGIcons/pagesIcons/trafficIcon';
+import { troubleshootingIcon } from 'app/components/SVGIcons/pagesIcons/troubleshooting';
 export const ROUTE = {
   base: '/',
   login: '/login',
@@ -18,8 +19,8 @@ export const ROUTE = {
   traffic: '/traffic',
   transit: '/transit',
   dashboard: '/dashboard',
-  performanceDashboard: '/performanceDashboard',
   analytics: '/analytics',
+  troubleshooting: '/troubleshooting',
   settings: '/settings',
   workflow: '/workflow',
   signUp: '/sign-up',
@@ -51,7 +52,8 @@ export const APP_PAGES: IPage[] = [
   // { id: 'performanceDashboard', path: ROUTE.performanceDashboard, pageName: 'Performance Dashboard', icon: performanceDashboard, breadcrumb: null },
   // { id: 'sessions', path: ROUTE.sessions, pageName: 'Sessions', icon: sessionsIcon, breadcrumb: null },
   { id: 'metrics', path: ROUTE.metrics, pageName: 'Metrics', icon: metricsIcon, breadcrumb: null },
-  { id: 'analytics', path: ROUTE.analytics, pageName: 'Analytics', icon: analyticsIcon, breadcrumb: null },
-  { id: 'workflow', path: ROUTE.workflow, pageName: 'Workflow', icon: automationIcon, breadcrumb: BreadCrumbTypes.WORK_FLOW },
+  // { id: 'analytics', path: ROUTE.analytics, pageName: 'Analytics', icon: analyticsIcon, breadcrumb: null },
+  { id: 'troubleshooting', path: ROUTE.troubleshooting, pageName: 'Troubleshooting', icon: troubleshootingIcon, breadcrumb: null },
+  { id: 'workflow', path: ROUTE.workflow, pageName: 'Automation', icon: automationIcon, breadcrumb: BreadCrumbTypes.WORK_FLOW },
   { id: 'settings', path: ROUTE.settings, pageName: 'Settings', icon: settingsIcon, breadcrumb: null },
 ];

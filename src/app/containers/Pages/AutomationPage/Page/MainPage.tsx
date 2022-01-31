@@ -45,21 +45,21 @@ const MainPage: React.FC<IProps> = (props: IProps) => {
         value={automation.selectedTab.index}
         index={AUTOMATIONS_TABS[0].index}
       >
-        <Accounts />
+        <Triggers />
       </TabPanel>
       <TabPanel
         styles={{ display: 'flex', flexDirection: 'column', flex: automation.selectedTab.index === AUTOMATIONS_TABS[1].index ? '1 1 100%' : '0' }}
         value={automation.selectedTab.index}
         index={AUTOMATIONS_TABS[1].index}
       >
-        <Triggers />
+        <Configutation />
       </TabPanel>
       <TabPanel
         styles={{ display: 'flex', flexDirection: 'column', flex: automation.selectedTab.index === AUTOMATIONS_TABS[2].index ? '1 1 100%' : '0' }}
         value={automation.selectedTab.index}
         index={AUTOMATIONS_TABS[2].index}
       >
-        <Configutation />
+        <Accounts />
       </TabPanel>
     </PageWrapperStyles>
   );

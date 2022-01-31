@@ -3,9 +3,7 @@ import { SessionsProvider, useSessionsActions } from 'lib/hooks/Sessions/useSess
 import MainPage from './MainPage';
 import { TrafficProvider, useTrafficActions } from 'lib/hooks/Traffic/useTrafficDataCont';
 
-interface Props {}
-
-const TrafficPage: React.FC<Props> = (props: Props) => {
+const TrafficPage: React.FC = () => {
   const trafficActions = useTrafficActions();
   const sessionsActions = useSessionsActions();
 
@@ -18,4 +16,4 @@ const TrafficPage: React.FC<Props> = (props: Props) => {
   );
 };
 
-export default React.memo(TrafficPage);
+export default TrafficPage;
