@@ -6,6 +6,7 @@ import { PerformanceDashboardStyles } from './PerformanceDashboardStyles';
 import { Column } from 'lib/api/http/SharedTypes';
 import IndeterminateCheckbox from './IndeterminateCheckbox';
 import SortIcon from '../../icons/performance dashboard/sort';
+import { isEmpty } from 'lodash';
 
 export interface Data {
   readonly id: string;
@@ -124,20 +125,26 @@ const Table: React.FC<TableProps> = ({ onSelectedRowsUpdate, columns, data }) =>
           ))}
         </thead>
         <tbody {...getTableBodyProps()}>
-          {page.map((row, i) => {
-            prepareRow(row);
-            return (
-              <tr {...row.getRowProps()}>
-                {row.cells.map(cell => {
-                  return (
-                    <td {...cell.getCellProps()}>
-                      <div className={classes.tableRowText}>{cell.render('Cell')}</div>
-                    </td>
-                  );
-                })}
-              </tr>
-            );
-          })}
+          {isEmpty(data) ? (
+            <tr>
+              <td colSpan={columns.length}>No Data</td>
+            </tr>
+          ) : (
+            page.map((row, i) => {
+              prepareRow(row);
+              return (
+                <tr {...row.getRowProps()}>
+                  {row.cells.map(cell => {
+                    return (
+                      <td {...cell.getCellProps()}>
+                        <div className={classes.tableRowText}>{cell.render('Cell')}</div>
+                      </td>
+                    );
+                  })}
+                </tr>
+              );
+            })
+          )}
         </tbody>
       </table>
       <div className="pagination">

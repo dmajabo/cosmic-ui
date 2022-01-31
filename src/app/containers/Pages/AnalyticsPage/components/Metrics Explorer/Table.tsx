@@ -1,4 +1,5 @@
 import { Column } from 'lib/api/http/SharedTypes';
+import { isEmpty } from 'lodash';
 import React from 'react';
 import { useTable, useSortBy } from 'react-table';
 import styled from 'styled-components';
@@ -59,16 +60,22 @@ export const Table: React.FC<TableProps> = ({ columns, data }) => {
           ))}
         </thead>
         <tbody {...getTableBodyProps()}>
-          {rows.map((row, i) => {
-            prepareRow(row);
-            return (
-              <tr {...row.getRowProps()}>
-                {row.cells.map(cell => {
-                  return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>;
-                })}
-              </tr>
-            );
-          })}
+          {isEmpty(data) ? (
+            <tr>
+              <td colSpan={columns.length}>No Data</td>
+            </tr>
+          ) : (
+            rows.map((row, i) => {
+              prepareRow(row);
+              return (
+                <tr {...row.getRowProps()}>
+                  {row.cells.map(cell => {
+                    return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>;
+                  })}
+                </tr>
+              );
+            })
+          )}
         </tbody>
       </table>
     </Styles>

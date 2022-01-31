@@ -73,7 +73,6 @@ export const PolicyTab: React.FC<PolicyTabProps> = () => {
 
   const policySubComponent = React.useCallback((row: Row<object>) => {
     const logsTableData: AnomalyPolicyLogsTableData[] = DUMMY_LOGS_TABLE_DATA.map(item => ({
-      hits: <div className={classes.hitsCount}>{item.hits}</div>,
       time: item.time,
       edge: (
         <div>

@@ -395,7 +395,6 @@ export interface AnomalySessionLogsData {
 }
 
 export interface AnomalyPolicyLogsTableData {
-  readonly hits: number | JSX.Element;
   readonly time: string | number;
   readonly edge: string | JSX.Element;
   readonly user: string | JSX.Element;

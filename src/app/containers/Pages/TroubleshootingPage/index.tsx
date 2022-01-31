@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Tab, Tabs } from '@mui/material';
 import { TroubleshootingStyles } from './TroubleshootingStyles';
+import { PolicyLogs } from './PolicyLogs';
 
 interface TabPanelProps {
   readonly title: string;
@@ -31,7 +32,7 @@ enum TabName {
 
 const TroubleshootingPage: React.FC = () => {
   const classes = TroubleshootingStyles();
-  const [selectedTabName, setSelectedTabName] = useState<TabName>(TabName.Connectivity);
+  const [selectedTabName, setSelectedTabName] = useState<TabName>(TabName.configChanges);
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: TabName) => setSelectedTabName(newValue);
 
@@ -59,7 +60,7 @@ const TroubleshootingPage: React.FC = () => {
         {selectedTabName === TabName.Connectivity && <>{TabName.Connectivity}</>}
       </TabPanel>
       <TabPanel value={selectedTabName} title={TabName.configChanges}>
-        {selectedTabName === TabName.configChanges && <>{TabName.configChanges}</>}
+        {selectedTabName === TabName.configChanges && <PolicyLogs />}
       </TabPanel>
     </div>
   );
