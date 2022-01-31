@@ -4,6 +4,7 @@ import { useTable, useSortBy, useAbsoluteLayout } from 'react-table';
 import { AnomalySessionLogsData, Column } from 'lib/api/http/SharedTypes';
 import { AnalyticsStyles } from '../../AnalyticsStyles';
 import SortIcon from '../../../MetricsPage/icons/performance dashboard/sort';
+import { isEmpty } from 'lodash';
 
 const Styles = styled.div`
   overflow-x: auto;
@@ -64,16 +65,22 @@ export const AnomalyBlockTable: React.FC<AnomalyBlockTableProps> = ({ data, colu
           ))}
         </thead>
         <tbody {...getTableBodyProps()}>
-          {rows.map((row, i) => {
-            prepareRow(row);
-            return (
-              <tr {...row.getRowProps()}>
-                {row.cells.map(cell => {
-                  return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>;
-                })}
-              </tr>
-            );
-          })}
+          {isEmpty(data) ? (
+            <tr>
+              <td colSpan={columns.length}>No Data</td>
+            </tr>
+          ) : (
+            rows.map((row, i) => {
+              prepareRow(row);
+              return (
+                <tr {...row.getRowProps()}>
+                  {row.cells.map(cell => {
+                    return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>;
+                  })}
+                </tr>
+              );
+            })
+          )}
         </tbody>
       </table>
     </Styles>

@@ -32,6 +32,91 @@ export const TroubleshootingStyles = makeStyles(
         flexGrow: 1,
         minHeight: 'calc(100% - 68px)', // 68px equal to tab panel height
       },
+      hitsCount: {
+        color: 'white',
+        backgroundColor: '#2C82C9',
+        textAlign: 'center',
+        width: 50,
+        borderRadius: 20,
+      },
+      circularImage: {
+        width: 28,
+        height: 28,
+        borderRadius: '50%',
+      },
+      profileNameText: {
+        marginLeft: 10,
+      },
+      tabTitleContainer: {
+        display: 'flex',
+        justifyContent: 'space-between',
+      },
+      ellipsisText: {
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        maxWidth: 300,
+      },
+      policyLogsDetailsText: {
+        color: '#437FEC',
+        fontSize: 12,
+        fontWeight: 700,
+      },
+      policyLogsViewDetailsButton: {
+        cursor: 'pointer',
+      },
+      policyLogsArrowRight: {
+        color: '#437FEC',
+      },
+      policyLogsContainer: {
+        marginTop: 40,
+      },
+      policyLogsSearchBar: {
+        height: 50,
+        border: 'none',
+        padding: 15,
+        width: 500,
+      },
+      searchIcon: {
+        backgroundColor: 'white',
+        marginLeft: -30,
+        marginRight: 30,
+        pointerEvents: 'none',
+      },
+      otherButtonText: {
+        fontSize: 12,
+        fontWeight: 700,
+        paddingRight: 10,
+      },
+      popoverContainer: {
+        padding: '10px 0px 10px 25px',
+      },
+      popoverItem: {
+        border: '1px solid #e7edf9',
+        backgroundColor: '#fbfcfe',
+        paddingRight: 10,
+      },
+      popoverText: {
+        fontSize: 12,
+        fontWeight: 700,
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: 250,
+      },
+      anomalyTimeRangeText: {
+        fontSize: 14,
+        color: 'var(--_tabHeaderTextColor)',
+        paddingRight: 20,
+        paddingLeft: 10,
+      },
+      inlineSelect: {
+        display: 'inline-block',
+        width: 200,
+      },
+      policyLogsTableContainer: {
+        marginTop: 20,
+      },
     }),
   {
     index: 1,

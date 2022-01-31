@@ -109,7 +109,6 @@ export const DUMMY_SESSION_LOGS_DATA: AnomalySessionLogsData[] = [
 
 export const DUMMY_LOGS_TABLE_DATA: AnomalyPolicyLogsTableData[] = [
   {
-    hits: 17,
     time: 'Tue,Nov 14 2021,10:25pm',
     edge: 'Office 4',
     user: 'Jesse Roy',
@@ -135,7 +134,6 @@ export const DUMMY_ANOMALY_COST_TABLE_DATA: AnomalyCostTableData[] = [
 
 export const DUMMY_POLICY_LOGS_TABLE_DATA: AnomalyPolicyLogsTableData[] = [
   {
-    hits: 17,
     time: 'Tue,Nov 14 2021,10:25pm',
     edge: 'Office 4',
     user: 'Jesse Roy',
