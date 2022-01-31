@@ -134,7 +134,8 @@ export interface ITempSegment {
   id: string;
   extId: string;
   dataItem: ISegmentSegmentP;
-  children: IDeviceNode[];
+  type: TopoNodeTypes.DEVICE | TopoNodeTypes.VNET;
+  children: (IDeviceNode | INetworkVNetNode)[];
 }
 export interface ITempSegmentObjData {
   [key: string]: ITempSegment;

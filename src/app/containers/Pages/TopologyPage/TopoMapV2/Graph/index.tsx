@@ -14,7 +14,7 @@ import GContainer from '../Containers/GContainer/GContainer';
 import StructuresWrapper from '../Containers/Nodes/StructuresWrapper';
 import DefsComponent from '../Containers/Shared/DefsComponent';
 import { TopologyPanelTypes } from 'lib/hooks/Topology/models';
-// import SegmentsLegend from '../Containers/SegmentsLegend';
+import SegmentsLegend from '../Containers/SegmentsLegend';
 import AccountNodeTopContainer from '../Containers/Nodes/NodeWrapper/AccountNode/AccountNodeTopContainer';
 import RegionNodeTopContainer from '../Containers/Nodes/NodeWrapper/RegionNode/RegionNodeTopContainer';
 import AccountNode from '../Containers/Nodes/NodeWrapper/AccountNode/AccountNode';
@@ -105,7 +105,7 @@ const Graph: React.FC<Props> = (props: Props) => {
                 {topology.regions ? Object.keys(topology.regions).map(key => <RegionNode key={`regionChildrenLayer${topology.regions[key].uiId}`} dataItem={topology.regions[key]} />) : null}
               </GContainer>
             </StyledMap>
-            {/* {topology.originSegmentsData && topology.originSegmentsData.length ? <SegmentsLegend /> : null} */}
+            {topology.originSegmentsData && topology.originSegmentsData.length ? <SegmentsLegend /> : null}
           </ContainerWithLegend>
           {topology.regionStructures && topology.regionStructures.length ? <StructuresWrapper nodes={topology.regionStructures} /> : null}
           <ResizablePanel show={topology.topoPanel.show} onHidePanel={onHidePanel}>

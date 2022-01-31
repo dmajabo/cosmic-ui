@@ -12,6 +12,7 @@ import {
   INetworkWebAclNode,
   FilterEntityOptions,
   ITopoSitesNode,
+  ITempSegment,
 } from '../models';
 import uuid from 'react-uuid';
 import { ISegmentSegmentP } from 'lib/api/ApiModels/Policy/Segment';
@@ -105,11 +106,11 @@ export const createVnetNode = (
   rowIndex: number,
   childIndex: number,
   node: INetworkVNetwork,
-  site: ITopoSitesNode,
+  segment: ITempSegment,
 ): INetworkVNetNode => {
   const _x = childIndex * (NODES_CONSTANTS.NETWORK_VNET.collapse.width + NODES_CONSTANTS.NETWORK_VNET.collapse.spaceX);
   const _y = rowIndex * (NODES_CONSTANTS.NETWORK_VNET.collapse.height + NODES_CONSTANTS.NETWORK_VNET.collapse.spaceY);
-  const isPresentSegmentColor = !!site;
+  const isPresentSegmentColor = !!segment;
   return {
     ...node,
     parentId: parentId,
@@ -124,8 +125,8 @@ export const createVnetNode = (
     uiId: uuid(),
     vendorType: org.vendorType,
     nodeType: TopoNodeTypes.VNET,
-    segmentColor: isPresentSegmentColor ? site.dataItem.color : NODES_CONSTANTS.NETWORK_VNET.nodeBgColor,
-    segmentName: isPresentSegmentColor ? site.dataItem.name : null,
+    segmentColor: isPresentSegmentColor ? segment.dataItem.color : NODES_CONSTANTS.NETWORK_VNET.nodeBgColor,
+    segmentName: isPresentSegmentColor ? segment.dataItem.name : null,
     nodeIconColor: isPresentSegmentColor ? 'var(--_primaryWhiteColor)' : 'var(--_vnetIconBg)',
   };
 };
