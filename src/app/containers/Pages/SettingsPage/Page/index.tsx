@@ -54,13 +54,13 @@ const Page: React.FC<IProps> = (props: IProps) => {
       >
         <Logging />
       </TabPanel>
-      <TabPanel
+      {/* <TabPanel
         styles={{ display: 'flex', flexDirection: 'column', flex: settings.selectedTab.index === SETTINGS_TABS[1].index ? '1 1 100%' : '0' }}
         value={settings.selectedTab.index}
         index={SETTINGS_TABS[1].index}
       >
         <Inventory />
-      </TabPanel>
+      </TabPanel> */}
     </PageWrapperStyles>
   );
 };

@@ -15,4 +15,6 @@ export const TopoApi = {
   getWedges: () => 'topo/api/v1/topology/wedges', // => IWEdgesRes
   getVnetworks: () => 'topo/api/v1/topology/inventory/cloud/vnetworks', // => IVnetworksRes
   getTags: () => 'topo/api/v1/topology/tags', // => INetworkTagsRes
+
+  getPolicyLogs: () => 'topo/api/v1/topology/policy-logs',
 };

@@ -5,6 +5,7 @@ import { AnomalyPolicyLogsTableData, AnomalySlaTestData, Column, CostDetailTable
 import { AnalyticsStyles } from '../../AnalyticsStyles';
 import SortIcon from '../../../MetricsPage/icons/performance dashboard/sort';
 import { Typography } from '@mui/material';
+import { isEmpty } from 'lodash';
 
 const Styles = styled.div`
   table {
@@ -18,15 +19,18 @@ const Styles = styled.div`
       background-color: #f7f8fb;
       padding: 20px;
       border-radius: 6px 6px 0px 0px;
-      text-align: center;
+      text-align: left;
     }
     td {
       padding: 20px;
-      text-align: center;
+      text-align: left;
     }
   }
   .pagination {
     padding-top: 0.5rem;
+  }
+  .noData {
+    text-align: center;
   }
 `;
 
@@ -94,16 +98,24 @@ export const AnomalySLATestTable: React.FC<AnomalySLATestTableProps> = ({ data, 
           ))}
         </thead>
         <tbody {...getTableBodyProps()}>
-          {page.map((row, i) => {
-            prepareRow(row);
-            return (
-              <tr {...row.getRowProps()}>
-                {row.cells.map(cell => {
-                  return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>;
-                })}
-              </tr>
-            );
-          })}
+          {isEmpty(data) ? (
+            <tr>
+              <td colSpan={columns.length} className="noData">
+                No Data
+              </td>
+            </tr>
+          ) : (
+            page.map((row, i) => {
+              prepareRow(row);
+              return (
+                <tr {...row.getRowProps()}>
+                  {row.cells.map(cell => {
+                    return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>;
+                  })}
+                </tr>
+              );
+            })
+          )}
         </tbody>
       </table>
       <div className="pagination">

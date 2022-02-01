@@ -3,7 +3,7 @@ import { Tab, Tabs } from '@mui/material';
 import { AnalyticsStyles } from './AnalyticsStyles';
 import { Anomalies } from './components/Anomalies/Anomalies';
 // import { MetricsExplorer } from './components/Metrics Explorer/MetricsExplorer';
-import { PolicyLogs } from './components/PolicyLogs/PolicyLogs';
+import { PolicyLogs } from '../TroubleshootingPage/PolicyLogs';
 
 interface TabPanelProps {
   readonly title: string;

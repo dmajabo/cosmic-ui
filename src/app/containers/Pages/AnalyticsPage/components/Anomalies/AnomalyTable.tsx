@@ -6,6 +6,7 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import { AnalyticsStyles } from '../../AnalyticsStyles';
 import SortIcon from '../../../MetricsPage/icons/performance dashboard/sort';
+import { isEmpty } from 'lodash';
 
 const Styles = styled.div`
   table {
@@ -104,30 +105,36 @@ export const AnomalyTable: React.FC<AnomalyTableProps> = ({ inputColumns, data, 
           ))}
         </thead>
         <tbody {...getTableBodyProps()}>
-          {rows.map((row, i) => {
-            prepareRow(row);
-            const { role, ...newRowProps } = row.getRowProps();
-            return (
-              <React.Fragment {...newRowProps}>
-                <tr className={row.isExpanded ? 'expandedRow' : 'notexpandedRow'}>
-                  {row.cells.map(cell => {
-                    return (
-                      <td className={row.isExpanded ? 'isexpanded' : 'notexpanded'} {...cell.getCellProps()}>
-                        {cell.render('Cell')}
-                      </td>
-                    );
-                  })}
-                </tr>
-                {row.isExpanded ? (
+          {isEmpty(data) ? (
+            <tr>
+              <td colSpan={columns.length}>No Data</td>
+            </tr>
+          ) : (
+            rows.map((row, i) => {
+              prepareRow(row);
+              const { role, ...newRowProps } = row.getRowProps();
+              return (
+                <React.Fragment {...newRowProps}>
                   <tr className={row.isExpanded ? 'expandedRow' : 'notexpandedRow'}>
-                    <td className="isexpanded" colSpan={visibleColumns.length}>
-                      {subComponent(row)}
-                    </td>
+                    {row.cells.map(cell => {
+                      return (
+                        <td className={row.isExpanded ? 'isexpanded' : 'notexpanded'} {...cell.getCellProps()}>
+                          {cell.render('Cell')}
+                        </td>
+                      );
+                    })}
                   </tr>
-                ) : null}
-              </React.Fragment>
-            );
-          })}
+                  {row.isExpanded ? (
+                    <tr className={row.isExpanded ? 'expandedRow' : 'notexpandedRow'}>
+                      <td className="isexpanded" colSpan={visibleColumns.length}>
+                        {subComponent(row)}
+                      </td>
+                    </tr>
+                  ) : null}
+                </React.Fragment>
+              );
+            })
+          )}
         </tbody>
       </table>
     </Styles>
