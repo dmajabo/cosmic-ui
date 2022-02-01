@@ -126,7 +126,7 @@ export const TroubleshootingStyles = makeStyles(
       },
       gridContainer: {
         display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
+        gridTemplateColumns: '50% 50%',
       },
       gridItem: {
         border: '1px solid #CBD2DC',
@@ -167,6 +167,10 @@ export const TroubleshootingStyles = makeStyles(
       propertyValue: {
         color: '#7a808c',
         marginLeft: 5,
+      },
+      tablePropertyTitle: {
+        fontWeight: 700,
+        marginBottom: 15,
       },
     }),
   {
