@@ -113,3 +113,15 @@ export const GridButton = styled.button<PropsCellButton>`
     cursor: default;
   }
 `;
+
+export const CellCheckMarkValue = styled.span`
+  display: inline-block;
+  margin: auto;
+  width: 32px;
+  height: 32px;
+  svg {
+    width: 100%;
+    height: 100%;
+    vertical-align: top;
+  }
+`;

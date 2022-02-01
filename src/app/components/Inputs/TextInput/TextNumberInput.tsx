@@ -1,5 +1,4 @@
 import React from 'react';
-import { DEBOUNCE_TIME } from 'lib/constants/general';
 import useDebounce from 'lib/hooks/useDebounce';
 import { Input, InputWrapper, TextInputWrapper } from './styles';
 import { InputLabel } from '../styles/Label';
@@ -30,12 +29,12 @@ interface IProps {
 const TextNumberInput: React.FC<IProps> = (props: IProps) => {
   const [textValue, setTextValue] = React.useState<string | number>(props.value || '');
   const [isTyping, setIsTyping] = React.useState(false);
-  const debouncedSearchTerm = useDebounce(textValue, DEBOUNCE_TIME);
+  const debouncedSearchTerm = useDebounce(textValue, 500);
   React.useEffect(() => {
     if ((debouncedSearchTerm || debouncedSearchTerm === '' || debouncedSearchTerm === null) && isTyping) {
       setIsTyping(false);
       if (props.onChange) {
-        const value = textValue || null;
+        const value = textValue || textValue === 0 ? textValue : null;
         props.onChange(value);
       }
     }
@@ -49,7 +48,7 @@ const TextNumberInput: React.FC<IProps> = (props: IProps) => {
 
   const onBlur = () => {
     if (!props.onBlurChange) return;
-    const value = textValue || null;
+    const value = textValue || textValue === 0 ? textValue : null;
     props.onBlurChange(value);
   };
 

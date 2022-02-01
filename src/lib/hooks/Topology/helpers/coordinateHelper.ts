@@ -268,18 +268,14 @@ const setUpDevicesCoord = (site: ITopoSitesNode, items: IDeviceNode[][]) => {
 // -------------------------------
 
 export const centeredRegionNodes = (nodes: IObject<ITopoRegionNode>, filter: FilterEntityOptions) => {
-  let topNode: ITopoRegionNode = null;
+  let maxNodeHeight: number = 0;
   for (const key in nodes) {
-    if (!topNode) {
-      topNode = nodes[key];
-      continue;
-    }
-    if (nodes[key].height > topNode.height) {
-      topNode = nodes[key];
+    if (nodes[key].height > maxNodeHeight) {
+      maxNodeHeight = nodes[key].height;
     }
   }
   for (const key in nodes) {
-    nodes[key].y = topNode.y + topNode.height / 2 - nodes[key].height / 2;
+    nodes[key].y = maxNodeHeight / 2 - nodes[key].height / 2;
     setRegionChildrenCoords(filter, nodes[key].children, nodes[key].peerConnections, nodes[key].webAcls, nodes[key]);
   }
 };

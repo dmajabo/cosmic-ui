@@ -7,10 +7,10 @@ import {
 // import { useDrag } from 'app/containers/Pages/TopologyPage/TopoMapV2/hooks/useDrag';
 import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
 // import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
-import AccountCollapsedNode from './AccountCollapsedNode';
+// import AccountCollapsedNode from './AccountCollapsedNode';
 // import { onHoverNode, onUnHoverNode } from '../../../../Graph/helper';
 import AccountExpandNode from './AccountExpandNode';
-import TransitionContainer from '../../../TransitionContainer';
+// import TransitionContainer from '../../../TransitionContainer';
 // import CollapseExpandButton from '../../Containers/CollapseExpandButton';
 
 interface Props {
@@ -94,28 +94,26 @@ const AccountNodeTopContainer: React.FC<Props> = (props: Props) => {
   //   onUnHoverNode(`${NODES_CONSTANTS.ACCOUNT.type}${props.account.uiId}`);
   // };
 
-  if (!pos) return null;
+  if (!pos || !props.account.visible) return null;
   return (
-    <TransitionContainer stateIn={props.account.visible} origin="unset" transform="none">
-      <g
-        id={`${NODES_CONSTANTS.ACCOUNT.type}${props.account.uiId}`}
-        // onMouseEnter={onMouseEnter}
-        // onMouseLeave={onMouseLeave}
-        className="topologyNode"
-        transform={`translate(${pos.x}, ${pos.y})`}
-        data-type={NODES_CONSTANTS.ACCOUNT.type}
-      >
-        <AccountCollapsedNode dragId={`drag${NODES_CONSTANTS.ACCOUNT.type}${props.account.uiId}`} account={props.account} show={props.account.collapsed} />
-        <AccountExpandNode dragId={`drag${NODES_CONSTANTS.ACCOUNT.type}${props.account.uiId}`} account={props.account} show={!props.account.collapsed} />
-        {/* <CollapseExpandButton
+    <g
+      id={`${NODES_CONSTANTS.ACCOUNT.type}${props.account.uiId}`}
+      // onMouseEnter={onMouseEnter}
+      // onMouseLeave={onMouseLeave}
+      className="topologyNode"
+      transform={`translate(${pos.x}, ${pos.y})`}
+      data-type={NODES_CONSTANTS.ACCOUNT.type}
+    >
+      {/* <AccountCollapsedNode dragId={`drag${NODES_CONSTANTS.ACCOUNT.type}${props.account.uiId}`} account={props.account} show={props.account.collapsed} /> */}
+      <AccountExpandNode dragId={`drag${NODES_CONSTANTS.ACCOUNT.type}${props.account.uiId}`} account={props.account} show={!props.account.collapsed} />
+      {/* <CollapseExpandButton
           id={`expandCollapse${props.dataItem.id}`}
           isCollapse={!props.dataItem.collapsed}
           onClick={onExpandCollapse}
           x={!props.dataItem.collapsed ? props.dataItem.expandedSize.width - NODES_CONSTANTS.COLLAPSE_EXPAND.r : NODES_CONSTANTS.ACCOUNT.collapse.width - NODES_CONSTANTS.COLLAPSE_EXPAND.r}
           y={!props.dataItem.collapsed ? props.dataItem.expandedSize.height / 2 - NODES_CONSTANTS.COLLAPSE_EXPAND.r : NODES_CONSTANTS.ACCOUNT.collapse.height / 2 - NODES_CONSTANTS.COLLAPSE_EXPAND.r}
         /> */}
-      </g>
-    </TransitionContainer>
+    </g>
   );
 };
 

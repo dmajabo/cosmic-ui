@@ -8,10 +8,11 @@ import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import Paging from 'app/components/Basic/Paging';
 import { IColumn } from 'lib/models/grid';
 import { SegmentsGridColumns } from './models';
-import { ColorValue, GridButton, CellValue, GridCellWrapper } from 'app/components/Grid/styles';
+import { ColorValue, GridButton, CellValue, GridCellWrapper, CellCheckMarkValue } from 'app/components/Grid/styles';
 import { editIcon } from 'app/components/SVGIcons/edit';
 import { deleteIcon } from 'app/components/SVGIcons/delete';
 import { ISegmentSegmentP, SegmentSegmentType } from 'lib/api/ApiModels/Policy/Segment';
+import { checkMark } from 'app/components/SVGIcons/checkMark';
 interface Props {
   data: ISegmentSegmentP[];
   totalCount: number;
@@ -94,6 +95,23 @@ const TableComponent: React.FC<Props> = (props: Props) => {
       filterable: false,
       disableReorder: true,
       disableExport: true,
+    },
+    {
+      id: `segments${SegmentsGridColumns.isSystemSegment.resField}`,
+      field: SegmentsGridColumns.isSystemSegment.resField,
+      headerName: SegmentsGridColumns.isSystemSegment.label,
+      label: SegmentsGridColumns.isSystemSegment.label,
+      minWidth: 80,
+      disableColumnMenu: true,
+      resizable: false,
+      editable: false,
+      filterable: false,
+      disableReorder: true,
+      disableExport: true,
+      renderCell: (param: GridRenderCellParams) => {
+        if (param.value) return <CellCheckMarkValue>{checkMark}</CellCheckMarkValue>;
+        return '';
+      },
     },
     {
       id: `segmentsActionCol`,

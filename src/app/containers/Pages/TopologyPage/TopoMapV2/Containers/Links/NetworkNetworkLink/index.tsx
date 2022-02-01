@@ -32,10 +32,14 @@ const NetworkNetworkLink: React.FC<IProps> = (props: IProps) => {
         // data-tochildid={`${props.dataItem.toNode.child.nodeType}${props.dataItem.toNode.child.id}`}
         // data-fromparentid={`${props.dataItem.fromNode.parent.type}${props.dataItem.fromNode.parent.dataItem.id}`}
         // data-toparentid={`${props.dataItem.toNode.parent.type}${props.dataItem.toNode.parent.dataItem.id}`}
-        x1={props.dataItem.from.x + NODES_CONSTANTS.NETWORK_VNET.collapse.r}
-        y1={props.dataItem.from.y + NODES_CONSTANTS.NETWORK_VNET.collapse.height}
-        x2={props.dataItem.to.x + NODES_CONSTANTS.NETWORK_WEDGE.collapse.r}
-        y2={props.dataItem.to.y}
+        x1={props.dataItem.fromParent.collapsed ? props.dataItem.fromParent.x + props.dataItem.fromParent.width / 2 : props.dataItem.from.x + NODES_CONSTANTS.NETWORK_VNET.collapse.r}
+        y1={
+          props.dataItem.fromParent.collapsed
+            ? props.dataItem.fromParent.y + props.dataItem.toParent.height / 2 - NODES_CONSTANTS.REGION.collapse.height / 2
+            : props.dataItem.from.y + NODES_CONSTANTS.NETWORK_VNET.collapse.height
+        }
+        x2={props.dataItem.toParent.collapsed ? props.dataItem.toParent.x + props.dataItem.toParent.width / 2 : props.dataItem.to.x + NODES_CONSTANTS.NETWORK_WEDGE.collapse.r}
+        y2={props.dataItem.toParent.collapsed ? props.dataItem.toParent.y + props.dataItem.toParent.height / 2 - NODES_CONSTANTS.ACCOUNT.collapse.height / 2 : props.dataItem.to.y}
       />
     </TransitionContainer>
   );

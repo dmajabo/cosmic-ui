@@ -7,9 +7,9 @@ import {
 } from 'lib/models/general';
 // import { useDrag } from 'app/containers/Pages/TopologyPage/TopoMapV2/hooks/useDrag';
 import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
-import RegionCollapsedNode from './RegionCollapsedNode';
+// import RegionCollapsedNode from './RegionCollapsedNode';
 import RegionExpandNode from './RegionExpandNode';
-import TransitionContainer from '../../../TransitionContainer';
+// import TransitionContainer from '../../../TransitionContainer';
 // import CollapseExpandButton from '../../Containers/CollapseExpandButton';
 // import CollapseExpandButton from '../../Containers/CollapseExpandButton';
 
@@ -82,11 +82,10 @@ const RegionNodeTopContainer: React.FC<Props> = (props: Props) => {
   //   topology.onCollapseExpandNode(props.dataItem, false);
   // };
 
-  if (!pos) return null;
+  if (!pos || !props.region.visible) return null;
   return (
-    <TransitionContainer id={`g${NODES_CONSTANTS.REGION.type}${props.region.uiId}`} stateIn={props.region.visible} transform="none">
+    <>
       <g id={`${NODES_CONSTANTS.REGION.type}${props.region.uiId}`} className="topologyNode" transform={`translate(${pos.x}, ${pos.y})`} data-type={NODES_CONSTANTS.REGION.type}>
-        <RegionCollapsedNode dragId={`drag${NODES_CONSTANTS.REGION.type}${props.region.uiId}`} region={props.region} show={props.region.collapsed} />
         <RegionExpandNode dragId={`drag${NODES_CONSTANTS.REGION.type}${props.region.uiId}`} region={props.region} show={!props.region.collapsed} />
       </g>
       {/* <g onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} className="topologyNode">
@@ -98,7 +97,7 @@ const RegionNodeTopContainer: React.FC<Props> = (props: Props) => {
           y={!props.dataItem.collapsed ? props.dataItem.expandedSize.height / 2 - NODES_CONSTANTS.COLLAPSE_EXPAND.r : NODES_CONSTANTS.REGION.collapse.height / 2 - NODES_CONSTANTS.COLLAPSE_EXPAND.r}
         />
       </g> */}
-    </TransitionContainer>
+    </>
   );
 };
 

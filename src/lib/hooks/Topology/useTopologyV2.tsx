@@ -240,22 +240,22 @@ export function useTopologyV2Context(): TopologyV2ContextType {
       _obj[type].selected = selected;
       if (type === FilterEntityTypes.SITES) {
         const _data: IObject<ITopoSitesNode> = updateCollapseExpandSites(sites, !_obj[type].selected);
-        const _links: IObject<ITopoLink<any, any, any>> = updateLinkVisibleState(links, _obj, type as FilterEntityTypes);
+        const _links: IObject<ITopoLink<any, any, any>> = updateLinkVisibleState(links, _obj, type as FilterEntityTypes, regions, _data, accounts);
         setLinks(_links);
         setSitesNodes(_data);
       }
       if (type === FilterEntityTypes.TRANSIT) {
-        const data: IObject<ITopoAccountNode> = updateCollapseExpandAccounts(accounts, !_obj[type].selected);
-        const _links: IObject<ITopoLink<any, any, any>> = updateLinkVisibleState(links, _obj, type as FilterEntityTypes);
+        const _data: IObject<ITopoAccountNode> = updateCollapseExpandAccounts(accounts, !_obj[type].selected);
+        const _links: IObject<ITopoLink<any, any, any>> = updateLinkVisibleState(links, _obj, type as FilterEntityTypes, regions, sites, _data);
         setLinks(_links);
-        setAccountsNodes(data);
+        setAccountsNodes(_data);
       }
       if (type === FilterEntityTypes.PEERING_CONNECTIONS || type === FilterEntityTypes.VPC || type === FilterEntityTypes.WEB_ACLS) {
-        const data: IObject<ITopoRegionNode> = updateRegionNodes(regions, _obj);
-        const _links: IObject<ITopoLink<any, any, any>> = updateLinkVisibleState(links, _obj, type as FilterEntityTypes);
-        updateLinkNodesPosition(_links, data);
+        const _data: IObject<ITopoRegionNode> = updateRegionNodes(regions, _obj);
+        const _links: IObject<ITopoLink<any, any, any>> = updateLinkVisibleState(links, _obj, type as FilterEntityTypes, _data, sites, accounts);
+        updateLinkNodesPosition(_links, _data);
         setLinks(_links);
-        setRegionsNodes(data);
+        setRegionsNodes(_data);
       }
       updateSessionStoragePreference(_obj, OKULIS_LOCAL_STORAGE_KEYS.OKULIS_PREFERENCE, StoragePreferenceKeys.TOPOLOGY_FILTER_ENTITY_OPTIONS);
       setEntities(_obj);

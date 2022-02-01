@@ -1,14 +1,7 @@
+import { IFlowPreferenceRange } from 'lib/api/ApiModels/Policy/Preference';
 import uuid from 'react-uuid';
 
-export interface IFlowRange {
-  name: string;
-  color: string;
-  from: number;
-  to: number;
-  id?: string;
-}
-
-export const createNewRange = (): IFlowRange => ({
+export const createNewRange = (): IFlowPreferenceRange => ({
   id: uuid(),
   color: '#000000',
   name: '',

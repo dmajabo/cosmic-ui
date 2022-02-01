@@ -4,6 +4,7 @@ import { VPCS_IN_ROW, PEER_CONNECTION_IN_ROW, WEB_ACL_IN_ROW } from '../models';
 export const getBeautifulRowsCount = (_count: number, maxInRow: number): number => {
   if (_count <= 6) return _count;
   if (_count <= maxInRow) return Math.max(4, Math.ceil(_count / 1.75));
+  if (_count <= maxInRow * 3) return Math.ceil(_count / 1.75);
   return maxInRow;
 };
 

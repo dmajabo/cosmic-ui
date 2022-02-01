@@ -5,6 +5,7 @@ export interface ISegmentsGridColumns {
   type: IGridColumnField;
   source: IGridColumnField;
   color: IGridColumnField;
+  isSystemSegment: IGridColumnField;
   description: IGridColumnField;
 }
 
@@ -28,6 +29,10 @@ export const SegmentsGridColumns: ISegmentsGridColumns = {
   color: {
     resField: 'color',
     label: '',
+  },
+  isSystemSegment: {
+    resField: 'isSystemSegment',
+    label: 'Is System',
   },
 };
 

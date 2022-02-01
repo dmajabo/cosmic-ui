@@ -29,10 +29,10 @@ import VmsTable from './SegmentTypeComponents/VmStep/VmsTable';
 import VnetsTable from './SegmentTypeComponents/NetworkStep/VnetsTable';
 import DevicesTable from './SegmentTypeComponents/SitesStep/DevicesTable';
 
-import { DEFAULT_SEGMENTS_COLORS_SCHEMA, FORM_STEPS, ISegmentComplete } from './models';
+import { FORM_STEPS, ISegmentComplete } from './models';
 
 import { PolicyApi } from 'lib/api/ApiModels/Services/policy';
-import { IBaseEntity } from 'lib/models/general';
+import { DEFAULT_SEGMENTS_COLORS_SCHEMA, IBaseEntity } from 'lib/models/general';
 import _ from 'lodash';
 import SecondaryButton from 'app/components/Buttons/SecondaryButton';
 import ModalStepper from 'app/components/Stepper/ModalStepper';

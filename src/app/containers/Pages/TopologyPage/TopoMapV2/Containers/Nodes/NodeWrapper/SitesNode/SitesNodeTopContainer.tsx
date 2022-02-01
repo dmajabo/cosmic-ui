@@ -6,11 +6,9 @@ import {
 // import { useDrag } from 'app/containers/Pages/TopologyPage/TopoMapV2/hooks/useDrag';
 import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
-import SitesCollapsedNode from './SitesCollapsedNode';
 // import { onHoverNode, onUnHoverNode } from '../../../../Graph/helper';
 import SitesExpandNode from './SitesExpandNode';
 import { ITopoSitesNode } from 'lib/hooks/Topology/models';
-import TransitionContainer from '../../../TransitionContainer';
 // import CollapseExpandButton from '../../Containers/CollapseExpandButton';
 
 interface Props {
@@ -99,28 +97,25 @@ const SitesNodeTopContainer: React.FC<Props> = (props: Props) => {
     topology.onChangeSitesPage(props.site.dataItem.id, page);
   };
 
-  if (!pos) return null;
+  if (!pos || !props.site.visible) return null;
   return (
-    <TransitionContainer stateIn={props.site.visible} origin="unset" transform="none">
-      <g
-        id={`${NODES_CONSTANTS.SITES.type}${props.site.uiId}`}
-        // onMouseEnter={onMouseEnter}
-        // onMouseLeave={onMouseLeave}
-        className="topologyNode"
-        transform={`translate(${pos.x}, ${pos.y})`}
-        data-type={NODES_CONSTANTS.SITES.type}
-      >
-        <SitesCollapsedNode site={props.site} dragId={`drag${NODES_CONSTANTS.SITES.type}${props.site.uiId}`} show={props.site.collapsed} />
-        <SitesExpandNode dragId={`drag${NODES_CONSTANTS.SITES.type}${props.site.uiId}`} site={props.site} show={!props.site.collapsed} onPrev={onPrev} onNext={onNext} />
-        {/* <CollapseExpandButton
+    <g
+      id={`${NODES_CONSTANTS.SITES.type}${props.site.uiId}`}
+      // onMouseEnter={onMouseEnter}
+      // onMouseLeave={onMouseLeave}
+      className="topologyNode"
+      transform={`translate(${pos.x}, ${pos.y})`}
+      data-type={NODES_CONSTANTS.SITES.type}
+    >
+      <SitesExpandNode dragId={`drag${NODES_CONSTANTS.SITES.type}${props.site.uiId}`} site={props.site} show={!props.site.collapsed} onPrev={onPrev} onNext={onNext} />
+      {/* <CollapseExpandButton
           id={`expandCollapse${props.dataItem.uiId}`}
           isCollapse={!props.dataItem.collapsed}
           onClick={onExpandCollapse}
           x={!props.dataItem.collapsed ? props.dataItem.expandedSize.width - NODES_CONSTANTS.COLLAPSE_EXPAND.r : NODES_CONSTANTS.SITES.collapse.width - NODES_CONSTANTS.COLLAPSE_EXPAND.r}
           y={!props.dataItem.collapsed ? props.dataItem.expandedSize.height / 2 - NODES_CONSTANTS.COLLAPSE_EXPAND.r : NODES_CONSTANTS.SITES.collapse.height / 2 - NODES_CONSTANTS.COLLAPSE_EXPAND.r}
         /> */}
-      </g>
-    </TransitionContainer>
+    </g>
   );
 };
 

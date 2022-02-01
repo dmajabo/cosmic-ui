@@ -86,6 +86,7 @@ export interface ISegmentSegmentP extends IBaseEntity<string> {
   serviceSegPol: ISegmentServiceSegmentP;
   paasSegPol: ISegmentPaasSegementP;
   siteSegPol: ISegmentSiteSegmentP;
+  isSystemSegment: boolean;
   color: string;
 
   extId?: string; // on ui

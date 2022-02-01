@@ -15,6 +15,7 @@ interface Props {
   color: string;
   colorSchema?: string[][];
   styles?: Object;
+  previewColorStyles?: Object;
   required?: boolean;
   labelStyles?: Object;
   onChange: (v: string) => void;
@@ -69,7 +70,7 @@ const ColorPiker: React.FC<Props> = (props: Props) => {
           {props.required && <Required>*</Required>}
         </InputLabel>
       )}
-      <PreviewWrapper onClick={e => onOpenPopup(e)}>
+      <PreviewWrapper style={props.previewColorStyles} onClick={e => onOpenPopup(e)}>
         <PreviewColor ref={previewRef} style={{ background: debounceColorValue }} />
       </PreviewWrapper>
       <Popover

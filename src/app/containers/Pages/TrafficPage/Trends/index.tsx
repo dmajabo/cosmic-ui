@@ -9,17 +9,38 @@ import PanelBar from 'app/components/Basic/PanelBar';
 import { APP_HEADER_HEIGHT } from 'lib/constants/general';
 import { IPanelBarLayoutTypes } from 'lib/models/general';
 import FlowsOverviewSettings from './Components/FlowsOverviewComponent/FlowsOverviewSettings';
+import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
+import { useGet } from 'lib/api/http/useAxiosHook';
+import { IPreferenceRes, USER_PREFERENCE_KEYS } from 'lib/api/ApiModels/Policy/Preference';
+import { PolicyApi } from 'lib/api/ApiModels/Services/policy';
+import { useTrafficDataContext } from 'lib/hooks/Traffic/useTrafficDataCont';
 
 interface Props {}
 
 export const TrendsPage: React.FC<Props> = (props: Props) => {
+  const userContext = React.useContext<UserContextState>(UserContext);
+  const { traffic } = useTrafficDataContext();
   const [showSettingsPanel, setShowSettingsPanel] = React.useState<boolean>(false);
+  const { response: getRes, onGet: onGetPreferrences } = useGet<IPreferenceRes>();
+
+  React.useEffect(() => {
+    onTryLoadPreferences();
+  }, []);
+  React.useEffect(() => {
+    if (getRes) {
+      traffic.onSetFlowRangePreference(getRes);
+    }
+  }, [getRes]);
 
   const onOpenPanel = () => {
     setShowSettingsPanel(true);
   };
   const onHideSettingsPanel = () => {
     setShowSettingsPanel(false);
+  };
+
+  const onTryLoadPreferences = async () => {
+    await onGetPreferrences(PolicyApi.getPreferenceByKey(USER_PREFERENCE_KEYS.FLOWS_OVERRVIEW_SETTINGS_RANGES, userContext.user.sub), userContext.accessToken!);
   };
   return (
     <ContentPanelWrapper>
@@ -36,7 +57,7 @@ export const TrendsPage: React.FC<Props> = (props: Props) => {
         onHidePanel={onHideSettingsPanel}
         type={IPanelBarLayoutTypes.VERTICAL}
       >
-        <FlowsOverviewSettings />
+        {showSettingsPanel && <FlowsOverviewSettings />}
       </PanelBar>
     </ContentPanelWrapper>
   );

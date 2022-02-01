@@ -8,7 +8,7 @@ import { BreadCrumbProvider, useBreadCrumbActions } from 'lib/hooks/Breadcrumb/u
 import LoadingIndicator from 'app/components/Loading';
 
 export const HomePage: React.FC = () => {
-  const { getIdTokenClaims, getAccessTokenSilently } = useAuth0();
+  const { getIdTokenClaims, getAccessTokenSilently, user } = useAuth0();
   const breadcrumbActions = useBreadCrumbActions();
   const userContext = useContext<UserContextState>(UserContext);
   useEffect(() => {
@@ -18,6 +18,7 @@ export const HomePage: React.FC = () => {
     getAccessTokenSilently().then(accesstoken => {
       userContext.setAccessToken(accesstoken);
     });
+    userContext.setUser(user);
   }, []);
   return userContext.idToken && userContext.accessToken ? (
     <BreadCrumbProvider actions={breadcrumbActions}>

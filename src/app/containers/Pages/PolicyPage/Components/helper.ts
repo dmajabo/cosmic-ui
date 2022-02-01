@@ -13,9 +13,10 @@ import {
 } from 'lib/api/ApiModels/Policy/Segment';
 import { INetworkDevice, INetworkTag, INetworkVM, INetworkVNetwork } from 'lib/api/ApiModels/Topology/apiModels';
 import { jsonClone } from 'lib/helpers/cloneHelper';
-import { DEFAULT_SEGMENTS_COLORS_SCHEMA, ISegmentComplete } from './models';
+import { ISegmentComplete } from './models';
 import { Validator } from 'ip-num/Validator';
 import uuid from 'react-uuid';
+import { DEFAULT_SEGMENTS_COLORS_SCHEMA } from 'lib/models/general';
 
 const createNewSegment = (): ISegmentSegmentP => {
   const _col = Math.floor(Math.random() * DEFAULT_SEGMENTS_COLORS_SCHEMA[0].length);
@@ -32,6 +33,7 @@ const createNewSegment = (): ISegmentSegmentP => {
     serviceSegPol: null,
     paasSegPol: null,
     siteSegPol: null,
+    isSystemSegment: false,
     color: randomColor,
   };
 };

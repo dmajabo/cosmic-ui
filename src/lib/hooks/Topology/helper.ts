@@ -159,6 +159,7 @@ export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[]
       serviceSegPol: null,
       paasSegPol: null,
       siteSegPol: null,
+      isSystemSegment: false,
       color: NODES_CONSTANTS.SITES.expanded.marker.bgColor,
     });
     sites[DEFAULT_GROUP_ID] = _defGroup;

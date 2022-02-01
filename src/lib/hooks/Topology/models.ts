@@ -97,9 +97,9 @@ export interface ITopoLink<F, T, L> extends IVisible, IBaseEntity<string> {
   from: F;
   to: T;
   connection: L;
-  fromParentId: string;
-  toParentId: string;
-  connectionParentId: string;
+  fromParent: any;
+  toParent: any;
+  connectionParent: any;
 }
 
 export interface IAccountNode extends IBaseEntity<string> {

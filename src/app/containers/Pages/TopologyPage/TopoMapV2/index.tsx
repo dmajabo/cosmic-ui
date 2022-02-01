@@ -35,11 +35,9 @@ const TopoMapV2: React.FC<IProps> = (props: IProps) => {
   }, [response]);
 
   React.useEffect(() => {
-    // if (error) {
-    //   topology.onSetData({ organizations: data, segments: segmentsData as any });
-    // }
     let interval = null;
     if (error) {
+      topology.onSetData(null);
       interval = setInterval(() => {
         onTryLoadData();
       }, 15000);

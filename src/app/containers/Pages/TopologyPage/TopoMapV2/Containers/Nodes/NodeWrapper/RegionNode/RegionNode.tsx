@@ -7,6 +7,7 @@ import {} from 'lib/hooks/Topology/models';
 import NetworkVnetNode from '../NetworkVnetNode';
 import PeerConnectionNode from '../PeerConnectionNode';
 import WebAclNode from '../WebAclNode';
+import RegionCollapsedNode from './RegionCollapsedNode';
 
 interface Props {
   dataItem: ITopoRegionNode;
@@ -23,7 +24,14 @@ const RegionNode: React.FC<Props> = (props: Props) => {
     topology.onToogleTopoPanel(TopologyPanelTypes.WebAcl, true, item);
   };
 
-  if (!props.dataItem.visible || props.dataItem.collapsed) return null;
+  if (!props.dataItem.visible) return null;
+  if (props.dataItem.collapsed || (!topology.entities.web_acls.selected && !topology.entities.peer_connections.selected && !topology.entities.vpc.selected)) {
+    return (
+      <g id={`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`} className="topologyNode" transform={`translate(${props.dataItem.x}, ${props.dataItem.y})`} data-type={NODES_CONSTANTS.REGION.type}>
+        <RegionCollapsedNode dragId={`drag${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`} region={props.dataItem} show={props.dataItem.collapsed} />
+      </g>
+    );
+  }
   return (
     <g id={`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}childrensLayer`} className="topologyNode" data-type={NODES_CONSTANTS.REGION.type}>
       <>

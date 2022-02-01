@@ -29,10 +29,18 @@ const VPNLink: React.FC<IProps> = (props: IProps) => {
         fill="var(--_defaultLinkFill)"
         stroke="var(--_defaultLinkFill)"
         strokeWidth="1"
-        x1={props.dataItem.from.x + NODES_CONSTANTS.DEVICE.collapse.width / 2}
-        y1={props.dataItem.from.y + NODES_CONSTANTS.DEVICE.collapse.height / 2}
-        x2={props.dataItem.to.x + NODES_CONSTANTS.NETWORK_WEDGE.collapse.r}
-        y2={props.dataItem.to.y + NODES_CONSTANTS.NETWORK_WEDGE.collapse.height}
+        x1={props.dataItem.fromParent.collapsed ? props.dataItem.fromParent.x + props.dataItem.fromParent.width / 2 : props.dataItem.from.x + NODES_CONSTANTS.DEVICE.collapse.width / 2}
+        y1={
+          props.dataItem.fromParent.collapsed
+            ? props.dataItem.fromParent.y + props.dataItem.toParent.height / 2 - NODES_CONSTANTS.SITES.collapse.height / 2
+            : props.dataItem.from.y + NODES_CONSTANTS.DEVICE.collapse.height / 2
+        }
+        x2={props.dataItem.toParent.collapsed ? props.dataItem.toParent.x + props.dataItem.toParent.width / 2 : props.dataItem.to.x + NODES_CONSTANTS.NETWORK_WEDGE.collapse.r}
+        y2={
+          props.dataItem.toParent.collapsed
+            ? props.dataItem.toParent.y + props.dataItem.toParent.height / 2 + NODES_CONSTANTS.ACCOUNT.collapse.height / 2
+            : props.dataItem.to.y + NODES_CONSTANTS.NETWORK_WEDGE.collapse.height
+        }
       />
     </TransitionContainer>
   );

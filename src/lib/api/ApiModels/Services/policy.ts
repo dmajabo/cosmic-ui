@@ -19,4 +19,7 @@ export const PolicyApi = {
   getSegmentsById: (id: string) => 'policy/api/v1/policy/segments/' + id, // ISegmentSegmentP
   deleteSegmentsById: (id: string) => 'policy/api/v1/policy/segments/' + id, // empty
   putSegmentsById: (id: string) => 'policy/api/v1/policy/segments/' + id, // baseBaseResponse
+
+  getPreferenceByKey: (key: string, userId: string) => `policy/api/v1/policy/ui/preference/${key}/${userId}`, // res => IUserPreference
+  postSavePreference: () => `policy/api/v1/policy/ui/preference`, // reg body { preference: IUserPreference }
 };
