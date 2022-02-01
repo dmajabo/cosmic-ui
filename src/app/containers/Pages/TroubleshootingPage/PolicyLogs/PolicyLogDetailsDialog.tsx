@@ -49,10 +49,10 @@ export interface PolicyLogDetails {
   readonly TenantId: string;
   readonly UpdatedAt: string;
   readonly UpdatedBy: string;
-  readonly extId: string;
-  readonly name: string;
   readonly ownerId: string;
   readonly ctrlrId: string;
+  readonly extId: string;
+  readonly name: string;
   readonly ctrlrName: string;
   readonly regionCode: string;
   readonly vendor: string;
@@ -62,25 +62,18 @@ export interface PolicyLogDetails {
   readonly clientVpnEndpoints: Vnetwork[];
 }
 
-const EMPTY_POLICY_LOG_DETAILS: PolicyLogDetails = {
-  CreatedAt: undefined,
-  CreatedBy: undefined,
-  Id: undefined,
-  TenantId: undefined,
-  UpdatedAt: undefined,
-  UpdatedBy: undefined,
-  extId: undefined,
-  name: undefined,
-  ownerId: undefined,
-  ctrlrId: undefined,
-  ctrlrName: undefined,
-  regionCode: undefined,
-  vendor: undefined,
-  routes: [],
-  rules: [],
-  vNetworks: [],
-  clientVpnEndpoints: [],
-};
+export interface PolicyLogDetailProperty {
+  readonly label: string;
+  readonly value: string;
+}
+
+const SHARED_POLICY_DETAILS: PolicyLogDetailProperty[] = [
+  { value: 'name', label: 'Name' },
+  { value: 'extId', label: 'External Id' },
+  { value: 'ctrlrName', label: 'Controller Name' },
+  { value: 'regionCode', label: 'Region Code' },
+  { value: 'vendor', label: 'Vendor' },
+];
 
 const getEmptyJSON = (json: PolicyLogDetails) => {
   Object.keys(json).forEach(key => (isArray(json[key]) ? (json[key] = []) : (json[key] = '')));
@@ -106,11 +99,11 @@ export const PolicyLogDetailsDialog: React.FC<PolicyLogDetailsProps> = ({ isOpen
       <DialogContent className={classes.gridContainer}>
         <div className={classes.gridItem}>
           <div className={`${classes.gridItemTitle} ${classes.templateHeader}`}>Configuration Template</div>
-          <OldConfigData oldData={oldPolicyLogDetails} />
+          <OldConfigData oldData={oldPolicyLogDetails} sharedProperties={SHARED_POLICY_DETAILS} policyLogType={selectedPolicyLogData.policyType} />
         </div>
         <div className={classes.gridItem}>
           <div className={`${classes.gridItemTitle} ${classes.changesHeader}`}>Configuration Changes</div>
-          <NewConfigData oldData={oldPolicyLogDetails} newData={newPolicyLogDetails} />
+          <NewConfigData oldData={oldPolicyLogDetails} newData={newPolicyLogDetails} sharedProperties={SHARED_POLICY_DETAILS} policyLogType={selectedPolicyLogData.policyType} />
         </div>
       </DialogContent>
     </Dialog>

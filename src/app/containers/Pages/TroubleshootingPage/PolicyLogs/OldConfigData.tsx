@@ -1,29 +1,23 @@
-import { isArray, startCase } from 'lodash';
 import React from 'react';
 import { TroubleshootingStyles } from '../TroubleshootingStyles';
-import { PolicyLogDetails } from './PolicyLogDetailsDialog';
+import { PolicyLogDetailProperty, PolicyLogDetails } from './PolicyLogDetailsDialog';
 
 interface ConfigDataProps {
   readonly oldData: PolicyLogDetails;
+  readonly sharedProperties: PolicyLogDetailProperty[];
+  readonly policyLogType: string;
 }
 
-const ARRAY_DETAILS = ['routes', 'rules', 'vNetworks', 'clientVpnEndpoints'];
-
-export const OldConfigData: React.FC<ConfigDataProps> = ({ oldData }) => {
+export const OldConfigData: React.FC<ConfigDataProps> = ({ oldData, sharedProperties, policyLogType }) => {
   const classes = TroubleshootingStyles();
 
-  const getConfigProperty = (title: string, oldDataItem: string) => (
-    <div key={title} className={classes.defaultPropertyItem}>
-      <span>{`${title}:`}</span>
-      <span className={classes.propertyValue}>{oldDataItem}</span>
-    </div>
-  );
+  const getConfigProperty = (title: string, oldDataItem: string) =>
+    oldDataItem && (
+      <div key={title} className={classes.defaultPropertyItem}>
+        <span>{`${title}:`}</span>
+        <span className={classes.propertyValue}>{oldDataItem}</span>
+      </div>
+    );
 
-  return (
-    <div className={classes.gridItemContent}>
-      {Object.keys(oldData)
-        .filter(key => !isArray(oldData[key]))
-        .map(key => getConfigProperty(startCase(key), oldData[key]))}
-    </div>
-  );
+  return <div className={classes.gridItemContent}>{sharedProperties.map(key => getConfigProperty(key.label, oldData[key.value]))}</div>;
 };
