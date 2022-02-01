@@ -10,6 +10,7 @@ export enum RoutesResourceTypes {
   VpnLink = 'VpnLink',
   NetworkLink = 'NetworkLink',
   WEdge = 'WEdge',
+  Vm = 'Vm',
 }
 
 export enum RoutesResKeyEnum {

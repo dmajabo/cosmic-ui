@@ -19,6 +19,7 @@ const PeerConnectionLink: React.FC<IProps> = (props: IProps) => {
   //     setIsSelected(false);
   //   }
   // }, [topology.selectedNode]);
+  console.log(props.dataItem);
   return (
     <TransitionContainer stateIn={props.visible} id={`peerConnectionLink${props.dataItem.extId}`} transform="none" origin="unset" timing={50}>
       <line
