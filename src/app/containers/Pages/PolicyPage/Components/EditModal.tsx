@@ -27,7 +27,6 @@ import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 import { ModalContent, ModalFooter } from '../../Edges/Editor/Components/styles';
 import VmsTable from './SegmentTypeComponents/VmStep/VmsTable';
 import VnetsTable from './SegmentTypeComponents/NetworkStep/VnetsTable';
-import DevicesTable from './SegmentTypeComponents/SitesStep/DevicesTable';
 
 import { FORM_STEPS, ISegmentComplete } from './models';
 
@@ -37,6 +36,7 @@ import _ from 'lodash';
 import SecondaryButton from 'app/components/Buttons/SecondaryButton';
 import ModalStepper from 'app/components/Stepper/ModalStepper';
 import ExternalStep from './SegmentTypeComponents/ExternalStep/ExternalStep';
+import SiteStep from './SegmentTypeComponents/SitesStep/SiteStep';
 
 interface IProps {
   data: ISegmentSegmentP;
@@ -107,7 +107,7 @@ const EditModal: React.FC<IProps> = (props: IProps) => {
   };
 
   const onSelectItem = (type: SegmentSegmentType, rule: ISegmentSiteSegmentMatchRuleP | ISegmentApplicationSegMatchRuleP | ISegmentNetworkSegMatchRuleP) => {
-    const _s: ISegmentSegmentP = helper.updateMatchRule(segment, rule);
+    const _s: ISegmentSegmentP = helper.updateMatchRule(null, segment, rule);
     const completed: ISegmentComplete = helper.onValidateSegment(_s);
     setSegment(_s);
     setCompleted(completed);
@@ -131,7 +131,7 @@ const EditModal: React.FC<IProps> = (props: IProps) => {
   };
 
   const onUpdateExtRule = (rule: ISegmentExternalSegMatchRuleP, index?: number) => {
-    const _s: ISegmentSegmentP = helper.updateMatchRule(segment, rule, index);
+    const _s: ISegmentSegmentP = helper.updateMatchRule(null, segment, rule, index);
     const completed: ISegmentComplete = helper.onValidateSegment(_s);
     setSegment(_s);
     setCompleted(completed);
@@ -143,7 +143,31 @@ const EditModal: React.FC<IProps> = (props: IProps) => {
   };
 
   const onRemoveExtRule = (rule: ISegmentExternalSegMatchRuleP, index: number) => {
-    const _s: ISegmentSegmentP = helper.removeMatchRule(segment, index, rule);
+    const _s: ISegmentSegmentP = helper.removeMatchRule(null, segment, index, rule);
+    const completed: ISegmentComplete = helper.onValidateSegment(_s);
+    setSegment(_s);
+    setCompleted(completed);
+    if (_.isEqual(_s, props.data)) {
+      setHasChanges(false);
+    } else {
+      setHasChanges(true);
+    }
+  };
+
+  const onUpdateSiteRegionRule = (rule: ISegmentSiteSegmentMatchRuleP, index?: number) => {
+    const _s: ISegmentSegmentP = helper.updateMatchRule(selectedSiteMatchKey, segment, rule, index);
+    const completed: ISegmentComplete = helper.onValidateSegment(_s);
+    setSegment(_s);
+    setCompleted(completed);
+    if (_.isEqual(_s, props.data)) {
+      setHasChanges(false);
+    } else {
+      setHasChanges(true);
+    }
+  };
+
+  const onRemoveSiteRegiomnRule = (rule: ISegmentSiteSegmentMatchRuleP, index: number) => {
+    const _s: ISegmentSegmentP = helper.removeMatchRule(selectedSiteMatchKey, segment, index, rule);
     const completed: ISegmentComplete = helper.onValidateSegment(_s);
     setSegment(_s);
     setCompleted(completed);
@@ -284,12 +308,14 @@ const EditModal: React.FC<IProps> = (props: IProps) => {
               />
             )}
             {segment.segType === SegmentSegmentType.SITE && (
-              <DevicesTable
+              <SiteStep
                 matchRules={segment.siteSegPol && segment.siteSegPol.matchRules ? segment.siteSegPol.matchRules : []}
                 selectedMatchKey={selectedSiteMatchKey}
                 onChangeMatchKey={onChangeMatchKey}
                 onSelectChange={onSelectItem}
                 onSelectAll={onSelectAllItems}
+                onUpdateSiteRegionRule={onUpdateSiteRegionRule}
+                onRemoveSiteRegiomnRule={onRemoveSiteRegiomnRule}
               />
             )}
             {segment.segType === SegmentSegmentType.EXTERNAL && (

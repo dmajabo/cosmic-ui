@@ -66,11 +66,13 @@ export enum SegmentSiteSegmentMatchKey {
   SITE_SEG_MATCH_KEY_NETWORK = 'SITE_SEG_MATCH_KEY_NETWORK',
   SITE_SEG_MATCH_KEY_MODEL = 'SITE_SEG_MATCH_KEY_MODEL',
   SITE_SEG_MATCH_KEY_SERIAL_NUM = 'SITE_SEG_MATCH_KEY_SERIAL_NUM',
+  SITE_SEG_MATCH_KEY_REGION_NAME = 'SITE_SEG_MATCH_KEY_REGION_NAME',
 }
 
 export interface ISegmentSiteSegmentMatchRuleP {
   matchKey: SegmentSiteSegmentMatchKey; //  "default": "SITE_SEG_MATCH_KEY_NETWORK",
   matchValuePrimary: string;
+  uiId?: string;
 }
 export interface ISegmentSiteSegmentP {
   matchRules: ISegmentSiteSegmentMatchRuleP[];

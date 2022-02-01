@@ -1,5 +1,5 @@
 import React from 'react';
-import { GridWrapper, ModalLabel, ModalRow } from 'app/containers/Pages/Edges/Editor/Components/styles';
+import { GridWrapper } from 'app/containers/Pages/Edges/Editor/Components/styles';
 import { DataGrid, GridColDef, GridColumnHeaderParams, GridRowParams, GridSelectionModel } from '@mui/x-data-grid';
 import SimpleCheckbox from 'app/components/Inputs/Checkbox/SimpleCheckbox';
 import { GridStyles } from 'app/components/Grid/GridStyles';
@@ -10,8 +10,6 @@ import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import { INetworkDevice, ISitesRes } from 'lib/api/ApiModels/Topology/apiModels';
 import { IUiPagingData } from 'lib/api/ApiModels/generalApiModel';
 import { ISegmentSiteSegmentMatchRuleP, SegmentSegmentType, SegmentSiteSegmentMatchKey } from 'lib/api/ApiModels/Policy/Segment';
-import MatSelect from 'app/components/Inputs/MatSelect';
-import { ValueLabel } from 'app/components/Inputs/MatSelect/styles';
 import * as helper from '../../helper';
 import { paramBuilder } from 'lib/api/ApiModels/paramBuilders';
 import { TopoApi } from 'lib/api/ApiModels/Services/topo';
@@ -21,7 +19,6 @@ import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 interface Props {
   matchRules: ISegmentSiteSegmentMatchRuleP[];
   selectedMatchKey: SegmentSiteSegmentMatchKey;
-  onChangeMatchKey: (type: SegmentSegmentType, v: SegmentSiteSegmentMatchKey) => void;
   onSelectChange: (type: SegmentSegmentType, rule: ISegmentSiteSegmentMatchRuleP) => void;
   onSelectAll: (type: SegmentSegmentType, rules: ISegmentSiteSegmentMatchRuleP[]) => void;
 }
@@ -136,6 +133,22 @@ const DevicesTable: React.FC<Props> = (props: Props) => {
     setSelectionModel(_ids);
   }, [props.matchRules, devices, props.selectedMatchKey]);
 
+  React.useEffect(() => {
+    const _items: GridColDef[] = columns.map(col => {
+      if (col.field === 'model') {
+        col.hide = props.selectedMatchKey === SegmentSiteSegmentMatchKey.SITE_SEG_MATCH_KEY_MODEL ? false : true;
+      }
+      if (col.field === 'serial') {
+        col.hide = props.selectedMatchKey === SegmentSiteSegmentMatchKey.SITE_SEG_MATCH_KEY_SERIAL_NUM ? false : true;
+      }
+      if (col.field === 'networkId') {
+        col.hide = props.selectedMatchKey === SegmentSiteSegmentMatchKey.SITE_SEG_MATCH_KEY_NETWORK ? false : true;
+      }
+      return col;
+    });
+    setColumns(_items);
+  }, [props.selectedMatchKey]);
+
   const onRowClick = (params: GridRowParams) => {
     const _item = params.row as INetworkDevice;
     const _value = helper.getSitesFieldValueFromRuleKey(props.selectedMatchKey, _item);
@@ -174,22 +187,6 @@ const DevicesTable: React.FC<Props> = (props: Props) => {
     setDevicesPagingData(_obj);
     onTryLoadDevices(_obj);
   };
-  const onChangeMatchKey = (v: SegmentSiteSegmentMatchKey) => {
-    const _items: GridColDef[] = columns.map(col => {
-      if (col.field === 'model') {
-        col.hide = v === SegmentSiteSegmentMatchKey.SITE_SEG_MATCH_KEY_MODEL ? false : true;
-      }
-      if (col.field === 'serial') {
-        col.hide = v === SegmentSiteSegmentMatchKey.SITE_SEG_MATCH_KEY_SERIAL_NUM ? false : true;
-      }
-      if (col.field === 'networkId') {
-        col.hide = v === SegmentSiteSegmentMatchKey.SITE_SEG_MATCH_KEY_NETWORK ? false : true;
-      }
-      return col;
-    });
-    setColumns(_items);
-    props.onChangeMatchKey(SegmentSegmentType.SITE, v);
-  };
 
   const onTryLoadDevices = async (pageData: IUiPagingData) => {
     const _param = paramBuilder(pageData.pageSize, pageData.pageOffset);
@@ -197,33 +194,6 @@ const DevicesTable: React.FC<Props> = (props: Props) => {
   };
   return (
     <>
-      <ModalRow margin="0 0 20px 0">
-        <MatSelect
-          id="siteMatchKeyType"
-          label="Key"
-          value={props.selectedMatchKey}
-          options={[SegmentSiteSegmentMatchKey.SITE_SEG_MATCH_KEY_NETWORK, SegmentSiteSegmentMatchKey.SITE_SEG_MATCH_KEY_MODEL, SegmentSiteSegmentMatchKey.SITE_SEG_MATCH_KEY_SERIAL_NUM]}
-          styles={{ height: '72px', minHeight: '72px', margin: '0' }}
-          selectStyles={{ height: '50px', width: '100%' }}
-          selectClaassName="withLabel"
-          onChange={onChangeMatchKey}
-          renderValue={(v: SegmentSiteSegmentMatchKey) => {
-            if (v === SegmentSiteSegmentMatchKey.SITE_SEG_MATCH_KEY_NETWORK) return <ValueLabel>On-Prem Network</ValueLabel>;
-            if (v === SegmentSiteSegmentMatchKey.SITE_SEG_MATCH_KEY_MODEL) return <ValueLabel>Model</ValueLabel>;
-            if (v === SegmentSiteSegmentMatchKey.SITE_SEG_MATCH_KEY_SERIAL_NUM) return <ValueLabel>Serial number</ValueLabel>;
-            return <ValueLabel>{v}</ValueLabel>;
-          }}
-          renderOption={(v: SegmentSiteSegmentMatchKey) => {
-            if (v === SegmentSiteSegmentMatchKey.SITE_SEG_MATCH_KEY_NETWORK) return 'On-Prem Network';
-            if (v === SegmentSiteSegmentMatchKey.SITE_SEG_MATCH_KEY_MODEL) return 'Model';
-            if (v === SegmentSiteSegmentMatchKey.SITE_SEG_MATCH_KEY_SERIAL_NUM) return 'Serial number';
-            return v;
-          }}
-        />
-      </ModalRow>
-      <ModalRow margin="0 0 10px 0" align="center">
-        <ModalLabel>DEVICES</ModalLabel>
-      </ModalRow>
       <GridWrapper>
         <DataGrid
           disableColumnFilter

@@ -7,7 +7,7 @@ import { usePolicyDataContext } from 'lib/hooks/Policy/usePolicyDataContext';
 import { POLICY_TABS } from 'lib/hooks/Policy/models';
 import { PageWrapperStyles, TabsWrapperStyles } from '../Shared/styles';
 import Segments from './Page/Segments';
-import Rules from './Page/Rules';
+// import Rules from './Page/Rules';
 
 interface IProps {}
 
@@ -46,13 +46,13 @@ const MainPage: React.FC<IProps> = (props: IProps) => {
       >
         <Segments />
       </TabPanel>
-      <TabPanel
+      {/* <TabPanel
         styles={{ display: 'flex', flexDirection: 'column', flex: policy.selectedTab.index === POLICY_TABS[1].index ? '1 1 100%' : '0' }}
         value={policy.selectedTab.index}
         index={POLICY_TABS[1].index}
       >
         <Rules />
-      </TabPanel>
+      </TabPanel> */}
     </PageWrapperStyles>
   );
 };

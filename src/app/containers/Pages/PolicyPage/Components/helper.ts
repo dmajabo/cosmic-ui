@@ -74,13 +74,30 @@ const onCreateExtRule = (): ISegmentExternalSegMatchRuleP => {
   };
 };
 
+const onCreateRegionRule = (): ISegmentSiteSegmentMatchRuleP => {
+  return {
+    matchKey: SegmentSiteSegmentMatchKey.SITE_SEG_MATCH_KEY_REGION_NAME,
+    matchValuePrimary: null,
+    uiId: uuid(),
+  };
+};
+
 const updateSegmentDataToEdit = (item: ISegmentSegmentP): ISegmentSegmentP => {
-  if (!item.segType || item.segType !== SegmentSegmentType.EXTERNAL) return item;
-  if (!item.extSegPol.matchRules || !item.extSegPol.matchRules.length) return item;
+  if (!item.segType || (item.segType !== SegmentSegmentType.EXTERNAL && item.segType !== SegmentSegmentType.SITE)) return item;
+  if (item.segType === SegmentSegmentType.EXTERNAL && (!item.extSegPol.matchRules || !item.extSegPol.matchRules.length)) return item;
+  if (item.segType === SegmentSegmentType.SITE && (!item.siteSegPol.matchRules || !item.siteSegPol.matchRules.length)) return item;
   const _s: ISegmentSegmentP = jsonClone(item);
-  _s.extSegPol.matchRules.forEach(it => {
-    it.uiId = uuid();
-  });
+  if (item.segType === SegmentSegmentType.EXTERNAL) {
+    _s.extSegPol.matchRules.forEach(it => {
+      it.uiId = uuid();
+    });
+  }
+  if (item.segType === SegmentSegmentType.SITE) {
+    _s.siteSegPol.matchRules.forEach(it => {
+      if (it.matchKey !== SegmentSiteSegmentMatchKey.SITE_SEG_MATCH_KEY_REGION_NAME) return;
+      it.uiId = uuid();
+    });
+  }
   return _s;
 };
 
@@ -106,6 +123,10 @@ const prepareNewSegmentForSave = (segment: ISegmentSegmentP): ISegmentSegmentP =
     _s.paasSegPol = null;
     _s.serviceSegPol = null;
     _s.appSegPol = null;
+    _s.siteSegPol.matchRules.forEach(rule => {
+      if (!rule.uiId) return;
+      delete rule.uiId;
+    });
   }
   if (_s.segType === SegmentSegmentType.EXTERNAL) {
     _s.networkSegPol = null;
@@ -121,6 +142,7 @@ const prepareNewSegmentForSave = (segment: ISegmentSegmentP): ISegmentSegmentP =
 };
 
 const updateMatchRule = (
+  matchKey: SegmentSiteSegmentMatchKey,
   segment: ISegmentSegmentP,
   rule: ISegmentSiteSegmentMatchRuleP | ISegmentApplicationSegMatchRuleP | ISegmentNetworkSegMatchRuleP | ISegmentExternalSegMatchRuleP,
   index?: number,
@@ -150,12 +172,20 @@ const updateMatchRule = (
   }
   if (_s.segType === SegmentSegmentType.SITE) {
     const _arr: ISegmentSiteSegmentMatchRuleP[] = segment.siteSegPol.matchRules.slice();
-    const _r = rule as ISegmentSiteSegmentMatchRuleP;
-    const index = _arr.findIndex(it => it.matchKey === _r.matchKey && it.matchValuePrimary === _r.matchValuePrimary);
-    if (index !== -1) {
-      _arr.splice(index, 1);
+    if (matchKey !== SegmentSiteSegmentMatchKey.SITE_SEG_MATCH_KEY_REGION_NAME) {
+      const _r = rule as ISegmentSiteSegmentMatchRuleP;
+      const index = _arr.findIndex(it => it.matchKey === _r.matchKey && it.matchValuePrimary === _r.matchValuePrimary);
+      if (index !== -1) {
+        _arr.splice(index, 1);
+      } else {
+        _arr.push(rule as ISegmentSiteSegmentMatchRuleP);
+      }
     } else {
-      _arr.push(rule as ISegmentSiteSegmentMatchRuleP);
+      if (!index && index !== 0) {
+        _arr.push(rule as ISegmentSiteSegmentMatchRuleP);
+      } else {
+        _arr.splice(index, 1, rule as ISegmentSiteSegmentMatchRuleP);
+      }
     }
     _s.siteSegPol = { matchRules: _arr };
   }
@@ -172,6 +202,7 @@ const updateMatchRule = (
 };
 
 const removeMatchRule = (
+  matchKey: SegmentSiteSegmentMatchKey,
   segment: ISegmentSegmentP,
   index: number,
   rule?: ISegmentSiteSegmentMatchRuleP | ISegmentApplicationSegMatchRuleP | ISegmentNetworkSegMatchRuleP | ISegmentExternalSegMatchRuleP,
@@ -181,6 +212,11 @@ const removeMatchRule = (
     const _arr: ISegmentExternalSegMatchRuleP[] = segment.extSegPol.matchRules.slice();
     _arr.splice(index, 1);
     _s.extSegPol = { matchRules: _arr };
+  }
+  if (_s.segType === SegmentSegmentType.SITE) {
+    const _arr: ISegmentSiteSegmentMatchRuleP[] = segment.siteSegPol.matchRules.slice();
+    _arr.splice(index, 1);
+    _s.siteSegPol = { matchRules: _arr };
   }
   return _s;
 };
@@ -307,7 +343,7 @@ const onValidateSegment = (_s: ISegmentSegmentP): ISegmentComplete => {
     }
   }
   if (_s.segType && _s.segType === SegmentSegmentType.SITE) {
-    if (!_s.siteSegPol || (_s.siteSegPol && (!_s.siteSegPol.matchRules || !_s.siteSegPol.matchRules.length))) {
+    if (!_s.siteSegPol || (_s.siteSegPol && (!_s.siteSegPol.matchRules || !_s.siteSegPol.matchRules.length || !checkSiteRegionRules(_s.siteSegPol.matchRules)))) {
       _obj.step_2 = false;
     } else {
       _obj.step_2 = true;
@@ -338,6 +374,12 @@ const checkExtRules = (items: ISegmentExternalSegMatchRuleP[]): boolean => {
     }
   }
   return valid;
+};
+
+const checkSiteRegionRules = (items: ISegmentSiteSegmentMatchRuleP[]): boolean => {
+  const invalid = items.some(it => !it.matchValuePrimary);
+  if (!invalid) return true;
+  return false;
 };
 
 const getVmsFieldFromRuleKey = (key: SegmentApplicationSegMatchKey): string => {
@@ -450,4 +492,6 @@ export {
   onCreateExtRule,
   checkExtRules,
   updateSegmentDataToEdit,
+  checkSiteRegionRules,
+  onCreateRegionRule,
 };

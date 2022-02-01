@@ -1,10 +1,11 @@
 import React from 'react';
 // import { select } from 'd3-selection';
-import { INetworkVNetNode, ITGWNode, ITopoLink } from 'lib/hooks/Topology/models';
+import { FilterEntityOptions, INetworkVNetNode, ITGWNode, ITopoLink } from 'lib/hooks/Topology/models';
 import { INetworkNetworkLink } from 'lib/api/ApiModels/Topology/apiModels';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 import TransitionContainer from '../../TransitionContainer';
 import { NODES_CONSTANTS } from '../../../model';
+import { ICoord } from 'lib/models/general';
 
 interface IProps {
   visible: boolean;
@@ -13,6 +14,15 @@ interface IProps {
 const NetworkNetworkLink: React.FC<IProps> = (props: IProps) => {
   const { topology } = useTopologyV2DataContext();
   const [isSelected, setIsSelected] = React.useState<boolean>(false);
+  const [fromCoord, setFromCoord] = React.useState<ICoord>(null);
+  const [toCoord, setToCoord] = React.useState<ICoord>(null);
+
+  React.useEffect(() => {
+    const _fromCoord = getFromCoord(props.dataItem, topology.entities);
+    const _toCoord = getToCoord(props.dataItem, topology.entities);
+    setFromCoord(_fromCoord);
+    setToCoord(_toCoord);
+  }, [props.dataItem, topology.entities]);
 
   React.useEffect(() => {
     if (topology.selectedNode && (topology.selectedNode.uiId === props.dataItem.from.uiId || topology.selectedNode.uiId === props.dataItem.to.uiId)) {
@@ -21,6 +31,29 @@ const NetworkNetworkLink: React.FC<IProps> = (props: IProps) => {
       setIsSelected(false);
     }
   }, [topology.selectedNode]);
+
+  const getFromCoord = (dataItem: ITopoLink<INetworkVNetNode, ITGWNode, INetworkNetworkLink>, filter: FilterEntityOptions): ICoord => {
+    if (!dataItem.fromParent.visible) return null;
+    if (dataItem.fromParent.collapsed) {
+      return { x: props.dataItem.fromParent.x + props.dataItem.fromParent.width / 2, y: props.dataItem.fromParent.y + props.dataItem.toParent.height / 2 + NODES_CONSTANTS.REGION.collapse.height / 2 };
+    }
+    if (!filter.vpc.selected) {
+      const _bottom = dataItem.fromParent.collapsed ? props.dataItem.fromParent.height / 2 + NODES_CONSTANTS.REGION.collapse.height : props.dataItem.fromParent.height;
+      return { x: props.dataItem.fromParent.x + props.dataItem.fromParent.width / 2, y: props.dataItem.fromParent.y + _bottom };
+    }
+    return { x: props.dataItem.from.x + NODES_CONSTANTS.NETWORK_VNET.collapse.r, y: props.dataItem.from.y + NODES_CONSTANTS.NETWORK_VNET.collapse.height };
+  };
+
+  const getToCoord = (dataItem: ITopoLink<INetworkVNetNode, ITGWNode, INetworkNetworkLink>, filter: FilterEntityOptions): ICoord => {
+    if (!dataItem.toParent.visible) return null;
+    if (props.dataItem.toParent.collapsed || !filter.transit.selected) {
+      return { x: props.dataItem.toParent.x + props.dataItem.toParent.width / 2, y: props.dataItem.toParent.y + props.dataItem.toParent.height / 2 - NODES_CONSTANTS.ACCOUNT.collapse.height / 2 };
+    }
+    return { x: props.dataItem.to.x + NODES_CONSTANTS.NETWORK_WEDGE.collapse.r, y: props.dataItem.to.y };
+  };
+
+  if (!props.visible || !fromCoord || !toCoord) return null;
+
   return (
     <TransitionContainer id={`networkNetworkLink${props.dataItem.extId}`} stateIn={props.visible} transform="none" origin="unset" timing={50}>
       <line
@@ -32,14 +65,10 @@ const NetworkNetworkLink: React.FC<IProps> = (props: IProps) => {
         // data-tochildid={`${props.dataItem.toNode.child.nodeType}${props.dataItem.toNode.child.id}`}
         // data-fromparentid={`${props.dataItem.fromNode.parent.type}${props.dataItem.fromNode.parent.dataItem.id}`}
         // data-toparentid={`${props.dataItem.toNode.parent.type}${props.dataItem.toNode.parent.dataItem.id}`}
-        x1={props.dataItem.fromParent.collapsed ? props.dataItem.fromParent.x + props.dataItem.fromParent.width / 2 : props.dataItem.from.x + NODES_CONSTANTS.NETWORK_VNET.collapse.r}
-        y1={
-          props.dataItem.fromParent.collapsed
-            ? props.dataItem.fromParent.y + props.dataItem.toParent.height / 2 - NODES_CONSTANTS.REGION.collapse.height / 2
-            : props.dataItem.from.y + NODES_CONSTANTS.NETWORK_VNET.collapse.height
-        }
-        x2={props.dataItem.toParent.collapsed ? props.dataItem.toParent.x + props.dataItem.toParent.width / 2 : props.dataItem.to.x + NODES_CONSTANTS.NETWORK_WEDGE.collapse.r}
-        y2={props.dataItem.toParent.collapsed ? props.dataItem.toParent.y + props.dataItem.toParent.height / 2 - NODES_CONSTANTS.ACCOUNT.collapse.height / 2 : props.dataItem.to.y}
+        x1={fromCoord.x}
+        y1={fromCoord.y}
+        x2={toCoord.x}
+        y2={toCoord.y}
       />
     </TransitionContainer>
   );

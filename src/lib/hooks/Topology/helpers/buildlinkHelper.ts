@@ -80,7 +80,6 @@ const buildPeerLinks = (
   }
   if (!_from || !_to) return;
   const pl: ITopoLink<INetworkVNetNode, INetworkVNetNode, INetworkVNetworkPeeringConnectionNode> = createTopoLink(TopoLinkTypes.PeerConnectionLink, _from, _to, _fromParent, _toParent, region, item);
-  pl.visible = filter.peer_connections.selected && filter.vpc.selected;
   links[pl.extId] = pl;
 };
 
@@ -203,23 +202,15 @@ export const updateLinkVisibleState = (
       // _links[key].visible = filter.sites.selected && filter.transit.selected;
       continue;
     }
-    if (filterOption === FilterEntityTypes.PEERING_CONNECTIONS) {
-      if (_links[key].type !== TopoLinkTypes.PeerConnectionLink) continue;
-      _links[key].fromParent = regions[_links[key].fromParent.dataItem.extId];
-      _links[key].toParent = regions[_links[key].toParent.dataItem.extId];
-      // _links[key].visible = filter.peer_connections.selected && filter.vpc.selected;
-      continue;
-    }
-    if (filterOption === FilterEntityTypes.VPC) {
-      if (_links[key].type === TopoLinkTypes.NetworkNetworkLink) {
-        _links[key].fromParent = regions[_links[key].fromParent.dataItem.extId];
-        // _links[key].visible = filter.vpc.selected && filter.transit.selected;
-        continue;
-      }
+    if (filterOption === FilterEntityTypes.PEERING_CONNECTIONS || filterOption === FilterEntityTypes.VPC || filterOption === FilterEntityTypes.WEB_ACLS) {
       if (_links[key].type === TopoLinkTypes.PeerConnectionLink) {
         _links[key].fromParent = regions[_links[key].fromParent.dataItem.extId];
         _links[key].toParent = regions[_links[key].toParent.dataItem.extId];
-        // _links[key].visible = filter.vpc.selected && filter.peer_connections.selected;
+        continue;
+      }
+      if (_links[key].type === TopoLinkTypes.NetworkNetworkLink) {
+        _links[key].fromParent = regions[_links[key].fromParent.dataItem.extId];
+        // _links[key].visible = filter.vpc.selected && filter.transit.selected;
         continue;
       }
       continue;
