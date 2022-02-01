@@ -21,6 +21,7 @@ import { ciscoMerakiLogoIcon } from 'app/components/SVGIcons/topologyIcons/cisco
 import { awsIcon } from 'app/components/SVGIcons/topologyIcons/aws';
 import LoadingIndicator from 'app/components/Loading';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
+import { PolicyLogDetailsDialog } from './PolicyLogDetailsDialog';
 
 const REGEX = /[-[\]{}()*+?.,\\^$|#\s]/g;
 
@@ -29,7 +30,7 @@ interface PolicyLogsSelectOption {
   readonly value: PolicyLogsTimeRangeValue;
 }
 
-interface PolicyLogsData {
+export interface PolicyLogsData {
   readonly id: string;
   readonly operation: string;
   readonly policyType: string;
@@ -132,6 +133,8 @@ export const PolicyLogs: React.FC = () => {
   const [columnAnchorEl, setColumnAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [policyLogsData, setPolicyLogsData] = useState<PolicyLogsData[]>([]);
   const [filteredPolicyLogsData, setFilteredPolicyLogsData] = useState<PolicyLogsData[]>([]);
+  const [selectedPolicyLogsData, setSelectedPolicyLogsData] = useState<PolicyLogsData | null>(null);
+  const [isPolicyLogDetailsDialogOpen, setIsPolicyLogDetailsDialogOpen] = useState<boolean>(false);
 
   const { response, loading, error, onGet } = useGet<PolicyLogsResponse>();
 
@@ -200,6 +203,18 @@ export const PolicyLogs: React.FC = () => {
 
   const handleTimeRangeChange = (value: PolicyLogsSelectOption) => setTimeRange(value);
 
+  const onPolicyLogSelect = (data: PolicyLogsData) => {
+    setSelectedPolicyLogsData(data);
+    handlePolicyLogDetailsDialogOpen();
+  };
+
+  const handlePolicyLogDetailsDialogOpen = () => setIsPolicyLogDetailsDialogOpen(true);
+
+  const handlePolicyLogDetailsDialogClose = () => {
+    setIsPolicyLogDetailsDialogOpen(false);
+    setSelectedPolicyLogsData(null);
+  };
+
   const logsTableData: AnomalyPolicyLogsTableData[] = filteredPolicyLogsData.map(item => {
     return {
       time: item.timestamp,
@@ -226,7 +241,9 @@ export const PolicyLogs: React.FC = () => {
         <div className={`${classes.tabTitleContainer} ${classes.policyLogsViewDetailsButton}`}>
           <div className={classes.ellipsisText}>{item.policyType}</div>
           <div>
-            <span className={classes.policyLogsDetailsText}>VIEW DETAILS</span>
+            <span className={classes.policyLogsDetailsText} onClick={() => onPolicyLogSelect(item)}>
+              VIEW DETAILS
+            </span>
             <ArrowRightIcon fontSize="medium" className={classes.policyLogsArrowRight} />
           </div>
         </div>
@@ -300,6 +317,7 @@ export const PolicyLogs: React.FC = () => {
           <AnomalySLATestTable columns={selectedColumns} data={logsTableData} sortableHeaders={POLICY_LOGS_TABLE_SORTABLE_HEADERS} />
         )}
       </div>
+      {selectedPolicyLogsData && <PolicyLogDetailsDialog isOpen={isPolicyLogDetailsDialogOpen} handleClose={handlePolicyLogDetailsDialogClose} selectedPolicyLogData={selectedPolicyLogsData} />}
     </div>
   );
 };
