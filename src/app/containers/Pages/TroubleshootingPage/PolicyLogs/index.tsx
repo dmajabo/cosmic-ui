@@ -22,6 +22,7 @@ import { awsIcon } from 'app/components/SVGIcons/topologyIcons/aws';
 import LoadingIndicator from 'app/components/Loading';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import { PolicyLogDetailsDialog } from './PolicyLogDetailsDialog';
+import { getCorrectedTimeString } from '../../MetricsPage/components/Utils';
 
 const REGEX = /[-[\]{}()*+?.,\\^$|#\s]/g;
 
@@ -154,8 +155,7 @@ export const PolicyLogs: React.FC = () => {
     if (response && response.policyLogs) {
       const formattedPolicyLogsData: PolicyLogsData[] = response.policyLogs.map(item => {
         const { timestamp, ...other } = item;
-        const garbagesubstring = timestamp.slice(item.timestamp.indexOf('.'), timestamp.indexOf('.') + 10);
-        const timeString = timestamp.replace(garbagesubstring, '');
+        const timeString = getCorrectedTimeString(timestamp);
         return {
           ...other,
           timestamp: DateTime.fromFormat(timeString, INPUT_TIME_FORMAT).toUTC().toFormat(TABLE_TIME_FORMAT),
