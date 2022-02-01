@@ -41,8 +41,10 @@ const TextNumberInput: React.FC<IProps> = (props: IProps) => {
   }, [debouncedSearchTerm]);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setIsTyping(true);
     const { valueAsNumber } = e.target;
+    if ((props.min || props.min === 0) && (valueAsNumber || valueAsNumber === 0) && valueAsNumber < props.min) return;
+    if ((props.max || props.max === 0) && (valueAsNumber || valueAsNumber === 0) && valueAsNumber > props.max) return;
+    setIsTyping(true);
     setTextValue(valueAsNumber);
   };
 
