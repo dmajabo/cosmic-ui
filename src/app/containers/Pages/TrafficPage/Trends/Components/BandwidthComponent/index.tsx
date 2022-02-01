@@ -79,7 +79,7 @@ const BandwidthComponent: React.FC<Props> = (props: Props) => {
   return (
     <ChartContainer margin="0 0 20px 0">
       <ChartHeader>
-        <ChartLabel className="textOverflow">Bandwidth (Transit)</ChartLabel>
+        <ChartLabel className="textOverflowEllips">Bandwidth (Transit)</ChartLabel>
       </ChartHeader>
 
       <ChartWrapper>

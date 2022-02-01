@@ -62,7 +62,7 @@ export const DroppedFlowsComponent: React.FC<Props> = (props: Props) => {
   return (
     <ChartContainer margin="0 0 20px 0">
       <ChartHeader>
-        <ChartLabel className="textOverflow">Dropped Flows</ChartLabel>
+        <ChartLabel className="textOverflowEllips">Dropped Flows</ChartLabel>
       </ChartHeader>
 
       <ChartWrapper>

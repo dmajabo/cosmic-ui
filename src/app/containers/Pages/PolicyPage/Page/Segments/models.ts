@@ -1,9 +1,10 @@
 import { IGridColumnField } from 'lib/models/grid';
 
 export interface ISegmentsGridColumns {
+  id: IGridColumnField;
   name: IGridColumnField;
   type: IGridColumnField;
-  source: IGridColumnField;
+  // source: IGridColumnField;
   color: IGridColumnField;
   isSystemSegment: IGridColumnField;
   description: IGridColumnField;
@@ -22,8 +23,8 @@ export const SegmentsGridColumns: ISegmentsGridColumns = {
     resField: 'segType',
     label: 'Type',
   },
-  source: {
-    resField: 'networkSegPol',
+  id: {
+    resField: 'id',
     label: 'Source',
   },
   color: {
@@ -32,7 +33,7 @@ export const SegmentsGridColumns: ISegmentsGridColumns = {
   },
   isSystemSegment: {
     resField: 'isSystemSegment',
-    label: 'Is System',
+    label: 'System Defined',
   },
 };
 

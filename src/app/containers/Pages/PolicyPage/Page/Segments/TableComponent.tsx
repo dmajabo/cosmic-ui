@@ -13,6 +13,7 @@ import { editIcon } from 'app/components/SVGIcons/edit';
 import { deleteIcon } from 'app/components/SVGIcons/delete';
 import { ISegmentSegmentP, SegmentSegmentType } from 'lib/api/ApiModels/Policy/Segment';
 import { checkMark } from 'app/components/SVGIcons/checkMark';
+import SeparateTableCell from './SeparateTableCell';
 interface Props {
   data: ISegmentSegmentP[];
   totalCount: number;
@@ -34,7 +35,7 @@ const TableComponent: React.FC<Props> = (props: Props) => {
       headerName: SegmentsGridColumns.name.label,
       label: SegmentsGridColumns.name.label,
       minWidth: 200,
-      flex: 0.5,
+      flex: 0.25,
       disableColumnMenu: true,
       resizable: false,
       editable: false,
@@ -54,7 +55,6 @@ const TableComponent: React.FC<Props> = (props: Props) => {
       headerName: SegmentsGridColumns.type.label,
       label: SegmentsGridColumns.type.label,
       minWidth: 200,
-      flex: 0.5,
       disableColumnMenu: true,
       resizable: false,
       editable: false,
@@ -68,11 +68,25 @@ const TableComponent: React.FC<Props> = (props: Props) => {
         return param.value;
       },
     },
+    // {
+    //   id: `segments${SegmentsGridColumns.description.resField}`,
+    //   field: SegmentsGridColumns.description.resField,
+    //   headerName: SegmentsGridColumns.description.label,
+    //   label: SegmentsGridColumns.description.label,
+    //   minWidth: 200,
+    //   flex: 0.5,
+    //   disableColumnMenu: true,
+    //   resizable: false,
+    //   editable: false,
+    //   filterable: false,
+    //   disableReorder: true,
+    //   disableExport: true,
+    // },
     {
-      id: `segments${SegmentsGridColumns.description.resField}`,
-      field: SegmentsGridColumns.description.resField,
-      headerName: SegmentsGridColumns.description.label,
-      label: SegmentsGridColumns.description.label,
+      id: `segments${SegmentsGridColumns.id.resField}`,
+      field: SegmentsGridColumns.id.resField,
+      headerName: SegmentsGridColumns.id.label,
+      label: SegmentsGridColumns.id.label,
       minWidth: 200,
       flex: 0.5,
       disableColumnMenu: true,
@@ -81,27 +95,14 @@ const TableComponent: React.FC<Props> = (props: Props) => {
       filterable: false,
       disableReorder: true,
       disableExport: true,
-    },
-    {
-      id: `segments${SegmentsGridColumns.source.resField}`,
-      field: SegmentsGridColumns.source.resField,
-      headerName: SegmentsGridColumns.source.label,
-      label: SegmentsGridColumns.source.label,
-      minWidth: 200,
-      flex: 0.5,
-      disableColumnMenu: true,
-      resizable: false,
-      editable: false,
-      filterable: false,
-      disableReorder: true,
-      disableExport: true,
+      renderCell: (param: GridRenderCellParams) => <SeparateTableCell dataItem={param.row} />,
     },
     {
       id: `segments${SegmentsGridColumns.isSystemSegment.resField}`,
       field: SegmentsGridColumns.isSystemSegment.resField,
       headerName: SegmentsGridColumns.isSystemSegment.label,
       label: SegmentsGridColumns.isSystemSegment.label,
-      minWidth: 80,
+      minWidth: 160,
       disableColumnMenu: true,
       resizable: false,
       editable: false,

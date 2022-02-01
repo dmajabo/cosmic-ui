@@ -71,7 +71,7 @@ const FlowsOverviewSettings: React.FC<Props> = (props: Props) => {
 
   return (
     <>
-      <PanelTitle className="textOverflow">Flows Overview Settings</PanelTitle>
+      <PanelTitle className="textOverflowEllips">Flows Overview Settings</PanelTitle>
       <OverflowContainer style={{ left: '0', display: 'flex', flexDirection: 'column' }}>
         {ranges && ranges.length
           ? ranges.map((r, i) => (

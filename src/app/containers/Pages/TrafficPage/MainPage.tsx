@@ -21,7 +21,7 @@ const MainPage: React.FC<IProps> = (props: IProps) => {
   };
 
   return (
-    <PageWrapperStyles>
+    <PageWrapperStyles padding="20px 40px 40px 40px">
       <TabsWrapperStyles>
         <Tabs
           value={traffic.selectedTab.index}

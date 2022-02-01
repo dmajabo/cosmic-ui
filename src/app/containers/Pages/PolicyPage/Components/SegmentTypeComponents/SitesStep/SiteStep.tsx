@@ -91,13 +91,13 @@ const SiteStep: React.FC<Props> = (props: Props) => {
             props.matchRules.map((it, index) => {
               if (it.matchKey !== SegmentSiteSegmentMatchKey.SITE_SEG_MATCH_KEY_REGION_NAME) return null;
               return (
-                <ModalRow margin="0 0 20px 0">
-                  <RegionRule key={`extMatchRule${it.uiId}`} data={it} index={index} onChange={onUpdateRule} onRemoveRule={onRemoveRule} />
+                <ModalRow margin="0 0 20px 0" key={`extMatchRule${it.uiId}${index}`}>
+                  <RegionRule data={it} index={index} onChange={onUpdateRule} onRemoveRule={onRemoveRule} />
                 </ModalRow>
               );
             })
           ) : (
-            <ModalRow margin="40px auto 40px auto">There are no region rules yet. To create rule click the button bellow.</ModalRow>
+            <ModalRow margin="40px auto 40px auto">There are no rules yet. To create rule click the button bellow.</ModalRow>
           )}
           <ModalRow margin="0">
             <SecondaryButton

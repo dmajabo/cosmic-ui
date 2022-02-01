@@ -30,7 +30,7 @@ export const FlowsOverviewComponent: React.FC<Props> = (props: Props) => {
   return (
     <ChartContainer>
       <ChartHeader>
-        <ChartLabel className="textOverflow">Flows Overview</ChartLabel>
+        <ChartLabel className="textOverflowEllips">Flows Overview</ChartLabel>
         <SecondaryButton styles={{ margin: '0 0 0 auto' }} label="Settings" icon={settingIcon} onClick={onOpenPanel} />
       </ChartHeader>
       <ChartWrapper>

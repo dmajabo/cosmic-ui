@@ -2,18 +2,18 @@ import { ToggleButtonWrapper } from 'app/components/Inputs/Toogle/styles';
 import { DEFAULT_TRANSITION } from 'lib/constants/general';
 import styled from 'styled-components';
 
-export const PageWrapperStyles = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  min-height: 100%;
-  padding: 40px;
-`;
-
 interface PageWrapProps {
   width?: string;
   padding?: string;
 }
+export const PageWrapperStyles = styled.div<PageWrapProps>`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 100%;
+  padding: ${props => props.padding || '40px'};
+`;
+
 export const PageWithPanelWrapperStyles = styled.div<PageWrapProps>`
   display: flex;
   flex-direction: column;

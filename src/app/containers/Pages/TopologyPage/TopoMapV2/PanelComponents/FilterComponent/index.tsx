@@ -31,6 +31,9 @@ const FilterComponent: React.FC<IProps> = (props: IProps) => {
           <FilterGroup maxGroupHeight="260px" defaultOpen label="Entities" styles={{ margin: '0 0 5px 0' }}>
             <FilterEntityGroup type={TopoFilterTypes.Entities} data={topology.entities} onClick={onSelectFilterOption} />
           </FilterGroup>
+          <FilterGroup maxGroupHeight="unset" label="Segments" styles={{ margin: '0' }}>
+            <FilterNodesGroup type={TopoFilterTypes.Sites} icon={ciscoMerakiLogoIcon(20)} iconStyles={{ width: '20px', height: '20px' }} data={topology.sites} onClick={onSelectFilterOption} />
+          </FilterGroup>
           {/* <FilterGroup maxGroupHeight="260px" label="Health Severity" styles={{ margin: '0 0 5px 0' }}>
             <FilterSeverityGroup type={TopoFilterTypes.Severity} data={topology.severity} onClick={onSelectFilterOption} />
           </FilterGroup> */}
@@ -39,9 +42,6 @@ const FilterComponent: React.FC<IProps> = (props: IProps) => {
           </FilterGroup>
           <FilterGroup maxGroupHeight="unset" label="Accounts" styles={{ margin: '0 0 5px 0' }}>
             <FilterNodesGroup type={TopoFilterTypes.Accounts} icon={accountFilterIcon} data={topology.accounts} onClick={onSelectFilterOption} />
-          </FilterGroup>
-          <FilterGroup maxGroupHeight="unset" label="Sites" styles={{ margin: '0' }}>
-            <FilterNodesGroup type={TopoFilterTypes.Sites} icon={ciscoMerakiLogoIcon(20)} iconStyles={{ width: '20px', height: '20px' }} data={topology.sites} onClick={onSelectFilterOption} />
           </FilterGroup>
         </PanelContent>
       </OverflowContainer>

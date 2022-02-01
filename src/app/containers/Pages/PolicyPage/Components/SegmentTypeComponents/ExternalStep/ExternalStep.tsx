@@ -45,12 +45,12 @@ const ExternalStep: React.FC<Props> = (props: Props) => {
       <RulesContainer>
         {props.matchRules && props.matchRules.length ? (
           props.matchRules.map((it, index) => (
-            <ModalRow margin="0 0 20px 0">
-              <ExternalRule key={`extMatchRule${it.uiId}`} data={it} index={index} onChange={onUpdateRule} onRemoveRule={onRemoveRule} />
+            <ModalRow margin="0 0 20px 0" key={`extMatchRule${it.uiId}`}>
+              <ExternalRule data={it} index={index} onChange={onUpdateRule} onRemoveRule={onRemoveRule} />
             </ModalRow>
           ))
         ) : (
-          <ModalRow margin="40px auto 40px auto">There are no external rules yet. To create rule click the button bellow.</ModalRow>
+          <ModalRow margin="40px auto 40px auto">There are no rules yet. To create rule click the button bellow.</ModalRow>
         )}
         <ModalRow margin="0">
           <SecondaryButton
