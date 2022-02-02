@@ -26,7 +26,6 @@ export interface PolicyLogRoute {
 export interface ConnectionResource {
   readonly extId: string;
   readonly name: string;
-  readonly resourceType: string;
 }
 
 export interface PolicyLogDetails {

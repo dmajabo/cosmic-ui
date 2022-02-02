@@ -1,5 +1,5 @@
-import produce from 'immer';
 import { IRouteResDataItem, IVmRule, PolicyTableKeyEnum } from 'lib/api/ApiModels/Metrics/apiModel';
+import { isEmpty } from 'lodash';
 import React from 'react';
 import PolicyTable from '../../TopologyPage/TopoMapV2/PanelComponents/NodePanels/VpcPanel/VmTabs/PolicyTab/PolicyTable';
 import RouteTable from '../../TopologyPage/TopoMapV2/PanelComponents/NodePanels/VpcPanel/VmTabs/RoutesTab/RouteTable';
@@ -28,6 +28,8 @@ export const RESOURCE_TYPE = {
   },
 };
 
+export const TABLE_HEIGHT: React.CSSProperties = { height: '17vh' };
+
 export const OldConfigData: React.FC<ConfigDataProps> = ({ oldData, sharedProperties, connectionProperties, vendorType }) => {
   const classes = TroubleshootingStyles();
 
@@ -40,10 +42,10 @@ export const OldConfigData: React.FC<ConfigDataProps> = ({ oldData, sharedProper
     );
 
   const getConnectionProperty = (title: string, oldDataItem: ConnectionResource[]) =>
-    oldDataItem && (
+    !isEmpty(oldDataItem) && (
       <div key={title} className={classes.defaultPropertyItem}>
         <div className={classes.tablePropertyTitle}>{title}</div>
-        <ConnectionResourceTable resourceData={oldDataItem} />
+        <ConnectionResourceTable resourceData={oldDataItem} styles={TABLE_HEIGHT} />
       </div>
     );
 
@@ -58,7 +60,7 @@ export const OldConfigData: React.FC<ConfigDataProps> = ({ oldData, sharedProper
     return (
       <div className={classes.defaultPropertyItem}>
         <div className={classes.tablePropertyTitle}>Routes</div>
-        <RouteTable data={routeTableData} />
+        <RouteTable data={routeTableData} styles={TABLE_HEIGHT} />
       </div>
     );
   };
@@ -69,8 +71,8 @@ export const OldConfigData: React.FC<ConfigDataProps> = ({ oldData, sharedProper
     return (
       <div className={classes.defaultPropertyItem}>
         <div className={classes.tablePropertyTitle}>Rules</div>
-        <PolicyTable data={inboundRules} showLoader={false} title={'Inbound'} />
-        <PolicyTable data={outboundRules} showLoader={false} title={'Outbound'} />
+        <PolicyTable data={inboundRules} showLoader={false} title={'Inbound'} styles={TABLE_HEIGHT} />
+        <PolicyTable data={outboundRules} showLoader={false} title={'Outbound'} styles={TABLE_HEIGHT} />
       </div>
     );
   };
@@ -79,18 +81,11 @@ export const OldConfigData: React.FC<ConfigDataProps> = ({ oldData, sharedProper
     <div className={classes.gridItemContent}>
       {sharedProperties.map(key => getConfigProperty(key.label, oldData[key.value]))}
       {connectionProperties.map(key => {
-        const data: ConnectionResource[] = oldData[key.value]
-          ? produce<ConnectionResource[]>(oldData[key.value], draft => {
-              draft.forEach(resource => {
-                const vendorResourceType = RESOURCE_TYPE[vendorType][key.value] || '';
-                resource.resourceType = vendorResourceType;
-              });
-            })
-          : undefined;
-        return getConnectionProperty(key.label, data);
+        const vendorResourceType = RESOURCE_TYPE[vendorType][key.value] || '';
+        return getConnectionProperty(vendorResourceType, oldData[key.value]);
       })}
-      {oldData.routes && oldData.routes.length && getRouteTable(oldData.routes)}
-      {oldData.rules && oldData.rules.length && getRuleTables(oldData.rules)}
+      {!isEmpty(oldData.routes) && getRouteTable(oldData.routes)}
+      {!isEmpty(oldData.rules) && getRuleTables(oldData.rules)}
     </div>
   );
 };

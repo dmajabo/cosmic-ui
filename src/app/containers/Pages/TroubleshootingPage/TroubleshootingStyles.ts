@@ -163,6 +163,7 @@ export const TroubleshootingStyles = makeStyles(
         position: 'relative',
         right: '4%',
         paddingLeft: '5.5%',
+        paddingRight: '5.5%',
       },
       propertyValue: {
         color: '#7a808c',

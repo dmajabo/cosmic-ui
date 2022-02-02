@@ -7,19 +7,17 @@ import { EmptyDataStyles, EmptyText } from 'app/components/Basic/NoDataStyles/No
 
 interface ConnectionResourceTableProps {
   readonly resourceData: ConnectionResource[];
+  readonly styles?: React.CSSProperties;
 }
 
-export const ConnectionResourceTable: React.FC<ConnectionResourceTableProps> = ({ resourceData }) => {
+export const ConnectionResourceTable: React.FC<ConnectionResourceTableProps> = ({ resourceData, styles }) => {
   const classes = TableStyles();
   return (
-    <TableWrapperStyles>
+    <TableWrapperStyles style={styles}>
       <TableContainer className={classes.container}>
         <Table stickyHeader aria-label="sticky table" className={classes.table}>
           <TableHead>
             <TableRow>
-              <TableCell className={classes.tableHeadCell} style={{ minWidth: 130 }}>
-                Resource Type
-              </TableCell>
               <TableCell className={classes.tableHeadCell} style={{ minWidth: 100 }}>
                 Name
               </TableCell>
@@ -32,7 +30,6 @@ export const ConnectionResourceTable: React.FC<ConnectionResourceTableProps> = (
             {resourceData && resourceData.length
               ? resourceData.map(resource => (
                   <TableRow hover tabIndex={-1} key={`tableRow_${resource.extId}`} className={classes.row}>
-                    <TableCell className={classes.tableCell}>{resource.resourceType}</TableCell>
                     <TableCell className={classes.tableCell}>{resource.name}</TableCell>
                     <TableCell className={classes.tableCell}>{resource.extId}</TableCell>
                   </TableRow>

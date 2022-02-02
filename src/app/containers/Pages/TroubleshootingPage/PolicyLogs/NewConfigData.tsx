@@ -1,12 +1,12 @@
 import produce from 'immer';
 import { IRouteResDataItem, IVmRule, PolicyTableKeyEnum } from 'lib/api/ApiModels/Metrics/apiModel';
-import { isEqual } from 'lodash';
+import { isEmpty, isEqual } from 'lodash';
 import React from 'react';
 import PolicyTable from '../../TopologyPage/TopoMapV2/PanelComponents/NodePanels/VpcPanel/VmTabs/PolicyTab/PolicyTable';
 import RouteTable from '../../TopologyPage/TopoMapV2/PanelComponents/NodePanels/VpcPanel/VmTabs/RoutesTab/RouteTable';
 import { TroubleshootingStyles } from '../TroubleshootingStyles';
 import { ConnectionResourceTable } from './ConnectionResourceTable';
-import { RESOURCE_TYPE } from './OldConfigData';
+import { RESOURCE_TYPE, TABLE_HEIGHT } from './OldConfigData';
 import { ConnectionResource, PolicyLogDetailProperty, PolicyLogDetails, PolicyLogRoute } from './PolicyLogDetailsDialog';
 
 interface ConfigDataProps {
@@ -66,10 +66,10 @@ export const NewConfigData: React.FC<ConfigDataProps> = ({ oldData, newData, sha
     );
 
   const getConnectionProperty = (title: string, oldDataItem: ConnectionResource[], newDataItem: ConnectionResource[]) =>
-    newDataItem && (
+    !isEmpty(newDataItem) && (
       <div key={title} className={getConnectionTableClassName(oldDataItem, newDataItem)}>
         <div className={classes.tablePropertyTitle}>{title}</div>
-        <ConnectionResourceTable resourceData={newDataItem} />
+        <ConnectionResourceTable resourceData={newDataItem} styles={TABLE_HEIGHT} />
       </div>
     );
 
@@ -84,7 +84,7 @@ export const NewConfigData: React.FC<ConfigDataProps> = ({ oldData, newData, sha
     return (
       <div className={getRouteTableClassName(oldRoutes, newRoutes)}>
         <div className={classes.tablePropertyTitle}>Routes</div>
-        <RouteTable data={routeTableData} />
+        <RouteTable data={routeTableData} styles={TABLE_HEIGHT} />
       </div>
     );
   };
@@ -95,8 +95,8 @@ export const NewConfigData: React.FC<ConfigDataProps> = ({ oldData, newData, sha
     return (
       <div className={getRulesTableClassName(oldRules, newRules)}>
         <div className={classes.tablePropertyTitle}>Rules</div>
-        <PolicyTable data={inboundRules} showLoader={false} title={'Inbound'} />
-        <PolicyTable data={outboundRules} showLoader={false} title={'Outbound'} />
+        <PolicyTable data={inboundRules} showLoader={false} title={'Inbound'} styles={TABLE_HEIGHT} />
+        <PolicyTable data={outboundRules} showLoader={false} title={'Outbound'} styles={TABLE_HEIGHT} />
       </div>
     );
   };
@@ -105,24 +105,8 @@ export const NewConfigData: React.FC<ConfigDataProps> = ({ oldData, newData, sha
     <div className={classes.gridItemContent}>
       {sharedProperties.map(key => getConfigProperty(key.label, oldData[key.value], newData[key.value]))}
       {connectionProperties.map(key => {
-        const newResourceData: ConnectionResource[] = newData[key.value]
-          ? produce<ConnectionResource[]>(newData[key.value], draft => {
-              draft.forEach(resource => {
-                const vendorResourceType = RESOURCE_TYPE[vendorType][key.value] || '';
-                resource.resourceType = vendorResourceType;
-              });
-            })
-          : undefined;
-
-        const oldResourceData: ConnectionResource[] = oldData[key.value]
-          ? produce<ConnectionResource[]>(oldData[key.value], draft => {
-              draft.forEach(resource => {
-                const vendorResourceType = RESOURCE_TYPE[vendorType][key.value] || '';
-                resource.resourceType = vendorResourceType;
-              });
-            })
-          : undefined;
-        return getConnectionProperty(key.label, oldResourceData, newResourceData);
+        const vendorResourceType = RESOURCE_TYPE[vendorType][key.value] || '';
+        return getConnectionProperty(vendorResourceType, oldData[key.value], newData[key.value]);
       })}
       {newData.routes && newData.routes.length && getRouteTable(oldData.routes, newData.routes)}
       {newData.rules && newData.rules.length && getRuleTables(oldData.rules, newData.rules)}
