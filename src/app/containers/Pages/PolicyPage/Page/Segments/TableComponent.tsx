@@ -102,7 +102,7 @@ const TableComponent: React.FC<Props> = (props: Props) => {
       field: SegmentsGridColumns.isSystemSegment.resField,
       headerName: SegmentsGridColumns.isSystemSegment.label,
       label: SegmentsGridColumns.isSystemSegment.label,
-      minWidth: 160,
+      minWidth: 140,
       disableColumnMenu: true,
       resizable: false,
       editable: false,

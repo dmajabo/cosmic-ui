@@ -14,21 +14,20 @@ import {
 } from './sizeHelpers';
 
 export const updateTopLevelItems = (filter: FilterEntityOptions, regions: IObject<ITopoRegionNode>, accounts: IObject<ITopoAccountNode>, sites: IObject<ITopoSitesNode>) => {
-  let offsetY = 0;
   let regionSizes: ISize = { width: 0, height: 0 };
   let accountSizes: ISize = { width: 0, height: 0 };
   let sitesSizes: ISize = { width: 0, height: 0 };
-  if (regions && Object.keys(regions).length) {
-    regionSizes = updateRegionItems(regions, filter);
-    offsetY = offsetY + regionSizes.height + NODES_CONSTANTS.REGION.spaceY;
-  }
   if (accounts && Object.keys(accounts).length) {
-    accountSizes = updateAccountItems(filter.transit.selected, accounts, offsetY);
-    offsetY = offsetY + accountSizes.height + NODES_CONSTANTS.ACCOUNT.spaceY;
+    const _startYPos = STANDART_DISPLAY_RESOLUTION_V2.height / 2;
+    accountSizes = updateAccountItems(filter.transit.selected, accounts, _startYPos);
+  }
+  if (regions && Object.keys(regions).length) {
+    const _startYPos = STANDART_DISPLAY_RESOLUTION_V2.height / 2 - NODES_CONSTANTS.ACCOUNT.spaceY * 1.5;
+    regionSizes = updateRegionItems(regions, filter, _startYPos);
   }
   if (sites && Object.keys(sites).length) {
-    sitesSizes = updateSitesItems(filter.sites.selected, sites, offsetY);
-    offsetY += sitesSizes.height;
+    const _startYPos = STANDART_DISPLAY_RESOLUTION_V2.height / 2 + NODES_CONSTANTS.ACCOUNT.spaceY * 1.5;
+    sitesSizes = updateSitesItems(filter.sites.selected, sites, _startYPos);
   }
   setRegionsCoord(filter, regions, regionSizes, STANDART_DISPLAY_RESOLUTION_V2.width);
   setAccountsCoord(accounts, accountSizes, STANDART_DISPLAY_RESOLUTION_V2.width);
@@ -36,16 +35,16 @@ export const updateTopLevelItems = (filter: FilterEntityOptions, regions: IObjec
 };
 
 // Set coord for vpc, vnets, peer-connections, waf
-export const updateRegionItems = (items: IObject<ITopoRegionNode>, filter: FilterEntityOptions): ISize => {
+export const updateRegionItems = (items: IObject<ITopoRegionNode>, filter: FilterEntityOptions, _startYPos: number): ISize => {
   if (!items || !Object.keys(items).length) return { width: 0, height: 0 };
   let offsetX = 0;
   let maxNodeHeight = 0;
   Object.keys(items).forEach((key, i) => {
     items[key].collapsed = getCollapseExpandState(filter, items[key].children, items[key].peerConnections, items[key].webAcls);
     setRegionSizes(items[key], filter);
-    items[key].y = 0;
-    items[key].x = offsetX;
     maxNodeHeight = Math.max(maxNodeHeight, items[key].height);
+    items[key].y = _startYPos - items[key].height;
+    items[key].x = offsetX;
     offsetX = offsetX + items[key].width + NODES_CONSTANTS.REGION.spaceX;
   });
   return { width: offsetX, height: maxNodeHeight };
@@ -186,9 +185,9 @@ export const updateAccountItems = (showChildrens: boolean, items: IObject<ITopoA
       items[key].width = Math.max(_width, NODES_CONSTANTS.ACCOUNT.expanded.minWidth);
       items[key].height = Math.max(_height, NODES_CONSTANTS.ACCOUNT.expanded.minHeight);
     }
-    items[key].y = offsetY;
-    items[key].x = offsetX;
     maxNodeHeight = Math.max(maxNodeHeight, items[key].height);
+    items[key].y = offsetY - maxNodeHeight / 2;
+    items[key].x = offsetX;
     offsetX = offsetX + items[key].width + NODES_CONSTANTS.ACCOUNT.spaceX;
   });
   return { width: offsetX, height: maxNodeHeight };
@@ -269,13 +268,15 @@ const setUpDevicesCoord = (site: ITopoSitesNode, items: IDeviceNode[][]) => {
 
 export const centeredRegionNodes = (nodes: IObject<ITopoRegionNode>, filter: FilterEntityOptions) => {
   let maxNodeHeight: number = 0;
+  const _startYPos = STANDART_DISPLAY_RESOLUTION_V2.height / 2 - NODES_CONSTANTS.ACCOUNT.spaceY * 1.5;
   for (const key in nodes) {
     if (nodes[key].height > maxNodeHeight) {
       maxNodeHeight = nodes[key].height;
     }
   }
   for (const key in nodes) {
-    nodes[key].y = maxNodeHeight / 2 - nodes[key].height / 2;
+    nodes[key].y = _startYPos - nodes[key].height;
+    set_Vertical_Coord_TopoNode(nodes[key], maxNodeHeight);
     setRegionChildrenCoords(filter, nodes[key].children, nodes[key].peerConnections, nodes[key].webAcls, nodes[key]);
   }
 };

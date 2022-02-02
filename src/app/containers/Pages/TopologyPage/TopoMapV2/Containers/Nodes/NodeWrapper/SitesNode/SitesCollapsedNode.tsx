@@ -17,7 +17,7 @@ const SitesCollapsedNode: React.FC<Props> = (props: Props) => {
     <g style={{ cursor: 'pointer' }} transform={`translate(${dx}, ${dy})`}>
       <rect
         id={props.dragId}
-        fill={props.site.dataItem.color}
+        fill={props.site.dataItem.color || NODES_CONSTANTS.SITES.expanded.marker.bgColor}
         width={NODES_CONSTANTS.SITES.collapse.width}
         height={NODES_CONSTANTS.SITES.collapse.height}
         rx={NODES_CONSTANTS.SITES.collapse.borderRadius}

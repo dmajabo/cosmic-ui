@@ -36,7 +36,7 @@ export const getChildContainerHeight = (visible: boolean, rows: number, containe
 
 export const set_Vertical_Coord_TopoNode = (node: ITopoRegionNode | ITopoSitesNode | ITopoAccountNode, height: number) => {
   if (node.height < height) {
-    node.y = node.y + height / 2 - node.height / 2;
+    node.y = node.y - height / 2 + node.height / 2;
   }
 };
 

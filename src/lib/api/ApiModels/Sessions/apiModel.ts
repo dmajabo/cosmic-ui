@@ -93,3 +93,11 @@ export interface ISankeyAppDetail {
 export interface ISankeyDetailRes {
   sankeydetail: ISankeyAppDetail;
 }
+
+export interface INetworkSegmentCount {
+  segmentId: string;
+  count: number;
+}
+export interface ITesseractGetTotalSessionsPerSegmentResponse {
+  segments: INetworkSegmentCount[];
+}

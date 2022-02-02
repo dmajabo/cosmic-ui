@@ -25,8 +25,9 @@ export const Paper = styled.div`
   display: flex;
   .react-colorful {
     width: 210px;
-    height: 210px;
+    height: 250px;
     margin-right: 20px;
+    margin-top: 3px;
   }
 `;
 

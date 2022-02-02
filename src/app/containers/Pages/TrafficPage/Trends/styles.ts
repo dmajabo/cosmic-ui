@@ -35,6 +35,7 @@ export const ChartLabel = styled.div`
 `;
 
 export const ChartWrapper = styled.div`
+  display: flex;
   width: 100%;
   height: calc(100% - 60px);
   border: 1px solid;

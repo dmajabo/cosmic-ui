@@ -2,10 +2,10 @@ import React from 'react';
 import { ChartWrapContainer } from './style';
 import useResizeAware from 'react-resize-aware';
 import * as d3 from 'd3';
+import { DEFAULT_SEGMENTS_COLORS_SCHEMA } from 'lib/models/general';
 export interface PieDataItem {
   name: string;
   value: number;
-  color: string;
 }
 
 interface Props {
@@ -14,6 +14,7 @@ interface Props {
 
 const DonutChart: React.FC<Props> = (props: Props) => {
   const [resizeListener, sizes] = useResizeAware();
+  const [colors] = React.useState<string[][]>(DEFAULT_SEGMENTS_COLORS_SCHEMA);
   const radius = Math.min(sizes.width, sizes.height) / 2 - 30;
 
   const pie = React.useMemo(() => {
@@ -29,7 +30,7 @@ const DonutChart: React.FC<Props> = (props: Props) => {
       .arc()
       .innerRadius(radius / 2)
       .outerRadius(radius * 0.99);
-    return pie.map(d => {
+    return pie.map((d, index) => {
       const _textArc = d3
         .arc()
         .innerRadius(radius)
@@ -37,7 +38,9 @@ const DonutChart: React.FC<Props> = (props: Props) => {
       const pos = _textArc.centroid(d);
       const midangle = d.startAngle + (d.endAngle - d.startAngle) / 2;
       const _a = midangle < Math.PI ? 'start' : 'end';
-      return { path: arcPathGenerator(d), labelPos: `translate(${pos})`, textAnchor: _a, ...d };
+      const colorRowI = index % colors.length;
+      const colorColumnI = index % colors[colorRowI].length;
+      return { path: arcPathGenerator(d), labelPos: `translate(${pos})`, textAnchor: _a, color: colors[colorRowI][colorColumnI], ...d };
     });
   }, [radius, pie]);
 
@@ -49,9 +52,9 @@ const DonutChart: React.FC<Props> = (props: Props) => {
           {arcs.map((arc, i) => {
             return (
               <g data-value={arc.data.value}>
-                <path key={`path${i}`} d={arc.path} fill={arc.data.color} stroke="var(--_primaryBg)" strokeWidth="2.5" />
+                <path key={`path${i}`} d={arc.path} fill={arc.color} stroke="var(--_primaryBg)" strokeWidth="5" />
                 <g transform={`${arc.labelPos}`}>
-                  <text fontSize="20" fill={arc.data.color} textAnchor={arc.textAnchor}>
+                  <text fontSize="20" fill={arc.color} textAnchor={arc.textAnchor}>
                     {arc.data.name}
                   </text>
                 </g>
