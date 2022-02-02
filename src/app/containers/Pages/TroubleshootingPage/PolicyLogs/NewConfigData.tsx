@@ -108,8 +108,8 @@ export const NewConfigData: React.FC<ConfigDataProps> = ({ oldData, newData, sha
         const vendorResourceType = RESOURCE_TYPE[vendorType][key.value] || '';
         return getConnectionProperty(vendorResourceType, oldData[key.value], newData[key.value]);
       })}
-      {newData.routes && newData.routes.length && getRouteTable(oldData.routes, newData.routes)}
-      {newData.rules && newData.rules.length && getRuleTables(oldData.rules, newData.rules)}
+      {!isEmpty(newData.routes) && getRouteTable(oldData.routes, newData.routes)}
+      {!isEmpty(newData.rules) && getRuleTables(oldData.rules, newData.rules)}
     </div>
   );
 };
