@@ -5,6 +5,7 @@ import { ciscoMerakiLogoIcon } from 'app/components/SVGIcons/topologyIcons/cisco
 import { awsIcon } from 'app/components/SVGIcons/topologyIcons/aws';
 import { poloAltoIcon } from 'app/components/SVGIcons/edges/poloAlto';
 import { IObject } from 'lib/models/general';
+import _ from 'lodash';
 
 export const buildAggregatedData = (data: IBuckets[]): IAggregateRow[] => {
   if (!data || !data.length) return [];
@@ -26,38 +27,11 @@ const buildRow = (bucket: IBuckets): IAggregateRow => {
 
 const generateTopLevelSessionItem = (bucket: IBuckets): ISession => {
   if (!bucket.sessions || !bucket.sessions.length) {
-    return {
-      id: bucket.key,
-      timestamp: '',
-      sessionId: bucket.key,
-      flowId: null,
-      sourceIp: null,
-      sourcePort: null,
-      destIp: null,
-      destPort: null,
-      natSourceIp: null,
-      natSourcePort: null,
-      natDestIp: null,
-      natDestPort: null,
-      stitched: null,
-      deviceName: null,
-      deviceExtId: null,
-      device: null,
-      deviceVendor: null,
-      bytes: null,
-      packets: null,
-      action: null,
-      tcpFlags: null,
-      trafficType: null,
-      vnetworkExtId: null,
-      vnetworkName: null,
-      subnetExtId: null,
-      subnetName: null,
-      vmExtId: null,
-      vmName: null,
-      region: null,
-      azId: null,
-    };
+    const _item = _.cloneDeep(bucket.sessions[0]);
+    _item.id = bucket.key;
+    _item.timestamp = '';
+    _item.sessionId = bucket.key;
+    return _item;
   }
   return { ...bucket.sessions[0] };
 };

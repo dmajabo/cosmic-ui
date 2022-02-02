@@ -7,23 +7,28 @@ export enum SankeyNodeType {
   SANKEY_APPLICATION = 'SANKEY_APPLICATION',
 }
 
+export enum NetworkPolicyAction {
+  ALLOW = 'ALLOW', // "default": "ALLOW"
+  DENY = 'DENY',
+}
+
 export interface ISession extends IBaseEntity<string> {
   timestamp: string;
   sessionId: string;
-  flowId: string;
-  sourceIp: string;
-  sourcePort: number;
-  destIp: string;
-  destPort: number;
-  natSourceIp: string;
-  natSourcePort: number;
-  natDestIp: string;
-  natDestPort: number;
-  stitched: boolean;
-  deviceName: string;
-  deviceExtId: string;
-  device: string;
-  deviceVendor: AccountVendorTypes;
+  readonly flowId: string;
+  readonly sourceIp: string;
+  readonly sourcePort: number;
+  readonly destIp: string;
+  readonly destPort: number;
+  readonly natSourceIp: string;
+  readonly natSourcePort: number;
+  readonly natDestIp: string;
+  readonly natDestPort: number;
+  readonly stitched: boolean;
+  readonly deviceName: string;
+  readonly deviceExtId: string;
+  readonly device: string;
+  readonly deviceVendor: AccountVendorTypes;
   readonly bytes: number;
   readonly packets: number;
   readonly action: string;
@@ -37,6 +42,35 @@ export interface ISession extends IBaseEntity<string> {
   readonly vmName: string;
   readonly region: string;
   readonly azId: string;
+
+  readonly protocol: string;
+  readonly flowDirection: string;
+  readonly startTime: string;
+  readonly endTime: string;
+  readonly policyAction: NetworkPolicyAction;
+  readonly deviceNetworkExtid: string;
+  readonly deviceControllerId: string;
+  readonly deviceControllerName: string;
+  readonly sourceOrgid: string;
+  readonly sourceVnetworkExtid: string;
+  readonly sourceVnetworkName: string;
+  readonly sourceSubnetExtid: string;
+  readonly sourceVmExtid: string;
+  readonly sourceVmName: string;
+  readonly sourceRegion: string;
+  readonly sourceControllerName: string;
+  readonly sourceControllerId: string;
+  readonly sourceSegmentId: string;
+  readonly destOrgid: string;
+  readonly destVnetworkExtid: string;
+  readonly destVnetworkName: string;
+  readonly destSubnetExtid: string;
+  readonly destVmExtid: string;
+  readonly destVmName: string;
+  readonly destRegion: string;
+  readonly destControllerName: string;
+  readonly destControllerId: string;
+  readonly destSegmentId: string;
 }
 
 export interface IBuckets {

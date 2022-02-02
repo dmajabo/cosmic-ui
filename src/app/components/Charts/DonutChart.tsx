@@ -51,8 +51,8 @@ const DonutChart: React.FC<Props> = (props: Props) => {
         <g transform={`translate(${sizes.width / 2}, ${sizes.height / 2})`}>
           {arcs.map((arc, i) => {
             return (
-              <g data-value={arc.data.value}>
-                <path key={`path${i}`} d={arc.path} fill={arc.color} stroke="var(--_primaryBg)" strokeWidth="5" />
+              <g data-value={arc.data.value} key={`path${i}${arc.data.name}`}>
+                <path d={arc.path} fill={arc.color} stroke="var(--_primaryBg)" strokeWidth="5" />
                 <g transform={`${arc.labelPos}`}>
                   <text fontSize="20" fill={arc.color} textAnchor={arc.textAnchor}>
                     {arc.data.name}
