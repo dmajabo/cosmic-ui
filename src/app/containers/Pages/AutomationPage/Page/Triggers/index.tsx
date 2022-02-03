@@ -24,10 +24,11 @@ import { GridWrapper } from '../../styles/styles';
 import { toast, ToastContainer } from 'react-toastify';
 import { ALERT_TIME_RANGE_QUERY_TYPES, paramBuilder } from 'lib/api/ApiModels/paramBuilders';
 import { AlertApi } from 'lib/api/ApiModels/Services/alert';
+import _ from 'lodash';
+
 interface Props {}
 
 const Triggers: React.FC<Props> = (props: Props) => {
-  // const { automation } = useAutomationDataContext();
   const userContext = React.useContext<UserContextState>(UserContext);
   const { loading, error, response, onGet } = useGet<IAlertMetaDataRes>();
   const { loading: putLoading, error: putError, response: updateRes, onPost } = usePost<IAlertMeta, IAlertMeta>();
@@ -189,7 +190,10 @@ const Triggers: React.FC<Props> = (props: Props) => {
 
   React.useEffect(() => {
     if (response && response.alertMetadata && response.alertMetadata.length) {
-      const _arr: IAlertMeta[] = getSearchedListData(response.alertMetadata, searchValue);
+      const _arr: IAlertMeta[] = getSearchedListData(
+        response.alertMetadata.map(it => ({ ...it, id: it.id ? it.id : `CUSTOM_${it.type}` })),
+        searchValue,
+      );
       setDataRows(response.alertMetadata);
       setFilteredData(_arr);
       setTotalCount(response.totalCount);
@@ -203,7 +207,7 @@ const Triggers: React.FC<Props> = (props: Props) => {
   React.useEffect(() => {
     if (updateRes && updateRes.id) {
       const _items: IAlertMeta[] = dataRows.slice();
-      const index: number = _items.findIndex(it => it.id === updateRes.id);
+      const index: number = _items.findIndex(it => it.type === updateRes.type);
       _items.splice(index, 1, updateRes);
       const _arr: IAlertMeta[] = getSearchedListData(_items, searchValue);
       setDataRows(_items);
@@ -287,7 +291,12 @@ const Triggers: React.FC<Props> = (props: Props) => {
   };
 
   const onTryUpdateMetaData = async (data: IAlertMeta) => {
-    await onPost(AlertApi.postMetadata(), data, userContext.accessToken!);
+    const _obj: IAlertMeta = _.cloneDeep(data);
+    debugger;
+    if (_obj.id.includes('CUSTOM_')) {
+      _obj.id = '';
+    }
+    await onPost(AlertApi.postMetadata(), _obj, userContext.accessToken!);
   };
 
   return (
