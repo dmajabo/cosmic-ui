@@ -12,7 +12,7 @@ interface DevicePolicyTableProps {
   readonly data: IDeviceRule[];
   readonly showLoader: boolean;
   readonly error?: string;
-  readonly styles?: Object;
+  readonly styles?: React.CSSProperties;
   readonly title?: string;
 }
 
