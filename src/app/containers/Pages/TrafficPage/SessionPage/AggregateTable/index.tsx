@@ -43,7 +43,7 @@ const AggregateTable: React.FC<Props> = (props: Props) => {
   const [data, setData] = React.useState<IAggregateRow[]>([]);
   const [aggregatedColumnTabs, setColumnTabs] = React.useState<ITabsColumnFilterData[]>([
     {
-      tab: 'Top Row',
+      tab: 'Outside',
       id: 'aggregatedTopTable',
       index: 0,
       items: [
@@ -51,15 +51,17 @@ const AggregateTable: React.FC<Props> = (props: Props) => {
         { ...SessionGridColumns.sessionId, hide: false },
         { ...SessionGridColumns.sourceIp, hide: false },
         { ...SessionGridColumns.sourcePort, hide: false },
-        { ...SessionGridColumns.sourceSegmentId, hide: false },
+        { ...SessionGridColumns.sourceSegmentName, hide: false },
+        { ...SessionGridColumns.sourceSegmentType, hide: false },
         { ...SessionGridColumns.destIp, hide: false },
         { ...SessionGridColumns.destPort, hide: false },
-        { ...SessionGridColumns.destSegmentId, hide: false },
+        { ...SessionGridColumns.destSegmentName, hide: false },
+        { ...SessionGridColumns.destSegmentType, hide: false },
         { ...SessionGridColumns.vendorsColumn, hide: false },
       ],
     },
     {
-      tab: 'Nested Table',
+      tab: 'Inside',
       id: 'aggregatedNestedTable',
       index: 1,
       items: [
@@ -83,6 +85,8 @@ const AggregateTable: React.FC<Props> = (props: Props) => {
         { ...SessionGridColumns.sourceControllerName },
         { ...SessionGridColumns.sourceControllerId },
         { ...SessionGridColumns.sourceSegmentId },
+        { ...SessionGridColumns.sourceSegmentName },
+        { ...SessionGridColumns.sourceSegmentType },
         { ...SessionGridColumns.destIp },
         { ...SessionGridColumns.destPort },
         { ...SessionGridColumns.destOrgid },
@@ -95,6 +99,8 @@ const AggregateTable: React.FC<Props> = (props: Props) => {
         { ...SessionGridColumns.destControllerName },
         { ...SessionGridColumns.destControllerId },
         { ...SessionGridColumns.destSegmentId },
+        { ...SessionGridColumns.destSegmentName },
+        { ...SessionGridColumns.destSegmentType },
         { ...SessionGridColumns.natSourceIp },
         { ...SessionGridColumns.natSourcePort },
         { ...SessionGridColumns.natDestIp },
@@ -149,7 +155,14 @@ const AggregateTable: React.FC<Props> = (props: Props) => {
               col.hide = it.items[_cIndex].hide;
             }
           });
-          _tabs[_tIndex].items.sort((a, b) => it.items.findIndex(it => it.id === a.id) - it.items.findIndex(it => it.id === b.id));
+          _tabs[_tIndex].items.sort((a, b) => {
+            const aindex = it.items.findIndex(it => it.id === a.id);
+            const bindex = it.items.findIndex(it => it.id === b.id);
+            if (aindex === -1 || bindex === -1) {
+              return 0;
+            }
+            return aindex - bindex;
+          });
         }
       });
       aggregatedColumnTabsRef.current = _tabs;
@@ -223,7 +236,6 @@ const AggregateTable: React.FC<Props> = (props: Props) => {
       prefKey: USER_PREFERENCE_KEYS.SESSIONS_LOG_COLUMNS_STITCH_TRUE,
       prefData: getToBase64(data),
     };
-    debugger;
     await onPost(PolicyApi.postSavePreference(), { preference: _obj }, userContext.accessToken!);
   };
 

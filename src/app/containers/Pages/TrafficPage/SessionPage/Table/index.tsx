@@ -39,7 +39,6 @@ const Table: React.FC<Props> = (props: Props) => {
   const userContext = React.useContext<UserContextState>(UserContext);
   const [dataRows, setDataRows] = React.useState<ISession[]>(props.data || []);
   const { error, onPost } = usePost<IPreferenceRes, any>();
-  const [columnChanged, setColumnChanged] = React.useState<boolean>(false);
   const [columns, setColumns] = React.useState<IColumn[]>([
     {
       ...SessionGridColumns.timestamp,
@@ -61,6 +60,8 @@ const Table: React.FC<Props> = (props: Props) => {
     { ...SessionGridColumns.sourceControllerName },
     { ...SessionGridColumns.sourceControllerId },
     { ...SessionGridColumns.sourceSegmentId },
+    { ...SessionGridColumns.sourceSegmentName },
+    { ...SessionGridColumns.sourceSegmentType },
     { ...SessionGridColumns.destIp },
     { ...SessionGridColumns.destPort },
     { ...SessionGridColumns.destOrgid },
@@ -73,6 +74,8 @@ const Table: React.FC<Props> = (props: Props) => {
     { ...SessionGridColumns.destControllerName },
     { ...SessionGridColumns.destControllerId },
     { ...SessionGridColumns.destSegmentId },
+    { ...SessionGridColumns.destSegmentName },
+    { ...SessionGridColumns.destSegmentType },
     { ...SessionGridColumns.natSourceIp },
     { ...SessionGridColumns.natSourcePort },
     { ...SessionGridColumns.natDestIp },
@@ -110,12 +113,13 @@ const Table: React.FC<Props> = (props: Props) => {
     { ...SessionGridColumns.protocol },
     { ...SessionGridColumns.policyAction },
   ]);
-
+  const columnChangedref = React.useRef(false);
+  const columnsRef = React.useRef(columns);
   const gridStyles = GridStyles();
 
   React.useEffect(() => {
     if (sessions.sessionsLogColumnPreferencesStitch_False && sessions.sessionsLogColumnPreferencesStitch_False.length) {
-      const _columns: IColumn[] = columns.slice();
+      const _columns: IColumn[] = columnsRef.current.slice();
 
       sessions.sessionsLogColumnPreferencesStitch_False.forEach(it => {
         const _cIndex = _columns.findIndex(c => c.id === it.id);
@@ -123,12 +127,21 @@ const Table: React.FC<Props> = (props: Props) => {
           _columns[_cIndex].hide = it.hide;
         }
       });
-      _columns.sort((a, b) => sessions.sessionsLogColumnPreferencesStitch_False.findIndex(it => it.id === a.id) - sessions.sessionsLogColumnPreferencesStitch_False.findIndex(it => it.id === b.id));
+      _columns.sort((a, b) => {
+        const aindex = sessions.sessionsLogColumnPreferencesStitch_False.findIndex(it => it.id === a.id);
+        const bindex = sessions.sessionsLogColumnPreferencesStitch_False.findIndex(it => it.id === b.id);
+        if (aindex === -1 || bindex === -1) {
+          return 0;
+        }
+        return aindex - bindex;
+      });
+      columnsRef.current = _columns;
       setColumns(_columns);
     }
     return () => {
-      if (columnChanged) {
-        const _с: ISessionsLogPreference[] = columns.map((it, index) => ({ id: it.id, field: it.field, hide: it.hide }));
+      if (columnChangedref.current) {
+        const _с: ISessionsLogPreference[] = columnsRef.current.map((it, index) => ({ id: it.id, field: it.field, hide: it.hide }));
+        sessions.onUpdateLogPreference(_с);
         onTrySavePreferences(_с);
       }
     };
@@ -151,18 +164,16 @@ const Table: React.FC<Props> = (props: Props) => {
     props.onChangePageSize(size, page);
   };
   const onChangeColumn = (col: IColumn) => {
-    const _items: IColumn[] = columns.slice();
+    const _items: IColumn[] = columnsRef.current.slice();
     const _index = _items.findIndex(it => it.field === col.field);
     _items[_index].hide = !col.hide;
-    const _с: ISessionsLogPreference[] = _items.map((it, index) => ({ id: it.id, field: it.field, hide: it.hide }));
-    sessions.onUpdateLogPreference(_с);
-    setColumnChanged(true);
+    columnsRef.current = _items;
+    columnChangedref.current = true;
     setColumns(_items);
   };
   const onChangeOrder = (_items: IColumn[]) => {
-    const _с: ISessionsLogPreference[] = _items.map((it, index) => ({ id: it.id, field: it.field, hide: it.hide }));
-    sessions.onUpdateLogPreference(_с);
-    setColumnChanged(true);
+    columnsRef.current = _items;
+    columnChangedref.current = true;
     setColumns(_items);
   };
 

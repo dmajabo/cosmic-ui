@@ -61,6 +61,8 @@ export interface ISession extends IBaseEntity<string> {
   readonly sourceControllerName: string;
   readonly sourceControllerId: string;
   readonly sourceSegmentId: string;
+  readonly sourceSegmentName: string;
+  readonly sourceSegmentType: string;
   readonly destOrgid: string;
   readonly destVnetworkExtid: string;
   readonly destVnetworkName: string;
@@ -71,6 +73,8 @@ export interface ISession extends IBaseEntity<string> {
   readonly destControllerName: string;
   readonly destControllerId: string;
   readonly destSegmentId: string;
+  readonly destSegmentName: string;
+  readonly destSegmentType: string;
 }
 
 export interface IBuckets {
