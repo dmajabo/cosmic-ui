@@ -6,7 +6,7 @@ import { PolicyLogsData } from '.';
 import { OldConfigData } from './OldConfigData';
 import { NewConfigData } from './NewConfigData';
 import { isArray } from 'lodash';
-import { IDestinationCidr, IRouteState, IVmRule } from 'lib/api/ApiModels/Metrics/apiModel';
+import { ICIDR, IDestinationCidr, IRouteState, IVmRule, PolicyTableKeyEnum } from 'lib/api/ApiModels/Metrics/apiModel';
 
 interface PolicyLogDetailsProps {
   readonly isOpen: boolean;
@@ -28,6 +28,20 @@ export interface ConnectionResource {
   readonly name: string;
 }
 
+export interface Rule {
+  readonly fromPort: number;
+  readonly toPort: number;
+  readonly ipProtocol: string;
+  readonly ruleType: PolicyTableKeyEnum;
+  readonly cidrs: ICIDR[];
+  readonly name: string;
+  readonly destCidrs: any[];
+  readonly srcCidrs: ICIDR[];
+  readonly syslogEnabled: boolean;
+  readonly comment: string;
+  readonly policy: string;
+}
+
 export interface PolicyLogDetails {
   readonly CreatedAt: string;
   readonly CreatedBy: string;
@@ -42,7 +56,7 @@ export interface PolicyLogDetails {
   readonly ctrlrName: string;
   readonly regionCode: string;
   readonly vendor: string;
-  readonly rules: IVmRule[];
+  readonly rules: Rule[];
   readonly routes: PolicyLogRoute[];
   readonly vNetworks: ConnectionResource[];
   readonly clientVpnEndpoints: ConnectionResource[];
