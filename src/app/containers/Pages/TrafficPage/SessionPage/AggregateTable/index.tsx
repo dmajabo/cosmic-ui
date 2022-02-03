@@ -19,7 +19,7 @@ import { IColumn } from 'lib/models/grid';
 import _ from 'lodash';
 import { useSessionsDataContext } from 'lib/hooks/Sessions/useSessionsDataContext';
 import { usePost } from 'lib/api/http/useAxiosHook';
-import { IPreferenceRes, ISessionsLogStitchPreference, IUserPreference, USER_PREFERENCE_KEYS } from 'lib/api/ApiModels/Policy/Preference';
+import { buildPreferenceKey, IPreferenceRes, ISessionsLogStitchPreference, IUserPreference, USER_PREFERENCE_KEYS } from 'lib/api/ApiModels/Policy/Preference';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { getToBase64 } from 'lib/api/http/utils';
 import { PolicyApi } from 'lib/api/ApiModels/Services/policy';
@@ -233,7 +233,7 @@ const AggregateTable: React.FC<Props> = (props: Props) => {
   const onTrySavePreferences = async (data: ISessionsLogStitchPreference[]) => {
     const _obj: IUserPreference = {
       userId: userContext.user.sub,
-      prefKey: USER_PREFERENCE_KEYS.SESSIONS_LOG_COLUMNS_STITCH_TRUE,
+      prefKey: buildPreferenceKey(USER_PREFERENCE_KEYS.SESSIONS_LOG_COLUMNS_STITCH_TRUE, userContext.user.sub),
       prefData: getToBase64(data),
     };
     await onPost(PolicyApi.postSavePreference(), { preference: _obj }, userContext.accessToken!);

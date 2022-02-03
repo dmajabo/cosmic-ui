@@ -8,7 +8,7 @@ import { createNewRange } from './models';
 import { usePost } from 'lib/api/http/useAxiosHook';
 import { PolicyApi } from 'lib/api/ApiModels/Services/policy';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
-import { IFlowPreferenceRange, IPreferenceRes, IUserPreference, USER_PREFERENCE_KEYS } from 'lib/api/ApiModels/Policy/Preference';
+import { buildPreferenceKey, IFlowPreferenceRange, IPreferenceRes, IUserPreference, USER_PREFERENCE_KEYS } from 'lib/api/ApiModels/Policy/Preference';
 import { getToBase64 } from 'lib/api/http/utils';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
@@ -63,7 +63,7 @@ const FlowsOverviewSettings: React.FC<Props> = (props: Props) => {
   const onTrySavePreferences = async (data: IFlowPreferenceRange[]) => {
     const _obj: IUserPreference = {
       userId: userContext.user.sub,
-      prefKey: USER_PREFERENCE_KEYS.FLOWS_OVERRVIEW_SETTINGS_RANGES,
+      prefKey: buildPreferenceKey(USER_PREFERENCE_KEYS.FLOWS_OVERRVIEW_SETTINGS_RANGES, userContext.user.sub),
       prefData: getToBase64(data),
     };
     await onPost(PolicyApi.postSavePreference(), { preference: _obj }, userContext.accessToken!);

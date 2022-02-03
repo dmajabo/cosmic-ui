@@ -16,7 +16,7 @@ import { getVendorObject } from '../AggregateTable/helper';
 import { VendorTdWrapper } from '../AggregateTable/styles';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { usePost } from 'lib/api/http/useAxiosHook';
-import { IPreferenceRes, ISessionsLogPreference, IUserPreference, USER_PREFERENCE_KEYS } from 'lib/api/ApiModels/Policy/Preference';
+import { buildPreferenceKey, IPreferenceRes, ISessionsLogPreference, IUserPreference, USER_PREFERENCE_KEYS } from 'lib/api/ApiModels/Policy/Preference';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { getToBase64 } from 'lib/api/http/utils';
 import { PolicyApi } from 'lib/api/ApiModels/Services/policy';
@@ -180,7 +180,7 @@ const Table: React.FC<Props> = (props: Props) => {
   const onTrySavePreferences = async (data: ISessionsLogPreference[]) => {
     const _obj: IUserPreference = {
       userId: userContext.user.sub,
-      prefKey: USER_PREFERENCE_KEYS.SESSIONS_LOG_COLUMNS_STITCH_FALSE,
+      prefKey: buildPreferenceKey(USER_PREFERENCE_KEYS.SESSIONS_LOG_COLUMNS_STITCH_FALSE, userContext.user.sub),
       prefData: getToBase64(data),
     };
     await onPost(PolicyApi.postSavePreference(), { preference: _obj }, userContext.accessToken!);

@@ -9,9 +9,9 @@ import { TRAFFIC_TABS } from 'lib/hooks/Traffic/models';
 import { useTrafficDataContext } from 'lib/hooks/Traffic/useTrafficDataCont';
 import { TrendsPage } from './Trends';
 // import Rules from './Page/Rules';
-import { IPreferenceRes, USER_PREFERENCE_KEYS } from 'lib/api/ApiModels/Policy/Preference';
+import { buildPreferenceKey, IPolicysvcListUiPreferenceRequest, IPolicysvcListUiPreferenceResponse, USER_PREFERENCE_KEYS } from 'lib/api/ApiModels/Policy/Preference';
 import { PolicyApi } from 'lib/api/ApiModels/Services/policy';
-import { useGet } from 'lib/api/http/useAxiosHook';
+import { usePost } from 'lib/api/http/useAxiosHook';
 import { useSessionsDataContext } from 'lib/hooks/Sessions/useSessionsDataContext';
 import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
@@ -22,50 +22,37 @@ const MainPage: React.FC<IProps> = (props: IProps) => {
   const userContext = React.useContext<UserContextState>(UserContext);
   const { sessions } = useSessionsDataContext();
   const { traffic } = useTrafficDataContext();
-  const { response: getRes, loading, onGet: onGetPreferrences } = useGet<IPreferenceRes>();
-  const { response: getStitchRes, loading: stitchloading, onGet: onGetStitchPreferrences } = useGet<IPreferenceRes>();
-  const { response: trendsRes, loading: trendsLoading, onGet: onGetTrendsPreferrences } = useGet<IPreferenceRes>();
+  const { response, loading, onPost: onGetPreferrences } = usePost<IPolicysvcListUiPreferenceRequest, IPolicysvcListUiPreferenceResponse>();
+
   const classes = TabsStyles();
 
   React.useEffect(() => {
-    onTryLoadTrendsPreferences();
     onTryLoadPreferences();
-    onTryLoadStitchPreferences();
   }, []);
 
   React.useEffect(() => {
-    if (trendsRes) {
-      traffic.onSetFlowRangePreference(trendsRes);
+    if (response) {
+      console.log(response);
+      // sessions.onSetLogPreference(getRes);
     }
-  }, [trendsRes]);
-
-  React.useEffect(() => {
-    if (getRes) {
-      sessions.onSetLogPreference(getRes);
-    }
-  }, [getRes]);
-
-  React.useEffect(() => {
-    if (getStitchRes) {
-      sessions.onSetLogStitchPreference(getStitchRes);
-    }
-  }, [getStitchRes]);
+  }, [response]);
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     traffic.onChangeSelectedTab(newValue);
   };
 
   const onTryLoadPreferences = async () => {
-    await onGetPreferrences(PolicyApi.getPreferenceByKey(USER_PREFERENCE_KEYS.SESSIONS_LOG_COLUMNS_STITCH_FALSE, userContext.user.sub), userContext.accessToken!);
-  };
-  const onTryLoadStitchPreferences = async () => {
-    await onGetStitchPreferrences(PolicyApi.getPreferenceByKey(USER_PREFERENCE_KEYS.SESSIONS_LOG_COLUMNS_STITCH_TRUE, userContext.user.sub), userContext.accessToken!);
-  };
-  const onTryLoadTrendsPreferences = async () => {
-    await onGetTrendsPreferrences(PolicyApi.getPreferenceByKey(USER_PREFERENCE_KEYS.FLOWS_OVERRVIEW_SETTINGS_RANGES, userContext.user.sub), userContext.accessToken!);
+    const _obj: IPolicysvcListUiPreferenceRequest = {
+      userKeys: [
+        { userId: userContext.user.sub, prefKey: buildPreferenceKey(USER_PREFERENCE_KEYS.SESSIONS_LOG_COLUMNS_STITCH_FALSE, userContext.user.sub) },
+        { userId: userContext.user.sub, prefKey: buildPreferenceKey(USER_PREFERENCE_KEYS.SESSIONS_LOG_COLUMNS_STITCH_TRUE, userContext.user.sub) },
+        { userId: userContext.user.sub, prefKey: buildPreferenceKey(USER_PREFERENCE_KEYS.FLOWS_OVERRVIEW_SETTINGS_RANGES, userContext.user.sub) },
+      ],
+    };
+    await onGetPreferrences(PolicyApi.getPostPreferencesList(), _obj, userContext.accessToken!);
   };
 
-  if (loading || stitchloading || trendsLoading) {
+  if (loading) {
     return (
       <PageWrapperStyles padding="20px 40px 40px 40px">
         <AbsLoaderWrapper width="100%" height="100%">
