@@ -3,6 +3,8 @@ import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import { MultiLineMetricsData } from 'app/containers/Pages/TopologyPage/TopologyMetrics/SharedTypes';
 import { DateTime } from 'luxon';
+import { sortBy } from 'lodash';
+import { getCorrectedTimeString } from 'app/containers/Pages/MetricsPage/components/Utils';
 
 interface LineChartProps {
   readonly dataValueSuffix?: string;
@@ -76,12 +78,13 @@ const COLOURS = [
 export const MultiLineChart: React.FC<LineChartProps> = ({ dataValueSuffix, inputData, xAxisText, yAxisText, chartHeight, chartWidth }) => {
   const series = inputData.map(item => {
     const metrics = item.metrics.map(metric => {
-      const time = DateTime.fromFormat(metric.time, INPUT_TIME_FORMAT).toUTC();
-      return { x: time.toMillis(), y: Number(metric.value) };
+      const timeString = getCorrectedTimeString(metric.time);
+      const timestamp = DateTime.fromFormat(timeString, INPUT_TIME_FORMAT).toUTC();
+      return { x: timestamp.toMillis(), y: Number(metric.value) };
     });
     return {
       name: item.name,
-      data: metrics,
+      data: sortBy(metrics, 'x'),
     };
   });
 

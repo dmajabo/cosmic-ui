@@ -117,6 +117,62 @@ export const TroubleshootingStyles = makeStyles(
       policyLogsTableContainer: {
         marginTop: 20,
       },
+      dialogTitle: {
+        fontSize: 22,
+        fontWeight: 700,
+      },
+      closeIcon: {
+        cursor: 'pointer',
+      },
+      gridContainer: {
+        display: 'grid',
+        gridTemplateColumns: '50% 50%',
+      },
+      gridItem: {
+        border: '1px solid #CBD2DC',
+        margin: 20,
+        borderRadius: 6,
+        backgroundColor: '#FBFCFE',
+      },
+      gridItemTitle: {
+        fontSize: 14,
+        color: 'white',
+        fontWeight: 500,
+        borderRadius: '0px 0px 6px 6px',
+        padding: '5px 20px 5px 20px',
+        maxWidth: '40%',
+        textAlign: 'center',
+        margin: 'auto',
+      },
+      templateHeader: {
+        backgroundColor: '#52984E',
+      },
+      changesHeader: {
+        backgroundColor: '#437FEC',
+      },
+      gridItemContent: {
+        padding: 20,
+      },
+      defaultPropertyItem: {
+        padding: 7,
+      },
+      changedPropertyItem: {
+        background: 'rgba(67,127,236,0.2)',
+        padding: 7,
+        width: '108%',
+        position: 'relative',
+        right: '4%',
+        paddingLeft: '5.5%',
+        paddingRight: '5.5%',
+      },
+      propertyValue: {
+        color: '#7a808c',
+        marginLeft: 5,
+      },
+      tablePropertyTitle: {
+        fontWeight: 700,
+        marginBottom: 15,
+      },
     }),
   {
     index: 1,
