@@ -81,3 +81,18 @@ export const FilteredColumnLabel = styled.div`
   max-width: calc(100% - 32px);
   text-overflow: ellipsis;
 `;
+
+export const PopupTabsWrapperStyles = styled.div`
+  margin-bottom: 12px;
+  height: 24px;
+  flex-shrink: 0;
+`;
+
+export const PopupTabOverflowContainer = styled.div`
+  direction: ltr;
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: 100%;
+  width: 100%;
+  position: relative;
+`;

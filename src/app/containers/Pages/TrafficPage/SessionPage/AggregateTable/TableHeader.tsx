@@ -1,21 +1,21 @@
 import React from 'react';
 import { columnsIcon } from 'app/components/SVGIcons/columnsIcon';
 import { GridHeaderWrapper, GridLabelWrapper, GridLabel, GridCount } from '../Table/styles';
-import { ISessionsGridFieldColumn } from '../models';
-import ColumnFilter from 'app/components/Basic/ColumnFilter';
+import ColumnFilterWithTabs, { ITabsColumnFilterData } from 'app/components/Basic/ColumnFilter/ColumnFilterWithTabs';
+import { IColumn } from 'lib/models/grid';
 interface Props {
   count: number;
-  columns: ISessionsGridFieldColumn[];
-  onChangeColumn: (col: ISessionsGridFieldColumn) => void;
-  onChangeOrder: (items: ISessionsGridFieldColumn[]) => void;
+  columns: ITabsColumnFilterData[];
+  onItemClick: (tab: ITabsColumnFilterData, item: IColumn) => void;
+  onChangeOrder: (items: ITabsColumnFilterData) => void;
 }
 
 const TableHeader: React.FC<Props> = (props: Props) => {
-  const onColumnChange = (col: ISessionsGridFieldColumn) => {
-    props.onChangeColumn(col);
+  const onColumnChange = (tab: ITabsColumnFilterData, item: IColumn) => {
+    props.onItemClick(tab, item);
   };
 
-  const onChangeOrder = (items: ISessionsGridFieldColumn[]) => {
+  const onChangeOrder = (items: ITabsColumnFilterData) => {
     props.onChangeOrder(items);
   };
   return (
@@ -25,7 +25,7 @@ const TableHeader: React.FC<Props> = (props: Props) => {
           <GridLabel>Logs</GridLabel>
           {!props.count ? null : <GridCount>{props.count}</GridCount>}
         </GridLabelWrapper>
-        <ColumnFilter label="Columns" popupLabel="Columns" icon={columnsIcon} items={props.columns} draggable onItemClick={onColumnChange} onChangeOrder={onChangeOrder} />
+        <ColumnFilterWithTabs label="Columns" icon={columnsIcon} data={props.columns} draggable onItemClick={onColumnChange} onChangeOrder={onChangeOrder} />
       </GridHeaderWrapper>
     </>
   );

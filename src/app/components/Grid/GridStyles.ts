@@ -80,7 +80,7 @@ export const GridStyles = makeStyles(
           borderBottomColor: 'var(--_rowBorder)',
         },
         '& .MuiDataGrid-columnHeaderTitleContainer': {
-          padding: 0,
+          padding: '0 !important',
         },
         '& .MuiDataGrid-virtualScrollerContent': {
           minHeight: '200px',

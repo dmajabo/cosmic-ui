@@ -196,12 +196,6 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
     return Array.from(_arr) as string[];
   };
 
-  // export const SESSIONS_SELECT_VALUES: ISelectedListItem<SESSIONS_TIME_RANGE_QUERY_TYPES>[] = [
-  //   { id: SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_HOUR, value: SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_HOUR, label: '', data: '-1h' },
-  //   { id: SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_DAY, value: SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_DAY, label: '', data: '-24h' },
-  //   { id: SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_WEEK, value: SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_WEEK, label: '', data: '-7d' },
-  //   { id: SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_MONTH, value: SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_MONTH, label: '', data: '-30d' },
-  // ];
   return (
     <>
       <ActionRowStyles margin="0 0 30px 0">

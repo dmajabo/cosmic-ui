@@ -71,7 +71,7 @@ const ColumnFilter: React.FC<IProps> = (props: IProps) => {
           background: 'var(--_primaryBg)',
         }}
       >
-        <PopupTitle>{props.popupLabel}</PopupTitle>
+        {props.popupLabel && <PopupTitle>{props.popupLabel}</PopupTitle>}
         <OverflowContainer>
           {data.map(col => {
             if (col.field === 'rowIndex' || !col.label) return null;

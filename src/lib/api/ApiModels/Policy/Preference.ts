@@ -1,5 +1,7 @@
 export enum USER_PREFERENCE_KEYS {
   FLOWS_OVERRVIEW_SETTINGS_RANGES = 'FLOWS_OVERRVIEW_SETTINGS_RANGES',
+  SESSIONS_LOG_COLUMNS_STITCH_FALSE = 'SESSIONS_LOG_COLUMNS_STITCH_FALSE',
+  SESSIONS_LOG_COLUMNS_STITCH_TRUE = 'SESSIONS_LOG_COLUMNS_STITCH_TRUE',
 }
 export interface IPreferenceRes {
   preference: IUserPreference;
@@ -16,4 +18,17 @@ export interface IFlowPreferenceRange {
   from: number;
   to: number;
   id: string;
+}
+
+export interface ISessionsLogPreference {
+  field: string;
+  index?: number;
+  hide: boolean;
+  id: string;
+}
+
+export interface ISessionsLogStitchPreference {
+  tab: string;
+  id: string;
+  items: ISessionsLogPreference[];
 }
