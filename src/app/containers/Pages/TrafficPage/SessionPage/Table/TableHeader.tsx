@@ -6,13 +6,13 @@ import { IColumn } from 'lib/models/grid';
 interface Props {
   count: number;
   columns: IColumn[];
-  onChangeColumn: (col: IColumn) => void;
+  onChangeColumn: (col: IColumn, hide: boolean) => void;
   onChangeOrder: (items: IColumn[]) => void;
 }
 
 const TableHeader: React.FC<Props> = (props: Props) => {
-  const onColumnChange = (col: IColumn) => {
-    props.onChangeColumn(col);
+  const onColumnChange = (col: IColumn, hide: boolean) => {
+    props.onChangeColumn(col, hide);
   };
 
   const onChangeOrder = (items: IColumn[]) => {

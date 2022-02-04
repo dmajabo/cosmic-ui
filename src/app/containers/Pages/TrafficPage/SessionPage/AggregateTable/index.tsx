@@ -52,12 +52,19 @@ const AggregateTable: React.FC<Props> = (props: Props) => {
         { ...SessionGridColumns.sourceIp, hide: false },
         { ...SessionGridColumns.sourcePort, hide: false },
         { ...SessionGridColumns.sourceSegmentName, hide: false },
-        { ...SessionGridColumns.sourceSegmentType, hide: false },
         { ...SessionGridColumns.destIp, hide: false },
         { ...SessionGridColumns.destPort, hide: false },
         { ...SessionGridColumns.destSegmentName, hide: false },
-        { ...SessionGridColumns.destSegmentType, hide: false },
+        { ...SessionGridColumns.protocol, hide: true },
+        { ...SessionGridColumns.deviceName, hide: true },
         { ...SessionGridColumns.vendorsColumn, hide: false },
+        { ...SessionGridColumns.flowDirection, hide: true },
+        { ...SessionGridColumns.sourceControllerName, hide: true },
+        { ...SessionGridColumns.sourceControllerId, hide: true },
+        { ...SessionGridColumns.natSourceIp, hide: true },
+        { ...SessionGridColumns.natSourcePort, hide: true },
+        { ...SessionGridColumns.tcpFlags, hide: true },
+        { ...SessionGridColumns.trafficType, hide: true },
       ],
     },
     {
@@ -67,51 +74,26 @@ const AggregateTable: React.FC<Props> = (props: Props) => {
       items: [
         {
           ...SessionGridColumns.timestamp,
+          hide: false,
           valueFormatter: (params: GridValueFormatterParams) => parseFieldAsDate(params.value, `EEE',' LLL d',' yyyy HH:mm aa`),
         },
-        { ...SessionGridColumns.startTime },
-        { ...SessionGridColumns.endTime },
-        { ...SessionGridColumns.flowId },
-        { ...SessionGridColumns.flowDirection },
-        { ...SessionGridColumns.sourceIp },
-        { ...SessionGridColumns.sourcePort },
-        { ...SessionGridColumns.sourceOrgid },
-        { ...SessionGridColumns.sourceVnetworkExtid },
-        { ...SessionGridColumns.sourceVnetworkName },
-        { ...SessionGridColumns.sourceSubnetExtid },
-        { ...SessionGridColumns.sourceVmExtid },
-        { ...SessionGridColumns.sourceVmName },
-        { ...SessionGridColumns.sourceRegion },
-        { ...SessionGridColumns.sourceControllerName },
-        { ...SessionGridColumns.sourceControllerId },
-        { ...SessionGridColumns.sourceSegmentId },
-        { ...SessionGridColumns.sourceSegmentName },
-        { ...SessionGridColumns.sourceSegmentType },
-        { ...SessionGridColumns.destIp },
-        { ...SessionGridColumns.destPort },
-        { ...SessionGridColumns.destOrgid },
-        { ...SessionGridColumns.destVnetworkExtid },
-        { ...SessionGridColumns.destVnetworkName },
-        { ...SessionGridColumns.destSubnetExtid },
-        { ...SessionGridColumns.destVmExtid },
-        { ...SessionGridColumns.destVmName },
-        { ...SessionGridColumns.destRegion },
-        { ...SessionGridColumns.destControllerName },
-        { ...SessionGridColumns.destControllerId },
-        { ...SessionGridColumns.destSegmentId },
-        { ...SessionGridColumns.destSegmentName },
-        { ...SessionGridColumns.destSegmentType },
-        { ...SessionGridColumns.natSourceIp },
-        { ...SessionGridColumns.natSourcePort },
-        { ...SessionGridColumns.natDestIp },
-        { ...SessionGridColumns.natDestPort },
-        { ...SessionGridColumns.bytes },
-        { ...SessionGridColumns.packets },
-        { ...SessionGridColumns.action },
-        { ...SessionGridColumns.deviceName },
-        { ...SessionGridColumns.deviceExtId },
+        { ...SessionGridColumns.sourceIp, hide: false },
+        { ...SessionGridColumns.sourcePort, hide: false },
+        { ...SessionGridColumns.sourceSegmentName, hide: false },
+        { ...SessionGridColumns.sourceSegmentType, hide: false },
+        { ...SessionGridColumns.destIp, hide: false },
+        { ...SessionGridColumns.destPort, hide: false },
+        { ...SessionGridColumns.destSegmentName, hide: false },
+        { ...SessionGridColumns.destSegmentType, hide: false },
+        { ...SessionGridColumns.policyAction, hide: false },
+        { ...SessionGridColumns.protocol, hide: false },
+        { ...SessionGridColumns.flowDirection, hide: false },
+        { ...SessionGridColumns.bytes, hide: false },
+        { ...SessionGridColumns.packets, hide: false },
+        { ...SessionGridColumns.deviceName, hide: false },
         {
           ...SessionGridColumns.deviceVendor,
+          hide: false,
           renderCell: (param: GridRenderCellParams) => {
             const _obj = getVendorObject(param.value as AccountVendorTypes);
             return (
@@ -122,21 +104,49 @@ const AggregateTable: React.FC<Props> = (props: Props) => {
             );
           },
         },
-        { ...SessionGridColumns.deviceNetworkExtid },
-        { ...SessionGridColumns.deviceControllerId },
-        { ...SessionGridColumns.deviceControllerName },
-        { ...SessionGridColumns.tcpFlags },
-        { ...SessionGridColumns.trafficType },
-        { ...SessionGridColumns.vnetworkExtId },
-        { ...SessionGridColumns.vnetworkName },
-        { ...SessionGridColumns.subnetExtId },
-        { ...SessionGridColumns.subnetName },
-        { ...SessionGridColumns.vmExtId },
-        { ...SessionGridColumns.vmName },
-        { ...SessionGridColumns.region },
-        { ...SessionGridColumns.azId },
-        { ...SessionGridColumns.protocol },
-        { ...SessionGridColumns.policyAction },
+        { ...SessionGridColumns.sourceOrgid, hide: true },
+        { ...SessionGridColumns.sourceVnetworkExtid, hide: true },
+        { ...SessionGridColumns.sourceVnetworkName, hide: true },
+        { ...SessionGridColumns.sourceSubnetExtid, hide: true },
+        { ...SessionGridColumns.sourceVmExtid, hide: true },
+        { ...SessionGridColumns.sourceVmName, hide: true },
+        { ...SessionGridColumns.sourceRegion, hide: true },
+        { ...SessionGridColumns.sourceControllerName, hide: true },
+        { ...SessionGridColumns.sourceControllerId, hide: true },
+        { ...SessionGridColumns.sourceSegmentId, hide: true },
+        { ...SessionGridColumns.destOrgid, hide: true },
+        { ...SessionGridColumns.destVnetworkExtid, hide: true },
+        { ...SessionGridColumns.destVnetworkName, hide: true },
+        { ...SessionGridColumns.destSubnetExtid, hide: true },
+        { ...SessionGridColumns.destVmExtid, hide: true },
+        { ...SessionGridColumns.destVmName, hide: true },
+        { ...SessionGridColumns.destRegion, hide: true },
+        { ...SessionGridColumns.destControllerName, hide: true },
+        { ...SessionGridColumns.destControllerId, hide: true },
+        { ...SessionGridColumns.destSegmentId, hide: true },
+        { ...SessionGridColumns.natSourceIp, hide: true },
+        { ...SessionGridColumns.natSourcePort, hide: true },
+        { ...SessionGridColumns.tcpFlags, hide: false },
+        { ...SessionGridColumns.trafficType, hide: false },
+        { ...SessionGridColumns.deviceNetworkExtid, hide: true },
+        { ...SessionGridColumns.deviceControllerName, hide: true },
+
+        // { ...SessionGridColumns.startTime },
+        // { ...SessionGridColumns.endTime },
+        // { ...SessionGridColumns.flowId },
+        // { ...SessionGridColumns.natDestIp },
+        // { ...SessionGridColumns.natDestPort },
+        // { ...SessionGridColumns.action },
+        // { ...SessionGridColumns.deviceExtId },
+        // { ...SessionGridColumns.deviceControllerId },
+        // { ...SessionGridColumns.vnetworkExtId },
+        // { ...SessionGridColumns.vnetworkName },
+        // { ...SessionGridColumns.subnetExtId },
+        // { ...SessionGridColumns.subnetName },
+        // { ...SessionGridColumns.vmExtId },
+        // { ...SessionGridColumns.vmName },
+        // { ...SessionGridColumns.region },
+        // { ...SessionGridColumns.azId },
       ],
     },
   ]);
@@ -191,12 +201,11 @@ const AggregateTable: React.FC<Props> = (props: Props) => {
     setData(_data);
   }, [props.data]);
 
-  const onChangeColumn = (tab: ITabsColumnFilterData, item: IColumn) => {
+  const onChangeColumn = (tab: ITabsColumnFilterData, item: IColumn, hide: boolean) => {
     const _items: ITabsColumnFilterData[] = _.cloneDeep(aggregatedColumnTabsRef.current);
     const _tabIndex = _items.findIndex(it => it.id === tab.id);
     const _i = _items[_tabIndex].items.findIndex(it => it.field === item.field);
-    const _hide = !item.hide;
-    _items[_tabIndex].items.splice(_i, 1, { ...item, hide: _hide });
+    _items[_tabIndex].items.splice(_i, 1, { ...item, hide: hide });
     const _с: ISessionsLogStitchPreference[] = _items.map((it, index) => ({
       tab: it.tab,
       id: it.id,
@@ -251,7 +260,11 @@ const AggregateTable: React.FC<Props> = (props: Props) => {
                 if (it.field === 'id') {
                   return <TableCell key={`thRow${it.field}${index}`} style={{ width: '20px' }} />;
                 }
-                return <TableCell key={`thRow${it.field}${index}`}>{it.label}</TableCell>;
+                return (
+                  <TableCell key={`thRow${it.field}${index}`} style={{ minWidth: `${it.minWidth}px` }}>
+                    {it.label}
+                  </TableCell>
+                );
               })}
             </TableRow>
           </TableHead>
