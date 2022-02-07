@@ -110,7 +110,7 @@ export const ChartWrapper = styled.div`
           text-overflow: ellipsis;
           white-space: nowrap;
           text-align: center !important;
-          color: var(--_primaryWhiteColor);
+          color: inherit;
           font-weight: bold;
         }
       }

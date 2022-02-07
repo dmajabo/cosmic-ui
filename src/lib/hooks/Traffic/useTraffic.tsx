@@ -42,12 +42,12 @@ export function useTrafficContext(): TrafficContextType {
 
   const onSetFlowRangePreference = (res: IUserPreference) => {
     if (!res || !res.prefData) {
-      setRangePreference([]);
+      setRangePreference([...DEFAULT_FLOWS_RANGES]);
       return;
     }
     const _arr: IFlowPreferenceRange[] = getFromBase64(res.prefData);
     if (!_arr || !_arr.length) {
-      setRangePreference([]);
+      setRangePreference([...DEFAULT_FLOWS_RANGES]);
       return;
     }
     setRangePreference(_arr);

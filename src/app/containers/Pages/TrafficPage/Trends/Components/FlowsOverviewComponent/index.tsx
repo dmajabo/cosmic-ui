@@ -109,7 +109,8 @@ export const FlowsOverviewComponent: React.FC<Props> = (props: Props) => {
             background={scale ? scale(1000) : 'transparent'}
             cellStyle={(background, value, min, max, data, x, y) => {
               return {
-                background: value && value.count && scale ? scale(value.count) : scale(0),
+                background: value && value.count && scale ? scale(value.count) : 'transparent',
+                color: value !== null ? 'var(--_primaryWhiteColor)' : 'var(--_primaryTextColor)',
                 fontSize: '14px',
                 textAlign: 'center',
                 whiteSpace: 'nowrap',
