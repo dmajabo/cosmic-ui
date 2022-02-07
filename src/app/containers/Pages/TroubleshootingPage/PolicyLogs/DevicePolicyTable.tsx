@@ -16,6 +16,11 @@ interface DevicePolicyTableProps {
   readonly title?: string;
 }
 
+enum LoggingState {
+  Enabled = 'Enabled',
+  Disabled = 'Disabled',
+}
+
 const DevicePolicyTable: React.FC<DevicePolicyTableProps> = props => {
   const classes = TableStyles();
   return (
@@ -41,6 +46,9 @@ const DevicePolicyTable: React.FC<DevicePolicyTableProps> = props => {
                 Destination
               </TableCell>
               <TableCell className={classes.tableHeadCell} style={{ minWidth: '110px' }}>
+                Logging
+              </TableCell>
+              <TableCell className={classes.tableHeadCell} style={{ minWidth: '110px' }}>
                 Protocol
               </TableCell>
               <TableCell className={classes.tableHeadCell} style={{ minWidth: '110px' }}>
@@ -58,6 +66,7 @@ const DevicePolicyTable: React.FC<DevicePolicyTableProps> = props => {
                       <TableCell className={classes.tableCell}>{row.srcCidrs && row.srcCidrs.length && row.srcCidrs[0].name ? row.srcCidrs[0].name : '*'}</TableCell>
                       <TableCell className={classes.tableCell}>{row.fromPort}</TableCell>
                       <TableCell className={classes.tableCell}>{row.destCidrs && row.destCidrs.length && row.destCidrs[0].name ? row.destCidrs[0].name : '*'}</TableCell>
+                      <TableCell className={classes.tableCell}>{row.syslogEnabled ? LoggingState.Enabled : LoggingState.Disabled}</TableCell>
                       <TableCell className={classes.tableCell} style={{ textTransform: 'uppercase' }}>
                         {row.ipProtocol}
                       </TableCell>
