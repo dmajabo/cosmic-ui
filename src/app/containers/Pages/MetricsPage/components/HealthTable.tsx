@@ -1,4 +1,4 @@
-import { uniq } from 'lodash';
+import uniq from 'lodash/uniq';
 import React from 'react';
 import styled from 'styled-components';
 import { MetricsStyles } from '../MetricsStyles';

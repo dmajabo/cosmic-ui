@@ -73,12 +73,6 @@ export const MetricsStyles = makeStyles(
         paddingLeft: 10,
         paddingRight: '5vw',
       },
-      noData: {
-        display: 'flex',
-        justifyContent: 'center',
-        padding: '10%',
-        color: 'gray',
-      },
     }),
   {
     index: 1,
