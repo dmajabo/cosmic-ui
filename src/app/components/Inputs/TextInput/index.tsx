@@ -43,6 +43,12 @@ const TextInput: React.FC<IProps> = (props: IProps) => {
     }
   }, [debouncedSearchTerm]);
 
+  React.useEffect(() => {
+    if (props.value !== textValue) {
+      setTextValue(props.value);
+    }
+  }, [props.value]);
+
   const onChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) => {
     setIsTyping(true);
     const { value } = e.target;

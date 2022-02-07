@@ -3,8 +3,8 @@ import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { ChartContainer, ChartHeader, ChartLabel, ChartWrapper } from '../../styles';
 import { useTrafficDataContext } from 'lib/hooks/Traffic/useTrafficDataCont';
 import { useGet } from 'lib/api/http/useAxiosHook';
-// import LoadingIndicator from 'app/components/Loading';
-// import { AbsLoaderWrapper } from 'app/components/Loading/styles';
+import LoadingIndicator from 'app/components/Loading';
+import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import SecondaryButton from 'app/components/Buttons/SecondaryButton';
 import { settingIcon } from 'app/components/SVGIcons/settingIcon';
@@ -20,7 +20,7 @@ interface Props {
 export const FlowsOverviewComponent: React.FC<Props> = (props: Props) => {
   const userContext = React.useContext<UserContextState>(UserContext);
   const { traffic } = useTrafficDataContext();
-  const { response, error, onGet } = useGet<ITesseractGetSessionsBetweenSegmentsResponse>();
+  const { response, loading, error, onGet } = useGet<ITesseractGetSessionsBetweenSegmentsResponse>();
   const [period, setPeriod] = React.useState(null);
   const [rows, setRowsData] = React.useState<any[][]>([]);
   const [xAxis, setXAxis] = React.useState([]);
@@ -44,15 +44,15 @@ export const FlowsOverviewComponent: React.FC<Props> = (props: Props) => {
 
   React.useEffect(() => {
     if (response && response.sessionsBetweenSegments && response.sessionsBetweenSegments.length) {
-      // const _arr: INetworkSessionsBetweenSegments[] = [];
-      // for (let i = 0; i < 15; i++) {
-      //   const _destArr: any[] = [];
-      //   for (let j = 0; j < Math.floor(Math.random() * (50 - 0 + 1) + 0); j++) {
-      //     _destArr.push({ segmentId: `app_${j}`, count: Math.floor(Math.random() * (200 - 0 + 1) + 0) });
-      //   }
-      //   _arr.push({ sourceSegmentId: `app_${i}`, destSegments: _destArr });
-      // }
-      const _data: INetworkSessionsBetweenSegments[] = [...response.sessionsBetweenSegments]; // .concat(_arr);
+      const _arr: INetworkSessionsBetweenSegments[] = [];
+      for (let i = 0; i < 15; i++) {
+        const _destArr: any[] = [];
+        for (let j = 0; j < Math.floor(Math.random() * (50 - 0 + 1) + 0); j++) {
+          _destArr.push({ segmentId: `app_${j}`, count: Math.floor(Math.random() * (200 - 0 + 1) + 0) });
+        }
+        _arr.push({ sourceSegmentId: `app_${i}`, destSegments: _destArr });
+      }
+      const _data: INetworkSessionsBetweenSegments[] = [...response.sessionsBetweenSegments].concat(_arr);
       const _xAxis: string[] = _data.map(it => (it.sourceSegmentId ? it.sourceSegmentId : 'UNKNOWN'));
       const setData = new Set<string>();
       _data.forEach(source => {
@@ -84,10 +84,24 @@ export const FlowsOverviewComponent: React.FC<Props> = (props: Props) => {
   const onOpenPanel = () => {
     props.onOpenPanel();
   };
-  const scale = range && range.length && domain && domain.length ? d3.scaleQuantile().range(range).domain(domain) : null;
+
+  // if (scale) {
+  //   console.log(range)
+  //   console.log(domain)
+  //   console.log(scale(1))
+  //   console.log(scale(8))
+  // }
 
   const onTryLoadSegments = async (timePeriod: TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES) => {
     await onGet(TesseractApi.getSessionBwSegments(timePeriod || TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES.LAST_HOUR), userContext.accessToken!);
+  };
+
+  const getColor = (v: any) => {
+    if (!range || !range.length || !domain || !domain.length) return { bg: 'transparent', color: 'var(--_primaryTextColor)' };
+    const scale = d3.scaleQuantile().range(range).domain(domain);
+    if (!scale) return { bg: 'transparent', color: 'var(--_primaryTextColor)' };
+    if (!v || !v.count) return { bg: scale(0), color: 'var(--_primaryWhiteColor)' };
+    return { bg: scale(v.count), color: 'var(--_primaryWhiteColor)' };
   };
 
   return (
@@ -106,11 +120,11 @@ export const FlowsOverviewComponent: React.FC<Props> = (props: Props) => {
             yLabelWidth={190}
             height={48}
             data={rows}
-            background={scale ? scale(1000) : 'transparent'}
             cellStyle={(background, value, min, max, data, x, y) => {
+              const c = getColor(value);
               return {
-                background: value && value.count && scale ? scale(value.count) : 'transparent',
-                color: value !== null ? 'var(--_primaryWhiteColor)' : 'var(--_primaryTextColor)',
+                background: c.bg,
+                color: c.color,
                 fontSize: '14px',
                 textAlign: 'center',
                 whiteSpace: 'nowrap',
@@ -133,11 +147,11 @@ export const FlowsOverviewComponent: React.FC<Props> = (props: Props) => {
             title={() => ''}
           />
         )}
-        {/* {loading && (
-          <AbsLoaderWrapper width="100%" height="100%">
+        {loading && (
+          <AbsLoaderWrapper width="100%" height="100%" zIndex={10}>
             <LoadingIndicator margin="auto" />
           </AbsLoaderWrapper>
-        )} */}
+        )}
         {error && <ErrorMessage>{error.message || 'Something went wrong'}</ErrorMessage>}
       </ChartWrapper>
     </ChartContainer>

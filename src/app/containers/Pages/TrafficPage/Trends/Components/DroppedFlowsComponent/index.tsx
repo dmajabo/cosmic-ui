@@ -48,7 +48,7 @@ export const DroppedFlowsComponent: React.FC<Props> = (props: Props) => {
           </ErrorMessage>
         ) : null}
         {loading && (
-          <AbsLoaderWrapper width="100%" height="100%">
+          <AbsLoaderWrapper width="100%" height="100%" zIndex={10}>
             <LoadingIndicator margin="auto" />
           </AbsLoaderWrapper>
         )}

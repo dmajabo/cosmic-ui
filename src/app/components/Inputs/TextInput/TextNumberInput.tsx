@@ -41,6 +41,18 @@ const TextNumberInput: React.FC<IProps> = (props: IProps) => {
     }
   }, [debouncedSearchTerm]);
 
+  React.useEffect(() => {
+    if (props.value !== textValue) {
+      setTextValue(props.value);
+    }
+  }, [props.value]);
+
+  React.useEffect(() => {
+    if (!touched && textValue < props.min) {
+      setTouched(true);
+    }
+  }, [props.min]);
+
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { valueAsNumber } = e.target;
     // if ((props.min || props.min === 0) && (valueAsNumber || valueAsNumber === 0) && valueAsNumber < props.min) return;
@@ -81,8 +93,8 @@ const TextNumberInput: React.FC<IProps> = (props: IProps) => {
           placeholder={props.placeholder}
           style={props.inputStyles}
           autoComplete="new-password"
-          min={props.min}
-          max={props.max}
+          min={props.min || null}
+          max={props.max || null}
           step={props.step}
           padding="8px 0 8px 16px"
           className={touched && ((!textValue && textValue !== 0) || textValue < props.min || textValue > props.max) ? 'invalid' : null}

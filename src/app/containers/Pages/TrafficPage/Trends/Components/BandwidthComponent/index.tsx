@@ -85,7 +85,7 @@ const BandwidthComponent: React.FC<Props> = (props: Props) => {
       <ChartWrapper>
         {!error && data && data.sankey && <SankeyChart data={data.sankey} onLinkClick={(netName: string, destName: string) => {}} />}
         {loading && (
-          <AbsLoaderWrapper width="100%" height="100%">
+          <AbsLoaderWrapper width="100%" height="100%" zIndex={10}>
             <LoadingIndicator margin="auto" />
           </AbsLoaderWrapper>
         )}
