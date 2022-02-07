@@ -44,15 +44,15 @@ export const FlowsOverviewComponent: React.FC<Props> = (props: Props) => {
 
   React.useEffect(() => {
     if (response && response.sessionsBetweenSegments && response.sessionsBetweenSegments.length) {
-      const _arr: INetworkSessionsBetweenSegments[] = [];
-      for (let i = 0; i < 15; i++) {
-        const _destArr: any[] = [];
-        for (let j = 0; j < Math.floor(Math.random() * (50 - 0 + 1) + 0); j++) {
-          _destArr.push({ segmentId: `app_${j}`, count: Math.floor(Math.random() * (200 - 0 + 1) + 0) });
-        }
-        _arr.push({ sourceSegmentId: `app_${i}`, destSegments: _destArr });
-      }
-      const _data: INetworkSessionsBetweenSegments[] = [...response.sessionsBetweenSegments].concat(_arr);
+      // const _arr: INetworkSessionsBetweenSegments[] = [];
+      // for (let i = 0; i < 15; i++) {
+      //   const _destArr: any[] = [];
+      //   for (let j = 0; j < Math.floor(Math.random() * (50 - 0 + 1) + 0); j++) {
+      //     _destArr.push({ segmentId: `app_${j}`, count: Math.floor(Math.random() * (200 - 0 + 1) + 0) });
+      //   }
+      //   _arr.push({ sourceSegmentId: `app_${i}`, destSegments: _destArr });
+      // }
+      const _data: INetworkSessionsBetweenSegments[] = [...response.sessionsBetweenSegments]; // .concat(_arr);
       const _xAxis: string[] = _data.map(it => (it.sourceSegmentId ? it.sourceSegmentId : 'UNKNOWN'));
       const setData = new Set<string>();
       _data.forEach(source => {

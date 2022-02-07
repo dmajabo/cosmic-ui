@@ -24,7 +24,7 @@ interface IProps {
   icon?: any;
   data: ITabsColumnFilterData[];
   draggable?: boolean;
-  onItemClick: (tab: ITabsColumnFilterData, item: IColumn, hide: boolean) => void;
+  onItemClick: (tabIndex: number, item: IColumn, hide: boolean) => void;
   onChangeOrder: (tab: ITabsColumnFilterData) => void;
 }
 
@@ -40,8 +40,8 @@ const ColumnFilterWithTabs: React.FC<IProps> = (props: IProps) => {
     }
   }, [props.data]);
 
-  const onItemClick = (item: IColumn) => {
-    props.onItemClick(selectedTab, item, !item.hide);
+  const onItemClick = (tabIndex: number, item: IColumn) => {
+    props.onItemClick(tabIndex, item, !item.hide);
   };
 
   const handleDrag = event => {
@@ -123,7 +123,7 @@ const ColumnFilterWithTabs: React.FC<IProps> = (props: IProps) => {
                 return (
                   <FilteredColumnItem
                     key={`filteredColumnMenuItem${col.id}`}
-                    onClick={() => onItemClick(col)}
+                    onClick={() => onItemClick(index, col)}
                     draggable={props.draggable}
                     dragPosible={props.draggable}
                     id={col.id}

@@ -77,12 +77,12 @@ const Table: React.FC<Props> = (props: Props) => {
     { ...SessionGridColumns.tcpFlags, hide: true },
     { ...SessionGridColumns.trafficType, hide: true },
   ]);
-  const columnChangedref = React.useRef(false);
   const columnsRef = React.useRef(columns);
   const gridStyles = GridStyles();
 
   React.useEffect(() => {
     if (sessions.sessionsLogColumnPreferencesStitch_False && sessions.sessionsLogColumnPreferencesStitch_False.length) {
+      console.log(sessions.sessionsLogColumnPreferencesStitch_False);
       const _columns: IColumn[] = columnsRef.current.slice();
 
       sessions.sessionsLogColumnPreferencesStitch_False.forEach(it => {
@@ -102,13 +102,6 @@ const Table: React.FC<Props> = (props: Props) => {
       columnsRef.current = _columns;
       setColumns(_columns);
     }
-    return () => {
-      if (columnChangedref.current) {
-        const _с: ISessionsLogPreference[] = columnsRef.current.map((it, index) => ({ id: it.id, field: it.field, hide: it.hide }));
-        sessions.onUpdateLogPreference(_с);
-        onTrySavePreferences(_с);
-      }
-    };
   }, []);
 
   React.useEffect(() => {
@@ -132,13 +125,17 @@ const Table: React.FC<Props> = (props: Props) => {
     const _index = _items.findIndex(it => it.field === col.field);
     _items[_index].hide = hide;
     columnsRef.current = _items;
-    columnChangedref.current = true;
+    const _с: ISessionsLogPreference[] = columnsRef.current.map((it, index) => ({ id: it.id, field: it.field, hide: it.hide }));
     setColumns(_items);
+    sessions.onUpdateLogPreference(_с);
+    onTrySavePreferences(_с);
   };
   const onChangeOrder = (_items: IColumn[]) => {
     columnsRef.current = _items;
-    columnChangedref.current = true;
+    const _с: ISessionsLogPreference[] = columnsRef.current.map((it, index) => ({ id: it.id, field: it.field, hide: it.hide }));
     setColumns(_items);
+    sessions.onUpdateLogPreference(_с);
+    onTrySavePreferences(_с);
   };
 
   const onTrySavePreferences = async (data: ISessionsLogPreference[]) => {

@@ -16,7 +16,6 @@ import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { AccountVendorTypes } from 'lib/api/ApiModels/Accounts/apiModel';
 import { VendorTdWrapper } from './styles';
 import { IColumn } from 'lib/models/grid';
-import _ from 'lodash';
 import { useSessionsDataContext } from 'lib/hooks/Sessions/useSessionsDataContext';
 import { usePost } from 'lib/api/http/useAxiosHook';
 import { buildPreferenceKey, IPreferenceRes, ISessionsLogStitchPreference, IUserPreference, USER_PREFERENCE_KEYS } from 'lib/api/ApiModels/Policy/Preference';
@@ -133,7 +132,6 @@ const AggregateTable: React.FC<Props> = (props: Props) => {
       ],
     },
   ]);
-  const columnChangedref = React.useRef(false);
   const aggregatedColumnTabsRef = React.useRef(aggregatedColumnTabs);
 
   React.useEffect(() => {
@@ -161,17 +159,6 @@ const AggregateTable: React.FC<Props> = (props: Props) => {
       aggregatedColumnTabsRef.current = _tabs;
       setColumnTabs(_tabs);
     }
-    return () => {
-      if (columnChangedref.current) {
-        const _с: ISessionsLogStitchPreference[] = aggregatedColumnTabsRef.current.map((it, index) => ({
-          tab: it.tab,
-          id: it.id,
-          items: it.items.map(item => ({ id: item.id, field: item.field, hide: item.hide })),
-        }));
-        sessions.onUpdateLogSitchPreference(_с);
-        onTrySavePreferences(_с);
-      }
-    };
   }, []);
 
   React.useEffect(() => {
@@ -185,22 +172,35 @@ const AggregateTable: React.FC<Props> = (props: Props) => {
     setData(_data);
   }, [props.data]);
 
-  const onChangeColumn = (tab: ITabsColumnFilterData, item: IColumn, hide: boolean) => {
-    const _items: ITabsColumnFilterData[] = _.cloneDeep(aggregatedColumnTabsRef.current);
-    const _tabIndex = _items.findIndex(it => it.id === tab.id);
-    const _i = _items[_tabIndex].items.findIndex(it => it.field === item.field);
-    _items[_tabIndex].items.splice(_i, 1, { ...item, hide: hide });
-    columnChangedref.current = true;
+  const onChangeColumn = (tabIndex: number, item: IColumn, hide: boolean) => {
+    const _items: ITabsColumnFilterData[] = aggregatedColumnTabsRef.current.slice();
+    const _arr = _items[tabIndex].items.slice();
+    const index = _arr.findIndex(it => it.field === item.field);
+    _arr.splice(index, 1, { ..._arr[index], hide: hide });
+    _items[tabIndex].items = _arr;
     aggregatedColumnTabsRef.current = _items;
+    const _с: ISessionsLogStitchPreference[] = aggregatedColumnTabsRef.current.map((it, index) => ({
+      tab: it.tab,
+      id: it.id,
+      items: it.items.map(item => ({ id: item.id, field: item.field, hide: item.hide })),
+    }));
     setColumnTabs(_items);
+    sessions.onUpdateLogSitchPreference(_с);
+    onTrySavePreferences(_с);
   };
   const onChangeOrder = (tab: ITabsColumnFilterData) => {
-    const _items: ITabsColumnFilterData[] = _.cloneDeep(aggregatedColumnTabsRef.current);
+    const _items: ITabsColumnFilterData[] = aggregatedColumnTabsRef.current.slice();
     const _tabIndex = _items.findIndex(it => it.id === tab.id);
     _items.splice(_tabIndex, 1, tab);
-    columnChangedref.current = true;
     aggregatedColumnTabsRef.current = _items;
+    const _с: ISessionsLogStitchPreference[] = aggregatedColumnTabsRef.current.map((it, index) => ({
+      tab: it.tab,
+      id: it.id,
+      items: it.items.map(item => ({ id: item.id, field: item.field, hide: item.hide })),
+    }));
     setColumnTabs(_items);
+    sessions.onUpdateLogSitchPreference(_с);
+    onTrySavePreferences(_с);
   };
 
   const onChangeCurrentPage = (_page: number) => {
@@ -212,6 +212,7 @@ const AggregateTable: React.FC<Props> = (props: Props) => {
   };
 
   const onTrySavePreferences = async (data: ISessionsLogStitchPreference[]) => {
+    console.log(data);
     const _obj: IUserPreference = {
       userId: userContext.user.sub,
       prefKey: buildPreferenceKey(USER_PREFERENCE_KEYS.SESSIONS_LOG_COLUMNS_STITCH_TRUE, userContext.user.sub),
@@ -222,12 +223,12 @@ const AggregateTable: React.FC<Props> = (props: Props) => {
 
   return (
     <>
-      <TableHeader count={props.logCount} columns={aggregatedColumnTabsRef.current} onItemClick={onChangeColumn} onChangeOrder={onChangeOrder} />
+      <TableHeader count={props.logCount} columns={aggregatedColumnTabs} onItemClick={onChangeColumn} onChangeOrder={onChangeOrder} />
       <TableContainer minHeight="290px">
         <Table aria-label="collapsible table" className="largeTable">
           <TableHead>
             <TableRow>
-              {aggregatedColumnTabsRef.current[0].items.map((it, index) => {
+              {aggregatedColumnTabs[0].items.map((it, index) => {
                 if (it.hide) return null;
                 if (it.field === 'id') {
                   return <TableCell key={`thRow${it.field}${index}`} style={{ width: '20px' }} />;
@@ -242,12 +243,10 @@ const AggregateTable: React.FC<Props> = (props: Props) => {
           </TableHead>
           <TableBody>
             {!props.error && data && data.length ? (
-              data.map((row, index) => (
-                <AggregateRow key={`rowIndex${row.session.id}${index}`} row={row} columns={aggregatedColumnTabsRef.current[0].items} nestedColumns={aggregatedColumnTabs[1].items} />
-              ))
+              data.map((row, index) => <AggregateRow key={`rowIndex${row.session.id}${index}`} row={row} columns={aggregatedColumnTabs[0].items} nestedColumns={aggregatedColumnTabs[1].items} />)
             ) : (
               <TableRow>
-                <TableCell className="errorCell" colSpan={aggregatedColumnTabsRef.current[0].items.length}>
+                <TableCell className="errorCell" colSpan={aggregatedColumnTabs[0].items.length}>
                   <ErrorMessage color="var(--_primaryTextColor)" margin="48px auto">
                     No data
                   </ErrorMessage>
@@ -256,7 +255,7 @@ const AggregateTable: React.FC<Props> = (props: Props) => {
             )}
             {props.error && (
               <TableRow>
-                <TableCell className="errorCell" colSpan={aggregatedColumnTabsRef.current[0].items.length}>
+                <TableCell className="errorCell" colSpan={aggregatedColumnTabs[0].items.length}>
                   <ErrorMessage margin="48px 0">{props.error}</ErrorMessage>
                 </TableCell>
               </TableRow>
