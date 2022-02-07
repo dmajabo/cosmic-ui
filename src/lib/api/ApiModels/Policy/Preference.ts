@@ -46,3 +46,10 @@ export interface IPolicysvcListUiPreferenceResponse {
 }
 
 export const buildPreferenceKey = (key: string, userId: string): string => `${key}_${userId}`;
+
+export const getPreferenceByKey = (list: IPolicysvcListUiPreferenceResponse, key: string): IUserPreference => {
+  if (!list || !list.preferences || !list.preferences.length) return null;
+  const _item = list.preferences.find(it => it.prefKey === key);
+  if (!_item) return null;
+  return _item;
+};

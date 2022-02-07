@@ -31,6 +31,7 @@ const TextInput: React.FC<IProps> = (props: IProps) => {
   const [type, setType] = React.useState<string>(props.type || 'text');
   const [textValue, setTextValue] = React.useState<string>(props.value || '');
   const [isTyping, setIsTyping] = React.useState(false);
+  const [touched, setTouched] = React.useState(false);
   const debouncedSearchTerm = useDebounce(textValue, DEBOUNCE_TIME);
   React.useEffect(() => {
     if ((debouncedSearchTerm || debouncedSearchTerm === '' || debouncedSearchTerm === null) && isTyping) {
@@ -42,22 +43,20 @@ const TextInput: React.FC<IProps> = (props: IProps) => {
     }
   }, [debouncedSearchTerm]);
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) => {
     setIsTyping(true);
     const { value } = e.target;
     setTextValue(value);
+    if (!touched) {
+      setTouched(true);
+    }
   };
 
   const onBlur = () => {
+    setTouched(true);
     if (!props.onBlurChange) return;
     const value = textValue || null;
     props.onBlurChange(value);
-  };
-
-  const onTextAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setIsTyping(true);
-    const { value } = e.target;
-    setTextValue(value);
   };
 
   const onChangeType = () => {
@@ -67,7 +66,6 @@ const TextInput: React.FC<IProps> = (props: IProps) => {
     }
     setType(props.type || 'password');
   };
-
   return (
     <TextInputWrapper style={props.styles}>
       {props.label && (
@@ -91,6 +89,7 @@ const TextInput: React.FC<IProps> = (props: IProps) => {
             placeholder={props.placeholder}
             style={props.inputStyles}
             autoComplete="new-password"
+            className={touched && !textValue ? 'invalid' : null}
           />
           {props.type === 'password' && (
             <IconWrapper onClick={onChangeType} styles={{ zIndex: 1, position: 'absolute', top: 'calc(50% - 8px)', right: '16px' }} icon={type === 'password' ? eyeIcon : eyeHideIcon} />
@@ -103,7 +102,7 @@ const TextInput: React.FC<IProps> = (props: IProps) => {
           name={props.name}
           value={textValue}
           onBlur={onBlur}
-          onChange={onTextAreaChange}
+          onChange={onChange}
           readOnly={props.readOnly}
           disabled={props.disabled}
           placeholder={props.placeholder}

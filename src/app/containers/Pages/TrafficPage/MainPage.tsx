@@ -9,7 +9,7 @@ import { TRAFFIC_TABS } from 'lib/hooks/Traffic/models';
 import { useTrafficDataContext } from 'lib/hooks/Traffic/useTrafficDataCont';
 import { TrendsPage } from './Trends';
 // import Rules from './Page/Rules';
-import { buildPreferenceKey, IPolicysvcListUiPreferenceRequest, IPolicysvcListUiPreferenceResponse, USER_PREFERENCE_KEYS } from 'lib/api/ApiModels/Policy/Preference';
+import { buildPreferenceKey, getPreferenceByKey, IPolicysvcListUiPreferenceRequest, IPolicysvcListUiPreferenceResponse, USER_PREFERENCE_KEYS } from 'lib/api/ApiModels/Policy/Preference';
 import { PolicyApi } from 'lib/api/ApiModels/Services/policy';
 import { usePost } from 'lib/api/http/useAxiosHook';
 import { useSessionsDataContext } from 'lib/hooks/Sessions/useSessionsDataContext';
@@ -23,17 +23,22 @@ const MainPage: React.FC<IProps> = (props: IProps) => {
   const { sessions } = useSessionsDataContext();
   const { traffic } = useTrafficDataContext();
   const { response, loading, onPost: onGetPreferrences } = usePost<IPolicysvcListUiPreferenceRequest, IPolicysvcListUiPreferenceResponse>();
+  const [isDataLoaded, setDataLoaded] = React.useState<boolean>(false);
 
   const classes = TabsStyles();
 
   React.useEffect(() => {
     onTryLoadPreferences();
+    setDataLoaded(true);
   }, []);
 
   React.useEffect(() => {
     if (response) {
-      console.log(response);
-      // sessions.onSetLogPreference(getRes);
+      const _rangePref = getPreferenceByKey(response, buildPreferenceKey(USER_PREFERENCE_KEYS.FLOWS_OVERRVIEW_SETTINGS_RANGES, userContext.user.sub));
+      const _sttichOn = getPreferenceByKey(response, buildPreferenceKey(USER_PREFERENCE_KEYS.SESSIONS_LOG_COLUMNS_STITCH_TRUE, userContext.user.sub));
+      const _sttichOff = getPreferenceByKey(response, buildPreferenceKey(USER_PREFERENCE_KEYS.SESSIONS_LOG_COLUMNS_STITCH_FALSE, userContext.user.sub));
+      traffic.onSetFlowRangePreference(_rangePref);
+      sessions.onSetLogPreference(_sttichOff, _sttichOn);
     }
   }, [response]);
 
@@ -52,7 +57,7 @@ const MainPage: React.FC<IProps> = (props: IProps) => {
     await onGetPreferrences(PolicyApi.getPostPreferencesList(), _obj, userContext.accessToken!);
   };
 
-  if (loading) {
+  if (loading || !isDataLoaded) {
     return (
       <PageWrapperStyles padding="20px 40px 40px 40px">
         <AbsLoaderWrapper width="100%" height="100%">

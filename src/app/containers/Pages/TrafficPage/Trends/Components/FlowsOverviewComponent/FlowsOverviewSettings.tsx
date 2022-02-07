@@ -24,7 +24,7 @@ const FlowsOverviewSettings: React.FC<Props> = (props: Props) => {
   const { response: postRes, error: postError, loading, onPost } = usePost<IPreferenceRes, any>();
   React.useEffect(() => {
     setRanges(traffic.rangePreference);
-  }, []);
+  }, [traffic.rangePreference]);
 
   React.useEffect(() => {
     if (postRes && !postError) {
@@ -33,7 +33,7 @@ const FlowsOverviewSettings: React.FC<Props> = (props: Props) => {
   }, [postRes]);
 
   React.useEffect(() => {
-    if (ranges.some(r => !r.color || !r.from || !r.to || !r.name)) {
+    if (ranges.some(r => !r.color || (!r.from && r.from !== 0) || (!r.to && r.to !== 0) || !r.name)) {
       setDisabledCreate(true);
     } else {
       setDisabledCreate(false);

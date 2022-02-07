@@ -48,7 +48,6 @@ const RangeItem: React.FC<Props> = (props: Props) => {
   const onChange = (v: any, field: string) => {
     const _obj: IFlowPreferenceRange = { ...props.range };
     _obj[field] = v;
-    console.log(_obj);
     props.onUpdateRange(_obj, props.index);
   };
   const onRemoveRange = () => {
@@ -61,7 +60,7 @@ const RangeItem: React.FC<Props> = (props: Props) => {
         colorSchema={DEFAULT_SEGMENTS_COLORS_SCHEMA}
         styles={{ width: '20px', minHeight: '20px', height: '20px', margin: 'auto 20px auto 0' }}
         // required?: boolean;
-        previewColorStyles={{ padding: '0', width: '100%', height: '100%' }}
+        previewColorStyles={{ padding: '0', width: '100%', height: '100%', border: 'none' }}
         onChange={v => onChange(v, 'color')}
         color={props.color}
       />
@@ -71,7 +70,7 @@ const RangeItem: React.FC<Props> = (props: Props) => {
         onChange={v => onChange(v, 'name')}
         styles={{ minHeight: '50px', height: '50px', width: '160px', margin: 'auto 20px auto 0' }}
         placeholder="Name"
-        // inputStyles?: Object;
+        // inputStyles={{ borderColor: !props.name ? 'var(--_errorColor)' : 'var(--_defaultInputBorder)' }}
       />
       <FromToWrapper>
         <TextNumberInput

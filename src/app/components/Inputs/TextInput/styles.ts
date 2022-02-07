@@ -32,6 +32,15 @@ const InputStyles = css`
     cursor: default;
     color: var(--_disabledTextColor);
   }
+  &:-webkit-autofill,
+  &:-webkit-autofill:hover,
+  &:-webkit-autofill:focus,
+  &:-webkit-autofill:active {
+    background: transparent;
+  }
+  &.invalid {
+    border-color: var(--_errorColor);
+  }
 `;
 export const Input = styled.input<Props>`
   ${InputStyles};

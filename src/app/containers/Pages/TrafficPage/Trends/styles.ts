@@ -43,6 +43,79 @@ export const ChartWrapper = styled.div`
   border-radius: 6px;
   background: var(--_chartBg);
   position: relative;
+  &.heatChartWrapperMap > div {
+    width: 100%;
+    overflow: auto;
+    background: var(--_chartBg);
+    border-radius: 6px;
+    border: 1px solid var(--_rowBorder);
+    flex-grow: 0;
+    align-self: flex-start;
+    max-height: 100%;
+    & > div div {
+      min-width: 190px;
+      flex-shrink: 0 !important;
+      user-select: none;
+    }
+    & > div:nth-child(1) {
+      height: 48px;
+      & > div {
+        font-size: 14px;
+        padding: 8px !important;
+        text-align: center !important;
+        background: var(--_chartBg);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        border: 1px solid var(--_rowBorder);
+        height: 48px;
+        line-height: 32px;
+        box-sizing: border-box;
+        flex: 1 1 190px !important;
+      }
+    }
+    & > div:nth-child(2) > div {
+      height: 48px;
+      & > div:nth-child(1) {
+        display: flex;
+        overflow: hidden;
+        align-items: center;
+        justify-content: center;
+        height: 48px;
+        & div {
+          font-size: 14px;
+          padding: 8px !important;
+          text-align: center !important;
+          background: var(--_chartBg);
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          border: 1px solid var(--_rowBorder);
+          height: 48px;
+          line-height: 32px;
+          box-sizing: border-box;
+          position: static !important;
+          width: 100% !important;
+          color: var(--_primaryTextColor);
+          font-weight: normal;
+        }
+      }
+      & > div {
+        flex: 1 1 190px !important;
+        & div {
+          padding: 8px !important;
+          height: 48px;
+          line-height: 32px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          text-align: center !important;
+          color: var(--_primaryWhiteColor);
+          font-weight: bold;
+        }
+      }
+    }
+  }
 `;
 
 export const PanelTitle = styled.div`

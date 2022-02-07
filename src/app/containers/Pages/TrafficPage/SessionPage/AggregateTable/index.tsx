@@ -130,23 +130,6 @@ const AggregateTable: React.FC<Props> = (props: Props) => {
         { ...SessionGridColumns.trafficType, hide: false },
         { ...SessionGridColumns.deviceNetworkExtid, hide: true },
         { ...SessionGridColumns.deviceControllerName, hide: true },
-
-        // { ...SessionGridColumns.startTime },
-        // { ...SessionGridColumns.endTime },
-        // { ...SessionGridColumns.flowId },
-        // { ...SessionGridColumns.natDestIp },
-        // { ...SessionGridColumns.natDestPort },
-        // { ...SessionGridColumns.action },
-        // { ...SessionGridColumns.deviceExtId },
-        // { ...SessionGridColumns.deviceControllerId },
-        // { ...SessionGridColumns.vnetworkExtId },
-        // { ...SessionGridColumns.vnetworkName },
-        // { ...SessionGridColumns.subnetExtId },
-        // { ...SessionGridColumns.subnetName },
-        // { ...SessionGridColumns.vmExtId },
-        // { ...SessionGridColumns.vmName },
-        // { ...SessionGridColumns.region },
-        // { ...SessionGridColumns.azId },
       ],
     },
   ]);
@@ -185,6 +168,7 @@ const AggregateTable: React.FC<Props> = (props: Props) => {
           id: it.id,
           items: it.items.map(item => ({ id: item.id, field: item.field, hide: item.hide })),
         }));
+        sessions.onUpdateLogSitchPreference(_с);
         onTrySavePreferences(_с);
       }
     };
@@ -206,29 +190,17 @@ const AggregateTable: React.FC<Props> = (props: Props) => {
     const _tabIndex = _items.findIndex(it => it.id === tab.id);
     const _i = _items[_tabIndex].items.findIndex(it => it.field === item.field);
     _items[_tabIndex].items.splice(_i, 1, { ...item, hide: hide });
-    const _с: ISessionsLogStitchPreference[] = _items.map((it, index) => ({
-      tab: it.tab,
-      id: it.id,
-      items: it.items.map(item => ({ id: item.id, field: item.field, hide: item.hide })),
-    }));
     columnChangedref.current = true;
     aggregatedColumnTabsRef.current = _items;
     setColumnTabs(_items);
-    sessions.onUpdateLogSitchPreference(_с);
   };
   const onChangeOrder = (tab: ITabsColumnFilterData) => {
     const _items: ITabsColumnFilterData[] = _.cloneDeep(aggregatedColumnTabsRef.current);
     const _tabIndex = _items.findIndex(it => it.id === tab.id);
     _items.splice(_tabIndex, 1, tab);
-    const _с: ISessionsLogStitchPreference[] = _items.map((it, index) => ({
-      tab: it.tab,
-      id: it.id,
-      items: it.items.map(item => ({ id: item.id, field: item.field, hide: item.hide })),
-    }));
     columnChangedref.current = true;
     aggregatedColumnTabsRef.current = _items;
     setColumnTabs(_items);
-    sessions.onUpdateLogSitchPreference(_с);
   };
 
   const onChangeCurrentPage = (_page: number) => {
