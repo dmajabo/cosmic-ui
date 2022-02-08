@@ -3,4 +3,5 @@ export const TesseractApi = {
   getAggregatedSessions: () => 'tesseract/api/v1/tesseract/aggregatedsessions',
 
   getSessionsPerSegment: (time: string) => `tesseract/api/v1/tesseract/sessions-per-segment?timeRange=${time}&filters=policy_action:ALLOW`, // policy_action:ALLOW // res => ITesseractGetTotalSessionsPerSegmentResponse
+  getSessionBwSegments: (time: string) => `tesseract/api/v1/tesseract/sessions-bw-segments?timeRange=${time}`, // res => ITesseractGetSessionsBetweenSegmentsResponse
 };

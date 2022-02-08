@@ -16,7 +16,7 @@ import { getVendorObject } from '../AggregateTable/helper';
 import { VendorTdWrapper } from '../AggregateTable/styles';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { usePost } from 'lib/api/http/useAxiosHook';
-import { IPreferenceRes, ISessionsLogPreference, IUserPreference, USER_PREFERENCE_KEYS } from 'lib/api/ApiModels/Policy/Preference';
+import { buildPreferenceKey, IPreferenceRes, ISessionsLogPreference, IUserPreference, USER_PREFERENCE_KEYS } from 'lib/api/ApiModels/Policy/Preference';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { getToBase64 } from 'lib/api/http/utils';
 import { PolicyApi } from 'lib/api/ApiModels/Services/policy';
@@ -42,51 +42,21 @@ const Table: React.FC<Props> = (props: Props) => {
   const [columns, setColumns] = React.useState<IColumn[]>([
     {
       ...SessionGridColumns.timestamp,
+      hide: false,
       valueFormatter: (params: GridValueFormatterParams) => parseFieldAsDate(params.value, `EEE',' LLL d',' yyyy HH:mm aa`),
     },
-    { ...SessionGridColumns.startTime },
-    { ...SessionGridColumns.endTime },
-    { ...SessionGridColumns.flowId },
-    { ...SessionGridColumns.flowDirection },
-    { ...SessionGridColumns.sourceIp },
-    { ...SessionGridColumns.sourcePort },
-    { ...SessionGridColumns.sourceOrgid },
-    { ...SessionGridColumns.sourceVnetworkExtid },
-    { ...SessionGridColumns.sourceVnetworkName },
-    { ...SessionGridColumns.sourceSubnetExtid },
-    { ...SessionGridColumns.sourceVmExtid },
-    { ...SessionGridColumns.sourceVmName },
-    { ...SessionGridColumns.sourceRegion },
-    { ...SessionGridColumns.sourceControllerName },
-    { ...SessionGridColumns.sourceControllerId },
-    { ...SessionGridColumns.sourceSegmentId },
-    { ...SessionGridColumns.sourceSegmentName },
-    { ...SessionGridColumns.sourceSegmentType },
-    { ...SessionGridColumns.destIp },
-    { ...SessionGridColumns.destPort },
-    { ...SessionGridColumns.destOrgid },
-    { ...SessionGridColumns.destVnetworkExtid },
-    { ...SessionGridColumns.destVnetworkName },
-    { ...SessionGridColumns.destSubnetExtid },
-    { ...SessionGridColumns.destVmExtid },
-    { ...SessionGridColumns.destVmName },
-    { ...SessionGridColumns.destRegion },
-    { ...SessionGridColumns.destControllerName },
-    { ...SessionGridColumns.destControllerId },
-    { ...SessionGridColumns.destSegmentId },
-    { ...SessionGridColumns.destSegmentName },
-    { ...SessionGridColumns.destSegmentType },
-    { ...SessionGridColumns.natSourceIp },
-    { ...SessionGridColumns.natSourcePort },
-    { ...SessionGridColumns.natDestIp },
-    { ...SessionGridColumns.natDestPort },
-    { ...SessionGridColumns.bytes },
-    { ...SessionGridColumns.packets },
-    { ...SessionGridColumns.action },
-    { ...SessionGridColumns.deviceName },
-    { ...SessionGridColumns.deviceExtId },
+    { ...SessionGridColumns.sourceIp, hide: false },
+    { ...SessionGridColumns.sourcePort, hide: false },
+    { ...SessionGridColumns.destIp, hide: false },
+    { ...SessionGridColumns.destPort, hide: false },
+    { ...SessionGridColumns.policyAction, hide: false },
+    { ...SessionGridColumns.protocol, hide: false },
+    { ...SessionGridColumns.bytes, hide: false },
+    { ...SessionGridColumns.packets, hide: false },
+    { ...SessionGridColumns.deviceName, hide: false },
     {
       ...SessionGridColumns.deviceVendor,
+      hide: false,
       renderCell: (param: GridRenderCellParams) => {
         const _obj = getVendorObject(param.value as AccountVendorTypes);
         return (
@@ -97,28 +67,22 @@ const Table: React.FC<Props> = (props: Props) => {
         );
       },
     },
-    { ...SessionGridColumns.deviceNetworkExtid },
-    { ...SessionGridColumns.deviceControllerId },
-    { ...SessionGridColumns.deviceControllerName },
-    { ...SessionGridColumns.tcpFlags },
-    { ...SessionGridColumns.trafficType },
-    { ...SessionGridColumns.vnetworkExtId },
-    { ...SessionGridColumns.vnetworkName },
-    { ...SessionGridColumns.subnetExtId },
-    { ...SessionGridColumns.subnetName },
-    { ...SessionGridColumns.vmExtId },
-    { ...SessionGridColumns.vmName },
-    { ...SessionGridColumns.region },
-    { ...SessionGridColumns.azId },
-    { ...SessionGridColumns.protocol },
-    { ...SessionGridColumns.policyAction },
+    { ...SessionGridColumns.flowDirection, hide: true },
+    { ...SessionGridColumns.sourceControllerName, hide: true },
+    { ...SessionGridColumns.destControllerName, hide: true },
+    { ...SessionGridColumns.natSourceIp, hide: true },
+    { ...SessionGridColumns.natSourcePort, hide: true },
+    { ...SessionGridColumns.natDestIp, hide: true },
+    { ...SessionGridColumns.natDestPort, hide: true },
+    { ...SessionGridColumns.tcpFlags, hide: true },
+    { ...SessionGridColumns.trafficType, hide: true },
   ]);
-  const columnChangedref = React.useRef(false);
   const columnsRef = React.useRef(columns);
   const gridStyles = GridStyles();
 
   React.useEffect(() => {
     if (sessions.sessionsLogColumnPreferencesStitch_False && sessions.sessionsLogColumnPreferencesStitch_False.length) {
+      console.log(sessions.sessionsLogColumnPreferencesStitch_False);
       const _columns: IColumn[] = columnsRef.current.slice();
 
       sessions.sessionsLogColumnPreferencesStitch_False.forEach(it => {
@@ -138,13 +102,6 @@ const Table: React.FC<Props> = (props: Props) => {
       columnsRef.current = _columns;
       setColumns(_columns);
     }
-    return () => {
-      if (columnChangedref.current) {
-        const _с: ISessionsLogPreference[] = columnsRef.current.map((it, index) => ({ id: it.id, field: it.field, hide: it.hide }));
-        sessions.onUpdateLogPreference(_с);
-        onTrySavePreferences(_с);
-      }
-    };
   }, []);
 
   React.useEffect(() => {
@@ -163,24 +120,28 @@ const Table: React.FC<Props> = (props: Props) => {
   const onChangePageSize = (size: number, page?: number) => {
     props.onChangePageSize(size, page);
   };
-  const onChangeColumn = (col: IColumn) => {
+  const onChangeColumn = (col: IColumn, hide: boolean) => {
     const _items: IColumn[] = columnsRef.current.slice();
     const _index = _items.findIndex(it => it.field === col.field);
-    _items[_index].hide = !col.hide;
+    _items[_index].hide = hide;
     columnsRef.current = _items;
-    columnChangedref.current = true;
+    const _с: ISessionsLogPreference[] = columnsRef.current.map((it, index) => ({ id: it.id, field: it.field, hide: it.hide }));
     setColumns(_items);
+    sessions.onUpdateLogPreference(_с);
+    onTrySavePreferences(_с);
   };
   const onChangeOrder = (_items: IColumn[]) => {
     columnsRef.current = _items;
-    columnChangedref.current = true;
+    const _с: ISessionsLogPreference[] = columnsRef.current.map((it, index) => ({ id: it.id, field: it.field, hide: it.hide }));
     setColumns(_items);
+    sessions.onUpdateLogPreference(_с);
+    onTrySavePreferences(_с);
   };
 
   const onTrySavePreferences = async (data: ISessionsLogPreference[]) => {
     const _obj: IUserPreference = {
       userId: userContext.user.sub,
-      prefKey: USER_PREFERENCE_KEYS.SESSIONS_LOG_COLUMNS_STITCH_FALSE,
+      prefKey: buildPreferenceKey(USER_PREFERENCE_KEYS.SESSIONS_LOG_COLUMNS_STITCH_FALSE, userContext.user.sub),
       prefData: getToBase64(data),
     };
     await onPost(PolicyApi.postSavePreference(), { preference: _obj }, userContext.accessToken!);

@@ -34,6 +34,20 @@ export enum AlertChannelType {
   WEBHOOK = 'WEBHOOK',
 }
 
+export enum AlertWebhookType {
+  UNKNOWN_WEBHOOK = 'UNKNOWN_WEBHOOK', // default
+  SLACK = 'SLACK',
+}
+
+export enum AlertVerificationStatusTypes {
+  UNKNOWN_STATUS = 'UNKNOWN_STATUS', // "default": "UNKNOWN_STATUS"
+  NotStarted = 'NotStarted',
+  TemporaryFailure = 'TemporaryFailure',
+  Success = 'Success',
+  Failed = 'Failed',
+  Pending = 'Pending',
+}
+
 export interface IAlertMeta extends IBaseEntity<string> {
   name: string;
   type: ModelalertType;
@@ -46,17 +60,37 @@ export interface IAlertMeta extends IBaseEntity<string> {
 }
 export interface IAlertMetaDataRes extends IBaseTotalCount, IBasePages {
   alertMetadata: IAlertMeta[];
+  channels: IAlertChannel[];
 }
 
 export interface IAlertEmailChannel {
   receiverEmailIds: string[];
   emailSubjectPrefix: string;
 }
+
+export interface IAlertWebhookChannel {
+  webhookUrl: string;
+  webhookType: AlertWebhookType;
+}
+
+export interface IEmailStatuses {
+  additionalProperties: AlertVerificationStatusTypes;
+}
+export interface IAlertEmailChannelVerificationStatus {
+  emailStatuses: IEmailStatuses;
+}
+
+export interface IAlertVerificationStatus {
+  emailChannelStatus: IAlertEmailChannelVerificationStatus;
+}
 export interface IAlertChannel extends IBaseEntity<string> {
   name: string;
   channelType: AlertChannelType;
-  emailPolicy: IAlertEmailChannel;
+  emailPolicy?: IAlertEmailChannel;
+  webhookPolicy?: IAlertWebhookChannel;
   isDefault: boolean;
+  alertMetaIds: string[];
+  verificationStatus: IAlertVerificationStatus;
 }
 export interface IAlertChannelRes extends IBaseTotalCount, IBasePages {
   channels: IAlertChannel[];
@@ -68,10 +102,26 @@ export const createChannel = (type: AlertChannelType): IAlertChannel => {
     name: '',
     isDefault: false,
     channelType: type,
-    emailPolicy: {
-      receiverEmailIds: [],
-      emailSubjectPrefix: '',
+    alertMetaIds: [],
+    verificationStatus: {
+      emailChannelStatus: {
+        emailStatuses: {
+          additionalProperties: AlertVerificationStatusTypes.UNKNOWN_STATUS,
+        },
+      },
     },
   };
+  if (type === AlertChannelType.EMAIL) {
+    _obj.emailPolicy = {
+      receiverEmailIds: [],
+      emailSubjectPrefix: '',
+    };
+  }
+  if (type === AlertChannelType.WEBHOOK) {
+    _obj.webhookPolicy = {
+      webhookUrl: '',
+      webhookType: AlertWebhookType.SLACK,
+    };
+  }
   return _obj;
 };

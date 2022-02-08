@@ -16,10 +16,9 @@ import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { AccountVendorTypes } from 'lib/api/ApiModels/Accounts/apiModel';
 import { VendorTdWrapper } from './styles';
 import { IColumn } from 'lib/models/grid';
-import _ from 'lodash';
 import { useSessionsDataContext } from 'lib/hooks/Sessions/useSessionsDataContext';
 import { usePost } from 'lib/api/http/useAxiosHook';
-import { IPreferenceRes, ISessionsLogStitchPreference, IUserPreference, USER_PREFERENCE_KEYS } from 'lib/api/ApiModels/Policy/Preference';
+import { buildPreferenceKey, IPreferenceRes, ISessionsLogStitchPreference, IUserPreference, USER_PREFERENCE_KEYS } from 'lib/api/ApiModels/Policy/Preference';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { getToBase64 } from 'lib/api/http/utils';
 import { PolicyApi } from 'lib/api/ApiModels/Services/policy';
@@ -52,12 +51,19 @@ const AggregateTable: React.FC<Props> = (props: Props) => {
         { ...SessionGridColumns.sourceIp, hide: false },
         { ...SessionGridColumns.sourcePort, hide: false },
         { ...SessionGridColumns.sourceSegmentName, hide: false },
-        { ...SessionGridColumns.sourceSegmentType, hide: false },
         { ...SessionGridColumns.destIp, hide: false },
         { ...SessionGridColumns.destPort, hide: false },
         { ...SessionGridColumns.destSegmentName, hide: false },
-        { ...SessionGridColumns.destSegmentType, hide: false },
+        { ...SessionGridColumns.protocol, hide: true },
+        { ...SessionGridColumns.deviceName, hide: true },
         { ...SessionGridColumns.vendorsColumn, hide: false },
+        { ...SessionGridColumns.flowDirection, hide: true },
+        { ...SessionGridColumns.sourceControllerName, hide: true },
+        { ...SessionGridColumns.sourceControllerId, hide: true },
+        { ...SessionGridColumns.natSourceIp, hide: true },
+        { ...SessionGridColumns.natSourcePort, hide: true },
+        { ...SessionGridColumns.tcpFlags, hide: true },
+        { ...SessionGridColumns.trafficType, hide: true },
       ],
     },
     {
@@ -67,51 +73,26 @@ const AggregateTable: React.FC<Props> = (props: Props) => {
       items: [
         {
           ...SessionGridColumns.timestamp,
+          hide: false,
           valueFormatter: (params: GridValueFormatterParams) => parseFieldAsDate(params.value, `EEE',' LLL d',' yyyy HH:mm aa`),
         },
-        { ...SessionGridColumns.startTime },
-        { ...SessionGridColumns.endTime },
-        { ...SessionGridColumns.flowId },
-        { ...SessionGridColumns.flowDirection },
-        { ...SessionGridColumns.sourceIp },
-        { ...SessionGridColumns.sourcePort },
-        { ...SessionGridColumns.sourceOrgid },
-        { ...SessionGridColumns.sourceVnetworkExtid },
-        { ...SessionGridColumns.sourceVnetworkName },
-        { ...SessionGridColumns.sourceSubnetExtid },
-        { ...SessionGridColumns.sourceVmExtid },
-        { ...SessionGridColumns.sourceVmName },
-        { ...SessionGridColumns.sourceRegion },
-        { ...SessionGridColumns.sourceControllerName },
-        { ...SessionGridColumns.sourceControllerId },
-        { ...SessionGridColumns.sourceSegmentId },
-        { ...SessionGridColumns.sourceSegmentName },
-        { ...SessionGridColumns.sourceSegmentType },
-        { ...SessionGridColumns.destIp },
-        { ...SessionGridColumns.destPort },
-        { ...SessionGridColumns.destOrgid },
-        { ...SessionGridColumns.destVnetworkExtid },
-        { ...SessionGridColumns.destVnetworkName },
-        { ...SessionGridColumns.destSubnetExtid },
-        { ...SessionGridColumns.destVmExtid },
-        { ...SessionGridColumns.destVmName },
-        { ...SessionGridColumns.destRegion },
-        { ...SessionGridColumns.destControllerName },
-        { ...SessionGridColumns.destControllerId },
-        { ...SessionGridColumns.destSegmentId },
-        { ...SessionGridColumns.destSegmentName },
-        { ...SessionGridColumns.destSegmentType },
-        { ...SessionGridColumns.natSourceIp },
-        { ...SessionGridColumns.natSourcePort },
-        { ...SessionGridColumns.natDestIp },
-        { ...SessionGridColumns.natDestPort },
-        { ...SessionGridColumns.bytes },
-        { ...SessionGridColumns.packets },
-        { ...SessionGridColumns.action },
-        { ...SessionGridColumns.deviceName },
-        { ...SessionGridColumns.deviceExtId },
+        { ...SessionGridColumns.sourceIp, hide: false },
+        { ...SessionGridColumns.sourcePort, hide: false },
+        { ...SessionGridColumns.sourceSegmentName, hide: false },
+        { ...SessionGridColumns.sourceSegmentType, hide: false },
+        { ...SessionGridColumns.destIp, hide: false },
+        { ...SessionGridColumns.destPort, hide: false },
+        { ...SessionGridColumns.destSegmentName, hide: false },
+        { ...SessionGridColumns.destSegmentType, hide: false },
+        { ...SessionGridColumns.policyAction, hide: false },
+        { ...SessionGridColumns.protocol, hide: false },
+        { ...SessionGridColumns.flowDirection, hide: false },
+        { ...SessionGridColumns.bytes, hide: false },
+        { ...SessionGridColumns.packets, hide: false },
+        { ...SessionGridColumns.deviceName, hide: false },
         {
           ...SessionGridColumns.deviceVendor,
+          hide: false,
           renderCell: (param: GridRenderCellParams) => {
             const _obj = getVendorObject(param.value as AccountVendorTypes);
             return (
@@ -122,25 +103,35 @@ const AggregateTable: React.FC<Props> = (props: Props) => {
             );
           },
         },
-        { ...SessionGridColumns.deviceNetworkExtid },
-        { ...SessionGridColumns.deviceControllerId },
-        { ...SessionGridColumns.deviceControllerName },
-        { ...SessionGridColumns.tcpFlags },
-        { ...SessionGridColumns.trafficType },
-        { ...SessionGridColumns.vnetworkExtId },
-        { ...SessionGridColumns.vnetworkName },
-        { ...SessionGridColumns.subnetExtId },
-        { ...SessionGridColumns.subnetName },
-        { ...SessionGridColumns.vmExtId },
-        { ...SessionGridColumns.vmName },
-        { ...SessionGridColumns.region },
-        { ...SessionGridColumns.azId },
-        { ...SessionGridColumns.protocol },
-        { ...SessionGridColumns.policyAction },
+        { ...SessionGridColumns.sourceOrgid, hide: true },
+        { ...SessionGridColumns.sourceVnetworkExtid, hide: true },
+        { ...SessionGridColumns.sourceVnetworkName, hide: true },
+        { ...SessionGridColumns.sourceSubnetExtid, hide: true },
+        { ...SessionGridColumns.sourceVmExtid, hide: true },
+        { ...SessionGridColumns.sourceVmName, hide: true },
+        { ...SessionGridColumns.sourceRegion, hide: true },
+        { ...SessionGridColumns.sourceControllerName, hide: true },
+        { ...SessionGridColumns.sourceControllerId, hide: true },
+        { ...SessionGridColumns.sourceSegmentId, hide: true },
+        { ...SessionGridColumns.destOrgid, hide: true },
+        { ...SessionGridColumns.destVnetworkExtid, hide: true },
+        { ...SessionGridColumns.destVnetworkName, hide: true },
+        { ...SessionGridColumns.destSubnetExtid, hide: true },
+        { ...SessionGridColumns.destVmExtid, hide: true },
+        { ...SessionGridColumns.destVmName, hide: true },
+        { ...SessionGridColumns.destRegion, hide: true },
+        { ...SessionGridColumns.destControllerName, hide: true },
+        { ...SessionGridColumns.destControllerId, hide: true },
+        { ...SessionGridColumns.destSegmentId, hide: true },
+        { ...SessionGridColumns.natSourceIp, hide: true },
+        { ...SessionGridColumns.natSourcePort, hide: true },
+        { ...SessionGridColumns.tcpFlags, hide: false },
+        { ...SessionGridColumns.trafficType, hide: false },
+        { ...SessionGridColumns.deviceNetworkExtid, hide: true },
+        { ...SessionGridColumns.deviceControllerName, hide: true },
       ],
     },
   ]);
-  const columnChangedref = React.useRef(false);
   const aggregatedColumnTabsRef = React.useRef(aggregatedColumnTabs);
 
   React.useEffect(() => {
@@ -168,16 +159,6 @@ const AggregateTable: React.FC<Props> = (props: Props) => {
       aggregatedColumnTabsRef.current = _tabs;
       setColumnTabs(_tabs);
     }
-    return () => {
-      if (columnChangedref.current) {
-        const _с: ISessionsLogStitchPreference[] = aggregatedColumnTabsRef.current.map((it, index) => ({
-          tab: it.tab,
-          id: it.id,
-          items: it.items.map(item => ({ id: item.id, field: item.field, hide: item.hide })),
-        }));
-        onTrySavePreferences(_с);
-      }
-    };
   }, []);
 
   React.useEffect(() => {
@@ -191,35 +172,35 @@ const AggregateTable: React.FC<Props> = (props: Props) => {
     setData(_data);
   }, [props.data]);
 
-  const onChangeColumn = (tab: ITabsColumnFilterData, item: IColumn) => {
-    const _items: ITabsColumnFilterData[] = _.cloneDeep(aggregatedColumnTabsRef.current);
-    const _tabIndex = _items.findIndex(it => it.id === tab.id);
-    const _i = _items[_tabIndex].items.findIndex(it => it.field === item.field);
-    const _hide = !item.hide;
-    _items[_tabIndex].items.splice(_i, 1, { ...item, hide: _hide });
-    const _с: ISessionsLogStitchPreference[] = _items.map((it, index) => ({
+  const onChangeColumn = (tabIndex: number, item: IColumn, hide: boolean) => {
+    const _items: ITabsColumnFilterData[] = aggregatedColumnTabsRef.current.slice();
+    const _arr = _items[tabIndex].items.slice();
+    const index = _arr.findIndex(it => it.field === item.field);
+    _arr.splice(index, 1, { ..._arr[index], hide: hide });
+    _items[tabIndex].items = _arr;
+    aggregatedColumnTabsRef.current = _items;
+    const _с: ISessionsLogStitchPreference[] = aggregatedColumnTabsRef.current.map((it, index) => ({
       tab: it.tab,
       id: it.id,
       items: it.items.map(item => ({ id: item.id, field: item.field, hide: item.hide })),
     }));
-    columnChangedref.current = true;
-    aggregatedColumnTabsRef.current = _items;
     setColumnTabs(_items);
     sessions.onUpdateLogSitchPreference(_с);
+    onTrySavePreferences(_с);
   };
   const onChangeOrder = (tab: ITabsColumnFilterData) => {
-    const _items: ITabsColumnFilterData[] = _.cloneDeep(aggregatedColumnTabsRef.current);
+    const _items: ITabsColumnFilterData[] = aggregatedColumnTabsRef.current.slice();
     const _tabIndex = _items.findIndex(it => it.id === tab.id);
     _items.splice(_tabIndex, 1, tab);
-    const _с: ISessionsLogStitchPreference[] = _items.map((it, index) => ({
+    aggregatedColumnTabsRef.current = _items;
+    const _с: ISessionsLogStitchPreference[] = aggregatedColumnTabsRef.current.map((it, index) => ({
       tab: it.tab,
       id: it.id,
       items: it.items.map(item => ({ id: item.id, field: item.field, hide: item.hide })),
     }));
-    columnChangedref.current = true;
-    aggregatedColumnTabsRef.current = _items;
     setColumnTabs(_items);
     sessions.onUpdateLogSitchPreference(_с);
+    onTrySavePreferences(_с);
   };
 
   const onChangeCurrentPage = (_page: number) => {
@@ -231,9 +212,10 @@ const AggregateTable: React.FC<Props> = (props: Props) => {
   };
 
   const onTrySavePreferences = async (data: ISessionsLogStitchPreference[]) => {
+    console.log(data);
     const _obj: IUserPreference = {
       userId: userContext.user.sub,
-      prefKey: USER_PREFERENCE_KEYS.SESSIONS_LOG_COLUMNS_STITCH_TRUE,
+      prefKey: buildPreferenceKey(USER_PREFERENCE_KEYS.SESSIONS_LOG_COLUMNS_STITCH_TRUE, userContext.user.sub),
       prefData: getToBase64(data),
     };
     await onPost(PolicyApi.postSavePreference(), { preference: _obj }, userContext.accessToken!);
@@ -241,28 +223,30 @@ const AggregateTable: React.FC<Props> = (props: Props) => {
 
   return (
     <>
-      <TableHeader count={props.logCount} columns={aggregatedColumnTabsRef.current} onItemClick={onChangeColumn} onChangeOrder={onChangeOrder} />
+      <TableHeader count={props.logCount} columns={aggregatedColumnTabs} onItemClick={onChangeColumn} onChangeOrder={onChangeOrder} />
       <TableContainer minHeight="290px">
         <Table aria-label="collapsible table" className="largeTable">
           <TableHead>
             <TableRow>
-              {aggregatedColumnTabsRef.current[0].items.map((it, index) => {
+              {aggregatedColumnTabs[0].items.map((it, index) => {
                 if (it.hide) return null;
                 if (it.field === 'id') {
                   return <TableCell key={`thRow${it.field}${index}`} style={{ width: '20px' }} />;
                 }
-                return <TableCell key={`thRow${it.field}${index}`}>{it.label}</TableCell>;
+                return (
+                  <TableCell key={`thRow${it.field}${index}`} style={{ minWidth: `${it.minWidth}px` }}>
+                    {it.label}
+                  </TableCell>
+                );
               })}
             </TableRow>
           </TableHead>
           <TableBody>
             {!props.error && data && data.length ? (
-              data.map((row, index) => (
-                <AggregateRow key={`rowIndex${row.session.id}${index}`} row={row} columns={aggregatedColumnTabsRef.current[0].items} nestedColumns={aggregatedColumnTabs[1].items} />
-              ))
+              data.map((row, index) => <AggregateRow key={`rowIndex${row.session.id}${index}`} row={row} columns={aggregatedColumnTabs[0].items} nestedColumns={aggregatedColumnTabs[1].items} />)
             ) : (
               <TableRow>
-                <TableCell className="errorCell" colSpan={aggregatedColumnTabsRef.current[0].items.length}>
+                <TableCell className="errorCell" colSpan={aggregatedColumnTabs[0].items.length}>
                   <ErrorMessage color="var(--_primaryTextColor)" margin="48px auto">
                     No data
                   </ErrorMessage>
@@ -271,7 +255,7 @@ const AggregateTable: React.FC<Props> = (props: Props) => {
             )}
             {props.error && (
               <TableRow>
-                <TableCell className="errorCell" colSpan={aggregatedColumnTabsRef.current[0].items.length}>
+                <TableCell className="errorCell" colSpan={aggregatedColumnTabs[0].items.length}>
                   <ErrorMessage margin="48px 0">{props.error}</ErrorMessage>
                 </TableCell>
               </TableRow>

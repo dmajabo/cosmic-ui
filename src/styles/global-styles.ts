@@ -1,4 +1,5 @@
 import '../fonts/fonts.css';
+
 import { createGlobalStyle } from 'styled-components';
 
 const fontSize = 16;
