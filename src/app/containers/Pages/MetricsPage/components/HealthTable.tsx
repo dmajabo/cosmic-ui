@@ -1,3 +1,4 @@
+import { isNumber } from 'lodash';
 import uniq from 'lodash/uniq';
 import React from 'react';
 import styled from 'styled-components';
@@ -77,7 +78,7 @@ export const HealthTable: React.FC<HealthTableProps> = ({ tableData }) => {
                 <td>{item}</td>
                 {time.map(timeItem => (
                   <td key={timeItem} className={getTableItemClassName(DUMMY_TABLE_OBJECT[`${timeItem}_${item}`])}>
-                    {DUMMY_TABLE_OBJECT[`${timeItem}_${item}`] || 'N/A'}
+                    {isNumber(DUMMY_TABLE_OBJECT[`${timeItem}_${item}`]) ? DUMMY_TABLE_OBJECT[`${timeItem}_${item}`] : 'N/A'}
                   </td>
                 ))}
               </tr>
