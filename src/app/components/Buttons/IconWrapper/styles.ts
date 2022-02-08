@@ -25,6 +25,9 @@ export const Icon = styled.span<IProps>`
   &:hover .inheritHoverFill {
     fill: var(--_hoverButtonBg);
   }
+  &.disabled .inheritFill {
+    fill: var(--_defaultInputBorder);
+  }
   &.inheritRemoveFill:hover .inheritFill {
     fill: var(--_errorColor);
   }

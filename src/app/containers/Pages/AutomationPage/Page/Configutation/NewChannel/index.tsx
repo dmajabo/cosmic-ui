@@ -5,6 +5,10 @@ import { ModalContent, ModalFooter } from 'app/containers/Pages/Edges/Editor/Com
 import { AlertChannelType, IAlertChannel } from 'lib/api/ApiModels/Workflow/apiModel';
 import MatSelect from 'app/components/Inputs/MatSelect';
 import { ValueLabel } from 'app/components/Inputs/MatSelect/styles';
+import WebHookFields from './WebHookFields';
+import _ from 'lodash';
+import { IObject } from 'lib/models/general';
+import { channelValidator } from './validationHelper';
 interface Props {
   dataItem: IAlertChannel;
   onClose: () => void;
@@ -12,20 +16,35 @@ interface Props {
 }
 const NewChannel: React.FC<Props> = (props: Props) => {
   const [editItem, setEditItem] = React.useState<IAlertChannel>(props.dataItem);
+  const [validObj, setValidObj] = React.useState<IObject<string>>(null);
+
+  React.useEffect(() => {
+    if (!_.isEqual(props.dataItem, editItem)) {
+      const validObj: IObject<string> = channelValidator(editItem);
+      setValidObj(validObj);
+    }
+  }, [editItem]);
 
   const onChangeType = (v: AlertChannelType) => {
-    const _obj: IAlertChannel = { ...editItem };
+    const _obj: IAlertChannel = _.cloneDeep(editItem);
     _obj.channelType = v;
     setEditItem(_obj);
   };
 
   const onChangeChannelField = (v: string, field: string) => {
-    const _obj: IAlertChannel = { ...editItem };
+    const _obj: IAlertChannel = _.cloneDeep(editItem);
     _obj[field] = v;
     setEditItem(_obj);
   };
 
+  const onChangeWebHookPolicyField = (v: string, field: string) => {
+    const _obj: IAlertChannel = _.cloneDeep(editItem);
+    _obj.webhookPolicy[field] = v;
+    setEditItem(_obj);
+  };
+
   const onSaveChanges = () => {
+    if (validObj) return;
     props.onSave(editItem);
   };
 
@@ -40,6 +59,8 @@ const NewChannel: React.FC<Props> = (props: Props) => {
           onChange={v => onChangeChannelField(v, 'name')}
           styles={{ margin: '0 0 20px 0' }}
           required
+          error={validObj && validObj['name'] ? validObj['name'] : null}
+          hideEmptyInvalid
           inputStyles={{ height: '50px' }}
         />
         <MatSelect
@@ -64,9 +85,10 @@ const NewChannel: React.FC<Props> = (props: Props) => {
             return null;
           }}
         />
+        {editItem.channelType === AlertChannelType.WEBHOOK && <WebHookFields validObj={validObj} policy={editItem.webhookPolicy} onChangePolicyField={onChangeWebHookPolicyField} />}
       </ModalContent>
       <ModalFooter>
-        <PrimaryButton styles={{ width: '100%', height: '100%' }} disabled={!editItem.name} label="New Channel" onClick={onSaveChanges} />
+        <PrimaryButton styles={{ width: '100%', height: '100%' }} disabled={!!validObj || !editItem.name} label="New Channel" onClick={onSaveChanges} />
       </ModalFooter>
     </>
   );

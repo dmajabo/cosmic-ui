@@ -74,7 +74,7 @@ export interface IAlertWebhookChannel {
 }
 
 export interface IEmailStatuses {
-  additionalProperties: AlertVerificationStatusTypes;
+  [key: string]: AlertVerificationStatusTypes;
 }
 export interface IAlertEmailChannelVerificationStatus {
   emailStatuses: IEmailStatuses;
@@ -105,23 +105,17 @@ export const createChannel = (type: AlertChannelType): IAlertChannel => {
     alertMetaIds: [],
     verificationStatus: {
       emailChannelStatus: {
-        emailStatuses: {
-          additionalProperties: AlertVerificationStatusTypes.UNKNOWN_STATUS,
-        },
+        emailStatuses: {},
       },
     },
-  };
-  if (type === AlertChannelType.EMAIL) {
-    _obj.emailPolicy = {
+    emailPolicy: {
       receiverEmailIds: [],
       emailSubjectPrefix: '',
-    };
-  }
-  if (type === AlertChannelType.WEBHOOK) {
-    _obj.webhookPolicy = {
+    },
+    webhookPolicy: {
       webhookUrl: '',
       webhookType: AlertWebhookType.SLACK,
-    };
-  }
+    },
+  };
   return _obj;
 };

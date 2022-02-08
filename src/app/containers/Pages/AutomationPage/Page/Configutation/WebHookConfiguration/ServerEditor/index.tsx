@@ -42,7 +42,7 @@ const ServerEditor: React.FC<Props> = (props: Props) => {
           name="name"
           value={editItem.name}
           type="password"
-          label="Password"
+          label="Shared Secret"
           onChange={v => onChangeChannelField(v, 'password')}
           styles={{ margin: '0 0 20px 0' }}
           required

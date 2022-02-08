@@ -89,7 +89,13 @@ const Configutation: React.FC<Props> = (props: Props) => {
 
   React.useEffect(() => {
     if (response) {
-      setDataRows(response.channels);
+      setDataRows(
+        response.channels.sort((a, b) => {
+          if (a.channelType === AlertChannelType.EMAIL) return -1;
+          if (b.channelType === AlertChannelType.WEBHOOK) return 1;
+          return 0;
+        }),
+      );
     }
   }, [response]);
 
@@ -140,6 +146,12 @@ const Configutation: React.FC<Props> = (props: Props) => {
   };
 
   const onSaveChannel = async (_newChannel: IAlertChannel) => {
+    if (_newChannel.channelType === AlertChannelType.EMAIL) {
+      delete _newChannel.webhookPolicy;
+    }
+    if (_newChannel.channelType === AlertChannelType.WEBHOOK) {
+      delete _newChannel.emailPolicy;
+    }
     await onPost(AlertApi.postChannel(), _newChannel, userContext.accessToken!);
   };
 

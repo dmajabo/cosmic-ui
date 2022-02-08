@@ -14,7 +14,7 @@ import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import LoadingIndicator from 'app/components/Loading';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import Paging from 'app/components/Basic/Paging';
-import { getSearchedListData, TriggerGridColumns } from './model';
+import { getMappedData, getSearchedListData, IAlertMetaTableItem, TriggerGridColumns } from './model';
 import Header from './Header';
 import { GridCellTotalTag, GridCellWrapper } from 'app/components/Grid/styles';
 import SwitchInput from 'app/components/Inputs/SwitchInput';
@@ -35,8 +35,8 @@ const Triggers: React.FC<Props> = (props: Props) => {
   const [totalCount, setTotalCount] = React.useState<number>(0);
   const [currentPage, setCurrentPage] = React.useState<number>(1);
   const [pageSize, setPageSize] = React.useState<number>(PAGING_DEFAULT_PAGE_SIZE);
-  const [dataRows, setDataRows] = React.useState<IAlertMeta[]>([]);
-  const [filteredData, setFilteredData] = React.useState<IAlertMeta[]>([]);
+  const [dataRows, setDataRows] = React.useState<IAlertMetaTableItem[]>([]);
+  const [filteredData, setFilteredData] = React.useState<IAlertMetaTableItem[]>([]);
   const [searchValue, setSearchValue] = React.useState<string>(null);
   const [selectedPeriod, setSelectedPeriod] = React.useState<ALERT_TIME_RANGE_QUERY_TYPES>(ALERT_SELECT_VALUES[0].value);
   const gridStyles = GridStyles();
@@ -190,11 +190,9 @@ const Triggers: React.FC<Props> = (props: Props) => {
 
   React.useEffect(() => {
     if (response && response.alertMetadata && response.alertMetadata.length) {
-      const _arr: IAlertMeta[] = getSearchedListData(
-        response.alertMetadata.map(it => ({ ...it, id: it.id ? it.id : `CUSTOM_${it.type}` })),
-        searchValue,
-      );
-      setDataRows(response.alertMetadata);
+      const _mappedData: IAlertMetaTableItem[] = getMappedData(response);
+      const _arr: IAlertMetaTableItem[] = getSearchedListData(_mappedData, searchValue);
+      setDataRows(_mappedData);
       setFilteredData(_arr);
       setTotalCount(response.totalCount);
     } else {
@@ -206,13 +204,13 @@ const Triggers: React.FC<Props> = (props: Props) => {
 
   React.useEffect(() => {
     if (updateRes && updateRes.id) {
-      const _items: IAlertMeta[] = dataRows.slice();
-      const index: number = _items.findIndex(it => it.type === updateRes.type);
-      _items.splice(index, 1, updateRes);
-      const _arr: IAlertMeta[] = getSearchedListData(_items, searchValue);
-      setDataRows(_items);
-      setFilteredData(_arr);
-      toast.success('Trigger was updated successfully.');
+      // const _items: IAlertMetaTableItem[] = dataRows.slice();
+      // const index: number = _items.findIndex(it => it.type === updateRes.type);
+      // _items.splice(index, 1, updateRes);
+      // const _arr: IAlertMetaTableItem[] = getSearchedListData(_items, searchValue);
+      // setDataRows(_items);
+      // setFilteredData(_arr);
+      // toast.success('Trigger was updated successfully.');
     }
   }, [updateRes]);
 
@@ -232,7 +230,7 @@ const Triggers: React.FC<Props> = (props: Props) => {
 
   const onSearhChange = (_value: string) => {
     if (_value !== searchValue) {
-      const _arr: IAlertMeta[] = getSearchedListData(dataRows, _value);
+      const _arr: IAlertMetaTableItem[] = getSearchedListData(dataRows, _value);
       setFilteredData(_arr);
       setSearchValue(_value);
     }

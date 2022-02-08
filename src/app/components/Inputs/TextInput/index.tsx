@@ -25,6 +25,7 @@ interface IProps {
   inputStyles?: Object;
   labelStyles?: Object;
   error?: string;
+  hideEmptyInvalid?: boolean;
 }
 
 const TextInput: React.FC<IProps> = (props: IProps) => {
@@ -95,7 +96,7 @@ const TextInput: React.FC<IProps> = (props: IProps) => {
             placeholder={props.placeholder}
             style={props.inputStyles}
             autoComplete="new-password"
-            className={touched && !textValue ? 'invalid' : null}
+            className={touched && !textValue && !props.hideEmptyInvalid ? 'invalid' : null}
           />
           {props.type === 'password' && (
             <IconWrapper onClick={onChangeType} styles={{ zIndex: 1, position: 'absolute', top: 'calc(50% - 8px)', right: '16px' }} icon={type === 'password' ? eyeIcon : eyeHideIcon} />
@@ -115,7 +116,7 @@ const TextInput: React.FC<IProps> = (props: IProps) => {
           style={props.inputStyles}
         />
       )}
-      {props.error && (
+      {touched && props.error && (
         <ErrorMessage textAlign="left" margin="6px 0 0 0">
           {props.error}
         </ErrorMessage>

@@ -1,12 +1,11 @@
 /* eslint-disable no-useless-escape */
 import React from 'react';
-import { ChannelContent, ChannelHeaderRow, ChannelItemWrapper, ConfigurationSubTitle, ConfigurationTitle, LabelsWrapper } from '../styles';
+import { ChannelContent, ChannelHeaderRow, ChannelItemWrapper, ConfigurationTitle, LabelsWrapper } from '../styles';
 import { emailIcon } from 'app/components/SVGIcons/automationIcons/configurationIcons';
 import IconContainer from 'app/components/Basic/IconContainer';
 import TextInputWithIcon from 'app/components/Inputs/TextInput/TextInputWithIcon';
 import { plusIcon } from 'app/components/SVGIcons/plusIcon';
 import { AlertChannelType, IAlertChannel, createChannel } from 'lib/api/ApiModels/Workflow/apiModel';
-import Tag from 'app/components/Basic/Tag';
 import { jsonClone } from 'lib/helpers/cloneHelper';
 import SecondaryButton from 'app/components/Buttons/SecondaryButton';
 import { closeSmallIcon } from 'app/components/SVGIcons/close';
@@ -14,6 +13,7 @@ import { deleteIcon } from 'app/components/SVGIcons/delete';
 import SettingsButton from 'app/components/Buttons/SettingsButton';
 import { PopupContent } from 'app/components/Buttons/SettingsButton/PopupItemStyles';
 import PopupItem from 'app/components/Buttons/SettingsButton/PopupItem';
+import PolicyItem from './PolicyItem';
 
 const emailRegExp = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 interface Props {
@@ -87,7 +87,6 @@ const EmailConfiguration: React.FC<Props> = (props: Props) => {
         <IconContainer iconWidth="22px" iconHeight="22px" icon={emailIcon} />
         <LabelsWrapper>
           <ConfigurationTitle>{channel.name || 'Default Email Recipients'}</ConfigurationTitle>
-          <ConfigurationSubTitle>Here you can add email recipients and use them in automation.</ConfigurationSubTitle>
         </LabelsWrapper>
         {props.showDelete && (
           <SettingsButton buttonStyles={{ top: '-40px', right: '-40px' }} id={`settingsAnomalyButton${channel.id}`} width="24px" height="40px" hoverIconColor="var(--_hoverButtonBg)">
@@ -120,7 +119,7 @@ const EmailConfiguration: React.FC<Props> = (props: Props) => {
         {channel && channel.emailPolicy && channel.emailPolicy.receiverEmailIds && channel.emailPolicy.receiverEmailIds.length ? (
           <>
             {channel.emailPolicy.receiverEmailIds.map((it, index) => (
-              <Tag key={`emailTag${it}`} text={it} index={index} onRemove={onDeleteEmail} bgColor="var(--_pButtonBg)" textColor="var(--_pButtonBg)" />
+              <PolicyItem key={`emailTag${it}`} tag={it} index={index} verificationStatus={channel.verificationStatus} onDeleteEmail={onDeleteEmail} />
             ))}
             <SecondaryButton
               iconWidth="10px"

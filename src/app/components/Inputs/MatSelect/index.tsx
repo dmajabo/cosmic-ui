@@ -85,7 +85,7 @@ const MatSelect: React.FC<Props> = (props: Props) => {
         }}
         IconComponent={() => (
           <IconWrapper
-            classes={open ? 'icon open' : 'icon'}
+            classes={`${open ? 'icon open' : 'icon'} ${props.disabled || props.readOnly ? 'disabled' : null}`}
             width="12px"
             height="12px"
             styles={{ position: 'absolute', right: '8px', top: 'calc(50% - 6px)', pointerEvents: 'none' }}

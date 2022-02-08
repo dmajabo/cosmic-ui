@@ -1,7 +1,7 @@
 import React from 'react';
 import IconContainer from 'app/components/Basic/IconContainer';
 import { webhookIcon } from 'app/components/SVGIcons/automationIcons/configurationIcons';
-import { ChannelHeaderRow, ChannelItemWrapper, ConfigurationSubTitle, ConfigurationTitle, LabelsWrapper } from '../styles';
+import { ChannelContent, ChannelHeaderRow, ChannelItemWrapper, ConfigurationTitle, LabelsWrapper } from '../styles';
 import SecondaryButton from 'app/components/Buttons/SecondaryButton';
 import { plusIcon } from 'app/components/SVGIcons/plusIcon';
 import { AlertChannelType, IAlertChannel, createChannel } from 'lib/api/ApiModels/Workflow/apiModel';
@@ -9,6 +9,7 @@ import { deleteIcon } from 'app/components/SVGIcons/delete';
 import SettingsButton from 'app/components/Buttons/SettingsButton';
 import { PopupContent } from 'app/components/Buttons/SettingsButton/PopupItemStyles';
 import PopupItem from 'app/components/Buttons/SettingsButton/PopupItem';
+import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 // import { editIcon } from 'app/components/SVGIcons/edit';
 
 interface Props {
@@ -30,17 +31,11 @@ const WebHookConfiguration: React.FC<Props> = (props: Props) => {
   };
   if (!channel) return null;
   return (
-    <ChannelItemWrapper>
+    <ChannelItemWrapper style={{ minHeight: '500px' }}>
       <ChannelHeaderRow>
         <IconContainer iconWidth="22px" iconHeight="22px" icon={webhookIcon} />
         <LabelsWrapper>
           <ConfigurationTitle>{channel.name || 'Default Webhook Servers'}</ConfigurationTitle>
-          <ConfigurationSubTitle>
-            {/* to do */}
-            {!props.channel || !props.channel.emailPolicy || !props.channel.emailPolicy.receiverEmailIds
-              ? 'There are no Webhook servers. To add server click on the “Add Server” button.'
-              : 'To add server click on the “Add Server” button.'}
-          </ConfigurationSubTitle>
         </LabelsWrapper>
         <SecondaryButton styles={{ margin: 'auto 0 auto 20px' }} onClick={onClick} label="Add server" icon={plusIcon} />
         {props.showDelete && (
@@ -52,7 +47,14 @@ const WebHookConfiguration: React.FC<Props> = (props: Props) => {
           </SettingsButton>
         )}
       </ChannelHeaderRow>
-      {/* {props.items && props.items.length ? <ChannelContent></ChannelContent> : null} */}
+      <ChannelContent style={{ display: 'flex', flexDirection: 'column', width: '100%', height: 'calc(100% - 80px)' }}>
+        <ErrorMessage margin="auto auto 20px auto" color="var(--_primaryTextColor)" fontSize={18}>
+          There are no servers yet
+        </ErrorMessage>
+        <ErrorMessage margin="0 auto auto auto" color="var(--_disabledTextColor)" fontSize={16}>
+          To add a server click the “Add Server” button.
+        </ErrorMessage>
+      </ChannelContent>
     </ChannelItemWrapper>
   );
 };

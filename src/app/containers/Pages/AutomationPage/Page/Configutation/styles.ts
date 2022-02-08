@@ -28,13 +28,14 @@ export const LabelsWrapper = styled.div`
   width: auto;
   flex-grow: 1;
   max-width: 100%;
+  display: flex;
 `;
 export const ConfigurationTitle = styled.div`
   font-weight: bold;
   font-size: 22px;
   line-height: 29px;
   color: var(--_primaryTextColor);
-  margin-bottom: 3px;
+  margin: auto 0;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
