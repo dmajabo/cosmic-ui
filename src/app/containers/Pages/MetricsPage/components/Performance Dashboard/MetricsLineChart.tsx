@@ -5,6 +5,8 @@ import { DateTime } from 'luxon';
 import { MetricKeyValue } from './PacketLoss';
 import { Data } from './Table';
 import sortBy from 'lodash/sortBy';
+import HighchartsMore from 'highcharts/highcharts-more';
+HighchartsMore(Highcharts);
 
 interface DataPoint {
   readonly x: number;
@@ -14,6 +16,17 @@ interface DataPoint {
 interface ChartData {
   readonly name: string;
   readonly data: DataPoint[];
+}
+
+interface AreaDataPoint {
+  readonly x: number;
+  readonly low: number;
+  readonly high: number;
+}
+
+interface AreaChartData {
+  readonly name: string;
+  readonly data: AreaDataPoint[];
 }
 
 interface LineChartProps {
@@ -85,6 +98,7 @@ const ANOMALY_POINT_COLOR = 'red';
 
 export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataValueSuffix, inputData }) => {
   const [data, setData] = useState<ChartData[]>([]);
+  const [areaChartData, setAreaChartData] = useState<AreaChartData[]>([]);
 
   useEffect(() => {
     const tempChartData: ChartData[] = selectedRows.map(row => {
@@ -105,6 +119,7 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
             },
           };
         }),
+        zIndex: 1,
         turboThreshold: inputData[row.id].length,
       };
     });
@@ -131,11 +146,41 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
             lineWidthPlus: 0,
           },
         },
+        zIndex: 1,
+        lineWidth: 0,
+      };
+    });
+    const areaData: AreaChartData[] = selectedRows.map(row => {
+      return {
+        name: `${row.name}_bounds`,
+        data: sortBy(inputData[`${row.id}_lowerbound`], 'time').map((item, index) => {
+          const val = DateTime.fromFormat(item.time, OLD_TIME_FORMAT).toUTC();
+          return {
+            x: val.toMillis(),
+            low: dataValueSuffix === 'mbps' ? Number(item.value) / 1000 : Number(Number.parseFloat(item.value).toFixed(2)),
+            high: dataValueSuffix === 'mbps' ? Number(item.value) / 1000 : Number(Number.parseFloat(inputData[`${row.id}_upperbound`][index].value).toFixed(2)),
+            marker: {
+              enabled: false,
+            },
+          };
+        }),
+        type: 'arearange',
+        turboThreshold: inputData[row.id].length,
+        showInLegend: false,
+        color: 'aliceblue',
+        zIndex: 0,
+        fillOpacity: 0.1,
+        states: {
+          hover: {
+            lineWidthPlus: 0,
+          },
+        },
         lineWidth: 0,
       };
     });
     const finalChartData = sortBy(tempChartData, 'data').reverse().concat(anomalyData);
     setData(finalChartData);
+    setAreaChartData(areaData);
   }, [inputData]);
 
   const lineChartOptions = {
@@ -175,7 +220,7 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
     credits: {
       enabled: false,
     },
-    series: data,
+    series: [...data, ...areaChartData],
   };
 
   return <HighchartsReact highcharts={Highcharts} options={lineChartOptions} />;
