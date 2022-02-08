@@ -42,7 +42,7 @@ const MetricsPage: React.FC = () => {
   const userContext = useContext<UserContextState>(UserContext);
   const { response, loading, error, onGet } = useGet<ITopologyMapData>();
 
-  const [selectedTabName, setSelectedTabName] = useState<TabName>(TabName.Cloud);
+  const [selectedTabName, setSelectedTabName] = useState<TabName>(TabName.Sites);
   const [orgMap, setOrgMap] = useState<ITopologyMapData>({ count: 0, organizations: [] });
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: TabName) => setSelectedTabName(newValue);

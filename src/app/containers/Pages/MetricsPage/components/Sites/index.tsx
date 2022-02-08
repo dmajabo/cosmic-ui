@@ -12,6 +12,7 @@ import LoadingIndicator from 'app/components/Loading';
 import { NetworkUsageHealth } from './NetworkUsageHealth';
 import { AxiosError } from 'axios';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
+import { ConnectivityHealth } from './ConnectivityHealth';
 
 interface SitesProps {
   readonly orgMap: ITopologyMapData;
@@ -100,6 +101,7 @@ export const Sites: React.FC<SitesProps> = ({ orgMap, orgError, orgLoading }) =>
         </div>
       </div>
       <NetworkUsageHealth networks={getNetworkIds()} timeRange={timeRange} />
+      <ConnectivityHealth timeRange={timeRange} />
       <DeviceHealth devices={getDeviceIds()} timeRange={timeRange} />
     </>
   );
