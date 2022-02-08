@@ -139,3 +139,11 @@ export interface INetworkSegmentCount {
 export interface ITesseractGetTotalSessionsPerSegmentResponse {
   segments: INetworkSegmentCount[];
 }
+
+export interface INetworkSessionsBetweenSegments {
+  sourceSegmentId: string;
+  destSegments: INetworkSegmentCount[];
+}
+export interface ITesseractGetSessionsBetweenSegmentsResponse {
+  sessionsBetweenSegments: INetworkSessionsBetweenSegments[];
+}

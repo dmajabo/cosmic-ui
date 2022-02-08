@@ -222,12 +222,16 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
 
   const timeRangeOptions = [
     {
+      value: '-1d',
+      label: 'Last day',
+    },
+    {
       value: '-7d',
-      label: '1 Week',
+      label: 'Last 7 days',
     },
     {
       value: '-30d',
-      label: '1 Month',
+      label: 'Last 1 month',
     },
   ];
 
@@ -238,7 +242,7 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
     }),
     control: provided => ({
       ...provided,
-      width: 120,
+      width: 150,
     }),
   };
 
@@ -313,7 +317,7 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
             </div>
             <div className={classes.timeRangeContainer}>
               <span className={classes.timeRangeText}>Time Range:</span>
-              <Select label="Single select" styles={dropdownStyle} options={timeRangeOptions} defaultValue={timeRangeOptions[0]} onChange={e => setTimeRange(e.value)} />
+              <Select label="Single select" styles={dropdownStyle} value={timeRangeOptions.find(time => time.value === timeRange)} options={timeRangeOptions} onChange={e => setTimeRange(e.value)} />
             </div>
           </div>
           <TabPanel value={MetricTabValue.packetLoss}>

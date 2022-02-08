@@ -15,7 +15,17 @@ interface Props {
 const DonutChart: React.FC<Props> = (props: Props) => {
   const [resizeListener, sizes] = useResizeAware();
   const [colors] = React.useState<string[][]>(DEFAULT_SEGMENTS_COLORS_SCHEMA);
+  const [total, setTotal] = React.useState<number>(0);
   const radius = Math.min(sizes.width, sizes.height) / 2 - 30;
+
+  React.useEffect(() => {
+    if (!props.data || !props.data.length) {
+      setTotal(0);
+      return;
+    }
+    const _total = props.data.reduce((a, b) => a + b.value, 0);
+    setTotal(_total);
+  }, [props.data]);
 
   const pie = React.useMemo(() => {
     const pieGenerator = d3
@@ -29,7 +39,7 @@ const DonutChart: React.FC<Props> = (props: Props) => {
     const arcPathGenerator = d3
       .arc()
       .innerRadius(radius / 2)
-      .outerRadius(radius * 0.99);
+      .outerRadius(radius * 0.95);
     return pie.map((d, index) => {
       const _textArc = d3
         .arc()
@@ -52,15 +62,23 @@ const DonutChart: React.FC<Props> = (props: Props) => {
           {arcs.map((arc, i) => {
             return (
               <g data-value={arc.data.value} key={`path${i}${arc.data.name}`}>
-                <path d={arc.path} fill={arc.color} stroke="var(--_primaryBg)" strokeWidth="5" />
+                <path d={arc.path} fill={arc.color} stroke="var(--_primaryBg)" strokeWidth="2.5" />
                 <g transform={`${arc.labelPos}`}>
-                  <text fontSize="20" fill={arc.color} textAnchor={arc.textAnchor}>
-                    {arc.data.name}
+                  <text dy="8" fontFamily="DMSans" fontWeight="bold" fontSize="20" fill={arc.color} textAnchor={arc.textAnchor}>
+                    {arc.data.value}
                   </text>
                 </g>
               </g>
             );
           })}
+        </g>
+        <g transform={`translate(${sizes.width / 2}, ${sizes.height / 2})`}>
+          <text dx="0" dy="8" fontSize="48" fontFamily="DMSans" fontWeight="bold" fill="var(--_primaryTextColor)" textAnchor="middle">
+            {total}
+          </text>
+          <text dx="0" dy="36" fontSize="14" fontFamily="DMSans" fontWeight="500" fill="var(--_defaultColor)" textAnchor="middle">
+            Drops
+          </text>
         </g>
       </svg>
     </ChartWrapContainer>

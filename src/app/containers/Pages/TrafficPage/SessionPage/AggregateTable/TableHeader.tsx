@@ -6,13 +6,13 @@ import { IColumn } from 'lib/models/grid';
 interface Props {
   count: number;
   columns: ITabsColumnFilterData[];
-  onItemClick: (tab: ITabsColumnFilterData, item: IColumn) => void;
+  onItemClick: (tabIndex: number, item: IColumn, hide: boolean) => void;
   onChangeOrder: (items: ITabsColumnFilterData) => void;
 }
 
 const TableHeader: React.FC<Props> = (props: Props) => {
-  const onColumnChange = (tab: ITabsColumnFilterData, item: IColumn) => {
-    props.onItemClick(tab, item);
+  const onColumnChange = (tabIndex: number, item: IColumn, hide: boolean) => {
+    props.onItemClick(tabIndex, item, hide);
   };
 
   const onChangeOrder = (items: ITabsColumnFilterData) => {

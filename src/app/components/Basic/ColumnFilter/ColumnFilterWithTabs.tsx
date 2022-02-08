@@ -10,12 +10,13 @@ import { Tab, Tabs } from '@mui/material';
 import TabPanel from 'app/components/Tabs/TabPanel';
 import { TabComponentProps } from 'app/components/Tabs/TabComponentProps';
 import { TabsStyles } from 'app/components/Tabs/TabsStyles';
+import { IColumn } from 'lib/models/grid';
 
 export interface ITabsColumnFilterData {
   tab: string;
   id: string;
   index: number;
-  items: any[];
+  items: IColumn[];
 }
 
 interface IProps {
@@ -23,7 +24,7 @@ interface IProps {
   icon?: any;
   data: ITabsColumnFilterData[];
   draggable?: boolean;
-  onItemClick: (tab: ITabsColumnFilterData, item: any) => void;
+  onItemClick: (tabIndex: number, item: IColumn, hide: boolean) => void;
   onChangeOrder: (tab: ITabsColumnFilterData) => void;
 }
 
@@ -39,8 +40,8 @@ const ColumnFilterWithTabs: React.FC<IProps> = (props: IProps) => {
     }
   }, [props.data]);
 
-  const onItemClick = (item: any) => {
-    props.onItemClick(selectedTab, item);
+  const onItemClick = (tabIndex: number, item: IColumn) => {
+    props.onItemClick(tabIndex, item, !item.hide);
   };
 
   const handleDrag = event => {
@@ -55,7 +56,7 @@ const ColumnFilterWithTabs: React.FC<IProps> = (props: IProps) => {
     const _dragItem = selectedTab.items[dragItemIndex];
     const _dropItem = selectedTab.items[dropItemIndex];
     if (!_dragItem || !_dropItem || _dragItem.id === _dropItem.id) return;
-    const _items: any[] = selectedTab.items.slice();
+    const _items: IColumn[] = selectedTab.items.slice();
     _items.splice(dragItemIndex, 1);
     _items.splice(dropItemIndex, 0, _dragItem);
     dragRef.current = null;
@@ -122,7 +123,7 @@ const ColumnFilterWithTabs: React.FC<IProps> = (props: IProps) => {
                 return (
                   <FilteredColumnItem
                     key={`filteredColumnMenuItem${col.id}`}
-                    onClick={() => onItemClick(col)}
+                    onClick={() => onItemClick(index, col)}
                     draggable={props.draggable}
                     dragPosible={props.draggable}
                     id={col.id}

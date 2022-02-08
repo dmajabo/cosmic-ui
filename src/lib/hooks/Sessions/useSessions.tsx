@@ -7,7 +7,7 @@ import { getFromBase64, OKULIS_LOCAL_STORAGE_KEYS } from 'lib/api/http/utils';
 import { getSessionStoragePreferences, StoragePreferenceKeys, updateSessionStoragePreference } from 'lib/helpers/localStorageHelpers';
 import { convertStringToNumber } from 'lib/helpers/general';
 import { IElasticFilterModel, SESSIONS_TIME_RANGE_QUERY_TYPES } from 'lib/api/ApiModels/paramBuilders';
-import { IPreferenceRes, ISessionsLogPreference, ISessionsLogStitchPreference } from 'lib/api/ApiModels/Policy/Preference';
+import { ISessionsLogPreference, ISessionsLogStitchPreference, IUserPreference } from 'lib/api/ApiModels/Policy/Preference';
 
 export interface SessionsContextType {
   selectedTab: ITab<SessionsTabTypes>;
@@ -21,8 +21,7 @@ export interface SessionsContextType {
   sessionsFilter: (IElasticFilterModel | string)[];
   sessionsLogColumnPreferencesStitch_False: ISessionsLogPreference[];
   sessionsLogColumnPreferencesStitch_True: ISessionsLogStitchPreference[];
-  onSetLogPreference: (res: IPreferenceRes) => void;
-  onSetLogStitchPreference: (res: IPreferenceRes) => void;
+  onSetLogPreference: (stitchOn: IUserPreference, stitchOff: IUserPreference) => void;
   onUpdateLogPreference: (columns: ISessionsLogPreference[]) => void;
   onUpdateLogSitchPreference: (tabs: ISessionsLogStitchPreference[]) => void;
   onChangePageSize: (_size: number, _page?: number) => void;
@@ -73,30 +72,23 @@ export function useSessionsContext(): SessionsContextType {
     }
   }, []);
 
-  const onSetLogPreference = (res: IPreferenceRes) => {
-    if (!res || !res.preference || !res.preference.prefData) {
-      setSessionsLogColumnPreferencesStitch_False([]);
-      return;
+  const onSetLogPreference = (stitchOff: IUserPreference, stitchOn: IUserPreference) => {
+    if (stitchOff) {
+      const _arr: ISessionsLogPreference[] = getFromBase64(stitchOff.prefData);
+      if (!_arr || !_arr.length) {
+        setSessionsLogColumnPreferencesStitch_False([]);
+      } else {
+        setSessionsLogColumnPreferencesStitch_False(_arr);
+      }
     }
-    const _arr: ISessionsLogPreference[] = getFromBase64(res.preference.prefData);
-    if (!_arr || !_arr.length) {
-      setSessionsLogColumnPreferencesStitch_False([]);
-      return;
+    if (stitchOn) {
+      const _arr: ISessionsLogStitchPreference[] = getFromBase64(stitchOn.prefData);
+      if (!_arr || !_arr.length) {
+        setSessionsLogColumnPreferencesStitch_True([]);
+      } else {
+        setSessionsLogColumnPreferencesStitch_True(_arr);
+      }
     }
-    setSessionsLogColumnPreferencesStitch_False(_arr);
-  };
-
-  const onSetLogStitchPreference = (res: IPreferenceRes) => {
-    if (!res || !res.preference || !res.preference.prefData) {
-      setSessionsLogColumnPreferencesStitch_True([]);
-      return;
-    }
-    const _arr: ISessionsLogStitchPreference[] = getFromBase64(res.preference.prefData);
-    if (!_arr || !_arr.length) {
-      setSessionsLogColumnPreferencesStitch_True([]);
-      return;
-    }
-    setSessionsLogColumnPreferencesStitch_True(_arr);
   };
 
   const onUpdateLogPreference = (columns: ISessionsLogPreference[]) => {
@@ -183,7 +175,6 @@ export function useSessionsContext(): SessionsContextType {
     sessionsLogColumnPreferencesStitch_False,
     sessionsLogColumnPreferencesStitch_True,
     onSetLogPreference,
-    onSetLogStitchPreference,
     onUpdateLogPreference,
     onUpdateLogSitchPreference,
     onChangeCurrentPage,

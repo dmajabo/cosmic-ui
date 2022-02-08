@@ -32,3 +32,24 @@ export interface ISessionsLogStitchPreference {
   id: string;
   items: ISessionsLogPreference[];
 }
+
+interface IUserUiPreferenceUserKey {
+  userId: string;
+  prefKey: string;
+}
+export interface IPolicysvcListUiPreferenceRequest {
+  userKeys: IUserUiPreferenceUserKey[];
+}
+
+export interface IPolicysvcListUiPreferenceResponse {
+  preferences: IUserPreference[];
+}
+
+export const buildPreferenceKey = (key: string, userId: string): string => `${key}_${userId}`;
+
+export const getPreferenceByKey = (list: IPolicysvcListUiPreferenceResponse, key: string): IUserPreference => {
+  if (!list || !list.preferences || !list.preferences.length) return null;
+  const _item = list.preferences.find(it => it.prefKey === key);
+  if (!_item) return null;
+  return _item;
+};
