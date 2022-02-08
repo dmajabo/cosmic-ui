@@ -8,7 +8,6 @@ export const ConnectivityHealth: React.FC = () => {
   return (
     <div className={classes.pageComponentBackground}>
       <div className={classes.pageComponentTitle}>Connectivity Health</div>
-      <HealthTable />
     </div>
   );
 };

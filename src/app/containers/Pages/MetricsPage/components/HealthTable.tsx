@@ -1,61 +1,18 @@
-import { uniq } from 'lodash';
+import uniq from 'lodash/uniq';
 import React from 'react';
 import styled from 'styled-components';
 import { MetricsStyles } from '../MetricsStyles';
+import { HealthTableData } from './Cloud/DirectConnectConnectionHealth';
 import { LegendIcon } from './LegendIcon';
+
+interface HealthTableProps {
+  readonly tableData: HealthTableData[];
+}
 
 const LEGEND_DATA = [
   { low: 0, high: 10, color: '#75B472', className: 'green' },
   { low: 11, high: 20, color: '#FFC568', className: 'yellow' },
   { low: 21, high: 30, color: '#DF6060', className: 'red' },
-];
-
-const DUMMY_TABLE_DATA = [
-  {
-    time: 'Nov 1',
-    connection: 'Site1-Segment',
-    value: 3,
-  },
-  {
-    time: 'Nov 1',
-    connection: 'Site2-Segment',
-    value: 3,
-  },
-  {
-    time: 'Nov 1',
-    connection: 'Site3-Segment',
-    value: 3,
-  },
-  {
-    time: 'Nov 2',
-    connection: 'Site2-Segment',
-    value: 12,
-  },
-  {
-    time: 'Nov 3',
-    connection: 'Site3-Segment',
-    value: 25,
-  },
-  {
-    time: 'Nov 4',
-    connection: 'Site4-Segment',
-    value: 6,
-  },
-  {
-    time: 'Nov 5',
-    connection: 'Site5-Segment',
-    value: 20,
-  },
-  {
-    time: 'Nov 6',
-    connection: 'Site6-Segment',
-    value: 23,
-  },
-  {
-    time: 'Nov 7',
-    connection: 'Site7-Segment',
-    value: 6,
-  },
 ];
 
 const TableContainer = styled.div`
@@ -94,15 +51,15 @@ const TableContainer = styled.div`
 
 const getTableItemClassName = (data: number) => LEGEND_DATA.find(item => data >= item.low && data <= item.high)?.className || '';
 
-export const HealthTable: React.FC = () => {
+export const HealthTable: React.FC<HealthTableProps> = ({ tableData }) => {
   const classes = MetricsStyles();
 
-  const DUMMY_TABLE_OBJECT = DUMMY_TABLE_DATA.reduce((acc, nextValue) => {
+  const DUMMY_TABLE_OBJECT = tableData.reduce((acc, nextValue) => {
     acc[`${nextValue.time}_${nextValue.connection}`] = nextValue.value;
     return acc;
   }, {});
-  const time = uniq(DUMMY_TABLE_DATA.map(item => item.time));
-  const connection = uniq(DUMMY_TABLE_DATA.map(item => item.connection));
+  const time = uniq(tableData.map(item => item.time));
+  const connection = uniq(tableData.map(item => item.connection));
 
   return (
     <>

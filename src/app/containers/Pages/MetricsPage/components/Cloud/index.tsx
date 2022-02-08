@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 import Select from 'react-select';
 import FilterIcon from '../../icons/performance dashboard/filter';
 import { MetricsStyles } from '../../MetricsStyles';
+import { DirectConnectConnectionHealth } from './DirectConnectConnectionHealth';
 import { DirectConnectVirtualHealth } from './DirectConnectVirtualHealth';
 import { Transit } from './Transit';
 
@@ -64,6 +65,7 @@ export const Cloud: React.FC = () => {
           <Select styles={dropdownStyle} className={classes.inlineSelect} label="Single select" value={timeRange} options={TIME_RANGE_OPTIONS} onChange={handleTimeRangeChange} />
         </div>
       </div>
+      <DirectConnectConnectionHealth timeRange={timeRange} />
       <DirectConnectVirtualHealth timeRange={timeRange} />
       <Transit timeRange={timeRange} />
     </>
