@@ -167,7 +167,7 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
         type: 'arearange',
         turboThreshold: inputData[row.id].length,
         linkedTo: `${row.name} &#9654 ${row.sourceDevice}`,
-        color: 'aliceblue',
+        color: 'ghostwhite',
         zIndex: 0,
         fillOpacity: 0.1,
         states: {
