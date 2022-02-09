@@ -36,6 +36,9 @@ export const TableWrapper = styled.div`
       &.p-datatable-row-expansion > td {
         padding: 30px 16px;
       }
+      &.row-expanded .channelTagBg {
+        background: var(--_primaryWhiteColor);
+      }
     }
     .p-datatable-table .p-datatable-thead th {
       border: none;

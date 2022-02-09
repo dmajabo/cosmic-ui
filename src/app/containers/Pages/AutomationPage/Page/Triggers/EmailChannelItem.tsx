@@ -19,7 +19,7 @@ const EmailChannelItem: React.FC<Props> = (props: Props) => {
   }, [props.verificationStatus, props.name]);
   return (
     <TagStyles style={{ maxWidth: '260px', overflow: 'hidden', margin: '0 10px 10px 0' }}>
-      <TagBg bgColor={styles.bgColor} />
+      <TagBg className="channelTagBg" bgColor="var(--_appBg)" opacity="1" />
       <ChannelIcon>{props.icon}</ChannelIcon>
       <ChannelLabel>{props.label}:</ChannelLabel>
       <TagText className="textSimple" style={{ maxWidth: '100%', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }} color={styles.textColor}>

@@ -12,6 +12,7 @@ export const ChannelIcon = styled.span`
   flex-shrink: 0;
   display: inline-flex;
   margin: auto 10px auto 0;
+  z-index: 2;
   svg {
     width: 100%;
     height: 100%;
@@ -28,4 +29,5 @@ export const ChannelLabel = styled.span`
   line-height: 15px;
   color: var(--_primaryTextColor);
   margin: auto 4px auto 0;
+  z-index: 2;
 `;
