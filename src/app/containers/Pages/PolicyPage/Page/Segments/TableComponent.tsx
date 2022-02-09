@@ -65,6 +65,7 @@ const TableComponent: React.FC<Props> = (props: Props) => {
         if (param.value === SegmentSegmentType.NETWORK) return 'Network';
         if (param.value === SegmentSegmentType.SITE) return 'Site';
         if (param.value === SegmentSegmentType.APPLICATION) return 'Application';
+        if (param.value === SegmentSegmentType.EXTERNAL) return 'External';
         return param.value;
       },
     },
