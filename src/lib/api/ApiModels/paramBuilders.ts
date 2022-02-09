@@ -1,4 +1,5 @@
 import { PAGING_DEFAULT_PAGE_SIZE } from 'lib/models/general';
+import { AlertState, ModelalertType } from './Workflow/apiModel';
 
 export enum IQuryFieldtype {
   STRING = 'string',
@@ -71,11 +72,12 @@ export enum TAGS_RESOURCE_TYPE {
 export interface IParam {
   start_from?: number;
   page_size?: number;
-  time_range?: ALERT_TIME_RANGE_QUERY_TYPES | AUDIT_LOGS_TIME_RANGE_QUERY_TYPES | SESSIONS_TIME_RANGE_QUERY_TYPES;
+  time_range?: ALERT_TIME_RANGE_QUERY_TYPES | AUDIT_LOGS_TIME_RANGE_QUERY_TYPES | SESSIONS_TIME_RANGE_QUERY_TYPES | TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES;
   search_type?: STITCHED_TYPES;
   filters?: string;
   filterSuffics?: ElasticFilterSuffics;
   resourceType?: string;
+  [key: string]: any;
 }
 
 export const paramBuilder = (size?: number, currentPage?: number, time_range?: ALERT_TIME_RANGE_QUERY_TYPES | AUDIT_LOGS_TIME_RANGE_QUERY_TYPES, resourceType?: string): IParam => {
@@ -161,4 +163,32 @@ export const convertTimePeriodToQueryDays = (value: string): string => {
   if (_v.includes('LAST_WEEK')) return '-7d';
   if (_v.includes('LAST_MONTH')) return '-30d';
   return null;
+};
+
+export const convertTimePeriodToQueryGeneral = (value: string): TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES => {
+  if (!value) return null;
+  const _v: string = value.toUpperCase();
+  if (_v.includes('LAST_HOUR')) return TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES.LAST_HOUR;
+  if (_v.includes('LAST_DAY')) return TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES.LAST_DAY;
+  if (_v.includes('LAST_WEEK')) return TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES.LAST_WEEK;
+  if (_v.includes('LAST_MONTH')) return TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES.LAST_MONTH;
+  return TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES.LAST_HOUR;
+};
+
+export const getAlertLogParam = (type: ModelalertType, time_range: ALERT_TIME_RANGE_QUERY_TYPES, size: number, currentPage: number, alert_states?: AlertState): IParam => {
+  let param: IParam = {};
+  param.alert_type = type;
+  param.time_range = convertTimePeriodToQueryGeneral(time_range);
+  if (currentPage || currentPage === 0) {
+    const _size = size || PAGING_DEFAULT_PAGE_SIZE;
+    param.start_from = (currentPage - 1) * _size;
+  }
+  if (size || size === 0) {
+    param.page_size = size;
+  }
+  if (alert_states) {
+    param.alert_states = alert_states;
+  }
+  if (!Object.keys(param).length) return null;
+  return param;
 };

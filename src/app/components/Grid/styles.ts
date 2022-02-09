@@ -52,7 +52,7 @@ export const GridCellTotalTag = styled.span`
   font-weight: 500;
   font-size: 14px;
   line-height: 22px;
-  text-align: center;
+  text-align: center !important;
   color: var(--_primaryBg);
   margin: auto auto auto 0;
   padding: 0 10px;

@@ -76,7 +76,7 @@ export const TextInputWrapper = styled.div`
     font-size: 14px !important;
     font-family: 'DMSans' !important;
     font-weight: 500 !important;
-    line-height: 20px;
+    line-height: 18px;
     background: var(--_primaryBg) !important;
     &.Mui-disabled {
       opacity: 0.5;

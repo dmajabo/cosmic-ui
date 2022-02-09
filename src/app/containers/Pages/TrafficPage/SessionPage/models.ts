@@ -18,10 +18,6 @@ export interface ISessionsGridField {
   hide: boolean;
 }
 
-export interface ISessionsGridFieldColumn extends ISessionsGridField {
-  hide: boolean;
-}
-
 export interface ISessionGridColumns {
   [key: string]: ISessionsGridField;
 }

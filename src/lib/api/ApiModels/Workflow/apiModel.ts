@@ -1,4 +1,4 @@
-import { IBaseEntity } from 'lib/models/general';
+import { IBaseEntity, IObject } from 'lib/models/general';
 import { IBasePages, IBaseTotalCount } from '../generalApiModel';
 
 export enum ModelalertType {
@@ -7,6 +7,17 @@ export enum ModelalertType {
   ANOMALY_PACKETLOSS = 'ANOMALY_PACKETLOSS',
   ANOMALY_GOODPUT = 'ANOMALY_GOODPUT',
   ANOMALY_CATEGORY = 'ANOMALY_CATEGORY',
+  SECURITYGROUP_UPDATE = 'SECURITYGROUP_UPDATE',
+  FIREWALLPOLICY_UPDATE = 'FIREWALLPOLICY_UPDATE',
+  ROUTETABLE_UPDATE = 'ROUTETABLE_UPDATE',
+  DEVICE_CONNECTIVITY_HEALTH = 'DEVICE_CONNECTIVITY_HEALTH',
+}
+
+export enum AlertState {
+  UNKNOWN_STATE = 'UNKNOWN_STATE', // default
+  ACTIVE = 'ACTIVE',
+  CLEARED = 'CLEARED',
+  OK = 'OK',
 }
 
 export enum AlertCategory {
@@ -94,6 +105,20 @@ export interface IAlertChannel extends IBaseEntity<string> {
 }
 export interface IAlertChannelRes extends IBaseTotalCount, IBasePages {
   channels: IAlertChannel[];
+}
+
+export interface IAlertAlert extends IBaseEntity<string> {
+  alertType: ModelalertType;
+  state: AlertState;
+  objectExtId: string;
+  objectName: string;
+  objectType: string;
+  descString: string;
+  timestamp: string;
+  labels: IObject<string>;
+}
+export interface IAlertListAlertLogsResponse extends IBaseTotalCount {
+  alerts: IAlertAlert[];
 }
 
 export const createChannel = (type: AlertChannelType): IAlertChannel => {

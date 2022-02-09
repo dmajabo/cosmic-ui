@@ -18,15 +18,19 @@ export const TableContainer = styled.div<TableProps>`
     font-family: 'DMSans' !important;
     font-style: normal;
     background: var(--__tableBg);
-    *:not(.errorCell) {
+    td:not(.errorCell):not(.customCell) {
       font-family: inherit !important;
       text-align: left !important;
     }
     td.errorCell {
+      font-family: inherit !important;
       text-align: center;
       * {
         text-align: inherit !important;
       }
+    }
+    td.customCell {
+      font-family: inherit !important;
     }
     th {
       border: none;

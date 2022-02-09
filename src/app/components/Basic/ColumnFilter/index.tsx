@@ -6,27 +6,27 @@ import { PopupTitle, OverflowContainer, FilteredColumnItem, FilteredColumnLabel 
 import { columnsIcon } from 'app/components/SVGIcons/columnsIcon';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { dragIcon } from 'app/components/SVGIcons/dragIcon';
-import { IColumn } from 'lib/models/grid';
+import { IColumn, IGridColumnField } from 'lib/models/grid';
 
 interface IProps {
   label: string;
   popupLabel?: string;
   icon?: any;
-  items: IColumn[];
+  items: (IColumn | IGridColumnField)[];
   draggable?: boolean;
-  onItemClick: (item: IColumn, hide: boolean) => void;
-  onChangeOrder: (items: IColumn[]) => void;
+  onItemClick: (item: IColumn | IGridColumnField, hide: boolean) => void;
+  onChangeOrder: (items: (IColumn | IGridColumnField)[]) => void;
 }
 
 const ColumnFilter: React.FC<IProps> = (props: IProps) => {
-  const [data, setData] = React.useState<IColumn[]>(props.items || []);
+  const [data, setData] = React.useState<(IColumn | IGridColumnField)[]>(props.items || []);
   const dragRef = React.useRef(null);
 
   React.useEffect(() => {
     setData(props.items);
   }, [props.items]);
 
-  const onItemClick = (item: IColumn) => {
+  const onItemClick = (item: IColumn | IGridColumnField) => {
     props.onItemClick(item, !item.hide);
   };
 

@@ -2,29 +2,30 @@ import React from 'react';
 import { AlertConfigState, AlertSeverity, IAlertMeta, IAlertMetaDataRes } from 'lib/api/ApiModels/Workflow/apiModel';
 import { useGet, usePost } from 'lib/api/http/useAxiosHook';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
-import { ALERT_SELECT_VALUES } from 'lib/hooks/Automation/models';
-import { ISelectedListItem, PAGING_DEFAULT_PAGE_SIZE } from 'lib/models/general';
+import { PAGING_DEFAULT_PAGE_SIZE } from 'lib/models/general';
 import { OKULIS_LOCAL_STORAGE_KEYS } from 'lib/api/http/utils';
 import { getSessionStoragePreferences, StoragePreferenceKeys, updateSessionStoragePreference } from 'lib/helpers/localStorageHelpers';
-import { DataGrid, GridColumnHeaderParams, GridRenderCellParams } from '@mui/x-data-grid';
-import { IColumn } from 'lib/models/grid';
-import { GridStyles } from 'app/components/Grid/GridStyles';
-import { gridAscArrow, gridDescArrow } from 'app/components/SVGIcons/arrows';
+import { arrowBottomIcon } from 'app/components/SVGIcons/arrows';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import LoadingIndicator from 'app/components/Loading';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import Paging from 'app/components/Basic/Paging';
 import { getMappedData, getSearchedListData, IAlertMetaTableItem, TriggerGridColumns } from './model';
 import Header from './Header';
-import { GridCellTotalTag, GridCellWrapper } from 'app/components/Grid/styles';
-import SwitchInput from 'app/components/Inputs/SwitchInput';
-import MatSelect from 'app/components/Inputs/MatSelect';
-import SeverityOption from '../../Components/SeverityOption/SeverityOption';
-import { GridWrapper } from '../../styles/styles';
 import { toast, ToastContainer } from 'react-toastify';
 import { ALERT_TIME_RANGE_QUERY_TYPES, paramBuilder } from 'lib/api/ApiModels/paramBuilders';
 import { AlertApi } from 'lib/api/ApiModels/Services/alert';
-import _ from 'lodash';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
+import MatSelect from 'app/components/Inputs/MatSelect';
+import SeverityOption from '../../Components/SeverityOption/SeverityOption';
+import SwitchInput from 'app/components/Inputs/SwitchInput';
+import { GridCellTotalTag } from 'app/components/Grid/styles';
+import TriggerChannel from './TriggerChannel';
+import { TableWrapper } from 'app/components/Basic/Table/PrimeTableStyles';
+import IconWrapper from 'app/components/Buttons/IconWrapper';
+import { DEFAULT_TRANSITION } from 'lib/constants/general';
+import HitsComponent from './HitsComponent';
 
 interface Props {}
 
@@ -38,144 +39,12 @@ const Triggers: React.FC<Props> = (props: Props) => {
   const [dataRows, setDataRows] = React.useState<IAlertMetaTableItem[]>([]);
   const [filteredData, setFilteredData] = React.useState<IAlertMetaTableItem[]>([]);
   const [searchValue, setSearchValue] = React.useState<string>(null);
-  const [selectedPeriod, setSelectedPeriod] = React.useState<ALERT_TIME_RANGE_QUERY_TYPES>(ALERT_SELECT_VALUES[0].value);
-  const gridStyles = GridStyles();
-  const [gridColumns, setGridColumns] = React.useState<IColumn[]>([
-    {
-      id: `triggers${TriggerGridColumns.name.resField}`,
-      field: TriggerGridColumns.name.resField,
-      headerName: TriggerGridColumns.name.label,
-      label: TriggerGridColumns.name.label,
-      minWidth: 300,
-      disableColumnMenu: true,
-      resizable: false,
-      editable: false,
-      filterable: false,
-      disableReorder: true,
-      disableExport: true,
-    },
-    {
-      id: `loggins${TriggerGridColumns.category.resField}`,
-      field: TriggerGridColumns.category.resField,
-      headerName: TriggerGridColumns.category.label,
-      label: TriggerGridColumns.category.label,
-      minWidth: 300,
-      disableColumnMenu: true,
-      resizable: false,
-      editable: false,
-      filterable: false,
-      disableReorder: true,
-      disableExport: true,
-    },
-    {
-      id: `loggins${TriggerGridColumns.severity.resField}`,
-      field: TriggerGridColumns.severity.resField,
-      headerName: TriggerGridColumns.severity.label,
-      label: TriggerGridColumns.severity.label,
-      width: 240,
-      disableColumnMenu: true,
-      resizable: false,
-      editable: false,
-      filterable: false,
-      disableReorder: true,
-      disableExport: true,
-      renderCell: (param: GridRenderCellParams) => (
-        <GridCellWrapper>
-          <MatSelect
-            id={`sevirity${param.row.id}`}
-            value={param.value}
-            options={[AlertSeverity.LOW, AlertSeverity.MEDIUM, AlertSeverity.HIGH, AlertSeverity.INFO]}
-            onChange={v => onSeverityChange(v, param)}
-            styles={{ maxWidth: '160px' }}
-            selectStyles={{ height: '38px', width: '100%' }}
-            renderValue={(v: string) => <SeverityOption value={v as AlertSeverity} />}
-          />
-        </GridCellWrapper>
-      ),
-    },
-    {
-      id: `loggins${TriggerGridColumns.triggerCount.resField}`,
-      field: TriggerGridColumns.triggerCount.resField,
-      headerName: TriggerGridColumns.triggerCount.label,
-      label: TriggerGridColumns.triggerCount.label,
-      minWidth: 160,
-      disableColumnMenu: true,
-      resizable: false,
-      editable: false,
-      filterable: false,
-      disableReorder: true,
-      disableExport: true,
-      renderCell: (param: GridRenderCellParams) => {
-        return (
-          <GridCellWrapper>
-            <GridCellTotalTag>{param.value}</GridCellTotalTag>
-          </GridCellWrapper>
-        );
-      },
-    },
-    {
-      id: `loggins${TriggerGridColumns.channelIds.resField}`,
-      field: TriggerGridColumns.channelIds.resField,
-      headerName: TriggerGridColumns.channelIds.label,
-      label: TriggerGridColumns.channelIds.label,
-      minWidth: 200,
-      flex: 0.5,
-      disableColumnMenu: true,
-      resizable: false,
-      editable: false,
-      filterable: false,
-      disableReorder: true,
-      disableExport: true,
-      renderCell: (param: GridRenderCellParams) => {
-        if (Array.isArray(param.value)) {
-          return (
-            <GridCellWrapper>
-              {param.value.map(it => (
-                <span key={`channelId${it}`}>{it}</span>
-              ))}
-            </GridCellWrapper>
-          );
-        }
-        return <GridCellWrapper>{param.value}</GridCellWrapper>;
-      },
-    },
-    {
-      id: `loggins${TriggerGridColumns.configState.resField}`,
-      field: TriggerGridColumns.configState.resField,
-      headerName: '',
-      label: TriggerGridColumns.configState.label,
-      width: 160,
-      disableColumnMenu: true,
-      resizable: false,
-      editable: false,
-      filterable: false,
-      disableReorder: true,
-      disableExport: true,
-      renderHeader: (params: GridColumnHeaderParams) => <></>,
-      renderCell: (param: GridRenderCellParams) => (
-        <GridCellWrapper>
-          <SwitchInput showLabels checked={param.value === AlertConfigState.ON} onChange={(e: React.ChangeEvent<HTMLInputElement>) => onToogleChange(e, param)} />
-        </GridCellWrapper>
-      ),
-    },
-    {
-      id: `loggins${TriggerGridColumns.metaDescString.resField}`,
-      field: TriggerGridColumns.metaDescString.resField,
-      headerName: TriggerGridColumns.metaDescString.label,
-      label: TriggerGridColumns.metaDescString.label,
-      width: 400,
-      disableColumnMenu: true,
-      resizable: false,
-      editable: false,
-      filterable: false,
-      disableReorder: true,
-      disableExport: true,
-      hide: true,
-    },
-  ]);
+  const [selectedPeriod, setSelectedPeriod] = React.useState<ALERT_TIME_RANGE_QUERY_TYPES>(ALERT_TIME_RANGE_QUERY_TYPES.LAST_WEEK);
+  const [expandedRows, setExpandedRows] = React.useState(null);
+
   React.useEffect(() => {
     const _preference = getSessionStoragePreferences(OKULIS_LOCAL_STORAGE_KEYS.OKULIS_PREFERENCE, [StoragePreferenceKeys.WORKFLOW_TRIGGERS_TIME_PERIOD]);
-    let _period = ALERT_SELECT_VALUES[0].value;
+    let _period = ALERT_TIME_RANGE_QUERY_TYPES.LAST_WEEK;
     if (_preference) {
       if (_preference[StoragePreferenceKeys.WORKFLOW_TRIGGERS_TIME_PERIOD]) {
         _period = _preference[StoragePreferenceKeys.WORKFLOW_TRIGGERS_TIME_PERIOD];
@@ -204,13 +73,14 @@ const Triggers: React.FC<Props> = (props: Props) => {
 
   React.useEffect(() => {
     if (updateRes && updateRes.id) {
-      // const _items: IAlertMetaTableItem[] = dataRows.slice();
-      // const index: number = _items.findIndex(it => it.type === updateRes.type);
-      // _items.splice(index, 1, updateRes);
-      // const _arr: IAlertMetaTableItem[] = getSearchedListData(_items, searchValue);
-      // setDataRows(_items);
-      // setFilteredData(_arr);
-      // toast.success('Trigger was updated successfully.');
+      const _items: IAlertMetaTableItem[] = dataRows.slice();
+      const index: number = _items.findIndex(it => it.type === updateRes.type);
+      const _newItem: IAlertMetaTableItem = Object.assign(_items[index], updateRes);
+      _items.splice(index, 1, _newItem);
+      const _arr: IAlertMetaTableItem[] = getSearchedListData(_items, searchValue);
+      setDataRows(_items);
+      setFilteredData(_arr);
+      toast.success('Trigger was updated successfully.');
     }
   }, [updateRes]);
 
@@ -252,35 +122,28 @@ const Triggers: React.FC<Props> = (props: Props) => {
     onTryLoadAlertMetaData(size, currentPage, selectedPeriod);
   };
 
-  const onChangePeriod = (_item: ISelectedListItem<ALERT_TIME_RANGE_QUERY_TYPES>) => {
-    setSelectedPeriod(_item.value);
-    updateSessionStoragePreference(_item.value, OKULIS_LOCAL_STORAGE_KEYS.OKULIS_PREFERENCE, StoragePreferenceKeys.WORKFLOW_TRIGGERS_TIME_PERIOD);
-    onTryLoadAlertMetaData(pageSize, currentPage, _item.value);
+  const onChangePeriod = (_item: ALERT_TIME_RANGE_QUERY_TYPES) => {
+    setSelectedPeriod(_item);
+    updateSessionStoragePreference(_item, OKULIS_LOCAL_STORAGE_KEYS.OKULIS_PREFERENCE, StoragePreferenceKeys.WORKFLOW_TRIGGERS_TIME_PERIOD);
+    onTryLoadAlertMetaData(pageSize, currentPage, _item);
   };
 
-  const onChangeColumn = (col: IColumn) => {
-    const _items: IColumn[] = gridColumns.slice();
-    const _index = _items.findIndex(it => it.field === col.field);
-    _items[_index].hide = !col.hide;
-    setGridColumns(_items);
-  };
-
-  const onChangeOrder = (_items: IColumn[]) => {
-    setGridColumns(_items);
-  };
-
-  const onToogleChange = (e: React.ChangeEvent<HTMLInputElement>, param: GridRenderCellParams) => {
+  const onToogleChange = (e: React.ChangeEvent<HTMLInputElement>, rowData: IAlertMetaTableItem) => {
     const { checked } = e.target;
     const _configState = checked ? AlertConfigState.ON : AlertConfigState.OFF;
-    const _obj: IAlertMeta = { ...param.row } as IAlertMeta;
+    const _obj: IAlertMetaTableItem = { ...rowData } as IAlertMetaTableItem;
     _obj.configState = _configState;
     onTryUpdateMetaData(_obj);
   };
 
-  const onSeverityChange = (v: any, param: GridRenderCellParams) => {
-    const _obj: IAlertMeta = { ...param.row } as IAlertMeta;
+  const onSeverityChange = (v: any, rowData: IAlertMetaTableItem) => {
+    const _obj: IAlertMetaTableItem = { ...rowData } as IAlertMetaTableItem;
     _obj.severity = v;
     onTryUpdateMetaData(_obj);
+  };
+
+  const onRefresh = () => {
+    onTryLoadAlertMetaData(pageSize, currentPage, selectedPeriod);
   };
 
   const onTryLoadAlertMetaData = async (_pageSize: number, _currentPage: number, _period: ALERT_TIME_RANGE_QUERY_TYPES) => {
@@ -288,68 +151,143 @@ const Triggers: React.FC<Props> = (props: Props) => {
     await onGet(AlertApi.getAllMetadata(), userContext.accessToken!, _param);
   };
 
-  const onTryUpdateMetaData = async (data: IAlertMeta) => {
-    const _obj: IAlertMeta = _.cloneDeep(data);
-    debugger;
+  const onTryUpdateMetaData = async (data: IAlertMetaTableItem) => {
+    const _obj: IAlertMetaTableItem = { ...data };
     if (_obj.id.includes('CUSTOM_')) {
       _obj.id = '';
+    }
+    if (_obj.channels) {
+      delete _obj.channels;
     }
     await onPost(AlertApi.postMetadata(), _obj, userContext.accessToken!);
   };
 
+  const severityBodyTemplate = (rowData: IAlertMetaTableItem) => {
+    return (
+      <MatSelect
+        id={`sevirity${rowData.id}`}
+        value={rowData.severity}
+        options={[AlertSeverity.LOW, AlertSeverity.MEDIUM, AlertSeverity.HIGH, AlertSeverity.INFO]}
+        onChange={v => onSeverityChange(v, rowData)}
+        styles={{ maxWidth: '160px', minHeight: '38px', margin: 'auto 0' }}
+        selectStyles={{ height: '38px', width: '100%' }}
+        renderValue={(v: string) => <SeverityOption value={v as AlertSeverity} />}
+      />
+    );
+  };
+
+  const configStateBodyTemplate = (rowData: IAlertMetaTableItem) => {
+    return <SwitchInput showLabels checked={rowData.configState === AlertConfigState.ON} onChange={(e: React.ChangeEvent<HTMLInputElement>) => onToogleChange(e, rowData)} />;
+  };
+
+  const hitsBodyTemplate = (rowData: IAlertMetaTableItem) => {
+    return <GridCellTotalTag>{rowData.triggerCount}</GridCellTotalTag>;
+  };
+
+  const channelsBodyTemplate = (rowData: IAlertMetaTableItem) => {
+    if (!rowData || !rowData.channels || !rowData.channels.length) return null;
+    return rowData.channels.map((it, index) => <TriggerChannel key={`channel${rowData.id}${it.id}${index}`} channel={it} />);
+  };
+
+  const onRowToggle = (id: string) => {
+    if (!expandedRows) {
+      const _obj = {};
+      _obj[id] = true;
+      setExpandedRows(_obj);
+      return;
+    }
+    const _obj = { ...expandedRows };
+    if (!_obj[id]) {
+      _obj[id] = true;
+      setExpandedRows(_obj);
+      return;
+    }
+    delete _obj[id];
+    if (!Object.keys(_obj).length) {
+      setExpandedRows(null);
+      return;
+    }
+    setExpandedRows(_obj);
+  };
+
+  const expanderBodyTemplate = (rowData: IAlertMetaTableItem) => {
+    if (!rowData || !rowData.triggerCount || rowData.triggerCount <= 0) return null;
+    return (
+      <IconWrapper
+        width="12px"
+        height="12px"
+        styles={{ verticalAlign: 'middle', transform: expandedRows && expandedRows[rowData.id] ? 'rotate(0)' : 'rotate(-90deg)', transition: `transform ${DEFAULT_TRANSITION}` }}
+        icon={arrowBottomIcon}
+        onClick={() => onRowToggle(rowData.id)}
+      />
+    );
+  };
+
+  const rowExpansionTemplate = (rowData: IAlertMetaTableItem) => {
+    return <HitsComponent trigger={rowData} period={selectedPeriod} />;
+  };
+
+  const rowClass = (rowData: IAlertMetaTableItem) => {
+    return {
+      'row-expanded': expandedRows && expandedRows[rowData.id],
+    };
+  };
+
   return (
     <>
-      <Header
-        onChangePeriod={onChangePeriod}
-        timeRangeValues={ALERT_SELECT_VALUES}
-        selectedTimeRangePeriod={selectedPeriod}
-        searchValue={searchValue}
-        columns={gridColumns}
-        onChangeColumn={onChangeColumn}
-        onChangeOrder={onChangeOrder}
-        onSearchChange={onSearhChange}
-      />
-      <GridWrapper>
-        <DataGrid
-          className={gridStyles.borderedRow}
-          disableColumnMenu
-          hideFooter
-          headerHeight={50}
-          rowHeight={70}
-          rowCount={filteredData && filteredData.length ? filteredData.length : 0}
-          disableColumnFilter
-          autoHeight
-          rows={filteredData}
-          loading={loading}
-          // error={error ? error.message : null}
-          columns={gridColumns}
-          components={{
-            ColumnUnsortedIcon: () => null,
-            ColumnSortedAscendingIcon: () => <>{gridAscArrow}</>,
-            ColumnSortedDescendingIcon: () => <>{gridDescArrow}</>,
-            NoRowsOverlay: () => (
-              <AbsLoaderWrapper width="100%" height="100%">
-                <ErrorMessage color="var(--_primaryTextColor)" margin="auto">
-                  No data
-                </ErrorMessage>
-              </AbsLoaderWrapper>
-            ),
-            ErrorOverlay: () => <ErrorMessage margin="auto">{error ? error.message : null}</ErrorMessage>,
-            LoadingOverlay: () => (
-              <AbsLoaderWrapper width="100%" height="calc(100% - 50px)" top="50px">
-                <LoadingIndicator margin="auto" />
-              </AbsLoaderWrapper>
-            ),
-          }}
-          pageSize={filteredData ? filteredData.length : 0}
-        />
-        {putLoading && (
-          <AbsLoaderWrapper width="100%" height="calc(100% - 50px)" top="50px">
+      <Header onRefreshData={onRefresh} onChangePeriod={onChangePeriod} selectedTimeRangePeriod={selectedPeriod} searchValue={searchValue} onSearchChange={onSearhChange} />
+      <TableWrapper>
+        {!error && (
+          <DataTable
+            className="table"
+            emptyMessage="No data"
+            dataKey="id"
+            rowClassName={rowClass}
+            rowExpansionTemplate={rowExpansionTemplate}
+            expandedRows={expandedRows}
+            value={filteredData}
+            responsiveLayout="scroll"
+          >
+            <Column
+              className="expandCollapseCell"
+              style={{ width: TriggerGridColumns.id.width }}
+              field={TriggerGridColumns.id.field}
+              header={TriggerGridColumns.id.label}
+              expander
+              body={expanderBodyTemplate}
+            ></Column>
+            <Column style={{ width: TriggerGridColumns.name.width }} sortable field={TriggerGridColumns.name.field} header={TriggerGridColumns.name.label}></Column>
+            <Column style={{ width: TriggerGridColumns.category.width }} sortable field={TriggerGridColumns.category.field} header={TriggerGridColumns.category.label}></Column>
+            <Column
+              style={{ width: TriggerGridColumns.severity.width }}
+              sortable
+              field={TriggerGridColumns.severity.field}
+              header={TriggerGridColumns.severity.label}
+              body={severityBodyTemplate}
+            ></Column>
+            <Column field={TriggerGridColumns.channels.field} header={TriggerGridColumns.channels.label} body={channelsBodyTemplate}></Column>
+            <Column
+              style={{ width: TriggerGridColumns.triggerCount.width }}
+              field={TriggerGridColumns.triggerCount.field}
+              header={TriggerGridColumns.triggerCount.label}
+              body={hitsBodyTemplate}
+              sortable
+            ></Column>
+            <Column
+              style={{ width: TriggerGridColumns.configState.width }}
+              field={TriggerGridColumns.configState.field}
+              header={TriggerGridColumns.configState.label}
+              body={configStateBodyTemplate}
+            ></Column>
+          </DataTable>
+        )}
+        {(loading || putLoading) && (
+          <AbsLoaderWrapper width="100%" height="100%">
             <LoadingIndicator margin="auto" />
           </AbsLoaderWrapper>
         )}
-      </GridWrapper>
-
+        {error && <ErrorMessage margin="auto">{error && error.message ? error.message : 'Something went wrong'}</ErrorMessage>}
+      </TableWrapper>
       <Paging count={totalCount} disabled={!dataRows.length} pageSize={pageSize} currentPage={currentPage} onChangePage={onChangeCurrentPage} onChangePageSize={onChangePageSize} />
       <ToastContainer />
     </>
