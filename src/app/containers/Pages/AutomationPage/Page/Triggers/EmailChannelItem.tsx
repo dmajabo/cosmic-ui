@@ -11,7 +11,7 @@ interface Props {
   verificationStatus: IAlertVerificationStatus;
 }
 const EmailChannelItem: React.FC<Props> = (props: Props) => {
-  const [styles, setStyles] = React.useState<ITagStyles>(getStyles());
+  const [styles, setStyles] = React.useState<ITagStyles>(getStyles(null));
 
   React.useEffect(() => {
     const _styles: ITagStyles = getTagStyles(props.name, props.verificationStatus);

@@ -2,7 +2,8 @@ import React from 'react';
 import { closeSmallIcon } from 'app/components/SVGIcons/close';
 import { TagBg, TagStyles, TagText } from './style';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
-
+import Popover from '@mui/material/Popover';
+import { PopupContent } from 'app/components/Buttons/IconButtonWithPopup/styles';
 interface Props {
   text: string;
   subText?: string;
@@ -14,24 +15,60 @@ interface Props {
   textColor?: string;
   subTextColor?: string;
   opacity?: string | number;
+  showPopup?: boolean;
+  children?: React.ReactNode;
 }
 
-const Tag: React.FC<Props> = ({ text, subText, index, hideClearButton, styles, bgColor, textColor, subTextColor, opacity, onRemove }) => {
+const Tag: React.FC<Props> = (props: Props) => {
+  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
+
+  const handlePopoverOpen = (event: React.MouseEvent<HTMLElement>) => {
+    if (!props.showPopup) return;
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handlePopoverClose = () => {
+    if (!props.showPopup) return;
+    setAnchorEl(null);
+  };
+
   const onDelete = e => {
-    onRemove(index, e);
+    props.onRemove(props.index, e);
   };
   return (
-    <TagStyles style={styles}>
-      <TagBg bgColor={bgColor} opacity={opacity} />
-      <TagText className={hideClearButton ? 'textSimple' : ''} color={textColor}>
-        {text}
+    <TagStyles style={props.styles} onMouseEnter={handlePopoverOpen} onMouseLeave={handlePopoverClose}>
+      <TagBg bgColor={props.bgColor} opacity={props.opacity} />
+      <TagText className={props.hideClearButton ? 'textSimple' : ''} color={props.textColor}>
+        {props.text}
       </TagText>
-      {subText && (
-        <TagText isSubText color={subTextColor}>
-          {subText}
+      {props.subText && (
+        <TagText isSubText color={props.subTextColor}>
+          {props.subText}
         </TagText>
       )}
-      {!hideClearButton && <IconWrapper styles={{ zIndex: 2 }} width="10px" height="10px" icon={closeSmallIcon} onClick={onDelete} />}
+      {!props.hideClearButton && <IconWrapper styles={{ zIndex: 2 }} width="10px" height="10px" icon={closeSmallIcon} onClick={onDelete} />}
+      {props.showPopup && (
+        <Popover
+          id={`${props.text}${props.index}`}
+          open={!!anchorEl}
+          anchorEl={anchorEl}
+          onClose={handlePopoverClose}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'center',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'center',
+          }}
+          sx={{
+            pointerEvents: 'none',
+          }}
+          className="tagPopup"
+        >
+          <PopupContent style={{ background: 'var(--_primaryBg)', padding: '12px 20px', maxWidth: '400px' }}>{props.children}</PopupContent>
+        </Popover>
+      )}
     </TagStyles>
   );
 };

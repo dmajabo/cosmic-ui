@@ -105,7 +105,7 @@ export const TableWrapper = styled.div`
         text-align: center;
       }
     }
-    .p-datatable .p-datatable-emptymessage td {
+    .p-datatable-table .p-datatable-emptymessage td {
       text-align: center;
       border: none;
       padding: 25px 10px;
