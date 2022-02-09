@@ -13,11 +13,13 @@ import { NetworkUsageHealth } from './NetworkUsageHealth';
 import { AxiosError } from 'axios';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import { ConnectivityHealth } from './ConnectivityHealth';
+import { TabName } from '../..';
 
 interface SitesProps {
   readonly orgMap: ITopologyMapData;
   readonly orgLoading: boolean;
   readonly orgError: AxiosError;
+  readonly selectedTabName: TabName;
 }
 
 const dropdownStyle = {
@@ -53,7 +55,7 @@ const TIME_RANGE_OPTIONS: LookbackSelectOption[] = [
   },
 ];
 
-export const Sites: React.FC<SitesProps> = ({ orgMap, orgError, orgLoading }) => {
+export const Sites: React.FC<SitesProps> = ({ orgMap, orgError, orgLoading, selectedTabName }) => {
   const classes = MetricsStyles();
   const [devices, setDevices] = useState<INetworkDevice[]>([]);
   const [timeRange, setTimeRange] = useState<LookbackSelectOption>(INITIAL_ANOMALY_TIME_RANGE_VALUE);
@@ -100,9 +102,9 @@ export const Sites: React.FC<SitesProps> = ({ orgMap, orgError, orgLoading }) =>
           <Select styles={dropdownStyle} className={classes.inlineSelect} label="Single select" value={timeRange} options={TIME_RANGE_OPTIONS} onChange={handleTimeRangeChange} />
         </div>
       </div>
-      <NetworkUsageHealth networks={getNetworkIds()} timeRange={timeRange} />
-      <ConnectivityHealth timeRange={timeRange} />
-      <DeviceHealth devices={getDeviceIds()} timeRange={timeRange} />
+      <NetworkUsageHealth selectedTabName={selectedTabName} networks={getNetworkIds()} timeRange={timeRange} />
+      <ConnectivityHealth selectedTabName={selectedTabName} timeRange={timeRange} />
+      <DeviceHealth selectedTabName={selectedTabName} devices={getDeviceIds()} timeRange={timeRange} />
     </>
   );
 };

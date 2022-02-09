@@ -14,9 +14,11 @@ import LoadingIndicator from 'app/components/Loading';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import { EmptyText } from 'app/components/Basic/NoDataStyles/NoDataStyles';
 import { HealthTableData } from '../Cloud/DirectConnectConnectionHealth';
+import { TabName } from '../..';
 
 interface ConnectivityHealthProps {
   readonly timeRange: LookbackSelectOption;
+  readonly selectedTabName: TabName;
 }
 
 const CONNECTIVITY_HEALTH_METRIC_NAMES = ['ConnectivityHealth'];
@@ -25,21 +27,23 @@ const INPUT_TIME_FORMAT = 'yyyy-MM-dd HH:mm:ss ZZZ z';
 
 const HEALTH_TABLE_TIME_FORMAT = 'MMM dd';
 
-export const ConnectivityHealth: React.FC<ConnectivityHealthProps> = ({ timeRange }) => {
+export const ConnectivityHealth: React.FC<ConnectivityHealthProps> = ({ timeRange, selectedTabName }) => {
   const classes = MetricsStyles();
   const userContext = useContext<UserContextState>(UserContext);
   const [healthTableData, setHealthTableData] = useState<HealthTableData[]>([]);
   const { response, loading, error, onGet } = useGet<GetTelemetryMetricsResponse>();
 
   useEffect(() => {
-    const params: TransitMetricsParams = {
-      type: 'DeviceConnectionState',
-      metricNames: CONNECTIVITY_HEALTH_METRIC_NAMES,
-      startTime: timeRange.value,
-      endTime: '-0m',
-    };
-    onGet(TelemetryApi.getAllMetrics(), userContext.accessToken!, params);
-  }, [timeRange]);
+    if (selectedTabName === TabName.Sites) {
+      const params: TransitMetricsParams = {
+        type: 'DeviceConnectionState',
+        metricNames: CONNECTIVITY_HEALTH_METRIC_NAMES,
+        startTime: timeRange.value,
+        endTime: '-0m',
+      };
+      onGet(TelemetryApi.getAllMetrics(), userContext.accessToken!, params);
+    }
+  }, [timeRange, selectedTabName]);
 
   useEffect(() => {
     if (response && response.metrics && response.metrics.length) {

@@ -15,14 +15,16 @@ import { CreateSLATest } from './CreateSLATest';
 import './Toastify.css';
 import { INetworkOrg, ITopologyMapData, VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
 import { AxiosError } from 'axios';
+import { TabName } from '../..';
 
 interface PerformanceDashboardProps {
   readonly orgMap: ITopologyMapData;
   readonly orgLoading: boolean;
   readonly orgError: AxiosError;
+  readonly selectedTabName: TabName;
 }
 
-export const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ orgMap, orgLoading, orgError }) => {
+export const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ orgMap, orgLoading, orgError, selectedTabName }) => {
   const classes = PerformanceDashboardStyles();
 
   const userContext = useContext<UserContextState>(UserContext);
@@ -33,13 +35,13 @@ export const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ orgM
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    if (!isEmpty(orgMap)) {
+    if (!isEmpty(orgMap) && selectedTabName === TabName.Performance) {
       const merakiOrganizations = orgMap.organizations.filter(organization => organization.vendorType === VendorTypes.MERAKI);
       const awsOrganizations = orgMap.organizations.filter(organization => organization.vendorType === VendorTypes.AWS);
       setMerakiOrganizations(merakiOrganizations);
       setAwsOrganizations(awsOrganizations);
     }
-  }, [orgMap]);
+  }, [orgMap, selectedTabName]);
 
   const getSLATests = async () => {
     const responseData = await apiClient.getSLATests();

@@ -13,9 +13,11 @@ import { HealthTable } from '../HealthTable';
 import LoadingIndicator from 'app/components/Loading';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import { EmptyText } from 'app/components/Basic/NoDataStyles/NoDataStyles';
+import { TabName } from '../..';
 
 interface DirectConnectConnectionHealthProps {
   readonly timeRange: LookbackSelectOption;
+  readonly selectedTabName: TabName;
 }
 
 export interface HealthTableData {
@@ -30,21 +32,23 @@ const INPUT_TIME_FORMAT = 'yyyy-MM-dd HH:mm:ss ZZZ z';
 
 const HEALTH_TABLE_TIME_FORMAT = 'MMM dd';
 
-export const DirectConnectConnectionHealth: React.FC<DirectConnectConnectionHealthProps> = ({ timeRange }) => {
+export const DirectConnectConnectionHealth: React.FC<DirectConnectConnectionHealthProps> = ({ timeRange, selectedTabName }) => {
   const classes = MetricsStyles();
   const userContext = useContext<UserContextState>(UserContext);
   const [healthTableData, setHealthTableData] = useState<HealthTableData[]>([]);
   const { response, loading, error, onGet } = useGet<GetTelemetryMetricsResponse>();
 
   useEffect(() => {
-    const params: TransitMetricsParams = {
-      type: 'DirectConnect',
-      metricNames: DIRECT_CONNECT_CONNECTION_HEALTH_METRIC_NAMES,
-      startTime: timeRange.value,
-      endTime: '-0m',
-    };
-    onGet(TelemetryApi.getAllMetrics(), userContext.accessToken!, params);
-  }, [timeRange]);
+    if (selectedTabName === TabName.Cloud) {
+      const params: TransitMetricsParams = {
+        type: 'DirectConnect',
+        metricNames: DIRECT_CONNECT_CONNECTION_HEALTH_METRIC_NAMES,
+        startTime: timeRange.value,
+        endTime: '-0m',
+      };
+      onGet(TelemetryApi.getAllMetrics(), userContext.accessToken!, params);
+    }
+  }, [timeRange, selectedTabName]);
 
   useEffect(() => {
     if (response && response.metrics && response.metrics.length) {

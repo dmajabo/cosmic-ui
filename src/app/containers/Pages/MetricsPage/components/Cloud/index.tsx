@@ -3,11 +3,16 @@ import SecondaryButtonwithEvent from 'app/containers/Pages/AnalyticsPage/compone
 import { noop } from 'lodash';
 import React, { useState } from 'react';
 import Select from 'react-select';
+import { TabName } from '../..';
 import FilterIcon from '../../icons/performance dashboard/filter';
 import { MetricsStyles } from '../../MetricsStyles';
 import { DirectConnectConnectionHealth } from './DirectConnectConnectionHealth';
 import { DirectConnectVirtualHealth } from './DirectConnectVirtualHealth';
 import { Transit } from './Transit';
+
+interface CloudTabProps {
+  readonly selectedTabName: TabName;
+}
 
 const dropdownStyle = {
   option: provided => ({
@@ -42,7 +47,7 @@ const TIME_RANGE_OPTIONS: LookbackSelectOption[] = [
   },
 ];
 
-export const Cloud: React.FC = () => {
+export const Cloud: React.FC<CloudTabProps> = ({ selectedTabName }) => {
   const classes = MetricsStyles();
   const [timeRange, setTimeRange] = useState<LookbackSelectOption>(INITIAL_ANOMALY_TIME_RANGE_VALUE);
 
@@ -65,9 +70,9 @@ export const Cloud: React.FC = () => {
           <Select styles={dropdownStyle} className={classes.inlineSelect} label="Single select" value={timeRange} options={TIME_RANGE_OPTIONS} onChange={handleTimeRangeChange} />
         </div>
       </div>
-      <DirectConnectConnectionHealth timeRange={timeRange} />
-      <DirectConnectVirtualHealth timeRange={timeRange} />
-      <Transit timeRange={timeRange} />
+      <DirectConnectConnectionHealth selectedTabName={selectedTabName} timeRange={timeRange} />
+      <DirectConnectVirtualHealth selectedTabName={selectedTabName} timeRange={timeRange} />
+      <Transit selectedTabName={selectedTabName} timeRange={timeRange} />
     </>
   );
 };
