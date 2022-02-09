@@ -12,20 +12,22 @@ import { Chart, ChartContainerStyles } from 'app/components/ChartContainer/style
 import { LookbackSelectOption } from 'app/containers/Pages/AnalyticsPage/components/Metrics Explorer/LookbackTimeTab';
 import { IMetrickQueryParam } from 'lib/api/ApiModels/Metrics/apiModel';
 import { getChartXAxisLabel, isMetricsEmpty } from '../Utils';
+import { TabName } from '../..';
 
 interface DeviceHealthProps {
   readonly devices: string[];
   readonly timeRange: LookbackSelectOption;
+  readonly selectedTabName: TabName;
 }
 
-export const DeviceHealth: React.FC<DeviceHealthProps> = ({ devices, timeRange }) => {
+export const DeviceHealth: React.FC<DeviceHealthProps> = ({ devices, timeRange, selectedTabName }) => {
   const classes = MetricsStyles();
   const userContext = useContext<UserContextState>(UserContext);
   const { response, loading, error, onGetChainData } = useGetChainData();
   const [metricsData, setMetricsData] = useState<MultiLineMetricsData[]>([]);
 
   useEffect(() => {
-    if (devices.length > 0) {
+    if (devices.length > 0 && selectedTabName === TabName.Sites) {
       const timeParams: IMetrickQueryParam = {
         startTime: timeRange.value,
         endTime: '-0m',
@@ -37,7 +39,7 @@ export const DeviceHealth: React.FC<DeviceHealthProps> = ({ devices, timeRange }
         timeParams,
       );
     }
-  }, [devices, timeRange]);
+  }, [devices, timeRange, selectedTabName]);
 
   useEffect(() => {
     if (response) {

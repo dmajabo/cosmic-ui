@@ -12,14 +12,16 @@ import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import { EmptyText } from 'app/components/Basic/NoDataStyles/NoDataStyles';
 import { MultiLineChart } from 'app/containers/Pages/TopologyPage/TopoMapV2/PanelComponents/NodePanels/WedgePanel/MetricsTab/MultiLineChart';
 import { getChartXAxisLabel, isMetricsEmpty } from '../Utils';
+import { TabName } from '../..';
 
 interface DirectConnectVirtualHealthProps {
   readonly timeRange: LookbackSelectOption;
+  readonly selectedTabName: TabName;
 }
 
 const DIRECT_CONNECT_VIRTUAL_HEALTH_METRIC_NAMES = ['VirtualInterfaceBpsIngress', 'VirtualInterfaceBpsEgress'];
 
-export const DirectConnectVirtualHealth: React.FC<DirectConnectVirtualHealthProps> = ({ timeRange }) => {
+export const DirectConnectVirtualHealth: React.FC<DirectConnectVirtualHealthProps> = ({ timeRange, selectedTabName }) => {
   const classes = MetricsStyles();
   const userContext = useContext<UserContextState>(UserContext);
   const { response, loading, error, onGet } = useGet<GetTelemetryMetricsResponse>();
@@ -27,14 +29,16 @@ export const DirectConnectVirtualHealth: React.FC<DirectConnectVirtualHealthProp
   const [metricsData, setMetricsData] = useState<MultiLineMetricsData[]>([]);
 
   useEffect(() => {
-    const params: TransitMetricsParams = {
-      type: 'DirectConnect',
-      metricNames: DIRECT_CONNECT_VIRTUAL_HEALTH_METRIC_NAMES,
-      startTime: timeRange.value,
-      endTime: '-0m',
-    };
-    onGet(TelemetryApi.getAllMetrics(), userContext.accessToken!, params);
-  }, [timeRange]);
+    if (selectedTabName === TabName.Cloud) {
+      const params: TransitMetricsParams = {
+        type: 'DirectConnect',
+        metricNames: DIRECT_CONNECT_VIRTUAL_HEALTH_METRIC_NAMES,
+        startTime: timeRange.value,
+        endTime: '-0m',
+      };
+      onGet(TelemetryApi.getAllMetrics(), userContext.accessToken!, params);
+    }
+  }, [timeRange, selectedTabName]);
 
   useEffect(() => {
     if (response) {

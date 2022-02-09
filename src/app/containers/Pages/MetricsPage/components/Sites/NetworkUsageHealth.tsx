@@ -12,20 +12,22 @@ import { Chart, ChartContainerStyles } from 'app/components/ChartContainer/style
 import { LookbackSelectOption } from 'app/containers/Pages/AnalyticsPage/components/Metrics Explorer/LookbackTimeTab';
 import { IMetrickQueryParam } from 'lib/api/ApiModels/Metrics/apiModel';
 import { getChartXAxisLabel, isMetricsEmpty } from '../Utils';
+import { TabName } from '../..';
 
 interface NetworkUsageHealthProps {
   readonly networks: string[];
   readonly timeRange: LookbackSelectOption;
+  readonly selectedTabName: TabName;
 }
 
-export const NetworkUsageHealth: React.FC<NetworkUsageHealthProps> = ({ networks, timeRange }) => {
+export const NetworkUsageHealth: React.FC<NetworkUsageHealthProps> = ({ networks, timeRange, selectedTabName }) => {
   const classes = MetricsStyles();
   const userContext = useContext<UserContextState>(UserContext);
   const { response, loading, error, onGetChainData } = useGetChainData();
   const [metricsData, setMetricsData] = useState<MultiLineMetricsData[]>([]);
 
   useEffect(() => {
-    if (networks.length > 0) {
+    if (networks.length > 0 && selectedTabName === TabName.Sites) {
       const timeParams: IMetrickQueryParam = {
         startTime: timeRange.value,
         endTime: '-0d',
@@ -37,7 +39,7 @@ export const NetworkUsageHealth: React.FC<NetworkUsageHealthProps> = ({ networks
         timeParams,
       );
     }
-  }, [networks, timeRange]);
+  }, [networks, timeRange, selectedTabName]);
 
   useEffect(() => {
     if (response) {

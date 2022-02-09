@@ -10,7 +10,7 @@ import { PerformanceDashboard } from './components/Performance Dashboard/Perform
 import { Sites } from './components/Sites';
 import { MetricsStyles } from './MetricsStyles';
 
-enum TabName {
+export enum TabName {
   Performance = 'Performance',
   Sites = 'Sites',
   Cloud = 'Cloud',
@@ -84,13 +84,13 @@ const MetricsPage: React.FC = () => {
         </TabsWrapperStyles>
       </div>
       <TabPanel value={selectedTabName} title={TabName.Performance}>
-        <PerformanceDashboard orgMap={orgMap} orgLoading={loading} orgError={error} />
+        <PerformanceDashboard selectedTabName={selectedTabName} orgMap={orgMap} orgLoading={loading} orgError={error} />
       </TabPanel>
       <TabPanel value={selectedTabName} title={TabName.Sites}>
-        <Sites orgMap={orgMap} orgLoading={loading} orgError={error} />
+        <Sites selectedTabName={selectedTabName} orgMap={orgMap} orgLoading={loading} orgError={error} />
       </TabPanel>
       <TabPanel value={selectedTabName} title={TabName.Cloud}>
-        <Cloud />
+        <Cloud selectedTabName={selectedTabName} />
       </TabPanel>
     </div>
   );
