@@ -17,7 +17,7 @@ export enum AlertState {
   UNKNOWN_STATE = 'UNKNOWN_STATE', // default
   ACTIVE = 'ACTIVE',
   CLEARED = 'CLEARED',
-  OK = 'OK',
+  OK = 'OK', // Info
 }
 
 export enum AlertCategory {
@@ -51,12 +51,12 @@ export enum AlertWebhookType {
 }
 
 export enum AlertVerificationStatusTypes {
-  UNKNOWN_STATUS = 'UNKNOWN_STATUS', // "default": "UNKNOWN_STATUS"
-  NotStarted = 'NotStarted',
-  TemporaryFailure = 'TemporaryFailure',
-  Success = 'Success',
-  Failed = 'Failed',
-  Pending = 'Pending',
+  UNKNOWN_STATUS = 'UNKNOWN_STATUS', // verification status Unknown      "default": "UNKNOWN_STATUS"
+  NotStarted = 'NotStarted', // verification not started
+  TemporaryFailure = 'TemporaryFailure', // verification failed
+  Success = 'Success', // => verified
+  Failed = 'Failed', // verification failed
+  Pending = 'Pending', // verification pending
 }
 
 export interface IAlertMeta extends IBaseEntity<string> {

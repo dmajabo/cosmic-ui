@@ -1,13 +1,13 @@
 import React from 'react';
 import { closeSmallIcon } from 'app/components/SVGIcons/close';
-import { TagBg, TagStyles, TagText } from './style';
+import { TagBg, TagIcon, TagStyles, TagText } from './style';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import Popover from '@mui/material/Popover';
 import { PopupContent } from 'app/components/Buttons/IconButtonWithPopup/styles';
 interface Props {
   text: string;
   subText?: string;
-  index: number;
+  index?: number;
   hideClearButton?: boolean;
   onRemove?: (index: number, e: any) => void;
   styles?: Object;
@@ -15,6 +15,7 @@ interface Props {
   textColor?: string;
   subTextColor?: string;
   opacity?: string | number;
+  icon?: any;
   showPopup?: boolean;
   children?: React.ReactNode;
 }
@@ -38,6 +39,7 @@ const Tag: React.FC<Props> = (props: Props) => {
   return (
     <TagStyles style={props.styles} onMouseEnter={handlePopoverOpen} onMouseLeave={handlePopoverClose}>
       <TagBg bgColor={props.bgColor} opacity={props.opacity} />
+      {props.icon && <TagIcon>{props.icon}</TagIcon>}
       <TagText className={props.hideClearButton ? 'textSimple' : ''} color={props.textColor}>
         {props.text}
       </TagText>

@@ -3,6 +3,7 @@ import Tag from 'app/components/Basic/Tag';
 import { IAlertVerificationStatus } from 'lib/api/ApiModels/Workflow/apiModel';
 import { getStyles, getTagStyles, ITagStyles } from './tagStatusHelper';
 import { StatusRow, TagStatus } from '../styles';
+import { emailIconSmall } from 'app/components/SVGIcons/automationIcons/email';
 
 interface Props {
   tag: string;
@@ -24,7 +25,7 @@ const PolicyItem: React.FC<Props> = (props: Props) => {
   };
 
   return (
-    <Tag showPopup text={props.tag} index={props.index} onRemove={onDeleteEmail} bgColor={styles.bgColor} textColor={styles.textColor}>
+    <Tag showPopup icon={emailIconSmall} text={props.tag} index={props.index} onRemove={onDeleteEmail} bgColor={styles.bgColor} textColor={styles.textColor}>
       <TagStatus>
         <StatusRow style={{ margin: '0 0 8px 0' }}>
           <div className="label">Email:</div>

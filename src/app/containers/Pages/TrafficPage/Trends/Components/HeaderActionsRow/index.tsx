@@ -20,25 +20,20 @@ const HeaderActionsRow: React.FC<Props> = (props: Props) => {
           label="Show"
           labelStyles={{ margin: 'auto 10px auto 0' }}
           value={traffic.trendsPeriod}
-          options={[
-            TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES.LAST_HOUR,
-            TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES.LAST_DAY,
-            TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES.LAST_WEEK,
-            TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES.LAST_MONTH,
-          ]}
+          options={[TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES.LAST_HOUR, TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES.LAST_DAY, TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES.LAST_WEEK]}
           onChange={onChangePeriod}
           renderValue={(v: TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES) => {
             if (v === TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES.LAST_HOUR) return 'Last hour';
             if (v === TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES.LAST_DAY) return 'Last day';
             if (v === TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES.LAST_WEEK) return 'Last week';
-            if (v === TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES.LAST_MONTH) return 'Last month';
+            // if (v === TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES.LAST_MONTH) return 'Last month';
             return v;
           }}
           renderOption={(v: TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES) => {
             if (v === TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES.LAST_HOUR) return 'Last hour';
             if (v === TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES.LAST_DAY) return 'Last day';
             if (v === TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES.LAST_WEEK) return 'Last week';
-            if (v === TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES.LAST_MONTH) return 'Last month';
+            // if (v === TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES.LAST_MONTH) return 'Last month';
             return v;
           }}
           styles={{ height: '50px', minHeight: '50px', width: 'auto', display: 'inline-flex', alignItems: 'center' }}

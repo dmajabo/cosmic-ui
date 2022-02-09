@@ -68,7 +68,7 @@ export function useSessionsContext(): SessionsContextType {
       }
     }
     if (!_preference || !_preference[StoragePreferenceKeys.SESSIONS_OVERVIEW_TIME_PERIOD]) {
-      setSessionsOverviewPeriod(SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_MONTH);
+      setSessionsOverviewPeriod(SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_WEEK);
     }
   }, []);
 

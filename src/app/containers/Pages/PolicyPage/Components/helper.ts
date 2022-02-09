@@ -84,8 +84,8 @@ const onCreateRegionRule = (): ISegmentSiteSegmentMatchRuleP => {
 
 const updateSegmentDataToEdit = (item: ISegmentSegmentP): ISegmentSegmentP => {
   if (!item.segType || (item.segType !== SegmentSegmentType.EXTERNAL && item.segType !== SegmentSegmentType.SITE)) return item;
-  if (item.segType === SegmentSegmentType.EXTERNAL && (!item.extSegPol.matchRules || !item.extSegPol.matchRules.length)) return item;
-  if (item.segType === SegmentSegmentType.SITE && (!item.siteSegPol.matchRules || !item.siteSegPol.matchRules.length)) return item;
+  if (item.segType === SegmentSegmentType.EXTERNAL && (!item.extSegPol || !item.extSegPol.matchRules || !item.extSegPol.matchRules.length)) return item;
+  if (item.segType === SegmentSegmentType.SITE && (!item.siteSegPol || !item.siteSegPol.matchRules || !item.siteSegPol.matchRules.length)) return item;
   const _s: ISegmentSegmentP = jsonClone(item);
   if (item.segType === SegmentSegmentType.EXTERNAL) {
     _s.extSegPol.matchRules.forEach(it => {

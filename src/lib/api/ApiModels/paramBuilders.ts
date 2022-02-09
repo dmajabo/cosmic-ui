@@ -28,28 +28,28 @@ export enum ALERT_TIME_RANGE_QUERY_TYPES {
   LAST_HOUR = 'ALERT_QUERY_LAST_HOUR',
   LAST_DAY = 'ALERT_QUERY_LAST_DAY',
   LAST_WEEK = 'ALERT_QUERY_LAST_WEEK',
-  LAST_MONTH = 'ALERT_QUERY_LAST_MONTH',
+  // LAST_MONTH = 'ALERT_QUERY_LAST_MONTH',
 }
 
 export enum AUDIT_LOGS_TIME_RANGE_QUERY_TYPES {
   LAST_HOUR = 'AUDITLOG_QUERY_LAST_HOUR',
   LAST_DAY = 'AUDITLOG_QUERY_LAST_DAY',
   LAST_WEEK = 'AUDITLOG_QUERY_LAST_WEEK',
-  LAST_MONTH = 'AUDITLOG_QUERY_LAST_MONTH',
+  // LAST_MONTH = 'AUDITLOG_QUERY_LAST_MONTH',
 }
 
 export enum SESSIONS_TIME_RANGE_QUERY_TYPES {
   LAST_HOUR = 'SESSION_QUERY_LAST_HOUR',
   LAST_DAY = 'SESSION_QUERY_LAST_DAY',
   LAST_WEEK = 'SESSION_QUERY_LAST_WEEK',
-  LAST_MONTH = 'SESSION_QUERY_LAST_MONTH',
+  // LAST_MONTH = 'SESSION_QUERY_LAST_MONTH',
 }
 
 export enum TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES {
   LAST_HOUR = 'LAST_HOUR',
   LAST_DAY = 'LAST_DAY',
   LAST_WEEK = 'LAST_WEEK',
-  LAST_MONTH = 'LAST_MONTH',
+  // LAST_MONTH = 'LAST_MONTH',
 }
 
 export enum STITCHED_TYPES {
@@ -161,7 +161,7 @@ export const convertTimePeriodToQueryDays = (value: string): string => {
   if (_v.includes('LAST_HOUR')) return '-1h';
   if (_v.includes('LAST_DAY')) return '-24h';
   if (_v.includes('LAST_WEEK')) return '-7d';
-  if (_v.includes('LAST_MONTH')) return '-30d';
+  // if (_v.includes('LAST_MONTH')) return '-30d';
   return null;
 };
 
@@ -171,8 +171,8 @@ export const convertTimePeriodToQueryGeneral = (value: string): TRAFFIC_TRENDS_T
   if (_v.includes('LAST_HOUR')) return TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES.LAST_HOUR;
   if (_v.includes('LAST_DAY')) return TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES.LAST_DAY;
   if (_v.includes('LAST_WEEK')) return TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES.LAST_WEEK;
-  if (_v.includes('LAST_MONTH')) return TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES.LAST_MONTH;
-  return TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES.LAST_HOUR;
+  // if (_v.includes('LAST_MONTH')) return TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES.LAST_MONTH;
+  return TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES.LAST_WEEK;
 };
 
 export const getAlertLogParam = (type: ModelalertType, time_range: ALERT_TIME_RANGE_QUERY_TYPES, size: number, currentPage: number, alert_states?: AlertState): IParam => {

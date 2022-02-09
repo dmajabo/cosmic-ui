@@ -6,20 +6,6 @@ export const ChannelsWrapper = styled.div`
   max-width: 100%;
 `;
 
-export const ChannelIcon = styled.span`
-  width: 14px;
-  height: 14px;
-  flex-shrink: 0;
-  display: inline-flex;
-  margin: auto 10px auto 0;
-  z-index: 2;
-  svg {
-    width: 100%;
-    height: 100%;
-    margin: auto;
-    vertical-align: top;
-  }
-`;
 export const ChannelLabel = styled.span`
   display: inline-block;
   font-family: 'DMSans';

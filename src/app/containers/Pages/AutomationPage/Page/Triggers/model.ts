@@ -162,14 +162,14 @@ export const NestedTriggerGridColumns: INestedTriggerGridColumns = {
   },
   objectName: {
     resField: 'objectName',
-    label: 'Name',
+    label: 'Resource Name',
     field: 'objectName',
     width: '300px',
     hide: true,
   },
   objectType: {
     resField: 'objectType',
-    label: 'Type',
+    label: 'Resource Type',
     field: 'objectType',
     width: '200px',
     hide: false,
