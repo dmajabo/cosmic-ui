@@ -26,6 +26,7 @@ import { TableWrapper } from 'app/components/Basic/Table/PrimeTableStyles';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { DEFAULT_TRANSITION } from 'lib/constants/general';
 import HitsComponent from './HitsComponent';
+import { ChannelsWrapper } from './styles';
 
 interface Props {}
 
@@ -78,6 +79,15 @@ const Triggers: React.FC<Props> = (props: Props) => {
       const _newItem: IAlertMetaTableItem = Object.assign(_items[index], updateRes);
       _items.splice(index, 1, _newItem);
       const _arr: IAlertMetaTableItem[] = getSearchedListData(_items, searchValue);
+      if (expandedRows && expandedRows[_newItem.id] && (!_newItem.triggerCount || _newItem.triggerCount <= 0)) {
+        const _obj = { ...expandedRows };
+        delete _obj[_newItem.id];
+        if (!Object.keys(_obj).length) {
+          setExpandedRows(null);
+        } else {
+          setExpandedRows(_obj);
+        }
+      }
       setDataRows(_items);
       setFilteredData(_arr);
       toast.success('Trigger was updated successfully.');
@@ -162,6 +172,27 @@ const Triggers: React.FC<Props> = (props: Props) => {
     await onPost(AlertApi.postMetadata(), _obj, userContext.accessToken!);
   };
 
+  const onRowToggle = (id: string) => {
+    if (!expandedRows) {
+      const _obj = {};
+      _obj[id] = true;
+      setExpandedRows(_obj);
+      return;
+    }
+    const _obj = { ...expandedRows };
+    if (!_obj[id]) {
+      _obj[id] = true;
+      setExpandedRows(_obj);
+      return;
+    }
+    delete _obj[id];
+    if (!Object.keys(_obj).length) {
+      setExpandedRows(null);
+      return;
+    }
+    setExpandedRows(_obj);
+  };
+
   const severityBodyTemplate = (rowData: IAlertMetaTableItem) => {
     return (
       <MatSelect
@@ -186,28 +217,13 @@ const Triggers: React.FC<Props> = (props: Props) => {
 
   const channelsBodyTemplate = (rowData: IAlertMetaTableItem) => {
     if (!rowData || !rowData.channels || !rowData.channels.length) return null;
-    return rowData.channels.map((it, index) => <TriggerChannel key={`channel${rowData.id}${it.id}${index}`} channel={it} />);
-  };
-
-  const onRowToggle = (id: string) => {
-    if (!expandedRows) {
-      const _obj = {};
-      _obj[id] = true;
-      setExpandedRows(_obj);
-      return;
-    }
-    const _obj = { ...expandedRows };
-    if (!_obj[id]) {
-      _obj[id] = true;
-      setExpandedRows(_obj);
-      return;
-    }
-    delete _obj[id];
-    if (!Object.keys(_obj).length) {
-      setExpandedRows(null);
-      return;
-    }
-    setExpandedRows(_obj);
+    return (
+      <ChannelsWrapper>
+        {rowData.channels.map((it, index) => (
+          <TriggerChannel key={`channel${rowData.id}${it.id}${index}`} channel={it} id={rowData.id} />
+        ))}
+      </ChannelsWrapper>
+    );
   };
 
   const expanderBodyTemplate = (rowData: IAlertMetaTableItem) => {
@@ -250,31 +266,31 @@ const Triggers: React.FC<Props> = (props: Props) => {
           >
             <Column
               className="expandCollapseCell"
-              style={{ width: TriggerGridColumns.id.width }}
+              style={{ width: TriggerGridColumns.id.width, verticalAlign: 'top' }}
               field={TriggerGridColumns.id.field}
               header={TriggerGridColumns.id.label}
               expander
               body={expanderBodyTemplate}
             ></Column>
-            <Column style={{ width: TriggerGridColumns.name.width }} sortable field={TriggerGridColumns.name.field} header={TriggerGridColumns.name.label}></Column>
-            <Column style={{ width: TriggerGridColumns.category.width }} sortable field={TriggerGridColumns.category.field} header={TriggerGridColumns.category.label}></Column>
+            <Column style={{ width: TriggerGridColumns.name.width, verticalAlign: 'top' }} sortable field={TriggerGridColumns.name.field} header={TriggerGridColumns.name.label}></Column>
+            <Column style={{ width: TriggerGridColumns.category.width, verticalAlign: 'top' }} sortable field={TriggerGridColumns.category.field} header={TriggerGridColumns.category.label}></Column>
             <Column
-              style={{ width: TriggerGridColumns.severity.width }}
+              style={{ width: TriggerGridColumns.severity.width, verticalAlign: 'top' }}
               sortable
               field={TriggerGridColumns.severity.field}
               header={TriggerGridColumns.severity.label}
               body={severityBodyTemplate}
             ></Column>
-            <Column field={TriggerGridColumns.channels.field} header={TriggerGridColumns.channels.label} body={channelsBodyTemplate}></Column>
+            <Column style={{ maxWidth: '600px', verticalAlign: 'top' }} field={TriggerGridColumns.channels.field} header={TriggerGridColumns.channels.label} body={channelsBodyTemplate}></Column>
             <Column
-              style={{ width: TriggerGridColumns.triggerCount.width }}
+              style={{ width: TriggerGridColumns.triggerCount.width, verticalAlign: 'top' }}
               field={TriggerGridColumns.triggerCount.field}
               header={TriggerGridColumns.triggerCount.label}
               body={hitsBodyTemplate}
               sortable
             ></Column>
             <Column
-              style={{ width: TriggerGridColumns.configState.width }}
+              style={{ width: TriggerGridColumns.configState.width, verticalAlign: 'top' }}
               field={TriggerGridColumns.configState.field}
               header={TriggerGridColumns.configState.label}
               body={configStateBodyTemplate}

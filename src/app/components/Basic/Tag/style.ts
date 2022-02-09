@@ -40,7 +40,7 @@ export const TagText = styled.span<Props>`
   font-style: normal;
   font-weight: ${props => (props.isSubText ? 'normal' : 'bold')};
   font-size: 12px;
-  line-height: 15px;
+  line-height: 14px;
   letter-spacing: 0.1em;
   margin-right: ${props => (props.isSubText ? '4px' : '12px')};
   color: ${props => props.color || 'var(--_successColor)'};

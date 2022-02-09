@@ -150,7 +150,7 @@ export const NestedTriggerGridColumns: INestedTriggerGridColumns = {
     resField: 'labels',
     label: 'Labels',
     field: 'labels',
-    width: '320px',
+    width: '400px',
     hide: false,
   },
   objectExtId: {
