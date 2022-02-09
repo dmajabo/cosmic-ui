@@ -26,7 +26,7 @@ interface AreaDataPoint {
 
 interface AreaChartData {
   readonly name: string;
-  readonly data: AreaDataPoint[];
+  readonly data: [number, number, number][];
 }
 
 interface LineChartProps {
@@ -103,6 +103,7 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
   useEffect(() => {
     const tempChartData: ChartData[] = selectedRows.map(row => {
       return {
+        id: `${row.name} &#9654 ${row.sourceDevice}`,
         name: `${row.name} &#9654 ${row.sourceDevice}`,
         data: sortBy(inputData[row.id], 'time').map(item => {
           const val = DateTime.fromFormat(item.time, OLD_TIME_FORMAT).toUTC();
@@ -138,8 +139,8 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
             },
           };
         }),
+        linkedTo: `${row.name} &#9654 ${row.sourceDevice}`,
         turboThreshold: inputData[row.id].length,
-        showInLegend: false,
         color: ANOMALY_POINT_COLOR,
         states: {
           hover: {
@@ -155,19 +156,18 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
         name: `${row.name}_bounds`,
         data: sortBy(inputData[`${row.id}_lowerbound`], 'time').map((item, index) => {
           const val = DateTime.fromFormat(item.time, OLD_TIME_FORMAT).toUTC();
-          return {
-            x: val.toMillis(),
-            low: dataValueSuffix === 'mbps' ? Number(item.value) / 1000 : Number(Number.parseFloat(item.value).toFixed(2)),
-            high: dataValueSuffix === 'mbps' ? Number(item.value) / 1000 : Number(Number.parseFloat(inputData[`${row.id}_upperbound`][index].value).toFixed(2)),
-            marker: {
-              enabled: false,
-            },
-          };
+          return [
+            val.toMillis(),
+            dataValueSuffix === 'mbps' ? Number(item.value) / 1000 : Number(Number.parseFloat(item.value).toFixed(2)),
+            dataValueSuffix === 'mbps'
+              ? Number(Number.parseFloat(inputData[`${row.id}_upperbound`][index].value)) / 1000
+              : Number(Number.parseFloat(inputData[`${row.id}_upperbound`][index].value).toFixed(2)),
+          ];
         }),
         type: 'arearange',
         turboThreshold: inputData[row.id].length,
-        showInLegend: false,
-        color: 'aliceblue',
+        linkedTo: `${row.name} &#9654 ${row.sourceDevice}`,
+        color: 'ghostwhite',
         zIndex: 0,
         fillOpacity: 0.1,
         states: {
@@ -185,7 +185,7 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
 
   const lineChartOptions = {
     chart: {
-      zoomType: 'x',
+      zoomType: 'xy',
     },
     time: {
       useUTC: false,
@@ -193,7 +193,7 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
     title: false,
     xAxis: {
       type: 'datetime',
-      tickInterval: 1000 * 60 * 60 * 24,
+      crosshair: true,
     },
     tooltip: {
       valueSuffix: dataValueSuffix ? ` ${dataValueSuffix}` : '',

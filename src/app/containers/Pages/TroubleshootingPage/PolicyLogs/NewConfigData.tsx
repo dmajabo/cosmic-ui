@@ -26,7 +26,7 @@ export const NewConfigData: React.FC<ConfigDataProps> = ({ oldData, newData, sha
 
   const getConnectionTableClassName = (oldData: ConnectionResource[], newData: ConnectionResource[]) => {
     const areArraysEqual =
-      oldData.length == newData.length &&
+      oldData.length === newData.length &&
       newData.every(resource => {
         const selectedOldResource = oldData.find(oldResource => oldResource.extId === resource.extId);
         return isEqual(resource, selectedOldResource);
@@ -37,7 +37,7 @@ export const NewConfigData: React.FC<ConfigDataProps> = ({ oldData, newData, sha
 
   const getRouteTableClassName = (oldData: PolicyLogRoute[], newData: PolicyLogRoute[]) => {
     const areArraysEqual =
-      oldData.length == newData.length &&
+      oldData.length === newData.length &&
       newData.every(resource => {
         const selectedOldResource = oldData.find(oldResource => oldResource.extId === resource.extId);
         return isEqual(resource, selectedOldResource);
@@ -50,7 +50,7 @@ export const NewConfigData: React.FC<ConfigDataProps> = ({ oldData, newData, sha
 
   const getRulesTableClassName = (oldData: IVmRule[], newData: IVmRule[]) => {
     const areArraysEqual =
-      oldData.length == newData.length &&
+      oldData.length === newData.length &&
       newData.every(resource => {
         const selectedOldResource = oldData.find(oldResource => getCIDRUniqueKey(oldResource) === getCIDRUniqueKey(resource));
         return isEqual(resource, selectedOldResource);
@@ -61,7 +61,7 @@ export const NewConfigData: React.FC<ConfigDataProps> = ({ oldData, newData, sha
 
   const getDeviceRulesTableClassName = (oldData: IDeviceRule[], newData: IDeviceRule[]) => {
     const areArraysEqual =
-      oldData.length == newData.length &&
+      oldData.length === newData.length &&
       newData.every(resource => {
         const selectedOldResource = oldData.find(oldResource => oldResource.name === resource.name);
         return isEqual(resource, selectedOldResource);

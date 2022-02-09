@@ -11,16 +11,18 @@ import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import { EmptyText } from 'app/components/Basic/NoDataStyles/NoDataStyles';
 import { MultiLineChart } from 'app/containers/Pages/TopologyPage/TopoMapV2/PanelComponents/NodePanels/WedgePanel/MetricsTab/MultiLineChart';
 import { getChartXAxisLabel, isMetricsEmpty } from '../Utils';
+import { TabName } from '../..';
 
 interface TransitProps {
   readonly timeRange: LookbackSelectOption;
+  readonly selectedTabName: TabName;
 }
 
 const TRANSIT_METRICNAMES = ['BytesIn', 'BytesOut'];
 
 const TRANSIT_METRIC_TYPES = ['NetworkLink', 'VpnLink', 'WedgePeeringConnection'];
 
-export const Transit: React.FC<TransitProps> = ({ timeRange }) => {
+export const Transit: React.FC<TransitProps> = ({ timeRange, selectedTabName }) => {
   const classes = MetricsStyles();
   const userContext = useContext<UserContextState>(UserContext);
   const apiClient = createApiClient(userContext.accessToken!);
@@ -30,37 +32,39 @@ export const Transit: React.FC<TransitProps> = ({ timeRange }) => {
   const [isError, setIsError] = useState<boolean>(false);
 
   useEffect(() => {
-    const promises = TRANSIT_METRIC_TYPES.map(type => {
-      const params: TransitMetricsParams = {
-        startTime: timeRange.value,
-        endTime: '-0m',
-        type: type,
-        metricNames: TRANSIT_METRICNAMES,
-      };
-      return apiClient.getTelemetryMetrics(type, params);
-    });
-    setIsLoading(true);
-    Promise.all(promises)
-      .then(responses => {
-        const transitMetricsData: MultiLineMetricsData[] = responses.reduce((acc, nextValue) => {
-          if (nextValue.metrics.length > 0) {
-            const typeMetricsData: MultiLineMetricsData[] = nextValue.metrics.map(item => ({
-              name: `${nextValue.type}_${item.resourceId}_${item.key}`,
-              metrics: item.ts,
-            }));
-            return acc.concat(typeMetricsData);
-          } else {
-            return acc.concat([]);
-          }
-        }, []);
-        setMetricsData(transitMetricsData);
-        setIsLoading(false);
-      })
-      .catch(() => {
-        setIsError(true);
-        setIsLoading(false);
+    if (selectedTabName === TabName.Cloud) {
+      const promises = TRANSIT_METRIC_TYPES.map(type => {
+        const params: TransitMetricsParams = {
+          startTime: timeRange.value,
+          endTime: '-0m',
+          type: type,
+          metricNames: TRANSIT_METRICNAMES,
+        };
+        return apiClient.getTelemetryMetrics(type, params);
       });
-  }, [timeRange]);
+      setIsLoading(true);
+      Promise.all(promises)
+        .then(responses => {
+          const transitMetricsData: MultiLineMetricsData[] = responses.reduce((acc, nextValue) => {
+            if (nextValue.metrics.length > 0) {
+              const typeMetricsData: MultiLineMetricsData[] = nextValue.metrics.map(item => ({
+                name: `${nextValue.type}_${item.resourceId}_${item.key}`,
+                metrics: item.ts,
+              }));
+              return acc.concat(typeMetricsData);
+            } else {
+              return acc.concat([]);
+            }
+          }, []);
+          setMetricsData(transitMetricsData);
+          setIsLoading(false);
+        })
+        .catch(() => {
+          setIsError(true);
+          setIsLoading(false);
+        });
+    }
+  }, [timeRange, selectedTabName]);
 
   return (
     <div className={classes.pageComponentBackground}>
