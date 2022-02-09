@@ -1,4 +1,3 @@
-import { Typography } from '@mui/material';
 import React, { useContext, useEffect, useState } from 'react';
 import { createApiClient } from 'lib/api/http/apiClient';
 import { PerformanceDashboardStyles } from './PerformanceDashboardStyles';
@@ -11,7 +10,6 @@ import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import LoadingIndicator from 'app/components/Loading';
 import { HeatMapData } from 'lib/api/http/SharedTypes';
 import Heatmap, { LegendData } from './Heatmap';
-import { Divider } from 'app/containers/SignUpPage/ArticleComponents/Divider';
 
 interface GoodputProps {
   readonly selectedRows: Data[];
@@ -20,6 +18,8 @@ interface GoodputProps {
 
 const GOODPUT = 'goodput';
 const GOODPUT_ANOMALY = 'goodput_anomaly';
+const GOODPUT_LOWERBOUND = 'goodput_lowerbound';
+const GOODPUT_UPPERBOUND = 'goodput_upperbound';
 
 export const GOODPUT_HEATMAP_LEGEND: LegendData[] = [
   {
@@ -72,6 +72,8 @@ export const Goodput: React.FC<GoodputProps> = ({ selectedRows, timeRange }) => 
         values.forEach(item => {
           goodputChartData[item.testId] = item.metrics.keyedmap.find(item => item.key === GOODPUT)?.ts || [];
           goodputChartData[`${item.testId}_anomaly`] = item.metrics.keyedmap.find(item => item.key === GOODPUT_ANOMALY)?.ts || [];
+          goodputChartData[`${item.testId}_upperbound`] = item.metrics.keyedmap.find(item => item.key === GOODPUT_UPPERBOUND)?.ts || [];
+          goodputChartData[`${item.testId}_lowerbound`] = item.metrics.keyedmap.find(item => item.key === GOODPUT_LOWERBOUND)?.ts || [];
         });
         setGoodputData(goodputChartData);
       });
@@ -111,8 +113,8 @@ export const Goodput: React.FC<GoodputProps> = ({ selectedRows, timeRange }) => 
       </div>
       <div className={classes.lineChartContainer}>
         {!isEmpty(selectedRows) ? (
-          // goodputData contains 2 keys for each row. One for the data and one for anomaly
-          Object.keys(goodputData).length / 2 === selectedRows.length ? (
+          // goodputData contains 4 keys for each row. One for the data, one for anomaly, one for upperbound and one for lowerbound
+          Object.keys(goodputData).length / 4 === selectedRows.length ? (
             <MetricsLineChart dataValueSuffix="mbps" selectedRows={selectedRows} inputData={goodputData} />
           ) : (
             <div className={classes.noChartContainer}>

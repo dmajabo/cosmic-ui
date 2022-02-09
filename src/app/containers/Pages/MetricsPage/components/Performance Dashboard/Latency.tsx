@@ -18,6 +18,8 @@ interface LatencyProps {
 
 const LATENCY = 'latency';
 const LATENCY_ANOMALY = 'latency_anomaly';
+const LATENCY_LOWERBOUND = 'latency_lowerbound';
+const LATENCY_UPPERBOUND = 'latency_upperbound';
 
 export const LATENCY_HEATMAP_LEGEND: LegendData[] = [
   {
@@ -69,6 +71,8 @@ export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange }) => 
         values.forEach(item => {
           latencyChartData[item.testId] = item.metrics.keyedmap.find(item => item.key === LATENCY)?.ts || [];
           latencyChartData[`${item.testId}_anomaly`] = item.metrics.keyedmap.find(item => item.key === LATENCY_ANOMALY)?.ts || [];
+          latencyChartData[`${item.testId}_upperbound`] = item.metrics.keyedmap.find(item => item.key === LATENCY_UPPERBOUND)?.ts || [];
+          latencyChartData[`${item.testId}_lowerbound`] = item.metrics.keyedmap.find(item => item.key === LATENCY_LOWERBOUND)?.ts || [];
         });
         setLatencyData(latencyChartData);
       });
@@ -111,8 +115,8 @@ export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange }) => 
       </div>
       <div className={classes.lineChartContainer}>
         {!isEmpty(selectedRows) ? (
-          // latencyData contains 2 keys for each row. One for the data and one for anomaly
-          Object.keys(latencyData).length / 2 === selectedRows.length ? (
+          // latencyData contains 4 keys for each row. One for the data, one for anomaly, one for upperbound and one for lowerbound
+          Object.keys(latencyData).length / 4 === selectedRows.length ? (
             <MetricsLineChart dataValueSuffix="ms" selectedRows={selectedRows} inputData={latencyData} />
           ) : (
             <div className={classes.noChartContainer}>

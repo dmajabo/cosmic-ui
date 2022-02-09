@@ -494,8 +494,15 @@ export interface TransitMetricsParams {
 
 interface TelemetryMetrics {
   readonly key: string;
+  readonly tags?: TelemetryMetricsTags;
   readonly resourceId: string;
   readonly ts: MetricsData[];
+}
+
+interface TelemetryMetricsTags {
+  readonly extId: string;
+  readonly name: string;
+  readonly type: string;
 }
 
 export interface GetTelemetryMetricsResponse {

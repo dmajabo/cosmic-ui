@@ -182,7 +182,8 @@ export const PerformanceDashboardStyles = makeStyles(
         fontSize: 14,
         paddingTop: 10,
         fontWeight: 400,
-        marginLeft: 40,
+        marginLeft: 10,
+        marginRight: 5,
       },
       lineChartContainer: {
         marginTop: 40,
