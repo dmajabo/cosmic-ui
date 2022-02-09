@@ -13,7 +13,7 @@ const WebhookChannelItem: React.FC<Props> = (props: Props) => {
       <TagBg className="channelTagBg" bgColor="var(--_appBg)" opacity="1" />
       <ChannelIcon>{props.icon}</ChannelIcon>
       <ChannelLabel>{props.label}:</ChannelLabel>
-      <TagText className="textSimple" style={{ maxWidth: '100%', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
+      <TagText className="textSimple" color="var(--_primaryTextColor)" style={{ maxWidth: '100%', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
         {props.name}
       </TagText>
     </TagStyles>
