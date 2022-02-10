@@ -1,4 +1,5 @@
 import { MetricsData } from 'app/containers/Pages/TopologyPage/TopologyMetrics/SharedTypes';
+import { AccountVendorTypes } from '../ApiModels/Accounts/apiModel';
 import { SeverityLevel } from './utils';
 
 interface Device {
@@ -508,4 +509,8 @@ interface TelemetryMetricsTags {
 export interface GetTelemetryMetricsResponse {
   readonly type?: string;
   readonly metrics: TelemetryMetrics[];
+}
+
+export interface GetControllerVendorResponse {
+  readonly vendors: AccountVendorTypes[];
 }

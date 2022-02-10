@@ -1,6 +1,9 @@
 import { Tab, Tabs } from '@mui/material';
+import { AccountVendorTypes } from 'lib/api/ApiModels/Accounts/apiModel';
+import { PolicyApi } from 'lib/api/ApiModels/Services/policy';
 import { TopoApi } from 'lib/api/ApiModels/Services/topo';
 import { ITopologyMapData } from 'lib/api/ApiModels/Topology/apiModels';
+import { GetControllerVendorResponse } from 'lib/api/http/SharedTypes';
 import { useGet } from 'lib/api/http/useAxiosHook';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import React, { useContext, useEffect, useState } from 'react';
@@ -41,14 +44,17 @@ const MetricsPage: React.FC = () => {
   const classes = MetricsStyles();
   const userContext = useContext<UserContextState>(UserContext);
   const { response, loading, error, onGet } = useGet<ITopologyMapData>();
+  const { response: vendorResponse, onGet: onGetVendors } = useGet<GetControllerVendorResponse>();
 
   const [selectedTabName, setSelectedTabName] = useState<TabName>(TabName.Performance);
   const [orgMap, setOrgMap] = useState<ITopologyMapData>({ count: 0, organizations: [] });
+  const [isAwsConfigured, setIsAwsConfigured] = useState<boolean>(false);
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: TabName) => setSelectedTabName(newValue);
 
   useEffect(() => {
     onGet(TopoApi.getAllOrganizations(), userContext.accessToken!);
+    onGetVendors(PolicyApi.getControllerVendors(), userContext.accessToken!);
   }, []);
 
   useEffect(() => {
@@ -56,6 +62,12 @@ const MetricsPage: React.FC = () => {
       setOrgMap(response);
     }
   }, [response]);
+
+  useEffect(() => {
+    if (vendorResponse && vendorResponse.vendors && vendorResponse.vendors.length) {
+      setIsAwsConfigured(vendorResponse.vendors.includes(AccountVendorTypes.AMAZON_AWS));
+    }
+  }, [vendorResponse]);
 
   return (
     <div className={classes.metricsPageContainer}>
@@ -74,12 +86,14 @@ const MetricsPage: React.FC = () => {
               wrapped
               {...a11yProps(TabName.Sites)}
             />
-            <Tab
-              value={TabName.Cloud}
-              label={<span className={selectedTabName === TabName.Cloud ? classes.activeTabLabel : classes.tabLabel}>{TabName.Cloud}</span>}
-              wrapped
-              {...a11yProps(TabName.Cloud)}
-            />
+            {isAwsConfigured && (
+              <Tab
+                value={TabName.Cloud}
+                label={<span className={selectedTabName === TabName.Cloud ? classes.activeTabLabel : classes.tabLabel}>{TabName.Cloud}</span>}
+                wrapped
+                {...a11yProps(TabName.Cloud)}
+              />
+            )}
           </Tabs>
         </TabsWrapperStyles>
       </div>
@@ -89,9 +103,11 @@ const MetricsPage: React.FC = () => {
       <TabPanel value={selectedTabName} title={TabName.Sites}>
         <Sites selectedTabName={selectedTabName} orgMap={orgMap} orgLoading={loading} orgError={error} />
       </TabPanel>
-      <TabPanel value={selectedTabName} title={TabName.Cloud}>
-        <Cloud selectedTabName={selectedTabName} />
-      </TabPanel>
+      {isAwsConfigured && (
+        <TabPanel value={selectedTabName} title={TabName.Cloud}>
+          <Cloud selectedTabName={selectedTabName} />
+        </TabPanel>
+      )}
     </div>
   );
 };

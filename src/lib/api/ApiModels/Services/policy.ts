@@ -14,6 +14,8 @@ export const PolicyApi = {
 
   getAlSlaTests: () => '/policy/api/v1/policy/performance/sla-tests',
 
+  getControllerVendors: () => '/policy/api/v1/policy/controller/vendors',
+
   getSegments: () => 'policy/api/v1/policy/segments', // IPolicysvcListSegmentPsResponse
   postSegments: () => 'policy/api/v1/policy/segments', // body: { segment: ISegmentSegmentP, dry_run?: boolean }  => res: baseBaseResponse
   getSegmentsById: (id: string) => 'policy/api/v1/policy/segments/' + id, // ISegmentSegmentP
