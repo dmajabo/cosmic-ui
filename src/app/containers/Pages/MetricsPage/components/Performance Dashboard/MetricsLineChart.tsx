@@ -199,9 +199,8 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
         type: 'arearange',
         turboThreshold: inputData[row.id].length,
         linkedTo: `${row.name} &#9654 ${row.sourceDevice}`,
-        color: 'aliceblue',
+        color: 'rgb(235,240,250)',
         zIndex: 0,
-        fillOpacity: 0.3,
         states: {
           hover: {
             lineWidthPlus: 0,
