@@ -5,6 +5,7 @@ import { ChannelContent, ChannelHeaderRow, ChannelItemWrapper, ConfigurationTitl
 // import SecondaryButton from 'app/components/Buttons/SecondaryButton';
 // import { plusIcon } from 'app/components/SVGIcons/plusIcon';
 import {
+  AlertWebhookType,
   // AlertChannelType,
   IAlertChannel,
   // createChannel,
@@ -13,7 +14,8 @@ import { deleteIcon } from 'app/components/SVGIcons/delete';
 import SettingsButton from 'app/components/Buttons/SettingsButton';
 import { PopupContent } from 'app/components/Buttons/SettingsButton/PopupItemStyles';
 import PopupItem from 'app/components/Buttons/SettingsButton/PopupItem';
-import { PolicyRow, PolicyLabel } from './styles';
+import { PolicyRow, PolicyLabel, PolicyIcon } from './styles';
+import { slackIcon } from 'app/components/SVGIcons/automationIcons/slack';
 
 interface Props {
   channel: IAlertChannel;
@@ -51,10 +53,12 @@ const WebHookConfiguration: React.FC<Props> = (props: Props) => {
         )}
       </ChannelHeaderRow>
       <ChannelContent style={{ display: 'flex', flexDirection: 'column', width: '100%', height: 'calc(100% - 80px)' }}>
-        <PolicyRow margin="0 0 12px 0">
-          <PolicyLabel margin="0 12px 0 0">Type:</PolicyLabel>
-          <PolicyLabel fontWeight="500">{channel.webhookPolicy.webhookType}</PolicyLabel>
-        </PolicyRow>
+        {channel.webhookPolicy.webhookType === AlertWebhookType.SLACK && (
+          <PolicyRow margin="0 0 12px 0">
+            <PolicyIcon>{slackIcon(18)}</PolicyIcon>
+            <PolicyLabel fontWeight="500">Slack</PolicyLabel>
+          </PolicyRow>
+        )}
         <PolicyRow>
           <PolicyLabel margin="0 12px 0 0">URL:</PolicyLabel>
           <PolicyLabel fontWeight="500">{channel.webhookPolicy.webhookUrl}</PolicyLabel>

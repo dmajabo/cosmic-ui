@@ -22,3 +22,14 @@ export const PolicyLabel = styled.span<PolicyProps>`
   line-height: ${props => props.lineHeight || '22px'};
   font-weight: ${props => props.fontWeight || 700};
 `;
+
+export const PolicyIcon = styled.div`
+  width: 18px;
+  height: 18px;
+  margin: auto 10px auto 0;
+  svg {
+    width: 100%;
+    height: 100%;
+    vertical-align: top;
+  }
+`;

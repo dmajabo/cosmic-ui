@@ -1,7 +1,7 @@
 import React from 'react';
 import { ALERT_TIME_RANGE_QUERY_TYPES, getAlertLogParam } from 'lib/api/ApiModels/paramBuilders';
 import { AlertApi } from 'lib/api/ApiModels/Services/alert';
-import { IAlertAlert, IAlertListAlertLogsResponse, ModelalertType } from 'lib/api/ApiModels/Workflow/apiModel';
+import { convertAlertState, IAlertAlert, IAlertListAlertLogsResponse, ModelalertType } from 'lib/api/ApiModels/Workflow/apiModel';
 import { useGet } from 'lib/api/http/useAxiosHook';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 // import { IAlertChannel, IAlertVerificationStatus } from 'lib/api/ApiModels/Workflow/apiModel';
@@ -74,7 +74,7 @@ const HitsComponent: React.FC<Props> = (props: Props) => {
   };
   const timestampBodyTemplate = (rowData: IAlertAlert) => parseFieldAsDate(rowData.timestamp, `EEE',' LLL d',' yyyy HH:mm aa`);
   const descBodyTemplate = (rowData: IAlertAlert) => <div className="nestedDescCell">{rowData.descString}</div>;
-  const stateBodyTemplate = (rowData: IAlertAlert) => <StateCell state={rowData.state}>{rowData.state}</StateCell>;
+  const stateBodyTemplate = (rowData: IAlertAlert) => <StateCell state={rowData.state}>{convertAlertState(rowData.state)}</StateCell>;
   return (
     <NestedTableWrapper style={{ display: error ? 'flex' : null, height: rows && rows.length ? 'auto' : '300px', minHeight: rows && rows.length ? '100px' : '300px' }}>
       {!error && (

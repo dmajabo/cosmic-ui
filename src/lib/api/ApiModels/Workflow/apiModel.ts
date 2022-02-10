@@ -144,3 +144,11 @@ export const createChannel = (type: AlertChannelType): IAlertChannel => {
   };
   return _obj;
 };
+
+export const convertAlertState = (state: AlertState): string => {
+  if (state === AlertState.OK) return 'Info';
+  if (state === AlertState.ACTIVE) return 'Active';
+  if (state === AlertState.CLEARED) return 'Cleared';
+  if (state === AlertState.UNKNOWN_STATE) return 'Unknown';
+  return state;
+};
