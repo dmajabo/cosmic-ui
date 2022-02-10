@@ -229,10 +229,6 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
       value: '-7d',
       label: 'Last 7 days',
     },
-    {
-      value: '-30d',
-      label: 'Last 1 month',
-    },
   ];
 
   const dropdownStyle = {

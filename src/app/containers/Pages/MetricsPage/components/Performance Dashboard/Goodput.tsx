@@ -20,6 +20,7 @@ const GOODPUT = 'goodput';
 const GOODPUT_ANOMALY = 'goodput_anomaly';
 const GOODPUT_LOWERBOUND = 'goodput_lowerbound';
 const GOODPUT_UPPERBOUND = 'goodput_upperbound';
+const GOODPUT_THRESHOLD = 'goodput_threshold';
 
 export const GOODPUT_HEATMAP_LEGEND: LegendData[] = [
   {
@@ -74,6 +75,7 @@ export const Goodput: React.FC<GoodputProps> = ({ selectedRows, timeRange }) => 
           goodputChartData[`${item.testId}_anomaly`] = item.metrics.keyedmap.find(item => item.key === GOODPUT_ANOMALY)?.ts || [];
           goodputChartData[`${item.testId}_upperbound`] = item.metrics.keyedmap.find(item => item.key === GOODPUT_UPPERBOUND)?.ts || [];
           goodputChartData[`${item.testId}_lowerbound`] = item.metrics.keyedmap.find(item => item.key === GOODPUT_LOWERBOUND)?.ts || [];
+          goodputChartData[`${item.testId}_threshold`] = item.metrics.keyedmap.find(item => item.key === GOODPUT_THRESHOLD)?.ts || [];
         });
         setGoodputData(goodputChartData);
       });
@@ -102,19 +104,13 @@ export const Goodput: React.FC<GoodputProps> = ({ selectedRows, timeRange }) => 
     <div>
       <div className={classes.flexContainer}>
         <div>
-          <div className={classes.itemTitle}>
-            Goodput summary
-            <span className={classes.sortIcon}>
-              <InfoIcon />
-            </span>
-          </div>
-          <div className={classes.subTitleText}>Shows aggregated goodput between sources.</div>
+          <div className={classes.itemTitle}>Goodput summary</div>
         </div>
       </div>
       <div className={classes.lineChartContainer}>
         {!isEmpty(selectedRows) ? (
-          // goodputData contains 4 keys for each row. One for the data, one for anomaly, one for upperbound and one for lowerbound
-          Object.keys(goodputData).length / 4 === selectedRows.length ? (
+          // goodputData contains 5 keys for each row. One for the data, one for anomaly, one for upperbound,one for lowerbound and one for threshold
+          Object.keys(goodputData).length / 5 === selectedRows.length ? (
             <MetricsLineChart dataValueSuffix="mbps" selectedRows={selectedRows} inputData={goodputData} />
           ) : (
             <div className={classes.noChartContainer}>
@@ -130,13 +126,7 @@ export const Goodput: React.FC<GoodputProps> = ({ selectedRows, timeRange }) => 
       <hr className={classes.hrLine} />
       <div className={classes.flexContainer}>
         <div>
-          <div className={classes.itemTitle}>
-            Median Goodput
-            <span className={classes.sortIcon}>
-              <InfoIcon />
-            </span>
-          </div>
-          <div className={classes.subTitleText}>Shows aggregated goodput between branches and applications.</div>
+          <div className={classes.itemTitle}>Median Goodput</div>
         </div>
       </div>
       <div className={classes.lineChartContainer}>

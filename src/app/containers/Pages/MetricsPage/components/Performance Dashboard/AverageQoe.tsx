@@ -40,9 +40,9 @@ const AverageQoe: React.FC<AvgQoeProps> = ({ updateTest, deleteTest, packetLoss,
     <div className={classes.flexContainer}>
       <div className={classes.averageQoeText}>
         <span>Packet Loss:</span>
-        <span style={{ color: getColor(PACKET_LOSS_HEATMAP_LEGEND, Number(packetLoss)) }} className={classes.qoeValueText}>{`${isNaN(Number(packetLoss)) ? '-' : Number(packetLoss)}%`}</span>
+        <span style={{ color: getColor(PACKET_LOSS_HEATMAP_LEGEND, Number(packetLoss)) }} className={classes.qoeValueText}>{`${isNaN(Number(packetLoss)) ? 'NaN' : `${Number(packetLoss)}%`}`}</span>
         <span>Latency:</span>
-        <span style={{ color: getColor(LATENCY_HEATMAP_LEGEND, Number(latency)) }} className={classes.qoeValueText}>{`${isNaN(Number(latency)) ? '-' : Number(latency).toFixed(2)}ms`}</span>
+        <span style={{ color: getColor(LATENCY_HEATMAP_LEGEND, Number(latency)) }} className={classes.qoeValueText}>{`${isNaN(Number(latency)) ? 'NaN' : `${Number(latency).toFixed(2)}ms`}`}</span>
       </div>
       <div>
         <IconButton aria-controls="test-menu" aria-haspopup="true" onClick={handleClick}>
