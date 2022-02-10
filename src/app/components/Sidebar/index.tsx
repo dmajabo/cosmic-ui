@@ -31,7 +31,7 @@ const Sidebar: React.FC<SidebarProps> = props => {
 
   useEffect(() => {
     if (vendorResponse && vendorResponse.vendors && vendorResponse.vendors.length) {
-      setIsAwsConfigured(vendorResponse.vendors.includes(AccountVendorTypes.AMAZON_AWS) ? true : false);
+      setIsAwsConfigured(vendorResponse.vendors.includes(AccountVendorTypes.AMAZON_AWS));
     }
   }, [vendorResponse]);
 
