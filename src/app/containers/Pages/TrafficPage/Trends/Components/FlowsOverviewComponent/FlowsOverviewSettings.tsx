@@ -75,17 +75,6 @@ const FlowsOverviewSettings: React.FC<Props> = (props: Props) => {
         _items.splice(i, 1, _nextItem);
       }
     }
-    if (_items[index - 1]) {
-      for (let i = index - 1; i >= 0; i--) {
-        const _nextItem = { ..._items[i], to: Math.max(0, _items[i + 1].from - 1) };
-        if (_nextItem.to > _nextItem.from) {
-          _items.splice(i, 1, _nextItem);
-          break;
-        }
-        _nextItem.from = Math.max(0, _nextItem.to - 1);
-        _items.splice(i, 1, _nextItem);
-      }
-    }
     setRanges(_items);
     onTrySavePreferences(_items);
   };

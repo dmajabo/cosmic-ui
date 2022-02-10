@@ -13,6 +13,8 @@ import { TesseractApi } from 'lib/api/ApiModels/Services/tesseract';
 import { INetworkSessionsBetweenSegments, ITesseractGetSessionsBetweenSegmentsResponse } from 'lib/api/ApiModels/Sessions/apiModel';
 import HeatMap from 'react-heatmap-grid';
 import * as d3 from 'd3';
+import LegendRangeItem from './RangeItem/LegendRangeItem';
+import { LegendRangeItemsWrapper } from './RangeItem/style';
 interface Props {
   onOpenPanel: () => void;
 }
@@ -23,10 +25,10 @@ export const FlowsOverviewComponent: React.FC<Props> = (props: Props) => {
   const { response, loading, error, onGet } = useGet<ITesseractGetSessionsBetweenSegmentsResponse>();
   const [period, setPeriod] = React.useState(null);
   const [rows, setRowsData] = React.useState<any[][]>([]);
-  const [xAxis, setXAxis] = React.useState([]);
-  const [yAxis, setYAxis] = React.useState([]);
-  const [range, setRange] = React.useState([]);
-  const [domain, setDomain] = React.useState([]);
+  const [xAxis, setXAxis] = React.useState<string[]>([]);
+  const [yAxis, setYAxis] = React.useState<string[]>([]);
+  const [range, setRange] = React.useState<string[]>([]);
+  const [domain, setDomain] = React.useState<number[]>([]);
 
   React.useEffect(() => {
     const _range = traffic.rangePreference.map(it => it.color);
@@ -53,13 +55,13 @@ export const FlowsOverviewComponent: React.FC<Props> = (props: Props) => {
       //   _arr.push({ sourceSegmentId: `app_${i}`, destSegments: _destArr });
       // }
       const _data: INetworkSessionsBetweenSegments[] = [...response.sessionsBetweenSegments]; // .concat(_arr);
-      const _xAxis: string[] = _data.map(it => (it.sourceSegmentId ? it.sourceSegmentId : 'UNKNOWN'));
+      const _xAxis: string[] = _data.map(it => (it.sourceSegmentName ? it.sourceSegmentName : 'UNKNOWN'));
       const setData = new Set<string>();
       _data.forEach(source => {
         if (!source.destSegments || !source.destSegments.length) return;
         source.destSegments.forEach(dest => {
-          if (dest.segmentId) {
-            setData.add(dest.segmentId);
+          if (dest.segmentName) {
+            setData.add(dest.segmentName);
           } else {
             setData.add('UNKNOWN');
           }
@@ -70,7 +72,7 @@ export const FlowsOverviewComponent: React.FC<Props> = (props: Props) => {
       _data.forEach((source, colI) => {
         if (!source.destSegments || !source.destSegments.length) return;
         source.destSegments.forEach(dest => {
-          const _id = dest.segmentId || 'UNKNOWN';
+          const _id = dest.segmentName || 'UNKNOWN';
           const _rowIndex = _yAxis.findIndex(it => it === _id);
           _rows[_rowIndex][colI] = dest;
         });
@@ -110,7 +112,10 @@ export const FlowsOverviewComponent: React.FC<Props> = (props: Props) => {
         <ChartLabel className="textOverflowEllips">Flows Overview</ChartLabel>
         <SecondaryButton styles={{ margin: '0 0 0 auto' }} label="Settings" icon={settingIcon} onClick={onOpenPanel} />
       </ChartHeader>
-      <ChartWrapper className="heatChartWrapperMap" style={{ borderColor: 'transparent', background: 'transparent', overflow: 'hidden' }}>
+      <ChartWrapper
+        className="heatChartWrapperMap"
+        style={{ borderColor: 'transparent', background: 'transparent', overflow: 'hidden', height: 'auto', maxHeight: 'calc(100% - 60px)', flexGrow: 1, flexShrink: 1 }}
+      >
         {!error && rows && rows.length && (
           <HeatMap
             xLabels={xAxis}
@@ -142,11 +147,12 @@ export const FlowsOverviewComponent: React.FC<Props> = (props: Props) => {
               if (!cell) {
                 return <span title={`source: ${col}`}>0</span>;
               }
-              return <span title={`source: ${col}, destination: ${cell.segmentId}`}>{cell.count}</span>;
+              return <span title={`source: ${col}, destination: ${cell.segmentName}`}>{cell.count}</span>;
             }}
             title={() => ''}
           />
         )}
+
         {loading && (
           <AbsLoaderWrapper width="100%" height="100%" zIndex={10}>
             <LoadingIndicator margin="auto" />
@@ -154,6 +160,13 @@ export const FlowsOverviewComponent: React.FC<Props> = (props: Props) => {
         )}
         {error && <ErrorMessage>{error.message || 'Something went wrong'}</ErrorMessage>}
       </ChartWrapper>
+      {traffic.rangePreference && traffic.rangePreference.length ? (
+        <LegendRangeItemsWrapper>
+          {traffic.rangePreference.map(it => (
+            <LegendRangeItem key={`rangeItem${it.id}`} range={it} />
+          ))}
+        </LegendRangeItemsWrapper>
+      ) : null}
     </ChartContainer>
   );
 };

@@ -134,6 +134,7 @@ export interface ISankeyDetailRes {
 
 export interface INetworkSegmentCount {
   segmentId: string;
+  segmentName: string;
   count: number;
 }
 export interface ITesseractGetTotalSessionsPerSegmentResponse {
@@ -142,6 +143,7 @@ export interface ITesseractGetTotalSessionsPerSegmentResponse {
 
 export interface INetworkSessionsBetweenSegments {
   sourceSegmentId: string;
+  sourceSegmentName: string;
   destSegments: INetworkSegmentCount[];
 }
 export interface ITesseractGetSessionsBetweenSegmentsResponse {
