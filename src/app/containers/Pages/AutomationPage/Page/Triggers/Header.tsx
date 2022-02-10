@@ -41,20 +41,20 @@ const Header: React.FC<Props> = (props: Props) => {
             label="Show"
             labelStyles={{ margin: 'auto 10px auto 0' }}
             value={props.selectedTimeRangePeriod}
-            options={[ALERT_TIME_RANGE_QUERY_TYPES.LAST_HOUR, ALERT_TIME_RANGE_QUERY_TYPES.LAST_DAY, ALERT_TIME_RANGE_QUERY_TYPES.LAST_WEEK, ALERT_TIME_RANGE_QUERY_TYPES.LAST_MONTH]}
+            options={[ALERT_TIME_RANGE_QUERY_TYPES.LAST_HOUR, ALERT_TIME_RANGE_QUERY_TYPES.LAST_DAY, ALERT_TIME_RANGE_QUERY_TYPES.LAST_WEEK]}
             onChange={onChangePeriod}
             renderValue={(v: ALERT_TIME_RANGE_QUERY_TYPES) => {
               if (v === ALERT_TIME_RANGE_QUERY_TYPES.LAST_HOUR) return 'Last hour';
               if (v === ALERT_TIME_RANGE_QUERY_TYPES.LAST_DAY) return 'Last day';
               if (v === ALERT_TIME_RANGE_QUERY_TYPES.LAST_WEEK) return 'Last week';
-              if (v === ALERT_TIME_RANGE_QUERY_TYPES.LAST_MONTH) return 'Last month';
+              // if (v === ALERT_TIME_RANGE_QUERY_TYPES.LAST_MONTH) return 'Last month';
               return v;
             }}
             renderOption={(v: ALERT_TIME_RANGE_QUERY_TYPES) => {
               if (v === ALERT_TIME_RANGE_QUERY_TYPES.LAST_HOUR) return 'Last hour';
               if (v === ALERT_TIME_RANGE_QUERY_TYPES.LAST_DAY) return 'Last day';
               if (v === ALERT_TIME_RANGE_QUERY_TYPES.LAST_WEEK) return 'Last week';
-              if (v === ALERT_TIME_RANGE_QUERY_TYPES.LAST_MONTH) return 'Last month';
+              // if (v === ALERT_TIME_RANGE_QUERY_TYPES.LAST_MONTH) return 'Last month';
               return v;
             }}
             styles={{ height: '50px', minHeight: '50px', width: 'auto', display: 'inline-flex', alignItems: 'center' }}

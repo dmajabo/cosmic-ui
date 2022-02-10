@@ -85,6 +85,13 @@ const GlobalStyle = createGlobalStyle`
       box-shadow: 0px 20px 30px rgb(5 20 58 / 10%) !important;
     }
   }
+  .tagPopup {
+    .MuiPopover-paper {
+      background: transparent !important;
+      box-shadow: 0px 20px 30px rgb(5 20 58 / 10%) !important;
+      margin: 12px 0 0 0;
+    }
+  }
   .textOverflowEllips {
     text-overflow: ellipsis;
     overflow: hidden;

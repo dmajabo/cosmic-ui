@@ -11,11 +11,6 @@ import TabPanelUnstyled from '@mui/base/TabPanelUnstyled';
 import { buttonUnstyledClasses } from '@mui/base/ButtonUnstyled';
 import TabUnstyled, { tabUnstyledClasses } from '@mui/base/TabUnstyled';
 
-interface TabPanelProps {
-  readonly name: string;
-  readonly value: string;
-}
-
 export enum AnomalyTabValue {
   Experience = 'Experience',
   Policy = 'Policy',
@@ -26,14 +21,14 @@ export enum AnomalyTimeRangeLabel {
   lastHour = 'Last 1 hour',
   lastDay = 'Last 1 day',
   lastWeek = 'Last 7 days',
-  lastMonth = 'Last 30 days',
+  // lastMonth = 'Last 30 days',
 }
 
 export enum AnomalyTimeRangeValue {
   lastHour = 'ANOMALY_QUERY_LAST_HOUR',
   lastDay = 'ANOMALY_QUERY_LAST_DAY',
   lastWeek = 'ANOMALY_QUERY_LAST_WEEK',
-  lastMonth = 'ANOMALY_QUERY_LAST_MONTH',
+  // lastMonth = 'ANOMALY_QUERY_LAST_MONTH',
 }
 
 export interface AnomalySelectOption {
@@ -59,10 +54,10 @@ const TIME_RANGE_OPTIONS: AnomalySelectOption[] = [
     label: AnomalyTimeRangeLabel.lastWeek,
     value: AnomalyTimeRangeValue.lastWeek,
   },
-  {
-    label: AnomalyTimeRangeLabel.lastMonth,
-    value: AnomalyTimeRangeValue.lastMonth,
-  },
+  // {
+  //   label: AnomalyTimeRangeLabel.lastMonth,
+  //   value: AnomalyTimeRangeValue.lastMonth,
+  // },
 ];
 
 const Tab = styled(TabUnstyled)`

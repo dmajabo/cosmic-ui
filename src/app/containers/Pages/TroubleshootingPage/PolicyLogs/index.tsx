@@ -52,7 +52,7 @@ enum PolicyLogsTimeRangeValue {
   oneHour = 'POLICYLOG_QUERY_LAST_HOUR',
   oneDay = 'POLICYLOG_QUERY_LAST_DAY',
   oneWeek = 'POLICYLOG_QUERY_LAST_WEEK',
-  oneMonth = 'POLICYLOG_QUERY_LAST_MONTH',
+  // oneMonth = 'POLICYLOG_QUERY_LAST_MONTH',
 }
 
 const INITIAL_ANOMALY_TIME_RANGE_VALUE: PolicyLogsSelectOption = {
@@ -73,10 +73,10 @@ const TIME_RANGE_OPTIONS: PolicyLogsSelectOption[] = [
     label: LookbackLabel.oneWeek,
     value: PolicyLogsTimeRangeValue.oneWeek,
   },
-  {
-    label: LookbackLabel.oneMonth,
-    value: PolicyLogsTimeRangeValue.oneMonth,
-  },
+  // {
+  //   label: LookbackLabel.oneMonth,
+  //   value: PolicyLogsTimeRangeValue.oneMonth,
+  // },
 ];
 
 const LOGS_TABLE_COLUMNS: Column[] = [

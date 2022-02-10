@@ -3,7 +3,7 @@ import { DataGrid, GridRenderCellParams, GridValueFormatterParams } from '@mui/x
 import { GridStyles } from 'app/components/Grid/GridStyles';
 import Drawer from '@mui/material/Drawer';
 import { GridCellLabel, GridCellStatusCircle, GridCellWrapper } from 'app/components/Grid/styles';
-import { IModal, ISelectedListItem, PAGING_DEFAULT_PAGE_SIZE } from 'lib/models/general';
+import { IModal, PAGING_DEFAULT_PAGE_SIZE } from 'lib/models/general';
 import Paging from 'app/components/Basic/Paging';
 import { gridAscArrow, gridDescArrow } from 'app/components/SVGIcons/arrows';
 import Header from '../Components/Header';
@@ -19,7 +19,6 @@ import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { IAuditLogsRes, INetworkAuditLog } from 'lib/api/ApiModels/Settings/apiModels';
 import { getSearchedList } from 'lib/helpers/listHelper';
 import { convertStringToNumber, parseFieldAsDate } from 'lib/helpers/general';
-import { AUDIT_LOGS_SELECT_VALUES } from 'lib/hooks/Settings/model';
 import { getSessionStoragePreferences, StoragePreferenceKeys, updateSessionStoragePreference } from 'lib/helpers/localStorageHelpers';
 import { OKULIS_LOCAL_STORAGE_KEYS } from 'lib/api/http/utils';
 import { AUDIT_LOGS_TIME_RANGE_QUERY_TYPES, paramBuilder } from 'lib/api/ApiModels/paramBuilders';
@@ -36,7 +35,7 @@ const Logging: React.FC<IProps> = (props: IProps) => {
   const [dataRows, setDataRows] = React.useState<INetworkAuditLog[]>([]);
   const [filteredData, setFilteredData] = React.useState<INetworkAuditLog[]>([]);
   const [searchValue, setSearchValue] = React.useState<string>(null);
-  const [period, setPeriod] = React.useState<AUDIT_LOGS_TIME_RANGE_QUERY_TYPES>(AUDIT_LOGS_SELECT_VALUES[0].value);
+  const [period, setPeriod] = React.useState<AUDIT_LOGS_TIME_RANGE_QUERY_TYPES>(AUDIT_LOGS_TIME_RANGE_QUERY_TYPES.LAST_WEEK);
   const [gridColumns, setGridColumns] = React.useState<IColumn[]>([
     {
       id: `loggins${LoggingGridColumns.timestamp.resField}`,
@@ -182,7 +181,7 @@ const Logging: React.FC<IProps> = (props: IProps) => {
 
   React.useEffect(() => {
     const _preference = getSessionStoragePreferences(OKULIS_LOCAL_STORAGE_KEYS.OKULIS_PREFERENCE, [StoragePreferenceKeys.AUDIT_LOG_TIME_PERIOD]);
-    let _period = AUDIT_LOGS_SELECT_VALUES[0].value;
+    let _period = AUDIT_LOGS_TIME_RANGE_QUERY_TYPES.LAST_WEEK;
     if (_preference) {
       if (_preference[StoragePreferenceKeys.AUDIT_LOG_TIME_PERIOD]) {
         _period = _preference[StoragePreferenceKeys.AUDIT_LOG_TIME_PERIOD];
@@ -264,10 +263,10 @@ const Logging: React.FC<IProps> = (props: IProps) => {
     onTryLoadAuditLogs(size, currentPage, period);
   };
 
-  const onChangePeriod = (_item: ISelectedListItem<AUDIT_LOGS_TIME_RANGE_QUERY_TYPES>) => {
-    setPeriod(_item.value);
-    updateSessionStoragePreference(_item.value, OKULIS_LOCAL_STORAGE_KEYS.OKULIS_PREFERENCE, StoragePreferenceKeys.AUDIT_LOG_TIME_PERIOD);
-    onTryLoadAuditLogs(pageSize, currentPage, _item.value);
+  const onChangePeriod = (_item: AUDIT_LOGS_TIME_RANGE_QUERY_TYPES) => {
+    setPeriod(_item);
+    updateSessionStoragePreference(_item, OKULIS_LOCAL_STORAGE_KEYS.OKULIS_PREFERENCE, StoragePreferenceKeys.AUDIT_LOG_TIME_PERIOD);
+    onTryLoadAuditLogs(pageSize, currentPage, _item);
   };
 
   const onRefresh = async () => {
@@ -284,7 +283,6 @@ const Logging: React.FC<IProps> = (props: IProps) => {
     <>
       <Header
         onChangePeriod={onChangePeriod}
-        timeRangeValues={AUDIT_LOGS_SELECT_VALUES}
         selectedTimeRangePeriod={period}
         showTimeRange
         searchValue={searchValue}

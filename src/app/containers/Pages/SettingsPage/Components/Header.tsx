@@ -10,12 +10,12 @@ import { InventoryOptions } from '../Inventory/model';
 import Toogle from 'app/components/Inputs/Toogle';
 import ColumnFilter from 'app/components/Basic/ColumnFilter';
 import { IColumn } from 'lib/models/grid';
-import Dropdown from 'app/components/Inputs/Dropdown';
 import IconButton from 'app/components/Buttons/IconButton';
 import { refreshIcon } from 'app/components/SVGIcons/refresh';
+import MatSelect from 'app/components/Inputs/MatSelect';
+import { AUDIT_LOGS_TIME_RANGE_QUERY_TYPES } from 'lib/api/ApiModels/paramBuilders';
 interface Props {
-  timeRangeValues?: ISelectedListItem<any>[];
-  selectedTimeRangePeriod?: string;
+  selectedTimeRangePeriod?: AUDIT_LOGS_TIME_RANGE_QUERY_TYPES;
   selectedItems?: GridSelectionModel;
   searchValue: string | null;
   columns: IColumn[];
@@ -27,7 +27,7 @@ interface Props {
   onMassDelete?: () => void;
   onToogleChange?: (value: ISelectedListItem<InventoryOptions>) => void;
   onChangeOrder: (items: IColumn[]) => void;
-  onChangePeriod?: (value: ISelectedListItem<any>) => void;
+  onChangePeriod?: (value: AUDIT_LOGS_TIME_RANGE_QUERY_TYPES) => void;
   onRefresh?: () => void;
   showReloadButton?: boolean;
   hideEditButton?: boolean;
@@ -50,7 +50,7 @@ const Header: React.FC<Props> = (props: Props) => {
     props.onChangeOrder(items);
   };
 
-  const onChangePeriod = (value: ISelectedListItem<any>) => {
+  const onChangePeriod = (value: AUDIT_LOGS_TIME_RANGE_QUERY_TYPES) => {
     props.onChangePeriod(value);
   };
 
@@ -71,12 +71,29 @@ const Header: React.FC<Props> = (props: Props) => {
         </ActionPart>
         <ActionPart margin="0 0 0 auto">
           {props.showTimeRange && (
-            <Dropdown
-              wrapStyles={{ height: '50px', border: '1px solid var(--_primaryButtonBorder)', borderRadius: '6px', margin: '0 20px 0 0' }}
+            <MatSelect
+              id="auditLogsTimePeriod"
               label="Show"
-              selectedValue={props.selectedTimeRangePeriod}
-              values={props.timeRangeValues}
-              onSelectValue={onChangePeriod}
+              labelStyles={{ margin: 'auto 20px auto 0' }}
+              value={props.selectedTimeRangePeriod}
+              options={[AUDIT_LOGS_TIME_RANGE_QUERY_TYPES.LAST_HOUR, AUDIT_LOGS_TIME_RANGE_QUERY_TYPES.LAST_DAY, AUDIT_LOGS_TIME_RANGE_QUERY_TYPES.LAST_WEEK]}
+              onChange={onChangePeriod}
+              renderValue={(v: AUDIT_LOGS_TIME_RANGE_QUERY_TYPES) => {
+                if (v === AUDIT_LOGS_TIME_RANGE_QUERY_TYPES.LAST_HOUR) return 'Last hour';
+                if (v === AUDIT_LOGS_TIME_RANGE_QUERY_TYPES.LAST_DAY) return 'Last day';
+                if (v === AUDIT_LOGS_TIME_RANGE_QUERY_TYPES.LAST_WEEK) return 'Last week';
+                // if (v === TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES.LAST_MONTH) return 'Last month';
+                return v;
+              }}
+              renderOption={(v: AUDIT_LOGS_TIME_RANGE_QUERY_TYPES) => {
+                if (v === AUDIT_LOGS_TIME_RANGE_QUERY_TYPES.LAST_HOUR) return 'Last hour';
+                if (v === AUDIT_LOGS_TIME_RANGE_QUERY_TYPES.LAST_DAY) return 'Last day';
+                if (v === AUDIT_LOGS_TIME_RANGE_QUERY_TYPES.LAST_WEEK) return 'Last week';
+                // if (v === TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES.LAST_MONTH) return 'Last month';
+                return v;
+              }}
+              styles={{ height: '50px', minHeight: '50px', width: 'auto', margin: '0 20px 0 0', display: 'inline-flex', alignItems: 'center' }}
+              selectStyles={{ height: '50px', width: 'auto', minWidth: '240px' }}
             />
           )}
           {!props.hideDelete && props.selectedItems && props.selectedItems.length ? (

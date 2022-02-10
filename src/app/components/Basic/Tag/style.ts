@@ -34,6 +34,21 @@ export const TagBg = styled.span<Props>`
   z-index: 1;
 `;
 
+export const TagIcon = styled.span`
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  display: inline-flex;
+  margin: auto 10px auto 0;
+  z-index: 2;
+  svg {
+    width: 100%;
+    height: 100%;
+    margin: auto;
+    vertical-align: top;
+  }
+`;
+
 export const TagText = styled.span<Props>`
   display: inline-block;
   font-family: 'DMSans';

@@ -14,6 +14,7 @@ import SettingsButton from 'app/components/Buttons/SettingsButton';
 import { PopupContent } from 'app/components/Buttons/SettingsButton/PopupItemStyles';
 import PopupItem from 'app/components/Buttons/SettingsButton/PopupItem';
 import PolicyItem from './PolicyItem';
+import { DEFAULT_EMAIL_CHANNEL_NAME } from 'lib/hooks/Automation/models';
 
 const emailRegExp = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 interface Props {
@@ -86,7 +87,7 @@ const EmailConfiguration: React.FC<Props> = (props: Props) => {
       <ChannelHeaderRow>
         <IconContainer iconWidth="22px" iconHeight="22px" icon={emailIcon} />
         <LabelsWrapper>
-          <ConfigurationTitle>{channel.name || 'Default Email Recipients'}</ConfigurationTitle>
+          <ConfigurationTitle>{channel.name || DEFAULT_EMAIL_CHANNEL_NAME}</ConfigurationTitle>
         </LabelsWrapper>
         {props.showDelete && (
           <SettingsButton buttonStyles={{ top: '-40px', right: '-40px' }} id={`settingsAnomalyButton${channel.id}`} width="24px" height="40px" hoverIconColor="var(--_hoverButtonBg)">
