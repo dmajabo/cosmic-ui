@@ -49,7 +49,7 @@ const Tag: React.FC<Props> = (props: Props) => {
         </TagText>
       )}
       {!props.hideClearButton && <IconWrapper styles={{ zIndex: 2 }} width="10px" height="10px" icon={closeSmallIcon} onClick={onDelete} />}
-      {props.showPopup && (
+      {props.showPopup && anchorEl && (
         <Popover
           id={`${props.text}${props.index}`}
           open={!!anchorEl}
@@ -66,6 +66,7 @@ const Tag: React.FC<Props> = (props: Props) => {
           sx={{
             pointerEvents: 'none',
           }}
+          container={anchorEl ? (anchorEl.parentNode as HTMLElement) : null}
           className="tagPopup"
         >
           <PopupContent style={{ background: 'var(--_primaryBg)', padding: '12px 20px', maxWidth: '400px' }}>{props.children}</PopupContent>
