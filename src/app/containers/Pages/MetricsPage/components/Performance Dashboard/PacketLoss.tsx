@@ -33,6 +33,7 @@ const PACKET_LOSS = 'packetloss';
 const PACKET_LOSS_ANOMALY = 'packetloss_anomaly';
 const PACKET_LOSS_LOWERBOUND = 'packetloss_lowerbound';
 const PACKET_LOSS_UPPERBOUND = 'packetloss_upperbound';
+const PACKET_LOSS_THRESHOLD = 'packetloss_threshold';
 
 export const PACKET_LOSS_HEATMAP_LEGEND: LegendData[] = [
   {
@@ -86,6 +87,7 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange 
           packetLossChartData[`${item.testId}_anomaly`] = item.metrics.keyedmap.find(item => item.key === PACKET_LOSS_ANOMALY)?.ts || [];
           packetLossChartData[`${item.testId}_upperbound`] = item.metrics.keyedmap.find(item => item.key === PACKET_LOSS_UPPERBOUND)?.ts || [];
           packetLossChartData[`${item.testId}_lowerbound`] = item.metrics.keyedmap.find(item => item.key === PACKET_LOSS_LOWERBOUND)?.ts || [];
+          packetLossChartData[`${item.testId}_threshold`] = item.metrics.keyedmap.find(item => item.key === PACKET_LOSS_THRESHOLD)?.ts || [];
         });
         setPacketLossData(packetLossChartData);
       });
@@ -117,19 +119,13 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange 
     <div>
       <div className={classes.flexContainer}>
         <div>
-          <div className={classes.itemTitle}>
-            Packet Loss summary
-            <span className={classes.sortIcon}>
-              <InfoIcon />
-            </span>
-          </div>
-          <div className={classes.subTitleText}>Shows aggregated packet loss between sources.</div>
+          <div className={classes.itemTitle}>Packet Loss summary</div>
         </div>
       </div>
       <div className={classes.lineChartContainer}>
         {!isEmpty(selectedRows) ? (
-          // packetLossData contains 4 keys for each row. One for the data, one for anomaly, one for upperbound and one for lowerbound
-          Object.keys(packetLossData).length / 4 === selectedRows.length ? (
+          // packetLossData contains 5 keys for each row. One for the data, one for anomaly, one for upperbound,one for lowerbound and one for threshold
+          Object.keys(packetLossData).length / 5 === selectedRows.length ? (
             <MetricsLineChart dataValueSuffix="%" selectedRows={selectedRows} inputData={packetLossData} />
           ) : (
             <div className={classes.noChartContainer}>
@@ -145,13 +141,7 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange 
       <hr className={classes.hrLine} />
       <div className={classes.flexContainer}>
         <div>
-          <span className={classes.itemTitle}>
-            Average packet loss
-            <span className={classes.sortIcon}>
-              <InfoIcon />
-            </span>
-          </span>
-          <div className={classes.subTitleText}>Shows aggregated packet loss between branches and applications.</div>
+          <span className={classes.itemTitle}>Average packet loss</span>
         </div>
       </div>
       <div className={classes.lineChartContainer}>
