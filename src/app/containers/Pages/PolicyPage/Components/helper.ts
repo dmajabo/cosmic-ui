@@ -123,10 +123,14 @@ const prepareNewSegmentForSave = (segment: ISegmentSegmentP): ISegmentSegmentP =
     _s.paasSegPol = null;
     _s.serviceSegPol = null;
     _s.appSegPol = null;
-    _s.siteSegPol.matchRules.forEach(rule => {
-      if (!rule.uiId) return;
-      delete rule.uiId;
-    });
+    if (_s.siteSegPol && _s.siteSegPol.matchRules) {
+      _s.siteSegPol.matchRules.forEach(rule => {
+        if (!rule.uiId) return;
+        delete rule.uiId;
+      });
+    } else {
+      _s.siteSegPol = { matchRules: [] };
+    }
   }
   if (_s.segType === SegmentSegmentType.EXTERNAL) {
     _s.networkSegPol = null;
@@ -134,9 +138,14 @@ const prepareNewSegmentForSave = (segment: ISegmentSegmentP): ISegmentSegmentP =
     _s.paasSegPol = null;
     _s.serviceSegPol = null;
     _s.appSegPol = null;
-    _s.extSegPol.matchRules.forEach(rule => {
-      delete rule.uiId;
-    });
+    if (_s.extSegPol && _s.extSegPol.matchRules) {
+      _s.extSegPol.matchRules.forEach(rule => {
+        if (!rule.uiId) return;
+        delete rule.uiId;
+      });
+    } else {
+      _s.extSegPol = { matchRules: [] };
+    }
   }
   return _s;
 };
@@ -149,7 +158,12 @@ const updateMatchRule = (
 ): ISegmentSegmentP => {
   const _s: ISegmentSegmentP = jsonClone(segment);
   if (_s.segType === SegmentSegmentType.NETWORK) {
-    const _arr: ISegmentNetworkSegMatchRuleP[] = segment.networkSegPol.matchRules.slice();
+    let _arr: ISegmentNetworkSegMatchRuleP[] = [];
+    if (!_s.networkSegPol || !_s.networkSegPol.matchRules) {
+      _s.networkSegPol = { matchRules: _arr };
+    } else {
+      _arr = segment.networkSegPol.matchRules.slice();
+    }
     const _r = rule as ISegmentNetworkSegMatchRuleP;
     const index = _arr.findIndex(it => it.matchKey === _r.matchKey && it.matchValuePrimary === _r.matchValuePrimary && it.matchValueSecondary === _r.matchValueSecondary);
     if (index !== -1) {
@@ -160,7 +174,16 @@ const updateMatchRule = (
     _s.networkSegPol = { matchRules: _arr };
   }
   if (_s.segType === SegmentSegmentType.APPLICATION) {
-    const _arr: ISegmentApplicationSegMatchRuleP[] = segment.appSegPol.matchRules.slice();
+    let _arr: ISegmentApplicationSegMatchRuleP[] = [];
+    let scope = SegmentApplicationSegMatchScope.APP_SEG_MATCH_SCOPE_VM;
+    if (!_s.appSegPol || !_s.appSegPol.matchRules) {
+      _s.appSegPol = { matchScope: scope, matchRules: _arr };
+    } else {
+      _arr = segment.appSegPol.matchRules.slice();
+      if (segment.appSegPol.matchScope) {
+        scope = segment.appSegPol.matchScope;
+      }
+    }
     const _r = rule as ISegmentApplicationSegMatchRuleP;
     const index = _arr.findIndex(it => it.matchKey === _r.matchKey && it.matchValuePrimary === _r.matchValuePrimary && it.matchValueSecondary === _r.matchValueSecondary);
     if (index !== -1) {
@@ -168,10 +191,15 @@ const updateMatchRule = (
     } else {
       _arr.push(rule as ISegmentApplicationSegMatchRuleP);
     }
-    _s.appSegPol = { matchScope: segment.appSegPol.matchScope, matchRules: _arr };
+    _s.appSegPol = { matchScope: scope, matchRules: _arr };
   }
   if (_s.segType === SegmentSegmentType.SITE) {
-    const _arr: ISegmentSiteSegmentMatchRuleP[] = segment.siteSegPol.matchRules.slice();
+    let _arr: ISegmentSiteSegmentMatchRuleP[] = [];
+    if (!_s.siteSegPol || !_s.siteSegPol.matchRules) {
+      _s.siteSegPol = { matchRules: _arr };
+    } else {
+      _arr = segment.siteSegPol.matchRules.slice();
+    }
     if (matchKey !== SegmentSiteSegmentMatchKey.SITE_SEG_MATCH_KEY_REGION_NAME) {
       const _r = rule as ISegmentSiteSegmentMatchRuleP;
       const index = _arr.findIndex(it => it.matchKey === _r.matchKey && it.matchValuePrimary === _r.matchValuePrimary);
@@ -190,7 +218,12 @@ const updateMatchRule = (
     _s.siteSegPol = { matchRules: _arr };
   }
   if (_s.segType === SegmentSegmentType.EXTERNAL) {
-    const _arr: ISegmentExternalSegMatchRuleP[] = segment.extSegPol.matchRules.slice();
+    let _arr: ISegmentExternalSegMatchRuleP[] = [];
+    if (!_s.extSegPol || !_s.extSegPol.matchRules) {
+      _s.extSegPol = { matchRules: _arr };
+    } else {
+      _arr = segment.extSegPol.matchRules.slice();
+    }
     if (!index && index !== 0) {
       _arr.push(rule as ISegmentExternalSegMatchRuleP);
     } else {
@@ -209,14 +242,24 @@ const removeMatchRule = (
 ): ISegmentSegmentP => {
   const _s: ISegmentSegmentP = jsonClone(segment);
   if (_s.segType === SegmentSegmentType.EXTERNAL) {
-    const _arr: ISegmentExternalSegMatchRuleP[] = segment.extSegPol.matchRules.slice();
-    _arr.splice(index, 1);
-    _s.extSegPol = { matchRules: _arr };
+    let _arr: ISegmentExternalSegMatchRuleP[] = [];
+    if (!_s.extSegPol || !_s.extSegPol.matchRules) {
+      _s.extSegPol = { matchRules: _arr };
+    } else {
+      _arr = segment.extSegPol.matchRules.slice();
+      _arr.splice(index, 1);
+      _s.extSegPol = { matchRules: _arr };
+    }
   }
   if (_s.segType === SegmentSegmentType.SITE) {
-    const _arr: ISegmentSiteSegmentMatchRuleP[] = segment.siteSegPol.matchRules.slice();
-    _arr.splice(index, 1);
-    _s.siteSegPol = { matchRules: _arr };
+    let _arr: ISegmentSiteSegmentMatchRuleP[] = [];
+    if (!_s.siteSegPol || !_s.siteSegPol.matchRules) {
+      _s.siteSegPol = { matchRules: _arr };
+    } else {
+      _arr = segment.siteSegPol.matchRules.slice();
+      _arr.splice(index, 1);
+      _s.siteSegPol = { matchRules: _arr };
+    }
   }
   return _s;
 };
@@ -236,7 +279,7 @@ const updateMatchRules = (segment: ISegmentSegmentP, rules: (ISegmentSiteSegment
 };
 
 const updateNetworkMatchRules = (_s: ISegmentSegmentP, rules: ISegmentNetworkSegMatchRuleP[]) => {
-  if (!_s.networkSegPol.matchRules || !_s.networkSegPol.matchRules.length) {
+  if (!_s.networkSegPol || !_s.networkSegPol.matchRules || !_s.networkSegPol.matchRules.length) {
     _s.networkSegPol = {
       matchRules: rules,
     };
@@ -265,9 +308,9 @@ const updateNetworkMatchRules = (_s: ISegmentSegmentP, rules: ISegmentNetworkSeg
 };
 
 const updateAppMatchRules = (_s: ISegmentSegmentP, rules: ISegmentApplicationSegMatchRuleP[]) => {
-  if (!_s.appSegPol.matchRules || !_s.appSegPol.matchRules.length) {
+  if (!_s.appSegPol || !_s.appSegPol.matchRules || !_s.appSegPol.matchRules.length) {
     _s.appSegPol = {
-      matchScope: _s.appSegPol.matchScope,
+      matchScope: _s.appSegPol && _s.appSegPol.matchScope ? _s.appSegPol.matchScope : SegmentApplicationSegMatchScope.APP_SEG_MATCH_SCOPE_VM,
       matchRules: rules,
     };
   } else {
@@ -295,7 +338,7 @@ const updateAppMatchRules = (_s: ISegmentSegmentP, rules: ISegmentApplicationSeg
 };
 
 const updateSitesMatchRules = (_s: ISegmentSegmentP, rules: ISegmentSiteSegmentMatchRuleP[]) => {
-  if (!_s.siteSegPol.matchRules || !_s.siteSegPol.matchRules.length) {
+  if (!_s.siteSegPol || !_s.siteSegPol.matchRules || !_s.siteSegPol.matchRules.length) {
     _s.siteSegPol = { matchRules: rules };
   } else {
     const _all: ISegmentSiteSegmentMatchRuleP[] = _s.siteSegPol.matchRules.slice();
