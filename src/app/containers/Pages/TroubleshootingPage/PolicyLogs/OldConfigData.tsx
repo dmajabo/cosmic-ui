@@ -1,5 +1,5 @@
-import { IDeviceRule, IRouteResDataItem, IVmRule, PolicyTableKeyEnum } from 'lib/api/ApiModels/Metrics/apiModel';
-import { VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
+import { IRouteResDataItem, PolicyTableKeyEnum } from 'lib/api/ApiModels/Metrics/apiModel';
+import { INetworkRule, VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
 import isEmpty from 'lodash/isEmpty';
 import PolicyTable from '../../TopologyPage/TopoMapV2/PanelComponents/NodePanels/VpcPanel/VmTabs/PolicyTab/PolicyTable';
 import RouteTable from '../../TopologyPage/TopoMapV2/PanelComponents/NodePanels/VpcPanel/VmTabs/RoutesTab/RouteTable';
@@ -71,7 +71,7 @@ export const OldConfigData: React.FC<ConfigDataProps> = ({ oldData, sharedProper
 
   const getRuleTables = (rules: Rule[]) => {
     if (vendorType === VendorTypes.AWS) {
-      const vmRules: IVmRule[] = rules.map(rule => ({ id: '', fromPort: rule.fromPort, toPort: rule.toPort, ipProtocol: rule.ipProtocol, ruleType: rule.ruleType, cidrs: rule.cidrs }));
+      const vmRules: INetworkRule[] = rules.map(rule => ({ id: '', fromPort: rule.fromPort, toPort: rule.toPort, ipProtocol: rule.ipProtocol, ruleType: rule.ruleType, cidrs: rule.cidrs, ...rule }));
       const inboundRules = vmRules.filter(rule => rule.ruleType === PolicyTableKeyEnum.Inbound);
       const outboundRules = vmRules.filter(rule => rule.ruleType === PolicyTableKeyEnum.Outbound);
       return (
@@ -82,7 +82,7 @@ export const OldConfigData: React.FC<ConfigDataProps> = ({ oldData, sharedProper
         </div>
       );
     } else {
-      const deviceRules: IDeviceRule[] = rules.map(rule => ({
+      const deviceRules: INetworkRule[] = rules.map(rule => ({
         id: '',
         name: rule.name,
         ruleType: rule.ruleType,
@@ -95,6 +95,7 @@ export const OldConfigData: React.FC<ConfigDataProps> = ({ oldData, sharedProper
         syslogEnabled: rule.syslogEnabled,
         comment: rule.comment,
         policy: rule.policy,
+        ...rule,
       }));
       return (
         <div className={classes.defaultPropertyItem}>

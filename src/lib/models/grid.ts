@@ -1,4 +1,5 @@
 import { GridColDef } from '@mui/x-data-grid';
+import { DataTableSortOrderType } from 'primereact/datatable';
 import { IBaseEntity } from './general';
 
 export interface IGridColumnField {
@@ -8,6 +9,13 @@ export interface IGridColumnField {
   hide?: boolean;
   width?: number | string;
   field?: string;
+  sortable?: boolean;
+  body?: (rowData: any) => React.ReactNode;
+}
+
+export interface ISortObject {
+  field: string;
+  order: DataTableSortOrderType;
 }
 
 export interface IColumn extends GridColDef, IBaseEntity<string> {

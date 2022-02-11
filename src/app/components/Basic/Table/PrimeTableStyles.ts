@@ -15,6 +15,7 @@ export const TableWrapper = styled.div`
     .p-datatable-wrapper {
       display: flex;
       min-height: 100%;
+      border-radius: 6px 6px 0 0;
     }
     .p-datatable-table {
       width: 100%;
@@ -46,7 +47,7 @@ export const TableWrapper = styled.div`
       border-bottom: 1px solid var(--_rowBorder);
       font-weight: 700;
       font-size: 12px;
-      line-height: 16px;
+      line-height: 16px !important;
       text-transform: uppercase;
       color: var(--_disabledTextColor);
       padding: 25px 10px;
@@ -117,6 +118,9 @@ export const TableWrapper = styled.div`
   }
   .tableSM .p-datatable-tbody td {
     padding: 10px;
+  }
+  .cellToUpperCase {
+    text-transform: uppercase;
   }
 `;
 

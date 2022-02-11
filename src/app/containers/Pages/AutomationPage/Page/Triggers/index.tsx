@@ -15,7 +15,7 @@ import Header from './Header';
 import { toast, ToastContainer } from 'react-toastify';
 import { ALERT_TIME_RANGE_QUERY_TYPES, paramBuilder } from 'lib/api/ApiModels/paramBuilders';
 import { AlertApi } from 'lib/api/ApiModels/Services/alert';
-import { DataTable } from 'primereact/datatable';
+import { DataTable, DataTablePFSEvent } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import MatSelect from 'app/components/Inputs/MatSelect';
 import SeverityOption from '../../Components/SeverityOption/SeverityOption';
@@ -27,6 +27,7 @@ import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { DEFAULT_TRANSITION } from 'lib/constants/general';
 import HitsComponent from './HitsComponent';
 import { ChannelsWrapper } from './styles';
+import { ISortObject } from 'lib/models/grid';
 
 interface Props {}
 
@@ -42,6 +43,7 @@ const Triggers: React.FC<Props> = (props: Props) => {
   const [searchValue, setSearchValue] = React.useState<string>(null);
   const [selectedPeriod, setSelectedPeriod] = React.useState<ALERT_TIME_RANGE_QUERY_TYPES>(ALERT_TIME_RANGE_QUERY_TYPES.LAST_WEEK);
   const [expandedRows, setExpandedRows] = React.useState(null);
+  const [sortObject, setSortObject] = React.useState<ISortObject>(null);
 
   React.useEffect(() => {
     const _preference = getSessionStoragePreferences(OKULIS_LOCAL_STORAGE_KEYS.OKULIS_PREFERENCE, [StoragePreferenceKeys.WORKFLOW_TRIGGERS_TIME_PERIOD]);
@@ -193,6 +195,24 @@ const Triggers: React.FC<Props> = (props: Props) => {
     setExpandedRows(_obj);
   };
 
+  const onSort = (e: DataTablePFSEvent) => {
+    if (!sortObject) {
+      setSortObject({ field: e.sortField, order: e.sortOrder });
+      return;
+    }
+    if (sortObject && e.sortField !== sortObject.field) {
+      setSortObject({ field: e.sortField, order: e.sortOrder });
+      return;
+    }
+    if (sortObject && e.sortField === sortObject.field) {
+      if (sortObject.order === -1 && e.sortOrder === 1) {
+        setSortObject(null);
+        return;
+      }
+      setSortObject({ ...sortObject, order: e.sortOrder });
+    }
+  };
+
   const severityBodyTemplate = (rowData: IAlertMetaTableItem) => {
     return (
       <MatSelect
@@ -200,8 +220,8 @@ const Triggers: React.FC<Props> = (props: Props) => {
         value={rowData.severity}
         options={[AlertSeverity.LOW, AlertSeverity.MEDIUM, AlertSeverity.HIGH, AlertSeverity.INFO]}
         onChange={v => onSeverityChange(v, rowData)}
-        styles={{ maxWidth: '160px', minHeight: '38px', margin: 'auto 0' }}
-        selectStyles={{ height: '38px', width: '100%' }}
+        styles={{ maxWidth: '160px', minHeight: '40px', margin: 'auto 0' }}
+        selectStyles={{ height: '40px', width: '100%' }}
         renderValue={(v: string) => <SeverityOption value={v as AlertSeverity} />}
       />
     );
@@ -263,17 +283,31 @@ const Triggers: React.FC<Props> = (props: Props) => {
             expandedRows={expandedRows}
             value={filteredData}
             responsiveLayout="scroll"
+            onSort={onSort}
+            sortField={sortObject ? sortObject.field : null}
+            sortOrder={sortObject ? sortObject.order : null}
+            sortMode="single"
           >
             <Column
               className="expandCollapseCell"
-              style={{ width: TriggerGridColumns.id.width, verticalAlign: 'top' }}
+              style={{ width: TriggerGridColumns.id.width }}
               field={TriggerGridColumns.id.field}
               header={TriggerGridColumns.id.label}
               expander
               body={expanderBodyTemplate}
             ></Column>
-            <Column style={{ width: TriggerGridColumns.name.width, verticalAlign: 'top' }} sortable field={TriggerGridColumns.name.field} header={TriggerGridColumns.name.label}></Column>
-            <Column style={{ width: TriggerGridColumns.category.width, verticalAlign: 'top' }} sortable field={TriggerGridColumns.category.field} header={TriggerGridColumns.category.label}></Column>
+            <Column
+              style={{ width: TriggerGridColumns.name.width, verticalAlign: 'top', lineHeight: '40px' }}
+              sortable
+              field={TriggerGridColumns.name.field}
+              header={TriggerGridColumns.name.label}
+            ></Column>
+            <Column
+              style={{ width: TriggerGridColumns.category.width, verticalAlign: 'top', lineHeight: '40px' }}
+              sortable
+              field={TriggerGridColumns.category.field}
+              header={TriggerGridColumns.category.label}
+            ></Column>
             <Column
               style={{ width: TriggerGridColumns.severity.width, verticalAlign: 'top' }}
               sortable
@@ -283,14 +317,14 @@ const Triggers: React.FC<Props> = (props: Props) => {
             ></Column>
             <Column style={{ maxWidth: '600px', verticalAlign: 'top' }} field={TriggerGridColumns.channels.field} header={TriggerGridColumns.channels.label} body={channelsBodyTemplate}></Column>
             <Column
-              style={{ width: TriggerGridColumns.triggerCount.width, verticalAlign: 'top' }}
+              style={{ width: TriggerGridColumns.triggerCount.width, verticalAlign: 'top', lineHeight: '40px' }}
               field={TriggerGridColumns.triggerCount.field}
               header={TriggerGridColumns.triggerCount.label}
               body={hitsBodyTemplate}
               sortable
             ></Column>
             <Column
-              style={{ width: TriggerGridColumns.configState.width, verticalAlign: 'top' }}
+              style={{ width: TriggerGridColumns.configState.width, verticalAlign: 'top', lineHeight: '40px' }}
               field={TriggerGridColumns.configState.field}
               header={TriggerGridColumns.configState.label}
               body={configStateBodyTemplate}

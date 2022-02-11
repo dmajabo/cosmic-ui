@@ -37,7 +37,7 @@ const HeaderActionsRow: React.FC<Props> = (props: Props) => {
             return v;
           }}
           styles={{ height: '50px', minHeight: '50px', width: 'auto', display: 'inline-flex', alignItems: 'center' }}
-          selectStyles={{ height: '50px', width: 'auto', minWidth: '240px' }}
+          selectStyles={{ height: '50px', width: 'auto', minWidth: '240px', border: '1px solid transparent' }}
         />
       </ActionPart>
     </ActionRowStyles>

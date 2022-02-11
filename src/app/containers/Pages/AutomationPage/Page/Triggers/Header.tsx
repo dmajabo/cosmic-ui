@@ -58,9 +58,9 @@ const Header: React.FC<Props> = (props: Props) => {
               return v;
             }}
             styles={{ height: '50px', minHeight: '50px', width: 'auto', display: 'inline-flex', alignItems: 'center' }}
-            selectStyles={{ height: '50px', width: 'auto', minWidth: '240px' }}
+            selectStyles={{ height: '50px', width: 'auto', minWidth: '240px', border: '1px solid transparent' }}
           />
-          <IconButton styles={{ margin: '0 0 0 20px', flexShrink: 0 }} icon={refreshIcon} title="Reload" onClick={onRefresh} />
+          <IconButton styles={{ margin: '0 0 0 20px', flexShrink: 0, border: '1px solid transparent' }} icon={refreshIcon} title="Reload" onClick={onRefresh} />
         </ActionPart>
       </ActionRowStyles>
     </>

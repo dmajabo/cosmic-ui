@@ -6,7 +6,8 @@ import { PolicyLogsData } from '.';
 import { OldConfigData } from './OldConfigData';
 import { NewConfigData } from './NewConfigData';
 import { isArray } from 'lodash';
-import { ICIDR, IDestinationCidr, IRouteState, IVmRule, PolicyTableKeyEnum } from 'lib/api/ApiModels/Metrics/apiModel';
+import { IDestinationCidr, IRouteState } from 'lib/api/ApiModels/Metrics/apiModel';
+import { INetworkRule } from 'lib/api/ApiModels/Topology/apiModels';
 
 interface PolicyLogDetailsProps {
   readonly isOpen: boolean;
@@ -28,19 +29,7 @@ export interface ConnectionResource {
   readonly name: string;
 }
 
-export interface Rule {
-  readonly fromPort: number;
-  readonly toPort: number;
-  readonly ipProtocol: string;
-  readonly ruleType: PolicyTableKeyEnum;
-  readonly cidrs: ICIDR[];
-  readonly name: string;
-  readonly destCidrs: any[];
-  readonly srcCidrs: ICIDR[];
-  readonly syslogEnabled: boolean;
-  readonly comment: string;
-  readonly policy: string;
-}
+export interface Rule extends INetworkRule {}
 
 export interface PolicyLogDetails {
   readonly CreatedAt: string;

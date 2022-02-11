@@ -7,11 +7,14 @@ import { usePolicyDataContext } from 'lib/hooks/Policy/usePolicyDataContext';
 import { POLICY_TABS } from 'lib/hooks/Policy/models';
 import { PageWrapperStyles, TabsWrapperStyles } from '../Shared/styles';
 import Segments from './Page/Segments';
+import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
+import Inventory from './Page/Inventory';
 // import Rules from './Page/Rules';
 
 interface IProps {}
 
 const MainPage: React.FC<IProps> = (props: IProps) => {
+  const { user } = React.useContext<UserContextState>(UserContext);
   const { policy } = usePolicyDataContext();
   const classes = TabsStyles();
 
@@ -45,6 +48,13 @@ const MainPage: React.FC<IProps> = (props: IProps) => {
         index={POLICY_TABS[0].index}
       >
         <Segments />
+      </TabPanel>
+      <TabPanel
+        styles={{ display: 'flex', flexDirection: 'column', flex: policy.selectedTab.index === POLICY_TABS[1].index ? '1 1 100%' : '0' }}
+        value={policy.selectedTab.index}
+        index={POLICY_TABS[1].index}
+      >
+        <Inventory />
       </TabPanel>
       {/* <TabPanel
         styles={{ display: 'flex', flexDirection: 'column', flex: policy.selectedTab.index === POLICY_TABS[1].index ? '1 1 100%' : '0' }}

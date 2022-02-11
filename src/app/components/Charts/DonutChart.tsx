@@ -31,7 +31,6 @@ const DonutChart: React.FC<Props> = (props: Props) => {
       return;
     }
     const _total = chartData.reduce((a, b) => {
-      debugger;
       return b.hide ? a : a + b.value;
     }, 0);
     setTotal(_total);
@@ -47,10 +46,10 @@ const DonutChart: React.FC<Props> = (props: Props) => {
 
   const arcs = React.useMemo(() => {
     const r_inner = radius / 2;
-    const r_outer = radius * 0.95;
+    const r_outer = radius * 0.85;
 
     const onMouseEnter = (d, color) => {
-      const outer = radius * 0.98;
+      const outer = radius * 0.9;
       const g = d3.select(`#arcG${d.index}`);
       g.raise();
       const _arc = g.select(`#arc${d.index}`);
@@ -70,7 +69,7 @@ const DonutChart: React.FC<Props> = (props: Props) => {
       const _textArc = d3
         .arc()
         .innerRadius(radius)
-        .outerRadius(radius * 1.1);
+        .outerRadius(radius * 0.95);
       const pos = _textArc.centroid(d);
       const _isRight = index % 2 === 0;
       const colorRowI = index % colors.length;
@@ -108,7 +107,7 @@ const DonutChart: React.FC<Props> = (props: Props) => {
                     <g id={`arcG${arc.index}`} data-value={arc.data.value} key={`path${i}${arc.data.name}`}>
                       <path id={`arc${arc.index}`} d={arc.path} fill={arc.color} stroke="var(--_primaryBg)" strokeWidth="2.5" />
                       <g transform={`${arc.labelPos}`}>
-                        <text dy="8" fontFamily="DMSans" fontWeight="bold" fontSize="20" fill={arc.color} textAnchor={arc.textAnchor}>
+                        <text dy="4" fontFamily="DMSans" fontWeight="bold" fontSize="20" fill={arc.color} textAnchor={arc.textAnchor}>
                           {arc.data.value}
                         </text>
                       </g>

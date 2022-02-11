@@ -2,14 +2,14 @@ import React from 'react';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
 import { TableHeaderStyles, TableWrapperStyles } from 'app/components/Basic/Table/styles';
-import { IDeviceRule } from 'lib/api/ApiModels/Metrics/apiModel';
 import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import { EmptyText } from 'app/components/Basic/NoDataStyles/NoDataStyles';
 import { TableStyles } from 'app/components/Basic/Table/TableStyles';
+import { INetworkRule } from 'lib/api/ApiModels/Topology/apiModels';
 
 interface DevicePolicyTableProps {
-  readonly data: IDeviceRule[];
+  readonly data: INetworkRule[];
   readonly showLoader: boolean;
   readonly error?: string;
   readonly styles?: React.CSSProperties;

@@ -1,4 +1,6 @@
 import { IBaseEntity } from 'lib/models/general';
+import { IBaseTotalCount } from '../generalApiModel';
+import { INetworkRule } from '../Topology/apiModels';
 export enum ControllerKeyTypes {
   Subnets = 'subnets',
   SecurityGroups = 'security-groups',
@@ -33,48 +35,17 @@ export enum PolicyTableKeyEnum {
   Outbound = 'outbound',
 }
 
-export interface ICIDR extends IBaseEntity<string> {
+export interface INetworkSecurityGroup extends IBaseEntity<string> {
   name: string;
   description: string;
   extId: string;
-}
-export interface IVmRule extends IBaseEntity<string> {
-  fromPort: number;
-  toPort: number;
-  ipProtocol: string;
-  ruleType: PolicyTableKeyEnum;
-  cidrs: ICIDR[];
+  rules: INetworkRule[];
+  ownerId: string;
+  regionCode: string;
 }
 
-export interface IVmPolicy extends IBaseEntity<string> {
-  name: string;
-  description: string;
-  extId: string;
-  rules: IVmRule[];
-}
-
-export interface IDeviceRule extends IBaseEntity<string> {
-  name: string;
-  ruleType: string;
-  fromPort: string;
-  toPort: string;
-  ipProtocol: string;
-  cidrs: any[];
-  destCidrs: any[];
-  srcCidrs: ICIDR[];
-  syslogEnabled: boolean;
-  comment: string;
-  policy: string;
-}
-export interface IDevicePolicy extends IBaseEntity<string> {
-  name: string;
-  description: string;
-  extId: string;
-  rules: IDeviceRule[];
-}
-
-export interface IPolicyRes {
-  readonly securityGroups: IVmPolicy[];
+export interface IToposvcListSecurityGroupResponse extends IBaseTotalCount {
+  readonly securityGroups: INetworkSecurityGroup[];
 }
 
 export interface IDestinationCidr extends IBaseEntity<string> {
