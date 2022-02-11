@@ -1,26 +1,43 @@
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Tab, Tabs } from '@mui/material';
 import { TabsStyles } from 'app/components/Tabs/TabsStyles';
 import { TabComponentProps } from 'app/components/Tabs/TabComponentProps';
 import TabPanel from 'app/components/Tabs/TabPanel';
 import { usePolicyDataContext } from 'lib/hooks/Policy/usePolicyDataContext';
-import { POLICY_TABS } from 'lib/hooks/Policy/models';
+import { PolicyTabTypes, POLICY_TABS } from 'lib/hooks/Policy/models';
 import { PageWrapperStyles, TabsWrapperStyles } from '../Shared/styles';
 import Segments from './Page/Segments';
+//import Rules from './Page/Rules';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
-import Inventory from './Page/Inventory';
-// import Rules from './Page/Rules';
+import { useGet } from 'lib/api/http/useAxiosHook';
+import { GetControllerVendorResponse } from 'lib/api/http/SharedTypes';
+import { PolicyApi } from 'lib/api/ApiModels/Services/policy';
+import { AccountVendorTypes } from 'lib/api/ApiModels/Accounts/apiModel';
 
 interface IProps {}
 
 const MainPage: React.FC<IProps> = (props: IProps) => {
-  const { user } = React.useContext<UserContextState>(UserContext);
   const { policy } = usePolicyDataContext();
   const classes = TabsStyles();
+  const userContext = useContext<UserContextState>(UserContext);
+  const { response: vendorResponse, onGet: onGetVendors } = useGet<GetControllerVendorResponse>();
+  const [isAwsConfigured, setIsAwsConfigured] = useState<boolean>(false);
+
+  useEffect(() => {
+    onGetVendors(PolicyApi.getControllerVendors(), userContext.accessToken!);
+  }, []);
+
+  useEffect(() => {
+    if (vendorResponse && vendorResponse.vendors && vendorResponse.vendors.length) {
+      setIsAwsConfigured(vendorResponse.vendors.includes(AccountVendorTypes.AMAZON_AWS));
+    }
+  }, [vendorResponse]);
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     policy.onChangeSelectedTab(newValue);
   };
+
+  const getPolicyTabs = () => (isAwsConfigured ? POLICY_TABS : POLICY_TABS.filter(tab => tab.id !== PolicyTabTypes.Rules));
 
   return (
     <PageWrapperStyles padding="20px 40px 40px 40px">
@@ -37,7 +54,7 @@ const MainPage: React.FC<IProps> = (props: IProps) => {
             },
           }}
         >
-          {POLICY_TABS.map(it => (
+          {getPolicyTabs().map(it => (
             <Tab disableRipple key={`automationKey${it.id}`} label={it.label} classes={{ selected: classes.tabSelected }} {...TabComponentProps(0)} className={classes.tabBigSize} />
           ))}
         </Tabs>
@@ -49,20 +66,15 @@ const MainPage: React.FC<IProps> = (props: IProps) => {
       >
         <Segments />
       </TabPanel>
-      <TabPanel
-        styles={{ display: 'flex', flexDirection: 'column', flex: policy.selectedTab.index === POLICY_TABS[1].index ? '1 1 100%' : '0' }}
-        value={policy.selectedTab.index}
-        index={POLICY_TABS[1].index}
-      >
-        <Inventory />
-      </TabPanel>
-      {/* <TabPanel
-        styles={{ display: 'flex', flexDirection: 'column', flex: policy.selectedTab.index === POLICY_TABS[1].index ? '1 1 100%' : '0' }}
-        value={policy.selectedTab.index}
-        index={POLICY_TABS[1].index}
-      >
-        <Rules />
-      </TabPanel> */}
+      {/* {isAwsConfigured && (
+        <TabPanel
+          styles={{ display: 'flex', flexDirection: 'column', flex: policy.selectedTab.index === POLICY_TABS[1].index ? '1 1 100%' : '0' }}
+          value={policy.selectedTab.index}
+          index={POLICY_TABS[1].index}
+        >
+          <Rules />
+        </TabPanel>
+      )} */}
     </PageWrapperStyles>
   );
 };

@@ -30,7 +30,7 @@ import isEmpty from 'lodash/isEmpty';
 import { TopoApi } from 'lib/api/ApiModels/Services/topo';
 import { DateTime } from 'luxon';
 import { INetworkOrg, ITopologyMapData, VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
-import { GetDevicesString, GetSelectedOrganization } from 'app/containers/Pages/MetricsPage/components/Performance Dashboard/filterFunctions';
+import { GetDevicesString, GetSelectedOrganizationName } from 'app/containers/Pages/MetricsPage/components/Performance Dashboard/filterFunctions';
 
 interface ExperienceTabProps {
   readonly timeRange: AnomalyTimeRangeValue;
@@ -155,12 +155,12 @@ export const ExperienceTab: React.FC<ExperienceTabProps> = ({ timeRange }) => {
   const getSlaTestTableData = (): AnomalySlaTestData[] => {
     const merakiOrganisations = organizations.filter(organization => organization.vendorType === VendorTypes.MERAKI);
     return slaTests.map(item => {
-      const selectedOrganization = GetSelectedOrganization(merakiOrganisations, item.sourceOrgId);
-      const allDevices: string = GetDevicesString(selectedOrganization, item.sourceNwExtId);
+      const selectedOrganization = GetSelectedOrganizationName([], item.sourceOrgId);
+      const allDevices: string = GetDevicesString([], item.sourceNwExtId);
       return {
         id: item.testId,
         name: item.name,
-        sourceOrg: selectedOrganization.name,
+        sourceOrg: selectedOrganization,
         sourceNetwork: item.sourceNwExtId,
         sourceDevice: allDevices,
         destination: item.destination,

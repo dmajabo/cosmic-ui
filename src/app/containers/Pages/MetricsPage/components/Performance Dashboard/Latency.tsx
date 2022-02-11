@@ -20,6 +20,7 @@ const LATENCY = 'latency';
 const LATENCY_ANOMALY = 'latency_anomaly';
 const LATENCY_LOWERBOUND = 'latency_lowerbound';
 const LATENCY_UPPERBOUND = 'latency_upperbound';
+const LATENCY_THRESHOLD = 'latency_threshold';
 
 export const LATENCY_HEATMAP_LEGEND: LegendData[] = [
   {
@@ -73,6 +74,7 @@ export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange }) => 
           latencyChartData[`${item.testId}_anomaly`] = item.metrics.keyedmap.find(item => item.key === LATENCY_ANOMALY)?.ts || [];
           latencyChartData[`${item.testId}_upperbound`] = item.metrics.keyedmap.find(item => item.key === LATENCY_UPPERBOUND)?.ts || [];
           latencyChartData[`${item.testId}_lowerbound`] = item.metrics.keyedmap.find(item => item.key === LATENCY_LOWERBOUND)?.ts || [];
+          latencyChartData[`${item.testId}_threshold`] = item.metrics.keyedmap.find(item => item.key === LATENCY_THRESHOLD)?.ts || [];
         });
         setLatencyData(latencyChartData);
       });
@@ -104,19 +106,13 @@ export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange }) => 
     <div>
       <div className={classes.flexContainer}>
         <div>
-          <div className={classes.itemTitle}>
-            Latency summary
-            <span className={classes.sortIcon}>
-              <InfoIcon />
-            </span>
-          </div>
-          <div className={classes.subTitleText}>Shows aggregated latency between sources.</div>
+          <div className={classes.itemTitle}>Latency summary</div>
         </div>
       </div>
       <div className={classes.lineChartContainer}>
         {!isEmpty(selectedRows) ? (
-          // latencyData contains 4 keys for each row. One for the data, one for anomaly, one for upperbound and one for lowerbound
-          Object.keys(latencyData).length / 4 === selectedRows.length ? (
+          // latencyData contains 5 keys for each row. One for the data, one for anomaly, one for upperbound, one for lowerbound and one for threshold
+          Object.keys(latencyData).length / 5 === selectedRows.length ? (
             <MetricsLineChart dataValueSuffix="ms" selectedRows={selectedRows} inputData={latencyData} />
           ) : (
             <div className={classes.noChartContainer}>
@@ -132,13 +128,7 @@ export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange }) => 
       <hr className={classes.hrLine} />
       <div className={classes.flexContainer}>
         <div>
-          <div className={classes.itemTitle}>
-            Median latency
-            <span className={classes.sortIcon}>
-              <InfoIcon />
-            </span>
-          </div>
-          <div className={classes.subTitleText}>Shows aggregated latency between branches and applications.</div>
+          <div className={classes.itemTitle}>Median latency</div>
         </div>
       </div>
       <div className={classes.lineChartContainer}>

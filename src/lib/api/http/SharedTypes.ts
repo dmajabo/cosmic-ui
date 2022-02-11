@@ -1,7 +1,9 @@
 import { MetricsData } from 'app/containers/Pages/TopologyPage/TopologyMetrics/SharedTypes';
+import { AccountVendorTypes } from '../ApiModels/Accounts/apiModel';
+import { VendorTypes } from '../ApiModels/Topology/apiModels';
 import { SeverityLevel } from './utils';
 
-interface Device {
+export interface Device {
   readonly id: string;
   readonly name: string;
   readonly description: string;
@@ -77,14 +79,16 @@ interface Vm {
   readonly nic: Nic[];
 }
 
-interface Vnet {
+export interface Vnet {
   readonly id: string;
   readonly name: string;
   readonly description: string;
+  readonly ownerId: string;
   readonly extId: string;
   readonly endpoints: [];
   readonly vms: Vm[];
   readonly cidr: null;
+  readonly vendorType: VendorTypes;
 }
 
 export interface Organization {
@@ -94,11 +98,13 @@ export interface Organization {
   readonly extId: string;
   readonly extType: string;
   readonly extUrl: string;
+  readonly ctrlrName: string;
+  readonly ctrlrId: string;
   readonly vnets: Vnet[];
   readonly wedges: Wedge[];
   readonly oedges?: [];
   readonly devices: Device[];
-  readonly vendorType: string;
+  readonly vendorType: VendorTypes;
 }
 
 export interface GetOrganizationResponse {
@@ -180,6 +186,7 @@ export interface FinalTableData {
   readonly destination: string;
   readonly description: string;
   readonly averageQoe: AverageQoe;
+  readonly isTestDataValid?: boolean;
 }
 
 export enum ColumnAccessor {
@@ -508,4 +515,26 @@ interface TelemetryMetricsTags {
 export interface GetTelemetryMetricsResponse {
   readonly type?: string;
   readonly metrics: TelemetryMetrics[];
+}
+
+export interface GetControllerVendorResponse {
+  readonly vendors: AccountVendorTypes[];
+}
+
+interface OrgResponse {
+  readonly orgs: Organization[];
+}
+
+interface NetworkResponse {
+  readonly networks: Vnet[];
+}
+
+interface DeviceResponse {
+  readonly devices: Device[];
+}
+
+export interface MetricsTopoMap {
+  readonly organizations: OrgResponse;
+  readonly networks: NetworkResponse;
+  readonly devices: DeviceResponse;
 }

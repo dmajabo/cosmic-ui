@@ -17,4 +17,8 @@ export const TopoApi = {
   getTags: () => 'topo/api/v1/topology/tags', // => INetworkTagsRes
 
   getPolicyLogs: () => 'topo/api/v1/topology/policy-logs',
+
+  getOnPremOrgList: () => 'topo/api/v1/topology/onprem/orgs',
+  getOnPremNetworkList: () => 'topo/api/v1/topology/onprem/networks',
+  getOnPremDeviceList: () => 'topo/api/v1/topology/onprem/devices',
 };

@@ -14,12 +14,19 @@ import { AxiosError } from 'axios';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import { ConnectivityHealth } from './ConnectivityHealth';
 import { TabName } from '../..';
+import { Device, Vnet } from 'lib/api/http/SharedTypes';
 
 interface SitesProps {
-  readonly orgMap: ITopologyMapData;
+  readonly networks: Vnet[];
+  readonly devices: Device[];
   readonly orgLoading: boolean;
   readonly orgError: AxiosError;
   readonly selectedTabName: TabName;
+}
+
+export interface NetworkObject {
+  readonly id: string;
+  readonly name: string;
 }
 
 const dropdownStyle = {
@@ -55,25 +62,19 @@ const TIME_RANGE_OPTIONS: LookbackSelectOption[] = [
   },
 ];
 
-export const Sites: React.FC<SitesProps> = ({ orgMap, orgError, orgLoading, selectedTabName }) => {
+export const Sites: React.FC<SitesProps> = ({ networks, devices, orgError, orgLoading, selectedTabName }) => {
   const classes = MetricsStyles();
-  const [devices, setDevices] = useState<INetworkDevice[]>([]);
   const [timeRange, setTimeRange] = useState<LookbackSelectOption>(INITIAL_ANOMALY_TIME_RANGE_VALUE);
 
   const handleTimeRangeChange = (value: LookbackSelectOption) => setTimeRange(value);
 
   const getDeviceIds = () => uniq(devices.map(device => device.extId));
 
-  const getNetworkIds = () => uniq(devices.map(device => device.networkId));
-
-  useEffect(() => {
-    if (!isEmpty(orgMap.organizations)) {
-      const merakiOrgs = orgMap.organizations.filter(organization => organization.vendorType === VendorTypes.MERAKI);
-      const regions: INetworkRegion[] = merakiOrgs.reduce((acc, nextValue) => acc.concat(nextValue.regions), []);
-      const merakiDevices: INetworkDevice[] = regions.reduce((acc, nextValue) => acc.concat(nextValue.devices), []);
-      setDevices(merakiDevices);
-    }
-  }, [orgMap]);
+  const getNetworks = () => {
+    const networkIds = uniq(devices.map(device => device.networkId));
+    const networkObjects: NetworkObject[] = networkIds.map(networkId => ({ id: networkId, name: networks.find(network => network.extId == networkId)?.name || 'Unknown' }));
+    return networkObjects;
+  };
 
   return orgLoading ? (
     <AbsLoaderWrapper width="100%" height="100%">
@@ -102,7 +103,7 @@ export const Sites: React.FC<SitesProps> = ({ orgMap, orgError, orgLoading, sele
           <Select styles={dropdownStyle} className={classes.inlineSelect} label="Single select" value={timeRange} options={TIME_RANGE_OPTIONS} onChange={handleTimeRangeChange} />
         </div>
       </div>
-      <NetworkUsageHealth selectedTabName={selectedTabName} networks={getNetworkIds()} timeRange={timeRange} />
+      <NetworkUsageHealth selectedTabName={selectedTabName} networks={getNetworks()} timeRange={timeRange} />
       <ConnectivityHealth selectedTabName={selectedTabName} timeRange={timeRange} />
       <DeviceHealth selectedTabName={selectedTabName} devices={getDeviceIds()} timeRange={timeRange} />
     </>
