@@ -25,28 +25,28 @@ export interface IElasticFilterModel {
 }
 
 export enum ALERT_TIME_RANGE_QUERY_TYPES {
-  LAST_HOUR = 'ALERT_QUERY_LAST_HOUR',
+  // LAST_HOUR = 'ALERT_QUERY_LAST_HOUR',
   LAST_DAY = 'ALERT_QUERY_LAST_DAY',
   LAST_WEEK = 'ALERT_QUERY_LAST_WEEK',
   // LAST_MONTH = 'ALERT_QUERY_LAST_MONTH',
 }
 
 export enum AUDIT_LOGS_TIME_RANGE_QUERY_TYPES {
-  LAST_HOUR = 'AUDITLOG_QUERY_LAST_HOUR',
+  // LAST_HOUR = 'AUDITLOG_QUERY_LAST_HOUR',
   LAST_DAY = 'AUDITLOG_QUERY_LAST_DAY',
   LAST_WEEK = 'AUDITLOG_QUERY_LAST_WEEK',
   // LAST_MONTH = 'AUDITLOG_QUERY_LAST_MONTH',
 }
 
 export enum SESSIONS_TIME_RANGE_QUERY_TYPES {
-  LAST_HOUR = 'SESSION_QUERY_LAST_HOUR',
+  // LAST_HOUR = 'SESSION_QUERY_LAST_HOUR',
   LAST_DAY = 'SESSION_QUERY_LAST_DAY',
   LAST_WEEK = 'SESSION_QUERY_LAST_WEEK',
   // LAST_MONTH = 'SESSION_QUERY_LAST_MONTH',
 }
 
 export enum TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES {
-  LAST_HOUR = 'LAST_HOUR',
+  // LAST_HOUR = 'LAST_HOUR',
   LAST_DAY = 'LAST_DAY',
   LAST_WEEK = 'LAST_WEEK',
   // LAST_MONTH = 'LAST_MONTH',
@@ -90,7 +90,7 @@ export const paramBuilder = (size?: number, currentPage?: number, time_range?: A
     param.page_size = size;
   }
   if (time_range) {
-    if (time_range !== ALERT_TIME_RANGE_QUERY_TYPES.LAST_HOUR) {
+    if (time_range !== ALERT_TIME_RANGE_QUERY_TYPES.LAST_WEEK) {
       param.time_range = time_range;
     }
   }
@@ -106,7 +106,7 @@ export const sessionsParamBuilder = ({ size, currentPage, time_range, stitchOnly
   const _size = size || PAGING_DEFAULT_PAGE_SIZE;
   param.start_from = (currentPage - 1) * _size;
   param.page_size = size;
-  if (time_range && time_range !== SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_HOUR) {
+  if (time_range && time_range !== SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_WEEK) {
     param.time_range = time_range;
   }
   if (stitchOnly === true) {
@@ -158,7 +158,7 @@ export const toTimestamp = (date: Date): number => {
 export const convertTimePeriodToQueryDays = (value: string): string => {
   if (!value) return null;
   const _v: string = value.toUpperCase();
-  if (_v.includes('LAST_HOUR')) return '-1h';
+  // if (_v.includes('LAST_HOUR')) return '-1h';
   if (_v.includes('LAST_DAY')) return '-24h';
   if (_v.includes('LAST_WEEK')) return '-7d';
   // if (_v.includes('LAST_MONTH')) return '-30d';
@@ -168,7 +168,7 @@ export const convertTimePeriodToQueryDays = (value: string): string => {
 export const convertTimePeriodToQueryGeneral = (value: string): TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES => {
   if (!value) return null;
   const _v: string = value.toUpperCase();
-  if (_v.includes('LAST_HOUR')) return TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES.LAST_HOUR;
+  // if (_v.includes('LAST_HOUR')) return TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES.LAST_HOUR;
   if (_v.includes('LAST_DAY')) return TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES.LAST_DAY;
   if (_v.includes('LAST_WEEK')) return TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES.LAST_WEEK;
   // if (_v.includes('LAST_MONTH')) return TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES.LAST_MONTH;
@@ -191,4 +191,13 @@ export const getAlertLogParam = (type: ModelalertType, time_range: ALERT_TIME_RA
   }
   if (!Object.keys(param).length) return null;
   return param;
+};
+
+export const convertPeriodToUserFriendlyString = (value: any): string => {
+  if (!value) return null;
+  if (value.includes('LAST_HOUR')) return 'Last hour';
+  if (value.includes('LAST_DAY')) return 'Last day';
+  if (value.includes('LAST_WEEK')) return 'Last week';
+  if (value.includes('LAST_MONTH')) return 'Last month';
+  return value;
 };

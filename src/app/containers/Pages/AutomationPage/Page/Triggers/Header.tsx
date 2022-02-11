@@ -3,7 +3,7 @@ import Search from 'app/components/Inputs/Search';
 // import PrimaryButton from 'app/components/Buttons/PrimaryButton';
 // import { addIcon } from 'app/components/SVGIcons/addIcon';
 import { ActionPart, ActionRowStyles } from 'app/containers/Pages/Shared/styles';
-import { ALERT_TIME_RANGE_QUERY_TYPES } from 'lib/api/ApiModels/paramBuilders';
+import { ALERT_TIME_RANGE_QUERY_TYPES, convertPeriodToUserFriendlyString } from 'lib/api/ApiModels/paramBuilders';
 import MatSelect from 'app/components/Inputs/MatSelect';
 import IconButton from 'app/components/Buttons/IconButton';
 import { refreshIcon } from 'app/components/SVGIcons/refresh';
@@ -41,22 +41,10 @@ const Header: React.FC<Props> = (props: Props) => {
             label="Show"
             labelStyles={{ margin: 'auto 10px auto 0' }}
             value={props.selectedTimeRangePeriod}
-            options={[ALERT_TIME_RANGE_QUERY_TYPES.LAST_HOUR, ALERT_TIME_RANGE_QUERY_TYPES.LAST_DAY, ALERT_TIME_RANGE_QUERY_TYPES.LAST_WEEK]}
+            options={[ALERT_TIME_RANGE_QUERY_TYPES.LAST_DAY, ALERT_TIME_RANGE_QUERY_TYPES.LAST_WEEK]}
             onChange={onChangePeriod}
-            renderValue={(v: ALERT_TIME_RANGE_QUERY_TYPES) => {
-              if (v === ALERT_TIME_RANGE_QUERY_TYPES.LAST_HOUR) return 'Last hour';
-              if (v === ALERT_TIME_RANGE_QUERY_TYPES.LAST_DAY) return 'Last day';
-              if (v === ALERT_TIME_RANGE_QUERY_TYPES.LAST_WEEK) return 'Last week';
-              // if (v === ALERT_TIME_RANGE_QUERY_TYPES.LAST_MONTH) return 'Last month';
-              return v;
-            }}
-            renderOption={(v: ALERT_TIME_RANGE_QUERY_TYPES) => {
-              if (v === ALERT_TIME_RANGE_QUERY_TYPES.LAST_HOUR) return 'Last hour';
-              if (v === ALERT_TIME_RANGE_QUERY_TYPES.LAST_DAY) return 'Last day';
-              if (v === ALERT_TIME_RANGE_QUERY_TYPES.LAST_WEEK) return 'Last week';
-              // if (v === ALERT_TIME_RANGE_QUERY_TYPES.LAST_MONTH) return 'Last month';
-              return v;
-            }}
+            renderValue={(v: ALERT_TIME_RANGE_QUERY_TYPES) => convertPeriodToUserFriendlyString(v)}
+            renderOption={(v: ALERT_TIME_RANGE_QUERY_TYPES) => convertPeriodToUserFriendlyString(v)}
             styles={{ height: '50px', minHeight: '50px', width: 'auto', display: 'inline-flex', alignItems: 'center' }}
             selectStyles={{ height: '50px', width: 'auto', minWidth: '240px', border: '1px solid transparent' }}
           />

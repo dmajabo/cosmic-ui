@@ -15,7 +15,7 @@ export interface SettingsContextType {
   onChangeCurrentPage: (tab: SettingsTabTypes, _page: number, subTab?: InventoryOptions) => void;
 }
 export function useSettingsContext(): SettingsContextType {
-  const [selectedTab, setSelectedTab] = React.useState<ITab<SettingsTabTypes>>(SETTINGS_TABS[0]);
+  const [selectedTab, setSelectedTab] = React.useState<ITab<SettingsTabTypes>>(SETTINGS_TABS.loggings);
   const [adminsData, setAdminsData] = React.useState<any>([]);
   // const [sessionsCount, setSessionsCount] = React.useState<number>(0);
   const [adminsPageSize, setAdminsPageSize] = React.useState<number>(PAGING_DEFAULT_PAGE_SIZE);
@@ -30,8 +30,8 @@ export function useSettingsContext(): SettingsContextType {
   };
 
   const onChangeSelectedTab = (_tabIndex: number) => {
-    const _tab = SETTINGS_TABS.find(it => it.index === _tabIndex);
-    setSelectedTab(_tab);
+    const key = Object.keys(SETTINGS_TABS).find(key => SETTINGS_TABS[key].index === _tabIndex);
+    setSelectedTab(SETTINGS_TABS[key]);
   };
 
   const onChangePageSize = (tab: SettingsTabTypes, _size: number, _page?: number, subTab?: InventoryOptions) => {

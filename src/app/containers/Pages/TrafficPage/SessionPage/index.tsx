@@ -17,7 +17,7 @@ import { convertStringToNumber } from 'lib/helpers/general';
 import { useSessionsDataContext } from 'lib/hooks/Sessions/useSessionsDataContext';
 import IconButton from 'app/components/Buttons/IconButton';
 import { refreshIcon } from 'app/components/SVGIcons/refresh';
-import { ElasticFilterSuffics, IElasticField, IElasticFilterModel, sessionsParamBuilder, SESSIONS_TIME_RANGE_QUERY_TYPES } from 'lib/api/ApiModels/paramBuilders';
+import { convertPeriodToUserFriendlyString, ElasticFilterSuffics, IElasticField, IElasticFilterModel, sessionsParamBuilder, SESSIONS_TIME_RANGE_QUERY_TYPES } from 'lib/api/ApiModels/paramBuilders';
 import { TesseractApi } from 'lib/api/ApiModels/Services/tesseract';
 import MatSelect from 'app/components/Inputs/MatSelect';
 
@@ -208,26 +208,14 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
             label="Show"
             labelStyles={{ margin: 'auto 10px auto 0' }}
             value={sessions.sessionsPeriod}
-            options={[SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_HOUR, SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_DAY, SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_WEEK]}
+            options={[SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_DAY, SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_WEEK]}
             onChange={onChangePeriod}
-            renderValue={(v: SESSIONS_TIME_RANGE_QUERY_TYPES) => {
-              if (v === SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_HOUR) return 'Last hour';
-              if (v === SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_DAY) return 'Last day';
-              if (v === SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_WEEK) return 'Last week';
-              // if (v === SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_MONTH) return 'Last month';
-              return v;
-            }}
-            renderOption={(v: SESSIONS_TIME_RANGE_QUERY_TYPES) => {
-              if (v === SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_HOUR) return 'Last hour';
-              if (v === SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_DAY) return 'Last day';
-              if (v === SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_WEEK) return 'Last week';
-              // if (v === SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_MONTH) return 'Last month';
-              return v;
-            }}
+            renderValue={(v: SESSIONS_TIME_RANGE_QUERY_TYPES) => convertPeriodToUserFriendlyString(v)}
+            renderOption={(v: SESSIONS_TIME_RANGE_QUERY_TYPES) => convertPeriodToUserFriendlyString(v)}
             styles={{ height: '50px', minHeight: '50px', width: 'auto', display: 'inline-flex', alignItems: 'center' }}
-            selectStyles={{ height: '50px', width: 'auto', minWidth: '240px' }}
+            selectStyles={{ height: '50px', width: 'auto', minWidth: '240px', border: '1px solid transparent' }}
           />
-          <IconButton styles={{ margin: '0 0 0 20px', flexShrink: 0 }} icon={refreshIcon} title="Reload" onClick={onRefresh} />
+          <IconButton styles={{ margin: '0 0 0 20px', flexShrink: 0, border: '1px solid transparent' }} icon={refreshIcon} title="Reload" onClick={onRefresh} />
         </ActionPart>
       </ActionRowStyles>
       <PageContentWrapper>

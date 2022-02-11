@@ -47,7 +47,7 @@ export const SecondaryButtonStyles = styled.button<BProps>`
   &:hover:not(:disabled) {
     color: var(--_sHoverButtonColor);
     background: var(--_primaryWhiteColor);
-    border-color: ${props => (props.withoutBorder ? 'var(--_primaryWhiteColor)' : 'var(--_sHoverButtonBorder)')};
+    border-color: var(--_sHoverButtonBorder);
     .inheritFill {
       fill: var(--_sHoverButtonColor);
     }

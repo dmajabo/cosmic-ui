@@ -7,16 +7,16 @@ import { ClickAwayListener } from '@mui/material';
 import { useAuth0 } from '@auth0/auth0-react';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { UserRole as UserRoleData } from 'lib/api/ApiModels/Account/account';
-import Toogle from '../Inputs/Toogle';
-import { useGeneralDataContext } from 'lib/hooks/General/useGeneralDataContext';
-import { Themes } from 'utils/appTheme';
+// import Toogle from '../Inputs/Toogle';
+// import { useGeneralDataContext } from 'lib/hooks/General/useGeneralDataContext';
+// import { Themes } from 'utils/appTheme';
 interface Props {
   onOpenAbout: (value: boolean) => void;
 }
 
 export const UserComponent: React.FC<Props> = (props: Props) => {
   const [showPopup, setShowPopup] = React.useState<boolean>(false);
-  const { general } = useGeneralDataContext();
+  // const { general } = useGeneralDataContext();
   const { logout } = useAuth0();
   const userContext = useContext<UserContextState>(UserContext);
 
@@ -24,9 +24,9 @@ export const UserComponent: React.FC<Props> = (props: Props) => {
     logout({ returnTo: window.location.origin });
   };
 
-  const onSetTheme = (value: Themes) => {
-    general.onChangeTheme(value);
-  };
+  // const onSetTheme = (value: Themes) => {
+  //   general.onChangeTheme(value);
+  // };
 
   const onShowPopup = () => {
     setShowPopup(true);

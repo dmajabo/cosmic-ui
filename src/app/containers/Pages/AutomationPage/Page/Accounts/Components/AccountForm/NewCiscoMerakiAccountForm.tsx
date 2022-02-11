@@ -15,6 +15,7 @@ import { useAccountsDataContext } from 'lib/hooks/Accounts/useAccountsDataContex
 import { IBaseEntity } from 'lib/models/general';
 import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 import { PolicyApi } from 'lib/api/ApiModels/Services/policy';
+import { GetControllerVendorResponse } from 'lib/api/http/SharedTypes';
 interface Props {
   isEditMode: boolean;
   dataItem: IMeraki_Account;
@@ -29,7 +30,7 @@ const NewCiscoMerakiAccountForm: React.FC<Props> = (props: Props) => {
   const { response: postUpdateRes, loading: postUpdateLoading, onPut: onUpdate } = usePut<IMeraki_Account, IBaseEntity<string>>();
   const [dataItem, setDataItem] = React.useState<IMeraki_Account>(null);
   const [isValid, setIsValid] = React.useState<boolean>(false);
-
+  const { response: vendorResponse, onGet: onGetVendors } = useGet<GetControllerVendorResponse>();
   React.useEffect(() => {
     const _dataItem: IMeraki_Account = jsonClone(props.dataItem);
     setIsValid(onValidate(_dataItem));
@@ -51,9 +52,16 @@ const NewCiscoMerakiAccountForm: React.FC<Props> = (props: Props) => {
   React.useEffect(() => {
     if (getResById) {
       accounts.onAddAccount(getResById);
-      onClose();
+      onTryLoadVendors();
     }
   }, [getResById]);
+
+  React.useEffect(() => {
+    if (vendorResponse && vendorResponse.vendors) {
+      userContext.setUserVendors(vendorResponse.vendors);
+      onClose();
+    }
+  }, [vendorResponse]);
 
   const onClose = () => {
     props.onClose();
@@ -104,6 +112,10 @@ const NewCiscoMerakiAccountForm: React.FC<Props> = (props: Props) => {
 
   const onGetAccountById = async (id: string) => {
     await onGet(PolicyApi.getAccountsById(id), userContext.accessToken!);
+  };
+
+  const onTryLoadVendors = async () => {
+    await onGetVendors(PolicyApi.getControllerVendors(), userContext.accessToken!);
   };
 
   if (!dataItem) return null;

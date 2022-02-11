@@ -16,6 +16,7 @@ import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 import PageHeaderRow from './Components/PageHeaderRow';
 import AccountsListItems from './Components/AccountsListItems';
 import { PolicyApi } from 'lib/api/ApiModels/Services/policy';
+import { GetControllerVendorResponse } from 'lib/api/http/SharedTypes';
 interface IProps {}
 
 const Accounts: React.FC<IProps> = (props: IProps) => {
@@ -26,6 +27,7 @@ const Accounts: React.FC<IProps> = (props: IProps) => {
   const { response: resDelete, loading: deleteLoading, onDelete } = useDelete<any>();
   const [showModal, setShowModal] = React.useState<IModal<IMeraki_Account | IAWS_Account | IAZURE_Account>>({ show: false, dataItem: null, isEditMode: false });
   const [tempDeleteId, setTempDeleteId] = React.useState<string>(null);
+  const { response: vendorResponse, onGet: onGetVendors } = useGet<GetControllerVendorResponse>();
   React.useEffect(() => {
     onTryToLoadData();
     onTryLoadRegions();
@@ -42,8 +44,15 @@ const Accounts: React.FC<IProps> = (props: IProps) => {
     if (resDelete && tempDeleteId) {
       setTempDeleteId(null);
       accounts.onDeleteAccount(tempDeleteId);
+      onTryLoadVendors();
     }
   }, [resDelete]);
+
+  React.useEffect(() => {
+    if (vendorResponse && vendorResponse.vendors) {
+      userContext.setUserVendors(vendorResponse.vendors);
+    }
+  }, [vendorResponse]);
 
   React.useEffect(() => {
     if (resRegions && resRegions.awsRegions) {
@@ -92,6 +101,10 @@ const Accounts: React.FC<IProps> = (props: IProps) => {
 
   const onTryDelete = async (id: string) => {
     await onDelete(PolicyApi.deleteAccounts(id), userContext.accessToken!);
+  };
+
+  const onTryLoadVendors = async () => {
+    await onGetVendors(PolicyApi.getControllerVendors(), userContext.accessToken!);
   };
 
   return (

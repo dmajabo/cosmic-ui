@@ -19,6 +19,7 @@ import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 import MatMultipleSelect from 'app/components/Inputs/MatSelect/MatMultipleSelect';
 import MatSelect from 'app/components/Inputs/MatSelect';
 import { PolicyApi } from 'lib/api/ApiModels/Services/policy';
+import { GetControllerVendorResponse } from 'lib/api/http/SharedTypes';
 
 interface Props {
   isEditMode: boolean;
@@ -35,6 +36,7 @@ const NewAwsAccountForm: React.FC<Props> = (props: Props) => {
   const { response: postUpdateRes, loading: postUpdateLoading, onPut: onUpdate } = usePut<IAWS_Account, IBaseEntity<string>>();
   const [dataItem, setDataItem] = React.useState<IAWS_Account>(null);
   const [isValid, setIsValid] = React.useState<boolean>(false);
+  const { response: vendorResponse, onGet: onGetVendors } = useGet<GetControllerVendorResponse>();
 
   React.useEffect(() => {
     const _dataItem: IAWS_Account = jsonClone(props.dataItem);
@@ -57,9 +59,16 @@ const NewAwsAccountForm: React.FC<Props> = (props: Props) => {
   React.useEffect(() => {
     if (getResById) {
       accounts.onAddAccount(getResById);
-      onClose();
+      onTryLoadVendors();
     }
   }, [getResById]);
+
+  React.useEffect(() => {
+    if (vendorResponse && vendorResponse.vendors) {
+      userContext.setUserVendors(vendorResponse.vendors);
+      onClose();
+    }
+  }, [vendorResponse]);
 
   const onClose = () => {
     props.onClose();
@@ -152,6 +161,10 @@ const NewAwsAccountForm: React.FC<Props> = (props: Props) => {
 
   const onGetAccountById = async (id: string) => {
     await onGet(PolicyApi.getAccountsById(id), userContext.accessToken!);
+  };
+
+  const onTryLoadVendors = async () => {
+    await onGetVendors(PolicyApi.getControllerVendors(), userContext.accessToken!);
   };
 
   if (!dataItem) return null;

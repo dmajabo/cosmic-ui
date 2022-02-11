@@ -39,7 +39,7 @@ export function useSessionsContext(): SessionsContextType {
   const [sessionsCount, setSessionsCount] = React.useState<number>(0);
   const [sessionsPageSize, setSessionsPageSize] = React.useState<number>(PAGING_DEFAULT_PAGE_SIZE);
   const [sessionsCurrentPage, setSessionsCurrentPage] = React.useState<number>(1);
-  const [sessionsPeriod, setSessionsPeriod] = React.useState<SESSIONS_TIME_RANGE_QUERY_TYPES>(SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_HOUR);
+  const [sessionsPeriod, setSessionsPeriod] = React.useState<SESSIONS_TIME_RANGE_QUERY_TYPES>(SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_WEEK);
   const [sessionsOverviewPeriod, setSessionsOverviewPeriod] = React.useState<SESSIONS_TIME_RANGE_QUERY_TYPES>(null);
   const [sessionsStitch, setSessionsStitch] = React.useState<boolean>(false);
   const [sessionsFilter, setSessionsFilterValue] = React.useState<(IElasticFilterModel | string)[]>([]);

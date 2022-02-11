@@ -18,14 +18,14 @@ export enum AnomalyTabValue {
 }
 
 export enum AnomalyTimeRangeLabel {
-  lastHour = 'Last 1 hour',
+  // lastHour = 'Last 1 hour',
   lastDay = 'Last 1 day',
   lastWeek = 'Last 7 days',
   // lastMonth = 'Last 30 days',
 }
 
 export enum AnomalyTimeRangeValue {
-  lastHour = 'ANOMALY_QUERY_LAST_HOUR',
+  // lastHour = 'ANOMALY_QUERY_LAST_HOUR',
   lastDay = 'ANOMALY_QUERY_LAST_DAY',
   lastWeek = 'ANOMALY_QUERY_LAST_WEEK',
   // lastMonth = 'ANOMALY_QUERY_LAST_MONTH',
@@ -42,10 +42,10 @@ const INITIAL_ANOMALY_TIME_RANGE_VALUE: AnomalySelectOption = {
 };
 
 const TIME_RANGE_OPTIONS: AnomalySelectOption[] = [
-  {
-    label: AnomalyTimeRangeLabel.lastHour,
-    value: AnomalyTimeRangeValue.lastHour,
-  },
+  // {
+  //   label: AnomalyTimeRangeLabel.lastHour,
+  //   value: AnomalyTimeRangeValue.lastHour,
+  // },
   {
     label: AnomalyTimeRangeLabel.lastDay,
     value: AnomalyTimeRangeValue.lastDay,

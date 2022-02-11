@@ -95,7 +95,7 @@ export const FlowsOverviewComponent: React.FC<Props> = (props: Props) => {
   // }
 
   const onTryLoadSegments = async (timePeriod: TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES) => {
-    await onGet(TesseractApi.getSessionBwSegments(timePeriod || TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES.LAST_HOUR), userContext.accessToken!);
+    await onGet(TesseractApi.getSessionBwSegments(timePeriod || TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES.LAST_WEEK), userContext.accessToken!);
   };
 
   const getColor = (v: any) => {
