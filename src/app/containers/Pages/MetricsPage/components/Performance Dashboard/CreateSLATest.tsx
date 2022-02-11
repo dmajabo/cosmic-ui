@@ -80,13 +80,12 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ slaTestDataToUpdat
   }, [selectedOrganizationVnets]);
 
   const getSourceNetworkOptions = (sourceOrgId: string) => {
-    const orgVnets = networks.filter(network => network.ownerId === sourceOrgId);
-    const networkOptions: SelectOptions[] = orgVnets.map(vnet => {
-      return {
+    const networkOptions: SelectOptions[] = networks
+      .filter(network => network.ownerId === sourceOrgId)
+      .map(vnet => ({
         value: vnet.extId,
         label: vnet.name,
-      };
-    });
+      }));
     return networkOptions;
   };
 
