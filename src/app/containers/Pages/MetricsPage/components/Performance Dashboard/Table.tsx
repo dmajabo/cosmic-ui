@@ -18,6 +18,7 @@ export interface Data {
   readonly description: string;
   readonly averageQoe: JSX.Element;
   readonly hits?: JSX.Element;
+  readonly isTestDataValid?: boolean;
 }
 
 interface TableProps {
@@ -51,6 +52,16 @@ const Styles = styled.div`
   }
   .pagination {
     padding-top: 0.5rem;
+  }
+  .hide {
+    display: none;
+  }
+  .flexCenter {
+    display: flex;
+    justify-content: center;
+  }
+  .validData {
+    background-color: rgba(0, 255, 0, 0.1);
   }
 `;
 
@@ -133,7 +144,7 @@ const Table: React.FC<TableProps> = ({ onSelectedRowsUpdate, columns, data }) =>
             page.map((row, i) => {
               prepareRow(row);
               return (
-                <tr {...row.getRowProps()}>
+                <tr {...row.getRowProps()} className={data[i].isTestDataValid ? 'validData' : ''}>
                   {row.cells.map(cell => {
                     return (
                       <td {...cell.getCellProps()}>
@@ -148,8 +159,8 @@ const Table: React.FC<TableProps> = ({ onSelectedRowsUpdate, columns, data }) =>
         </tbody>
       </table>
       <div className="pagination">
-        <div className={classes.flexContainer}>
-          <div>
+        <div className={data.length < pageSize ? 'flexCenter' : classes.flexContainer}>
+          <div hidden={data.length < pageSize}>
             <button className={classes.paginationButton} onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
               <Typography className={classes.paginationText}>{'<<'}</Typography>
             </button>
@@ -188,10 +199,10 @@ const Table: React.FC<TableProps> = ({ onSelectedRowsUpdate, columns, data }) =>
             </select>
             <span className={classes.paginationText}>Items per page</span>
           </div>
-          <div>
-            <Typography className={classes.paginationText}>{`${Number(pageIndex) * pageSize + 1}-${
-              data.length < pageSize * (pageIndex + 1) ? data.length : pageSize * (Number(pageIndex) + 1)
-            } out of ${data.length} items`}</Typography>
+          <div hidden={data.length < pageSize}>
+            <span className={classes.paginationText}>{`${Number(pageIndex) * pageSize + 1}-${data.length < pageSize * (pageIndex + 1) ? data.length : pageSize * (Number(pageIndex) + 1)} out of ${
+              data.length
+            } items`}</span>
           </div>
         </div>
       </div>

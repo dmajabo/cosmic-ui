@@ -1,9 +1,9 @@
-import { Backdrop, collapseClasses } from '@mui/material';
+import { Backdrop } from '@mui/material';
 import React, { ChangeEvent, useContext, useEffect, useMemo, useState } from 'react';
 import { PerformanceDashboardStyles } from './PerformanceDashboardStyles';
 import Table, { Data } from './Table';
 import { CreateSLATest } from './CreateSLATest';
-import { Column, FinalTableData, SLATest, UpdateSLATestRequest, ColumnAccessor } from 'lib/api/http/SharedTypes';
+import { Column, FinalTableData, SLATest, UpdateSLATestRequest, ColumnAccessor, AverageQoe as MetricAvgQoe, Organization, Vnet } from 'lib/api/http/SharedTypes';
 import { PacketLoss } from './PacketLoss';
 import { Latency } from './Latency';
 import Select from 'react-select';
@@ -13,7 +13,6 @@ import { MetricTabValue } from '../../../DashboardPage/enum/MetricTabValue';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { createApiClient } from 'lib/api/http/apiClient';
 import { Checkbox, FormControlLabel, FormGroup, Popover } from '@mui/material';
-import { INetworkOrg } from 'lib/api/ApiModels/Topology/apiModels';
 import { addIcon } from 'app/components/SVGIcons/addIcon';
 import PrimaryButton from 'app/components/Buttons/PrimaryButton';
 import TabsUnstyled from '@mui/base/TabsUnstyled';
@@ -30,8 +29,8 @@ import SearchIcon from 'app/containers/Pages/AnalyticsPage/icons/metrics explore
 interface SLATestListProps {
   readonly finalTableData: FinalTableData[];
   readonly addSlaTest: Function;
-  readonly merakiOrganizations: INetworkOrg[];
-  readonly awsOrganizations: INetworkOrg[];
+  readonly merakiOrganizations: Organization[];
+  readonly networks: Vnet[];
   readonly deleteSlaTest: Function;
   readonly updateSlaTest: (submitData: UpdateSLATestRequest) => void;
 }
@@ -112,7 +111,7 @@ const columns: Column[] = [
 
 const COLUMNS_POPOVER = 'columns-popover';
 
-export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteSlaTest, awsOrganizations, merakiOrganizations, finalTableData, addSlaTest }) => {
+export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteSlaTest, networks, merakiOrganizations, finalTableData, addSlaTest }) => {
   const classes = PerformanceDashboardStyles();
 
   const [searchText, setSearchText] = useState<string>('');
@@ -203,6 +202,8 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
       [event.target.name]: event.target.checked,
     });
 
+  const isTestDataValid = (averageQoe: MetricAvgQoe) => !isNaN(Number(averageQoe.packetLoss)) && !isNaN(Number(averageQoe.latency));
+
   const data = useMemo(
     () =>
       filteredTableData.map(item => {
@@ -215,6 +216,7 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
           destination: item.destination,
           description: item.description,
           averageQoe: <AverageQoe updateTest={getTestDataToUpdate} deleteTest={deleteTest} packetLoss={item.averageQoe.packetLoss} latency={item.averageQoe.latency} testId={item.id} />,
+          isTestDataValid: isTestDataValid(item.averageQoe),
         };
       }),
     [filteredTableData],
@@ -227,7 +229,7 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
     },
     {
       value: '-7d',
-      label: 'Last 7 days',
+      label: 'Last week',
     },
   ];
 
@@ -294,9 +296,6 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
             <PrimaryButton height="50px" label="CREATE SLA TEST" icon={addIcon} onClick={handleToggle} />
           </div>
         </div>
-        <div>
-          <span className={classes.subTitleText}>Select sources for wich you want to view data.</span>
-        </div>
         <div className={classes.tableContainer}>
           <Table onSelectedRowsUpdate={onSelectedRowsUpdate} columns={selectedColumns} data={data} />
         </div>
@@ -328,14 +327,14 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
         </TabsUnstyled>
       </div>
       <Backdrop style={{ color: '#fff', zIndex: 5 }} open={createToggle}>
-        <CreateSLATest awsOrganizations={awsOrganizations} merakiOrganizations={merakiOrganizations} addSlaTest={addTest} popup={true} closeSlaTest={handleClose} />
+        <CreateSLATest networks={networks} merakiOrganizations={merakiOrganizations} addSlaTest={addTest} popup={true} closeSlaTest={handleClose} />
       </Backdrop>
       <Backdrop style={{ color: '#fff', zIndex: 5 }} open={updateTestToggle}>
         <CreateSLATest
           updateSlaTest={updateSlaTest}
           slaTestDataToUpdate={testDataToUpdate}
           isUpdateTest={true}
-          awsOrganizations={awsOrganizations}
+          networks={networks}
           merakiOrganizations={merakiOrganizations}
           popup={true}
           closeSlaTest={handleClose}
