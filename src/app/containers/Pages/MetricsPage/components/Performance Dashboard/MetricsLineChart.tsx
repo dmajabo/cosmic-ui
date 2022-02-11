@@ -18,12 +18,6 @@ interface ChartData {
   readonly data: DataPoint[];
 }
 
-interface AreaDataPoint {
-  readonly x: number;
-  readonly low: number;
-  readonly high: number;
-}
-
 interface AreaChartData {
   readonly name: string;
   readonly data: [number, number, number][];
@@ -97,8 +91,7 @@ const COLORS = [
 const ANOMALY_POINT_COLOR = 'red';
 
 export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataValueSuffix, inputData }) => {
-  const [data, setData] = useState<ChartData[]>([]);
-  const [areaChartData, setAreaChartData] = useState<AreaChartData[]>([]);
+  const [data, setData] = useState([]);
 
   useEffect(() => {
     const tempChartData: ChartData[] = selectedRows.map(row => {
@@ -208,14 +201,18 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
           useHTML: true,
           pointFormat: `
           <div><b>Upperbound: </b>{point.high}</div><br />
-          <div><b>Lowerbound: </b>{point.low}</div><br />
+          <div><b>Lowerbound: </b>{point.low}</div><br /><br />
           `,
         },
       };
     });
-    const finalChartData = sortBy(tempChartData, 'data').reverse().concat(anomalyData);
+    const finalChartData = [];
+    tempChartData.forEach((item, index) => {
+      finalChartData.push(item);
+      finalChartData.push(anomalyData[index]);
+      finalChartData.push(areaData[index]);
+    });
     setData(finalChartData);
-    setAreaChartData(areaData);
   }, [inputData]);
 
   const lineChartOptions = {
@@ -255,7 +252,7 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
     credits: {
       enabled: false,
     },
-    series: [...data, ...areaChartData],
+    series: data,
   };
 
   return <HighchartsReact highcharts={Highcharts} options={lineChartOptions} />;
