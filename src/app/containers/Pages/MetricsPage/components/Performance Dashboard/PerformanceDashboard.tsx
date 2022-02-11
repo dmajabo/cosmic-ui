@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { PerformanceDashboardStyles } from './PerformanceDashboardStyles';
 import { SLATestList } from './SLATestList';
-import { CreateSLATestRequest, FinalTableData, UpdateSLATestRequest } from 'lib/api/http/SharedTypes';
+import { CreateSLATestRequest, Device, FinalTableData, Organization, UpdateSLATestRequest, Vnet } from 'lib/api/http/SharedTypes';
 import LoadingIndicator from 'app/components/Loading';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -10,51 +10,52 @@ import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { createApiClient } from 'lib/api/http/apiClient';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
-import { GetDevicesString, GetSelectedOrganization } from './filterFunctions';
+import { GetDevicesString, GetSelectedNetworkName, GetSelectedOrganizationName } from './filterFunctions';
 import { CreateSLATest } from './CreateSLATest';
 import './Toastify.css';
-import { INetworkOrg, ITopologyMapData, VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
+import { VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
 import { AxiosError } from 'axios';
 import { TabName } from '../..';
 
 interface PerformanceDashboardProps {
-  readonly orgMap: ITopologyMapData;
+  readonly organizations: Organization[];
+  readonly networks: Vnet[];
+  readonly devices: Device[];
   readonly orgLoading: boolean;
   readonly orgError: AxiosError;
   readonly selectedTabName: TabName;
 }
 
-export const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ orgMap, orgLoading, orgError, selectedTabName }) => {
+export const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ networks, organizations, devices, orgLoading, orgError, selectedTabName }) => {
   const classes = PerformanceDashboardStyles();
 
   const userContext = useContext<UserContextState>(UserContext);
   const apiClient = createApiClient(userContext.accessToken!);
   const [finalTableData, setFinalTableData] = useState<FinalTableData[]>([]);
-  const [merakiOrganizations, setMerakiOrganizations] = useState<INetworkOrg[]>([]);
-  const [awsOrganizations, setAwsOrganizations] = useState<INetworkOrg[]>([]);
+  const [merakiOrganizations, setMerakiOrganizations] = useState<Organization[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    if (!isEmpty(orgMap) && selectedTabName === TabName.Performance) {
-      const merakiOrganizations = orgMap.organizations.filter(organization => organization.vendorType === VendorTypes.MERAKI);
-      const awsOrganizations = orgMap.organizations.filter(organization => organization.vendorType === VendorTypes.AWS);
+    if (!isEmpty(organizations) && selectedTabName === TabName.Performance) {
+      const merakiOrganizations = organizations.filter(organization => organization.vendorType === VendorTypes.MERAKI);
       setMerakiOrganizations(merakiOrganizations);
-      setAwsOrganizations(awsOrganizations);
     }
-  }, [orgMap, selectedTabName]);
+  }, [organizations, selectedTabName]);
 
   const getSLATests = async () => {
+    setIsLoading(true);
     const responseData = await apiClient.getSLATests();
     if (!isEmpty(responseData)) {
       if (Array.isArray(responseData.slaTests) && !isEmpty(responseData.slaTests)) {
         const testData: FinalTableData[] = responseData.slaTests.map(test => {
-          const selectedOrganization = GetSelectedOrganization(merakiOrganizations, test.sourceOrgId);
-          const allDevices: string = GetDevicesString(selectedOrganization, test.sourceNwExtId);
+          const selectedOrganizationName = GetSelectedOrganizationName(merakiOrganizations, test.sourceOrgId);
+          const allDevices: string = GetDevicesString(devices, test.sourceNwExtId);
+          const selectedNetworkName = GetSelectedNetworkName(networks, test.sourceNwExtId);
           return {
             id: test.testId,
             name: test.name,
-            sourceOrg: selectedOrganization.name,
-            sourceNetwork: test.sourceNwExtId,
+            sourceOrg: selectedOrganizationName,
+            sourceNetwork: selectedNetworkName,
             sourceDevice: allDevices,
             destination: test.destination,
             interface: test.interface,
@@ -125,18 +126,18 @@ export const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ orgM
         <div className={classes.pageCenter}>
           <LoadingIndicator />
         </div>
-      ) : !isEmpty(merakiOrganizations) && !isEmpty(awsOrganizations) ? (
+      ) : !isEmpty(merakiOrganizations) ? (
         !isEmpty(finalTableData) ? (
           <SLATestList
             updateSlaTest={updateSlaTest}
             deleteSlaTest={deleteSlaTest}
-            awsOrganizations={awsOrganizations}
+            networks={networks}
             merakiOrganizations={merakiOrganizations}
             finalTableData={finalTableData}
             addSlaTest={addSlaTest}
           />
         ) : (
-          <CreateSLATest awsOrganizations={awsOrganizations} merakiOrganizations={merakiOrganizations} addSlaTest={addSlaTest} />
+          <CreateSLATest networks={networks} merakiOrganizations={merakiOrganizations} addSlaTest={addSlaTest} />
         )
       ) : (
         <AbsLoaderWrapper width="100%" height="100%">

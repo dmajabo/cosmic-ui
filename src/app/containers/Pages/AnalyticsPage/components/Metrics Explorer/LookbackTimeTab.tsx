@@ -33,9 +33,9 @@ export enum LookbackLabel {
   sixHours = 'Last 6 Hours',
   twelveHours = 'Last 12 Hours',
   twentyFourHours = 'Last 24 Hours',
-  oneDay = 'Last Day',
-  oneWeek = 'Last Week',
-  oneMonth = 'Last Month',
+  oneDay = 'Last day',
+  oneWeek = 'Last week',
+  oneMonth = 'Last month',
 }
 
 const LOOKBACK_OPTIONS: LookbackSelectOption[] = [

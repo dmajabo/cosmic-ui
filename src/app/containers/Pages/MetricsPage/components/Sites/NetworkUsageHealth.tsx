@@ -13,9 +13,10 @@ import { LookbackSelectOption } from 'app/containers/Pages/AnalyticsPage/compone
 import { IMetrickQueryParam } from 'lib/api/ApiModels/Metrics/apiModel';
 import { getChartXAxisLabel, isMetricsEmpty } from '../Utils';
 import { TabName } from '../..';
+import { NetworkObject } from '.';
 
 interface NetworkUsageHealthProps {
-  readonly networks: string[];
+  readonly networks: NetworkObject[];
   readonly timeRange: LookbackSelectOption;
   readonly selectedTabName: TabName;
 }
@@ -33,8 +34,8 @@ export const NetworkUsageHealth: React.FC<NetworkUsageHealthProps> = ({ networks
         endTime: '-0d',
       };
       onGetChainData(
-        networks.map(network => TelemetryApi.getNetworkUsage(network)),
-        networks,
+        networks.map(network => TelemetryApi.getNetworkUsage(network.id)),
+        networks.map(item => item.id),
         userContext.accessToken!,
         timeParams,
       );
@@ -45,8 +46,8 @@ export const NetworkUsageHealth: React.FC<NetworkUsageHealthProps> = ({ networks
     if (response) {
       const metricsData: MultiLineMetricsData[] = [];
       networks.forEach(network => {
-        response[network].metrics.keyedmap.forEach(item => {
-          metricsData.push({ name: `${network}_${item.key}`, metrics: item.ts });
+        response[network.id].metrics.keyedmap.forEach(item => {
+          metricsData.push({ name: `${network.name} ${item.key}`, metrics: item.ts });
         });
       });
       setMetricsData(metricsData);
