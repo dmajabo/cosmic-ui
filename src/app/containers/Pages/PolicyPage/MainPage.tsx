@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Tab, Tabs } from '@mui/material';
 import { TabsStyles } from 'app/components/Tabs/TabsStyles';
 import { TabComponentProps } from 'app/components/Tabs/TabComponentProps';
@@ -8,16 +8,16 @@ import { POLICY_TABS } from 'lib/hooks/Policy/models';
 import { PageWrapperStyles, TabsWrapperStyles } from '../Shared/styles';
 import Segments from './Page/Segments';
 //import Rules from './Page/Rules';
-import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
-import { AccountVendorTypes } from 'lib/api/ApiModels/Accounts/apiModel';
+// import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
+// import { AccountVendorTypes } from 'lib/api/ApiModels/Accounts/apiModel';
 import Inventory from './Page/Inventory';
-import Rules from './Page/Rules';
+// import Rules from './Page/Rules';
 
 interface IProps {}
 
 const MainPage: React.FC<IProps> = (props: IProps) => {
   const { policy } = usePolicyDataContext();
-  const { vendors } = useContext<UserContextState>(UserContext);
+  // const { vendors } = useContext<UserContextState>(UserContext);
   const classes = TabsStyles();
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
@@ -40,9 +40,9 @@ const MainPage: React.FC<IProps> = (props: IProps) => {
           }}
         >
           <Tab disableRipple label={POLICY_TABS.segments.label} classes={{ selected: classes.tabSelected }} {...TabComponentProps(0)} className={classes.tabBigSize} />
-          {vendors && vendors[AccountVendorTypes.AMAZON_AWS] && (
+          {/* {vendors && vendors[AccountVendorTypes.AMAZON_AWS] && (
             <Tab disableRipple label={POLICY_TABS.rules.label} classes={{ selected: classes.tabSelected }} {...TabComponentProps(0)} className={classes.tabBigSize} />
-          )}
+          )} */}
           <Tab disableRipple label={POLICY_TABS.inventory.label} classes={{ selected: classes.tabSelected }} {...TabComponentProps(0)} className={classes.tabBigSize} />
         </Tabs>
       </TabsWrapperStyles>
@@ -60,7 +60,7 @@ const MainPage: React.FC<IProps> = (props: IProps) => {
       >
         <Inventory />
       </TabPanel>
-      {vendors && vendors[AccountVendorTypes.AMAZON_AWS] && (
+      {/* {vendors && vendors[AccountVendorTypes.AMAZON_AWS] && (
         <TabPanel
           styles={{ display: 'flex', flexDirection: 'column', flex: policy.selectedTab.index === POLICY_TABS.rules.index ? '1 1 100%' : '0' }}
           value={policy.selectedTab.index}
@@ -68,7 +68,7 @@ const MainPage: React.FC<IProps> = (props: IProps) => {
         >
           <Rules />
         </TabPanel>
-      )}
+      )} */}
     </PageWrapperStyles>
   );
 };

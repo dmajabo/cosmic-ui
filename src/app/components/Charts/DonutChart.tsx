@@ -12,6 +12,7 @@ export interface PieDataItem {
 
 interface Props {
   readonly data: PieDataItem[];
+  onItemClick?: (item: PieDataItem) => void;
 }
 
 const DonutChart: React.FC<Props> = (props: Props) => {
@@ -49,9 +50,13 @@ const DonutChart: React.FC<Props> = (props: Props) => {
     const r_outer = radius * 0.85;
 
     const onMouseEnter = (d, color) => {
+      if (d.data.hide) return;
       const outer = radius * 0.9;
+      const svg = d3.select(`#donutChartContainerSvg`);
+      svg.selectAll('.arcValue').transition().attr('opacity', 0.1);
       const g = d3.select(`#arcG${d.index}`);
       g.raise();
+      g.selectAll('.arcValue').interrupt().transition().attr('opacity', 1);
       const _arc = g.select(`#arc${d.index}`);
       _arc.interrupt();
       _arc.transition().attr('d', arcPathGenerator(r_inner, outer, 4, d)).attr('stroke', color);
@@ -59,28 +64,34 @@ const DonutChart: React.FC<Props> = (props: Props) => {
     };
 
     const onMouseLeave = d => {
+      const svg = d3.select(`#donutChartContainerSvg`);
+      svg.selectAll('.arcValue').transition().attr('opacity', 1);
       const g = d3.select(`#arcG${d.index}`);
       const _arc = g.select(`#arc${d.index}`);
       _arc.interrupt();
       _arc.transition().attr('d', arcPathGenerator(r_inner, r_outer, 6, d)).attr('stroke', 'var(--_primaryBg)');
       g.selectAll('text').transition().attr('font-size', 20);
     };
+
+    const onArcClick = (d: PieDataItem) => {
+      if (!props.onItemClick) return;
+      props.onItemClick(d);
+    };
     return pie.map((d, index) => {
       const _textArc = d3
         .arc()
-        .innerRadius(radius)
-        .outerRadius(radius * 0.95);
-      const pos = _textArc.centroid(d);
-      const _isRight = index % 2 === 0;
+        .innerRadius(radius * 0.85)
+        .outerRadius(radius * 1.2);
+      const _isLeft = index <= (pie.length - 1) / 2;
       const colorRowI = index % colors.length;
       const colorColumnI = index % colors[colorRowI].length;
       return {
         onMouseEnter: () => onMouseEnter(d, colors[colorRowI][colorColumnI]),
         onMouseLeave: () => onMouseLeave(d),
+        onClick: () => onArcClick(d.data),
         path: arcPathGenerator(r_inner, r_outer, 6, d),
-        labelPos: `translate(${pos})`,
-        isLeftArc: !_isRight,
-        textAnchor: _isRight ? 'start' : 'end',
+        labelPos: `translate(${_textArc.centroid(d)})`,
+        isLeftArc: _isLeft,
         color: colors[colorRowI][colorColumnI],
         ...d,
       };
@@ -90,6 +101,8 @@ const DonutChart: React.FC<Props> = (props: Props) => {
   const onLegendItemClick = (index: number) => {
     const _chartData = chartData.slice();
     _chartData[index].hide = !chartData[index].hide;
+    const svg = d3.select(`#donutChartContainerSvg`);
+    svg.selectAll('.arcValue').transition().attr('opacity', 1);
     setChartData(_chartData);
   };
 
@@ -104,10 +117,10 @@ const DonutChart: React.FC<Props> = (props: Props) => {
                 {arcs.map((arc, i) => {
                   if (arc.data.hide) return null;
                   return (
-                    <g id={`arcG${arc.index}`} data-value={arc.data.value} key={`path${i}${arc.data.name}`}>
+                    <g id={`arcG${arc.index}`} data-value={arc.data.value} key={`path${i}${arc.data.name}`} onClick={arc.onClick} style={{ cursor: 'pointer' }}>
                       <path id={`arc${arc.index}`} d={arc.path} fill={arc.color} stroke="var(--_primaryBg)" strokeWidth="2.5" />
-                      <g transform={`${arc.labelPos}`}>
-                        <text dy="4" fontFamily="DMSans" fontWeight="bold" fontSize="20" fill={arc.color} textAnchor={arc.textAnchor}>
+                      <g id={`arcValue${arc.index}`} transform={`${arc.labelPos}`} className="arcValue">
+                        <text y="10" fontFamily="DMSans" fontWeight="bold" fontSize="20" fill={arc.color} textAnchor="middle">
                           {arc.data.value}
                         </text>
                       </g>
@@ -131,7 +144,13 @@ const DonutChart: React.FC<Props> = (props: Props) => {
         {arcs.map(it => {
           if (!it.isLeftArc) return null;
           return (
-            <LegendItem key={`leftLEgendItem${it.data.name}`} onClick={() => onLegendItemClick(it.index)} onMouseEnter={it.onMouseEnter} onMouseLeave={it.onMouseLeave}>
+            <LegendItem
+              title={`${it.data.name}: ${it.data.value}`}
+              key={`leftLEgendItem${it.data.name}`}
+              onClick={() => onLegendItemClick(it.index)}
+              onMouseEnter={it.onMouseEnter}
+              onMouseLeave={it.onMouseLeave}
+            >
               <LegendColor color={it.color} hide={it.data.hide} />
               <LegendLabel hide={it.data.hide}>{it.data.name}</LegendLabel>
             </LegendItem>
@@ -142,7 +161,13 @@ const DonutChart: React.FC<Props> = (props: Props) => {
         {arcs.map(it => {
           if (it.isLeftArc) return null;
           return (
-            <LegendItem key={`rightLEgendItem${it.data.name}`} onClick={() => onLegendItemClick(it.index)} onMouseEnter={it.onMouseEnter} onMouseLeave={it.onMouseLeave}>
+            <LegendItem
+              key={`rightLEgendItem${it.data.name}`}
+              title={`${it.data.name}: ${it.data.value}`}
+              onClick={() => onLegendItemClick(it.index)}
+              onMouseEnter={it.onMouseEnter}
+              onMouseLeave={it.onMouseLeave}
+            >
               <LegendColor color={it.color} hide={it.data.hide} />
               <LegendLabel hide={it.data.hide}>{it.data.name}</LegendLabel>
             </LegendItem>

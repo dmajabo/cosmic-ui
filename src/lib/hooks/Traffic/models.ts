@@ -5,7 +5,12 @@ export enum TrafficTabTypes {
   Logs = 'Logs',
 }
 
-export const TRAFFIC_TABS: ITab<TrafficTabTypes>[] = [
-  { id: TrafficTabTypes.Trends, label: 'Trends', index: 0 },
-  { id: TrafficTabTypes.Logs, label: 'Logs', index: 1 },
-];
+interface ITrafficTabs {
+  trends: ITab<TrafficTabTypes>;
+  logs: ITab<TrafficTabTypes>;
+}
+
+export const TRAFFIC_TABS: ITrafficTabs = {
+  trends: { id: TrafficTabTypes.Trends, label: 'Trends', index: 0 },
+  logs: { id: TrafficTabTypes.Logs, label: 'Logs', index: 1 },
+};

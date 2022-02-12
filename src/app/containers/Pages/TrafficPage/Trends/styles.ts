@@ -43,7 +43,7 @@ export const ChartWrapper = styled.div`
   border-radius: 6px;
   background: var(--_chartBg);
   position: relative;
-  &.heatChartWrapperMap > div {
+  &.heatChartWrapperMap > div:not(.empty):not(.error):not(.loading) {
     width: 100%;
     overflow: auto;
     background: var(--_chartBg);

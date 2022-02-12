@@ -90,9 +90,7 @@ export const paramBuilder = (size?: number, currentPage?: number, time_range?: A
     param.page_size = size;
   }
   if (time_range) {
-    if (time_range !== ALERT_TIME_RANGE_QUERY_TYPES.LAST_WEEK) {
-      param.time_range = time_range;
-    }
+    param.time_range = time_range;
   }
   if (resourceType) {
     param.resourceType = resourceType;
@@ -104,9 +102,10 @@ export const paramBuilder = (size?: number, currentPage?: number, time_range?: A
 export const sessionsParamBuilder = ({ size, currentPage, time_range, stitchOnly, filters, filterSuffics }): IParam => {
   let param: IParam = {};
   const _size = size || PAGING_DEFAULT_PAGE_SIZE;
-  param.start_from = (currentPage - 1) * _size;
+  const _currentpage = !currentPage && currentPage !== 0 ? 1 : currentPage;
+  param.start_from = (_currentpage - 1) * _size;
   param.page_size = size;
-  if (time_range && time_range !== SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_WEEK) {
+  if (time_range) {
     param.time_range = time_range;
   }
   if (stitchOnly === true) {
@@ -120,7 +119,10 @@ export const sessionsParamBuilder = ({ size, currentPage, time_range, stitchOnly
       const _el: IElasticFilterModel = item as IElasticFilterModel;
       if (_el.field.queryType === IQuryFieldtype.STRING) {
         const fieldValue = filterSuffics ? `${_el.field.searchField}.${filterSuffics}` : _el.field.searchField;
-        const _v = _el.field.valueTransform ? _el.field.valueTransform(_el.value) : _el.value;
+        let _v = _el.field.valueTransform ? _el.field.valueTransform(_el.value) : _el.value;
+        if (!_v) {
+          return `(${fieldValue}:NULL)`;
+        }
         return `(${fieldValue}:${_v})`;
       }
       if (filterSuffics && filterSuffics === ElasticFilterSuffics.AUTOCOMPLETE) {
@@ -197,7 +199,7 @@ export const convertPeriodToUserFriendlyString = (value: any): string => {
   if (!value) return null;
   if (value.includes('LAST_HOUR')) return 'Last hour';
   if (value.includes('LAST_DAY')) return 'Last day';
-  if (value.includes('LAST_WEEK')) return 'Last week';
+  if (value.includes('LAST_WEEK')) return 'Last 7 days';
   if (value.includes('LAST_MONTH')) return 'Last month';
   return value;
 };

@@ -218,7 +218,7 @@ const ElasticFilter: React.FC<Props> = (props: Props) => {
   };
 
   const onTryLoadData = async (filter: IElasticFilterModel, filterSuffics: ElasticFilterSuffics) => {
-    const _param: IParam = props.paramBuilder ? props.paramBuilder({ time_range: props.timePeriod, stitchOnly: props.stitch, filters: [filter], filterSuffics: filterSuffics }) : null;
+    const _param: IParam = props.paramBuilder ? props.paramBuilder({ time_range: props.timePeriod, currentPage: 1, stitchOnly: props.stitch, filters: [filter], filterSuffics: filterSuffics }) : null;
     await onGetPossibleValues(props.url, userContext.accessToken!, _param);
   };
 

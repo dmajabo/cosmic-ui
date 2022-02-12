@@ -7,7 +7,7 @@ import TextInput from 'app/components/Inputs/TextInput';
 import PrimaryButton from 'app/components/Buttons/PrimaryButton';
 import { jsonClone } from 'lib/helpers/cloneHelper';
 import AccountFormHeader from './AccountFormHeader';
-import CheckBox from 'app/components/Inputs/Checkbox/CheckBox';
+// import CheckBox from 'app/components/Inputs/Checkbox/CheckBox';
 import { useGet, usePost, usePut } from 'lib/api/http/useAxiosHook';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
@@ -81,11 +81,11 @@ const NewCiscoMerakiAccountForm: React.FC<Props> = (props: Props) => {
     setDataItem(_item);
   };
 
-  const onEnabledPolicyChange = (checked: boolean) => {
-    const _item: IMeraki_Account = { ...dataItem };
-    _item.merakiPol.flowlogPol.enableSyslog = checked;
-    setDataItem(_item);
-  };
+  // const onEnabledPolicyChange = (checked: boolean) => {
+  //   const _item: IMeraki_Account = { ...dataItem };
+  //   _item.merakiPol.flowlogPol.enableSyslog = checked;
+  //   setDataItem(_item);
+  // };
 
   const onValidate = (_item: IMeraki_Account): boolean => {
     if (!_item) return false;
@@ -136,7 +136,7 @@ const NewCiscoMerakiAccountForm: React.FC<Props> = (props: Props) => {
                 required
               />
             </StepItemFormRow>
-            <StepItemFormRow margin="0 auto 0 0">
+            <StepItemFormRow margin="0 0 20px 0">
               <TextInput
                 id="editorAccountDescription"
                 name="description"
@@ -158,9 +158,9 @@ const NewCiscoMerakiAccountForm: React.FC<Props> = (props: Props) => {
                 required
               />
             </StepItemFormRow>
-            <StepItemFormRow margin="0">
+            {/* <StepItemFormRow margin="0">
               <CheckBox label="Enable Syslog Collection" isChecked={dataItem.merakiPol.flowlogPol.enableSyslog} toggleCheckboxChange={onEnabledPolicyChange} />
-            </StepItemFormRow>
+            </StepItemFormRow> */}
           </StepItem>
         </ModalOverflowContainer>
         {(postLoading || postUpdateLoading || getLoading) && (

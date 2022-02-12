@@ -10,11 +10,16 @@ import DonutChart, { PieDataItem } from 'app/components/Charts/DonutChart';
 import { TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES } from 'lib/api/ApiModels/paramBuilders';
 import { TesseractApi } from 'lib/api/ApiModels/Services/tesseract';
 import { ITesseractGetTotalSessionsPerSegmentResponse } from 'lib/api/ApiModels/Sessions/apiModel';
+import { TRAFFIC_TABS } from 'lib/hooks/Traffic/models';
+import { useSessionsDataContext } from 'lib/hooks/Sessions/useSessionsDataContext';
+import { FilterOpperatorsList, SessionElasticFieldItems, SessionGridColumns } from '../../../SessionPage/models';
+import { getSearchedFields, ISearchData } from 'app/components/Inputs/ElasticFilter/helper';
 interface Props {}
 
 export const DroppedFlowsComponent: React.FC<Props> = (props: Props) => {
   const userContext = React.useContext<UserContextState>(UserContext);
   const { traffic } = useTrafficDataContext();
+  const { sessions } = useSessionsDataContext();
   const { response, loading, error, onGet } = useGet<ITesseractGetTotalSessionsPerSegmentResponse>();
   const [data, setData] = React.useState<PieDataItem[]>([]);
 
@@ -31,6 +36,14 @@ export const DroppedFlowsComponent: React.FC<Props> = (props: Props) => {
     }
   }, [response]);
 
+  const onGoToLogs = (d: PieDataItem) => {
+    const _policyField: ISearchData = getSearchedFields(SessionGridColumns.policyAction.field, SessionElasticFieldItems);
+    const _destSegmentIdField: ISearchData = getSearchedFields(SessionGridColumns.destSegmentId.field, SessionElasticFieldItems);
+    const _destId = d.id !== 'Unknown' ? d.id : '';
+    traffic.onChangeSelectedTab(TRAFFIC_TABS.logs.index);
+    sessions.onGoToSession(true, [{ field: _policyField.field, value: 'DROP' }, FilterOpperatorsList[0].value, { field: _destSegmentIdField.field, value: _destId }]);
+  };
+
   const onTryLoadSegments = async (timePeriod: TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES) => {
     await onGet(TesseractApi.getSessionsPerSegment(timePeriod || TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES.LAST_WEEK), userContext.accessToken!);
   };
@@ -41,7 +54,7 @@ export const DroppedFlowsComponent: React.FC<Props> = (props: Props) => {
       </ChartHeader>
 
       <ChartWrapper>
-        {!error && data && data.length ? <DonutChart data={data} /> : null}
+        {!error && data && data.length ? <DonutChart data={data} onItemClick={onGoToLogs} /> : null}
         {!error && !data.length ? (
           <ErrorMessage color="var(--_primaryTextColor)" margin="auto" fontSize={20}>
             No data
