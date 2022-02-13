@@ -59,7 +59,17 @@ const DonutChart: React.FC<Props> = (props: Props) => {
       g.selectAll('.arcValue').interrupt().transition().attr('opacity', 1);
       const _arc = g.select(`#arc${d.index}`);
       _arc.interrupt();
-      _arc.transition().attr('d', arcPathGenerator(r_inner, outer, 4, d)).attr('stroke', color);
+      _arc
+        .transition()
+        .attrTween('d', function (this) {
+          var interpolate = d3.interpolate(this._current, d);
+          var _this = this;
+          return function (t) {
+            _this._current = interpolate(t);
+            return arcPathGenerator(r_inner, outer, 4, _this._current);
+          };
+        })
+        .attr('stroke', color);
       g.selectAll('text').transition().attr('font-size', 24);
     };
 
@@ -69,7 +79,17 @@ const DonutChart: React.FC<Props> = (props: Props) => {
       const g = d3.select(`#arcG${d.index}`);
       const _arc = g.select(`#arc${d.index}`);
       _arc.interrupt();
-      _arc.transition().attr('d', arcPathGenerator(r_inner, r_outer, 6, d)).attr('stroke', 'var(--_primaryBg)');
+      _arc
+        .transition()
+        .attrTween('d', function (this) {
+          var interpolate = d3.interpolate(this._current, d);
+          var _this = this;
+          return function (t) {
+            _this._current = interpolate(t);
+            return arcPathGenerator(r_inner, r_outer, 6, _this._current);
+          };
+        })
+        .attr('stroke', 'var(--_primaryBg)');
       g.selectAll('text').transition().attr('font-size', 20);
     };
 
