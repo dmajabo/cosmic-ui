@@ -93,6 +93,7 @@ const LegendWrapper = css`
   flex-wrap: wrap;
   overflow: hidden;
   align-items: flex-start;
+  overflow-x: auto;
 `;
 export const LegendRight = styled.div`
   ${LegendWrapper}
