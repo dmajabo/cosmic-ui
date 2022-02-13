@@ -46,6 +46,14 @@ const Segments: React.FC<Props> = (props: Props) => {
   }, [response]);
 
   React.useEffect(() => {
+    if (error) {
+      setDataRows([]);
+      setTotalCount(0);
+      setDataLoadState(DATA_READY_STATE.ERROR);
+    }
+  }, [error]);
+
+  React.useEffect(() => {
     if (resDelete && deleteModalData && deleteModalData.dataItem) {
       toast.success(`Group '${deleteModalData.dataItem.name}' was deleted successfully!`);
       const _items = dataRows.filter(it => it.id !== deleteModalData.dataItem.id);

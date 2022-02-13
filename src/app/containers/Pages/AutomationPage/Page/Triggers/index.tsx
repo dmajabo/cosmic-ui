@@ -28,6 +28,7 @@ import { DEFAULT_TRANSITION } from 'lib/constants/general';
 import HitsComponent from './HitsComponent';
 import { ChannelsWrapper } from './styles';
 import { ISortObject } from 'lib/models/grid';
+import * as sortHelper from 'lib/helpers/gridHelper';
 
 interface Props {}
 
@@ -196,21 +197,8 @@ const Triggers: React.FC<Props> = (props: Props) => {
   };
 
   const onSort = (e: DataTablePFSEvent) => {
-    if (!sortObject) {
-      setSortObject({ field: e.sortField, order: e.sortOrder });
-      return;
-    }
-    if (sortObject && e.sortField !== sortObject.field) {
-      setSortObject({ field: e.sortField, order: e.sortOrder });
-      return;
-    }
-    if (sortObject && e.sortField === sortObject.field) {
-      if (sortObject.order === -1 && e.sortOrder === 1) {
-        setSortObject(null);
-        return;
-      }
-      setSortObject({ ...sortObject, order: e.sortOrder });
-    }
+    const _sortObject = sortHelper.singelSortHelper(sortObject, e);
+    setSortObject(_sortObject);
   };
 
   const severityBodyTemplate = (rowData: IAlertMetaTableItem) => {

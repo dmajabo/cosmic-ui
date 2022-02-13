@@ -11,29 +11,48 @@ export interface ISegmentsGridColumns {
 }
 
 export const SegmentsGridColumns: ISegmentsGridColumns = {
+  color: {
+    resField: 'color',
+    field: 'color',
+    label: '',
+    sortable: true,
+    hide: false,
+    width: '80px',
+  },
   name: {
     resField: 'name',
+    field: 'name',
     label: 'Name',
-  },
-  description: {
-    resField: 'description',
-    label: 'Description',
+    sortable: true,
+    hide: false,
+    width: '300px',
   },
   type: {
     resField: 'segType',
+    field: 'segType',
     label: 'Type',
+    sortable: true,
+    hide: false,
+    width: '200px',
+  },
+  description: {
+    resField: 'description',
+    field: 'description',
+    label: 'Description',
+    hide: false,
   },
   id: {
     resField: 'id',
+    field: 'id',
     label: 'Source',
-  },
-  color: {
-    resField: 'color',
-    label: '',
   },
   isSystemSegment: {
     resField: 'isSystemSegment',
+    field: 'isSystemSegment',
     label: 'System Defined',
+    sortable: true,
+    hide: false,
+    width: '140px',
   },
 };
 
