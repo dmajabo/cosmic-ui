@@ -18,7 +18,7 @@ export interface Data {
   readonly description: string;
   readonly averageQoe: JSX.Element;
   readonly hits?: JSX.Element;
-  readonly isTestDataValid?: boolean;
+  readonly isTestDataInvalid?: boolean;
 }
 
 interface TableProps {
@@ -60,8 +60,8 @@ const Styles = styled.div`
     display: flex;
     justify-content: center;
   }
-  .validData {
-    background-color: rgba(0, 255, 0, 0.1);
+  .invalidData {
+    background-color: rgba(154, 164, 177, 0.1);
   }
 `;
 
@@ -95,14 +95,35 @@ const Table: React.FC<TableProps> = ({ onSelectedRowsUpdate, columns, data }) =>
       hooks.visibleColumns.push(columns => [
         {
           id: 'selection',
-          Header: ({ getToggleAllPageRowsSelectedProps }) => (
-            <div>
-              <IndeterminateCheckbox {...getToggleAllPageRowsSelectedProps()} />
-            </div>
-          ),
+          Header: ({ toggleRowSelected, isAllPageRowsSelected, page }) => {
+            const modifiedOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+              page.forEach(row => {
+                //check each row if it is not disabled
+                !data[row.index].isTestDataInvalid && toggleRowSelected(row.id, event.currentTarget.checked);
+              });
+            };
+
+            //Count number of selectable and selected rows in the current page to determine the state of select all checkbox
+            let selectableRowsInCurrentPage = 0;
+            let selectedRowsInCurrentPage = 0;
+            page.forEach(row => {
+              row.isSelected && selectedRowsInCurrentPage++;
+              !data[row.index].isTestDataInvalid && selectableRowsInCurrentPage++;
+            });
+
+            //If there are no selectable rows in the current page select all checkbox will be disabled
+            const disabled = selectableRowsInCurrentPage === 0;
+            const checked = (isAllPageRowsSelected || selectableRowsInCurrentPage === selectedRowsInCurrentPage) && !disabled;
+
+            return (
+              <div>
+                <IndeterminateCheckbox onChange={modifiedOnChange} checked={checked} disabled={disabled} />
+              </div>
+            );
+          },
           Cell: ({ row }) => (
             <div>
-              <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
+              <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} disabled={data[row.index].isTestDataInvalid} />
             </div>
           ),
         },
@@ -144,7 +165,7 @@ const Table: React.FC<TableProps> = ({ onSelectedRowsUpdate, columns, data }) =>
             page.map((row, i) => {
               prepareRow(row);
               return (
-                <tr {...row.getRowProps()} className={data[i].isTestDataValid ? 'validData' : ''}>
+                <tr {...row.getRowProps()} className={data[i].isTestDataInvalid ? 'invalidData' : ''}>
                   {row.cells.map(cell => {
                     return (
                       <td {...cell.getCellProps()}>
