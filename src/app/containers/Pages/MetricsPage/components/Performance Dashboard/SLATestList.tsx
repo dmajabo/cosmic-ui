@@ -316,13 +316,13 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
             </div>
           </div>
           <TabPanel value={MetricTabValue.packetLoss}>
-            <PacketLoss timeRange={timeRange} selectedRows={selectedRows} />
+            <PacketLoss timeRange={timeRange} selectedRows={selectedRows} networks={networks} />
           </TabPanel>
           <TabPanel value={MetricTabValue.latency}>
-            <Latency timeRange={timeRange} selectedRows={selectedRows} />
+            <Latency timeRange={timeRange} selectedRows={selectedRows} networks={networks} />
           </TabPanel>
           <TabPanel value={MetricTabValue.goodput}>
-            <Goodput timeRange={timeRange} selectedRows={selectedRows} />
+            <Goodput timeRange={timeRange} selectedRows={selectedRows} networks={networks} />
           </TabPanel>
         </TabsUnstyled>
       </div>

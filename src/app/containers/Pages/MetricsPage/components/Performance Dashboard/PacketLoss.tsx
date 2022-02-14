@@ -6,13 +6,14 @@ import InfoIcon from '../../icons/performance dashboard/info';
 import LoadingIndicator from 'app/components/Loading';
 import { Data } from './Table';
 import Heatmap, { LegendData } from './Heatmap';
-import { HeatMapData } from 'lib/api/http/SharedTypes';
+import { HeatMapData, Vnet } from 'lib/api/http/SharedTypes';
 import isEmpty from 'lodash/isEmpty';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 
 interface PacketLossProps {
   readonly selectedRows: Data[];
   readonly timeRange: string;
+  readonly networks: Vnet[];
 }
 
 interface DataMetrics {
@@ -63,7 +64,7 @@ export const PACKET_LOSS_HEATMAP_LEGEND: LegendData[] = [
   },
 ];
 
-export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange }) => {
+export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange, networks }) => {
   const classes = PerformanceDashboardStyles();
 
   const [packetLossData, setPacketLossData] = useState<MetricKeyValue>({});
@@ -94,7 +95,10 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange 
     };
 
     const getHeatMapPacketLoss = async () => {
-      const promises = selectedRows.map(row => apiClient.getHeatmapPacketLoss(row.sourceNetwork, row.destination, timeRange, row.id));
+      const promises = selectedRows.map(row => {
+        const rowNetworkId = networks.find(network => network.name === row.sourceNetwork)?.extId || '';
+        return apiClient.getHeatmapPacketLoss(rowNetworkId, row.destination, timeRange, row.id);
+      });
       Promise.all(promises).then(values => {
         const heatMapPacketLoss: HeatMapData[] = values.map(item => {
           return {
