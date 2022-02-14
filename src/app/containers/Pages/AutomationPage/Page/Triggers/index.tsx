@@ -260,9 +260,9 @@ const Triggers: React.FC<Props> = (props: Props) => {
   return (
     <>
       <Header onRefreshData={onRefresh} onChangePeriod={onChangePeriod} selectedTimeRangePeriod={selectedPeriod} searchValue={searchValue} onSearchChange={onSearhChange} />
-      <TableWrapper>
+      <TableWrapper style={{ minHeight: !filteredData || !filteredData.length ? '300px' : 'auto' }}>
         <DataTable
-          className="table"
+          className="table autoHeight"
           emptyMessage={!error ? 'No data' : ' '}
           dataKey="id"
           rowClassName={rowClass}

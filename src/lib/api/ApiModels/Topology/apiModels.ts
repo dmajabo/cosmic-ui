@@ -13,6 +13,13 @@ export enum VendorTypes {
   AWS = 'AWS',
 }
 
+export enum ToposvcRuleType {
+  UNKNOWN_RULE_TYPE = 'UNKNOWN_RULE_TYPE', // default
+  L3_Inbound = 'L3_Inbound',
+  L3_Outbound = 'L3_Outbound',
+  L7_Outbound = 'L7_Outbound',
+}
+
 export interface ITopologyGroup {
   id?: string;
   name: string | null;
@@ -75,6 +82,7 @@ export interface INetworkRouteTable extends IBaseEntity<string> {
   routes: INetworkRoute[];
   ownerId: string;
   regionCode: string;
+  numberOfRoutes: number;
 }
 
 export interface INetworkCidr extends IBaseEntity<string> {
@@ -467,4 +475,37 @@ export interface IWEdgesRes extends IBaseTotalCount, IBasePages {
 
 export interface ISitesRes extends IBaseTotalCount, IBasePages {
   devices: INetworkDevice[];
+}
+
+export interface IToposvcListRouteTableResponse extends IBaseTotalCount {
+  routeTables: INetworkRouteTable[];
+}
+
+export interface IToposvcListSecurityGroupResponse extends IBaseTotalCount {
+  securityGroups: INetworkSecurityGroup[];
+}
+
+export interface IToposvcGetRulesResponse {
+  count: number | string;
+  rules: INetworkRule[];
+}
+
+export interface INetworkL7RuleValue extends IBaseEntity<string> {
+  name: string;
+  extId: string;
+  ownerId: string;
+  regionCode: string;
+}
+export interface INetworkL7Rule extends IBaseEntity<string> {
+  name: string;
+  extId: string;
+  ownerId: string;
+  regionCode: string;
+  policy: string;
+  valueType: string;
+  values: INetworkL7RuleValue[];
+}
+export interface IToposvcGetL7RulesResponse {
+  count: number | string;
+  rules: INetworkL7Rule[];
 }

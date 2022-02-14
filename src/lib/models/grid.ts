@@ -8,6 +8,8 @@ export interface IGridColumnField {
   id?: string;
   hide?: boolean;
   width?: number | string;
+  minWidth?: string;
+  maxWidth?: string;
   field?: string;
   sortable?: boolean;
   body?: (rowData: any) => React.ReactNode;

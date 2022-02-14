@@ -12,6 +12,11 @@ export const TableWrapper = styled.div`
     height: 100%;
     font-family: 'DMSans';
     font-size: 14px;
+    &.tableFixed {
+      .p-datatable-table {
+        table-layout: fixed;
+      }
+    }
     .p-datatable-wrapper {
       display: flex;
       min-height: 100%;
@@ -22,6 +27,12 @@ export const TableWrapper = styled.div`
       background: var(--_tableBg);
       border-radius: 6px 6px 0 0;
       border: 2px solid var(--_tableBg);
+    }
+    .p-datatable-table .p-checkbox {
+      margin: 0 auto;
+    }
+    .p-datatable-table td.p-selection-column {
+      text-align: center !important;
     }
     .p-datatable-table tr {
       background: var(--_rowBg);
@@ -39,6 +50,10 @@ export const TableWrapper = styled.div`
       }
       &.row-expanded .channelTagBg {
         background: var(--_primaryWhiteColor);
+      }
+      &.p-selectable-row:not(.p-highlight):not(.p-datatable-emptymessage):hover {
+        background: var(--_rowBg);
+        color: var(--_primaryTextColor);
       }
     }
     .p-datatable-table .p-datatable-thead th {
@@ -121,6 +136,15 @@ export const TableWrapper = styled.div`
   }
   .cellToUpperCase {
     text-transform: uppercase;
+  }
+  .cellToCapitalize {
+    text-transform: capitalize;
+  }
+  .table.autoHeight {
+    height: auto;
+    .p-datatable-wrapper {
+      min-height: auto;
+    }
   }
 `;
 

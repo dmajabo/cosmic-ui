@@ -71,9 +71,9 @@ const TableComponent: React.FC<Props> = (props: Props) => {
   };
   return (
     <>
-      <TableWrapper>
+      <TableWrapper style={{ minHeight: !props.data || !props.data.length ? '300px' : null }}>
         <DataTable
-          className="table"
+          className="table autoHeight"
           emptyMessage={!props.error ? 'No data' : ' '}
           value={props.data}
           responsiveLayout="scroll"
@@ -83,7 +83,7 @@ const TableComponent: React.FC<Props> = (props: Props) => {
           sortMode="single"
         >
           <Column
-            style={{ width: SegmentsGridColumns.color.width, minWidth: SegmentsGridColumns.color.width, maxWidth: SegmentsGridColumns.color.width }}
+            style={{ width: SegmentsGridColumns.color.width, minWidth: SegmentsGridColumns.color.width, maxWidth: SegmentsGridColumns.color.width, textAlign: 'center', verticalAlign: 'middle' }}
             sortable={SegmentsGridColumns.color.sortable}
             field={SegmentsGridColumns.color.field}
             header={SegmentsGridColumns.color.label}

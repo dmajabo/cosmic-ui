@@ -161,7 +161,7 @@ const Configutation: React.FC<Props> = (props: Props) => {
   return (
     <>
       <ActionRowStyles>
-        <ActionPart margin="0 0 0 auto">
+        <ActionPart margin="0 0 0 auto" justifyContent="flex-end">
           <PrimaryButton height="50px" label="Create Channel" icon={addIcon} onClick={onCreateNewChannel} />
         </ActionPart>
       </ActionRowStyles>

@@ -39,7 +39,7 @@ export const DroppedFlowsComponent: React.FC<Props> = (props: Props) => {
   const onGoToLogs = (d: PieDataItem) => {
     const _policyField: ISearchData = getSearchedFields(SessionGridColumns.policyAction.field, SessionElasticFieldItems);
     const _destSegmentIdField: ISearchData = getSearchedFields(SessionGridColumns.destSegmentId.field, SessionElasticFieldItems);
-    const _destId = d.id !== 'Unknown' ? d.id : '';
+    const _destId = d.id === 'unknown' || d.id === 'Unknown' || !d.id ? 'unknown' : d.id;
     traffic.onChangeSelectedTab(TRAFFIC_TABS.logs.index);
     sessions.onGoToSession(true, [{ field: _policyField.field, value: 'DROP' }, FilterOpperatorsList[0].value, { field: _destSegmentIdField.field, value: _destId }]);
   };

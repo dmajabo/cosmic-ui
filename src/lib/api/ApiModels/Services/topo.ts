@@ -1,4 +1,5 @@
 import { ControllerKeyTypes } from 'lib/api/ApiModels/Metrics/apiModel';
+import { ToposvcRuleType } from '../Topology/apiModels';
 
 export const TopoApi = {
   getAllOrganizations: () => 'topo/api/v1/topology/organizations',
@@ -21,4 +22,9 @@ export const TopoApi = {
   getOnPremOrgList: () => 'topo/api/v1/topology/onprem/orgs',
   getOnPremNetworkList: () => 'topo/api/v1/topology/onprem/networks',
   getOnPremDeviceList: () => 'topo/api/v1/topology/onprem/devices',
+
+  getRouteTables: () => 'topo/api/v1/topology/route-tables', // res => IToposvcListRouteTableResponse
+  getSecurityGroups: () => 'topo/api/v1/topology/security-groups', // res => IToposvcListSecurityGroupResponse
+  getRules: (type?: ToposvcRuleType) => (type ? `topo/api/v1/topology/rules?ruleType=${type}` : `topo/api/v1/topology/rules`), // res => IToposvcGetRulesResponse
+  getL7Rules: () => 'topo/api/v1/topology/l7-rules', // res => IToposvcGetL7RulesResponse
 };

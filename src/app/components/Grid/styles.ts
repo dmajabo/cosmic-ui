@@ -69,6 +69,7 @@ export const ColorValue = styled.span<PropsCellColor>`
   height: 20px;
   border-radius: 4px;
   margin: ${props => props.margin || 'auto'};
+  vertical-align: middle;
 `;
 
 export const CellValue = styled.span<PropsCellColor>`
