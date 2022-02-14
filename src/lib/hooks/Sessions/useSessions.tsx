@@ -31,6 +31,7 @@ export interface SessionsContextType {
   onChangeSelectedPeriod: (_value: SESSIONS_TIME_RANGE_QUERY_TYPES, _page: SessionsTabTypes) => void;
   onChangeSwitch: (_value: boolean, _page: SessionsTabTypes) => void;
   onChangeFilter: (_value: (IElasticFilterModel | string)[]) => void;
+  onGoToSession: (stitch: boolean, filterItem: (IElasticFilterModel | string)[]) => void;
   onClearContext: () => void;
 }
 export function useSessionsContext(): SessionsContextType {
@@ -39,7 +40,7 @@ export function useSessionsContext(): SessionsContextType {
   const [sessionsCount, setSessionsCount] = React.useState<number>(0);
   const [sessionsPageSize, setSessionsPageSize] = React.useState<number>(PAGING_DEFAULT_PAGE_SIZE);
   const [sessionsCurrentPage, setSessionsCurrentPage] = React.useState<number>(1);
-  const [sessionsPeriod, setSessionsPeriod] = React.useState<SESSIONS_TIME_RANGE_QUERY_TYPES>(SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_HOUR);
+  const [sessionsPeriod, setSessionsPeriod] = React.useState<SESSIONS_TIME_RANGE_QUERY_TYPES>(SESSIONS_TIME_RANGE_QUERY_TYPES.LAST_WEEK);
   const [sessionsOverviewPeriod, setSessionsOverviewPeriod] = React.useState<SESSIONS_TIME_RANGE_QUERY_TYPES>(null);
   const [sessionsStitch, setSessionsStitch] = React.useState<boolean>(false);
   const [sessionsFilter, setSessionsFilterValue] = React.useState<(IElasticFilterModel | string)[]>([]);
@@ -124,6 +125,13 @@ export function useSessionsContext(): SessionsContextType {
     setSessionsFilterValue(value);
   };
 
+  const onGoToSession = (stitch: boolean, filterItem: (IElasticFilterModel | string)[]) => {
+    setSessionsFilterValue(filterItem);
+    setSessionsCurrentPage(1);
+    setSessionsPageSize(PAGING_DEFAULT_PAGE_SIZE);
+    setSessionsStitch(stitch);
+  };
+
   const onChangeSelectedPeriod = (value: SESSIONS_TIME_RANGE_QUERY_TYPES, _page: SessionsTabTypes) => {
     if (_page === SessionsTabTypes.Sessions) {
       updateSessionStoragePreference(value, OKULIS_LOCAL_STORAGE_KEYS.OKULIS_PREFERENCE, StoragePreferenceKeys.SESSIONS_TIME_PERIOD);
@@ -184,6 +192,7 @@ export function useSessionsContext(): SessionsContextType {
     onChangeSelectedPeriod,
     onChangeSwitch,
     onChangeFilter,
+    onGoToSession,
     onClearContext,
   };
 }

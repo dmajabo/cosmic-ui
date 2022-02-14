@@ -1,5 +1,5 @@
-import { IDeviceRule, IRouteResDataItem, IVmRule, PolicyTableKeyEnum } from 'lib/api/ApiModels/Metrics/apiModel';
-import { VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
+import { IRouteResDataItem, PolicyTableKeyEnum } from 'lib/api/ApiModels/Metrics/apiModel';
+import { INetworkRule, VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
 import isEmpty from 'lodash/isEmpty';
 import isEqual from 'lodash/isEqual';
 import React from 'react';
@@ -46,9 +46,9 @@ export const NewConfigData: React.FC<ConfigDataProps> = ({ oldData, newData, sha
     return areArraysEqual ? classes.defaultPropertyItem : classes.changedPropertyItem;
   };
 
-  const getCIDRUniqueKey = (resource: IVmRule) => `${resource.cidrs && resource.cidrs.length ? resource.cidrs[0].name : null}_${resource.fromPort}-${resource.toPort}`;
+  const getCIDRUniqueKey = (resource: INetworkRule) => `${resource.cidrs && resource.cidrs.length ? resource.cidrs[0].name : null}_${resource.fromPort}-${resource.toPort}`;
 
-  const getRulesTableClassName = (oldData: IVmRule[], newData: IVmRule[]) => {
+  const getRulesTableClassName = (oldData: INetworkRule[], newData: INetworkRule[]) => {
     const areArraysEqual =
       oldData.length === newData.length &&
       newData.every(resource => {
@@ -59,7 +59,7 @@ export const NewConfigData: React.FC<ConfigDataProps> = ({ oldData, newData, sha
     return areArraysEqual ? classes.defaultPropertyItem : classes.changedPropertyItem;
   };
 
-  const getDeviceRulesTableClassName = (oldData: IDeviceRule[], newData: IDeviceRule[]) => {
+  const getDeviceRulesTableClassName = (oldData: INetworkRule[], newData: INetworkRule[]) => {
     const areArraysEqual =
       oldData.length === newData.length &&
       newData.every(resource => {
@@ -116,12 +116,29 @@ export const NewConfigData: React.FC<ConfigDataProps> = ({ oldData, newData, sha
       syslogEnabled: rule.syslogEnabled,
       comment: rule.comment,
       policy: rule.policy,
+      ...rule,
     }));
 
   const getRuleTables = (oldRules: Rule[], newRules: Rule[]) => {
     if (vendorType === VendorTypes.AWS) {
-      const oldVmRules: IVmRule[] = oldRules.map(rule => ({ id: '', fromPort: rule.fromPort, toPort: rule.toPort, ipProtocol: rule.ipProtocol, ruleType: rule.ruleType, cidrs: rule.cidrs }));
-      const newVmRules: IVmRule[] = newRules.map(rule => ({ id: '', fromPort: rule.fromPort, toPort: rule.toPort, ipProtocol: rule.ipProtocol, ruleType: rule.ruleType, cidrs: rule.cidrs }));
+      const oldVmRules: INetworkRule[] = oldRules.map(rule => ({
+        id: '',
+        fromPort: rule.fromPort,
+        toPort: rule.toPort,
+        ipProtocol: rule.ipProtocol,
+        ruleType: rule.ruleType,
+        cidrs: rule.cidrs,
+        ...rule,
+      }));
+      const newVmRules: INetworkRule[] = newRules.map(rule => ({
+        id: '',
+        fromPort: rule.fromPort,
+        toPort: rule.toPort,
+        ipProtocol: rule.ipProtocol,
+        ruleType: rule.ruleType,
+        cidrs: rule.cidrs,
+        ...rule,
+      }));
       const inboundRules = newVmRules.filter(rule => rule.ruleType === PolicyTableKeyEnum.Inbound);
       const outboundRules = newVmRules.filter(rule => rule.ruleType === PolicyTableKeyEnum.Outbound);
       return (
@@ -132,8 +149,8 @@ export const NewConfigData: React.FC<ConfigDataProps> = ({ oldData, newData, sha
         </div>
       );
     } else {
-      const oldDeviceRules: IDeviceRule[] = getDeviceRules(oldRules);
-      const newDeviceRules: IDeviceRule[] = getDeviceRules(newRules);
+      const oldDeviceRules: INetworkRule[] = getDeviceRules(oldRules);
+      const newDeviceRules: INetworkRule[] = getDeviceRules(newRules);
       return (
         <div className={getDeviceRulesTableClassName(oldDeviceRules, newDeviceRules)}>
           <div className={classes.tablePropertyTitle}>Rules</div>

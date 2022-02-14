@@ -8,7 +8,6 @@ import { SETTINGS_TABS } from 'lib/hooks/Settings/model';
 import { useSettingsDataContext } from 'lib/hooks/Settings/useSettingsDataContenxt';
 // import AdminPage from 'app/containers/Pages/SettingsPage/Admin';
 import Logging from '../Logging';
-import Inventory from '../Inventory';
 
 interface IProps {}
 
@@ -35,9 +34,7 @@ const Page: React.FC<IProps> = (props: IProps) => {
             },
           }}
         >
-          {SETTINGS_TABS.map(it => (
-            <Tab disableRipple key={`settingsTab${it.id}`} label={it.label} classes={{ selected: classes.tabSelected }} {...TabComponentProps(0)} className={classes.tabBigSize} />
-          ))}
+          <Tab disableRipple label={SETTINGS_TABS.loggings.label} classes={{ selected: classes.tabSelected }} {...TabComponentProps(0)} className={classes.tabBigSize} />
         </Tabs>
       </TabsWrapperStyles>
       {/* <TabPanel
@@ -48,9 +45,9 @@ const Page: React.FC<IProps> = (props: IProps) => {
         <AdminPage />
       </TabPanel> */}
       <TabPanel
-        styles={{ display: 'flex', flexDirection: 'column', flex: settings.selectedTab.index === SETTINGS_TABS[0].index ? '1 1 100%' : '0' }}
+        styles={{ display: 'flex', flexDirection: 'column', flex: settings.selectedTab.index === SETTINGS_TABS.loggings.index ? '1 1 100%' : '0' }}
         value={settings.selectedTab.index}
-        index={SETTINGS_TABS[0].index}
+        index={SETTINGS_TABS.loggings.index}
       >
         <Logging />
       </TabPanel>

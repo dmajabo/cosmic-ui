@@ -1,4 +1,11 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+
+export const ChartLegendWrapContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  position: relative;
+  border-radius: 6px;
+`;
 
 export const ChartWrapContainer = styled.div`
   display: flex;
@@ -28,5 +35,76 @@ export const ChartWrapContainer = styled.div`
     width: 100%;
     height: 100%;
     border-radius: 6px;
+    &.donutChart {
+      width: 50%;
+      margin: 0 auto;
+    }
+  }
+`;
+
+interface LegendProps {
+  color?: string;
+  hide?: boolean;
+}
+export const LegendItem = styled.div`
+  display: inline-flex;
+  flex-shrink: 0;
+  margin: 10px;
+  width: 120px;
+  overflow: hidden;
+  align-items: center;
+  cursor: pointer;
+  direction: ltr;
+`;
+
+export const LegendColor = styled.span<LegendProps>`
+  width: 16px;
+  height: 16px;
+  border-radius: 6px;
+  background: ${props => props.color || 'transparent'};
+  margin: auto 12px auto 0;
+  flex-shrink: 0;
+  opacity: ${props => (props.hide ? 0.3 : 1)};
+`;
+export const LegendLabel = styled.span<LegendProps>`
+  display: inline-block;
+  font-family: 'DMSans';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 18px;
+  color: ${props => (props.hide ? 'var(--_disabledTextColor)' : 'var(--_primaryTextColor)')};
+  width: calc(100% - 36px);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+`;
+
+const LegendWrapper = css`
+  position: absolute;
+  top: 50%;
+  width: 25%;
+  height: auto;
+  max-height: 95%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: translateY(-50%);
+  flex-wrap: wrap;
+  overflow: hidden;
+  align-items: flex-start;
+  overflow-x: auto;
+`;
+export const LegendRight = styled.div`
+  ${LegendWrapper}
+  right: 0;
+`;
+
+export const LegendLeft = styled.div`
+  ${LegendWrapper}
+  left: 0;
+  direction: rtl;
+  ${LegendItem} {
+    justify-content: flex-end;
   }
 `;

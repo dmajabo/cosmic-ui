@@ -7,7 +7,7 @@ import TextInput from 'app/components/Inputs/TextInput';
 import PrimaryButton from 'app/components/Buttons/PrimaryButton';
 import { jsonClone } from 'lib/helpers/cloneHelper';
 import AccountFormHeader from './AccountFormHeader';
-import CheckBox from 'app/components/Inputs/Checkbox/CheckBox';
+// import CheckBox from 'app/components/Inputs/Checkbox/CheckBox';
 import { useGet, usePost, usePut } from 'lib/api/http/useAxiosHook';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
@@ -15,6 +15,7 @@ import { useAccountsDataContext } from 'lib/hooks/Accounts/useAccountsDataContex
 import { IBaseEntity } from 'lib/models/general';
 import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 import { PolicyApi } from 'lib/api/ApiModels/Services/policy';
+import { GetControllerVendorResponse } from 'lib/api/http/SharedTypes';
 interface Props {
   isEditMode: boolean;
   dataItem: IMeraki_Account;
@@ -29,7 +30,7 @@ const NewCiscoMerakiAccountForm: React.FC<Props> = (props: Props) => {
   const { response: postUpdateRes, loading: postUpdateLoading, onPut: onUpdate } = usePut<IMeraki_Account, IBaseEntity<string>>();
   const [dataItem, setDataItem] = React.useState<IMeraki_Account>(null);
   const [isValid, setIsValid] = React.useState<boolean>(false);
-
+  const { response: vendorResponse, onGet: onGetVendors } = useGet<GetControllerVendorResponse>();
   React.useEffect(() => {
     const _dataItem: IMeraki_Account = jsonClone(props.dataItem);
     setIsValid(onValidate(_dataItem));
@@ -51,9 +52,16 @@ const NewCiscoMerakiAccountForm: React.FC<Props> = (props: Props) => {
   React.useEffect(() => {
     if (getResById) {
       accounts.onAddAccount(getResById);
-      onClose();
+      onTryLoadVendors();
     }
   }, [getResById]);
+
+  React.useEffect(() => {
+    if (vendorResponse && vendorResponse.vendors) {
+      userContext.setUserVendors(vendorResponse.vendors);
+      onClose();
+    }
+  }, [vendorResponse]);
 
   const onClose = () => {
     props.onClose();
@@ -73,11 +81,11 @@ const NewCiscoMerakiAccountForm: React.FC<Props> = (props: Props) => {
     setDataItem(_item);
   };
 
-  const onEnabledPolicyChange = (checked: boolean) => {
-    const _item: IMeraki_Account = { ...dataItem };
-    _item.merakiPol.flowlogPol.enableSyslog = checked;
-    setDataItem(_item);
-  };
+  // const onEnabledPolicyChange = (checked: boolean) => {
+  //   const _item: IMeraki_Account = { ...dataItem };
+  //   _item.merakiPol.flowlogPol.enableSyslog = checked;
+  //   setDataItem(_item);
+  // };
 
   const onValidate = (_item: IMeraki_Account): boolean => {
     if (!_item) return false;
@@ -106,6 +114,10 @@ const NewCiscoMerakiAccountForm: React.FC<Props> = (props: Props) => {
     await onGet(PolicyApi.getAccountsById(id), userContext.accessToken!);
   };
 
+  const onTryLoadVendors = async () => {
+    await onGetVendors(PolicyApi.getControllerVendors(), userContext.accessToken!);
+  };
+
   if (!dataItem) return null;
   return (
     <>
@@ -124,7 +136,7 @@ const NewCiscoMerakiAccountForm: React.FC<Props> = (props: Props) => {
                 required
               />
             </StepItemFormRow>
-            <StepItemFormRow margin="0 auto 0 0">
+            <StepItemFormRow margin="0 0 20px 0">
               <TextInput
                 id="editorAccountDescription"
                 name="description"
@@ -146,9 +158,9 @@ const NewCiscoMerakiAccountForm: React.FC<Props> = (props: Props) => {
                 required
               />
             </StepItemFormRow>
-            <StepItemFormRow margin="0">
+            {/* <StepItemFormRow margin="0">
               <CheckBox label="Enable Syslog Collection" isChecked={dataItem.merakiPol.flowlogPol.enableSyslog} toggleCheckboxChange={onEnabledPolicyChange} />
-            </StepItemFormRow>
+            </StepItemFormRow> */}
           </StepItem>
         </ModalOverflowContainer>
         {(postLoading || postUpdateLoading || getLoading) && (

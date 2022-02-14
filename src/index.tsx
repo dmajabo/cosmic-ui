@@ -30,6 +30,7 @@ import reportWebVitals from 'reportWebVitals';
 import './locales/i18n';
 import { ROUTE } from 'lib/Routes/model';
 import { GeneralProvider } from 'lib/hooks/General/useGeneralDataContext';
+import { UserProvider } from 'lib/Routes/UserProvider';
 
 const store = configureAppStore();
 const MOUNT_NODE = document.getElementById('root') as HTMLElement;
@@ -43,11 +44,13 @@ ReactDOM.render(
       audience={process.env.REACT_APP_AUTH0_AUDIENCE}
     >
       <GeneralProvider>
-        <HelmetProvider>
-          <React.StrictMode>
-            <App />
-          </React.StrictMode>
-        </HelmetProvider>
+        <UserProvider>
+          <HelmetProvider>
+            <React.StrictMode>
+              <App />
+            </React.StrictMode>
+          </HelmetProvider>
+        </UserProvider>
       </GeneralProvider>
     </Auth0Provider>
   </Provider>,

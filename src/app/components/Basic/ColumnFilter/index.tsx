@@ -16,6 +16,7 @@ interface IProps {
   draggable?: boolean;
   onItemClick: (item: IColumn | IGridColumnField, hide: boolean) => void;
   onChangeOrder: (items: (IColumn | IGridColumnField)[]) => void;
+  withoutBorder?: boolean;
 }
 
 const ColumnFilter: React.FC<IProps> = (props: IProps) => {
@@ -50,7 +51,7 @@ const ColumnFilter: React.FC<IProps> = (props: IProps) => {
   };
 
   return (
-    <SecondaryButtonWithPopup label={props.label} icon={props.icon || columnsIcon} direction="rtl">
+    <SecondaryButtonWithPopup label={props.label} icon={props.icon || columnsIcon} direction="rtl" withoutBorder={props.withoutBorder}>
       <PopupContainer
         styles={{
           overflow: 'hidden',

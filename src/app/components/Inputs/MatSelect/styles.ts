@@ -6,15 +6,16 @@ export const TextInputWrapper = styled.div`
   flex-shrink: 0;
   overflow: hidden;
   min-height: 60px;
-  & .MuiSelect-root {
+  & .MuiSelect-root,
+  & .MuiInputBase-root {
     font-family: 'DMSans';
     font-size: 14px;
     line-height: normal;
     border-radius: 6px;
     width: 100%;
     color: var(--_primaryTextColor);
-    background: var(--_primaryBg) !important;
-    border: 1px solid var(--_defaultInputBorder) !important;
+    background: var(--_primaryBg);
+    border: 1px solid var(--_defaultInputBorder);
     box-sizing: border-box;
     & .icon svg {
       transform: rotate(0deg);
@@ -78,6 +79,8 @@ export const TextInputWrapper = styled.div`
     font-weight: 500 !important;
     line-height: 18px;
     background: var(--_primaryBg) !important;
+    border-radius: 6px;
+    border: none !important;
     &.Mui-disabled {
       opacity: 0.5;
       cursor: not-allowed;

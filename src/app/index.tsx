@@ -13,7 +13,13 @@ import { BrowserRouter, Router } from 'react-router-dom';
 import GlobalStyle from 'styles/global-styles';
 import { useTranslation } from 'react-i18next';
 import history from 'utils/history';
-import AppRouting from './AppRouting';
+import { Switch, Route, Redirect } from 'react-router-dom';
+import { ROUTE } from 'lib/Routes/model';
+import NotFoundPage from 'app/containers/NotFoundPage';
+import { ProtectedRouteV2 } from 'lib/Routes/ProtectedRoute';
+import LandingPage from 'app/containers/LandingPage';
+import { HomePage } from './containers/HomePage';
+import { RedirectContainer } from 'lib/Routes/RedirectContainer';
 
 export function App() {
   const { i18n } = useTranslation();
@@ -23,7 +29,13 @@ export function App() {
         <meta name="description" content="" />
       </Helmet>
       <Router history={history}>
-        <AppRouting />
+        <Switch>
+          <Route exact path={ROUTE.base} component={LandingPage} />
+          <ProtectedRouteV2 exact path={ROUTE.signUp} component={RedirectContainer} />
+          <ProtectedRouteV2 path={ROUTE.app} component={HomePage} />
+          <Route exact path={ROUTE.base} render={() => <Redirect to={ROUTE.app} />} />
+          <Route path={ROUTE.notFound} component={NotFoundPage} />
+        </Switch>
       </Router>
       <GlobalStyle />
     </BrowserRouter>

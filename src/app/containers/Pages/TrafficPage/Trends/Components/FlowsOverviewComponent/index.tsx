@@ -15,6 +15,10 @@ import HeatMap from 'react-heatmap-grid';
 import * as d3 from 'd3';
 import LegendRangeItem from './RangeItem/LegendRangeItem';
 import { LegendRangeItemsWrapper } from './RangeItem/style';
+import { getSearchedFields, ISearchData } from 'app/components/Inputs/ElasticFilter/helper';
+import { FilterOpperatorsList, SessionElasticFieldItems, SessionGridColumns } from '../../../SessionPage/models';
+import { TRAFFIC_TABS } from 'lib/hooks/Traffic/models';
+import { useSessionsDataContext } from 'lib/hooks/Sessions/useSessionsDataContext';
 interface Props {
   onOpenPanel: () => void;
 }
@@ -22,6 +26,7 @@ interface Props {
 export const FlowsOverviewComponent: React.FC<Props> = (props: Props) => {
   const userContext = React.useContext<UserContextState>(UserContext);
   const { traffic } = useTrafficDataContext();
+  const { sessions } = useSessionsDataContext();
   const { response, loading, error, onGet } = useGet<ITesseractGetSessionsBetweenSegmentsResponse>();
   const [period, setPeriod] = React.useState(null);
   const [rows, setRowsData] = React.useState<any[][]>([]);
@@ -74,7 +79,7 @@ export const FlowsOverviewComponent: React.FC<Props> = (props: Props) => {
         source.destSegments.forEach(dest => {
           const _id = dest.segmentName || 'UNKNOWN';
           const _rowIndex = _yAxis.findIndex(it => it === _id);
-          _rows[_rowIndex][colI] = dest;
+          _rows[_rowIndex][colI] = { ...dest, sourceSegmentId: source.sourceSegmentId };
         });
       });
       setXAxis(_xAxis);
@@ -87,15 +92,8 @@ export const FlowsOverviewComponent: React.FC<Props> = (props: Props) => {
     props.onOpenPanel();
   };
 
-  // if (scale) {
-  //   console.log(range)
-  //   console.log(domain)
-  //   console.log(scale(1))
-  //   console.log(scale(8))
-  // }
-
   const onTryLoadSegments = async (timePeriod: TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES) => {
-    await onGet(TesseractApi.getSessionBwSegments(timePeriod || TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES.LAST_HOUR), userContext.accessToken!);
+    await onGet(TesseractApi.getSessionBwSegments(timePeriod || TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES.LAST_WEEK), userContext.accessToken!);
   };
 
   const getColor = (v: any) => {
@@ -106,6 +104,16 @@ export const FlowsOverviewComponent: React.FC<Props> = (props: Props) => {
     return { bg: scale(v.count), color: 'var(--_primaryWhiteColor)' };
   };
 
+  const onCellClick = (col: number, row: number) => {
+    if (!rows[row][col]) return;
+    const _sourceSegmentIdField: ISearchData = getSearchedFields(SessionGridColumns.sourceSegmentId.field, SessionElasticFieldItems);
+    const _destSegmentIdField: ISearchData = getSearchedFields(SessionGridColumns.destSegmentId.field, SessionElasticFieldItems);
+    const _sourceId = rows[row][col].sourceSegmentId !== 'Unknown' && rows[row][col].sourceSegmentId ? rows[row][col].sourceSegmentId : '';
+    const _destId = rows[row][col].segmentId !== 'Unknown' && rows[row][col].segmentId ? rows[row][col].segmentId : '';
+    traffic.onChangeSelectedTab(TRAFFIC_TABS.logs.index);
+    sessions.onGoToSession(true, [{ field: _sourceSegmentIdField.field, value: _sourceId }, FilterOpperatorsList[0].value, { field: _destSegmentIdField.field, value: _destId }]);
+  };
+
   return (
     <ChartContainer>
       <ChartHeader>
@@ -114,9 +122,17 @@ export const FlowsOverviewComponent: React.FC<Props> = (props: Props) => {
       </ChartHeader>
       <ChartWrapper
         className="heatChartWrapperMap"
-        style={{ borderColor: 'transparent', background: 'transparent', overflow: 'hidden', height: 'auto', maxHeight: 'calc(100% - 60px)', flexGrow: 1, flexShrink: 1 }}
+        style={{
+          borderColor: !error && rows && rows.length ? 'transparent' : null,
+          background: !error && rows && rows.length ? 'transparent' : null,
+          overflow: 'hidden',
+          height: 'auto',
+          maxHeight: 'calc(100% - 60px)',
+          flexGrow: 1,
+          flexShrink: 1,
+        }}
       >
-        {!error && rows && rows.length && (
+        {!error && rows && rows.length ? (
           <HeatMap
             xLabels={xAxis}
             yLabels={yAxis}
@@ -125,6 +141,7 @@ export const FlowsOverviewComponent: React.FC<Props> = (props: Props) => {
             yLabelWidth={190}
             height={48}
             data={rows}
+            onClick={onCellClick}
             cellStyle={(background, value, min, max, data, x, y) => {
               const c = getColor(value);
               return {
@@ -151,16 +168,21 @@ export const FlowsOverviewComponent: React.FC<Props> = (props: Props) => {
             }}
             title={() => ''}
           />
+        ) : (
+          <ErrorMessage className="empty" color="var(--_primaryTextColor)" fontSize={20} margin="auto">
+            No data
+          </ErrorMessage>
         )}
 
         {loading && (
-          <AbsLoaderWrapper width="100%" height="100%" zIndex={10}>
+          <AbsLoaderWrapper className="loading" width="100%" height="100%" zIndex={10}>
             <LoadingIndicator margin="auto" />
           </AbsLoaderWrapper>
         )}
-        {error && <ErrorMessage>{error.message || 'Something went wrong'}</ErrorMessage>}
+        {error && <ErrorMessage className="error">{error.message || 'Something went wrong'}</ErrorMessage>}
       </ChartWrapper>
-      {traffic.rangePreference && traffic.rangePreference.length ? (
+      {!error && (!rows || !rows.length) ? <AbsLoaderWrapper width="100%" height="100%" zIndex={10}></AbsLoaderWrapper> : null}
+      {!error && rows && rows.length && traffic.rangePreference && traffic.rangePreference.length ? (
         <LegendRangeItemsWrapper>
           {traffic.rangePreference.map(it => (
             <LegendRangeItem key={`rangeItem${it.id}`} range={it} />

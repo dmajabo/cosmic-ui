@@ -1,13 +1,10 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import { logoIcon } from 'app/components/SVGIcons/pagesIcons/logo';
 import { APP_PAGES, IPage } from 'lib/Routes/model';
 import ListLink from './ListLink';
 import { ContentWrapper, List, Logo, LogoLabel, LogoWrapper, ToogleButton, ToogleWrapper, TransitionWrapper, WrapSidebar } from './styles';
 import { toggleSideBarIcon } from '../SVGIcons/toggleSideBarIcon';
-import { useGet } from 'lib/api/http/useAxiosHook';
-import { GetControllerVendorResponse } from 'lib/api/http/SharedTypes';
 import { AccountVendorTypes } from 'lib/api/ApiModels/Accounts/apiModel';
-import { PolicyApi } from 'lib/api/ApiModels/Services/policy';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 
 interface SidebarProps {
@@ -17,25 +14,13 @@ interface SidebarProps {
   onGoTo: (page: IPage) => void;
 }
 const Sidebar: React.FC<SidebarProps> = props => {
-  const userContext = useContext<UserContextState>(UserContext);
-  const { response: vendorResponse, onGet: onGetVendors } = useGet<GetControllerVendorResponse>();
-  const [isAwsConfigured, setIsAwsConfigured] = useState<boolean>(false);
+  const { vendors } = useContext<UserContextState>(UserContext);
 
   const onGoTo = (path: IPage) => {
     props.onGoTo(path);
   };
 
-  useEffect(() => {
-    onGetVendors(PolicyApi.getControllerVendors(), userContext.accessToken!);
-  }, []);
-
-  useEffect(() => {
-    if (vendorResponse && vendorResponse.vendors && vendorResponse.vendors.length) {
-      setIsAwsConfigured(vendorResponse.vendors.includes(AccountVendorTypes.AMAZON_AWS));
-    }
-  }, [vendorResponse]);
-
-  const getAppPages = () => (isAwsConfigured ? APP_PAGES : APP_PAGES.filter(page => page.id !== 'traffic'));
+  const getAppPages = () => (vendors && vendors[AccountVendorTypes.AMAZON_AWS] ? APP_PAGES : APP_PAGES.filter(page => page.id !== 'traffic'));
 
   return (
     <WrapSidebar isOpen={props.isOpenSidebar}>

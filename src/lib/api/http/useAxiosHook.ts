@@ -1,7 +1,7 @@
 import React from 'react';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 
-axios.defaults.baseURL = process.env.REACT_APP_API_ENDPOINT_PRODUCTION;
+axios.defaults.baseURL = 'https://dev01.api.asgardinternal.net'; // process.env.REACT_APP_API_ENDPOINT_PRODUCTION;
 
 const getHeaders = (token: string, params?: Object) => {
   return {

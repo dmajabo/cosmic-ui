@@ -1,6 +1,6 @@
 import React from 'react';
 import { INetworkVNetNode } from 'lib/hooks/Topology/models';
-import { IPolicyRes, IVmRule, IResourceQueryParam, SecurityGroupsResourceTypes, ControllerKeyTypes, PolicyResKeyEnum, PolicyTableKeyEnum } from 'lib/api/ApiModels/Metrics/apiModel';
+import { IToposvcListSecurityGroupResponse, IResourceQueryParam, SecurityGroupsResourceTypes, ControllerKeyTypes, PolicyResKeyEnum, PolicyTableKeyEnum } from 'lib/api/ApiModels/Metrics/apiModel';
 import { getQueryResourceParam } from 'lib/api/ApiModels/Metrics/queryRoutesHelper';
 import { toTimestamp } from 'lib/api/ApiModels/paramBuilders';
 import { TopoApi } from 'lib/api/ApiModels/Services/topo';
@@ -8,6 +8,7 @@ import { useGet } from 'lib/api/http/useAxiosHook';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 import PolicyTable from '../VmTabs/PolicyTab/PolicyTable';
+import { INetworkRule } from 'lib/api/ApiModels/Topology/apiModels';
 
 interface Props {
   dataItem: INetworkVNetNode;
@@ -16,9 +17,9 @@ interface Props {
 const PolicyTab: React.FC<Props> = (props: Props) => {
   const { topology } = useTopologyV2DataContext();
   const userContext = React.useContext<UserContextState>(UserContext);
-  const { response, loading, error, onGet } = useGet<IPolicyRes>();
-  const [inData, setInData] = React.useState<IVmRule[]>([]);
-  const [outData, setOutData] = React.useState<IVmRule[]>([]);
+  const { response, loading, error, onGet } = useGet<IToposvcListSecurityGroupResponse>();
+  const [inData, setInData] = React.useState<INetworkRule[]>([]);
+  const [outData, setOutData] = React.useState<INetworkRule[]>([]);
   React.useEffect(() => {
     const _param: IResourceQueryParam = getQueryResourceParam(SecurityGroupsResourceTypes.VNetwork, props.dataItem.extId);
     if (topology.selectedTime) {

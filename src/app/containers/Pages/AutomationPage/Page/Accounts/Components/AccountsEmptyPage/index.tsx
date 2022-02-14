@@ -19,22 +19,22 @@ const AccountsEmptyPage: React.FC<Props> = ({ onConnect }) => {
           <CardComponent
             title="AWS"
             vendor={AccountVendorTypes.AMAZON_AWS}
-            description="Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+            description=""
             onConnect={onCardClick}
             styles={{
               width: '100%',
-              maxWidth: '364px',
+              maxWidth: '360px',
               margin: '0 20px 20px 20px',
             }}
           />
           <CardComponent
             title="Cisco Meraki"
             vendor={AccountVendorTypes.CISCO_MERAKI}
-            description="Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+            description=""
             onConnect={onCardClick}
             styles={{
               width: '100%',
-              maxWidth: '364px',
+              maxWidth: '360px',
               margin: '0 20px 20px 20px',
             }}
           />

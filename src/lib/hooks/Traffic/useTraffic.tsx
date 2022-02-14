@@ -26,13 +26,13 @@ export interface TrafficContextType {
 }
 
 export function useTrafficContext(): TrafficContextType {
-  const [selectedTab, setSelectedTab] = React.useState<ITab<TrafficTabTypes>>(TRAFFIC_TABS[0]);
+  const [selectedTab, setSelectedTab] = React.useState<ITab<TrafficTabTypes>>(TRAFFIC_TABS.trends);
   const [trendsPeriod, setTrendsPeriod] = React.useState<TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES>(getPeriodFromSessionstorage());
   const [rangePreference, setRangePreference] = React.useState<IFlowPreferenceRange[]>([...DEFAULT_FLOWS_RANGES]);
 
   const onChangeSelectedTab = (_tabIndex: number) => {
-    const _tab = TRAFFIC_TABS.find(it => it.index === _tabIndex);
-    setSelectedTab(_tab);
+    const key = Object.keys(TRAFFIC_TABS).find(key => TRAFFIC_TABS[key].index === _tabIndex);
+    setSelectedTab(TRAFFIC_TABS[key]);
   };
 
   const onChangeSelectedPeriod = (value: TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES) => {

@@ -7,11 +7,11 @@ export interface PolicyContextType {
   onChangeSelectedTab: (_tabIndex: number) => void;
 }
 export function usePolicyContext(): PolicyContextType {
-  const [selectedTab, setSelectedTab] = React.useState<ITab<PolicyTabTypes>>(POLICY_TABS[0]);
+  const [selectedTab, setSelectedTab] = React.useState<ITab<PolicyTabTypes>>(POLICY_TABS.segments);
 
   const onChangeSelectedTab = (_tabIndex: number) => {
-    const _tab = POLICY_TABS.find(it => it.index === _tabIndex);
-    setSelectedTab(_tab);
+    const key = Object.keys(POLICY_TABS).find(key => POLICY_TABS[key].index === _tabIndex);
+    setSelectedTab(POLICY_TABS[key]);
   };
 
   return {

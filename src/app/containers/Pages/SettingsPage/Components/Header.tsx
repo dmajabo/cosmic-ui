@@ -13,7 +13,7 @@ import { IColumn } from 'lib/models/grid';
 import IconButton from 'app/components/Buttons/IconButton';
 import { refreshIcon } from 'app/components/SVGIcons/refresh';
 import MatSelect from 'app/components/Inputs/MatSelect';
-import { AUDIT_LOGS_TIME_RANGE_QUERY_TYPES } from 'lib/api/ApiModels/paramBuilders';
+import { AUDIT_LOGS_TIME_RANGE_QUERY_TYPES, convertPeriodToUserFriendlyString } from 'lib/api/ApiModels/paramBuilders';
 interface Props {
   selectedTimeRangePeriod?: AUDIT_LOGS_TIME_RANGE_QUERY_TYPES;
   selectedItems?: GridSelectionModel;
@@ -76,24 +76,12 @@ const Header: React.FC<Props> = (props: Props) => {
               label="Show"
               labelStyles={{ margin: 'auto 20px auto 0' }}
               value={props.selectedTimeRangePeriod}
-              options={[AUDIT_LOGS_TIME_RANGE_QUERY_TYPES.LAST_HOUR, AUDIT_LOGS_TIME_RANGE_QUERY_TYPES.LAST_DAY, AUDIT_LOGS_TIME_RANGE_QUERY_TYPES.LAST_WEEK]}
+              options={[AUDIT_LOGS_TIME_RANGE_QUERY_TYPES.LAST_DAY, AUDIT_LOGS_TIME_RANGE_QUERY_TYPES.LAST_WEEK]}
               onChange={onChangePeriod}
-              renderValue={(v: AUDIT_LOGS_TIME_RANGE_QUERY_TYPES) => {
-                if (v === AUDIT_LOGS_TIME_RANGE_QUERY_TYPES.LAST_HOUR) return 'Last hour';
-                if (v === AUDIT_LOGS_TIME_RANGE_QUERY_TYPES.LAST_DAY) return 'Last day';
-                if (v === AUDIT_LOGS_TIME_RANGE_QUERY_TYPES.LAST_WEEK) return 'Last week';
-                // if (v === TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES.LAST_MONTH) return 'Last month';
-                return v;
-              }}
-              renderOption={(v: AUDIT_LOGS_TIME_RANGE_QUERY_TYPES) => {
-                if (v === AUDIT_LOGS_TIME_RANGE_QUERY_TYPES.LAST_HOUR) return 'Last hour';
-                if (v === AUDIT_LOGS_TIME_RANGE_QUERY_TYPES.LAST_DAY) return 'Last day';
-                if (v === AUDIT_LOGS_TIME_RANGE_QUERY_TYPES.LAST_WEEK) return 'Last week';
-                // if (v === TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES.LAST_MONTH) return 'Last month';
-                return v;
-              }}
+              renderValue={(v: AUDIT_LOGS_TIME_RANGE_QUERY_TYPES) => convertPeriodToUserFriendlyString(v)}
+              renderOption={(v: AUDIT_LOGS_TIME_RANGE_QUERY_TYPES) => convertPeriodToUserFriendlyString(v)}
               styles={{ height: '50px', minHeight: '50px', width: 'auto', margin: '0 20px 0 0', display: 'inline-flex', alignItems: 'center' }}
-              selectStyles={{ height: '50px', width: 'auto', minWidth: '240px' }}
+              selectStyles={{ height: '50px', width: 'auto', minWidth: '240px', border: '1px solid transparent' }}
             />
           )}
           {!props.hideDelete && props.selectedItems && props.selectedItems.length ? (
@@ -107,7 +95,7 @@ const Header: React.FC<Props> = (props: Props) => {
               hoverBorder="var(--_errorColor)"
             />
           ) : null}
-          <ColumnFilter label="Columns" popupLabel="Columns" items={props.columns} draggable onItemClick={onColumnChange} onChangeOrder={onChangeOrder} />
+          <ColumnFilter withoutBorder label="Columns" popupLabel="Columns" items={props.columns} draggable onItemClick={onColumnChange} onChangeOrder={onChangeOrder} />
           {!props.hideEditButton && (
             <PrimaryButton
               label="Create new"
@@ -119,7 +107,7 @@ const Header: React.FC<Props> = (props: Props) => {
             />
           )}
         </ActionPart>
-        {props.showReloadButton && <IconButton styles={{ margin: '0 0 0 20px' }} icon={refreshIcon} title="Reload" onClick={props.onRefresh} />}
+        {props.showReloadButton && <IconButton styles={{ margin: '0 0 0 20px', border: '1px solid transparent' }} icon={refreshIcon} title="Reload" onClick={props.onRefresh} />}
       </ActionRowStyles>
     </>
   );

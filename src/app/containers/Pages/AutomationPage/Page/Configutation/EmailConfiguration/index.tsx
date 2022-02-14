@@ -125,7 +125,7 @@ const EmailConfiguration: React.FC<Props> = (props: Props) => {
             <SecondaryButton
               iconWidth="10px"
               iconHeight="10px"
-              styles={{ display: 'inline-flex', alignItems: 'center', height: '30px', padding: '4px 12px' }}
+              styles={{ display: 'inline-flex', alignItems: 'center', height: '30px', padding: '0px 12px', margin: '3px 6px 3px 0px' }}
               withoutBorder
               label="Clear all"
               icon={closeSmallIcon}

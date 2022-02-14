@@ -82,22 +82,21 @@ const MainPage: React.FC<IProps> = (props: IProps) => {
             },
           }}
         >
-          {TRAFFIC_TABS.map(it => (
-            <Tab disableRipple key={`trafficKey${it.id}`} label={it.label} classes={{ selected: classes.tabSelected }} {...TabComponentProps(0)} className={classes.tabBigSize} />
-          ))}
+          <Tab disableRipple label={TRAFFIC_TABS.trends.label} classes={{ selected: classes.tabSelected }} {...TabComponentProps(0)} className={classes.tabBigSize} />
+          <Tab disableRipple label={TRAFFIC_TABS.logs.label} classes={{ selected: classes.tabSelected }} {...TabComponentProps(0)} className={classes.tabBigSize} />
         </Tabs>
       </TabsWrapperStyles>
       <TabPanel
-        styles={{ display: 'flex', flexDirection: 'column', flex: traffic.selectedTab.index === TRAFFIC_TABS[0].index ? '1 1 100%' : '0' }}
+        styles={{ display: 'flex', flexDirection: 'column', flex: traffic.selectedTab.index === TRAFFIC_TABS.trends.index ? '1 1 100%' : '0' }}
         value={traffic.selectedTab.index}
-        index={TRAFFIC_TABS[0].index}
+        index={TRAFFIC_TABS.trends.index}
       >
         <TrendsPage />
       </TabPanel>
       <TabPanel
-        styles={{ display: 'flex', flexDirection: 'column', flex: traffic.selectedTab.index === TRAFFIC_TABS[1].index ? '1 1 100%' : '0' }}
+        styles={{ display: 'flex', flexDirection: 'column', flex: traffic.selectedTab.index === TRAFFIC_TABS.logs.index ? '1 1 100%' : '0' }}
         value={traffic.selectedTab.index}
-        index={TRAFFIC_TABS[1].index}
+        index={TRAFFIC_TABS.logs.index}
       >
         <SessionPage />
       </TabPanel>
