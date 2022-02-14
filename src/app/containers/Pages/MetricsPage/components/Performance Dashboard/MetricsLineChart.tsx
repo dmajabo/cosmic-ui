@@ -130,50 +130,78 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
         },
       };
     });
-    const anomalyData: ChartData[] = selectedRows.map(row => {
-      const sortedThresholdArray = sortBy(inputData[`${row.id}_threshold`], 'time');
-      return {
-        id: `${row.name}_anomaly`,
-        name: `${row.name}_anomaly`,
-        data: sortBy(inputData[`${row.id}_anomaly`], 'time').map((item, index) => {
-          const timestamp = DateTime.fromFormat(item.time, OLD_TIME_FORMAT).toUTC().toMillis();
+    const anomalyData: ChartData[] = selectedRows.map(row => ({
+      id: `${row.name}_anomaly`,
+      name: `${row.name}_anomaly`,
+      data: sortBy(inputData[`${row.id}_anomaly`], 'time').map((item, index) => {
+        const timestamp = DateTime.fromFormat(item.time, OLD_TIME_FORMAT).toUTC().toMillis();
 
-          return {
-            x: timestamp,
-            y: dataValueSuffix === 'mbps' ? Number(item.value) / 1000 : Number(Number.parseFloat(item.value).toFixed(2)),
-            marker: {
-              enabled: true,
-              radius: 3,
-              symbol: 'circle',
-            },
-            dataValueSuffix: dataValueSuffix,
-            rowName: row.name,
-            deviceName: row.sourceDevice,
-            destination: row.destination,
-            thresholdValue: sortedThresholdArray[index]
-              ? `${dataValueSuffix === 'mbps' ? Number(sortedThresholdArray[index].value) / 1000 : Number(Number.parseFloat(sortedThresholdArray[index].value).toFixed(2))}${dataValueSuffix}`
-              : 'NaN',
-          };
-        }),
-        linkedTo: `${row.name} &#9654 ${row.sourceDevice}`,
-        turboThreshold: inputData[row.id].length,
-        color: ANOMALY_POINT_COLOR,
-        states: {
-          hover: {
-            lineWidthPlus: 0,
+        return {
+          x: timestamp,
+          y: dataValueSuffix === 'mbps' ? Number(item.value) / 1000 : Number(Number.parseFloat(item.value).toFixed(2)),
+          marker: {
+            enabled: true,
+            radius: 3,
+            symbol: 'circle',
+          },
+          dataValueSuffix: dataValueSuffix,
+          rowName: row.name,
+          deviceName: row.sourceDevice,
+          destination: row.destination,
+        };
+      }),
+      linkedTo: `${row.name} &#9654 ${row.sourceDevice}`,
+      turboThreshold: inputData[row.id].length,
+      color: ANOMALY_POINT_COLOR,
+      states: {
+        hover: {
+          lineWidthPlus: 0,
+        },
+      },
+      zIndex: 1,
+      lineWidth: 0,
+      tooltip: {
+        useHTML: true,
+        pointFormat: `
+          <div><b>Anomaly:</b> {point.y}{point.dataValueSuffix}</div><br />
+          `,
+      },
+    }));
+    const thresholdData: ChartData[] = selectedRows.map(row => ({
+      id: `${row.name}_threshold`,
+      name: `${row.name}_threshold`,
+      data: sortBy(inputData[`${row.id}_threshold`], 'time').map((item, index) => {
+        const timestamp = DateTime.fromFormat(item.time, OLD_TIME_FORMAT).toUTC().toMillis();
+
+        return {
+          x: timestamp,
+          y: dataValueSuffix === 'mbps' ? Number(item.value) / 1000 : Number(Number.parseFloat(item.value).toFixed(2)),
+          marker: {
+            enabled: false,
+          },
+          dataValueSuffix: dataValueSuffix,
+        };
+      }),
+      linkedTo: `${row.name} &#9654 ${row.sourceDevice}`,
+      turboThreshold: inputData[row.id].length,
+      color: 'transparent',
+      states: {
+        hover: {
+          lineWidthPlus: 0,
+          marker: {
+            enabled: false,
           },
         },
-        zIndex: 1,
-        lineWidth: 0,
-        tooltip: {
-          useHTML: true,
-          pointFormat: `
-          <div><b>Anomaly:</b> {point.y}{point.dataValueSuffix}</div><br />
-          <div><b>Threshold:</b> {point.thresholdValue}</div><br />
+      },
+      zIndex: 1,
+      lineWidth: 0,
+      tooltip: {
+        useHTML: true,
+        pointFormat: `
+          <div><b>Threshold:</b> {point.y}{point.dataValueSuffix}</div><br />
           `,
-        },
-      };
-    });
+      },
+    }));
     const areaData: AreaChartData[] = selectedRows.map(row => {
       const sortedUpperboundData = sortBy(inputData[`${row.id}_upperbound`], 'time');
       return {
@@ -210,6 +238,7 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
     tempChartData.forEach((item, index) => {
       finalChartData.push(item);
       finalChartData.push(anomalyData[index]);
+      finalChartData.push(thresholdData[index]);
       finalChartData.push(areaData[index]);
     });
     setData(finalChartData);
