@@ -7,7 +7,9 @@ export const DashboardStyles = makeStyles(
       sitesContainer: {
         display: 'flex',
         flexDirection: 'column',
-        backgroundColor: '#fff',
+        backgroundColor: 'var(--_primaryBg)',
+        flex: '1 1 calc(50% - 15px)',
+        margin: '0 15px 0 0',
       },
       sitesHeader: {
         display: 'flex',
@@ -41,7 +43,9 @@ export const DashboardStyles = makeStyles(
         borderRadius: '6px',
       },
       flexContainer: {
+        display: 'flex',
         padding: '40px',
+        minHeight: '100%',
       },
       network: {
         '&.MuiTypography-root': {
@@ -177,6 +181,13 @@ export const DashboardStyles = makeStyles(
         paddingTop: 20,
         paddingLeft: 60,
         cursor: 'pointer',
+      },
+      // right side
+      rightContainer: {
+        display: 'flex',
+        flexDirection: 'column',
+        flex: '1 1 calc(50% - 15px)',
+        margin: '0 0 0 15px',
       },
     }),
   {

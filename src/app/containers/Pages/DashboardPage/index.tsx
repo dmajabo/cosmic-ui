@@ -8,6 +8,7 @@ import { styled } from '@mui/system';
 import { TabsUnstyled } from '@mui/material';
 import { DashboardSitesViewTab } from './enum';
 import styles from 'styled-components';
+import { DashboardItemContainer } from './styles/ChartContainer';
 
 const Tab = styled(TabUnstyled)`
   color: #848da3;
@@ -76,6 +77,10 @@ const DashboardPage: React.FC = () => {
           </TabsUnstyled>
         </div>
         <div></div>
+      </div>
+      <div className={classes.rightContainer}>
+        <DashboardItemContainer margin="0 0 15px 0" height="calc(50% - 15px)" flex="1 1 calc(50% - 15px)" />
+        <DashboardItemContainer margin="15px 0 0 0" height="calc(50% - 15px)" flex="1 1 calc(50% - 15px)" />
       </div>
     </div>
   );
