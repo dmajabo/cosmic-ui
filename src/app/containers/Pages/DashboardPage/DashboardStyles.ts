@@ -4,12 +4,44 @@ import { createStyles, makeStyles } from '@mui/styles';
 export const DashboardStyles = makeStyles(
   (theme: Theme) =>
     createStyles({
-      flexContainer: {
+      sitesContainer: {
         display: 'flex',
-        flexDirection: 'row',
+        flexDirection: 'column',
+        backgroundColor: '#fff',
+      },
+      sitesHeader: {
+        display: 'flex',
         justifyContent: 'space-between',
-        padding: '10px 20px',
+        margin: '37px 33px 30px 30px',
+      },
+      sitesHeaderLeftSection: {
+        display: 'flex',
         alignItems: 'center',
+      },
+      sites: {
+        fontWeight: 'bold',
+        fontSize: '20px',
+        color: '#05143A',
+      },
+      pillContainer: {
+        marginLeft: '20px',
+        backgroundColor: '#437FEC',
+        borderRadius: '20px',
+      },
+      pillText: {
+        fontSize: '12px',
+        fontWeight: 500,
+        color: '#FFFFFF',
+        lineHeight: '16px',
+        padding: '2px 10px 2px 10px',
+      },
+      tabListContainer: {
+        backgroundColor: 'var(--_tabContainerBg)',
+        padding: '5px',
+        borderRadius: '6px',
+      },
+      flexContainer: {
+        padding: '40px',
       },
       network: {
         '&.MuiTypography-root': {
@@ -19,27 +51,12 @@ export const DashboardStyles = makeStyles(
           fontWeight: 700,
         },
       },
-      widgetButton: {
-        marginLeft: 20,
-        marginTop: -10,
-        backgroundColor: '#437FEC',
-      },
-      widgetButtonText: {
-        fontSize: 12,
-        fontWeight: 700,
-        paddingRight: 10,
-      },
       endFlexContainer: {
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'flex-end',
         padding: '10px 20px',
         alignItems: 'center',
-      },
-      showText: {
-        color: '#848DA3',
-        fontSize: 14,
-        marginLeft: 15,
       },
       formControl: {
         minWidth: 160,
