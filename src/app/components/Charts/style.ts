@@ -7,41 +7,6 @@ export const ChartLegendWrapContainer = styled.div`
   border-radius: 6px;
 `;
 
-export const ChartWrapContainer = styled.div`
-  display: flex;
-  width: 100%;
-  height: 100%;
-  flex-shrink: 0;
-  position: relative;
-  border-radius: 6px;
-  .networkNode,
-  .destinationNode,
-  .applicationNode {
-    font-size: 12px;
-    font-weight: 500;
-    fill: var(--_primaryTextColor);
-    font-style: normal;
-    font-family: 'DMSans';
-  }
-  .link {
-    opacity: 0.3;
-    stroke-linecap: butt;
-    stroke-linejoin: bevel;
-  }
-  .link:hover {
-    opacity: 0.6;
-  }
-  & > svg {
-    width: 100%;
-    height: 100%;
-    border-radius: 6px;
-    &.donutChart {
-      width: 50%;
-      margin: 0 auto;
-    }
-  }
-`;
-
 interface LegendProps {
   color?: string;
   hide?: boolean;
@@ -88,7 +53,6 @@ const LegendWrapper = css`
   max-height: 95%;
   display: flex;
   flex-direction: column;
-  align-items: center;
   transform: translateY(-50%);
   flex-wrap: wrap;
   overflow: hidden;
@@ -106,5 +70,65 @@ export const LegendLeft = styled.div`
   direction: rtl;
   ${LegendItem} {
     justify-content: flex-end;
+  }
+`;
+
+export const LegendBottom = styled.div<WrapProps>`
+  position: absolute;
+  bottom: -9px; // legendItem line height / 2
+  width: 100%;
+  height: auto;
+  max-height: ${props => (props.height ? `${100 - props.height}%` : '20%')};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  overflow: hidden;
+  overflow-y: auto;
+  ${LegendItem} {
+    margin: 4px;
+    width: auto;
+    min-width: 76px;
+  }
+`;
+
+interface WrapProps {
+  width?: number;
+  height?: number;
+}
+export const ChartWrapContainer = styled.div<WrapProps>`
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-shrink: 0;
+  position: relative;
+  border-radius: 6px;
+  .networkNode,
+  .destinationNode,
+  .applicationNode {
+    font-size: 12px;
+    font-weight: 500;
+    fill: var(--_primaryTextColor);
+    font-style: normal;
+    font-family: 'DMSans';
+  }
+  .link {
+    opacity: 0.3;
+    stroke-linecap: butt;
+    stroke-linejoin: bevel;
+  }
+  .link:hover {
+    opacity: 0.6;
+  }
+  & > svg {
+    width: 100%;
+    height: 100%;
+    border-radius: 6px;
+    &.donutChart {
+      width: ${props => (props.width ? props.width + '%' : '50%')};
+      height: ${props => (props.height ? props.height + '%' : '100%')};
+      margin: 0 auto;
+      overflow: visible;
+    }
   }
 `;

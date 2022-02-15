@@ -8,7 +8,7 @@ export const DashboardStyles = makeStyles(
         display: 'flex',
         flexDirection: 'column',
         backgroundColor: 'var(--_primaryBg)',
-        flex: '1 1 calc(50% - 15px)',
+        flex: '1 1 calc(55% - 15px)',
         margin: '0 15px 0 0',
       },
       sitesHeader: {
@@ -186,7 +186,7 @@ export const DashboardStyles = makeStyles(
       rightContainer: {
         display: 'flex',
         flexDirection: 'column',
-        flex: '1 1 calc(50% - 15px)',
+        flex: '1 1 calc(45% - 15px)',
         margin: '0 0 0 15px',
       },
     }),

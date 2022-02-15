@@ -8,7 +8,10 @@ import { styled } from '@mui/system';
 import { TabsUnstyled } from '@mui/material';
 import { DashboardSitesViewTab } from './enum';
 import styles from 'styled-components';
-import { DashboardItemContainer } from './styles/ChartContainer';
+import { DashboardItemContainer, DashboardItemContent, DashboardItemLabel } from './styles/ChartContainer';
+import InOutBound from './components/ManagmentItem/InOutBound';
+import ManagementLayer7 from './components/ManagmentItem/ManagementLayer7';
+import ManagementDrifts from './components/ManagmentItem/ManagementDrifts';
 
 const Tab = styled(TabUnstyled)`
   color: #848da3;
@@ -79,8 +82,17 @@ const DashboardPage: React.FC = () => {
         <div></div>
       </div>
       <div className={classes.rightContainer}>
-        <DashboardItemContainer margin="0 0 15px 0" height="calc(50% - 15px)" flex="1 1 calc(50% - 15px)" />
-        <DashboardItemContainer margin="15px 0 0 0" height="calc(50% - 15px)" flex="1 1 calc(50% - 15px)" />
+        <DashboardItemContainer margin="0 0 15px 0" height="calc(50% - 15px)" flex="1 1 calc(50% - 15px)">
+          <DashboardItemLabel>Management</DashboardItemLabel>
+          <DashboardItemContent>
+            <ManagementDrifts />
+            <InOutBound styles={{ margin: '0 20px' }} />
+            <ManagementLayer7 />
+          </DashboardItemContent>
+        </DashboardItemContainer>
+        <DashboardItemContainer margin="15px 0 0 0" height="calc(50% - 15px)" flex="1 1 calc(50% - 15px)">
+          <DashboardItemLabel>Anomalies</DashboardItemLabel>
+        </DashboardItemContainer>
       </div>
     </div>
   );

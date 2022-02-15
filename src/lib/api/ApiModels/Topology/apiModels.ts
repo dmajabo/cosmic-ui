@@ -509,3 +509,11 @@ export interface IToposvcGetL7RulesResponse {
   count: number | string;
   rules: INetworkL7Rule[];
 }
+
+export interface IToposvcGetCountResponse {
+  count: number;
+}
+export interface IInOutBoundRes {
+  inbount: IToposvcGetCountResponse;
+  outbound: IToposvcGetCountResponse;
+}
