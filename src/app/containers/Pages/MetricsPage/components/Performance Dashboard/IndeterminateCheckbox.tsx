@@ -3,6 +3,9 @@ import { PerformanceDashboardStyles } from './PerformanceDashboardStyles';
 
 interface Props {
   readonly indeterminate?: boolean;
+  readonly onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  readonly checked?: boolean;
+  readonly disabled: boolean;
 }
 
 const useCombinedRefs = (...refs: any): MutableRefObject<any> => {

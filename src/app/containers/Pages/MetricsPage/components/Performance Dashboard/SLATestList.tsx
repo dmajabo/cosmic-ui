@@ -202,7 +202,7 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
       [event.target.name]: event.target.checked,
     });
 
-  const isTestDataValid = (averageQoe: MetricAvgQoe) => !isNaN(Number(averageQoe.packetLoss)) && !isNaN(Number(averageQoe.latency));
+  const isTestDataInvalid = (averageQoe: MetricAvgQoe) => isNaN(Number(averageQoe.packetLoss)) && isNaN(Number(averageQoe.latency));
 
   const data = useMemo(
     () =>
@@ -216,7 +216,7 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
           destination: item.destination,
           description: item.description,
           averageQoe: <AverageQoe updateTest={getTestDataToUpdate} deleteTest={deleteTest} packetLoss={item.averageQoe.packetLoss} latency={item.averageQoe.latency} testId={item.id} />,
-          isTestDataValid: isTestDataValid(item.averageQoe),
+          isTestDataInvalid: isTestDataInvalid(item.averageQoe),
         };
       }),
     [filteredTableData],
@@ -316,13 +316,13 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
             </div>
           </div>
           <TabPanel value={MetricTabValue.packetLoss}>
-            <PacketLoss timeRange={timeRange} selectedRows={selectedRows} />
+            <PacketLoss timeRange={timeRange} selectedRows={selectedRows} networks={networks} />
           </TabPanel>
           <TabPanel value={MetricTabValue.latency}>
-            <Latency timeRange={timeRange} selectedRows={selectedRows} />
+            <Latency timeRange={timeRange} selectedRows={selectedRows} networks={networks} />
           </TabPanel>
           <TabPanel value={MetricTabValue.goodput}>
-            <Goodput timeRange={timeRange} selectedRows={selectedRows} />
+            <Goodput timeRange={timeRange} selectedRows={selectedRows} networks={networks} />
           </TabPanel>
         </TabsUnstyled>
       </div>

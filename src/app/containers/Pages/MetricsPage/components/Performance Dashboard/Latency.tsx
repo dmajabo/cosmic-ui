@@ -7,13 +7,14 @@ import LoadingIndicator from 'app/components/Loading';
 import { MetricKeyValue, TestIdToName } from './PacketLoss';
 import { Data } from './Table';
 import Heatmap, { LegendData } from './Heatmap';
-import { HeatMapData } from 'lib/api/http/SharedTypes';
+import { HeatMapData, Vnet } from 'lib/api/http/SharedTypes';
 import isEmpty from 'lodash/isEmpty';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 
 interface LatencyProps {
   readonly selectedRows: Data[];
   readonly timeRange: string;
+  readonly networks: Vnet[];
 }
 
 const LATENCY = 'latency';
@@ -50,7 +51,7 @@ export const LATENCY_HEATMAP_LEGEND: LegendData[] = [
   },
 ];
 
-export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange }) => {
+export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange, networks }) => {
   const classes = PerformanceDashboardStyles();
 
   const [latencyData, setLatencyData] = useState<MetricKeyValue>({});
@@ -81,7 +82,10 @@ export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange }) => 
     };
 
     const getHeatMapLatency = async () => {
-      const promises = selectedRows.map(row => apiClient.getHeatmapLatency(row.sourceNetwork, row.destination, timeRange, row.id));
+      const promises = selectedRows.map(row => {
+        const rowNetworkId = networks.find(network => network.name === row.sourceNetwork)?.extId || '';
+        return apiClient.getHeatmapLatency(rowNetworkId, row.destination, timeRange, row.id);
+      });
       Promise.all(promises).then(values => {
         const heatMapLatency: HeatMapData[] = values.map(item => {
           return {

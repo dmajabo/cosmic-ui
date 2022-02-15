@@ -42,7 +42,6 @@ function a11yProps(title: string) {
 const MetricsPage: React.FC = () => {
   const classes = MetricsStyles();
   const userContext = useContext<UserContextState>(UserContext);
-  const { response: vendorResponse, onGet: onGetVendors } = useGet<GetControllerVendorResponse>();
   const { response, loading, error, onGetChainData } = useGetChainData<MetricsTopoMap>();
 
   const [organizations, setOrganizations] = useState<Organization[]>([]);
@@ -55,8 +54,13 @@ const MetricsPage: React.FC = () => {
 
   useEffect(() => {
     onGetChainData([TopoApi.getOnPremOrgList(), TopoApi.getOnPremNetworkList(), TopoApi.getOnPremDeviceList()], ['organizations', 'networks', 'devices'], userContext.accessToken!);
-    onGetVendors(PolicyApi.getControllerVendors(), userContext.accessToken!);
   }, []);
+
+  useEffect(() => {
+    if (userContext.vendors) {
+      setIsAwsConfigured(userContext.vendors.hasOwnProperty(AccountVendorTypes.AMAZON_AWS));
+    }
+  }, [userContext]);
 
   useEffect(() => {
     if (response) {
@@ -65,12 +69,6 @@ const MetricsPage: React.FC = () => {
       setDevices(response.devices.devices);
     }
   }, [response]);
-
-  useEffect(() => {
-    if (vendorResponse && vendorResponse.vendors && vendorResponse.vendors.length) {
-      setIsAwsConfigured(vendorResponse.vendors.includes(AccountVendorTypes.AMAZON_AWS));
-    }
-  }, [vendorResponse]);
 
   return (
     <div className={classes.metricsPageContainer}>

@@ -8,12 +8,13 @@ import { Data } from './Table';
 import isEmpty from 'lodash/isEmpty';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import LoadingIndicator from 'app/components/Loading';
-import { HeatMapData } from 'lib/api/http/SharedTypes';
+import { HeatMapData, Vnet } from 'lib/api/http/SharedTypes';
 import Heatmap, { LegendData } from './Heatmap';
 
 interface GoodputProps {
   readonly selectedRows: Data[];
   readonly timeRange: string;
+  readonly networks: Vnet[];
 }
 
 const GOODPUT = 'goodput';
@@ -50,7 +51,7 @@ export const GOODPUT_HEATMAP_LEGEND: LegendData[] = [
   },
 ];
 
-export const Goodput: React.FC<GoodputProps> = ({ selectedRows, timeRange }) => {
+export const Goodput: React.FC<GoodputProps> = ({ selectedRows, timeRange, networks }) => {
   const classes = PerformanceDashboardStyles();
 
   const [goodputData, setGoodputData] = useState<MetricKeyValue>({});
@@ -81,7 +82,10 @@ export const Goodput: React.FC<GoodputProps> = ({ selectedRows, timeRange }) => 
       });
     };
     const getHeatMapGoodput = async () => {
-      const promises = selectedRows.map(row => apiClient.getHeatmapGoodput(row.sourceNetwork, row.destination, timeRange, row.id));
+      const promises = selectedRows.map(row => {
+        const rowNetworkId = networks.find(network => network.name === row.sourceNetwork)?.extId || '';
+        return apiClient.getHeatmapGoodput(rowNetworkId, row.destination, timeRange, row.id);
+      });
       Promise.all(promises).then(values => {
         const heatMapGoodput: HeatMapData[] = values.map(item => ({
           testId: item.testId,

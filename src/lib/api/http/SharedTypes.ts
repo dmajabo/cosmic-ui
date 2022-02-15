@@ -186,7 +186,7 @@ export interface FinalTableData {
   readonly destination: string;
   readonly description: string;
   readonly averageQoe: AverageQoe;
-  readonly isTestDataValid?: boolean;
+  readonly isTestDataInvalid?: boolean;
 }
 
 export enum ColumnAccessor {

@@ -39,18 +39,13 @@ const TroubleshootingPage: React.FC = () => {
   const classes = TroubleshootingStyles();
   const [selectedTabName, setSelectedTabName] = useState<TabName>(TabName.configChanges);
   const userContext = useContext<UserContextState>(UserContext);
-  const { response: vendorResponse, onGet: onGetVendors } = useGet<GetControllerVendorResponse>();
   const [isAwsConfigured, setIsAwsConfigured] = useState<boolean>(false);
 
   useEffect(() => {
-    onGetVendors(PolicyApi.getControllerVendors(), userContext.accessToken!);
-  }, []);
-
-  useEffect(() => {
-    if (vendorResponse && vendorResponse.vendors && vendorResponse.vendors.length) {
-      setIsAwsConfigured(vendorResponse.vendors.includes(AccountVendorTypes.AMAZON_AWS));
+    if (userContext.vendors) {
+      setIsAwsConfigured(userContext.vendors.hasOwnProperty(AccountVendorTypes.AMAZON_AWS));
     }
-  }, [vendorResponse]);
+  }, [userContext]);
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: TabName) => setSelectedTabName(newValue);
 
