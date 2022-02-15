@@ -17,7 +17,7 @@ interface IProps {}
 
 const MainPage: React.FC<IProps> = (props: IProps) => {
   const { policy } = usePolicyDataContext();
-  // const { vendors } = useContext<UserContextState>(UserContext);
+  // const { vendors } = React.useContext<UserContextState>(UserContext);
   const classes = TabsStyles();
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
@@ -39,11 +39,11 @@ const MainPage: React.FC<IProps> = (props: IProps) => {
             },
           }}
         >
-          <Tab disableRipple label={POLICY_TABS.segments.label} classes={{ selected: classes.tabSelected }} {...TabComponentProps(0)} className={classes.tabBigSize} />
+          <Tab disableRipple label={POLICY_TABS.segments.label} classes={{ selected: classes.tabSelected }} {...TabComponentProps(POLICY_TABS.segments.index)} className={classes.tabBigSize} />
           {/* {vendors && vendors[AccountVendorTypes.AMAZON_AWS] && (
-            <Tab disableRipple label={POLICY_TABS.rules.label} classes={{ selected: classes.tabSelected }} {...TabComponentProps(0)} className={classes.tabBigSize} />
+            <Tab disableRipple label={POLICY_TABS.rules.label} classes={{ selected: classes.tabSelected }} {...TabComponentProps(1)} className={classes.tabBigSize} />
           )} */}
-          <Tab disableRipple label={POLICY_TABS.inventory.label} classes={{ selected: classes.tabSelected }} {...TabComponentProps(0)} className={classes.tabBigSize} />
+          <Tab disableRipple label={POLICY_TABS.inventory.label} classes={{ selected: classes.tabSelected }} {...TabComponentProps(POLICY_TABS.inventory.index)} className={classes.tabBigSize} />
         </Tabs>
       </TabsWrapperStyles>
       <TabPanel

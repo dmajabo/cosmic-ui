@@ -25,4 +25,7 @@ export const InputSearch = styled.input`
   &::placeholder {
     color: var(--_disabledTextColor);
   }
+  &.withBorder {
+    border-color: var(--_sButtonBorder);
+  }
 `;

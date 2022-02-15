@@ -5,6 +5,7 @@ import styled from 'styled-components';
 interface PageWrapProps {
   width?: string;
   padding?: string;
+  bgColor?: string;
 }
 export const PageWrapperStyles = styled.div<PageWrapProps>`
   display: flex;
@@ -20,6 +21,7 @@ export const PageWithPanelWrapperStyles = styled.div<PageWrapProps>`
   width: ${props => props.width || '100%'};
   min-height: 100%;
   padding: ${props => props.padding || '20px'};
+  background: ${props => props.bgColor || 'transparent'};
   position: relative;
   transition: width ${DEFAULT_TRANSITION};
 `;
@@ -56,16 +58,18 @@ interface IPageActionPart {
   minWidth?: string;
   maxWidth?: string;
   justifyContent?: string;
+  alignItems?: 'flex-start' | 'flex-end' | 'center';
+  flex?: string;
 }
 export const ActionPart = styled.div<IPageActionPart>`
   display: flex;
-  align-items: center;
+  align-items: ${props => props.alignItems || 'center'};
   justify-content: ${props => props.justifyContent || 'flex-start'};
   width: ${props => props.width || 'auto'};
   max-width: ${props => props.maxWidth || '100%'};
   min-width: ${props => props.minWidth || 'unset'};
   height: 100%;
-  flex-shrink: 0;
+  flex: ${props => props.flex || '1 1 50%'};
   margin: ${props => props.margin || 0};
   ${ToggleButtonWrapper} {
     background: transparent;

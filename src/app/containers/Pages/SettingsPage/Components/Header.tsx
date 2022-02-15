@@ -69,7 +69,7 @@ const Header: React.FC<Props> = (props: Props) => {
           )}
           <Search searchQuery={props.searchValue} onChange={onSearhChange} styles={{ minWidth: '440px', height: '50px' }} />
         </ActionPart>
-        <ActionPart margin="0 0 0 auto">
+        <ActionPart margin="0 0 0 auto" justifyContent="flex-end">
           {props.showTimeRange && (
             <MatSelect
               id="auditLogsTimePeriod"

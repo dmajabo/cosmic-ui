@@ -14,7 +14,7 @@ const HeaderActionsRow: React.FC<Props> = (props: Props) => {
 
   return (
     <ActionRowStyles margin="0 0 30px 0">
-      <ActionPart margin="0 0 0 auto">
+      <ActionPart margin="0 0 0 auto" flex="1 1 100%" justifyContent="flex-end">
         <MatSelect
           id="logsTimePeriod"
           label="Show"

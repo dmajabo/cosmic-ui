@@ -24,13 +24,15 @@ const Accounts: React.FC<IProps> = (props: IProps) => {
   const userContext = useContext<UserContextState>(UserContext);
   const { response, loading, error, onGet } = useGet<IAccountsRes>();
   const { response: resRegions, onGet: onGetRegions } = useGet<IAwsRegionsRes>();
+  const { response: vendorResponse, onGet: onGetVendors } = useGet<GetControllerVendorResponse>();
   const { response: resDelete, loading: deleteLoading, onDelete } = useDelete<any>();
   const [showModal, setShowModal] = React.useState<IModal<IMeraki_Account | IAWS_Account | IAZURE_Account>>({ show: false, dataItem: null, isEditMode: false });
   const [tempDeleteId, setTempDeleteId] = React.useState<string>(null);
-  const { response: vendorResponse, onGet: onGetVendors } = useGet<GetControllerVendorResponse>();
+
   React.useEffect(() => {
     onTryToLoadData();
     onTryLoadRegions();
+    onTryLoadVendors();
   }, []);
 
   React.useEffect(() => {

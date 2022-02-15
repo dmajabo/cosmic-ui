@@ -202,7 +202,7 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
         <ActionPart margin="0 auto 0 0">
           <SessionsSwitch checked={sessions.sessionsStitch} onChange={onSwitchChange} />
         </ActionPart>
-        <ActionPart margin="0 0 0 auto">
+        <ActionPart margin="0 0 0 auto" justifyContent="flex-end">
           <MatSelect
             id="logsTimePeriod"
             label="Show"

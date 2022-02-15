@@ -108,8 +108,8 @@ export const FlowsOverviewComponent: React.FC<Props> = (props: Props) => {
     if (!rows[row][col]) return;
     const _sourceSegmentIdField: ISearchData = getSearchedFields(SessionGridColumns.sourceSegmentId.field, SessionElasticFieldItems);
     const _destSegmentIdField: ISearchData = getSearchedFields(SessionGridColumns.destSegmentId.field, SessionElasticFieldItems);
-    const _sourceId = rows[row][col].sourceSegmentId !== 'Unknown' && rows[row][col].sourceSegmentId ? rows[row][col].sourceSegmentId : '';
-    const _destId = rows[row][col].segmentId !== 'Unknown' && rows[row][col].segmentId ? rows[row][col].segmentId : '';
+    const _sourceId = !rows[row][col].sourceSegmentId || rows[row][col].sourceSegmentId === 'Unknown' || rows[row][col].sourceSegmentId === 'unknown' ? 'unknown' : rows[row][col].sourceSegmentId;
+    const _destId = !rows[row][col].segmentId || rows[row][col].segmentId === 'Unknown' || rows[row][col].segmentId === 'unknown' ? 'unknown' : rows[row][col].segmentId;
     traffic.onChangeSelectedTab(TRAFFIC_TABS.logs.index);
     sessions.onGoToSession(true, [{ field: _sourceSegmentIdField.field, value: _sourceId }, FilterOpperatorsList[0].value, { field: _destSegmentIdField.field, value: _destId }]);
   };

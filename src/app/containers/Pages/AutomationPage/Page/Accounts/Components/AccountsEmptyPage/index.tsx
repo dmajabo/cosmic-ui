@@ -22,8 +22,10 @@ const AccountsEmptyPage: React.FC<Props> = ({ onConnect }) => {
             description=""
             onConnect={onCardClick}
             styles={{
-              width: '100%',
-              maxWidth: '360px',
+              width: 'calc(100% - 40px)',
+              flex: '1 1 calc(50% - 40px)',
+              minWidth: '400px',
+              maxWidth: '500px',
               margin: '0 20px 20px 20px',
             }}
           />
@@ -33,8 +35,10 @@ const AccountsEmptyPage: React.FC<Props> = ({ onConnect }) => {
             description=""
             onConnect={onCardClick}
             styles={{
-              width: '100%',
-              maxWidth: '360px',
+              width: 'calc(100% - 40px)',
+              flex: '1 1 calc(50% - 40px)',
+              minWidth: '400px',
+              maxWidth: '500px',
               margin: '0 20px 20px 20px',
             }}
           />

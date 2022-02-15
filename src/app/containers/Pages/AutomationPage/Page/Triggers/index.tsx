@@ -28,6 +28,7 @@ import { DEFAULT_TRANSITION } from 'lib/constants/general';
 import HitsComponent from './HitsComponent';
 import { ChannelsWrapper } from './styles';
 import { ISortObject } from 'lib/models/grid';
+import * as sortHelper from 'lib/helpers/gridHelper';
 
 interface Props {}
 
@@ -196,21 +197,8 @@ const Triggers: React.FC<Props> = (props: Props) => {
   };
 
   const onSort = (e: DataTablePFSEvent) => {
-    if (!sortObject) {
-      setSortObject({ field: e.sortField, order: e.sortOrder });
-      return;
-    }
-    if (sortObject && e.sortField !== sortObject.field) {
-      setSortObject({ field: e.sortField, order: e.sortOrder });
-      return;
-    }
-    if (sortObject && e.sortField === sortObject.field) {
-      if (sortObject.order === -1 && e.sortOrder === 1) {
-        setSortObject(null);
-        return;
-      }
-      setSortObject({ ...sortObject, order: e.sortOrder });
-    }
+    const _sortObject = sortHelper.singelSortHelper(sortObject, e);
+    setSortObject(_sortObject);
   };
 
   const severityBodyTemplate = (rowData: IAlertMetaTableItem) => {
@@ -272,71 +260,76 @@ const Triggers: React.FC<Props> = (props: Props) => {
   return (
     <>
       <Header onRefreshData={onRefresh} onChangePeriod={onChangePeriod} selectedTimeRangePeriod={selectedPeriod} searchValue={searchValue} onSearchChange={onSearhChange} />
-      <TableWrapper>
-        {!error && (
-          <DataTable
-            className="table"
-            emptyMessage="No data"
-            dataKey="id"
-            rowClassName={rowClass}
-            rowExpansionTemplate={rowExpansionTemplate}
-            expandedRows={expandedRows}
-            value={filteredData}
-            responsiveLayout="scroll"
-            onSort={onSort}
-            sortField={sortObject ? sortObject.field : null}
-            sortOrder={sortObject ? sortObject.order : null}
-            sortMode="single"
-          >
-            <Column
-              className="expandCollapseCell"
-              style={{ width: TriggerGridColumns.id.width }}
-              field={TriggerGridColumns.id.field}
-              header={TriggerGridColumns.id.label}
-              expander
-              body={expanderBodyTemplate}
-            ></Column>
-            <Column
-              style={{ width: TriggerGridColumns.name.width, verticalAlign: 'top', lineHeight: '40px' }}
-              sortable
-              field={TriggerGridColumns.name.field}
-              header={TriggerGridColumns.name.label}
-            ></Column>
-            <Column
-              style={{ width: TriggerGridColumns.category.width, verticalAlign: 'top', lineHeight: '40px' }}
-              sortable
-              field={TriggerGridColumns.category.field}
-              header={TriggerGridColumns.category.label}
-            ></Column>
-            <Column
-              style={{ width: TriggerGridColumns.severity.width, verticalAlign: 'top' }}
-              sortable
-              field={TriggerGridColumns.severity.field}
-              header={TriggerGridColumns.severity.label}
-              body={severityBodyTemplate}
-            ></Column>
-            <Column style={{ maxWidth: '600px', verticalAlign: 'top' }} field={TriggerGridColumns.channels.field} header={TriggerGridColumns.channels.label} body={channelsBodyTemplate}></Column>
-            <Column
-              style={{ width: TriggerGridColumns.triggerCount.width, verticalAlign: 'top', lineHeight: '40px' }}
-              field={TriggerGridColumns.triggerCount.field}
-              header={TriggerGridColumns.triggerCount.label}
-              body={hitsBodyTemplate}
-              sortable
-            ></Column>
-            <Column
-              style={{ width: TriggerGridColumns.configState.width, verticalAlign: 'top', lineHeight: '40px' }}
-              field={TriggerGridColumns.configState.field}
-              header={TriggerGridColumns.configState.label}
-              body={configStateBodyTemplate}
-            ></Column>
-          </DataTable>
-        )}
+      <TableWrapper style={{ minHeight: !filteredData || !filteredData.length ? '300px' : 'auto' }}>
+        <DataTable
+          className="table autoHeight"
+          emptyMessage={!error ? 'No data' : ' '}
+          dataKey="id"
+          rowClassName={rowClass}
+          rowExpansionTemplate={rowExpansionTemplate}
+          expandedRows={expandedRows}
+          value={filteredData}
+          responsiveLayout="scroll"
+          onSort={onSort}
+          sortField={sortObject ? sortObject.field : null}
+          sortOrder={sortObject ? sortObject.order : null}
+          sortMode="single"
+        >
+          <Column
+            className="expandCollapseCell"
+            style={{ width: TriggerGridColumns.id.width }}
+            field={TriggerGridColumns.id.field}
+            header={TriggerGridColumns.id.label}
+            expander
+            body={expanderBodyTemplate}
+          ></Column>
+          <Column
+            style={{ width: TriggerGridColumns.name.width, verticalAlign: 'top', lineHeight: '40px' }}
+            sortable
+            field={TriggerGridColumns.name.field}
+            header={TriggerGridColumns.name.label}
+          ></Column>
+          <Column
+            style={{ width: TriggerGridColumns.category.width, verticalAlign: 'top', lineHeight: '40px' }}
+            sortable
+            field={TriggerGridColumns.category.field}
+            header={TriggerGridColumns.category.label}
+          ></Column>
+          <Column
+            style={{ width: TriggerGridColumns.severity.width, verticalAlign: 'top' }}
+            sortable
+            field={TriggerGridColumns.severity.field}
+            header={TriggerGridColumns.severity.label}
+            body={severityBodyTemplate}
+          ></Column>
+          <Column style={{ maxWidth: '600px', verticalAlign: 'top' }} field={TriggerGridColumns.channels.field} header={TriggerGridColumns.channels.label} body={channelsBodyTemplate}></Column>
+          <Column
+            style={{ width: TriggerGridColumns.triggerCount.width, verticalAlign: 'top', lineHeight: '40px' }}
+            field={TriggerGridColumns.triggerCount.field}
+            header={TriggerGridColumns.triggerCount.label}
+            body={hitsBodyTemplate}
+            sortable
+          ></Column>
+          <Column
+            style={{ width: TriggerGridColumns.configState.width, verticalAlign: 'top', lineHeight: '40px' }}
+            field={TriggerGridColumns.configState.field}
+            header={TriggerGridColumns.configState.label}
+            body={configStateBodyTemplate}
+          ></Column>
+        </DataTable>
         {(loading || putLoading) && (
-          <AbsLoaderWrapper width="100%" height="100%">
+          <AbsLoaderWrapper width="100%" height="calc(100% - 70px)" top="70px">
             <LoadingIndicator margin="auto" />
           </AbsLoaderWrapper>
         )}
-        {error && <ErrorMessage margin="auto">{error && error.message ? error.message : 'Something went wrong'}</ErrorMessage>}
+
+        {error && (
+          <AbsLoaderWrapper width="100%" height="calc(100% - 70px)" top="70px" opacity="1">
+            <ErrorMessage margin="auto" fontSize={20}>
+              {error && error.message ? error.message : 'Something went wrong'}
+            </ErrorMessage>
+          </AbsLoaderWrapper>
+        )}
       </TableWrapper>
       <Paging count={totalCount} disabled={!dataRows.length} pageSize={pageSize} currentPage={currentPage} onChangePage={onChangeCurrentPage} onChangePageSize={onChangePageSize} />
       <ToastContainer />

@@ -1,19 +1,20 @@
 import React from 'react';
-import { DataGrid, GridRenderCellParams } from '@mui/x-data-grid';
-import { GridStyles } from 'app/components/Grid/GridStyles';
-import { gridAscArrow, gridDescArrow } from 'app/components/SVGIcons/arrows';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import LoadingIndicator from 'app/components/Loading';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import Paging from 'app/components/Basic/Paging';
-import { IColumn } from 'lib/models/grid';
+import { ISortObject } from 'lib/models/grid';
 import { SegmentsGridColumns } from './models';
-import { ColorValue, GridButton, CellValue, GridCellWrapper, CellCheckMarkValue } from 'app/components/Grid/styles';
+import { ColorValue, GridButton, GridCellWrapper, CellCheckMarkValue } from 'app/components/Grid/styles';
 import { editIcon } from 'app/components/SVGIcons/edit';
 import { deleteIcon } from 'app/components/SVGIcons/delete';
 import { ISegmentSegmentP, SegmentSegmentType } from 'lib/api/ApiModels/Policy/Segment';
 import { checkMark } from 'app/components/SVGIcons/checkMark';
 import SeparateTableCell from './SeparateTableCell';
+import { DataTable, DataTablePFSEvent } from 'primereact/datatable';
+import { Column } from 'primereact/column';
+import { TableWrapper } from 'app/components/Basic/Table/PrimeTableStyles';
+import * as sortHelper from 'lib/helpers/gridHelper';
 interface Props {
   data: ISegmentSegmentP[];
   totalCount: number;
@@ -28,155 +29,109 @@ interface Props {
 }
 
 const TableComponent: React.FC<Props> = (props: Props) => {
-  const [gridColumns] = React.useState<IColumn[]>([
-    {
-      id: `segments${SegmentsGridColumns.name.resField}`,
-      field: SegmentsGridColumns.name.resField,
-      headerName: SegmentsGridColumns.name.label,
-      label: SegmentsGridColumns.name.label,
-      minWidth: 200,
-      flex: 0.25,
-      disableColumnMenu: true,
-      resizable: false,
-      editable: false,
-      filterable: false,
-      disableReorder: true,
-      disableExport: true,
-      renderCell: (param: GridRenderCellParams) => (
-        <GridCellWrapper>
-          <ColorValue margin="auto 20px auto 0" color={param.row[SegmentsGridColumns.color.resField]} />
-          <CellValue>{param.value}</CellValue>
-        </GridCellWrapper>
-      ),
-    },
-    {
-      id: `segments${SegmentsGridColumns.type.resField}`,
-      field: SegmentsGridColumns.type.resField,
-      headerName: SegmentsGridColumns.type.label,
-      label: SegmentsGridColumns.type.label,
-      minWidth: 200,
-      disableColumnMenu: true,
-      resizable: false,
-      editable: false,
-      filterable: false,
-      disableReorder: true,
-      disableExport: true,
-      renderCell: (param: GridRenderCellParams) => {
-        if (param.value === SegmentSegmentType.NETWORK) return 'Network';
-        if (param.value === SegmentSegmentType.SITE) return 'Site';
-        if (param.value === SegmentSegmentType.APPLICATION) return 'Application';
-        if (param.value === SegmentSegmentType.EXTERNAL) return 'External';
-        return param.value;
-      },
-    },
-    // {
-    //   id: `segments${SegmentsGridColumns.description.resField}`,
-    //   field: SegmentsGridColumns.description.resField,
-    //   headerName: SegmentsGridColumns.description.label,
-    //   label: SegmentsGridColumns.description.label,
-    //   minWidth: 200,
-    //   flex: 0.5,
-    //   disableColumnMenu: true,
-    //   resizable: false,
-    //   editable: false,
-    //   filterable: false,
-    //   disableReorder: true,
-    //   disableExport: true,
-    // },
-    {
-      id: `segments${SegmentsGridColumns.id.resField}`,
-      field: SegmentsGridColumns.id.resField,
-      headerName: SegmentsGridColumns.id.label,
-      label: SegmentsGridColumns.id.label,
-      minWidth: 200,
-      flex: 0.5,
-      disableColumnMenu: true,
-      resizable: false,
-      editable: false,
-      filterable: false,
-      disableReorder: true,
-      disableExport: true,
-      renderCell: (param: GridRenderCellParams) => <SeparateTableCell dataItem={param.row} />,
-    },
-    {
-      id: `segments${SegmentsGridColumns.isSystemSegment.resField}`,
-      field: SegmentsGridColumns.isSystemSegment.resField,
-      headerName: SegmentsGridColumns.isSystemSegment.label,
-      label: SegmentsGridColumns.isSystemSegment.label,
-      minWidth: 140,
-      disableColumnMenu: true,
-      resizable: false,
-      editable: false,
-      filterable: false,
-      disableReorder: true,
-      disableExport: true,
-      renderCell: (param: GridRenderCellParams) => {
-        if (param.value) return <CellCheckMarkValue>{checkMark}</CellCheckMarkValue>;
-        return '';
-      },
-    },
-    {
-      id: `segmentsActionCol`,
-      field: '',
-      headerName: '',
-      label: '',
-      width: 80,
-      resizable: false,
-      filterable: false,
-      sortable: false,
-      editable: false,
-      hideSortIcons: true,
-      disableColumnMenu: true,
-      disableReorder: true,
-      disableExport: true,
-      renderCell: (param: GridRenderCellParams) => (
-        <GridCellWrapper>
-          <GridButton margin="auto 0" onClick={() => props.onEditSegment(param.row)}>
-            {editIcon}
-          </GridButton>
-          <GridButton margin="auto 0 auto 12px" hoverColor="var(--_errorColor)" onClick={() => props.onDeleteSegment(param.row)}>
-            {deleteIcon('#3A5277')}
-          </GridButton>
-        </GridCellWrapper>
-      ),
-    },
-  ]);
-  const gridStyles = GridStyles();
+  const [sortObject, setSortObject] = React.useState<ISortObject>(null);
+
+  const colorBodyTemplate = (rowData: ISegmentSegmentP) => {
+    return <ColorValue margin="auto 20px auto 0" color={rowData.color} />;
+  };
+
+  const typeBodyTemplate = (rowData: ISegmentSegmentP) => {
+    if (rowData.segType === SegmentSegmentType.NETWORK) return 'Network';
+    if (rowData.segType === SegmentSegmentType.SITE) return 'Site';
+    if (rowData.segType === SegmentSegmentType.APPLICATION) return 'Application';
+    if (rowData.segType === SegmentSegmentType.EXTERNAL) return 'External';
+    return rowData.segType;
+  };
+
+  const sourceBodyTemplate = (rowData: ISegmentSegmentP) => {
+    return <SeparateTableCell dataItem={rowData} />;
+  };
+
+  const systemSegmentBodyTemplate = (rowData: ISegmentSegmentP) => {
+    if (rowData.isSystemSegment) return <CellCheckMarkValue>{checkMark}</CellCheckMarkValue>;
+    return null;
+  };
+
+  const actionBodyTemplate = (rowData: ISegmentSegmentP) => {
+    return (
+      <GridCellWrapper>
+        <GridButton margin="auto 0" onClick={() => props.onEditSegment(rowData)}>
+          {editIcon}
+        </GridButton>
+        <GridButton margin="auto 0 auto 12px" hoverColor="var(--_errorColor)" onClick={() => props.onDeleteSegment(rowData)}>
+          {deleteIcon('#3A5277')}
+        </GridButton>
+      </GridCellWrapper>
+    );
+  };
+
+  const onSort = (e: DataTablePFSEvent) => {
+    const _sortObject = sortHelper.singelSortHelper(sortObject, e);
+    setSortObject(_sortObject);
+  };
   return (
     <>
-      <DataGrid
-        className={gridStyles.borderedRow}
-        disableColumnMenu
-        hideFooter
-        headerHeight={50}
-        rowHeight={70}
-        rowCount={props.data.length}
-        disableColumnFilter
-        autoHeight
-        rows={props.data}
-        loading={props.loading}
-        error={props.error || null}
-        columns={gridColumns}
-        components={{
-          ColumnUnsortedIcon: () => null,
-          ColumnSortedAscendingIcon: () => <>{gridAscArrow}</>,
-          ColumnSortedDescendingIcon: () => <>{gridDescArrow}</>,
-          NoRowsOverlay: () => (
-            <AbsLoaderWrapper width="100%" height="100%">
-              <ErrorMessage color="var(--_primaryTextColor)" margin="auto">
-                No data
-              </ErrorMessage>
-            </AbsLoaderWrapper>
-          ),
-          ErrorOverlay: () => <ErrorMessage margin="auto">{props.error || null}</ErrorMessage>,
-          LoadingOverlay: () => (
-            <AbsLoaderWrapper width="100%" height="calc(100% - 50px)" top="50px">
-              <LoadingIndicator margin="auto" />
-            </AbsLoaderWrapper>
-          ),
-        }}
-        pageSize={props.data ? props.data.length : 0}
-      />
+      <TableWrapper style={{ minHeight: !props.data || !props.data.length ? '300px' : null }}>
+        <DataTable
+          className="table autoHeight"
+          emptyMessage={!props.error ? 'No data' : ' '}
+          value={props.data}
+          responsiveLayout="scroll"
+          onSort={onSort}
+          sortField={sortObject ? sortObject.field : null}
+          sortOrder={sortObject ? sortObject.order : null}
+          sortMode="single"
+        >
+          <Column
+            style={{ width: SegmentsGridColumns.color.width, minWidth: SegmentsGridColumns.color.width, maxWidth: SegmentsGridColumns.color.width, textAlign: 'center', verticalAlign: 'middle' }}
+            sortable={SegmentsGridColumns.color.sortable}
+            field={SegmentsGridColumns.color.field}
+            header={SegmentsGridColumns.color.label}
+            body={colorBodyTemplate}
+          ></Column>
+          <Column
+            style={{ minWidth: SegmentsGridColumns.name.width }}
+            sortable={SegmentsGridColumns.name.sortable}
+            field={SegmentsGridColumns.name.field}
+            header={SegmentsGridColumns.name.label}
+          ></Column>
+          <Column
+            style={{ minWidth: SegmentsGridColumns.type.width }}
+            sortable={SegmentsGridColumns.type.sortable}
+            field={SegmentsGridColumns.type.field}
+            header={SegmentsGridColumns.type.label}
+            body={typeBodyTemplate}
+          ></Column>
+          <Column
+            style={{ maxWidth: '600px' }}
+            sortable={SegmentsGridColumns.id.sortable}
+            field={SegmentsGridColumns.id.field}
+            header={SegmentsGridColumns.id.label}
+            body={sourceBodyTemplate}
+          ></Column>
+          <Column
+            style={{ textAlign: 'center', width: SegmentsGridColumns.isSystemSegment.width, minWidth: SegmentsGridColumns.isSystemSegment.width, maxWidth: SegmentsGridColumns.isSystemSegment.width }}
+            sortable={SegmentsGridColumns.isSystemSegment.sortable}
+            field={SegmentsGridColumns.isSystemSegment.field}
+            header={SegmentsGridColumns.isSystemSegment.label}
+            body={systemSegmentBodyTemplate}
+          ></Column>
+          <Column body={actionBodyTemplate} sortable={false} exportable={false} style={{ width: '80px', minWidth: '80px', maxWidth: '80px' }}></Column>
+        </DataTable>
+        {props.loading && (
+          <AbsLoaderWrapper width="100%" height="calc(100% - 70px)" top="70px">
+            <LoadingIndicator margin="auto" />
+          </AbsLoaderWrapper>
+        )}
+
+        {props.error && (
+          <AbsLoaderWrapper width="100%" height="calc(100% - 70px)" top="70px" opacity="1">
+            <ErrorMessage margin="auto" fontSize={20}>
+              {props.error || null}
+            </ErrorMessage>
+          </AbsLoaderWrapper>
+        )}
+      </TableWrapper>
       <Paging
         count={props.totalCount}
         disabled={!props.data.length}

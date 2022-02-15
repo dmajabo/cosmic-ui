@@ -6,14 +6,19 @@ export enum PolicyTabTypes {
   Inventory = 'Inventory',
 }
 
+export enum InventoryPanelTypes {
+  Routes = 'Routes',
+  SecurityGroups = 'SecurityGroups',
+}
+
 interface IPolicyTabs {
   segments: ITab<PolicyTabTypes>;
-  rules: ITab<PolicyTabTypes>;
+  // rules: ITab<PolicyTabTypes>;
   inventory: ITab<PolicyTabTypes>;
 }
 export const POLICY_TABS: IPolicyTabs = {
   segments: { id: PolicyTabTypes.Segments, label: 'Segments', index: 0 },
-  rules: { id: PolicyTabTypes.Rules, label: 'Rules', index: 1 },
-  inventory: { id: PolicyTabTypes.Inventory, label: 'Inventory', index: 2 },
+  inventory: { id: PolicyTabTypes.Inventory, label: 'Inventory', index: 1 },
+  // rules: { id: PolicyTabTypes.Rules, label: 'Rules', index: 2 },
   //{ id: PolicyTabTypes.Rules, label: 'Rules', index: 1 },
 };
