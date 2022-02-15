@@ -59,7 +59,7 @@ export const DirectConnectConnectionHealth: React.FC<DirectConnectConnectionHeal
   return (
     <ChartContainer margin="30px 0px 0px 0px">
       <ChartHeader>
-        <ChartLabel className="textOverflowEllips">Connectivity Health</ChartLabel>
+        <ChartLabel className="textOverflowEllips">Direct Connect Connection Health</ChartLabel>
         <SecondaryButton styles={{ margin: '0 0 0 auto' }} label="Settings" icon={settingIcon} onClick={onOpenPanel} />
       </ChartHeader>
       {loading ? (

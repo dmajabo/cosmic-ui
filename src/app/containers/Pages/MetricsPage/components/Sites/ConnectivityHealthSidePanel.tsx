@@ -88,7 +88,7 @@ export const ConnectivityHealthSidePanel: React.FC = () => {
   };
   return (
     <>
-      <PanelTitle className="textOverflowEllips">Connectivity Health Settings</PanelTitle>
+      <PanelTitle className="textOverflowEllips">Health Settings</PanelTitle>
       <OverflowContainer style={{ left: '0', display: 'flex', flexDirection: 'column' }}>
         {ranges && ranges.length ? ranges.map((r, i) => <RangeItem key={`${r.id}${i}`} index={i} range={r} onUpdateRange={onUpdateRange} onRemoveRange={onRemoveRange} />) : null}
         <SecondaryButton disabled={disabledCreate} styles={{ margin: ranges && ranges.length ? '0 0 0 auto' : '0 auto 0 0' }} label="Add Range" icon={addIcon} onClick={onCreateRange} />
