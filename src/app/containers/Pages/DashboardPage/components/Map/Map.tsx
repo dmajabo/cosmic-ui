@@ -25,22 +25,23 @@ export interface GeoJSON {
   readonly features: Feature[];
 }
 
-mapboxgl.accessToken = process.env['REACT_APP_MAPBOX_TOKEN'];
-
-const LATITUDE = 43.023;
-const LONGITUDE = -95.288;
-const INITIAL_ZOOM_LEVEL = 3;
-
 interface MapProps {
   readonly features: Feature[];
 }
+
+mapboxgl.accessToken = process.env['REACT_APP_MAPBOX_TOKEN'];
+
+const MAPBOX_STYLE_URL = 'mapbox://styles/ajay-tp/ckznsacom001m15r6w0fjjaim';
+const LATITUDE = 43.023;
+const LONGITUDE = -95.288;
+const INITIAL_ZOOM_LEVEL = 3;
 
 export const Map: React.FC<MapProps> = ({ features }) => {
   useEffect(() => {
     if (features.length) {
       const map = new mapboxgl.Map({
         container: 'map',
-        style: 'mapbox://styles/ajay-tp/ckznsacom001m15r6w0fjjaim',
+        style: MAPBOX_STYLE_URL,
         center: [LONGITUDE, LATITUDE],
         zoom: INITIAL_ZOOM_LEVEL,
         attributionControl: false,
