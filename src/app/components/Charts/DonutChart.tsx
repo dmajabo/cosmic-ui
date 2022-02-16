@@ -53,6 +53,7 @@ interface Props {
   readonly arcLabelFontSize?: number;
   readonly totalStyle?: TotalProps;
   readonly legendSize?: number;
+  disabledLegendHide?: boolean;
   onItemClick?: (item: PieDataItem) => void;
 }
 
@@ -172,6 +173,7 @@ const DonutChart: React.FC<Props> = (props: Props) => {
   }, [radius, pie]);
 
   const onLegendItemClick = (index: number) => {
+    if (props.disabledLegendHide) return;
     const _chartData = chartData.slice();
     _chartData[index].hide = !chartData[index].hide;
     const svg = d3.select(`#donutChartContainerSvg`);
