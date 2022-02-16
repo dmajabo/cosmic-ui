@@ -22,7 +22,7 @@ const InventoryTableHeader: React.FC<Props> = (props: Props) => {
     props.onColumnOrderChange(items);
   };
   return (
-    <ActionRowStyles margin="0 0 10px 0">
+    <ActionRowStyles margin="0 0 10px 0" zIndex="unset">
       <ActionPart margin="0 auto 0 0" alignItems="flex-end">
         <GridLabel style={{ fontSize: '18px', lineHeight: '22px', fontWeight: 500 }}>{props.label}</GridLabel>
         {!props.total ? null : <GridCount>{props.total}</GridCount>}

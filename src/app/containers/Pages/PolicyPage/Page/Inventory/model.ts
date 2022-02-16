@@ -4,7 +4,12 @@ export interface ILayer3GridColumns {
   id: IGridColumnField;
   policy: IGridColumnField;
   protocol: IGridColumnField;
+  source: IGridColumnField;
+  sourcePort: IGridColumnField;
   destination: IGridColumnField;
+  destinationPort: IGridColumnField;
+  comment: IGridColumnField;
+  logging: IGridColumnField;
   portRange: IGridColumnField;
 }
 
@@ -36,14 +41,59 @@ export const Layer3Columns: ILayer3GridColumns = {
     hide: false,
     sortable: true,
   },
+  source: {
+    label: 'Source',
+    resField: 'srcCidrs',
+    id: 'layer3source',
+    field: 'srcCidrs',
+    width: '200px',
+    hide: false,
+    sortable: true,
+  },
+  sourcePort: {
+    label: 'Src port',
+    resField: 'fromPort',
+    id: 'layer3sourcePort',
+    field: 'fromPort',
+    width: '200px',
+    hide: false,
+    sortable: true,
+  },
   destination: {
     label: 'Destination',
     resField: 'destCidrs',
-    id: 'layer3destCidrs',
+    id: 'layer3destination',
     field: 'destCidrs',
     width: '200px',
     hide: false,
+    sortable: true,
+  },
+  destinationPort: {
+    label: 'Dst port',
+    resField: 'toPort',
+    id: 'layer3destinationPort',
+    field: 'toPort',
+    width: '200px',
+    hide: false,
+    sortable: true,
+  },
+  comment: {
+    label: 'Comment',
+    resField: 'comment',
+    id: 'layer3comment',
+    field: 'comment',
+    width: '200px',
+    hide: true,
     sortable: false,
+  },
+  logging: {
+    label: 'Logging',
+    resField: 'syslogEnabled',
+    id: 'layer3syslogEnabled',
+    field: 'syslogEnabled',
+    width: '100px',
+    hide: false,
+    sortable: true,
   },
   portRange: {
     label: 'Port Range',
@@ -146,8 +196,9 @@ export interface ISecurityGroupsGridColumns {
   extId: IGridColumnField;
   description: IGridColumnField;
   rules: IGridColumnField;
-  // ownerId: IGridColumnField;
-  // regionCode: IGridColumnField;
+  inboundRulesCount: IGridColumnField;
+  outboundRulesCount: IGridColumnField;
+  networkId: IGridColumnField;
 }
 
 export const SecurityGroupsColumns: ISecurityGroupsGridColumns = {
@@ -166,6 +217,8 @@ export const SecurityGroupsColumns: ISecurityGroupsGridColumns = {
     resField: 'extId',
     id: 'securityGroupExtId',
     field: 'extId',
+    minWidth: '200px',
+    maxWidth: '600px',
     hide: false,
     sortable: true,
   },
@@ -184,6 +237,39 @@ export const SecurityGroupsColumns: ISecurityGroupsGridColumns = {
     id: 'securityGrouprules',
     field: 'rules',
     width: '200px',
+    hide: false,
+    sortable: true,
+  },
+  inboundRulesCount: {
+    label: 'Number of Inbound Rules',
+    resField: 'inboundRulesCount',
+    id: 'securityGroupinboundRulesCount',
+    field: 'inboundRulesCount',
+    width: '240px',
+    minWidth: '240px',
+    maxWidth: '240px',
+    hide: false,
+    sortable: true,
+  },
+  outboundRulesCount: {
+    label: 'Number of Outbound Rules',
+    resField: 'outboundRulesCount',
+    id: 'securityGroupoutboundRulesCount',
+    field: 'outboundRulesCount',
+    width: '240px',
+    minWidth: '240px',
+    maxWidth: '240px',
+    hide: false,
+    sortable: true,
+  },
+  networkId: {
+    label: 'VPC ID',
+    resField: 'networkId',
+    id: 'securityGroupnetworkId',
+    field: 'networkId',
+    width: '240px',
+    minWidth: '240px',
+    maxWidth: '240px',
     hide: false,
     sortable: true,
   },

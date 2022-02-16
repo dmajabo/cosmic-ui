@@ -4,8 +4,6 @@ import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { useGet } from 'lib/api/http/useAxiosHook';
 import { INetworkL7Rule, IToposvcGetL7RulesResponse } from 'lib/api/ApiModels/Topology/apiModels';
 import { IGridColumnField, ISortObject } from 'lib/models/grid';
-import { PAGING_DEFAULT_PAGE_SIZE } from 'lib/models/general';
-import { convertStringToNumber } from 'lib/helpers/general';
 import { DataTable, DataTablePFSEvent } from 'primereact/datatable';
 import * as gridHelper from 'lib/helpers/gridHelper';
 import { paramBuilder } from 'lib/api/ApiModels/paramBuilders';
@@ -19,6 +17,7 @@ import LoadingIndicator from 'app/components/Loading';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import { Column } from 'primereact/column';
 import { Layer7Columns } from '../model';
+import ApplicationCell from './ApplicationCell';
 
 interface Props {}
 
@@ -33,7 +32,7 @@ const Layer7 = (props: Props) => {
   ]);
   const [sortObject, setSortObject] = React.useState<ISortObject>(null);
   const [currentPage, setCurrentPage] = React.useState<number>(1);
-  const [pageSize, setPageSize] = React.useState<number>(PAGING_DEFAULT_PAGE_SIZE);
+  const [pageSize, setPageSize] = React.useState<number>(20);
   const columnsRef = React.useRef(columns);
 
   React.useEffect(() => {
@@ -42,9 +41,8 @@ const Layer7 = (props: Props) => {
 
   React.useEffect(() => {
     if (response && response.rules) {
-      const _total = convertStringToNumber(response.count);
       setData(response.rules);
-      setTotalCount(_total);
+      setTotalCount(response.totalCount);
     } else {
       setData([]);
       setTotalCount(0);
@@ -75,8 +73,8 @@ const Layer7 = (props: Props) => {
     setSortObject(_sortObject);
   };
 
-  const policyBodyTemplate = (rowData: INetworkL7Rule) => <span className="cellToCapitalize">{rowData.policy || 'Allow'}</span>;
-  const applicationBodyTemplate = (rowData: INetworkL7Rule) => <span className="cellToUpperCase">app</span>;
+  const policyBodyTemplate = (rowData: INetworkL7Rule) => <span className="cellToCapitalize">{rowData.policy}</span>;
+  const applicationBodyTemplate = (rowData: INetworkL7Rule) => <ApplicationCell valueType={rowData.valueType} values={rowData.values} />;
 
   const onChangeCurrentPage = (_page: number) => {
     setCurrentPage(_page);

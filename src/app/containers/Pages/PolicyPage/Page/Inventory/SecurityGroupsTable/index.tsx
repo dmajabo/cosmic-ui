@@ -10,7 +10,7 @@ import { SecurityGroupsColumns } from '../model';
 import { DataTable, DataTablePFSEvent } from 'primereact/datatable';
 import * as gridHelper from 'lib/helpers/gridHelper';
 import { TopoApi } from 'lib/api/ApiModels/Services/topo';
-import { IObject, PAGING_DEFAULT_PAGE_SIZE } from 'lib/models/general';
+import { IObject } from 'lib/models/general';
 import { InventoryPanelTypes } from 'lib/hooks/Policy/models';
 import SimpleCheckbox from 'app/components/Inputs/Checkbox/SimpleCheckbox';
 import { TableWrapper } from 'app/components/Basic/Table/PrimeTableStyles';
@@ -27,14 +27,20 @@ interface Props {}
 const SecurityGroupsTable: React.FC<Props> = (props: Props) => {
   const { policy } = usePolicyDataContext();
   const { vendors, accessToken } = React.useContext<UserContextState>(UserContext);
-  const [columns, setColumns] = React.useState<IGridColumnField[]>([{ ...SecurityGroupsColumns.name }, { ...SecurityGroupsColumns.extId }]);
+  const [columns, setColumns] = React.useState<IGridColumnField[]>([
+    { ...SecurityGroupsColumns.name },
+    { ...SecurityGroupsColumns.extId },
+    { ...SecurityGroupsColumns.networkId },
+    { ...SecurityGroupsColumns.inboundRulesCount },
+    { ...SecurityGroupsColumns.outboundRulesCount },
+  ]);
   const { response, loading, error, onGet } = useGet<IToposvcListSecurityGroupResponse>();
   const [data, setData] = React.useState<INetworkSecurityGroup[]>([]);
   const [totalCount, setTotalCount] = React.useState<number>(0);
   const [selectedRows, setSelectedRows] = React.useState<IObject<string>>(null);
   const [sortObject, setSortObject] = React.useState<ISortObject>(null);
   const [currentPage, setCurrentPage] = React.useState<number>(1);
-  const [pageSize, setPageSize] = React.useState<number>(PAGING_DEFAULT_PAGE_SIZE);
+  const [pageSize, setPageSize] = React.useState<number>(20);
   const columnsRef = React.useRef(columns);
 
   React.useEffect(() => {
@@ -75,13 +81,6 @@ const SecurityGroupsTable: React.FC<Props> = (props: Props) => {
     setSortObject(_sortObject);
   };
 
-  const onSelectAll = () => {
-    const _obj: IObject<string> = gridHelper.selectionRowAllHelper(selectedRows, data, 'extId');
-    const _dataItems: INetworkSecurityGroup[] = _obj ? data : null;
-    policy.onTooglePanel(InventoryPanelTypes.Routes, _dataItems);
-    setSelectedRows(_obj);
-  };
-
   const onSelectRow = (id: string) => {
     const _obj: IObject<string> = gridHelper.multySelectionRowHelper(selectedRows, id);
     const _dataItems: INetworkSecurityGroup[] = _obj ? data.filter(it => (_obj[it.extId] ? it : null)) : null;
@@ -95,17 +94,6 @@ const SecurityGroupsTable: React.FC<Props> = (props: Props) => {
 
   const checkboxTemplate = (rowData: INetworkSecurityGroup) => {
     return <SimpleCheckbox wrapStyles={{ width: '20px', margin: '0 auto' }} isChecked={!!(selectedRows && selectedRows[rowData.extId])} toggleCheckboxChange={() => onSelectRow(rowData.extId)} />;
-  };
-
-  const headerCbTemplate = () => {
-    return (
-      <SimpleCheckbox
-        isChecked={!!(selectedRows && Object.keys(selectedRows).length)}
-        toggleCheckboxChange={onSelectAll}
-        wrapStyles={{ width: '20px', margin: '0 auto' }}
-        indeterminate={selectedRows && Object.keys(selectedRows).length && data && data.length && Object.keys(selectedRows).length !== data.length}
-      />
-    );
   };
 
   const onChangeCurrentPage = (_page: number) => {
@@ -146,7 +134,7 @@ const SecurityGroupsTable: React.FC<Props> = (props: Props) => {
             dataKey="extId"
             // onRowClick={onRowClick}
           >
-            <Column header={headerCbTemplate} body={checkboxTemplate} align="center" headerStyle={{ width: '60px' }} style={{ textAlign: 'center' }} exportable={false}></Column>
+            <Column header={null} body={checkboxTemplate} align="center" headerStyle={{ width: '60px' }} style={{ textAlign: 'center' }} exportable={false}></Column>
             {columns.map(it => {
               if (it.hide) return null;
               return (

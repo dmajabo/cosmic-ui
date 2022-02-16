@@ -29,9 +29,9 @@ export const DroppedFlowsComponent: React.FC<Props> = (props: Props) => {
   React.useEffect(() => {
     if (response && response.segments) {
       const _data: PieDataItem[] = response.segments.length ? response.segments.map(it => ({ name: it.segmentName, id: it.segmentId, value: it.count, hide: false })) : [];
-      for (let i = 0; i < 20; i++) {
-        _data.push({ name: `Site _${i}`, id: `Site _${i}`, hide: false, value: Math.floor(Math.random() * 50) });
-      }
+      // for (let i = 0; i < 20; i++) {
+      //   _data.push({ name: `Site _${i}`, id: `Site _${i}`, hide: false, value: Math.floor(Math.random() * 50) });
+      // }
       setData(_data);
     }
   }, [response]);

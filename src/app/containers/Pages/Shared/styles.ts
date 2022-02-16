@@ -40,7 +40,7 @@ export const TabsWrapperStyles = styled.div`
 interface IActionRowProps {
   height?: string;
   margin?: string;
-  zIndex?: number;
+  zIndex?: number | string;
 }
 
 export const ActionRowStyles = styled.div<IActionRowProps>`

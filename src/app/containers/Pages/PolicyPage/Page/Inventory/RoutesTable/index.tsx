@@ -15,7 +15,7 @@ import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { TopoApi } from 'lib/api/ApiModels/Services/topo';
 import { ComponentTableStyles, LayerWrapper } from '../styles';
 import SimpleCheckbox from 'app/components/Inputs/Checkbox/SimpleCheckbox';
-import { IObject, PAGING_DEFAULT_PAGE_SIZE } from 'lib/models/general';
+import { IObject } from 'lib/models/general';
 import { usePolicyDataContext } from 'lib/hooks/Policy/usePolicyDataContext';
 import { InventoryPanelTypes } from 'lib/hooks/Policy/models';
 import Paging from 'app/components/Basic/Paging';
@@ -33,7 +33,7 @@ const RoutesTable: React.FC<Props> = (props: Props) => {
   const [selectedRows, setSelectedRows] = React.useState<IObject<string>>(null);
   const [sortObject, setSortObject] = React.useState<ISortObject>(null);
   const [currentPage, setCurrentPage] = React.useState<number>(1);
-  const [pageSize, setPageSize] = React.useState<number>(PAGING_DEFAULT_PAGE_SIZE);
+  const [pageSize, setPageSize] = React.useState<number>(20);
   const columnsRef = React.useRef(columns);
 
   React.useEffect(() => {
@@ -74,13 +74,6 @@ const RoutesTable: React.FC<Props> = (props: Props) => {
     setSortObject(_sortObject);
   };
 
-  const onSelectAll = () => {
-    const _obj: IObject<string> = gridHelper.selectionRowAllHelper(selectedRows, data, 'extId');
-    const _dataItems: INetworkRouteTable[] = _obj ? data : null;
-    policy.onTooglePanel(InventoryPanelTypes.Routes, _dataItems);
-    setSelectedRows(_obj);
-  };
-
   const onSelectRow = (id: string) => {
     const _obj: IObject<string> = gridHelper.multySelectionRowHelper(selectedRows, id);
     const _dataItems: INetworkRouteTable[] = _obj ? data.filter(it => (_obj[it.extId] ? it : null)) : null;
@@ -94,17 +87,6 @@ const RoutesTable: React.FC<Props> = (props: Props) => {
 
   const checkboxTemplate = (rowData: INetworkRouteTable) => {
     return <SimpleCheckbox wrapStyles={{ width: '20px', margin: '0 auto' }} isChecked={!!(selectedRows && selectedRows[rowData.extId])} toggleCheckboxChange={() => onSelectRow(rowData.extId)} />;
-  };
-
-  const headerCbTemplate = () => {
-    return (
-      <SimpleCheckbox
-        isChecked={!!(selectedRows && Object.keys(selectedRows).length)}
-        toggleCheckboxChange={onSelectAll}
-        wrapStyles={{ width: '20px', margin: '0 auto' }}
-        indeterminate={selectedRows && Object.keys(selectedRows).length && data && data.length && Object.keys(selectedRows).length !== data.length}
-      />
-    );
   };
 
   const onChangeCurrentPage = (_page: number) => {
@@ -145,7 +127,7 @@ const RoutesTable: React.FC<Props> = (props: Props) => {
             dataKey="extId"
             // onRowClick={onRowClick}
           >
-            <Column header={headerCbTemplate} body={checkboxTemplate} align="center" style={{ textAlign: 'center', width: '60px', minWidth: '60px', maxWidth: '60px' }} exportable={false}></Column>
+            <Column header={null} body={checkboxTemplate} align="center" style={{ textAlign: 'center', width: '60px', minWidth: '60px', maxWidth: '60px' }} exportable={false}></Column>
             {columns.map(it => {
               if (it.hide) return null;
               return (
