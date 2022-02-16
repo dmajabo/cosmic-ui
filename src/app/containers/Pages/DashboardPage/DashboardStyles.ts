@@ -14,7 +14,15 @@ export const DashboardStyles = makeStyles(
       sitesHeader: {
         display: 'flex',
         justifyContent: 'space-between',
-        margin: '37px 33px 30px 30px',
+        margin: '30px 30px 23px 30px',
+      },
+      mapContainerMain: {
+        marginLeft: '30px',
+        marginRight: '33px',
+        marginBottom: '30px',
+        border: '1px solid #CBD2DC',
+        borderRadius: '6px',
+        overflow: 'hidden',
       },
       sitesHeaderLeftSection: {
         display: 'flex',
@@ -130,7 +138,7 @@ export const DashboardStyles = makeStyles(
         display: 'flex',
       },
       mapHeight: {
-        height: '375px',
+        height: '490px',
       },
       demoPopupContainer: {
         backgroundColor: '#FFFFFF',

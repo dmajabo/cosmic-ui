@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { DashboardStyles } from './DashboardStyles';
 import './react-grid-layout.css';
 import TabsListUnstyled from '@mui/base/TabsListUnstyled';
@@ -6,12 +6,16 @@ import { buttonUnstyledClasses } from '@mui/base/ButtonUnstyled';
 import TabUnstyled, { tabUnstyledClasses } from '@mui/base/TabUnstyled';
 import { styled } from '@mui/system';
 import { TabsUnstyled } from '@mui/material';
-import { DashboardSitesViewTab } from './enum';
-import styles from 'styled-components';
 import { DashboardItemContainer, DashboardItemContent, DashboardItemLabel } from './styles/ChartContainer';
 import InOutBound from './components/ManagmentItem/InOutBound';
 import ManagementLayer7 from './components/ManagmentItem/ManagementLayer7';
 import ManagementDrifts from './components/ManagmentItem/ManagementDrifts';
+import { DashboardSitesViewTab, Device, OnPremDevicesResponse } from './enum';
+import { Feature, Map } from './components/Map/Map';
+import { useGet } from 'lib/api/http/useAxiosHook';
+import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
+import { TopoApi } from 'lib/api/ApiModels/Services/topo';
+import LoadingIndicator from 'app/components/Loading';
 
 const Tab = styled(TabUnstyled)`
   color: #848da3;
@@ -54,11 +58,33 @@ const TabsList = styled(TabsListUnstyled)`
 
 const DashboardPage: React.FC = () => {
   const classes = DashboardStyles();
+  const userContext = useContext<UserContextState>(UserContext);
   const [sitesViewTabName, setSitesViewTabName] = useState<DashboardSitesViewTab>(DashboardSitesViewTab.Map);
+
+  const { loading, error, response, onGet } = useGet<OnPremDevicesResponse>();
 
   const onTabChange = (event: React.SyntheticEvent<Element, Event>, value: string | number) => {
     setSitesViewTabName(value as DashboardSitesViewTab);
   };
+
+  useEffect(() => {
+    onGet(TopoApi.getOnPremDeviceList(), userContext.accessToken!);
+  }, []);
+
+  const convertDataToFeatures = useCallback(
+    (devices: Device[] = []): Feature[] => {
+      return devices.map(device => ({
+        type: 'Feature',
+        properties: { title: '', description: '' },
+        geometry: {
+          coordinates: [device.lon, device.lat],
+          type: 'Point',
+          name: device.id,
+        },
+      }));
+    },
+    [response],
+  );
 
   return (
     <div className={classes.flexContainer}>
@@ -67,7 +93,7 @@ const DashboardPage: React.FC = () => {
           <div className={classes.sitesHeaderLeftSection}>
             <span className={classes.sites}>Sites</span>
             <div className={classes.pillContainer}>
-              <span className={classes.pillText}>50</span>
+              <span className={classes.pillText}>{response?.totalCount}</span>
             </div>
           </div>
           <TabsUnstyled value={sitesViewTabName} onChange={onTabChange}>
@@ -79,7 +105,17 @@ const DashboardPage: React.FC = () => {
             </div>
           </TabsUnstyled>
         </div>
-        <div></div>
+        {loading && <LoadingIndicator margin="auto" />}
+
+        {error && <div>Something went wrong. Please try again</div>}
+
+        {!loading && sitesViewTabName === DashboardSitesViewTab.Map && (
+          <div className={classes.mapContainerMain}>
+            <Map features={convertDataToFeatures(response?.devices)} />
+          </div>
+        )}
+
+        {!loading && sitesViewTabName === DashboardSitesViewTab.List && <div className={classes.mapContainerMain}>{/* TODO: Display table */}</div>}
       </div>
       <div className={classes.rightContainer}>
         <DashboardItemContainer margin="0 0 15px 0" height="calc(50% - 15px)" flex="1 1 calc(50% - 15px)">
