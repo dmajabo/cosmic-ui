@@ -16,6 +16,7 @@ import './Toastify.css';
 import { VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
 import { AxiosError } from 'axios';
 import { TabName } from '../..';
+import noop from 'lodash/noop';
 
 interface PerformanceDashboardProps {
   readonly organizations: Organization[];
@@ -147,8 +148,9 @@ export const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ netw
           addSlaTest={addSlaTest}
         />
       ) : (
-        <CreateSLATest networks={networks} merakiOrganizations={merakiOrganizations} addSlaTest={addSlaTest} />
+        <CreateSLATest networks={networks} merakiOrganizations={merakiOrganizations} addSlaTest={addSlaTest} popup={false} closeSlaTest={noop} />
       )}
+      <ToastContainer />
     </>
   );
 };
