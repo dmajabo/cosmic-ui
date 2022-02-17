@@ -2,32 +2,42 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useGet } from 'lib/api/http/useAxiosHook';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { MetricsStyles } from '../../MetricsStyles';
-import { HealthTable } from '../HealthTable';
 import isEmpty from 'lodash/isEmpty';
 import sortBy from 'lodash/sortBy';
 import { LookbackSelectOption } from 'app/containers/Pages/AnalyticsPage/components/Metrics Explorer/LookbackTimeTab';
 import { TelemetryApi } from 'lib/api/ApiModels/Services/telemetry';
 import { GetTelemetryMetricsResponse, TransitMetricsParams } from 'lib/api/http/SharedTypes';
 import { DateTime } from 'luxon';
-import { getCorrectedTimeString } from '../Utils';
+import { getConnectivityMetrics, getCorrectedTimeString, getHealthTableData } from '../Utils';
 import LoadingIndicator from 'app/components/Loading';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import { EmptyText } from 'app/components/Basic/NoDataStyles/NoDataStyles';
 import { HealthTableData } from '../Cloud/DirectConnectConnectionHealth';
 import { TabName } from '../..';
+import { ChartContainer, ChartHeader, ChartLabel, ChartWrapper } from 'app/containers/Pages/TrafficPage/Trends/styles';
+import { settingIcon } from 'app/components/SVGIcons/settingIcon';
+import SecondaryButton from 'app/components/Buttons/SecondaryButton';
+import { useMetricsDataContext } from 'lib/hooks/Metrics/useMetricsDataContent';
+import { HealthTable } from '../HealthTable';
 
 interface ConnectivityHealthProps {
   readonly timeRange: LookbackSelectOption;
   readonly selectedTabName: TabName;
+  readonly onOpenPanel: () => void;
+}
+
+interface MetricsObject {
+  readonly [timestamp: string]: number;
+}
+
+export interface ConnectivityMetricsData {
+  readonly name: string;
+  readonly metrics: MetricsObject;
 }
 
 const CONNECTIVITY_HEALTH_METRIC_NAMES = ['ConnectivityHealth'];
 
-const INPUT_TIME_FORMAT = 'yyyy-MM-dd HH:mm:ss ZZZ z';
-
-const HEALTH_TABLE_TIME_FORMAT = 'MMM dd';
-
-export const ConnectivityHealth: React.FC<ConnectivityHealthProps> = ({ timeRange, selectedTabName }) => {
+export const ConnectivityHealth: React.FC<ConnectivityHealthProps> = ({ timeRange, selectedTabName, onOpenPanel }) => {
   const classes = MetricsStyles();
   const userContext = useContext<UserContextState>(UserContext);
   const [healthTableData, setHealthTableData] = useState<HealthTableData[]>([]);
@@ -47,49 +57,29 @@ export const ConnectivityHealth: React.FC<ConnectivityHealthProps> = ({ timeRang
 
   useEffect(() => {
     if (response && response.metrics && response.metrics.length) {
-      const connectivityMetrics = response.metrics.map(item => {
-        const name = item.tags.name;
-        const metrics = item.ts.reduce((acc, nextValue) => {
-          const formattedTimeString = DateTime.fromFormat(getCorrectedTimeString(nextValue.time), INPUT_TIME_FORMAT).toUTC().toFormat(HEALTH_TABLE_TIME_FORMAT);
-          const milliseconds = DateTime.fromFormat(formattedTimeString, HEALTH_TABLE_TIME_FORMAT).toMillis();
-          const value = Number(nextValue.value);
-          if (acc[milliseconds]) {
-            acc[milliseconds] = acc[milliseconds] + value;
-          } else {
-            acc[milliseconds] = value;
-          }
-          return acc;
-        }, {});
-        return {
-          name: name,
-          metrics: metrics,
-        };
-      });
-      const connectivityTableData: HealthTableData[] = connectivityMetrics.reduce((acc, nextValue) => {
-        const sortedTimeString = sortBy(Object.keys(nextValue.metrics));
-        const itemTableData: HealthTableData[] = sortedTimeString.map(timeItem => ({
-          time: DateTime.fromMillis(Number(timeItem)).toFormat(HEALTH_TABLE_TIME_FORMAT),
-          value: nextValue.metrics[timeItem],
-          connection: nextValue.name,
-        }));
-        return acc.concat(itemTableData);
-      }, []);
+      const connectivityMetrics: ConnectivityMetricsData[] = getConnectivityMetrics(response);
+      const connectivityTableData: HealthTableData[] = getHealthTableData(connectivityMetrics);
       setHealthTableData(connectivityTableData);
     }
   }, [response]);
 
   return (
-    <div className={classes.pageComponentBackground}>
-      <div className={classes.pageComponentTitle}>Connectivity Health</div>
+    <ChartContainer margin="30px 0px 0px 0px">
+      <ChartHeader>
+        <ChartLabel className="textOverflowEllips">Connectivity Health</ChartLabel>
+        <SecondaryButton styles={{ margin: '0 0 0 auto' }} label="Settings" icon={settingIcon} onClick={onOpenPanel} />
+      </ChartHeader>
       {loading ? (
         <LoadingIndicator margin="auto" />
       ) : error ? (
-        <ErrorMessage>{error.message}</ErrorMessage>
+        <ErrorMessage className="error">{error.message || 'Something went wrong'}</ErrorMessage>
       ) : isEmpty(healthTableData) ? (
-        <EmptyText>No Data</EmptyText>
+        <ErrorMessage className="empty" color="var(--_primaryTextColor)" fontSize={20} margin="auto">
+          No data
+        </ErrorMessage>
       ) : (
         <HealthTable tableData={healthTableData} />
       )}
-    </div>
+    </ChartContainer>
   );
 };

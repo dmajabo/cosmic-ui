@@ -4,6 +4,7 @@ import { PolicyApi } from 'lib/api/ApiModels/Services/policy';
 import { TopoApi } from 'lib/api/ApiModels/Services/topo';
 import { Device, GetControllerVendorResponse, MetricsTopoMap, Organization, Vnet } from 'lib/api/http/SharedTypes';
 import { useGet, useGetChainData } from 'lib/api/http/useAxiosHook';
+import { MetricsProvider, useMetricsActions } from 'lib/hooks/Metrics/useMetricsDataContent';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import React, { useContext, useEffect, useState } from 'react';
 import { TabsWrapperStyles } from '../Shared/styles';
@@ -41,6 +42,7 @@ function a11yProps(title: string) {
 
 const MetricsPage: React.FC = () => {
   const classes = MetricsStyles();
+  const metricsActions = useMetricsActions();
   const userContext = useContext<UserContextState>(UserContext);
   const { response, loading, error, onGetChainData } = useGetChainData<MetricsTopoMap>();
 
@@ -71,45 +73,47 @@ const MetricsPage: React.FC = () => {
   }, [response]);
 
   return (
-    <div className={classes.metricsPageContainer}>
-      <div className={classes.fixedTabBar}>
-        <TabsWrapperStyles>
-          <Tabs value={selectedTabName} onChange={handleTabChange} indicatorColor="primary">
-            <Tab
-              value={TabName.Performance}
-              label={<span className={selectedTabName === TabName.Performance ? classes.activeTabLabel : classes.tabLabel}>{TabName.Performance}</span>}
-              wrapped
-              {...a11yProps(TabName.Performance)}
-            />
-            <Tab
-              value={TabName.Sites}
-              label={<span className={selectedTabName === TabName.Sites ? classes.activeTabLabel : classes.tabLabel}>{TabName.Sites}</span>}
-              wrapped
-              {...a11yProps(TabName.Sites)}
-            />
-            {isAwsConfigured && (
+    <MetricsProvider actions={metricsActions}>
+      <div className={classes.metricsPageContainer}>
+        <div className={classes.fixedTabBar}>
+          <TabsWrapperStyles>
+            <Tabs value={selectedTabName} onChange={handleTabChange} indicatorColor="primary">
               <Tab
-                value={TabName.Cloud}
-                label={<span className={selectedTabName === TabName.Cloud ? classes.activeTabLabel : classes.tabLabel}>{TabName.Cloud}</span>}
+                value={TabName.Performance}
+                label={<span className={selectedTabName === TabName.Performance ? classes.activeTabLabel : classes.tabLabel}>{TabName.Performance}</span>}
                 wrapped
-                {...a11yProps(TabName.Cloud)}
+                {...a11yProps(TabName.Performance)}
               />
-            )}
-          </Tabs>
-        </TabsWrapperStyles>
-      </div>
-      <TabPanel value={selectedTabName} title={TabName.Performance}>
-        <PerformanceDashboard selectedTabName={selectedTabName} organizations={organizations} networks={networks} devices={devices} orgLoading={loading} orgError={error} />
-      </TabPanel>
-      <TabPanel value={selectedTabName} title={TabName.Sites}>
-        <Sites selectedTabName={selectedTabName} networks={networks} devices={devices} orgLoading={loading} orgError={error} />
-      </TabPanel>
-      {isAwsConfigured && (
-        <TabPanel value={selectedTabName} title={TabName.Cloud}>
-          <Cloud selectedTabName={selectedTabName} />
+              <Tab
+                value={TabName.Sites}
+                label={<span className={selectedTabName === TabName.Sites ? classes.activeTabLabel : classes.tabLabel}>{TabName.Sites}</span>}
+                wrapped
+                {...a11yProps(TabName.Sites)}
+              />
+              {isAwsConfigured && (
+                <Tab
+                  value={TabName.Cloud}
+                  label={<span className={selectedTabName === TabName.Cloud ? classes.activeTabLabel : classes.tabLabel}>{TabName.Cloud}</span>}
+                  wrapped
+                  {...a11yProps(TabName.Cloud)}
+                />
+              )}
+            </Tabs>
+          </TabsWrapperStyles>
+        </div>
+        <TabPanel value={selectedTabName} title={TabName.Performance}>
+          <PerformanceDashboard selectedTabName={selectedTabName} organizations={organizations} networks={networks} devices={devices} orgLoading={loading} orgError={error} />
         </TabPanel>
-      )}
-    </div>
+        <TabPanel value={selectedTabName} title={TabName.Sites}>
+          <Sites selectedTabName={selectedTabName} networks={networks} devices={devices} orgLoading={loading} orgError={error} />
+        </TabPanel>
+        {isAwsConfigured && (
+          <TabPanel value={selectedTabName} title={TabName.Cloud}>
+            <Cloud selectedTabName={selectedTabName} />
+          </TabPanel>
+        )}
+      </div>
+    </MetricsProvider>
   );
 };
 export default MetricsPage;

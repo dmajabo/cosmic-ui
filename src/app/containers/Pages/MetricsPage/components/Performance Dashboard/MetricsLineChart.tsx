@@ -20,7 +20,7 @@ interface ChartData {
 
 interface AreaChartData {
   readonly name: string;
-  readonly data: [number, number, number][];
+  readonly data: [number, number, number?][];
 }
 
 interface LineChartProps {
@@ -167,34 +167,21 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
           `,
       },
     }));
-    const thresholdData: ChartData[] = selectedRows.map(row => ({
+    const thresholdData: AreaChartData[] = selectedRows.map(row => ({
       id: `${row.name}_threshold`,
       name: `${row.name}_threshold`,
       data: sortBy(inputData[`${row.id}_threshold`], 'time').map((item, index) => {
         const timestamp = DateTime.fromFormat(item.time, OLD_TIME_FORMAT).toUTC().toMillis();
 
-        return {
-          x: timestamp,
-          y: dataValueSuffix === 'mbps' ? Number(item.value) / 1000 : Number(Number.parseFloat(item.value).toFixed(2)),
-          marker: {
-            enabled: false,
-          },
-          dataValueSuffix: dataValueSuffix,
-        };
+        return [timestamp, dataValueSuffix === 'mbps' ? Number(item.value) / 1000 : Number(Number.parseFloat(item.value).toFixed(2))];
       }),
       linkedTo: `${row.name} &#9654 ${row.sourceDevice}`,
-      turboThreshold: inputData[row.id].length,
-      color: 'transparent',
       states: {
         hover: {
           lineWidthPlus: 0,
-          marker: {
-            enabled: false,
-          },
         },
       },
       zIndex: 1,
-      lineWidth: 0,
       tooltip: {
         useHTML: true,
         pointFormat: `
@@ -267,15 +254,17 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
     },
     plotOptions: {
       series: {
-        marker: {
-          symbol: 'square',
-          radius: 10,
-        },
+        marker: { enabled: false },
       },
     },
     legend: {
-      symbolHeight: 20,
-      symbolPadding: 10,
+      useHTML: true,
+      symbolPadding: 0,
+      symbolWidth: 0,
+      symbolHeight: 0,
+      labelFormatter: function (this: Highcharts.Point) {
+        return `<span><span style="background-color:${this.color}; padding-right: 15px; margin-right: 10px; border-radius: 6px;" >&nbsp</span>${this.name}</span>`;
+      },
     },
     colors: COLORS,
     credits: {

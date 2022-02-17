@@ -16,6 +16,7 @@ import './Toastify.css';
 import { VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
 import { AxiosError } from 'axios';
 import { TabName } from '../..';
+import noop from 'lodash/noop';
 
 interface PerformanceDashboardProps {
   readonly organizations: Organization[];
@@ -34,6 +35,7 @@ export const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ netw
   const [finalTableData, setFinalTableData] = useState<FinalTableData[]>([]);
   const [merakiOrganizations, setMerakiOrganizations] = useState<Organization[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isError, setIsError] = useState<boolean>(false);
 
   useEffect(() => {
     if (!isEmpty(organizations) && selectedTabName === TabName.Performance) {
@@ -70,7 +72,11 @@ export const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ netw
         setIsLoading(false);
       } else {
         setIsLoading(false);
+        setIsError(true);
       }
+    } else {
+      setIsLoading(false);
+      setIsError(true);
     }
   };
 
@@ -126,25 +132,23 @@ export const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ netw
         <div className={classes.pageCenter}>
           <LoadingIndicator />
         </div>
-      ) : !isEmpty(merakiOrganizations) ? (
-        !isEmpty(finalTableData) ? (
-          <SLATestList
-            updateSlaTest={updateSlaTest}
-            deleteSlaTest={deleteSlaTest}
-            networks={networks}
-            merakiOrganizations={merakiOrganizations}
-            finalTableData={finalTableData}
-            addSlaTest={addSlaTest}
-          />
-        ) : (
-          <CreateSLATest networks={networks} merakiOrganizations={merakiOrganizations} addSlaTest={addSlaTest} />
-        )
-      ) : (
+      ) : isError ? (
         <AbsLoaderWrapper width="100%" height="100%">
           <ErrorMessage fontSize={28} margin="auto">
             Something went wrong. Please refresh page
           </ErrorMessage>
         </AbsLoaderWrapper>
+      ) : !isEmpty(merakiOrganizations) && !isEmpty(finalTableData) ? (
+        <SLATestList
+          updateSlaTest={updateSlaTest}
+          deleteSlaTest={deleteSlaTest}
+          networks={networks}
+          merakiOrganizations={merakiOrganizations}
+          finalTableData={finalTableData}
+          addSlaTest={addSlaTest}
+        />
+      ) : (
+        <CreateSLATest networks={networks} merakiOrganizations={merakiOrganizations} addSlaTest={addSlaTest} popup={false} closeSlaTest={noop} />
       )}
       <ToastContainer />
     </>

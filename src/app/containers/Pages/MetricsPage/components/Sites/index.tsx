@@ -6,7 +6,6 @@ import { MetricsStyles } from '../../MetricsStyles';
 import Select from 'react-select';
 import { LookbackLabel, LookbackSelectOption, LookbackValue } from 'app/containers/Pages/AnalyticsPage/components/Metrics Explorer/LookbackTimeTab';
 import { DeviceHealth } from './DeviceHealth';
-import { INetworkDevice, INetworkRegion, ITopologyMapData, VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
 import { NetworkUsageHealth } from './NetworkUsageHealth';
@@ -15,6 +14,12 @@ import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import { ConnectivityHealth } from './ConnectivityHealth';
 import { TabName } from '../..';
 import { Device, Vnet } from 'lib/api/http/SharedTypes';
+import { ContentPanelWrapper } from 'app/components/Basic/PanelBar/styles';
+import { PageWithPanelWrapperStyles } from 'app/containers/Pages/Shared/styles';
+import PanelBar from 'app/components/Basic/PanelBar';
+import { APP_HEADER_HEIGHT } from 'lib/constants/general';
+import { IPanelBarLayoutTypes } from 'lib/models/general';
+import { ConnectivityHealthSidePanel } from './ConnectivityHealthSidePanel';
 
 interface SitesProps {
   readonly networks: Vnet[];
@@ -64,6 +69,7 @@ const TIME_RANGE_OPTIONS: LookbackSelectOption[] = [
 
 export const Sites: React.FC<SitesProps> = ({ networks, devices, orgError, orgLoading, selectedTabName }) => {
   const classes = MetricsStyles();
+  const [showSettingsPanel, setShowSettingsPanel] = useState<boolean>(false);
   const [timeRange, setTimeRange] = useState<LookbackSelectOption>(INITIAL_ANOMALY_TIME_RANGE_VALUE);
 
   const handleTimeRangeChange = (value: LookbackSelectOption) => setTimeRange(value);
@@ -74,6 +80,13 @@ export const Sites: React.FC<SitesProps> = ({ networks, devices, orgError, orgLo
     const networkIds = uniq(devices.map(device => device.networkId));
     const networkObjects: NetworkObject[] = networkIds.map(networkId => ({ id: networkId, name: networks.find(network => network.extId == networkId)?.name || 'Unknown' }));
     return networkObjects;
+  };
+
+  const onOpenPanel = () => {
+    setShowSettingsPanel(true);
+  };
+  const onHideSettingsPanel = () => {
+    setShowSettingsPanel(false);
   };
 
   return orgLoading ? (
@@ -87,25 +100,36 @@ export const Sites: React.FC<SitesProps> = ({ networks, devices, orgError, orgLo
       </ErrorMessage>
     </AbsLoaderWrapper>
   ) : (
-    <>
-      <div className={classes.endFlexContainer}>
-        <div>
-          <SecondaryButtonwithEvent
-            label={
-              <>
-                <span className={classes.otherButtonText}>FILTER</span>
-                <FilterIcon />
-              </>
-            }
-            onClick={noop}
-          />
-          <span className={classes.anomalyTimeRangeText}>Show:</span>
-          <Select styles={dropdownStyle} className={classes.inlineSelect} label="Single select" value={timeRange} options={TIME_RANGE_OPTIONS} onChange={handleTimeRangeChange} />
+    <ContentPanelWrapper>
+      <PageWithPanelWrapperStyles padding="0" width={showSettingsPanel ? 'calc(100% - 520px)' : '100%'}>
+        <div className={classes.endFlexContainer}>
+          <div>
+            <SecondaryButtonwithEvent
+              label={
+                <>
+                  <span className={classes.otherButtonText}>FILTER</span>
+                  <FilterIcon />
+                </>
+              }
+              onClick={noop}
+            />
+            <span className={classes.anomalyTimeRangeText}>Show:</span>
+            <Select styles={dropdownStyle} className={classes.inlineSelect} label="Single select" value={timeRange} options={TIME_RANGE_OPTIONS} onChange={handleTimeRangeChange} />
+          </div>
         </div>
-      </div>
-      <NetworkUsageHealth selectedTabName={selectedTabName} networks={getNetworks()} timeRange={timeRange} />
-      <ConnectivityHealth selectedTabName={selectedTabName} timeRange={timeRange} />
-      <DeviceHealth selectedTabName={selectedTabName} devices={getDeviceIds()} timeRange={timeRange} />
-    </>
+        <NetworkUsageHealth selectedTabName={selectedTabName} networks={getNetworks()} timeRange={timeRange} />
+        <ConnectivityHealth selectedTabName={selectedTabName} timeRange={timeRange} onOpenPanel={onOpenPanel} />
+        <DeviceHealth selectedTabName={selectedTabName} devices={getDeviceIds()} timeRange={timeRange} />
+      </PageWithPanelWrapperStyles>
+      <PanelBar
+        styles={{ position: 'fixed', top: APP_HEADER_HEIGHT, right: '0', maxHeight: `calc(100% - ${APP_HEADER_HEIGHT})`, zIndex: 11 }}
+        maxWidth="520px"
+        show={showSettingsPanel}
+        onHidePanel={onHideSettingsPanel}
+        type={IPanelBarLayoutTypes.VERTICAL}
+      >
+        {showSettingsPanel && <ConnectivityHealthSidePanel />}
+      </PanelBar>
+    </ContentPanelWrapper>
   );
 };

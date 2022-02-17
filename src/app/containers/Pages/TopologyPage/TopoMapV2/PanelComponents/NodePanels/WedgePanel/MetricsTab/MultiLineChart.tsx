@@ -118,6 +118,9 @@ export const MultiLineChart: React.FC<LineChartProps> = ({ dataValueSuffix, inpu
     plotOptions: {
       series: {
         turboThreshold: turboThreshold,
+        marker: {
+          enabled: false,
+        },
       },
     },
     yAxis: {
