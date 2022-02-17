@@ -7,6 +7,13 @@ interface PageWrapProps {
   padding?: string;
   bgColor?: string;
 }
+
+export const PageWrapperWithPanelStyles = styled.div`
+  display: flex;
+  width: 100%;
+  min-height: 100%;
+`;
+
 export const PageWrapperStyles = styled.div<PageWrapProps>`
   display: flex;
   flex-direction: column;

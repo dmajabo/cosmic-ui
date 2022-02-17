@@ -14,12 +14,12 @@ import * as gridHelper from 'lib/helpers/gridHelper';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { TopoApi } from 'lib/api/ApiModels/Services/topo';
 import { ComponentTableStyles, LayerWrapper } from '../styles';
-import SimpleCheckbox from 'app/components/Inputs/Checkbox/SimpleCheckbox';
 import { IObject } from 'lib/models/general';
 import { usePolicyDataContext } from 'lib/hooks/Policy/usePolicyDataContext';
 import { InventoryPanelTypes } from 'lib/hooks/Policy/models';
 import Paging from 'app/components/Basic/Paging';
 import { paramBuilder } from 'lib/api/ApiModels/paramBuilders';
+import * as cellTemplates from 'app/components/Basic/Table/CellTemplates';
 
 interface Props {}
 
@@ -33,12 +33,18 @@ const RoutesTable: React.FC<Props> = (props: Props) => {
   const [selectedRows, setSelectedRows] = React.useState<IObject<string>>(null);
   const [sortObject, setSortObject] = React.useState<ISortObject>(null);
   const [currentPage, setCurrentPage] = React.useState<number>(1);
-  const [pageSize, setPageSize] = React.useState<number>(20);
+  const [pageSize, setPageSize] = React.useState<number>(10);
   const columnsRef = React.useRef(columns);
 
   React.useEffect(() => {
     getDataAsync(pageSize, currentPage);
   }, []);
+
+  React.useEffect(() => {
+    if (selectedRows && !policy.panel.show) {
+      setSelectedRows(null);
+    }
+  }, [policy.panel]);
 
   React.useEffect(() => {
     if (response && response.routeTables) {
@@ -85,9 +91,7 @@ const RoutesTable: React.FC<Props> = (props: Props) => {
   //   onSelectRow(e.data.extId);
   // };
 
-  const checkboxTemplate = (rowData: INetworkRouteTable) => {
-    return <SimpleCheckbox wrapStyles={{ width: '20px', margin: '0 auto' }} isChecked={!!(selectedRows && selectedRows[rowData.extId])} toggleCheckboxChange={() => onSelectRow(rowData.extId)} />;
-  };
+  const checkboxTemplate = (rowData: INetworkRouteTable) => cellTemplates.cellCheckboxTemplate(!!(selectedRows && selectedRows[rowData.extId]), () => onSelectRow(rowData.extId));
 
   const onChangeCurrentPage = (_page: number) => {
     setCurrentPage(_page);
@@ -155,7 +159,15 @@ const RoutesTable: React.FC<Props> = (props: Props) => {
             </AbsLoaderWrapper>
           )}
         </TableWrapper>
-        <Paging count={totalCount} disabled={!data.length} pageSize={pageSize} currentPage={currentPage} onChangePage={onChangeCurrentPage} onChangePageSize={onChangePageSize} />
+        <Paging
+          pageSizeValues={[10, 20]}
+          count={totalCount}
+          disabled={!data.length}
+          pageSize={pageSize}
+          currentPage={currentPage}
+          onChangePage={onChangeCurrentPage}
+          onChangePageSize={onChangePageSize}
+        />
       </ComponentTableStyles>
     </LayerWrapper>
   );

@@ -24,7 +24,9 @@ export const TopoApi = {
   getOnPremDeviceList: () => 'topo/api/v1/topology/onprem/devices',
 
   getRouteTables: () => 'topo/api/v1/topology/route-tables', // res => IToposvcListRouteTableResponse
+  getRouteTableByExtId: (extId: string) => `topo/api/v1/topology/route-tables/${extId}`, // res => IToposvcGetRouteTableByExtIdResponse
   getSecurityGroups: () => 'topo/api/v1/topology/security-groups', // res => IToposvcListSecurityGroupResponse
+  getSecurityGroupsByExtId: (extId: string) => `topo/api/v1/topology/security-groups/${extId}`, // res => IToposvcGetSecurityGroupByExtIdResponse
   getRules: (type?: ToposvcRuleType) => (type ? `topo/api/v1/topology/rules?ruleType=${type}` : `topo/api/v1/topology/rules`), // res => IToposvcGetRulesResponse
   getL7Rules: () => 'topo/api/v1/topology/l7rules', // res => IToposvcGetL7RulesResponse
 

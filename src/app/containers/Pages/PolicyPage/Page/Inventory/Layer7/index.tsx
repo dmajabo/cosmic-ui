@@ -131,7 +131,15 @@ const Layer7 = (props: Props) => {
             </AbsLoaderWrapper>
           )}
         </TableWrapper>
-        <Paging count={totalCount} disabled={!data.length} pageSize={pageSize} currentPage={currentPage} onChangePage={onChangeCurrentPage} onChangePageSize={onChangePageSize} />
+        <Paging
+          pageSizeValues={[10, 20]}
+          count={totalCount}
+          disabled={!data.length}
+          pageSize={pageSize}
+          currentPage={currentPage}
+          onChangePage={onChangeCurrentPage}
+          onChangePageSize={onChangePageSize}
+        />
       </ComponentTableStyles>
     </LayerWrapper>
   );

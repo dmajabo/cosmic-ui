@@ -22,6 +22,7 @@ import SiteNode from '../Containers/Nodes/NodeWrapper/SitesNode/SiteNode';
 import SitesNodeTopContainer from '../Containers/Nodes/NodeWrapper/SitesNode/SitesNodeTopContainer';
 import LinksWrapper from '../Containers/Links';
 import ResizablePanel from 'app/components/Basic/PanelBar/ResizablePanel';
+import { OKULIS_LOCAL_STORAGE_KEYS } from 'lib/api/http/utils';
 // import { STANDART_DISPLAY_RESOLUTION_V2 } from 'lib/models/general';
 // import SegmentsComponent from '../PanelComponents/Segments/SegmentsComponent';
 
@@ -108,7 +109,7 @@ const Graph: React.FC<Props> = (props: Props) => {
             {/* {topology.originSegmentsData && topology.originSegmentsData.length ? <SegmentsLegend /> : null} */}
           </ContainerWithLegend>
           {topology.regionStructures && topology.regionStructures.length ? <StructuresWrapper nodes={topology.regionStructures} /> : null}
-          <ResizablePanel show={topology.topoPanel.show} onHidePanel={onHidePanel}>
+          <ResizablePanel show={topology.topoPanel.show} onHidePanel={onHidePanel} storageKey={OKULIS_LOCAL_STORAGE_KEYS.OKULIS_TOPOLOGY_PANEL_WIDTH}>
             {topology.topoPanel.type === TopologyPanelTypes.FILTERS && <FilterComponent />}
             {topology.topoPanel.type === TopologyPanelTypes.VPC && <VpcPanel dataItem={topology.topoPanel.dataItem} />}
             {topology.topoPanel.type === TopologyPanelTypes.WebAcl && <WebAclPanel dataItem={topology.topoPanel.dataItem} />}

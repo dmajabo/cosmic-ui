@@ -36,7 +36,7 @@ export const HomePage: React.FC = () => {
   const onTryLoadVendors = async _accesstoken => {
     await onGetVendors(PolicyApi.getControllerVendors(), _accesstoken!);
   };
-  return userContext.idToken && userContext.accessToken ? (
+  return userContext.idToken && userContext.accessToken && userContext.vendors !== null ? (
     <BreadCrumbProvider actions={breadcrumbActions}>
       <LayoutWithHeaderFooterSidebar>
         <BaseRouting />

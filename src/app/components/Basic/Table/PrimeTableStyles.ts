@@ -198,3 +198,16 @@ export const KeyValueWrapper = styled.div`
     vertical-align: top;
   }
 `;
+
+interface CellStatusValueProps {
+  color?: string;
+  padding?: string;
+}
+export const CellStatusValue = styled.div<CellStatusValueProps>`
+  display: flex;
+  color: ${props => props.color || 'var(--_primaryTextColor)'};
+  text-transform: capitalize;
+  text-align: left;
+  align-items: center;
+  padding: ${props => props.padding || '0'};
+`;

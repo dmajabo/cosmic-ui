@@ -5,7 +5,7 @@ import { IPanelBarLayoutTypes } from 'lib/models/general';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 
 interface IProps {
-  type: IPanelBarLayoutTypes;
+  type?: IPanelBarLayoutTypes;
   show: boolean;
   maxWidth?: string;
   height?: string;
@@ -16,7 +16,7 @@ interface IProps {
 
 const PanelBar: React.FC<IProps> = ({ type, maxWidth, height, show, children, styles, onHidePanel }) => {
   return (
-    <PanelWrapperStyles style={styles} show={show} type={type} maxWidth={maxWidth || '450px'} height={height || '100%'}>
+    <PanelWrapperStyles style={styles} show={show} type={type || IPanelBarLayoutTypes.VERTICAL} maxWidth={maxWidth || '450px'} height={height || '100%'}>
       <Panel>
         <IconWrapper styles={{ position: 'absolute', top: '20px', right: '20px', border: 'none', background: 'transparent', zIndex: 2 }} icon={closeSmallIcon} onClick={onHidePanel} />
         <PanelContent>{children}</PanelContent>

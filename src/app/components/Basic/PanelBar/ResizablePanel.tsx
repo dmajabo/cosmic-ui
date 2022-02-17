@@ -4,24 +4,31 @@ import { closeSmallIcon } from 'app/components/SVGIcons/close';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { getSessionStoragePreference, updateSessionStoragePreference } from 'lib/helpers/localStorageHelpers';
 import { OKULIS_LOCAL_STORAGE_KEYS } from 'lib/api/http/utils';
+
 interface IProps {
   show: boolean;
   children?: React.ReactNode;
   onHidePanel: () => void;
+  onPanelWidthChange?: (width: number) => void;
+  storageKey: OKULIS_LOCAL_STORAGE_KEYS;
+  styles?: Object;
 }
 
 const ResizablePanel: React.FC<IProps> = (props: IProps) => {
-  const [open, setOpen] = React.useState(props.show || false);
+  const [open, setOpen] = React.useState(false);
   const [cwidth, setWidth] = React.useState(0);
   const refW = React.useRef(cwidth);
   const ref = React.useRef(null);
   React.useEffect(() => {
     if (props.show) {
-      const _w = getSessionStoragePreference(OKULIS_LOCAL_STORAGE_KEYS.OKULIS_TOPOLOGY_PANEL_WIDTH);
+      const _w = getSessionStoragePreference(props.storageKey);
       const _defW = Number(_w) || 450;
       refW.current = _defW;
       setWidth(_defW);
       setOpen(true);
+      if (props.onPanelWidthChange) {
+        props.onPanelWidthChange(_defW);
+      }
     } else {
       ref.current.style.width = null;
       setWidth(0);
@@ -29,6 +36,9 @@ const ResizablePanel: React.FC<IProps> = (props: IProps) => {
       document.removeEventListener('mousemove', doDrag, false);
       document.removeEventListener('mouseup', stopDrag, false);
       document.removeEventListener('mouseleave', stopDrag, false);
+      if (props.onPanelWidthChange) {
+        props.onPanelWidthChange(0);
+      }
     }
   }, [props.show]);
 
@@ -78,12 +88,15 @@ const ResizablePanel: React.FC<IProps> = (props: IProps) => {
     document.removeEventListener('mouseleave', stopDrag, false);
     const newW = parseInt(width, 10);
     refW.current = newW;
-    updateSessionStoragePreference(newW, OKULIS_LOCAL_STORAGE_KEYS.OKULIS_TOPOLOGY_PANEL_WIDTH);
+    updateSessionStoragePreference(newW, props.storageKey);
     setWidth(newW);
+    if (props.onPanelWidthChange) {
+      props.onPanelWidthChange(newW);
+    }
   };
 
   return (
-    <ResizablePanelWrapperStyles id="resizableDiv" className={open ? 'open' : ''} ref={ref} style={{ width: cwidth + 'px' }}>
+    <ResizablePanelWrapperStyles id="resizableDiv" className={open ? 'open' : ''} ref={ref} style={{ width: cwidth + 'px', ...props.styles }}>
       <ResizableHandler onMouseDown={initResize} onMouseUp={stopDrag} />
       {open && (
         <Panel id="resizableDivPanel">

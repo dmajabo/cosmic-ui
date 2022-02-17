@@ -1,11 +1,10 @@
 import styled from 'styled-components';
 
 export const ValueCell = styled.div`
-  flex-wrap: nowrap;
   display: flex;
   width: 100%;
   overflow: hidden;
-  white-space: nowrap;
+  flex-wrap: wrap;
 `;
 
 export const ValueType = styled.span`
