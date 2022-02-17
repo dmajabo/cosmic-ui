@@ -10,12 +10,16 @@ import { DashboardItemContainer, DashboardItemContent, DashboardItemLabel } from
 import InOutBound from './components/ManagmentItem/InOutBound';
 import ManagementLayer7 from './components/ManagmentItem/ManagementLayer7';
 import ManagementDrifts from './components/ManagmentItem/ManagementDrifts';
-import { DashboardSitesViewTab, Device, OnPremDevicesResponse } from './enum';
+import { DashboardSitesViewTab, Device, OnPremDevicesResponse, SITES_COLUMNS, SITES_DATA } from './enum';
 import { Feature, Map } from './components/Map/Map';
 import { useGet } from 'lib/api/http/useAxiosHook';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { TopoApi } from 'lib/api/ApiModels/Services/topo';
 import LoadingIndicator from 'app/components/Loading';
+import Table from '../../../components/Basic/Table/TableComponent';
+import { TableWrapper } from 'app/components/Basic/Table/PrimeTableStyles';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
 
 const Tab = styled(TabUnstyled)`
   color: #848da3;
@@ -115,7 +119,63 @@ const DashboardPage: React.FC = () => {
           </div>
         )}
 
-        {!loading && sitesViewTabName === DashboardSitesViewTab.List && <div className={classes.mapContainerMain}>{/* TODO: Display table */}</div>}
+        {!loading && sitesViewTabName === DashboardSitesViewTab.List && (
+          <TableWrapper className={classes.tableWrapper}>
+            <DataTable className={classes.sitesTable} id="meraki_sites" responsiveLayout="scroll" value={SITES_DATA} scrollable={true} scrollDirection="both" scrollHeight="flex">
+              <Column
+                style={{
+                  fontSize: '12px',
+                  color: '#848DA3',
+                  fontWeight: 700,
+                  width: SITES_COLUMNS.name.width,
+                  minWidth: SITES_COLUMNS.name.minWidth,
+                }}
+                field={SITES_COLUMNS.name.field}
+                header={SITES_COLUMNS.name.label}
+              ></Column>
+              <Column
+                style={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, width: SITES_COLUMNS.name.width, minWidth: SITES_COLUMNS.name.minWidth }}
+                field={SITES_COLUMNS.uplinkType.field}
+                header={SITES_COLUMNS.uplinkType.label}
+              ></Column>
+              <Column
+                style={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, width: SITES_COLUMNS.name.width, minWidth: SITES_COLUMNS.name.minWidth }}
+                field={SITES_COLUMNS.availability.field}
+                header={SITES_COLUMNS.availability.label}
+              ></Column>
+              <Column
+                style={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, width: SITES_COLUMNS.name.width, minWidth: SITES_COLUMNS.name.minWidth }}
+                field={SITES_COLUMNS.totalUsage.field}
+                header={SITES_COLUMNS.totalUsage.label}
+              ></Column>
+              <Column
+                style={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, width: SITES_COLUMNS.name.width, minWidth: SITES_COLUMNS.name.minWidth }}
+                field={SITES_COLUMNS.avgBandwidth.field}
+                header={SITES_COLUMNS.avgBandwidth.label}
+              ></Column>
+              <Column
+                style={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, width: SITES_COLUMNS.name.width, minWidth: SITES_COLUMNS.name.minWidth }}
+                field={SITES_COLUMNS.latency.field}
+                header={SITES_COLUMNS.latency.label}
+              ></Column>
+              <Column
+                style={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, width: SITES_COLUMNS.name.width, minWidth: SITES_COLUMNS.name.minWidth }}
+                field={SITES_COLUMNS.jitter.field}
+                header={SITES_COLUMNS.jitter.label}
+              ></Column>
+              <Column
+                style={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, width: SITES_COLUMNS.name.width, minWidth: SITES_COLUMNS.name.minWidth }}
+                field={SITES_COLUMNS.packetLoss.field}
+                header={SITES_COLUMNS.packetLoss.label}
+              ></Column>
+              <Column
+                style={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, width: SITES_COLUMNS.name.width, minWidth: SITES_COLUMNS.name.minWidth }}
+                field={SITES_COLUMNS.goodput.field}
+                header={SITES_COLUMNS.goodput.label}
+              ></Column>
+            </DataTable>
+          </TableWrapper>
+        )}
       </div>
       <div className={classes.rightContainer}>
         <DashboardItemContainer margin="0 0 15px 0" height="calc(50% - 15px)" flex="1 1 calc(50% - 15px)">

@@ -24,6 +24,17 @@ export const DashboardStyles = makeStyles(
         borderRadius: '6px',
         overflow: 'hidden',
       },
+      tableWrapper: {
+        paddingLeft: '30px',
+        paddingRight: '33px',
+        paddingBottom: '30px',
+      },
+      sitesTableHeaderCell: { fontSize: '12px', color: '#848DA3', fontWeight: 700 },
+      sitesTable: {
+        border: '1px solid #CBD2DC',
+        borderRadius: '6px',
+        overflow: 'hidden',
+      },
       sitesHeaderLeftSection: {
         display: 'flex',
         alignItems: 'center',
