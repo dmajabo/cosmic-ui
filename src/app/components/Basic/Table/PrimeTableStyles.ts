@@ -199,15 +199,32 @@ export const KeyValueWrapper = styled.div`
   }
 `;
 
-interface CellStatusValueProps {
+interface CellValueProps {
   color?: string;
   padding?: string;
 }
-export const CellStatusValue = styled.div<CellStatusValueProps>`
+export const CellStatusValue = styled.div<CellValueProps>`
   display: flex;
   color: ${props => props.color || 'var(--_primaryTextColor)'};
   text-transform: capitalize;
   text-align: left;
   align-items: center;
   padding: ${props => props.padding || '0'};
+`;
+
+export const CellSegment = styled.div<CellValueProps>`
+  display: flex;
+  align-items: center;
+  span.color {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border-radius: 6px;
+    margin: 0 12px 0 0;
+    flex-shrink: 0;
+    background: ${props => props.color || 'transparent'};
+  }
+  span.name {
+    display: inline-block;
+  }
 `;

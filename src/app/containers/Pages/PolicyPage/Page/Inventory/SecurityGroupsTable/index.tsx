@@ -118,6 +118,7 @@ const SecurityGroupsTable: React.FC<Props> = (props: Props) => {
 
   const getDataAsync = async (_pageSize: number, _currentPage: number) => {
     const _param = paramBuilder(_pageSize, _currentPage);
+    _param.vendorType = AccountVendorTypes.AMAZON_AWS;
     await onGet(TopoApi.getSecurityGroups(), accessToken!, _param);
   };
 

@@ -8,10 +8,11 @@ interface PageWrapProps {
   bgColor?: string;
 }
 
-export const PageWrapperWithPanelStyles = styled.div`
+export const PageResisablePanelStyles = styled.div`
   display: flex;
   width: 100%;
   min-height: 100%;
+  position: relative;
 `;
 
 export const PageWrapperStyles = styled.div<PageWrapProps>`
@@ -20,6 +21,7 @@ export const PageWrapperStyles = styled.div<PageWrapProps>`
   width: 100%;
   min-height: 100%;
   padding: ${props => props.padding || '40px'};
+  background: ${props => props.bgColor || 'transparent'};
 `;
 
 export const PageWithPanelWrapperStyles = styled.div<PageWrapProps>`

@@ -53,70 +53,64 @@ export const RouteTableColumns: IRouteTableGridColumns = {
 };
 
 export interface ISecurityGroupTableGridColumns {
-  name: IGridColumnField;
-  ruleId: IGridColumnField;
-  ipVersion: IGridColumnField;
-  ruleType: IGridColumnField;
+  extId: IGridColumnField;
+  segment: IGridColumnField;
   protocol: IGridColumnField;
-  portRange: IGridColumnField;
   source: IGridColumnField;
+  destination: IGridColumnField;
+  portRange: IGridColumnField;
 }
 
 export const SecurityGroupTableGridColumns: ISecurityGroupTableGridColumns = {
-  name: {
-    label: 'Name',
-    resField: 'name',
-    id: 'securityGroupTablename',
-    field: 'name',
-    width: '160px',
-    minWidth: '160px',
+  extId: {
+    label: 'Rule ID',
+    resField: 'extId',
+    id: 'securityGroupTableextId',
+    field: 'extId',
+    width: '240px',
+    minWidth: '240px',
     hide: false,
     sortable: true,
   },
-  // Unknown
-  ruleId: {
-    label: 'Security group rule id',
-    resField: 'destinationCidr',
-    id: 'securityGroupTabledestinationCidr',
-    field: 'destinationCidr',
-    width: '300px',
-    minWidth: '300px',
+  segment: {
+    label: 'Segment',
+    resField: 'segment',
+    id: 'securityGroupTablesegment',
+    field: 'segment',
+    width: '200px',
+    minWidth: '200px',
     hide: false,
     sortable: false,
-  },
-  // Unknown
-  ipVersion: {
-    label: 'IP version',
-    resField: 'destinationCidr',
-    id: 'securityGroupTabledestinationCidr',
-    field: 'destinationCidr',
-    width: '300px',
-    minWidth: '300px',
-    hide: false,
-    sortable: false,
-  },
-  ruleType: {
-    label: 'Type',
-    resField: 'ruleType',
-    id: 'securityGroupTableruleType',
-    field: 'ruleType',
-    width: '100px',
-    minWidth: '100px',
-    hide: false,
-    sortable: false,
-    format: (v: string) => {
-      if (v && v.toLocaleLowerCase() === 'l3_inbound') return 'inbound';
-      if (v && v.toLocaleLowerCase() === 'l3_outbound') return 'outbound';
-      return v;
-    },
   },
   protocol: {
-    label: 'Type',
+    label: 'Protocol',
     resField: 'ipProtocol',
     id: 'securityGroupTableipProtocol',
     field: 'ipProtocol',
-    width: '100px',
-    minWidth: '100px',
+    width: '160px',
+    minWidth: '160px',
+    hide: false,
+    sortable: false,
+  },
+  // for inbound
+  source: {
+    label: 'Source',
+    resField: 'cidrs',
+    id: 'securityGroupTablecidrs',
+    field: 'cidrs',
+    width: '160px',
+    minWidth: '160px',
+    hide: false,
+    sortable: false,
+  },
+  // for outbound
+  destination: {
+    label: 'Destination',
+    resField: 'cidrs',
+    id: 'securityGroupTablecidrs',
+    field: 'cidrs',
+    width: '160px',
+    minWidth: '160px',
     hide: false,
     sortable: false,
   },
@@ -125,16 +119,6 @@ export const SecurityGroupTableGridColumns: ISecurityGroupTableGridColumns = {
     resField: 'fromPort',
     id: 'securityGroupTablefromPort',
     field: 'fromPort',
-    width: '200px',
-    minWidth: '200px',
-    hide: false,
-    sortable: false,
-  },
-  source: {
-    label: 'Source',
-    resField: 'srcCidrs',
-    id: 'securityGroupTablesrcCidrs',
-    field: 'srcCidrs',
     width: '160px',
     minWidth: '160px',
     hide: false,

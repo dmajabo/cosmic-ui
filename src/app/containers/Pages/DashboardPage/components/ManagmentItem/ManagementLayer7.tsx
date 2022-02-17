@@ -43,7 +43,7 @@ const ManagementLayer7: React.FC<Props> = (props: Props) => {
   };
 
   const onClick = () => {
-    history.push(ROUTE.app + ROUTE.policy, { tab: POLICY_TABS.inventory.id });
+    history.push(ROUTE.app + ROUTE.policy, { tab: POLICY_TABS.inventory.id, tableId: ToposvcRuleType.L7_Outbound });
   };
 
   return (

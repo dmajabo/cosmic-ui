@@ -5,7 +5,7 @@ import { TabComponentProps } from 'app/components/Tabs/TabComponentProps';
 import TabPanel from 'app/components/Tabs/TabPanel';
 import { usePolicyDataContext } from 'lib/hooks/Policy/usePolicyDataContext';
 import { InventoryPanelTypes, POLICY_TABS } from 'lib/hooks/Policy/models';
-import { PageWrapperStyles, PageWrapperWithPanelStyles, TabsWrapperStyles } from '../Shared/styles';
+import { PageWrapperStyles, PageResisablePanelStyles, TabsWrapperStyles } from '../Shared/styles';
 import Segments from './Page/Segments';
 //import Rules from './Page/Rules';
 // import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
@@ -42,9 +42,9 @@ const MainPage: React.FC<IProps> = (props: IProps) => {
   // };
 
   return (
-    <PageWrapperWithPanelStyles>
+    <PageResisablePanelStyles>
       {/* style={{ width: `calc(100% - ${panelWidth}px)` }} */}
-      <PageWrapperStyles style={{ width: policy && policy.panel && policy.panel.show ? 'calc(100% - 520px)' : '100%', flexGrow: 'unset' }} padding="20px 40px 40px 40px">
+      <PageWrapperStyles style={{ width: policy && policy.panel && policy.panel.show ? 'calc(100% - 700px)' : '100%', flexGrow: 'unset' }} padding="20px 40px 40px 40px">
         <TabsWrapperStyles>
           <Tabs
             value={policy.selectedTab.index}
@@ -93,14 +93,14 @@ const MainPage: React.FC<IProps> = (props: IProps) => {
         <PanelBar
           show={policy && policy.panel && policy.panel.show}
           onHidePanel={onHidePanel}
-          maxWidth="520px"
+          maxWidth="700px"
           styles={{ transition: 'none', position: 'fixed', top: APP_HEADER_HEIGHT, right: 0, height: `calc(100vh - ${APP_HEADER_HEIGHT})`, zIndex: 12 }}
         >
           {policy && policy.panel && policy.panel.type === InventoryPanelTypes.Routes && <RoutesPanel dataItem={policy.panel.dataItem as INetworkRouteTable[]} />}
           {policy && policy.panel && policy.panel.type === InventoryPanelTypes.SecurityGroups && <SecurityGroupsPanel dataItem={policy.panel.dataItem as INetworkSecurityGroup[]} />}
         </PanelBar>
       )}
-    </PageWrapperWithPanelStyles>
+    </PageResisablePanelStyles>
   );
 };
 
