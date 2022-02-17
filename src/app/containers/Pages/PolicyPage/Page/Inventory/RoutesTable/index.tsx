@@ -33,7 +33,7 @@ const RoutesTable: React.FC<Props> = (props: Props) => {
   const [selectedRows, setSelectedRows] = React.useState<IObject<string>>(null);
   const [sortObject, setSortObject] = React.useState<ISortObject>(null);
   const [currentPage, setCurrentPage] = React.useState<number>(1);
-  const [pageSize, setPageSize] = React.useState<number>(10);
+  const [pageSize, setPageSize] = React.useState<number>(20);
   const columnsRef = React.useRef(columns);
 
   React.useEffect(() => {

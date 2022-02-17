@@ -60,8 +60,10 @@ const RouteTableComponent: React.FC<Props> = (props: Props) => {
   return (
     <PanelTableWrapper>
       <ActionRowStyles height="30px" margin="0 0 10px 0" zIndex="unset">
-        <ActionPart margin="0 auto 0 0" alignItems="flex-end">
-          <GridLabel className="textOverflowEllips">{props.dataItem.name || props.dataItem.extId}</GridLabel>
+        <ActionPart>
+          <GridLabel className="textOverflowEllips" style={{ width: 'auto', maxWidth: 'calc(100% - 12px)' }}>
+            {props.dataItem.name || props.dataItem.extId}
+          </GridLabel>
           {!props.dataItem.numberOfRoutes ? null : <GridCount>{props.dataItem.numberOfRoutes}</GridCount>}
         </ActionPart>
       </ActionRowStyles>

@@ -10,6 +10,8 @@ export interface IGridColumnField {
   width?: number | string;
   minWidth?: string;
   maxWidth?: string;
+  flex?: string;
+  styles?: Object;
   field?: string;
   sortable?: boolean;
   format?: (v: any) => string;

@@ -15,6 +15,7 @@ export const TableHeaderStyles = styled.div`
   color: var(--_primaryTextColor);
   font-size: 14px;
   font-weight: 500;
+  flex-shrink: 0;
 `;
 
 export const CaptionRow = styled.div`

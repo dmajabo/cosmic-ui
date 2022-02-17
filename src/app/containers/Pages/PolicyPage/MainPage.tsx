@@ -44,7 +44,7 @@ const MainPage: React.FC<IProps> = (props: IProps) => {
   return (
     <PageResisablePanelStyles>
       {/* style={{ width: `calc(100% - ${panelWidth}px)` }} */}
-      <PageWrapperStyles style={{ width: policy && policy.panel && policy.panel.show ? 'calc(100% - 700px)' : '100%', flexGrow: 'unset' }} padding="20px 40px 40px 40px">
+      <PageWrapperStyles style={{ width: policy && policy.panel && policy.panel.show ? 'calc(100% - 520px)' : '100%', flexGrow: 'unset' }} padding="20px 40px 40px 40px">
         <TabsWrapperStyles>
           <Tabs
             value={policy.selectedTab.index}
@@ -93,7 +93,7 @@ const MainPage: React.FC<IProps> = (props: IProps) => {
         <PanelBar
           show={policy && policy.panel && policy.panel.show}
           onHidePanel={onHidePanel}
-          maxWidth="700px"
+          maxWidth="520px"
           styles={{ transition: 'none', position: 'fixed', top: APP_HEADER_HEIGHT, right: 0, height: `calc(100vh - ${APP_HEADER_HEIGHT})`, zIndex: 12 }}
         >
           {policy && policy.panel && policy.panel.type === InventoryPanelTypes.Routes && <RoutesPanel dataItem={policy.panel.dataItem as INetworkRouteTable[]} />}

@@ -118,6 +118,9 @@ export interface INetworkRule extends IBaseEntity<string> {
   policy: string;
   ownerId: string;
   regionCode: string;
+  extId: string;
+  description: string;
+  refSGroup: string;
 }
 
 export interface INetworkSecurityGroup extends IBaseEntity<string> {

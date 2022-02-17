@@ -18,7 +18,7 @@ import TabCustomLabel from 'app/components/Tabs/TabCustomLabel';
 import { ISegmentSegmentP } from 'lib/api/ApiModels/Policy/Segment';
 import { PolicyApi } from 'lib/api/ApiModels/Services/policy';
 import { PolicyTableKeyEnum } from 'lib/api/ApiModels/Metrics/apiModel';
-import SimpleTable from './SimpleTable';
+import SimpleTable from 'app/components/Basic/Table/SimpleTable';
 
 interface IChaineRes {
   securityGroup: IToposvcGetSecurityGroupByExtIdResponse;
@@ -107,7 +107,7 @@ const SecurityGroupTableComponent: React.FC<Props> = (props: Props) => {
   return (
     <PanelTableWrapper margin="0 0 40px 0">
       <ActionRowStyles height="30px" margin="0 0 10px 0" zIndex="unset">
-        <ActionPart margin="0 auto 0 0" alignItems="flex-end">
+        <ActionPart>
           <GridLabel className="textOverflowEllips">{props.dataItem.name || props.dataItem.extId}</GridLabel>
         </ActionPart>
       </ActionRowStyles>

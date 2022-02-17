@@ -59,7 +59,7 @@ const NetworkWEdgeNode: React.FC<Props> = (props: Props) => {
         pointerEvents="all"
         className="wedgeBg"
       />
-      <svg width={NODES_CONSTANTS.NETWORK_WEDGE.collapse.width} height={NODES_CONSTANTS.NETWORK_WEDGE.collapse.height} viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+      <svg pointerEvents="none" width={NODES_CONSTANTS.NETWORK_WEDGE.collapse.width} height={NODES_CONSTANTS.NETWORK_WEDGE.collapse.height} viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
         <path
           fillRule="evenodd"
           clipRule="evenodd"
