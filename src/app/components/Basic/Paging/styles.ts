@@ -18,6 +18,7 @@ export const DisplayRangeStyles = styled.span`
   font-family: 'DMSans';
   font-weight: normal;
   font-style: normal;
+  color: #848da3;
 `;
 
 export const SelectWrapper = styled.div`

@@ -10,11 +10,31 @@ export const DashboardStyles = makeStyles(
         backgroundColor: 'var(--_primaryBg)',
         flex: '1 1 calc(55% - 15px)',
         margin: '0 15px 0 0',
+        maxWidth: 'calc(55% - 15px)',
       },
       sitesHeader: {
         display: 'flex',
         justifyContent: 'space-between',
-        margin: '37px 33px 30px 30px',
+        margin: '30px 30px 23px 30px',
+      },
+      mapContainerMain: {
+        marginLeft: '30px',
+        marginRight: '33px',
+        marginBottom: '30px',
+        border: '1px solid #CBD2DC',
+        borderRadius: '6px',
+        overflow: 'hidden',
+      },
+      tableWrapper: {
+        paddingLeft: '30px',
+        paddingRight: '33px',
+        paddingBottom: '30px',
+      },
+      sitesTableHeaderCell: { fontSize: '12px', color: '#848DA3', fontWeight: 700 },
+      sitesTable: {
+        border: '1px solid #CBD2DC',
+        borderRadius: '6px',
+        overflow: 'hidden',
       },
       sitesHeaderLeftSection: {
         display: 'flex',
@@ -130,7 +150,7 @@ export const DashboardStyles = makeStyles(
         display: 'flex',
       },
       mapHeight: {
-        height: '375px',
+        height: '490px',
       },
       demoPopupContainer: {
         backgroundColor: '#FFFFFF',
@@ -188,6 +208,7 @@ export const DashboardStyles = makeStyles(
         flexDirection: 'column',
         flex: '1 1 calc(45% - 15px)',
         margin: '0 0 0 15px',
+        maxWidth: 'calc(45% - 15px)',
       },
     }),
   {
