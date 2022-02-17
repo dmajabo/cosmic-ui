@@ -1,8 +1,8 @@
 import styled, { css } from 'styled-components';
 
 export const ChartLegendWrapContainer = styled.div`
-  width: 100%;
-  height: 100%;
+  flex-grow: 1;
+  max-height: 100%;
   position: relative;
   border-radius: 6px;
 `;

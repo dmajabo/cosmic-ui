@@ -53,6 +53,8 @@ interface Props {
   readonly arcLabelFontSize?: number;
   readonly totalStyle?: TotalProps;
   readonly legendSize?: number;
+  readonly legendStyles?: Object;
+  readonly legendItemStyle?: Object;
   disabledLegendHide?: boolean;
   onItemClick?: (item: PieDataItem) => void;
 }
@@ -242,7 +244,7 @@ const DonutChart: React.FC<Props> = (props: Props) => {
         </svg>
       </ChartWrapContainer>
       {props.legendPosition === 'bottom' && (
-        <LegendBottom height={props.donutHeight}>
+        <LegendBottom height={props.donutHeight} style={props.legendStyles}>
           {arcs.map(it => {
             return (
               <LegendItem
@@ -251,6 +253,7 @@ const DonutChart: React.FC<Props> = (props: Props) => {
                 onClick={() => onLegendItemClick(it.index)}
                 onMouseEnter={it.onMouseEnter}
                 onMouseLeave={it.onMouseLeave}
+                style={props.legendItemStyle}
               >
                 <LegendColor color={it.color} hide={it.data.hide} />
                 <LegendLabel hide={it.data.hide}>{it.data.name}</LegendLabel>

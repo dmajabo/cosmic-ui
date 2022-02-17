@@ -4,38 +4,26 @@ import { createStyles, makeStyles } from '@mui/styles';
 export const DashboardStyles = makeStyles(
   (theme: Theme) =>
     createStyles({
-      sitesContainer: {
-        display: 'flex',
-        flexDirection: 'column',
-        backgroundColor: 'var(--_primaryBg)',
-        flex: '1 1 calc(55% - 15px)',
-        margin: '0 15px 0 0',
-        maxWidth: 'calc(55% - 15px)',
-      },
       sitesHeader: {
         display: 'flex',
         justifyContent: 'space-between',
-        margin: '30px 30px 23px 30px',
+        margin: '0 0 20px 0px',
+        flexShrink: 0,
       },
       mapContainerMain: {
-        marginLeft: '30px',
-        marginRight: '33px',
-        marginBottom: '30px',
         border: '1px solid #CBD2DC',
         borderRadius: '6px',
         overflow: 'hidden',
+        flexGrow: 1,
       },
       tableWrapper: {
-        paddingLeft: '30px',
-        paddingRight: '33px',
-        paddingBottom: '30px',
+        width: '100%',
+        maxHeight: 'calc(100% - 154px)',
+        height: 'auto',
+        flexGrow: 'unset',
+        margin: '0 0 auto 0',
       },
       sitesTableHeaderCell: { fontSize: '12px', color: '#848DA3', fontWeight: 700 },
-      sitesTable: {
-        border: '1px solid #CBD2DC',
-        borderRadius: '6px',
-        overflow: 'hidden',
-      },
       sitesHeaderLeftSection: {
         display: 'flex',
         alignItems: 'center',
@@ -150,7 +138,7 @@ export const DashboardStyles = makeStyles(
         display: 'flex',
       },
       mapHeight: {
-        height: '490px',
+        height: '100%',
       },
       demoPopupContainer: {
         backgroundColor: '#FFFFFF',
@@ -201,14 +189,6 @@ export const DashboardStyles = makeStyles(
         paddingTop: 20,
         paddingLeft: 60,
         cursor: 'pointer',
-      },
-      // right side
-      rightContainer: {
-        display: 'flex',
-        flexDirection: 'column',
-        flex: '1 1 calc(45% - 15px)',
-        margin: '0 0 0 15px',
-        maxWidth: 'calc(45% - 15px)',
       },
     }),
   {

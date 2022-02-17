@@ -44,11 +44,11 @@ const cellCheckboxTemplate = (isChecked: boolean, onChangeValueCallback: (event:
   return <SimpleCheckbox wrapStyles={{ width: '20px', margin: '0 auto' }} isChecked={isChecked} toggleCheckboxChange={onChangeValueCallback} />;
 };
 
-const cellFrom_ToTemplate = (from: any, to: any, unifyValue?: any) => {
+const cellFrom_ToTemplate = (from: any, to: any) => {
   if (!from && !to) return null;
   if (!from && to) return <>{to}</>;
   if (from && !to) return <>{from}</>;
-  if (unifyValue && from && to && from === unifyValue && to === unifyValue) return <>{from}</>;
+  if (from && to && from === to) return <>{from}</>;
   return (
     <>
       {from} - {to}

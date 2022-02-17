@@ -8,6 +8,7 @@ export const TableWrapper = styled.div`
   position: relative;
   border-radius: 6px 6px 0 0;
   border: 2px solid var(--_tableBg);
+  border-top: none;
   .table,
   .tableSM,
   .tableSX {
@@ -20,7 +21,7 @@ export const TableWrapper = styled.div`
         table-layout: fixed;
       }
     }
-    &:not(.autoHeight) .p-datatable-wrapper {
+    &:not(.autoHeight):not(.fixedToParentHeight) .p-datatable-wrapper {
       display: flex;
       min-height: 100%;
     }
@@ -119,7 +120,6 @@ export const TableWrapper = styled.div`
       font-weight: 500;
       font-size: 14px;
       line-height: 18px;
-      white-space: nowrap;
       font-family: 'DMSans';
       text-align: left;
       position: initial;
@@ -157,6 +157,11 @@ export const TableWrapper = styled.div`
     height: auto;
     .p-datatable-wrapper {
       min-height: auto;
+    }
+  }
+  .fixedToParentHeight {
+    .p-datatable-wrapper {
+      height: 100%;
     }
   }
 `;

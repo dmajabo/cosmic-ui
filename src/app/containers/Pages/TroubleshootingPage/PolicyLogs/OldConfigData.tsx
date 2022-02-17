@@ -86,7 +86,7 @@ export const OldConfigData: React.FC<ConfigDataProps> = ({ oldData, sharedProper
               { ...SecurityGroupTableGridColumns.extId },
               { ...SecurityGroupTableGridColumns.protocol, body: (d: INetworkRule) => cellTemplates.cellClassNameTemplate(d.ipProtocol, 'cellToUpperCase') },
               { ...SecurityGroupTableGridColumns.source, body: (d: INetworkRule) => cellTemplates.cellValueFromArrayTemplate(d.cidrs, 'name') },
-              { ...SecurityGroupTableGridColumns.portRange, body: (d: INetworkRule) => cellTemplates.cellFrom_ToTemplate(d.fromPort, d.toPort, 'all') },
+              { ...SecurityGroupTableGridColumns.portRange, body: (d: INetworkRule) => cellTemplates.cellFrom_ToTemplate(d.fromPort, d.toPort) },
             ]}
             scrollHeight="100%"
             styles={{ margin: '0 0 20px 0', maxHeight: '17vh' }}
@@ -101,7 +101,7 @@ export const OldConfigData: React.FC<ConfigDataProps> = ({ oldData, sharedProper
               { ...SecurityGroupTableGridColumns.extId },
               { ...SecurityGroupTableGridColumns.protocol, body: (d: INetworkRule) => cellTemplates.cellClassNameTemplate(d.ipProtocol, 'cellToUpperCase') },
               { ...SecurityGroupTableGridColumns.destination, body: (d: INetworkRule) => cellTemplates.cellValueFromArrayTemplate(d.cidrs, 'name') },
-              { ...SecurityGroupTableGridColumns.portRange, body: (d: INetworkRule) => cellTemplates.cellFrom_ToTemplate(d.fromPort, d.toPort, 'all') },
+              { ...SecurityGroupTableGridColumns.portRange, body: (d: INetworkRule) => cellTemplates.cellFrom_ToTemplate(d.fromPort, d.toPort) },
             ]}
             scrollHeight="100%"
             styles={{ maxHeight: '17vh' }}

@@ -21,20 +21,16 @@ export interface OnPremDevicesResponse {
   readonly devices: Device[];
 }
 
-interface IGridColumnFieldWithFlex extends IGridColumnField {
-  readonly flex: string;
-}
-
 export interface SitesGridColumns {
-  name: IGridColumnFieldWithFlex;
-  uplinkType: IGridColumnFieldWithFlex;
-  availability: IGridColumnFieldWithFlex;
-  totalUsage: IGridColumnFieldWithFlex;
-  avgBandwidth: IGridColumnFieldWithFlex;
-  latency: IGridColumnFieldWithFlex;
-  jitter: IGridColumnFieldWithFlex;
-  packetLoss: IGridColumnFieldWithFlex;
-  goodput: IGridColumnFieldWithFlex;
+  name: IGridColumnField;
+  uplinkType: IGridColumnField;
+  availability: IGridColumnField;
+  totalUsage: IGridColumnField;
+  avgBandwidth: IGridColumnField;
+  latency: IGridColumnField;
+  jitter: IGridColumnField;
+  packetLoss: IGridColumnField;
+  goodput: IGridColumnField;
 }
 
 export const SITES_COLUMNS: SitesGridColumns = {
@@ -42,71 +38,55 @@ export const SITES_COLUMNS: SitesGridColumns = {
     label: 'NAME',
     resField: 'name',
     field: 'name',
-    flex: '1 1 100px',
+    minWidth: '200px',
   },
   uplinkType: {
     label: 'UPLINK TYPE',
     resField: 'uplinkType',
     field: 'uplinkType',
-    width: '100px',
-    minWidth: '100px',
-    flex: '1 1 100px',
+    minWidth: '140px',
   },
   availability: {
     label: 'AVAILABILITY',
     resField: 'availability',
     field: 'availability',
-    width: '100px',
     minWidth: '100px',
-    flex: '1 1 100px',
   },
   totalUsage: {
     label: 'TOTAL USAGE',
     resField: 'totalUsage',
     field: 'totalUsage',
-    width: '100px',
-    minWidth: '100px',
-    flex: '1 1 100px',
+    minWidth: '160px',
   },
   avgBandwidth: {
     label: 'AVG. BANDWIDTH',
     resField: 'avgBandwidth',
     field: 'avgBandwidth',
-    width: '100px',
-    minWidth: '100px',
-    flex: '1 1 100px',
+    minWidth: '160px',
   },
   latency: {
     label: 'LATENCY',
     resField: 'latency',
     field: 'latency',
-    width: '100px',
     minWidth: '100px',
-    flex: '1 1 100px',
   },
   jitter: {
     label: 'JITTER',
     resField: 'jitter',
     field: 'jitter',
-    width: '100px',
     minWidth: '100px',
-    flex: '1 1 100px',
   },
   packetLoss: {
     label: 'PACKET LOSS',
     resField: 'packetLoss',
     field: 'packetLoss',
-    width: '100px',
     minWidth: '100px',
-    flex: '1 1 100px',
   },
   goodput: {
     label: 'GOODPUT',
     resField: 'goodput',
     field: 'goodput',
-    width: '100px',
     minWidth: '100px',
-    flex: '1 1 100px',
   },
 };
 

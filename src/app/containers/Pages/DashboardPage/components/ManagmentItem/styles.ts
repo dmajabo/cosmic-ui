@@ -6,7 +6,6 @@ interface ChartProps {
 export const ChartItem = styled.div`
   display: flex;
   flex-direction: column;
-  min-width: 220px;
   width: calc(100% / 3 - 40px / 3);
   height: 100%;
   background: var(--_chartBg);
