@@ -15,7 +15,8 @@ export const LegendItem = styled.div`
   display: inline-flex;
   flex-shrink: 0;
   margin: 10px;
-  width: 120px;
+  min-width: 76px;
+  max-width: 120px;
   overflow: hidden;
   align-items: center;
   cursor: pointer;
@@ -37,9 +38,11 @@ export const LegendLabel = styled.span<LegendProps>`
   font-style: normal;
   font-weight: 500;
   font-size: 16px;
-  line-height: 18px;
+  line-height: 16px;
   color: ${props => (props.hide ? 'var(--_disabledTextColor)' : 'var(--_primaryTextColor)')};
-  width: calc(100% - 36px);
+  width: auto;
+  min-width: 26px;
+  max-width: calc(100% - 36px);
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -88,7 +91,6 @@ export const LegendBottom = styled.div<WrapProps>`
   ${LegendItem} {
     margin: 4px;
     width: auto;
-    min-width: 76px;
   }
 `;
 
@@ -131,4 +133,17 @@ export const ChartWrapContainer = styled.div<WrapProps>`
       overflow: visible;
     }
   }
+`;
+
+interface TextProps {
+  fSize: number;
+  color?: string;
+  weight?: string | number;
+}
+export const TextStyle = styled.text<TextProps>`
+  font-size: ${props => (props.fSize ? props.fSize / 16 + 'vw' : '14px')};
+  font-family: 'DMSans';
+  font-weight: ${props => props.weight || 500};
+  fill: ${props => props.color || 'var(--_primaryTextColor)'};
+  text-anchor: middle;
 `;

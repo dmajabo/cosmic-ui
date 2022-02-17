@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChartLegendWrapContainer, ChartWrapContainer, LegendBottom, LegendColor, LegendItem, LegendLabel, LegendLeft, LegendRight } from './style';
+import { ChartLegendWrapContainer, ChartWrapContainer, LegendBottom, LegendColor, LegendItem, LegendLabel, LegendLeft, LegendRight, TextStyle } from './style';
 import useResizeAware from 'react-resize-aware';
 import * as d3 from 'd3';
 import { DEFAULT_SEGMENTS_COLORS_SCHEMA } from 'lib/models/general';
@@ -37,10 +37,10 @@ interface DonutRadius {
 }
 
 interface TotalProps {
-  fontSize: number | string;
-  fontLabelSize: number | string;
-  offsetY: number | string;
-  offsetLabelY: number | string;
+  fontSize: number;
+  fontLabelSize: number;
+  offsetY: number;
+  offsetLabelY: number;
 }
 interface Props {
   readonly data: PieDataItem[];
@@ -230,28 +230,12 @@ const DonutChart: React.FC<Props> = (props: Props) => {
                 })}
               </g>
               <g transform={`translate(${centerX}, ${centerY})`}>
-                <text
-                  dx="0"
-                  dy={props.totalStyle ? props.totalStyle.offsetY : '8'}
-                  fontSize={props.totalStyle ? props.totalStyle.fontSize : '48'}
-                  fontFamily="DMSans"
-                  fontWeight="bold"
-                  fill="var(--_primaryTextColor)"
-                  textAnchor="middle"
-                >
+                <TextStyle dx="0" dy={props.totalStyle ? props.totalStyle.offsetY : '8'} fSize={props.totalStyle ? props.totalStyle.fontSize : 48} weight={700} color="var(--_primaryTextColor)">
                   {total}
-                </text>
-                <text
-                  dx="0"
-                  dy={props.totalStyle ? props.totalStyle.offsetLabelY : '36'}
-                  fontSize={props.totalStyle ? props.totalStyle.fontLabelSize : '14'}
-                  fontFamily="DMSans"
-                  fontWeight="500"
-                  fill="var(--_defaultColor)"
-                  textAnchor="middle"
-                >
+                </TextStyle>
+                <TextStyle dx="0" dy={props.totalStyle ? props.totalStyle.offsetLabelY : '36'} fSize={props.totalStyle ? props.totalStyle.fontLabelSize : 14} color="var(--_defaultColor)">
                   Drops
-                </text>
+                </TextStyle>
               </g>
             </>
           ) : null}

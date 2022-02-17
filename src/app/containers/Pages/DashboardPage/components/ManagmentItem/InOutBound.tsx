@@ -46,7 +46,7 @@ const InOutBound: React.FC<Props> = (props: Props) => {
   return (
     <ChartItem style={props.styles}>
       <ChartTitle>Layer 3</ChartTitle>
-      {!error && data && data.length ? (
+      {!error && data !== null && (
         <DonutChart
           data={data}
           legendPosition="bottom"
@@ -59,7 +59,8 @@ const InOutBound: React.FC<Props> = (props: Props) => {
           totalStyle={{ fontSize: 28, fontLabelSize: 12, offsetY: 0, offsetLabelY: 18 }}
           donutRadius={{ innerRadius: 1.75, outerRadius: 0.85, textOuteOffset: 0.3, hoverOuterRadius: 0.875 }}
         />
-      ) : (
+      )}
+      {!error && !data && (
         <ChartContent>
           <ChartValue style={{ fontSize: '18px', lineHeight: '20px', margin: 'auto' }} color="var(--_primaryTextColor)">
             No data

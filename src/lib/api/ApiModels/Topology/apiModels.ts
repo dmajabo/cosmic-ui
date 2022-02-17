@@ -131,7 +131,7 @@ export interface INetworkSecurityGroup extends IBaseEntity<string> {
   inboundRulesCount: string;
   outboundRulesCount: string;
   networkId: string;
-  vnets: INetworkVNetwork;
+  vnets: INetworkVNetwork[];
 }
 
 export interface INetworkNIC extends IBaseEntity<string> {
@@ -559,4 +559,12 @@ export interface IToposvcGetCountResponse {
 export interface IInOutBoundRes {
   inbount: IToposvcGetCountResponse;
   outbound: IToposvcGetCountResponse;
+}
+
+export interface IToposvcGetRouteTableByExtIdResponse {
+  routeTable: INetworkRouteTable;
+}
+
+export interface IToposvcGetSecurityGroupByExtIdResponse {
+  securityGroup: INetworkSecurityGroup;
 }

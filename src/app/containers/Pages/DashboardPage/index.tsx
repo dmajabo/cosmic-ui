@@ -20,6 +20,8 @@ import Table from '../../../components/Basic/Table/TableComponent';
 import { TableWrapper } from 'app/components/Basic/Table/PrimeTableStyles';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
+import Paging from 'app/components/Basic/Paging';
+import { PAGING_DEFAULT_PAGE_SIZE } from 'lib/models/general';
 
 const Tab = styled(TabUnstyled)`
   color: #848da3;
@@ -65,6 +67,10 @@ const DashboardPage: React.FC = () => {
   const userContext = useContext<UserContextState>(UserContext);
   const [sitesViewTabName, setSitesViewTabName] = useState<DashboardSitesViewTab>(DashboardSitesViewTab.Map);
 
+  const [totalCount, setTotalCount] = React.useState<number>(0);
+  const [currentPage, setCurrentPage] = React.useState<number>(1);
+  const [pageSize, setPageSize] = React.useState<number>(PAGING_DEFAULT_PAGE_SIZE);
+
   const { loading, error, response, onGet } = useGet<OnPremDevicesResponse>();
 
   const onTabChange = (event: React.SyntheticEvent<Element, Event>, value: string | number) => {
@@ -89,6 +95,24 @@ const DashboardPage: React.FC = () => {
     },
     [response],
   );
+
+  const onChangeCurrentPage = (_page: number) => {
+    setCurrentPage(_page);
+    // TODO: Modify this
+    // onTryLoadAlertMetaData(size, page, selectedPeriod);
+  };
+
+  const onChangePageSize = (size: number, page?: number) => {
+    if (page) {
+      setCurrentPage(page);
+      setPageSize(size);
+      // TODO: Modify this
+      // onTryLoadAlertMetaData(size, page, selectedPeriod);
+      return;
+    }
+    setPageSize(size);
+    // onTryLoadAlertMetaData(size, currentPage, selectedPeriod);
+  };
 
   return (
     <div className={classes.flexContainer}>
@@ -120,61 +144,65 @@ const DashboardPage: React.FC = () => {
         )}
 
         {!loading && sitesViewTabName === DashboardSitesViewTab.List && (
-          <TableWrapper className={classes.tableWrapper}>
-            <DataTable className={classes.sitesTable} id="meraki_sites" responsiveLayout="scroll" value={SITES_DATA} scrollable={true} scrollDirection="both" scrollHeight="flex">
-              <Column
-                style={{
-                  fontSize: '12px',
-                  color: '#848DA3',
-                  fontWeight: 700,
-                  width: SITES_COLUMNS.name.width,
-                  minWidth: SITES_COLUMNS.name.minWidth,
-                }}
-                field={SITES_COLUMNS.name.field}
-                header={SITES_COLUMNS.name.label}
-              ></Column>
-              <Column
-                style={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, width: SITES_COLUMNS.name.width, minWidth: SITES_COLUMNS.name.minWidth }}
-                field={SITES_COLUMNS.uplinkType.field}
-                header={SITES_COLUMNS.uplinkType.label}
-              ></Column>
-              <Column
-                style={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, width: SITES_COLUMNS.name.width, minWidth: SITES_COLUMNS.name.minWidth }}
-                field={SITES_COLUMNS.availability.field}
-                header={SITES_COLUMNS.availability.label}
-              ></Column>
-              <Column
-                style={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, width: SITES_COLUMNS.name.width, minWidth: SITES_COLUMNS.name.minWidth }}
-                field={SITES_COLUMNS.totalUsage.field}
-                header={SITES_COLUMNS.totalUsage.label}
-              ></Column>
-              <Column
-                style={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, width: SITES_COLUMNS.name.width, minWidth: SITES_COLUMNS.name.minWidth }}
-                field={SITES_COLUMNS.avgBandwidth.field}
-                header={SITES_COLUMNS.avgBandwidth.label}
-              ></Column>
-              <Column
-                style={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, width: SITES_COLUMNS.name.width, minWidth: SITES_COLUMNS.name.minWidth }}
-                field={SITES_COLUMNS.latency.field}
-                header={SITES_COLUMNS.latency.label}
-              ></Column>
-              <Column
-                style={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, width: SITES_COLUMNS.name.width, minWidth: SITES_COLUMNS.name.minWidth }}
-                field={SITES_COLUMNS.jitter.field}
-                header={SITES_COLUMNS.jitter.label}
-              ></Column>
-              <Column
-                style={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, width: SITES_COLUMNS.name.width, minWidth: SITES_COLUMNS.name.minWidth }}
-                field={SITES_COLUMNS.packetLoss.field}
-                header={SITES_COLUMNS.packetLoss.label}
-              ></Column>
-              <Column
-                style={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, width: SITES_COLUMNS.name.width, minWidth: SITES_COLUMNS.name.minWidth }}
-                field={SITES_COLUMNS.goodput.field}
-                header={SITES_COLUMNS.goodput.label}
-              ></Column>
-            </DataTable>
-          </TableWrapper>
+          <>
+            <TableWrapper className={classes.tableWrapper}>
+              <DataTable className={classes.sitesTable} id="meraki_sites" responsiveLayout="scroll" value={SITES_DATA} scrollable={true} scrollDirection="both" scrollHeight="flex">
+                <Column
+                  style={{
+                    fontSize: '12px',
+                    color: '#848DA3',
+                    fontWeight: 700,
+                    flex: SITES_COLUMNS.name.flex,
+                  }}
+                  field={SITES_COLUMNS.name.field}
+                  header={SITES_COLUMNS.name.label}
+                ></Column>
+                <Column
+                  style={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, flex: SITES_COLUMNS.uplinkType.flex }}
+                  field={SITES_COLUMNS.uplinkType.field}
+                  header={SITES_COLUMNS.uplinkType.label}
+                ></Column>
+                <Column
+                  style={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, flex: SITES_COLUMNS.availability.flex }}
+                  field={SITES_COLUMNS.availability.field}
+                  header={SITES_COLUMNS.availability.label}
+                ></Column>
+                <Column
+                  style={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, flex: SITES_COLUMNS.totalUsage.flex }}
+                  field={SITES_COLUMNS.totalUsage.field}
+                  header={SITES_COLUMNS.totalUsage.label}
+                ></Column>
+                <Column
+                  style={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, flex: SITES_COLUMNS.avgBandwidth.flex }}
+                  field={SITES_COLUMNS.avgBandwidth.field}
+                  header={SITES_COLUMNS.avgBandwidth.label}
+                ></Column>
+                <Column
+                  style={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, minWidth: SITES_COLUMNS.latency.flex }}
+                  field={SITES_COLUMNS.latency.field}
+                  header={SITES_COLUMNS.latency.label}
+                ></Column>
+                <Column
+                  style={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, flex: SITES_COLUMNS.jitter.flex }}
+                  field={SITES_COLUMNS.jitter.field}
+                  header={SITES_COLUMNS.jitter.label}
+                ></Column>
+                <Column
+                  style={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, flex: SITES_COLUMNS.packetLoss.flex }}
+                  field={SITES_COLUMNS.packetLoss.field}
+                  header={SITES_COLUMNS.packetLoss.label}
+                ></Column>
+                <Column
+                  style={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, flex: SITES_COLUMNS.goodput.flex }}
+                  field={SITES_COLUMNS.goodput.field}
+                  header={SITES_COLUMNS.goodput.label}
+                ></Column>
+              </DataTable>
+            </TableWrapper>
+            <div className={classes.tableWrapper}>
+              <Paging disabled={false} count={totalCount} pageSize={pageSize} currentPage={currentPage} onChangePage={onChangeCurrentPage} onChangePageSize={onChangePageSize} />
+            </div>
+          </>
         )}
       </div>
       <div className={classes.rightContainer}>

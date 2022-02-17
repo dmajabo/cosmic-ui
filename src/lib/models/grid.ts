@@ -12,6 +12,7 @@ export interface IGridColumnField {
   maxWidth?: string;
   field?: string;
   sortable?: boolean;
+  format?: (v: any) => string;
   body?: (rowData: any) => React.ReactNode;
 }
 

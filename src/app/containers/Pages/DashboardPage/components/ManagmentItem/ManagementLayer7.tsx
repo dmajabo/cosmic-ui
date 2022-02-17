@@ -7,6 +7,9 @@ import LoadingIndicator from 'app/components/Loading';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import { TopoApi } from 'lib/api/ApiModels/Services/topo';
+import history from 'utils/history';
+import { ROUTE } from 'lib/Routes/model';
+import { POLICY_TABS } from 'lib/hooks/Policy/models';
 
 interface Props {
   styles?: Object;
@@ -39,15 +42,20 @@ const ManagementLayer7: React.FC<Props> = (props: Props) => {
     await onGet(TopoApi.getRulesCount(ToposvcRuleType.L7_Outbound), accessToken!);
   };
 
+  const onClick = () => {
+    history.push(ROUTE.app + ROUTE.policy, { tab: POLICY_TABS.inventory.id, tableId: ToposvcRuleType.L7_Outbound });
+  };
+
   return (
     <ChartItem style={props.styles}>
       <ChartTitle>Layer 7</ChartTitle>
-      {!error && data !== null ? (
-        <ChartContent>
+      {!error && data !== null && (
+        <ChartContent onClick={onClick}>
           <ChartValue color="var(--_errorColor)">{data}</ChartValue>
           <ChartValueLabel>Firewall Rules</ChartValueLabel>
         </ChartContent>
-      ) : (
+      )}
+      {!error && !data && (
         <ChartContent>
           <ChartValue style={{ fontSize: '18px', lineHeight: '20px', margin: 'auto' }} color="var(--_primaryTextColor)">
             No data

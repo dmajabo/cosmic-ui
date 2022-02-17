@@ -36,7 +36,7 @@ export const UserProvider: React.FC = ({ children }) => {
 
   const setUserVendors = (vendors: AccountVendorTypes[]) => {
     if (!vendors || !vendors.length) {
-      setVendors(null);
+      setVendors({});
       return;
     }
     const _vendorsData: IObject<AccountVendorTypes> = vendors.reduce((obj, v) => {

@@ -16,9 +16,7 @@ import { paramBuilder } from 'lib/api/ApiModels/paramBuilders';
 import { TopoApi } from 'lib/api/ApiModels/Services/topo';
 import InventoryTableHeader from '../../../Components/InventoryTableHeader';
 import Paging from 'app/components/Basic/Paging';
-import { CellCheckMarkValue } from 'app/components/Grid/styles';
-import { checkMark } from 'app/components/SVGIcons/checkMark';
-
+import * as cellTemplates from 'app/components/Basic/Table/CellTemplates';
 interface Props {}
 
 const OutboundTable = (props: Props) => {
@@ -27,14 +25,14 @@ const OutboundTable = (props: Props) => {
   const [data, setData] = React.useState<INetworkRule[]>([]);
   const [totalCount, setTotalCount] = React.useState<number>(0);
   const [columns, setColumns] = React.useState<IGridColumnField[]>([
-    { ...Layer3Columns.policy, body: d => policyBodyTemplate(d) },
-    { ...Layer3Columns.protocol, body: d => protocolBodyTemplate(d) },
-    { ...Layer3Columns.source, body: d => sourceBodyTemplate(d, 'name') },
+    { ...Layer3Columns.policy, body: (d: INetworkRule) => cellTemplates.cellClassNameTemplate(d.policy || 'Allow', 'cellToCapitalize') },
+    { ...Layer3Columns.protocol, body: (d: INetworkRule) => cellTemplates.cellClassNameTemplate(d.ipProtocol, 'cellToUpperCase') },
+    { ...Layer3Columns.source, body: (d: INetworkRule) => cellTemplates.cellValueFromArrayTemplate(d.srcCidrs, 'name') },
     { ...Layer3Columns.sourcePort },
-    { ...Layer3Columns.destination, body: d => destinationBodyTemplate(d) },
+    { ...Layer3Columns.destination, body: (d: INetworkRule) => cellTemplates.cellValueFromArrayTemplate(d.destCidrs, 'name') },
     { ...Layer3Columns.destinationPort },
     { ...Layer3Columns.comment },
-    { ...Layer3Columns.logging, body: d => syslogEnabledBodyTemplate(d) },
+    { ...Layer3Columns.logging, body: (d: INetworkRule) => cellTemplates.cellCheckMarkTemplate(d.syslogEnabled) },
     // { ...Layer3Columns.portRange, body: d => rangeBodyTemplate(d) },
   ]);
   const [sortObject, setSortObject] = React.useState<ISortObject>(null);
@@ -78,16 +76,6 @@ const OutboundTable = (props: Props) => {
   const onSort = (e: DataTablePFSEvent) => {
     const _sortObject = gridHelper.singelSortHelper(sortObject, e);
     setSortObject(_sortObject);
-  };
-
-  const policyBodyTemplate = (rowData: INetworkRule) => <span className="cellToCapitalize">{rowData.policy || 'Allow'}</span>;
-  const protocolBodyTemplate = (rowData: INetworkRule) => <span className="cellToUpperCase">{rowData.ipProtocol}</span>;
-  const sourceBodyTemplate = (rowData: INetworkRule, field: string) => (rowData.srcCidrs && rowData.srcCidrs.length ? rowData.srcCidrs[0][field] : null);
-
-  const destinationBodyTemplate = (rowData: INetworkRule) => (rowData.destCidrs && rowData.destCidrs.length ? rowData.destCidrs[0].name : null);
-  const syslogEnabledBodyTemplate = (rowData: INetworkRule) => {
-    if (rowData.syslogEnabled) return <CellCheckMarkValue>{checkMark}</CellCheckMarkValue>;
-    return null;
   };
 
   const onChangeCurrentPage = (_page: number) => {
@@ -153,7 +141,15 @@ const OutboundTable = (props: Props) => {
           </AbsLoaderWrapper>
         )}
       </TableWrapper>
-      <Paging count={totalCount} disabled={!data.length} pageSize={pageSize} currentPage={currentPage} onChangePage={onChangeCurrentPage} onChangePageSize={onChangePageSize} />
+      <Paging
+        pageSizeValues={[10, 20]}
+        count={totalCount}
+        disabled={!data.length}
+        pageSize={pageSize}
+        currentPage={currentPage}
+        onChangePage={onChangeCurrentPage}
+        onChangePageSize={onChangePageSize}
+      />
     </ComponentTableStyles>
   );
 };

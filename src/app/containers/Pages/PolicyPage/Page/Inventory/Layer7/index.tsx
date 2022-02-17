@@ -2,7 +2,7 @@ import React from 'react';
 import H2 from 'app/components/Basic/H2';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { useGet } from 'lib/api/http/useAxiosHook';
-import { INetworkL7Rule, IToposvcGetL7RulesResponse } from 'lib/api/ApiModels/Topology/apiModels';
+import { INetworkL7Rule, IToposvcGetL7RulesResponse, ToposvcRuleType } from 'lib/api/ApiModels/Topology/apiModels';
 import { IGridColumnField, ISortObject } from 'lib/models/grid';
 import { DataTable, DataTablePFSEvent } from 'primereact/datatable';
 import * as gridHelper from 'lib/helpers/gridHelper';
@@ -18,10 +18,12 @@ import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import { Column } from 'primereact/column';
 import { Layer7Columns } from '../model';
 import ApplicationCell from './ApplicationCell';
+import { useHistory } from 'react-router-dom';
 
 interface Props {}
 
 const Layer7 = (props: Props) => {
+  const history = useHistory();
   const userContext = React.useContext<UserContextState>(UserContext);
   const { response, loading, error, onGet } = useGet<IToposvcGetL7RulesResponse>();
   const [data, setData] = React.useState<INetworkL7Rule[]>([]);
@@ -34,8 +36,14 @@ const Layer7 = (props: Props) => {
   const [currentPage, setCurrentPage] = React.useState<number>(1);
   const [pageSize, setPageSize] = React.useState<number>(20);
   const columnsRef = React.useRef(columns);
-
+  const containerRef = React.useRef<HTMLDivElement>(null);
   React.useEffect(() => {
+    if (history && history.location && history.location.state) {
+      const _param: any = history.location.state as any;
+      if (_param.tableId && _param.tableId === ToposvcRuleType.L7_Outbound) {
+        containerRef.current.scrollIntoView();
+      }
+    }
     getDataAsync(pageSize, currentPage);
   }, []);
 
@@ -101,7 +109,7 @@ const Layer7 = (props: Props) => {
       <H2>Layer 7</H2>
       <ComponentTableStyles style={{ margin: '0' }}>
         <InventoryTableHeader label="Firewall Rules" total={totalCount} columns={columnsRef.current} onColumnClick={onChangeColumn} onColumnOrderChange={onChangeOrder} />
-        <TableWrapper style={{ minHeight: !data || !data.length ? '300px' : 'auto' }}>
+        <TableWrapper style={{ minHeight: !data || !data.length ? '300px' : 'auto' }} ref={containerRef}>
           <DataTable
             className="table"
             emptyMessage={!error ? 'No data' : ' '}
@@ -131,7 +139,15 @@ const Layer7 = (props: Props) => {
             </AbsLoaderWrapper>
           )}
         </TableWrapper>
-        <Paging count={totalCount} disabled={!data.length} pageSize={pageSize} currentPage={currentPage} onChangePage={onChangeCurrentPage} onChangePageSize={onChangePageSize} />
+        <Paging
+          pageSizeValues={[10, 20]}
+          count={totalCount}
+          disabled={!data.length}
+          pageSize={pageSize}
+          currentPage={currentPage}
+          onChangePage={onChangeCurrentPage}
+          onChangePageSize={onChangePageSize}
+        />
       </ComponentTableStyles>
     </LayerWrapper>
   );

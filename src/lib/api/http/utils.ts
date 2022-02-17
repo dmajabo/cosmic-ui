@@ -4,6 +4,7 @@ export enum OKULIS_LOCAL_STORAGE_KEYS {
   OKULIS_THEME = 'okulisTheme',
   OKULIS_SIDE_BAR = 'okulisSideBar',
   OKULIS_TOPOLOGY_PANEL_WIDTH = 'okulisTopologyPanelWidth',
+  OKULIS_INVENTORY_PANEL_WIDTH = 'okulisInventoryPanelWidth',
 }
 
 export const combineStrings = (root: string, index: string, separator: string = '/') => {

@@ -10,6 +10,7 @@ export const DashboardStyles = makeStyles(
         backgroundColor: 'var(--_primaryBg)',
         flex: '1 1 calc(55% - 15px)',
         margin: '0 15px 0 0',
+        maxWidth: 'calc(55% - 15px)',
       },
       sitesHeader: {
         display: 'flex',
@@ -207,6 +208,7 @@ export const DashboardStyles = makeStyles(
         flexDirection: 'column',
         flex: '1 1 calc(45% - 15px)',
         margin: '0 0 0 15px',
+        maxWidth: 'calc(45% - 15px)',
       },
     }),
   {

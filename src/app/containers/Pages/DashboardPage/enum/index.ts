@@ -1,4 +1,3 @@
-import { ITableColumn } from 'app/components/Basic/Table/model';
 import { IGridColumnField } from 'lib/models/grid';
 
 export enum DashboardSitesViewTab {
@@ -22,16 +21,20 @@ export interface OnPremDevicesResponse {
   readonly devices: Device[];
 }
 
+interface IGridColumnFieldWithFlex extends IGridColumnField {
+  readonly flex: string;
+}
+
 export interface SitesGridColumns {
-  name: IGridColumnField;
-  uplinkType: IGridColumnField;
-  availability: IGridColumnField;
-  totalUsage: IGridColumnField;
-  avgBandwidth: IGridColumnField;
-  latency: IGridColumnField;
-  jitter: IGridColumnField;
-  packetLoss: IGridColumnField;
-  goodput: IGridColumnField;
+  name: IGridColumnFieldWithFlex;
+  uplinkType: IGridColumnFieldWithFlex;
+  availability: IGridColumnFieldWithFlex;
+  totalUsage: IGridColumnFieldWithFlex;
+  avgBandwidth: IGridColumnFieldWithFlex;
+  latency: IGridColumnFieldWithFlex;
+  jitter: IGridColumnFieldWithFlex;
+  packetLoss: IGridColumnFieldWithFlex;
+  goodput: IGridColumnFieldWithFlex;
 }
 
 export const SITES_COLUMNS: SitesGridColumns = {
@@ -39,8 +42,7 @@ export const SITES_COLUMNS: SitesGridColumns = {
     label: 'NAME',
     resField: 'name',
     field: 'name',
-    width: '100px',
-    minWidth: '100px',
+    flex: '1 1 100px',
   },
   uplinkType: {
     label: 'UPLINK TYPE',
@@ -48,6 +50,7 @@ export const SITES_COLUMNS: SitesGridColumns = {
     field: 'uplinkType',
     width: '100px',
     minWidth: '100px',
+    flex: '1 1 100px',
   },
   availability: {
     label: 'AVAILABILITY',
@@ -55,13 +58,15 @@ export const SITES_COLUMNS: SitesGridColumns = {
     field: 'availability',
     width: '100px',
     minWidth: '100px',
+    flex: '1 1 100px',
   },
   totalUsage: {
     label: 'TOTAL USAGE',
-    resField: 'totalusage',
-    field: 'totalusage',
+    resField: 'totalUsage',
+    field: 'totalUsage',
     width: '100px',
     minWidth: '100px',
+    flex: '1 1 100px',
   },
   avgBandwidth: {
     label: 'AVG. BANDWIDTH',
@@ -69,6 +74,7 @@ export const SITES_COLUMNS: SitesGridColumns = {
     field: 'avgBandwidth',
     width: '100px',
     minWidth: '100px',
+    flex: '1 1 100px',
   },
   latency: {
     label: 'LATENCY',
@@ -76,6 +82,7 @@ export const SITES_COLUMNS: SitesGridColumns = {
     field: 'latency',
     width: '100px',
     minWidth: '100px',
+    flex: '1 1 100px',
   },
   jitter: {
     label: 'JITTER',
@@ -83,6 +90,7 @@ export const SITES_COLUMNS: SitesGridColumns = {
     field: 'jitter',
     width: '100px',
     minWidth: '100px',
+    flex: '1 1 100px',
   },
   packetLoss: {
     label: 'PACKET LOSS',
@@ -90,6 +98,7 @@ export const SITES_COLUMNS: SitesGridColumns = {
     field: 'packetLoss',
     width: '100px',
     minWidth: '100px',
+    flex: '1 1 100px',
   },
   goodput: {
     label: 'GOODPUT',
@@ -97,6 +106,7 @@ export const SITES_COLUMNS: SitesGridColumns = {
     field: 'goodput',
     width: '100px',
     minWidth: '100px',
+    flex: '1 1 100px',
   },
 };
 
@@ -106,6 +116,83 @@ export const SITES_DATA = [
   {
     name: 'User-Network',
     uplinkType: 'Primary',
+    availability: '78%',
+    totalUsage: '1.35 MB 14.89 MB',
+    avgBandwidth: '1.5 Mbps 2.5 Mbps',
+    latency: '2.94 ms',
+    jitter: '0.78 ms',
+    packetLoss: '4%',
+    goodput: '0.81 ms',
+  },
+  {
+    name: 'Test-Network',
+    uplinkType: 'Seconday',
+    availability: '78%',
+    totalUsage: '1.35 MB 14.89 MB',
+    avgBandwidth: '1.5 Mbps 2.5 Mbps',
+    latency: '2.94 ms',
+    jitter: '0.78 ms',
+    packetLoss: '4%',
+    goodput: '0.81 ms',
+  },
+  {
+    name: 'Test-Network',
+    uplinkType: 'Seconday',
+    availability: '78%',
+    totalUsage: '1.35 MB 14.89 MB',
+    avgBandwidth: '1.5 Mbps 2.5 Mbps',
+    latency: '2.94 ms',
+    jitter: '0.78 ms',
+    packetLoss: '4%',
+    goodput: '0.81 ms',
+  },
+  {
+    name: 'Test-Network',
+    uplinkType: 'Seconday',
+    availability: '78%',
+    totalUsage: '1.35 MB 14.89 MB',
+    avgBandwidth: '1.5 Mbps 2.5 Mbps',
+    latency: '2.94 ms',
+    jitter: '0.78 ms',
+    packetLoss: '4%',
+    goodput: '0.81 ms',
+  },
+  {
+    name: 'Test-Network',
+    uplinkType: 'Seconday',
+    availability: '78%',
+    totalUsage: '1.35 MB 14.89 MB',
+    avgBandwidth: '1.5 Mbps 2.5 Mbps',
+    latency: '2.94 ms',
+    jitter: '0.78 ms',
+    packetLoss: '4%',
+    goodput: '0.81 ms',
+  },
+  {
+    name: 'Test-Network',
+    uplinkType: 'Seconday',
+    availability: '78%',
+    totalUsage: '1.35 MB 14.89 MB',
+    avgBandwidth: '1.5 Mbps 2.5 Mbps',
+    latency: '2.94 ms',
+    jitter: '0.78 ms',
+    packetLoss: '4%',
+    goodput: '0.81 ms',
+  },
+  {
+    name: 'Test-Network',
+    uplinkType: 'Seconday',
+    availability: '78%',
+    totalUsage: '1.35 MB 14.89 MB',
+    avgBandwidth: '1.5 Mbps 2.5 Mbps',
+    latency: '2.94 ms',
+    jitter: '0.78 ms',
+    packetLoss: '4%',
+    goodput: '0.81 ms',
+  },
+  {
+    name: 'Test-Network',
+    uplinkType: 'Seconday',
     availability: '78%',
     totalUsage: '1.35 MB 14.89 MB',
     avgBandwidth: '1.5 Mbps 2.5 Mbps',
