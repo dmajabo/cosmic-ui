@@ -7,6 +7,7 @@ import { CellCheckMarkValue } from 'app/components/Grid/styles';
 import { checkMark } from 'app/components/SVGIcons/checkMark';
 import SimpleCheckbox from 'app/components/Inputs/Checkbox/SimpleCheckbox';
 import { ISegmentSegmentP } from 'lib/api/ApiModels/Policy/Segment';
+import { INetworkRule } from 'lib/api/ApiModels/Topology/apiModels';
 
 const cellValueTemplate = (value: any) => {
   return <>{value}</>;
@@ -24,6 +25,19 @@ const cellStatusTemplate = (value: any) => {
 const cellValueFromArrayTemplate = (arr: any[], field: string, index: number = 0) => {
   if (!arr || !arr.length) return null;
   return <>{arr[index][field]}</>;
+};
+
+const cellValueFromArrayFilledFieldTemplate = (arr: any[], field: string[], index: number = 0) => {
+  if (!arr || !arr.length) return null;
+  const key = Object.keys(arr[index]).find(key => arr[index][key]);
+  if (!key) return <>{arr[index][field[0]]}</>;
+  return <>{arr[index][key]}</>;
+};
+
+const cellValueSourceNetworkRuleTemplate = (d: INetworkRule) => {
+  if (!d) return null;
+  if (!d.cidrs || !d.cidrs.length) return <>{d.refSGroup}</>;
+  return <>{d.cidrs[0].name}</>;
 };
 
 const cellValueFromObjectTemplate = (obj: Object, field: string) => {
@@ -76,4 +90,6 @@ export {
   cellValueFromObjectTemplate,
   cellFrom_ToTemplate,
   cellSegmentTemplate,
+  cellValueFromArrayFilledFieldTemplate,
+  cellValueSourceNetworkRuleTemplate,
 };

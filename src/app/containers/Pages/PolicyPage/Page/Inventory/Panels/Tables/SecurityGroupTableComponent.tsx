@@ -39,7 +39,7 @@ const SecurityGroupTableComponent: React.FC<Props> = (props: Props) => {
     { ...SecurityGroupTableGridColumns.extId },
     { ...SecurityGroupTableGridColumns.segment, body: (d: IMappedNetworkRule) => cellTemplates.cellSegmentTemplate(d.segment) },
     { ...SecurityGroupTableGridColumns.protocol, body: (d: IMappedNetworkRule) => cellTemplates.cellClassNameTemplate(d.ipProtocol, 'cellToUpperCase') },
-    { ...SecurityGroupTableGridColumns.source, body: (d: IMappedNetworkRule) => cellTemplates.cellValueFromArrayTemplate(d.cidrs, 'name') },
+    { ...SecurityGroupTableGridColumns.source, body: (d: IMappedNetworkRule) => cellTemplates.cellValueSourceNetworkRuleTemplate(d) },
     { ...SecurityGroupTableGridColumns.portRange, body: (d: IMappedNetworkRule) => cellTemplates.cellFrom_ToTemplate(d.fromPort, d.toPort) },
   ]);
   const [outColumns] = React.useState<IGridColumnField[]>([

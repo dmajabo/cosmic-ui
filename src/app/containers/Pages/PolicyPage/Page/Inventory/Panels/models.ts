@@ -102,6 +102,7 @@ export const SecurityGroupTableGridColumns: ISecurityGroupTableGridColumns = {
     width: '120px',
     hide: false,
     sortable: false,
+    styles: { whiteSpace: 'nowrap' },
   },
   // for outbound
   destination: {
@@ -113,6 +114,7 @@ export const SecurityGroupTableGridColumns: ISecurityGroupTableGridColumns = {
     width: '120px',
     hide: false,
     sortable: false,
+    styles: { whiteSpace: 'nowrap' },
   },
   portRange: {
     label: 'Port Range',
