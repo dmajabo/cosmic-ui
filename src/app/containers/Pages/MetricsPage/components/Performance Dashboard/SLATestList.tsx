@@ -6,7 +6,6 @@ import { CreateSLATest } from './CreateSLATest';
 import { Column, FinalTableData, SLATest, UpdateSLATestRequest, ColumnAccessor, AverageQoe as MetricAvgQoe, Organization, Vnet } from 'lib/api/http/SharedTypes';
 import { PacketLoss } from './PacketLoss';
 import { Latency } from './Latency';
-import Select from 'react-select';
 import AverageQoe from './AverageQoe';
 import { Goodput } from './Goodput';
 import { MetricTabValue } from '../../../DashboardPage/enum/MetricTabValue';
@@ -25,6 +24,7 @@ import { CheckboxData } from 'app/containers/Pages/AnalyticsPage/components/Metr
 import SecondaryButtonwithEvent from 'app/containers/Pages/AnalyticsPage/components/SecondaryButtonwithEvent';
 import ColumnsIcon from '../../icons/performance dashboard/columns';
 import SearchIcon from 'app/containers/Pages/AnalyticsPage/icons/metrics explorer/search';
+import MatSelect from 'app/components/Inputs/MatSelect';
 
 interface SLATestListProps {
   readonly finalTableData: FinalTableData[];
@@ -233,17 +233,6 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
     },
   ];
 
-  const dropdownStyle = {
-    option: provided => ({
-      ...provided,
-      color: 'black',
-    }),
-    control: provided => ({
-      ...provided,
-      width: 150,
-    }),
-  };
-
   return (
     <div className={classes.slaTestListContainer}>
       <div className={classes.itemContainer}>
@@ -310,10 +299,18 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
                 <Tab value={MetricTabValue.goodput}>{MetricTabValue.goodput.toUpperCase()}</Tab>
               </TabsList>
             </div>
-            <div className={classes.timeRangeContainer}>
-              <span className={classes.timeRangeText}>Time Range:</span>
-              <Select label="Single select" styles={dropdownStyle} value={timeRangeOptions.find(time => time.value === timeRange)} options={timeRangeOptions} onChange={e => setTimeRange(e.value)} />
-            </div>
+            <MatSelect
+              id="SLATestTimePeriod"
+              label="Time Range:"
+              labelStyles={{ margin: 'auto 10px auto 0' }}
+              value={timeRangeOptions.find(time => time.value === timeRange)}
+              options={timeRangeOptions}
+              onChange={e => setTimeRange(e.value)}
+              renderValue={(v: any) => v.label}
+              renderOption={(v: any) => v.label}
+              styles={{ height: '50px', minHeight: '50px', margin: '0 20px 0 10px', width: 'auto', display: 'inline-flex', alignItems: 'center' }}
+              selectStyles={{ height: '50px', width: 'auto', minWidth: '240px' }}
+            />
           </div>
           <TabPanel value={MetricTabValue.packetLoss}>
             <PacketLoss timeRange={timeRange} selectedRows={selectedRows} networks={networks} />
