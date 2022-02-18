@@ -7,6 +7,7 @@ export const PagingWrapper = styled.div`
   height: 80px;
   align-items: center;
   width: 100%;
+  overflow: hidden;
 `;
 
 export const DisplayRangeStyles = styled.span`

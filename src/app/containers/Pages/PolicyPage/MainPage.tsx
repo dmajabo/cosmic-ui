@@ -5,7 +5,7 @@ import { TabComponentProps } from 'app/components/Tabs/TabComponentProps';
 import TabPanel from 'app/components/Tabs/TabPanel';
 import { usePolicyDataContext } from 'lib/hooks/Policy/usePolicyDataContext';
 import { InventoryPanelTypes, POLICY_TABS } from 'lib/hooks/Policy/models';
-import { PageWrapperStyles, PageResisablePanelStyles, TabsWrapperStyles } from '../Shared/styles';
+import { TabsWrapperStyles } from '../Shared/styles';
 import Segments from './Page/Segments';
 //import Rules from './Page/Rules';
 // import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
@@ -13,11 +13,12 @@ import Segments from './Page/Segments';
 import Inventory from './Page/Inventory';
 // import ResizablePanel from 'app/components/Basic/PanelBar/ResizablePanel';
 import RoutesPanel from './Page/Inventory/Panels/RoutesPanel';
-import { APP_HEADER_HEIGHT } from 'lib/constants/general';
 // import { OKULIS_LOCAL_STORAGE_KEYS } from 'lib/api/http/utils';
-import PanelBar from 'app/components/Basic/PanelBar';
 import SecurityGroupsPanel from './Page/Inventory/Panels/SecurityGroupsPanel';
 import { INetworkRouteTable, INetworkSecurityGroup } from 'lib/api/ApiModels/Topology/apiModels';
+import { ChildrenContainer, PageWrapper } from 'app/components/Basic/PageLayoutComponents/styles';
+import { OKULIS_LOCAL_STORAGE_KEYS } from 'lib/api/http/utils';
+import ResizablePanel from 'app/components/Basic/PanelBar/ResizablePanel';
 // import Rules from './Page/Rules';
 
 interface IProps {}
@@ -42,9 +43,8 @@ const MainPage: React.FC<IProps> = (props: IProps) => {
   // };
 
   return (
-    <PageResisablePanelStyles>
-      {/* style={{ width: `calc(100% - ${panelWidth}px)` }} */}
-      <PageWrapperStyles style={{ width: policy && policy.panel && policy.panel.show ? 'calc(100% - 520px)' : '100%', flexGrow: 'unset' }} padding="20px 40px 40px 40px">
+    <PageWrapper>
+      <ChildrenContainer padding="20px 40px 40px 40px">
         <TabsWrapperStyles>
           <Tabs
             value={policy.selectedTab.index}
@@ -88,19 +88,15 @@ const MainPage: React.FC<IProps> = (props: IProps) => {
           <Rules />
         </TabPanel>
       )} */}
-      </PageWrapperStyles>
+      </ChildrenContainer>
+
       {policy.selectedTab.index === POLICY_TABS.inventory.index && (
-        <PanelBar
-          show={policy && policy.panel && policy.panel.show}
-          onHidePanel={onHidePanel}
-          maxWidth="520px"
-          styles={{ transition: 'none', position: 'fixed', top: APP_HEADER_HEIGHT, right: 0, height: `calc(100vh - ${APP_HEADER_HEIGHT})`, zIndex: 12 }}
-        >
+        <ResizablePanel show={policy && policy.panel && policy.panel.show} onHidePanel={onHidePanel} storageKey={OKULIS_LOCAL_STORAGE_KEYS.OKULIS_INVENTORY_PANEL_WIDTH}>
           {policy && policy.panel && policy.panel.type === InventoryPanelTypes.Routes && <RoutesPanel dataItem={policy.panel.dataItem as INetworkRouteTable[]} />}
           {policy && policy.panel && policy.panel.type === InventoryPanelTypes.SecurityGroups && <SecurityGroupsPanel dataItem={policy.panel.dataItem as INetworkSecurityGroup[]} />}
-        </PanelBar>
+        </ResizablePanel>
       )}
-    </PageResisablePanelStyles>
+    </PageWrapper>
   );
 };
 

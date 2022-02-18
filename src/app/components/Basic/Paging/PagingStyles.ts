@@ -13,6 +13,7 @@ export const PagingStyles = makeStyles(
         },
         '& .MuiPagination-ul': {
           height: '100%',
+          flexWrap: 'nowrap',
         },
         '& .MuiPagination-ul li': {
           height: '40px',
