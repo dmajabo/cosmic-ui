@@ -2,12 +2,14 @@ import React from 'react';
 import { Dialog, DialogContent, DialogTitle } from '@mui/material';
 import { TroubleshootingStyles } from '../TroubleshootingStyles';
 import CloseIcon from '../../MetricsPage/icons/performance dashboard/close';
-import { PolicyLogsData } from '.';
+import { ConfigDiffData, PolicyLogsData } from '.';
 import { OldConfigData } from './OldConfigData';
 import { NewConfigData } from './NewConfigData';
 import { isArray } from 'lodash';
 import { IDestinationCidr, IRouteState } from 'lib/api/ApiModels/Metrics/apiModel';
 import { INetworkRule } from 'lib/api/ApiModels/Topology/apiModels';
+import { ConfigTemplate } from './ConfigTemplate';
+import { NetworkDetails } from './NetworkDetails';
 
 interface PolicyLogDetailsProps {
   readonly isOpen: boolean;
@@ -66,6 +68,7 @@ export interface PolicyLogDetailProperty {
 export enum PolicyType {
   SecurityGroup = 'SecurityGroup',
   RouteTable = 'RouteTable',
+  Network = 'Network',
 }
 
 const SHARED_POLICY_DETAILS: PolicyLogDetailProperty[] = [
@@ -93,11 +96,30 @@ const getEmptyJSON = (json: PolicyLogDetails) => {
   return json;
 };
 
+const getPolicyLogJSON = (firstValue: string, secondValue: string, policyType: string) => {
+  if (policyType === PolicyType.Network) {
+    return {};
+  } else {
+    return firstValue ? JSON.parse(firstValue) : getEmptyJSON(JSON.parse(secondValue));
+  }
+};
+
+const getConfigDiffJSON = (firstValue: string, secondValue: string, policyType: string) => {
+  if (policyType === PolicyType.Network) {
+    return firstValue ? JSON.parse(firstValue) : getEmptyJSON(JSON.parse(secondValue));
+  } else {
+    return {};
+  }
+};
+
 export const PolicyLogDetailsDialog: React.FC<PolicyLogDetailsProps> = ({ isOpen, handleClose, selectedPolicyLogData }) => {
   const classes = TroubleshootingStyles();
 
-  const oldPolicyLogDetails: PolicyLogDetails = selectedPolicyLogData.oldValue ? JSON.parse(selectedPolicyLogData.oldValue) : getEmptyJSON(JSON.parse(selectedPolicyLogData.newValue));
-  const newPolicyLogDetails: PolicyLogDetails = selectedPolicyLogData.newValue ? JSON.parse(selectedPolicyLogData.newValue) : getEmptyJSON(JSON.parse(selectedPolicyLogData.oldValue));
+  const oldPolicyLogDetails: PolicyLogDetails = getPolicyLogJSON(selectedPolicyLogData.oldValue, selectedPolicyLogData.newValue, selectedPolicyLogData.policyType);
+  const newPolicyLogDetails: PolicyLogDetails = getPolicyLogJSON(selectedPolicyLogData.newValue, selectedPolicyLogData.oldValue, selectedPolicyLogData.policyType);
+
+  const networkDetailsObject: ConfigDiffData = getConfigDiffJSON(selectedPolicyLogData.networkDetails, selectedPolicyLogData.configTemplateDetails, selectedPolicyLogData.policyType);
+  const configTemplateDetailsObject: ConfigDiffData = getConfigDiffJSON(selectedPolicyLogData.configTemplateDetails, selectedPolicyLogData.networkDetails, selectedPolicyLogData.policyType);
 
   return (
     <Dialog open={isOpen} onClose={handleClose} fullWidth maxWidth="lg">
@@ -109,22 +131,35 @@ export const PolicyLogDetailsDialog: React.FC<PolicyLogDetailsProps> = ({ isOpen
           </div>
         </div>
       </DialogTitle>
-      <DialogContent className={classes.gridContainer}>
-        <div className={classes.gridItem}>
-          <div className={`${classes.gridItemTitle} ${classes.templateHeader}`}>Old</div>
-          <OldConfigData oldData={oldPolicyLogDetails} sharedProperties={SHARED_POLICY_DETAILS} connectionProperties={CONNECTION_ARRAY_POLICY_DETAILS} vendorType={selectedPolicyLogData.vendor} />
-        </div>
-        <div className={classes.gridItem}>
-          <div className={`${classes.gridItemTitle} ${classes.changesHeader}`}>New</div>
-          <NewConfigData
-            oldData={oldPolicyLogDetails}
-            newData={newPolicyLogDetails}
-            sharedProperties={SHARED_POLICY_DETAILS}
-            connectionProperties={CONNECTION_ARRAY_POLICY_DETAILS}
-            vendorType={selectedPolicyLogData.vendor}
-          />
-        </div>
-      </DialogContent>
+      {selectedPolicyLogData.policyType === PolicyType.Network ? (
+        <DialogContent className={classes.gridContainer}>
+          <div className={classes.gridItem}>
+            <div className={`${classes.gridItemTitle} ${classes.templateHeader}`}>Configuration Template</div>
+            <ConfigTemplate configTemplateDetails={configTemplateDetailsObject} />
+          </div>
+          <div className={classes.gridItem}>
+            <div className={`${classes.gridItemTitle} ${classes.changesHeader}`}>Network Details</div>
+            <NetworkDetails networkDetails={networkDetailsObject} configTemplateDetails={configTemplateDetailsObject} />
+          </div>
+        </DialogContent>
+      ) : (
+        <DialogContent className={classes.gridContainer}>
+          <div className={classes.gridItem}>
+            <div className={`${classes.gridItemTitle} ${classes.templateHeader}`}>Old</div>
+            <OldConfigData oldData={oldPolicyLogDetails} sharedProperties={SHARED_POLICY_DETAILS} connectionProperties={CONNECTION_ARRAY_POLICY_DETAILS} vendorType={selectedPolicyLogData.vendor} />
+          </div>
+          <div className={classes.gridItem}>
+            <div className={`${classes.gridItemTitle} ${classes.changesHeader}`}>New</div>
+            <NewConfigData
+              oldData={oldPolicyLogDetails}
+              newData={newPolicyLogDetails}
+              sharedProperties={SHARED_POLICY_DETAILS}
+              connectionProperties={CONNECTION_ARRAY_POLICY_DETAILS}
+              vendorType={selectedPolicyLogData.vendor}
+            />
+          </div>
+        </DialogContent>
+      )}
     </Dialog>
   );
 };

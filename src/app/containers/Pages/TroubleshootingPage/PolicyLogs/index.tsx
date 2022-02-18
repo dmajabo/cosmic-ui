@@ -15,7 +15,7 @@ import { useGet } from 'lib/api/http/useAxiosHook';
 import { TopoApi } from 'lib/api/ApiModels/Services/topo';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { DateTime } from 'luxon';
-import { VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
+import { INetworkPortForwardingConfig, VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
 import { ciscoMerakiLogoIcon } from 'app/components/SVGIcons/topologyIcons/ciscoMerakiLogo';
 import { awsIcon } from 'app/components/SVGIcons/topologyIcons/aws';
 import LoadingIndicator from 'app/components/Loading';
@@ -41,6 +41,62 @@ export interface PolicyLogsData {
   readonly oldValue: string;
   readonly newValue: string;
   readonly timestamp: string;
+  readonly networkDetails: string;
+  readonly configTemplateDetails: string;
+}
+
+export interface CommonNatRule {
+  readonly extId: string;
+  readonly id: string;
+  readonly name: string;
+  readonly ownerId: string;
+  readonly regionCode: string;
+  readonly publicIp: string;
+  readonly uplink: string;
+}
+
+export interface OneToOneNatRule extends CommonNatRule {
+  readonly lanIp: string;
+}
+
+export interface PortRule {
+  readonly allowedIps: string[];
+  readonly extId: string;
+  readonly id: string;
+  readonly localIp: string;
+  readonly localPort: string;
+  readonly name: string;
+  readonly ownerId: string;
+  readonly protocol: string;
+  readonly publicPort: string;
+  readonly regionCode: string;
+}
+
+export interface OneToManyNatRule extends CommonNatRule {
+  readonly portRules: PortRule[];
+}
+
+export interface CommonNatConfig {
+  readonly extId: string;
+  readonly id: string;
+  readonly name: string;
+  readonly ownerId: string;
+  readonly regionCode: string;
+}
+
+export interface OneToOneNatConfig extends CommonNatConfig {
+  readonly rules: OneToOneNatRule[];
+}
+
+export interface OneToManyNatConfig extends CommonNatConfig {
+  readonly rules: OneToManyNatRule[];
+}
+
+export interface ConfigDiffData {
+  readonly extId: string;
+  readonly portForwardingConfig: INetworkPortForwardingConfig;
+  readonly oneToOneNatConfig: OneToOneNatConfig;
+  readonly oneToManyNatConfig: OneToManyNatConfig;
 }
 
 interface PolicyLogsResponse {

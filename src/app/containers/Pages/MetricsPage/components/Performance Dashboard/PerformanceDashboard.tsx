@@ -72,7 +72,6 @@ export const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ netw
         setIsLoading(false);
       } else {
         setIsLoading(false);
-        setIsError(true);
       }
     } else {
       setIsLoading(false);
