@@ -7,6 +7,7 @@ import HtmlNodeLabel from '../../Containers/HtmlNodeLabel';
 import { select } from 'd3-selection';
 interface Props {
   item: ITGWNode;
+  onCenteredToNode: (node: ITGWNode, width: number, height: number) => void;
 }
 
 const NetworkWEdgeNode: React.FC<Props> = (props: Props) => {
@@ -17,6 +18,7 @@ const NetworkWEdgeNode: React.FC<Props> = (props: Props) => {
   React.useEffect(() => {
     if (topology.selectedNode && topology.selectedNode.extId === props.item.extId && !isNodeSelected) {
       setIsNodeSelected(true);
+      props.onCenteredToNode(props.item, NODES_CONSTANTS.NETWORK_WEDGE.collapse.r, NODES_CONSTANTS.NETWORK_WEDGE.collapse.r);
     } else if (!topology.selectedNode || (topology.selectedNode && topology.selectedNode !== props.item.extId)) {
       setIsNodeSelected(false);
     }

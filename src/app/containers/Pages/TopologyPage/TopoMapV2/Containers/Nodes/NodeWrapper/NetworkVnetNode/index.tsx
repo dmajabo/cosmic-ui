@@ -12,6 +12,7 @@ interface Props {
   region: ITopoRegionNode;
   item: INetworkVNetNode;
   onClick: (item: INetworkVNetNode) => void;
+  onCenteredToNode: (node: INetworkVNetNode, width: number, height: number) => void;
 }
 
 const NetworkVnetNode: React.FC<Props> = (props: Props) => {
@@ -22,6 +23,7 @@ const NetworkVnetNode: React.FC<Props> = (props: Props) => {
   React.useEffect(() => {
     if (topology.selectedNode && topology.selectedNode.extId === props.item.extId && !isNodeSelected) {
       setIsNodeSelected(true);
+      props.onCenteredToNode(props.item, NODES_CONSTANTS.NETWORK_VNET.collapse.r, NODES_CONSTANTS.NETWORK_VNET.collapse.r);
     } else if (!topology.selectedNode || (topology.selectedNode && topology.selectedNode !== props.item.extId)) {
       setIsNodeSelected(false);
     }

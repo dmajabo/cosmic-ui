@@ -8,6 +8,7 @@ import SitesCollapsedNode from './SitesCollapsedNode';
 
 interface Props {
   dataItem: ITopoSitesNode;
+  onCenteredToNode: (node: any, width: number, height: number) => void;
 }
 
 const SiteNode: React.FC<Props> = (props: Props) => {
@@ -26,7 +27,7 @@ const SiteNode: React.FC<Props> = (props: Props) => {
       {props.dataItem.children && props.dataItem.children.length && props.dataItem.children[props.dataItem.currentPage] ? (
         <>
           {props.dataItem.children[props.dataItem.currentPage].map(it => (
-            <DeviceNode key={`${it.uiId}device`} item={it} />
+            <DeviceNode key={`${it.uiId}device`} item={it} onCenteredToNode={props.onCenteredToNode} />
           ))}
         </>
       ) : null}
