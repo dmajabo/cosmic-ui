@@ -7,6 +7,7 @@ import { TroubleshootingStyles } from '../TroubleshootingStyles';
 import { TABLE_HEIGHT } from './OldConfigData';
 import { PortForwardingTable } from './PortForwardingTable';
 import { OneToManyNATRuleTable } from './OneToManyNATRulesTable';
+import { OneToOneNATAllowedInboundTable } from './OneToOneNATAllowedInboundTable';
 
 interface ConfigTemplateProps {
   readonly configTemplateDetails: ConfigDiffData;
@@ -48,6 +49,7 @@ export const ConfigTemplate: React.FC<ConfigTemplateProps> = ({ configTemplateDe
                 <span>Uplink: </span>
                 <span className={classes.propertyValue}>{startCase(rule.uplink)}</span>
               </div>
+              {rule.allowedInBound ? <OneToOneNATAllowedInboundTable resourceData={rule.allowedInBound} styles={TABLE_HEIGHT} /> : null}
             </div>
           ))}
       </div>

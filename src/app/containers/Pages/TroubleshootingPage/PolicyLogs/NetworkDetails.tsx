@@ -7,6 +7,7 @@ import { ConfigDiffData, OneToManyNatConfig, OneToManyNatRule, OneToOneNatConfig
 import { TroubleshootingStyles } from '../TroubleshootingStyles';
 import { TABLE_HEIGHT } from './OldConfigData';
 import { OneToManyNATRuleTable } from './OneToManyNATRulesTable';
+import { OneToOneNATAllowedInboundTable } from './OneToOneNATAllowedInboundTable';
 import { PortForwardingTable } from './PortForwardingTable';
 
 interface NetworkDetailsProps {
@@ -87,6 +88,7 @@ export const NetworkDetails: React.FC<NetworkDetailsProps> = ({ networkDetails, 
                 <span>Uplink: </span>
                 <span className={classes.propertyValue}>{startCase(rule.uplink)}</span>
               </div>
+              {rule.allowedInBound ? <OneToOneNATAllowedInboundTable resourceData={rule.allowedInBound} styles={TABLE_HEIGHT} /> : null}
             </div>
           ))}
       </div>

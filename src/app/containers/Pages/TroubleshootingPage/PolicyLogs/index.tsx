@@ -23,6 +23,7 @@ import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import { PolicyLogDetailsDialog } from './PolicyLogDetailsDialog';
 import { getCorrectedTimeString } from '../../MetricsPage/components/Utils';
 import MatSelect from 'app/components/Inputs/MatSelect';
+import { on } from 'events';
 
 const REGEX = /[-[\]{}()*+?.,\\^$|#\s]/g;
 
@@ -55,8 +56,20 @@ export interface CommonNatRule {
   readonly uplink: string;
 }
 
+export interface OnetoOneAllowedInbound {
+  readonly allowedIps: string[];
+  readonly destinationPorts: string[];
+  readonly extId: string;
+  readonly id: string;
+  readonly name: string;
+  readonly ownerId: string;
+  readonly protocol: string;
+  readonly regionCode: string;
+}
+
 export interface OneToOneNatRule extends CommonNatRule {
   readonly lanIp: string;
+  readonly allowedInBound: OnetoOneAllowedInbound[];
 }
 
 export interface PortRule {
