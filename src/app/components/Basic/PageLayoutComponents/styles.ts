@@ -22,5 +22,6 @@ export const ChildrenContainer = styled.div<PageProps>`
   min-height: 100%;
   overflow-x: hidden;
   overflow-y: auto;
+  flex-grow: 1;
   padding: ${props => props.padding || '40px'};
 `;
