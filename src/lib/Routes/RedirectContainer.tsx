@@ -13,7 +13,7 @@ export const RedirectContainer: React.FC = () => {
       userContext.setIdToken(idtoken);
     });
     getAccessTokenSilently().then(accesstoken => {
-      userContext.setAccessToken(accesstoken);
+      userContext.setAccess(accesstoken);
     });
     userContext.setUser(user);
   }, []);

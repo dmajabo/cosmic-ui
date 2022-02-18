@@ -19,7 +19,7 @@ export const HomePage: React.FC = () => {
       userContext.setIdToken(idtoken);
     });
     getAccessTokenSilently().then(accesstoken => {
-      userContext.setAccessToken(accesstoken);
+      userContext.setAccess(accesstoken);
       if (!userContext.vendors) {
         onTryLoadVendors(accesstoken);
       }
