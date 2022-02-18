@@ -29,6 +29,7 @@ pipeline {
                 sh "echo REACT_APP_VERSION=0.1.${BUILD_NUMBER}-build >> ${env.WORKSPACE}/.env.local"
                 sh 'echo REACT_APP_DEPLOYED_AT=$(date +%s) >> $WORKSPACE/.env.local'
                 sh 'echo REACT_APP_AUTH0_AUDIENCE=dev01-cosmic >> $WORKSPACE/.env.local'
+                sh "echo REACT_APP_MAPBOX_TOKEN=${env.REACT_APP_MAPBOX_TOKEN} >>${env.WORKSPACE}/.env.local"
                 sh 'yarn install'
                 sh 'yarn build --prod'
             }
