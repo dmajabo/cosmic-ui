@@ -7,12 +7,21 @@ interface PageWrapProps {
   padding?: string;
   bgColor?: string;
 }
+
+export const PageResisablePanelStyles = styled.div`
+  display: flex;
+  width: 100%;
+  min-height: 100%;
+  position: relative;
+`;
+
 export const PageWrapperStyles = styled.div<PageWrapProps>`
   display: flex;
   flex-direction: column;
   width: 100%;
   min-height: 100%;
   padding: ${props => props.padding || '40px'};
+  background: ${props => props.bgColor || 'transparent'};
 `;
 
 export const PageWithPanelWrapperStyles = styled.div<PageWrapProps>`
@@ -40,7 +49,7 @@ export const TabsWrapperStyles = styled.div`
 interface IActionRowProps {
   height?: string;
   margin?: string;
-  zIndex?: number;
+  zIndex?: number | string;
 }
 
 export const ActionRowStyles = styled.div<IActionRowProps>`

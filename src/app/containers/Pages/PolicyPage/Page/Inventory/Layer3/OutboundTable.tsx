@@ -12,13 +12,11 @@ import { ComponentTableStyles } from '../styles';
 import * as gridHelper from 'lib/helpers/gridHelper';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { useGet } from 'lib/api/http/useAxiosHook';
-import { PAGING_DEFAULT_PAGE_SIZE } from 'lib/models/general';
-import { convertStringToNumber } from 'lib/helpers/general';
 import { paramBuilder } from 'lib/api/ApiModels/paramBuilders';
 import { TopoApi } from 'lib/api/ApiModels/Services/topo';
 import InventoryTableHeader from '../../../Components/InventoryTableHeader';
 import Paging from 'app/components/Basic/Paging';
-
+import * as cellTemplates from 'app/components/Basic/Table/CellTemplates';
 interface Props {}
 
 const OutboundTable = (props: Props) => {
@@ -27,14 +25,19 @@ const OutboundTable = (props: Props) => {
   const [data, setData] = React.useState<INetworkRule[]>([]);
   const [totalCount, setTotalCount] = React.useState<number>(0);
   const [columns, setColumns] = React.useState<IGridColumnField[]>([
-    { ...Layer3Columns.policy, body: d => policyBodyTemplate(d) },
-    { ...Layer3Columns.protocol, body: d => protocolBodyTemplate(d) },
-    { ...Layer3Columns.destination, body: d => destinationBodyTemplate(d) },
-    { ...Layer3Columns.portRange, body: d => rangeBodyTemplate(d) },
+    { ...Layer3Columns.policy, body: (d: INetworkRule) => cellTemplates.cellClassNameTemplate(d.policy || 'Allow', 'cellToCapitalize') },
+    { ...Layer3Columns.protocol, body: (d: INetworkRule) => cellTemplates.cellClassNameTemplate(d.ipProtocol, 'cellToUpperCase') },
+    { ...Layer3Columns.source, body: (d: INetworkRule) => cellTemplates.cellValueFromArrayTemplate(d.srcCidrs, 'name') },
+    { ...Layer3Columns.sourcePort },
+    { ...Layer3Columns.destination, body: (d: INetworkRule) => cellTemplates.cellValueFromArrayTemplate(d.destCidrs, 'name') },
+    { ...Layer3Columns.destinationPort },
+    { ...Layer3Columns.comment },
+    { ...Layer3Columns.logging, body: (d: INetworkRule) => cellTemplates.cellCheckMarkTemplate(d.syslogEnabled) },
+    // { ...Layer3Columns.portRange, body: d => rangeBodyTemplate(d) },
   ]);
   const [sortObject, setSortObject] = React.useState<ISortObject>(null);
   const [currentPage, setCurrentPage] = React.useState<number>(1);
-  const [pageSize, setPageSize] = React.useState<number>(PAGING_DEFAULT_PAGE_SIZE);
+  const [pageSize, setPageSize] = React.useState<number>(20);
   const columnsRef = React.useRef(columns);
 
   React.useEffect(() => {
@@ -43,9 +46,8 @@ const OutboundTable = (props: Props) => {
 
   React.useEffect(() => {
     if (response && response.rules) {
-      const _total = convertStringToNumber(response.count);
       setData(response.rules);
-      setTotalCount(_total);
+      setTotalCount(response.totalCount);
     } else {
       setData([]);
       setTotalCount(0);
@@ -75,11 +77,6 @@ const OutboundTable = (props: Props) => {
     const _sortObject = gridHelper.singelSortHelper(sortObject, e);
     setSortObject(_sortObject);
   };
-
-  const policyBodyTemplate = (rowData: INetworkRule) => <span className="cellToCapitalize">{rowData.policy || 'Allow'}</span>;
-  const protocolBodyTemplate = (rowData: INetworkRule) => <span className="cellToUpperCase">{rowData.ipProtocol}</span>;
-  const rangeBodyTemplate = (rowData: INetworkRule) => (rowData.fromPort === '0' && rowData.toPort === '0' ? 'All' : `${rowData.fromPort} - ${rowData.toPort}`);
-  const destinationBodyTemplate = (rowData: INetworkRule) => (rowData.cidrs && rowData.cidrs.length ? rowData.cidrs[0].name : null);
 
   const onChangeCurrentPage = (_page: number) => {
     setCurrentPage(_page);
@@ -144,7 +141,15 @@ const OutboundTable = (props: Props) => {
           </AbsLoaderWrapper>
         )}
       </TableWrapper>
-      <Paging count={totalCount} disabled={!data.length} pageSize={pageSize} currentPage={currentPage} onChangePage={onChangeCurrentPage} onChangePageSize={onChangePageSize} />
+      <Paging
+        pageSizeValues={[10, 20]}
+        count={totalCount}
+        disabled={!data.length}
+        pageSize={pageSize}
+        currentPage={currentPage}
+        onChangePage={onChangeCurrentPage}
+        onChangePageSize={onChangePageSize}
+      />
     </ComponentTableStyles>
   );
 };

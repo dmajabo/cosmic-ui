@@ -55,6 +55,7 @@ export const APP_THEME: ITheme = {
     '--_errorColor': '#DC4545',
     '--_successColor': '#52984E',
     '--_warningColor': '#F69442',
+    '--_orangeColor': '#F9BA55',
     // NODES
     // EDGES
     '--_sitesBg': '#0097A7',

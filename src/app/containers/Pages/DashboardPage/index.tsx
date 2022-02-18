@@ -1,212 +1,239 @@
-import { Button, FormControl, MenuItem, Typography, Select, CardContent, SelectChangeEvent } from '@mui/material';
-import { Add as AddIcon } from '@mui/icons-material';
-import React, { ReactNode } from 'react';
-import { useState } from 'react';
-import { CardTitle } from './enum/CardTitle';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { DashboardStyles } from './DashboardStyles';
-import { NetworkValueTrend } from './enum/NetworkValueTrend';
-import NetworkTile from './components/NetworkTile';
-import Tile from './components/Tile';
 import './react-grid-layout.css';
-import { Responsive, WidthProvider } from 'react-grid-layout';
-import { BarChart } from './components/BarChart';
-import { PieChart } from './components/PieChart';
-import { TroubleshootingCounter } from './components/TroubleshootingCounter';
-import { Map } from './components/Map/Map';
-const ResponsiveGridLayout = WidthProvider(Responsive);
+import TabsListUnstyled from '@mui/base/TabsListUnstyled';
+import { buttonUnstyledClasses } from '@mui/base/ButtonUnstyled';
+import TabUnstyled, { tabUnstyledClasses } from '@mui/base/TabUnstyled';
+import { styled } from '@mui/system';
+import { TabsUnstyled } from '@mui/material';
+import { DashboardItemContainer, DashboardItemContent, DashboardItemLabel, GridContainer, GridItemContainer } from './styles/ChartContainer';
+import InOutBound from './components/ManagmentItem/InOutBound';
+import ManagementLayer7 from './components/ManagmentItem/ManagementLayer7';
+import ManagementDrifts from './components/ManagmentItem/ManagementDrifts';
+import { DashboardSitesViewTab, Device, OnPremDevicesResponse, SITES_COLUMNS, SITES_DATA } from './enum';
+import { Feature, Map } from './components/Map/Map';
+import { useGet } from 'lib/api/http/useAxiosHook';
+import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
+import { TopoApi } from 'lib/api/ApiModels/Services/topo';
+import LoadingIndicator from 'app/components/Loading';
+import { TableWrapper } from 'app/components/Basic/Table/PrimeTableStyles';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
+import Paging from 'app/components/Basic/Paging';
+import { PAGING_DEFAULT_PAGE_SIZE } from 'lib/models/general';
 
-interface IProps {}
+const Tab = styled(TabUnstyled)`
+  color: #848da3;
+  cursor: pointer;
+  font-size: 12px;
+  background: #f3f6fc;
+  padding: 15px 40px 15px 40px;
+  border: none;
+  border-radius: 6px;
+  display: flex;
 
-interface Legend {
-  readonly name: string;
-  readonly colour: string;
-}
+  &.Mui-selected {
+    color: #437fec;
+    font-weight: bold;
+  }
 
-interface Widget {
-  readonly title: string;
-  readonly legends?: Legend[];
-  readonly cardContentcss: string;
-  readonly component?: ReactNode;
-  readonly layout: Layout;
-}
+  &:hover {
+    color: #437fec;
+  }
 
-interface Layout {
-  readonly x: number;
-  readonly y: number;
-  readonly w: number;
-  readonly h: number;
-}
+  &.${buttonUnstyledClasses.focusVisible} {
+    color: #437fec;
+  }
 
-const DashboardPage: React.FC<IProps> = (props: IProps) => {
+  &.${tabUnstyledClasses.selected} {
+    background-color: white;
+  }
+
+  &.${buttonUnstyledClasses.disabled} {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+`;
+
+const TabsList = styled(TabsListUnstyled)`
+  border-radius: 6px;
+  display: flex;
+  align-content: space-between;
+`;
+
+const DashboardPage: React.FC = () => {
   const classes = DashboardStyles();
+  const userContext = useContext<UserContextState>(UserContext);
+  const [sitesViewTabName, setSitesViewTabName] = useState<DashboardSitesViewTab>(DashboardSitesViewTab.Map);
 
-  const defaultWidgets = [
-    {
-      title: CardTitle.map,
-      legends: [
-        { name: 'Cisco Meraki', colour: '#437fec' },
-        { name: 'AWS', colour: '#f9a825' },
-      ],
-      cardContentcss: classes.mapWidth,
-      layout: { x: 0, y: 0, w: 7, h: 2 },
-      component: <Map />,
-    },
-    {
-      title: CardTitle.onPremise,
-      cardContentcss: classes.statTile,
-      layout: { x: 7, y: 0, w: 2.5, h: 1 },
-      component: <NetworkTile value={5} change={1} arrowDirection={NetworkValueTrend.Up} />,
-    },
-    {
-      title: CardTitle.cloud,
-      cardContentcss: classes.statTile,
-      layout: { x: 9.5, y: 0, w: 2.5, h: 1 },
-      component: <NetworkTile value={3} change={5} arrowDirection={NetworkValueTrend.Down} />,
-    },
-    {
-      title: CardTitle.topology,
-      cardContentcss: classes.statTile,
-      layout: { x: 7, y: 1, w: 2.5, h: 1 },
-      component: <NetworkTile value={3} change={50} arrowDirection={NetworkValueTrend.Up} />,
-    },
-    {
-      title: CardTitle.policy,
-      cardContentcss: classes.statTile,
-      layout: { x: 9.5, y: 1, w: 2.5, h: 1 },
-      component: <NetworkTile value={3} change={5} arrowDirection={NetworkValueTrend.Up} />,
-    },
-    {
-      title: CardTitle.topEdges,
-      cardContentcss: classes.chartWidth,
-      layout: { x: 0, y: 2, w: 4, h: 2 },
-      component: (
-        <BarChart
-          categories={['A1', 'A2', 'A3', 'A4', 'A5']}
-          yAxisTitle="Speed (mbps)"
-          dataValueSuffix="mbps"
-          borderRadius={7}
-          width={15}
-          colours={['#437FEC', '#F69442', '#F69442', '#F9A825', '#F9A825']}
-          data={[750, 300, 240, 175, 150]}
-        />
-      ),
-    },
-    {
-      title: CardTitle.topApplication,
-      cardContentcss: classes.chartWidth,
-      layout: { x: 4, y: 2, w: 4, h: 2 },
-      component: (
-        <PieChart
-          data={[
-            {
-              name: 'Application 1',
-              y: 40,
-            },
-            {
-              name: 'Application 2',
-              y: 32,
-            },
-            {
-              name: 'Application 3',
-              y: 20,
-            },
-            {
-              name: 'Application 4',
-              y: 8,
-            },
-          ]}
-          labelFormat="{point.percentage:.1f} %"
-          labelPosition={-30}
-          colours={['#437FEC', '#F69442', '#F9A825', '#DC4545']}
-          innerCircleArea="60%"
-        />
-      ),
-    },
-    {
-      title: CardTitle.connectivityTroubleshooting,
-      cardContentcss: classes.chartWidth,
-      layout: { x: 8, y: 2, w: 4, h: 2 },
-      component: (
-        <div className={classes.troubleshootContainer}>
-          <div className={classes.troubleshootElementContainer}>
-            <TroubleshootingCounter title={20} subtitle="Unreachable" data={[80, 20]} colours={['white', 'red']} innerCircleArea="80%" />
-          </div>
-          <div className={classes.troubleshootElementContainer}>
-            {' '}
-            <TroubleshootingCounter title={80} subtitle="Reachable" data={[80, 20]} colours={['green', 'white']} innerCircleArea="80%" />
-          </div>
-        </div>
-      ),
-    },
-  ];
+  const [totalCount, setTotalCount] = React.useState<number>(0);
+  const [currentPage, setCurrentPage] = React.useState<number>(1);
+  const [pageSize, setPageSize] = React.useState<number>(PAGING_DEFAULT_PAGE_SIZE);
 
-  const [networkDetailDuration, setNetwokDetailDuration] = React.useState<string>('');
+  const { loading, error, response, onGet } = useGet<OnPremDevicesResponse>();
 
-  const handleChange = (event: SelectChangeEvent<any>, child?: object) => setNetwokDetailDuration(event.target.value as string);
-
-  const [widgets, setWidgets] = useState<Widget[]>(defaultWidgets);
-  const [layouts, setLayouts] = useState({});
-
-  const onWidgetRemove = (title: string) => {
-    const newWidgetsList = widgets.filter(widget => {
-      return widget.title !== title;
-    });
-    setWidgets(newWidgetsList);
+  const onTabChange = (event: React.SyntheticEvent<Element, Event>, value: string | number) => {
+    setSitesViewTabName(value as DashboardSitesViewTab);
   };
 
-  const onLayoutChange = (layout, layouts) => {
-    setLayouts({ layouts });
+  useEffect(() => {
+    onGet(TopoApi.getOnPremDeviceList(), userContext.accessToken!);
+  }, []);
+
+  const convertDataToFeatures = useCallback(
+    (devices: Device[] = []): Feature[] => {
+      return devices.map(device => ({
+        type: 'Feature',
+        properties: { title: '', description: '' },
+        geometry: {
+          coordinates: [device.lon, device.lat],
+          type: 'Point',
+          name: device.id,
+        },
+      }));
+    },
+    [response],
+  );
+
+  const onChangeCurrentPage = (_page: number) => {
+    setCurrentPage(_page);
+    // TODO: Modify this
+    // onTryLoadAlertMetaData(size, page, selectedPeriod);
+  };
+
+  const onChangePageSize = (size: number, page?: number) => {
+    if (page) {
+      setCurrentPage(page);
+      setPageSize(size);
+      // TODO: Modify this
+      // onTryLoadAlertMetaData(size, page, selectedPeriod);
+      return;
+    }
+    setPageSize(size);
+    // onTryLoadAlertMetaData(size, currentPage, selectedPeriod);
   };
 
   return (
-    <div>
-      <div className={classes.flexContainer}>
-        <div>
-          <Typography className={classes.network} noWrap>
-            Network
-          </Typography>
-          <Button className={classes.widgetButton} variant="contained" color="primary" disableElevation>
-            <Typography className={classes.widgetButtonText} noWrap>
-              ADD WIDGET
-            </Typography>
-            <AddIcon fontSize="small" />
-          </Button>
-        </div>
-        <div className={classes.endFlexContainer}>
-          <Typography className={classes.showText} noWrap>
-            Show:
-          </Typography>
-          <FormControl variant="outlined" className={classes.formControl}>
-            <Select labelId="show dropdown" id="dropdown" classes={{ select: classes.dropdown }} value={networkDetailDuration} onChange={handleChange} label="show">
-              <MenuItem value={0}>
-                <em>None</em>
-              </MenuItem>
-              <MenuItem value={1}>Item 1</MenuItem>
-              <MenuItem value={2}>Item 2</MenuItem>
-              <MenuItem value={3}>Item 3</MenuItem>
-            </Select>
-          </FormControl>
-        </div>
-      </div>
-      <ResponsiveGridLayout
-        className="layout"
-        layouts={layouts}
-        cols={{ lg: 12, md: 12, sm: 6, xs: 4, xxs: 2 }}
-        compactType={'vertical'}
-        onLayoutChange={(layout, layouts) => onLayoutChange(layout, layouts)}
-        rowHeight={240}
-      >
-        {widgets.map(widget => {
-          return (
-            <div key={widget.title} data-grid={widget.layout}>
-              <Tile title={widget.title} legends={widget.legends} onWidgetRemove={onWidgetRemove}>
-                <CardContent className={widget.cardContentcss}>{widget.component}</CardContent>
-              </Tile>
+    <GridContainer>
+      <GridItemContainer gridArea="1 / 1 / 3 / 2" minResponciveHeight="500px">
+        <DashboardItemContainer>
+          <div className={classes.sitesHeader}>
+            <div className={classes.sitesHeaderLeftSection}>
+              <span className={classes.sites}>Sites</span>
+              <div className={classes.pillContainer}>
+                <span className={classes.pillText}>{response?.totalCount}</span>
+              </div>
             </div>
-          );
-        })}
-      </ResponsiveGridLayout>
-    </div>
+            <TabsUnstyled value={sitesViewTabName} onChange={onTabChange}>
+              <div className={classes.tabListContainer}>
+                <TabsList>
+                  <Tab value={DashboardSitesViewTab.Map}>{DashboardSitesViewTab.Map.toUpperCase()}</Tab>
+                  <Tab value={DashboardSitesViewTab.List}>{DashboardSitesViewTab.List.toUpperCase()}</Tab>
+                </TabsList>
+              </div>
+            </TabsUnstyled>
+          </div>
+          {loading && <LoadingIndicator margin="auto" />}
+
+          {error && <div>Something went wrong. Please try again</div>}
+
+          {!loading && sitesViewTabName === DashboardSitesViewTab.Map && (
+            <div className={classes.mapContainerMain}>
+              <Map features={convertDataToFeatures(response?.devices)} />
+            </div>
+          )}
+
+          {!loading && sitesViewTabName === DashboardSitesViewTab.List && (
+            <>
+              <TableWrapper className={classes.tableWrapper}>
+                <DataTable className="tableSM fixedToParentHeight" id="meraki_sites" responsiveLayout="scroll" value={SITES_DATA} scrollable>
+                  <Column
+                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700 }}
+                    style={{
+                      minWidth: SITES_COLUMNS.name.minWidth,
+                    }}
+                    field={SITES_COLUMNS.name.field}
+                    header={SITES_COLUMNS.name.label}
+                  ></Column>
+                  <Column
+                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700 }}
+                    style={{ minWidth: SITES_COLUMNS.uplinkType.minWidth }}
+                    field={SITES_COLUMNS.uplinkType.field}
+                    header={SITES_COLUMNS.uplinkType.label}
+                  ></Column>
+                  <Column
+                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700 }}
+                    style={{ minWidth: SITES_COLUMNS.availability.minWidth }}
+                    field={SITES_COLUMNS.availability.field}
+                    header={SITES_COLUMNS.availability.label}
+                  ></Column>
+                  <Column
+                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700 }}
+                    style={{ minWidth: SITES_COLUMNS.totalUsage.minWidth }}
+                    field={SITES_COLUMNS.totalUsage.field}
+                    header={SITES_COLUMNS.totalUsage.label}
+                  ></Column>
+                  <Column
+                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700 }}
+                    style={{ minWidth: SITES_COLUMNS.avgBandwidth.minWidth }}
+                    field={SITES_COLUMNS.avgBandwidth.field}
+                    header={SITES_COLUMNS.avgBandwidth.label}
+                  ></Column>
+                  <Column
+                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700 }}
+                    style={{ minWidth: SITES_COLUMNS.latency.minWidth }}
+                    field={SITES_COLUMNS.latency.field}
+                    header={SITES_COLUMNS.latency.label}
+                  ></Column>
+                  <Column
+                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700 }}
+                    style={{ minWidth: SITES_COLUMNS.jitter.minWidth }}
+                    field={SITES_COLUMNS.jitter.field}
+                    header={SITES_COLUMNS.jitter.label}
+                  ></Column>
+                  <Column
+                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700 }}
+                    style={{ minWidth: SITES_COLUMNS.packetLoss.minWidth }}
+                    field={SITES_COLUMNS.packetLoss.field}
+                    header={SITES_COLUMNS.packetLoss.label}
+                  ></Column>
+                  <Column
+                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700 }}
+                    style={{ minWidth: SITES_COLUMNS.goodput.minWidth }}
+                    field={SITES_COLUMNS.goodput.field}
+                    header={SITES_COLUMNS.goodput.label}
+                  ></Column>
+                </DataTable>
+              </TableWrapper>
+              <Paging
+                disabled={totalCount === 0}
+                hideRange={1024}
+                count={totalCount}
+                pageSize={pageSize}
+                currentPage={currentPage}
+                onChangePage={onChangeCurrentPage}
+                onChangePageSize={onChangePageSize}
+              />
+            </>
+          )}
+        </DashboardItemContainer>
+      </GridItemContainer>
+      <GridItemContainer gridArea="1 / 2 / 2 / 3">
+        <DashboardItemContainer>
+          <DashboardItemLabel>Management</DashboardItemLabel>
+          <DashboardItemContent>
+            <ManagementDrifts />
+            <InOutBound styles={{ margin: '0 20px' }} />
+            <ManagementLayer7 />
+          </DashboardItemContent>
+        </DashboardItemContainer>
+      </GridItemContainer>
+      <GridItemContainer gridArea="2 / 2 / 3 / 3">
+        <DashboardItemContainer>
+          <DashboardItemLabel>Anomalies</DashboardItemLabel>
+        </DashboardItemContainer>
+      </GridItemContainer>
+    </GridContainer>
   );
 };
 

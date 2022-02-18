@@ -4,12 +4,56 @@ import { createStyles, makeStyles } from '@mui/styles';
 export const DashboardStyles = makeStyles(
   (theme: Theme) =>
     createStyles({
+      sitesHeader: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        margin: '0 0 20px 0px',
+        flexShrink: 0,
+      },
+      mapContainerMain: {
+        border: '1px solid #CBD2DC',
+        borderRadius: '6px',
+        overflow: 'hidden',
+        flexGrow: 1,
+      },
+      tableWrapper: {
+        width: '100%',
+        maxHeight: 'calc(100% - 154px)',
+        height: 'auto',
+        flexGrow: 'unset',
+        margin: '0 0 auto 0',
+      },
+      sitesTableHeaderCell: { fontSize: '12px', color: '#848DA3', fontWeight: 700 },
+      sitesHeaderLeftSection: {
+        display: 'flex',
+        alignItems: 'center',
+      },
+      sites: {
+        fontWeight: 'bold',
+        fontSize: '20px',
+        color: '#05143A',
+      },
+      pillContainer: {
+        marginLeft: '20px',
+        backgroundColor: '#437FEC',
+        borderRadius: '20px',
+      },
+      pillText: {
+        fontSize: '12px',
+        fontWeight: 500,
+        color: '#FFFFFF',
+        lineHeight: '16px',
+        padding: '2px 10px 2px 10px',
+      },
+      tabListContainer: {
+        backgroundColor: 'var(--_tabContainerBg)',
+        padding: '5px',
+        borderRadius: '6px',
+      },
       flexContainer: {
         display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        padding: '10px 20px',
-        alignItems: 'center',
+        padding: '40px',
+        minHeight: '100%',
       },
       network: {
         '&.MuiTypography-root': {
@@ -19,27 +63,12 @@ export const DashboardStyles = makeStyles(
           fontWeight: 700,
         },
       },
-      widgetButton: {
-        marginLeft: 20,
-        marginTop: -10,
-        backgroundColor: '#437FEC',
-      },
-      widgetButtonText: {
-        fontSize: 12,
-        fontWeight: 700,
-        paddingRight: 10,
-      },
       endFlexContainer: {
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'flex-end',
         padding: '10px 20px',
         alignItems: 'center',
-      },
-      showText: {
-        color: '#848DA3',
-        fontSize: 14,
-        marginLeft: 15,
       },
       formControl: {
         minWidth: 160,
@@ -109,7 +138,7 @@ export const DashboardStyles = makeStyles(
         display: 'flex',
       },
       mapHeight: {
-        height: '375px',
+        height: '100%',
       },
       demoPopupContainer: {
         backgroundColor: '#FFFFFF',

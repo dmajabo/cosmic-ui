@@ -1,9 +1,8 @@
 import SecondaryButtonwithEvent from 'app/containers/Pages/AnalyticsPage/components/SecondaryButtonwithEvent';
-import { isEmpty, noop, uniq } from 'lodash';
-import React, { useEffect, useState } from 'react';
+import { noop, uniq } from 'lodash';
+import React, { useState } from 'react';
 import FilterIcon from '../../icons/performance dashboard/filter';
 import { MetricsStyles } from '../../MetricsStyles';
-import Select from 'react-select';
 import { LookbackLabel, LookbackSelectOption, LookbackValue } from 'app/containers/Pages/AnalyticsPage/components/Metrics Explorer/LookbackTimeTab';
 import { DeviceHealth } from './DeviceHealth';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
@@ -20,6 +19,7 @@ import PanelBar from 'app/components/Basic/PanelBar';
 import { APP_HEADER_HEIGHT } from 'lib/constants/general';
 import { IPanelBarLayoutTypes } from 'lib/models/general';
 import { ConnectivityHealthSidePanel } from './ConnectivityHealthSidePanel';
+import MatSelect from 'app/components/Inputs/MatSelect';
 
 interface SitesProps {
   readonly networks: Vnet[];
@@ -33,24 +33,6 @@ export interface NetworkObject {
   readonly id: string;
   readonly name: string;
 }
-
-const dropdownStyle = {
-  option: provided => ({
-    ...provided,
-    padding: 10,
-    color: 'black',
-  }),
-  control: provided => ({
-    ...provided,
-    height: 50,
-    border: 'none',
-  }),
-};
-
-const INITIAL_ANOMALY_TIME_RANGE_VALUE: LookbackSelectOption = {
-  label: LookbackLabel.oneWeek,
-  value: LookbackValue.oneWeek,
-};
 
 const TIME_RANGE_OPTIONS: LookbackSelectOption[] = [
   {
@@ -70,7 +52,7 @@ const TIME_RANGE_OPTIONS: LookbackSelectOption[] = [
 export const Sites: React.FC<SitesProps> = ({ networks, devices, orgError, orgLoading, selectedTabName }) => {
   const classes = MetricsStyles();
   const [showSettingsPanel, setShowSettingsPanel] = useState<boolean>(false);
-  const [timeRange, setTimeRange] = useState<LookbackSelectOption>(INITIAL_ANOMALY_TIME_RANGE_VALUE);
+  const [timeRange, setTimeRange] = useState<LookbackSelectOption>(TIME_RANGE_OPTIONS[1]);
 
   const handleTimeRangeChange = (value: LookbackSelectOption) => setTimeRange(value);
 
@@ -78,7 +60,7 @@ export const Sites: React.FC<SitesProps> = ({ networks, devices, orgError, orgLo
 
   const getNetworks = () => {
     const networkIds = uniq(devices.map(device => device.networkId));
-    const networkObjects: NetworkObject[] = networkIds.map(networkId => ({ id: networkId, name: networks.find(network => network.extId == networkId)?.name || 'Unknown' }));
+    const networkObjects: NetworkObject[] = networkIds.map(networkId => ({ id: networkId, name: networks.find(network => network.extId === networkId)?.name || 'Unknown' }));
     return networkObjects;
   };
 
@@ -113,8 +95,18 @@ export const Sites: React.FC<SitesProps> = ({ networks, devices, orgError, orgLo
               }
               onClick={noop}
             />
-            <span className={classes.anomalyTimeRangeText}>Show:</span>
-            <Select styles={dropdownStyle} className={classes.inlineSelect} label="Single select" value={timeRange} options={TIME_RANGE_OPTIONS} onChange={handleTimeRangeChange} />
+            <MatSelect
+              id="cloudTimePeriod"
+              label="Show"
+              labelStyles={{ margin: 'auto 10px auto 0' }}
+              value={timeRange}
+              options={TIME_RANGE_OPTIONS}
+              onChange={handleTimeRangeChange}
+              renderValue={(v: LookbackSelectOption) => v.label}
+              renderOption={(v: LookbackSelectOption) => v.label}
+              styles={{ height: '50px', minHeight: '50px', margin: '0 0 0 10px', width: 'auto', display: 'inline-flex', alignItems: 'center' }}
+              selectStyles={{ height: '50px', width: 'auto', minWidth: '240px', border: '1px solid transparent' }}
+            />
           </div>
         </div>
         <NetworkUsageHealth selectedTabName={selectedTabName} networks={getNetworks()} timeRange={timeRange} />

@@ -16,6 +16,12 @@ export interface IPanelBar<T> {
   dataItem?: any;
 }
 
+export interface IPanel<T, C> {
+  show: boolean;
+  type: T;
+  dataItem: C;
+}
+
 export enum TopologyPanelTypes {
   ENTITIES = 'entities',
   GROUPS = 'groups',

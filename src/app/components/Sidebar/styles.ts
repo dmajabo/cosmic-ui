@@ -45,6 +45,8 @@ export const WrapSidebar = styled.div<WrapSidebarProps>`
   flex-shrink: 0;
   height: 100vh;
   z-index: 101;
+  top: 0;
+  left: 0;
   ${WrapText} {
     width: ${props => (props.isOpen ? 'calc(100% - 41px)' : '0')};
   }

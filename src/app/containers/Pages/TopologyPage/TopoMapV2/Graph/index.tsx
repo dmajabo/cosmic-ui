@@ -4,7 +4,6 @@ import { ContainerWithLegend, ContainerWithMetrics, StyledMap } from '../styles'
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 import { useZoom } from '../hooks/useZoom';
 import HeadeerAction from '../HeadeerAction';
-import { STANDART_DISPLAY_RESOLUTION_V2 } from 'lib/models/general';
 import FilterComponent from '../PanelComponents/FilterComponent';
 import VpcPanel from '../PanelComponents/NodePanels/VpcPanel';
 import DevicePanel from '../PanelComponents/NodePanels/DevicePanel';
@@ -23,6 +22,8 @@ import SiteNode from '../Containers/Nodes/NodeWrapper/SitesNode/SiteNode';
 import SitesNodeTopContainer from '../Containers/Nodes/NodeWrapper/SitesNode/SitesNodeTopContainer';
 import LinksWrapper from '../Containers/Links';
 import ResizablePanel from 'app/components/Basic/PanelBar/ResizablePanel';
+import { OKULIS_LOCAL_STORAGE_KEYS } from 'lib/api/http/utils';
+// import { STANDART_DISPLAY_RESOLUTION_V2 } from 'lib/models/general';
 // import SegmentsComponent from '../PanelComponents/Segments/SegmentsComponent';
 
 interface Props {
@@ -85,7 +86,7 @@ const Graph: React.FC<Props> = (props: Props) => {
               id={TOPOLOGY_IDS.SVG}
               width="100%"
               height="100%"
-              viewBox={`0 0 ${STANDART_DISPLAY_RESOLUTION_V2.width} ${STANDART_DISPLAY_RESOLUTION_V2.height}`}
+              // viewBox={`0 0 ${STANDART_DISPLAY_RESOLUTION_V2.width} ${STANDART_DISPLAY_RESOLUTION_V2.height}`}
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
               xmlnsXlink="http://www.w3.org/1999/xlink"
@@ -108,7 +109,7 @@ const Graph: React.FC<Props> = (props: Props) => {
             {/* {topology.originSegmentsData && topology.originSegmentsData.length ? <SegmentsLegend /> : null} */}
           </ContainerWithLegend>
           {topology.regionStructures && topology.regionStructures.length ? <StructuresWrapper nodes={topology.regionStructures} /> : null}
-          <ResizablePanel show={topology.topoPanel.show} onHidePanel={onHidePanel}>
+          <ResizablePanel show={topology.topoPanel.show} onHidePanel={onHidePanel} storageKey={OKULIS_LOCAL_STORAGE_KEYS.OKULIS_TOPOLOGY_PANEL_WIDTH}>
             {topology.topoPanel.type === TopologyPanelTypes.FILTERS && <FilterComponent />}
             {topology.topoPanel.type === TopologyPanelTypes.VPC && <VpcPanel dataItem={topology.topoPanel.dataItem} />}
             {topology.topoPanel.type === TopologyPanelTypes.WebAcl && <WebAclPanel dataItem={topology.topoPanel.dataItem} />}

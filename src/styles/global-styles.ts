@@ -9,6 +9,7 @@ export const device_XSM = 576;
 export const device_SM = 576;
 export const device_M = 768;
 export const device_L = 1024;
+export const device_LL = 1440;
 export const device_XL = 1600;
 export const device_XXL = 1920;
 
@@ -97,6 +98,69 @@ const GlobalStyle = createGlobalStyle`
     overflow: hidden;
     white-space: nowrap;
     width: 100%;
+  }
+  .rndTooltip {
+    .resize {
+      background: var(--_disabledTextColor);
+    }
+    .resize-t,
+    .resize-b {
+      width: 20px !important;
+      height: 4px !important;
+      left: calc(50% - 10px) !important;
+    }
+    .resize-t {
+      top: -2px !important;
+    }
+    .resize-b {
+      bottom: -2px !important;
+    }
+    .resize-l,
+    .resize-r {
+      width: 4px !important;
+      height: 20px !important;
+      top: calc(50% - 10px) !important;
+    }
+    .resize-l {
+      left: -2px !important;
+    }
+    .resize-r {
+      right: -2px !important;
+    }
+    .resize-rect {
+      width: 15px !important;
+      height: 15px !important;
+      background: transparent;
+      border: 4px solid var(--_disabledTextColor);
+    }
+    .resize-sw {
+      bottom: -2px !important;
+      left: -2px !important;
+      border-top: none;
+      border-right: none;
+      border-bottom-left-radius: 6px;
+    }
+    .resize-se {
+      bottom: -2px !important;
+      right: -2px !important;
+      border-top: none;
+      border-left: none;
+      border-bottom-right-radius: 6px;
+    }
+    .resize-nw {
+      top: -2px !important;
+      left: -2px !important;
+      border-bottom: none;
+      border-right: none;
+      border-top-left-radius: 6px;
+    }
+    .resize-ne {
+      top: -2px !important;
+      right: -2px !important;
+      border-bottom: none;
+      border-left: none;
+      border-top-right-radius: 6px;
+    }
   }
 `;
 

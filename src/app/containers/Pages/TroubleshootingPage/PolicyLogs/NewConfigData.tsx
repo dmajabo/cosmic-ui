@@ -1,16 +1,17 @@
+import SimpleTable from 'app/components/Basic/Table/SimpleTable';
 import { IRouteResDataItem, PolicyTableKeyEnum } from 'lib/api/ApiModels/Metrics/apiModel';
 import { INetworkRule, VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
 import isEmpty from 'lodash/isEmpty';
 import isEqual from 'lodash/isEqual';
 import React from 'react';
-import PolicyTable from '../../TopologyPage/TopoMapV2/PanelComponents/NodePanels/VpcPanel/VmTabs/PolicyTab/PolicyTable';
+import { SecurityGroupTableGridColumns } from '../../PolicyPage/Page/Inventory/Panels/models';
 import RouteTable from '../../TopologyPage/TopoMapV2/PanelComponents/NodePanels/VpcPanel/VmTabs/RoutesTab/RouteTable';
 import { TroubleshootingStyles } from '../TroubleshootingStyles';
 import { ConnectionResourceTable } from './ConnectionResourceTable';
 import DevicePolicyTable from './DevicePolicyTable';
 import { RESOURCE_TYPE, TABLE_HEIGHT } from './OldConfigData';
 import { ConnectionResource, PolicyLogDetailProperty, PolicyLogDetails, PolicyLogRoute, Rule } from './PolicyLogDetailsDialog';
-
+import * as cellTemplates from 'app/components/Basic/Table/CellTemplates';
 interface ConfigDataProps {
   readonly oldData: PolicyLogDetails;
   readonly newData: PolicyLogDetails;
@@ -144,8 +145,36 @@ export const NewConfigData: React.FC<ConfigDataProps> = ({ oldData, newData, sha
       return (
         <div className={getRulesTableClassName(oldVmRules, newVmRules)}>
           <div className={classes.tablePropertyTitle}>Rules</div>
-          <PolicyTable data={inboundRules} showLoader={false} title={'Inbound'} styles={TABLE_HEIGHT} />
-          <PolicyTable data={outboundRules} showLoader={false} title={'Outbound'} styles={TABLE_HEIGHT} />
+          <SimpleTable
+            id="inbound"
+            tableTitle={PolicyTableKeyEnum.Inbound}
+            data={inboundRules}
+            columns={[
+              { ...SecurityGroupTableGridColumns.extId, body: d => d.extId },
+              { ...SecurityGroupTableGridColumns.protocol, body: (d: INetworkRule) => cellTemplates.cellClassNameTemplate(d.ipProtocol, 'cellToUpperCase') },
+              { ...SecurityGroupTableGridColumns.source, body: (d: INetworkRule) => cellTemplates.cellValueFromArrayTemplate(d.cidrs, 'name') },
+              { ...SecurityGroupTableGridColumns.portRange, body: (d: INetworkRule) => cellTemplates.cellFrom_ToTemplate(d.fromPort, d.toPort) },
+            ]}
+            scrollHeight="100%"
+            styles={{ margin: '0 0 20px 0', maxHeight: '17vh' }}
+            tableStyles={{ maxHeight: '100%', height: 'auto' }}
+            tableClass="tableSX autoHeight"
+          />
+          <SimpleTable
+            id="outbound"
+            tableTitle={PolicyTableKeyEnum.Outbound}
+            data={outboundRules}
+            columns={[
+              { ...SecurityGroupTableGridColumns.extId },
+              { ...SecurityGroupTableGridColumns.protocol, body: (d: INetworkRule) => cellTemplates.cellClassNameTemplate(d.ipProtocol, 'cellToUpperCase') },
+              { ...SecurityGroupTableGridColumns.destination, body: (d: INetworkRule) => cellTemplates.cellValueFromArrayTemplate(d.cidrs, 'name') },
+              { ...SecurityGroupTableGridColumns.portRange, body: (d: INetworkRule) => cellTemplates.cellFrom_ToTemplate(d.fromPort, d.toPort) },
+            ]}
+            scrollHeight="100%"
+            styles={{ maxHeight: '17vh' }}
+            tableStyles={{ maxHeight: '100%', height: 'auto' }}
+            tableClass="tableSX autoHeight"
+          />
         </div>
       );
     } else {

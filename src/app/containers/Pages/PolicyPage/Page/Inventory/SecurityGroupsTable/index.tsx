@@ -10,9 +10,8 @@ import { SecurityGroupsColumns } from '../model';
 import { DataTable, DataTablePFSEvent } from 'primereact/datatable';
 import * as gridHelper from 'lib/helpers/gridHelper';
 import { TopoApi } from 'lib/api/ApiModels/Services/topo';
-import { IObject, PAGING_DEFAULT_PAGE_SIZE } from 'lib/models/general';
+import { IObject } from 'lib/models/general';
 import { InventoryPanelTypes } from 'lib/hooks/Policy/models';
-import SimpleCheckbox from 'app/components/Inputs/Checkbox/SimpleCheckbox';
 import { TableWrapper } from 'app/components/Basic/Table/PrimeTableStyles';
 import { Column } from 'primereact/column';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
@@ -21,25 +20,38 @@ import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import { paramBuilder } from 'lib/api/ApiModels/paramBuilders';
 import Paging from 'app/components/Basic/Paging';
 import { AccountVendorTypes } from 'lib/api/ApiModels/Accounts/apiModel';
+import * as cellTemplates from 'app/components/Basic/Table/CellTemplates';
 
 interface Props {}
 
 const SecurityGroupsTable: React.FC<Props> = (props: Props) => {
   const { policy } = usePolicyDataContext();
   const { vendors, accessToken } = React.useContext<UserContextState>(UserContext);
-  const [columns, setColumns] = React.useState<IGridColumnField[]>([{ ...SecurityGroupsColumns.name }, { ...SecurityGroupsColumns.extId }]);
+  const [columns, setColumns] = React.useState<IGridColumnField[]>([
+    { ...SecurityGroupsColumns.name },
+    { ...SecurityGroupsColumns.extId },
+    { ...SecurityGroupsColumns.networkId, body: (d: INetworkSecurityGroup) => cellTemplates.cellValueFromArrayTemplate(d.vnets, 'extId') },
+    { ...SecurityGroupsColumns.inboundRulesCount },
+    { ...SecurityGroupsColumns.outboundRulesCount },
+  ]);
   const { response, loading, error, onGet } = useGet<IToposvcListSecurityGroupResponse>();
   const [data, setData] = React.useState<INetworkSecurityGroup[]>([]);
   const [totalCount, setTotalCount] = React.useState<number>(0);
   const [selectedRows, setSelectedRows] = React.useState<IObject<string>>(null);
   const [sortObject, setSortObject] = React.useState<ISortObject>(null);
   const [currentPage, setCurrentPage] = React.useState<number>(1);
-  const [pageSize, setPageSize] = React.useState<number>(PAGING_DEFAULT_PAGE_SIZE);
+  const [pageSize, setPageSize] = React.useState<number>(20);
   const columnsRef = React.useRef(columns);
 
   React.useEffect(() => {
     getDataAsync(pageSize, currentPage);
   }, []);
+
+  React.useEffect(() => {
+    if (selectedRows && !policy.panel.show) {
+      setSelectedRows(null);
+    }
+  }, [policy.panel]);
 
   React.useEffect(() => {
     if (response && response.securityGroups) {
@@ -75,17 +87,10 @@ const SecurityGroupsTable: React.FC<Props> = (props: Props) => {
     setSortObject(_sortObject);
   };
 
-  const onSelectAll = () => {
-    const _obj: IObject<string> = gridHelper.selectionRowAllHelper(selectedRows, data, 'extId');
-    const _dataItems: INetworkSecurityGroup[] = _obj ? data : null;
-    policy.onTooglePanel(InventoryPanelTypes.Routes, _dataItems);
-    setSelectedRows(_obj);
-  };
-
   const onSelectRow = (id: string) => {
     const _obj: IObject<string> = gridHelper.multySelectionRowHelper(selectedRows, id);
     const _dataItems: INetworkSecurityGroup[] = _obj ? data.filter(it => (_obj[it.extId] ? it : null)) : null;
-    policy.onTooglePanel(InventoryPanelTypes.Routes, _dataItems);
+    policy.onTooglePanel(InventoryPanelTypes.SecurityGroups, _dataItems);
     setSelectedRows(_obj);
   };
 
@@ -93,20 +98,7 @@ const SecurityGroupsTable: React.FC<Props> = (props: Props) => {
   //   onSelectRow(e.data.extId);
   // };
 
-  const checkboxTemplate = (rowData: INetworkSecurityGroup) => {
-    return <SimpleCheckbox wrapStyles={{ width: '20px', margin: '0 auto' }} isChecked={!!(selectedRows && selectedRows[rowData.extId])} toggleCheckboxChange={() => onSelectRow(rowData.extId)} />;
-  };
-
-  const headerCbTemplate = () => {
-    return (
-      <SimpleCheckbox
-        isChecked={!!(selectedRows && Object.keys(selectedRows).length)}
-        toggleCheckboxChange={onSelectAll}
-        wrapStyles={{ width: '20px', margin: '0 auto' }}
-        indeterminate={selectedRows && Object.keys(selectedRows).length && data && data.length && Object.keys(selectedRows).length !== data.length}
-      />
-    );
-  };
+  const checkboxTemplate = (rowData: INetworkSecurityGroup) => cellTemplates.cellCheckboxTemplate(!!(selectedRows && selectedRows[rowData.extId]), () => onSelectRow(rowData.extId));
 
   const onChangeCurrentPage = (_page: number) => {
     setCurrentPage(_page);
@@ -126,6 +118,7 @@ const SecurityGroupsTable: React.FC<Props> = (props: Props) => {
 
   const getDataAsync = async (_pageSize: number, _currentPage: number) => {
     const _param = paramBuilder(_pageSize, _currentPage);
+    _param.vendorType = AccountVendorTypes.AMAZON_AWS;
     await onGet(TopoApi.getSecurityGroups(), accessToken!, _param);
   };
 
@@ -146,16 +139,17 @@ const SecurityGroupsTable: React.FC<Props> = (props: Props) => {
             dataKey="extId"
             // onRowClick={onRowClick}
           >
-            <Column header={headerCbTemplate} body={checkboxTemplate} align="center" headerStyle={{ width: '60px' }} style={{ textAlign: 'center' }} exportable={false}></Column>
+            <Column header={null} body={checkboxTemplate} align="center" headerStyle={{ width: '60px' }} style={{ textAlign: 'center' }} exportable={false}></Column>
             {columns.map(it => {
               if (it.hide) return null;
               return (
                 <Column
-                  key={`routesColumn${it.field}`}
+                  key={`securityGroupColumn${it.field}`}
                   style={{ width: it.width || null, minWidth: it.minWidth || null, maxWidth: it.maxWidth || null }}
                   sortable={it.sortable}
                   field={it.field}
                   header={it.label}
+                  body={it.body || null}
                 ></Column>
               );
             })}
@@ -174,7 +168,15 @@ const SecurityGroupsTable: React.FC<Props> = (props: Props) => {
             </AbsLoaderWrapper>
           )}
         </TableWrapper>
-        <Paging count={totalCount} disabled={!data.length} pageSize={pageSize} currentPage={currentPage} onChangePage={onChangeCurrentPage} onChangePageSize={onChangePageSize} />
+        <Paging
+          pageSizeValues={[10, 20]}
+          count={totalCount}
+          disabled={!data.length}
+          pageSize={pageSize}
+          currentPage={currentPage}
+          onChangePage={onChangeCurrentPage}
+          onChangePageSize={onChangePageSize}
+        />
       </ComponentTableStyles>
     </LayerWrapper>
   );

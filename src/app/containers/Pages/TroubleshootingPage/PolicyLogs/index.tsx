@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from 'react';
-import Select from 'react-select';
 import SearchIcon from '../../AnalyticsPage/icons/metrics explorer/search';
 import FilterIcon from '../../MetricsPage/icons/performance dashboard/filter';
 import ColumnsIcon from '../../MetricsPage/icons/performance dashboard/columns';
@@ -23,6 +22,7 @@ import LoadingIndicator from 'app/components/Loading';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import { PolicyLogDetailsDialog } from './PolicyLogDetailsDialog';
 import { getCorrectedTimeString } from '../../MetricsPage/components/Utils';
+import MatSelect from 'app/components/Inputs/MatSelect';
 
 const REGEX = /[-[\]{}()*+?.,\\^$|#\s]/g;
 
@@ -97,19 +97,6 @@ const LOGS_TABLE_COLUMNS: Column[] = [
     accessor: ColumnAccessor.changes,
   },
 ];
-
-const dropdownStyle = {
-  option: provided => ({
-    ...provided,
-    padding: 10,
-    color: 'black',
-  }),
-  control: provided => ({
-    ...provided,
-    height: 50,
-    border: 'none',
-  }),
-};
 
 const initialCheckboxData: CheckboxData = LOGS_TABLE_COLUMNS.reduce((accu, nextValue) => {
   accu[nextValue.accessor] = true;
@@ -302,8 +289,18 @@ export const PolicyLogs: React.FC = () => {
               ))}
             </FormGroup>
           </Popover>
-          <span className={classes.anomalyTimeRangeText}>Show:</span>
-          <Select styles={dropdownStyle} className={classes.inlineSelect} label="Single select" value={timeRange} options={TIME_RANGE_OPTIONS} onChange={handleTimeRangeChange} />
+          <MatSelect
+            id="policyLogTimePeriod"
+            label="Show"
+            labelStyles={{ margin: 'auto 10px auto 0' }}
+            value={timeRange}
+            options={TIME_RANGE_OPTIONS}
+            onChange={handleTimeRangeChange}
+            renderValue={(v: PolicyLogsSelectOption) => v.label}
+            renderOption={(v: PolicyLogsSelectOption) => v.label}
+            styles={{ height: '50px', minHeight: '50px', margin: '0 0 0 10px', width: 'auto', display: 'inline-flex', alignItems: 'center' }}
+            selectStyles={{ height: '50px', width: 'auto', minWidth: '240px', border: '1px solid transparent' }}
+          />
         </div>
       </div>
       <div className={classes.policyLogsTableContainer}>

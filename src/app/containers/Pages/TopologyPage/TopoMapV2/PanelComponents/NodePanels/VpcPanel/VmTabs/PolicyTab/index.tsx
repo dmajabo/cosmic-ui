@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import { IResourceQueryParam, ControllerKeyTypes, SecurityGroupsResourceTypes, IToposvcListSecurityGroupResponse, PolicyResKeyEnum, PolicyTableKeyEnum } from 'lib/api/ApiModels/Metrics/apiModel';
-import PolicyTable from './PolicyTable';
 import { useGet } from 'lib/api/http/useAxiosHook';
 import { getQueryResourceParam } from 'lib/api/ApiModels/Metrics/queryRoutesHelper';
 import { toTimestamp } from 'lib/api/ApiModels/paramBuilders';
@@ -9,6 +8,10 @@ import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 import { TopoApi } from 'lib/api/ApiModels/Services/topo';
 import { INetworkVM } from 'lib/api/ApiModels/Topology/apiModels';
 import { INetworkRule } from 'lib/api/ApiModels/Topology/apiModels';
+import SimpleTable from 'app/components/Basic/Table/SimpleTable';
+import { SecurityGroupTableGridColumns } from 'app/containers/Pages/PolicyPage/Page/Inventory/Panels/models';
+import { IGridColumnField } from 'lib/models/grid';
+import * as cellTemplates from 'app/components/Basic/Table/CellTemplates';
 
 interface IProps {
   dataItem: INetworkVM;
@@ -16,10 +19,22 @@ interface IProps {
 
 const PolicyTab: React.FC<IProps> = (props: IProps) => {
   const { topology } = useTopologyV2DataContext();
-  const userContext = useContext<UserContextState>(UserContext);
+  const { accessToken } = useContext<UserContextState>(UserContext);
   const { response, loading, error, onGet } = useGet<IToposvcListSecurityGroupResponse>();
-  const [inData, setInData] = React.useState<INetworkRule[]>([]);
-  const [outData, setOutData] = React.useState<INetworkRule[]>([]);
+  const [inboundData, setInData] = React.useState<INetworkRule[]>([]);
+  const [outboundData, setOutData] = React.useState<INetworkRule[]>([]);
+  const [inColumns] = React.useState<IGridColumnField[]>([
+    { ...SecurityGroupTableGridColumns.extId },
+    { ...SecurityGroupTableGridColumns.protocol, body: (d: INetworkRule) => cellTemplates.cellClassNameTemplate(d.ipProtocol, 'cellToUpperCase') },
+    { ...SecurityGroupTableGridColumns.source, body: (d: INetworkRule) => cellTemplates.cellValueFromArrayTemplate(d.cidrs, 'name') },
+    { ...SecurityGroupTableGridColumns.portRange, body: (d: INetworkRule) => cellTemplates.cellFrom_ToTemplate(d.fromPort, d.toPort) },
+  ]);
+  const [outColumns] = React.useState<IGridColumnField[]>([
+    { ...SecurityGroupTableGridColumns.extId },
+    { ...SecurityGroupTableGridColumns.protocol, body: (d: INetworkRule) => cellTemplates.cellClassNameTemplate(d.ipProtocol, 'cellToUpperCase') },
+    { ...SecurityGroupTableGridColumns.destination, body: (d: INetworkRule) => cellTemplates.cellValueFromArrayTemplate(d.cidrs, 'name') },
+    { ...SecurityGroupTableGridColumns.portRange, body: (d: INetworkRule) => cellTemplates.cellFrom_ToTemplate(d.fromPort, d.toPort) },
+  ]);
   React.useEffect(() => {
     const _param: IResourceQueryParam = getQueryResourceParam(SecurityGroupsResourceTypes.Vm, props.dataItem.extId);
     if (topology.selectedTime) {
@@ -54,13 +69,30 @@ const PolicyTab: React.FC<IProps> = (props: IProps) => {
     if (!url || !params) {
       return;
     }
-    await onGet(url, userContext.accessToken!, params);
+    await onGet(url, accessToken!, params);
   };
 
   return (
     <>
-      <PolicyTable title={PolicyTableKeyEnum.Inbound} styles={{ margin: '0 0 20px 0', flexDirection: 'column' }} data={inData} showLoader={loading} error={error ? error.message : null} />
-      <PolicyTable title={PolicyTableKeyEnum.Outbound} styles={{ flexDirection: 'column' }} data={outData} showLoader={loading} error={error ? error.message : null} />
+      <SimpleTable
+        id={`inbound${props.dataItem.extId}`}
+        tableTitle={PolicyTableKeyEnum.Inbound}
+        data={inboundData}
+        columns={inColumns}
+        loading={loading}
+        error={error ? error.message : null}
+        tableStyles={loading || !inboundData || !inboundData.length ? { height: '200px' } : null}
+        styles={{ margin: '0 0 20px 0' }}
+      />
+      <SimpleTable
+        id={`outbound${props.dataItem.extId}`}
+        tableTitle={PolicyTableKeyEnum.Outbound}
+        data={outboundData}
+        tableStyles={loading || !outboundData || !outboundData.length ? { height: '200px' } : null}
+        columns={outColumns}
+        loading={loading}
+        error={error ? error.message : null}
+      />
     </>
   );
 };

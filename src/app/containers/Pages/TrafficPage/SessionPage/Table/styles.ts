@@ -35,5 +35,10 @@ export const GridCount = styled.span`
   font-weight: 500;
   font-size: 14px;
   line-height: 18px;
+  min-width: 30px;
+  text-align: center;
   color: var(--_primaryWhiteColor);
+  &.disabled {
+    background: var(--_disabledTextColor);
+  }
 `;

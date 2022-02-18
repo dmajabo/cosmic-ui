@@ -40,7 +40,7 @@ export const ZoomValue = styled.span`
   text-overflow: ellipsis;
   color: var(--_primaryTextColor);
   position: relative;
-  padding: 10px;
+  padding: 2px;
   border: 1px solid var(--_borderColor);
   border-radius: 6px;
   input {
@@ -51,7 +51,19 @@ export const ZoomValue = styled.span`
     outline: 0;
     text-align: center;
     background: transparent;
-    /* color: var(--_primaryBg); */
+    font-family: 'DMSans';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 18px;
+  }
+  input[type='number'] {
+    -moz-appearance: textfield;
+  }
+
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
   }
   span {
     height: 18px;

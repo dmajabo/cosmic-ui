@@ -26,7 +26,7 @@ const SecondaryButtonWithPopup: React.FC<IProps> = (props: IProps) => {
   };
   return (
     <ClickAwayListener onClickAway={onHidePopup}>
-      <SecondaryButtonWrapper style={props.wrapStyles}>
+      <SecondaryButtonWrapper style={{ zIndex: open ? 10 : 1, ...props.wrapStyles }}>
         <SecondaryButtonStyles className={open ? 'active' : ''} withoutBorder={props.withoutBorder} style={props.styles} disabled={props.disabled} onClick={onShowPopup}>
           {props.label && <Label margin={props.icon ? '0 12px 0 0' : '0'}>{props.label}</Label>}
           {props.icon && <IconWrapper icon={props.icon} />}

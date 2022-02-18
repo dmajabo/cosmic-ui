@@ -118,6 +118,9 @@ export interface INetworkRule extends IBaseEntity<string> {
   policy: string;
   ownerId: string;
   regionCode: string;
+  extId: string;
+  description: string;
+  refSGroup: string;
 }
 
 export interface INetworkSecurityGroup extends IBaseEntity<string> {
@@ -127,6 +130,11 @@ export interface INetworkSecurityGroup extends IBaseEntity<string> {
   rules: INetworkRule[];
   ownerId: string;
   regionCode: string;
+  vendorType: string;
+  inboundRulesCount: string;
+  outboundRulesCount: string;
+  networkId: string;
+  vnets: INetworkVNetwork[];
 }
 
 export interface INetworkNIC extends IBaseEntity<string> {
@@ -278,6 +286,41 @@ export interface INetworkEgressOnlyGateway extends IBaseEntity<string> {
   ownerId: string;
   regionCode: string;
 }
+
+export interface INetworkPortForwardingRule extends IBaseEntity<string> {
+  extId: string;
+  name: string;
+  protocol: string;
+  publicPort: string;
+  localPort: string;
+  uplink: string;
+  allowedIps: string[];
+  ownerId: string;
+  regionCode: string;
+}
+export interface INetworkPortForwardingConfig extends IBaseEntity<string> {
+  name: string;
+  extId: string;
+  portForwardingRules: INetworkPortForwardingRule[];
+  ownerId: string;
+  regionCode: string;
+}
+export interface INetworkConfigTemplate extends IBaseEntity<string> {
+  name: string;
+  extId: string;
+  timeZone: string;
+  productTypes: string[];
+  portForwardingConfig: INetworkPortForwardingConfig;
+}
+
+export interface INetworkFirewall extends IBaseEntity<string> {
+  name: string;
+  extId: string;
+  ownerId: string;
+  regionCode: string;
+  l7Rules: INetworkL7Rule[];
+}
+
 export interface INetworkVNetwork extends IBaseEntity<string> {
   name: string;
   description: string;
@@ -295,6 +338,11 @@ export interface INetworkVNetwork extends IBaseEntity<string> {
   egressOnlyInternetGateway: INetworkEgressOnlyGateway;
   segmentId: string;
   tags: INetworkTag[];
+  configTemplate: INetworkConfigTemplate;
+  firewall: INetworkFirewall;
+  vendorType: string;
+  portForwardingConfig: INetworkPortForwardingConfig;
+  isConfigDrifted: boolean;
 }
 
 export interface INetworkWedgePeeringConnection extends IBaseEntity<string> {
@@ -485,8 +533,7 @@ export interface IToposvcListSecurityGroupResponse extends IBaseTotalCount {
   securityGroups: INetworkSecurityGroup[];
 }
 
-export interface IToposvcGetRulesResponse {
-  count: number | string;
+export interface IToposvcGetRulesResponse extends IBaseTotalCount {
   rules: INetworkRule[];
 }
 
@@ -505,7 +552,22 @@ export interface INetworkL7Rule extends IBaseEntity<string> {
   valueType: string;
   values: INetworkL7RuleValue[];
 }
-export interface IToposvcGetL7RulesResponse {
-  count: number | string;
+export interface IToposvcGetL7RulesResponse extends IBaseTotalCount {
   rules: INetworkL7Rule[];
+}
+
+export interface IToposvcGetCountResponse {
+  count: number;
+}
+export interface IInOutBoundRes {
+  inbount: IToposvcGetCountResponse;
+  outbound: IToposvcGetCountResponse;
+}
+
+export interface IToposvcGetRouteTableByExtIdResponse {
+  routeTable: INetworkRouteTable;
+}
+
+export interface IToposvcGetSecurityGroupByExtIdResponse {
+  securityGroup: INetworkSecurityGroup;
 }
