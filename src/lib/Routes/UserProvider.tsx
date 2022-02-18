@@ -59,7 +59,7 @@ export const UserProvider: React.FC = ({ children }) => {
     if (process.env.NODE_ENV !== 'production' || !u) return;
     pendo.initialize({
       visitor: {
-        id: u.id, // Required if user is logged in
+        id: u.sub, // Required if user is logged in
         email: u.email, // Recommended if using Pendo Feedback, or NPS Email
         full_name: u.name, // Recommended if using Pendo Feedback
         ...u,
