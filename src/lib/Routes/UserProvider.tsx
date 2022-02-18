@@ -62,6 +62,7 @@ export const UserProvider: React.FC = ({ children }) => {
         id: u.sub, // Required if user is logged in
         email: u.email, // Recommended if using Pendo Feedback, or NPS Email
         full_name: u.name, // Recommended if using Pendo Feedback
+        app: process.env.REACT_APP_API_ENDPOINT_PRODUCTION,
         ...u,
 
         // You can add any additional visitor level key-values here,
