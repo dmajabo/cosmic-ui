@@ -7,6 +7,7 @@ import { APP_PAGES, IPage } from 'lib/Routes/model';
 import history from 'utils/history';
 import { getSessionStoragePreference, updateSessionStoragePreference } from 'lib/helpers/localStorageHelpers';
 import { OKULIS_LOCAL_STORAGE_KEYS } from 'lib/api/http/utils';
+declare const pendo: any;
 interface LayoutWithHeaderFooterSidebarProps {}
 
 const LayoutWithHeaderFooterSidebar: React.FC<LayoutWithHeaderFooterSidebarProps> = props => {
@@ -42,6 +43,9 @@ const LayoutWithHeaderFooterSidebar: React.FC<LayoutWithHeaderFooterSidebarProps
   const onGoTo = (page: IPage) => {
     // setIsOpenSidebar(false);
     if (currentPage && page.id === currentPage.id) return;
+    pendo.track('ROUTE', {
+      page: match.url + page.path,
+    });
     setCurrentPage(page);
     history.push(match.url + page.path);
   };
