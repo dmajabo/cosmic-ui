@@ -1,9 +1,11 @@
 import React from 'react';
-import { PanelContent, Panel, ResizablePanelWrapperStyles, ResizableHandler } from './styles';
+import { PanelContent, Panel, ResizablePanelWrapperStyles } from './styles';
 import { closeSmallIcon } from 'app/components/SVGIcons/close';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { getSessionStoragePreference, updateSessionStoragePreference } from 'lib/helpers/localStorageHelpers';
 import { OKULIS_LOCAL_STORAGE_KEYS } from 'lib/api/http/utils';
+import { ToogleButton } from 'app/components/Sidebar/styles';
+import { toggleSideBarIcon } from 'app/components/SVGIcons/toggleSideBarIcon';
 
 interface IProps {
   show: boolean;
@@ -97,7 +99,9 @@ const ResizablePanel: React.FC<IProps> = (props: IProps) => {
 
   return (
     <ResizablePanelWrapperStyles id="resizableDiv" className={open ? 'open' : ''} ref={ref} style={{ width: cwidth + 'px', ...props.styles }}>
-      <ResizableHandler onMouseDown={initResize} onMouseUp={stopDrag} />
+      <ToogleButton onMouseDown={initResize} onMouseUp={stopDrag}>
+        {toggleSideBarIcon}
+      </ToogleButton>
       {open && (
         <Panel id="resizableDivPanel">
           <IconWrapper styles={{ position: 'absolute', top: '20px', right: '20px', border: 'none', background: 'transparent', zIndex: 2 }} icon={closeSmallIcon} onClick={props.onHidePanel} />

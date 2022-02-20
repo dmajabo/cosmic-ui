@@ -1,3 +1,4 @@
+import { ToogleButton } from 'app/components/Sidebar/styles';
 import { DEFAULT_TRANSITION } from 'lib/constants/general';
 import { IPanelBarLayoutTypes } from 'lib/models/general';
 import styled, { css } from 'styled-components';
@@ -79,6 +80,12 @@ export const ResizablePanelWrapperStyles = styled.div`
     * {
       user-select: none !important;
     }
+  }
+  ${ToogleButton} {
+    left: -15px;
+    right: unset;
+    opacity: 1;
+    z-index: 1;
   }
 `;
 
