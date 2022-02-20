@@ -1,15 +1,18 @@
 import React from 'react';
 import * as d3 from 'd3';
-import { IObject, ITransform, ZoomRange } from 'lib/models/general';
-import { ITopoAccountNode, ITopoRegionNode, ITopoSitesNode } from 'lib/hooks/Topology/models';
+import { IObject, ISize, ITransform, ZoomRange } from 'lib/models/general';
+import { ITopoAccountNode, ITopoRegionNode, ITopoSitesNode, TopoNodeTypes } from 'lib/hooks/Topology/models';
 import { STANDART_DISPLAY_RESOLUTION_V2 } from 'lib/models/general';
+import { NODES_CONSTANTS } from '../model';
 
 interface IProps {
+  pageId: string;
   svgId: string;
   rootId: string;
 }
 // , onUpdateCallBack: (_transform: ITransform) => void
 export function useZoom(props: IProps) {
+  const [pageId] = React.useState<string>(props.pageId);
   const [svgId] = React.useState<string>(props.svgId);
   const [rootId] = React.useState<string>(props.rootId);
   const [transform, setTransform] = React.useState<ITransform>({ k: 1, x: 0, y: 0 });
@@ -209,8 +212,9 @@ export function useZoom(props: IProps) {
     return { width: right - left, height: bottom - top, left: left, rigth: right, top: top, bottom: bottom };
   };
 
-  const onCenteredToNode = (selectedNode: any, width: number, height: number) => {
-    const { svgCenterX, svgCenterY } = getSvgCenter();
+  const onCenteredToNode = (selectedNode: any, panelWidth: number) => {
+    const { svgCenterX, svgCenterY } = getSvgCenter(panelWidth);
+    const { width, height } = getNodeSize(selectedNode.nodeType);
     const d3Svg = d3.select(`#${svgId}`);
     const { x, y } = selectedNode;
     const translateX = -x + svgCenterX - width; // - size.halfWidth
@@ -218,11 +222,18 @@ export function useZoom(props: IProps) {
     d3Svg.call(zoom.transform, d3.zoomIdentity.translate(translateX, translateY).scale(1));
   };
 
-  const getSvgCenter = () => {
-    const svg = document.getElementById(svgId).getBoundingClientRect();
-    const svgCenterX = svg.width / 2;
-    const svgCenterY = svg.height / 2;
-    return { svg, svgCenterX, svgCenterY };
+  const getSvgCenter = (panelWidth: number) => {
+    const page = document.getElementById(pageId).getBoundingClientRect();
+    const svgCenterX = (page.width - panelWidth) / 2;
+    const svgCenterY = page.height / 2;
+    return { svgCenterX, svgCenterY };
+  };
+
+  const getNodeSize = (nodeType: TopoNodeTypes): ISize => {
+    if (nodeType === TopoNodeTypes.WEDGE) return { width: NODES_CONSTANTS.NETWORK_WEDGE.collapse.r, height: NODES_CONSTANTS.NETWORK_WEDGE.collapse.r };
+    if (nodeType === TopoNodeTypes.DEVICE) return { width: NODES_CONSTANTS.DEVICE.collapse.width / 2, height: NODES_CONSTANTS.DEVICE.collapse.height / 2 };
+    if (nodeType === TopoNodeTypes.VNET) return { width: NODES_CONSTANTS.NETWORK_VNET.collapse.r, height: NODES_CONSTANTS.NETWORK_VNET.collapse.r };
+    return { width: 0, height: 0 };
   };
 
   return {

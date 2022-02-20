@@ -2,6 +2,7 @@ import { TopoNodeTypes } from 'lib/hooks/Topology/models';
 import { IIconSize, IMinSize, ISize, ISpace } from 'lib/models/general';
 
 export const TOPOLOGY_IDS = {
+  PAGE: 'TopologyMapPAGE',
   SVG: 'svgTopologyMap',
   G_ROOT: 'gRoot',
   STRUCTURE_ROOT: 'structureRoot',

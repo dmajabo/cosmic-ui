@@ -2,35 +2,30 @@ import React from 'react';
 import { PanelContent, Panel, ResizablePanelWrapperStyles } from './styles';
 import { closeSmallIcon } from 'app/components/SVGIcons/close';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
-import { getSessionStoragePreference, updateSessionStoragePreference } from 'lib/helpers/localStorageHelpers';
-import { OKULIS_LOCAL_STORAGE_KEYS } from 'lib/api/http/utils';
+// import { getSessionStoragePreference, updateSessionStoragePreference } from 'lib/helpers/localStorageHelpers';
 import { ToogleButton } from 'app/components/Sidebar/styles';
 import { toggleSideBarIcon } from 'app/components/SVGIcons/toggleSideBarIcon';
 
 interface IProps {
   show: boolean;
   children?: React.ReactNode;
+  panelWidth: number;
   onHidePanel: () => void;
-  onPanelWidthChange?: (width: number) => void;
-  storageKey: OKULIS_LOCAL_STORAGE_KEYS;
+  onPanelWidthChange: (width: number) => void;
   styles?: Object;
 }
 
 const ResizablePanel: React.FC<IProps> = (props: IProps) => {
   const [open, setOpen] = React.useState(false);
-  const [cwidth, setWidth] = React.useState(0);
-  const refW = React.useRef(cwidth);
+  const [width, setWidth] = React.useState(0);
+  const refW = React.useRef(width);
   const ref = React.useRef(null);
   React.useEffect(() => {
     if (props.show) {
-      const _w = getSessionStoragePreference(props.storageKey);
-      const _defW = Number(_w) || 450;
+      const _defW = Number(props.panelWidth) || 450;
       refW.current = _defW;
       setWidth(_defW);
       setOpen(true);
-      if (props.onPanelWidthChange) {
-        props.onPanelWidthChange(_defW);
-      }
     } else {
       ref.current.style.width = null;
       setWidth(0);
@@ -38,11 +33,16 @@ const ResizablePanel: React.FC<IProps> = (props: IProps) => {
       document.removeEventListener('mousemove', doDrag, false);
       document.removeEventListener('mouseup', stopDrag, false);
       document.removeEventListener('mouseleave', stopDrag, false);
-      if (props.onPanelWidthChange) {
-        props.onPanelWidthChange(0);
-      }
     }
   }, [props.show]);
+
+  React.useEffect(() => {
+    if (open && props.panelWidth !== width) {
+      const _defW = Number(props.panelWidth) || 450;
+      refW.current = _defW;
+      setWidth(_defW);
+    }
+  }, [props.panelWidth]);
 
   const initResize = event => {
     if (!ref.current) return;
@@ -90,15 +90,13 @@ const ResizablePanel: React.FC<IProps> = (props: IProps) => {
     document.removeEventListener('mouseleave', stopDrag, false);
     const newW = parseInt(width, 10);
     refW.current = newW;
-    updateSessionStoragePreference(newW, props.storageKey);
+    // updateSessionStoragePreference(newW, props.storageKey);
     setWidth(newW);
-    if (props.onPanelWidthChange) {
-      props.onPanelWidthChange(newW);
-    }
+    props.onPanelWidthChange(newW);
   };
 
   return (
-    <ResizablePanelWrapperStyles id="resizableDiv" className={open ? 'open' : ''} ref={ref} style={{ width: cwidth + 'px', ...props.styles }}>
+    <ResizablePanelWrapperStyles id="resizableDiv" className={open ? 'open' : ''} ref={ref} style={{ width: width + 'px', ...props.styles }}>
       <ToogleButton onMouseDown={initResize} onMouseUp={stopDrag}>
         {toggleSideBarIcon}
       </ToogleButton>

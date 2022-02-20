@@ -17,7 +17,6 @@ import RoutesPanel from './Page/Inventory/Panels/RoutesPanel';
 import SecurityGroupsPanel from './Page/Inventory/Panels/SecurityGroupsPanel';
 import { INetworkRouteTable, INetworkSecurityGroup } from 'lib/api/ApiModels/Topology/apiModels';
 import { ChildrenContainer, PageWrapper } from 'app/components/Basic/PageLayoutComponents/styles';
-import { OKULIS_LOCAL_STORAGE_KEYS } from 'lib/api/http/utils';
 import ResizablePanel from 'app/components/Basic/PanelBar/ResizablePanel';
 // import Rules from './Page/Rules';
 
@@ -38,9 +37,9 @@ const MainPage: React.FC<IProps> = (props: IProps) => {
     policy.onClosePanel();
   };
 
-  // const onPanelWidthChange = (w: number) => {
-  //   setPanelWidth(w);
-  // };
+  const onPanelWidthChange = (w: number) => {
+    policy.onPanelWidthChange(w);
+  };
 
   return (
     <PageWrapper>
@@ -91,7 +90,13 @@ const MainPage: React.FC<IProps> = (props: IProps) => {
       </ChildrenContainer>
 
       {policy.selectedTab.index === POLICY_TABS.inventory.index && (
-        <ResizablePanel show={policy && policy.panel && policy.panel.show} onHidePanel={onHidePanel} storageKey={OKULIS_LOCAL_STORAGE_KEYS.OKULIS_INVENTORY_PANEL_WIDTH}>
+        <ResizablePanel
+          show={policy && policy.panel && policy.panel.show}
+          onHidePanel={onHidePanel}
+          panelWidth={policy.panelWidth}
+          onPanelWidthChange={onPanelWidthChange}
+          // storageKey={OKULIS_LOCAL_STORAGE_KEYS.OKULIS_INVENTORY_PANEL_WIDTH}
+        >
           {policy && policy.panel && policy.panel.type === InventoryPanelTypes.Routes && <RoutesPanel dataItem={policy.panel.dataItem as INetworkRouteTable[]} />}
           {policy && policy.panel && policy.panel.type === InventoryPanelTypes.SecurityGroups && <SecurityGroupsPanel dataItem={policy.panel.dataItem as INetworkSecurityGroup[]} />}
         </ResizablePanel>

@@ -8,7 +8,7 @@ import AccountCollapsedNode from './AccountCollapsedNode';
 
 interface Props {
   dataItem: ITopoAccountNode;
-  onCenteredToNode: (node: any, width: number, height: number) => void;
+  onCenteredToNode: (node: any, panelWidth: number) => void;
 }
 
 const AccountNode: React.FC<Props> = (props: Props) => {

@@ -7,7 +7,7 @@ import HtmlNodeTooltip from '../../Containers/HtmlNodeTooltip';
 import { select } from 'd3-selection';
 interface Props {
   item: IDeviceNode;
-  onCenteredToNode: (node: IDeviceNode, width: number, height: number) => void;
+  onCenteredToNode: (node: IDeviceNode, panelWidth: number) => void;
 }
 
 const DeviceNode: React.FC<Props> = (props: Props) => {
@@ -17,7 +17,7 @@ const DeviceNode: React.FC<Props> = (props: Props) => {
   React.useEffect(() => {
     if (topology.selectedNode && topology.selectedNode.extId === props.item.extId && !isNodeSelected) {
       setIsNodeSelected(true);
-      props.onCenteredToNode(props.item, NODES_CONSTANTS.DEVICE.collapse.width / 2, NODES_CONSTANTS.DEVICE.collapse.height / 2);
+      props.onCenteredToNode(props.item, topology.topoPanelWidth);
     } else if (!topology.selectedNode || (topology.selectedNode && topology.selectedNode !== props.item.extId)) {
       setIsNodeSelected(false);
     }

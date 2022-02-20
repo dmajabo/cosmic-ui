@@ -11,6 +11,8 @@ export interface PolicyContextType {
   panel: IPanel<InventoryPanelTypes, (INetworkRouteTable | INetworkSecurityGroup)[]>;
   onTooglePanel: (type: InventoryPanelTypes, dataItems: (INetworkRouteTable | INetworkSecurityGroup)[]) => void;
   onClosePanel: () => void;
+  panelWidth: number;
+  onPanelWidthChange: (width: number) => void;
 }
 
 const getSpecificTabFromHistory = (history: any): ITab<PolicyTabTypes> => {
@@ -26,6 +28,7 @@ export function usePolicyContext(): PolicyContextType {
   const history = useHistory();
   const [selectedTab, setSelectedTab] = React.useState<ITab<PolicyTabTypes>>(getSpecificTabFromHistory(history));
   const [panel, setPanel] = React.useState<IPanel<InventoryPanelTypes, (INetworkRouteTable | INetworkSecurityGroup)[]>>({ show: false, type: null, dataItem: null });
+  const [panelWidth, setPanelWidth] = React.useState<number>(450);
 
   const onChangeSelectedTab = (_tabIndex: number) => {
     const key = Object.keys(POLICY_TABS).find(key => POLICY_TABS[key].index === _tabIndex);
@@ -46,11 +49,18 @@ export function usePolicyContext(): PolicyContextType {
     setPanel({ show: false, type: null, dataItem: null });
   };
 
+  const onPanelWidthChange = (width: number) => {
+    setPanelWidth(width);
+  };
+
   return {
     selectedTab,
     panel,
     onTooglePanel,
     onClosePanel,
     onChangeSelectedTab,
+
+    panelWidth,
+    onPanelWidthChange,
   };
 }

@@ -4,7 +4,7 @@ import { useDrag } from 'app/containers/Pages/TopologyPage/TopoMapV2/hooks/useDr
 import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 import DataCenterCollapsedNode from './DataCenterCollapsedNode';
-import { onHoverNode, onUnHoverNode } from '../../../../Graph/helper';
+// import { onHoverNode, onUnHoverNode } from '../../../../Graph/helper';
 import DataCenterExpandNode from './DataCenterExpandNode';
 import TransitionContainer from '../../../TransitionContainer';
 import CollapseExpandButton from '../../Containers/CollapseExpandButton';
@@ -61,7 +61,7 @@ const DataCenter: React.FC<Props> = (props: Props) => {
   };
 
   const onExpandCollapse = (type: CollapseExpandState) => {
-    onUnHoverNode(`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`);
+    // onUnHoverNode(`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}`);
     if (type === CollapseExpandState.COLLAPSE) {
       onCollapse();
       return;
@@ -77,21 +77,21 @@ const DataCenter: React.FC<Props> = (props: Props) => {
     topology.onCollapseExpandNode(props.dataItem, false);
   };
 
-  const onMouseEnter = () => {
-    onHoverNode(`${NODES_CONSTANTS.DATA_CENTER.type}${props.dataItem.uiId}`);
-  };
+  // const onMouseEnter = () => {
+  //   onHoverNode(`${NODES_CONSTANTS.DATA_CENTER.type}${props.dataItem.uiId}`);
+  // };
 
-  const onMouseLeave = () => {
-    onUnHoverNode(`${NODES_CONSTANTS.DATA_CENTER.type}${props.dataItem.uiId}`);
-  };
+  // const onMouseLeave = () => {
+  //   onUnHoverNode(`${NODES_CONSTANTS.DATA_CENTER.type}${props.dataItem.uiId}`);
+  // };
 
   if (!pos) return null;
   return (
     <TransitionContainer id={`wrapper${NODES_CONSTANTS.DATA_CENTER.type}${props.dataItem.uiId}`} stateIn={props.dataItem.visible} origin="unset" transform="none">
       <g
         id={`${NODES_CONSTANTS.DATA_CENTER.type}${props.dataItem.uiId}`}
-        onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}
+        // onMouseEnter={onMouseEnter}
+        // onMouseLeave={onMouseLeave}
         className="topologyNode"
         transform={`translate(${pos.x}, ${pos.y})`}
         data-type={NODES_CONSTANTS.DATA_CENTER.type}

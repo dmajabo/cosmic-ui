@@ -22,7 +22,6 @@ import SiteNode from '../Containers/Nodes/NodeWrapper/SitesNode/SiteNode';
 import SitesNodeTopContainer from '../Containers/Nodes/NodeWrapper/SitesNode/SitesNodeTopContainer';
 import LinksWrapper from '../Containers/Links';
 import ResizablePanel from 'app/components/Basic/PanelBar/ResizablePanel';
-import { OKULIS_LOCAL_STORAGE_KEYS } from 'lib/api/http/utils';
 // import { STANDART_DISPLAY_RESOLUTION_V2 } from 'lib/models/general';
 // import SegmentsComponent from '../PanelComponents/Segments/SegmentsComponent';
 
@@ -36,7 +35,11 @@ interface Props {
 
 const Graph: React.FC<Props> = (props: Props) => {
   const { topology } = useTopologyV2DataContext();
-  const { transform, onZoomInit, onZoomIn, onZoomOut, onZoomChange, onCentered, onCenteredToNode, onUnsubscribe } = useZoom({ svgId: TOPOLOGY_IDS.SVG, rootId: TOPOLOGY_IDS.G_ROOT });
+  const { transform, onZoomInit, onZoomIn, onZoomOut, onZoomChange, onCentered, onCenteredToNode, onUnsubscribe } = useZoom({
+    pageId: TOPOLOGY_IDS.PAGE,
+    svgId: TOPOLOGY_IDS.SVG,
+    rootId: TOPOLOGY_IDS.G_ROOT,
+  });
 
   React.useEffect(() => {
     if (!props.onlyRefreshAvaible) {
@@ -50,6 +53,9 @@ const Graph: React.FC<Props> = (props: Props) => {
   React.useEffect(() => {
     if (topology.originData) {
       onCentered(topology.accounts, topology.sites, topology.regions);
+      if (topology.selectedNode) {
+        onCenteredToNode(topology.selectedNode, topology.topoPanelWidth);
+      }
     }
   }, [topology.originData]);
 
@@ -63,6 +69,11 @@ const Graph: React.FC<Props> = (props: Props) => {
 
   const onUnselectNode = () => {
     topology.onUnselectNode();
+  };
+
+  const onPanelWidthChange = (w: number) => {
+    onCenteredToNode(topology.selectedNode, w);
+    topology.onPanelWidthChange(w);
   };
 
   return (
@@ -80,7 +91,7 @@ const Graph: React.FC<Props> = (props: Props) => {
         onRefresh={props.onReload}
       />
       {topology.originData && (
-        <ContainerWithMetrics>
+        <ContainerWithMetrics id={TOPOLOGY_IDS.PAGE}>
           <ContainerWithLegend>
             <StyledMap
               id={TOPOLOGY_IDS.SVG}
@@ -115,11 +126,13 @@ const Graph: React.FC<Props> = (props: Props) => {
                     ))
                   : null}
               </GContainer>
+              {/* <line x1="50%" y1="0" x2="50%" y2="100%" fill="red" stroke="red" strokeWidth="1" />
+              <line x1="0" y1="50%" x2="100%" y2="50%" fill="red" stroke="red" strokeWidth="1" /> */}
             </StyledMap>
             {/* {topology.originSegmentsData && topology.originSegmentsData.length ? <SegmentsLegend /> : null} */}
           </ContainerWithLegend>
           {topology.regionStructures && topology.regionStructures.length ? <StructuresWrapper nodes={topology.regionStructures} /> : null}
-          <ResizablePanel show={topology.topoPanel.show} onHidePanel={onHidePanel} storageKey={OKULIS_LOCAL_STORAGE_KEYS.OKULIS_TOPOLOGY_PANEL_WIDTH}>
+          <ResizablePanel show={topology.topoPanel.show} panelWidth={topology.topoPanelWidth} onHidePanel={onHidePanel} onPanelWidthChange={onPanelWidthChange}>
             {topology.topoPanel.type === TopologyPanelTypes.FILTERS && <FilterComponent />}
             {topology.topoPanel.type === TopologyPanelTypes.VPC && <VpcPanel dataItem={topology.topoPanel.dataItem} />}
             {topology.topoPanel.type === TopologyPanelTypes.WebAcl && <WebAclPanel dataItem={topology.topoPanel.dataItem} />}

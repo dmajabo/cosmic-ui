@@ -11,7 +11,7 @@ import RegionCollapsedNode from './RegionCollapsedNode';
 
 interface Props {
   dataItem: ITopoRegionNode;
-  onCenteredToNode: (node: any, width: number, height: number) => void;
+  onCenteredToNode: (node: any, panelWidth: number) => void;
 }
 
 const RegionNode: React.FC<Props> = (props: Props) => {

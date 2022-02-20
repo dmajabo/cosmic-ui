@@ -25,7 +25,7 @@ import { AlertSeverity } from 'lib/api/ApiModels/Workflow/apiModel';
 // import { updateRegionHeight } from './helpers/buildNodeHelpers';
 import { ISegmentSegmentP } from 'lib/api/ApiModels/Policy/Segment';
 import { OKULIS_LOCAL_STORAGE_KEYS } from 'lib/api/http/utils';
-import { getSessionStoragePreferences, StoragePreferenceKeys, updateSessionStoragePreference } from 'lib/helpers/localStorageHelpers';
+import { getSessionStoragePreference, getSessionStoragePreferences, StoragePreferenceKeys, updateSessionStoragePreference } from 'lib/helpers/localStorageHelpers';
 import { updateLinkNodesPosition, updateLinksVisibleStateBySpecificNode, updateLinkVisibleState, updateVpnLinks } from './helpers/buildlinkHelper';
 import { updateCollapseExpandAccounts, updateCollapseExpandSites, updateRegionNodes } from './helpers/buildNodeHelpers';
 import _ from 'lodash';
@@ -39,6 +39,9 @@ export interface TopologyV2ContextType {
   originSegmentsData: ISegmentSegmentP[] | null;
   searchQuery: string | null;
   selectedType: string | null;
+
+  topoPanelWidth: number;
+  onPanelWidthChange: (width: number) => void;
 
   links: IObject<ITopoLink<any, any, any>>;
   segments: ITempSegmentObjData;
@@ -92,6 +95,7 @@ export function useTopologyV2Context(): TopologyV2ContextType {
   const [timeRange, setTimeRange] = React.useState<ITimeMinMaxRange | null>(null);
   const [searchQuery, setSearchQuery] = React.useState<string | null>(null);
   const [selectedType, setSelectedType] = React.useState<string | null>(null);
+  const [topoPanelWidth, setTopoPanelWidth] = React.useState<number>(450);
   const linksRef = React.useRef<IObject<ITopoLink<any, any, any>>>(links);
   const segmentsRef = React.useRef<ITempSegmentObjData>(segments);
 
@@ -100,6 +104,10 @@ export function useTopologyV2Context(): TopologyV2ContextType {
       StoragePreferenceKeys.TOPOLOGY_FILTER_ENTITY_OPTIONS,
       StoragePreferenceKeys.TOPOLOGY_FILTER_SEVERITY_OPTIONS,
     ]);
+    const _topoPanelWidth = getSessionStoragePreference(OKULIS_LOCAL_STORAGE_KEYS.OKULIS_TOPOLOGY_PANEL_WIDTH);
+    if (_topoPanelWidth) {
+      setTopoPanelWidth(Number(_topoPanelWidth));
+    }
     if (_preference) {
       if (_preference[StoragePreferenceKeys.TOPOLOGY_FILTER_ENTITY_OPTIONS]) {
         const _entities = _preference[StoragePreferenceKeys.TOPOLOGY_FILTER_ENTITY_OPTIONS];
@@ -165,6 +173,10 @@ export function useTopologyV2Context(): TopologyV2ContextType {
 
   const onSetSelectedType = (_value: string | null) => {
     setSelectedType(_value);
+  };
+
+  const onPanelWidthChange = (width: number) => {
+    setTopoPanelWidth(width);
   };
 
   // const onUpdateSegments = (_s: ISegmentSegmentP) => {
@@ -338,6 +350,8 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     searchQuery,
     selectedType,
     // entityTypes,
+    topoPanelWidth,
+    onPanelWidthChange,
 
     onToogleTopoPanel,
     onUnselectNode,
