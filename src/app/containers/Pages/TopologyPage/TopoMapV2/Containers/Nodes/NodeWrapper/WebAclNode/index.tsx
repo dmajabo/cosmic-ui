@@ -14,6 +14,7 @@ interface Props {
   counterStyles: ICounterStyle;
   labelStyles: ILabelHtmlStyles;
   onClick: (item: INetworkWebAclNode) => void;
+  onCenteredToNode: (node: INetworkWebAclNode, panelWidth: number) => void;
 }
 
 const WebAclNode: React.FC<Props> = (props: Props) => {
@@ -22,13 +23,16 @@ const WebAclNode: React.FC<Props> = (props: Props) => {
   const nodeRef = React.useRef(null);
   React.useEffect(() => {
     if (topology.selectedNode && topology.selectedNode.extId === props.item.extId && !isNodeSelected) {
+      onMouseLeave();
       setIsNodeSelected(true);
+      props.onCenteredToNode(props.item, topology.topoPanelWidth);
     } else if (!topology.selectedNode || (topology.selectedNode && topology.selectedNode !== props.item.extId)) {
       setIsNodeSelected(false);
     }
   }, [topology.selectedNode]);
 
   const onMouseEnter = () => {
+    if (topology.blockTooltip) return;
     select(`#${TOPOLOGY_IDS.SVG}`).selectAll('.htmlNodeTooltip').style('display', 'none');
     const _node = select(nodeRef.current);
     _node.raise();
@@ -39,7 +43,9 @@ const WebAclNode: React.FC<Props> = (props: Props) => {
   const onMouseLeave = () => {
     const _node = select(nodeRef.current);
     const tooltip = _node.select(`#tooltip${props.item.uiId}`);
-    tooltip.style('display', 'none');
+    if (tooltip && tooltip.node()) {
+      tooltip.style('display', 'none');
+    }
   };
 
   const onClick = () => {

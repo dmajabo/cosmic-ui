@@ -48,6 +48,7 @@ const RegionNode: React.FC<Props> = (props: Props) => {
                   nodeStyles={NODES_CONSTANTS.WEB_ACL.collapse}
                   counterStyles={NODES_CONSTANTS.WEB_ACL.countStyles}
                   labelStyles={NODES_CONSTANTS.WEB_ACL.labelHtmlStyles}
+                  onCenteredToNode={props.onCenteredToNode}
                 />
               ));
             })}

@@ -74,6 +74,8 @@ export interface TopologyV2ContextType {
   entities: FilterEntityOptions;
   severity: FilterSeverityOptions;
   onSelectFilterOption: (groupType: TopoFilterTypes, type: FilterEntityTypes, _selected: boolean) => void;
+
+  blockTooltip: boolean;
 }
 export function useTopologyV2Context(): TopologyV2ContextType {
   const [topoPanel, setTopoPanel] = React.useState<IPanelBar<TopologyPanelTypes>>({ show: false, type: null });
@@ -95,6 +97,9 @@ export function useTopologyV2Context(): TopologyV2ContextType {
   const [timeRange, setTimeRange] = React.useState<ITimeMinMaxRange | null>(null);
   const [searchQuery, setSearchQuery] = React.useState<string | null>(null);
   const [selectedType, setSelectedType] = React.useState<string | null>(null);
+
+  const [blockTooltip, setBlockTooltip] = React.useState<boolean>(false);
+
   const [topoPanelWidth, setTopoPanelWidth] = React.useState<number>(450);
   const linksRef = React.useRef<IObject<ITopoLink<any, any, any>>>(links);
   const segmentsRef = React.useRef<ITempSegmentObjData>(segments);
@@ -119,6 +124,21 @@ export function useTopologyV2Context(): TopologyV2ContextType {
       }
     }
   }, []);
+
+  React.useEffect(() => {
+    let timer = null;
+    if (selectedNode) {
+      setBlockTooltip(true);
+      timer = setTimeout(() => {
+        setBlockTooltip(false);
+      }, 1500);
+    }
+    return () => {
+      if (timer) {
+        clearTimeout(timer);
+      }
+    };
+  }, [selectedNode]);
 
   const onSetData = (res: ITopologyDataRes) => {
     if (!res) {
@@ -376,5 +396,7 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     entities,
     severity,
     onSelectFilterOption,
+
+    blockTooltip,
   };
 }

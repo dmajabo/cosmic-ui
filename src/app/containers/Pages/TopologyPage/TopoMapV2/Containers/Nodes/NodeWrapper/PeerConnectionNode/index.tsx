@@ -4,6 +4,7 @@ import { INetworkVNetworkPeeringConnectionNode, ITopoRegionNode } from 'lib/hook
 import HtmlNodeLabel from '../../Containers/HtmlNodeLabel';
 import HtmlNodeTooltip from '../../Containers/HtmlNodeTooltip';
 import * as helper from 'app/containers/Pages/TopologyPage/TopoMapV2/Containers/Nodes/NodeWrapper/RegionNode/helper';
+import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 interface Props {
   dataItem: ITopoRegionNode;
   item: INetworkVNetworkPeeringConnectionNode;
@@ -15,9 +16,11 @@ interface Props {
 }
 
 const PeerConnectionNode: React.FC<Props> = (props: Props) => {
+  const { topology } = useTopologyV2DataContext();
   const nodeRef = React.useRef(null);
 
   const onMouseEnter = () => {
+    if (topology.blockTooltip) return;
     helper.onHoverPeerConnectionNode(nodeRef.current, props.item, props.parentId, 'peerConnectionNodeWrapperHover');
     // links.forEach(link => {
     //   const _vps = _regG.select(`g[data-id='${link.to.nodeType}${link.to.id}']`);

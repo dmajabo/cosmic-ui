@@ -233,6 +233,7 @@ export function useZoom(props: IProps) {
     if (nodeType === TopoNodeTypes.WEDGE) return { width: NODES_CONSTANTS.NETWORK_WEDGE.collapse.r, height: NODES_CONSTANTS.NETWORK_WEDGE.collapse.r };
     if (nodeType === TopoNodeTypes.DEVICE) return { width: NODES_CONSTANTS.DEVICE.collapse.width / 2, height: NODES_CONSTANTS.DEVICE.collapse.height / 2 };
     if (nodeType === TopoNodeTypes.VNET) return { width: NODES_CONSTANTS.NETWORK_VNET.collapse.r, height: NODES_CONSTANTS.NETWORK_VNET.collapse.r };
+    if (nodeType === TopoNodeTypes.WEB_ACL) return { width: NODES_CONSTANTS.WEB_ACL.collapse.r, height: NODES_CONSTANTS.WEB_ACL.collapse.r };
     return { width: 0, height: 0 };
   };
 

@@ -22,6 +22,7 @@ const NetworkVnetNode: React.FC<Props> = (props: Props) => {
 
   React.useEffect(() => {
     if (topology.selectedNode && topology.selectedNode.extId === props.item.extId && !isNodeSelected) {
+      helper.onUnHoverRegionChildNode(nodeRef.current, props.parentId, props.item.uiId);
       setIsNodeSelected(true);
       props.onCenteredToNode(props.item, topology.topoPanelWidth);
     } else if (!topology.selectedNode || (topology.selectedNode && topology.selectedNode !== props.item.extId)) {
@@ -34,6 +35,7 @@ const NetworkVnetNode: React.FC<Props> = (props: Props) => {
   };
 
   const onMouseEnter = () => {
+    if (topology.blockTooltip) return;
     helper.onHoverRegionChildNode(nodeRef.current, props.parentId, props.item.uiId);
     // links.forEach(link => {
     //   const _vps = _regG.select(`g[data-id='${link.to.nodeType}${link.to.id}']`);

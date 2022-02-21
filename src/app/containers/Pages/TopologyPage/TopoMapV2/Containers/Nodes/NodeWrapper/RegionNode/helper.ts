@@ -79,6 +79,7 @@ const onHoverRegionChildNode = (node: any, parentId: string, nodeId: string, hig
 const onUnHoverRegionChildNode = (node: any, parentId: string, nodeId: string, highLightNodeClass?: string) => {
   const _node = select(node);
   const tooltip = _node.select(`#tooltip${nodeId}`);
+  if (!tooltip || !tooltip.node()) return;
   tooltip.style('display', 'none');
   const _regG = select(`#${parentId}`);
   _regG.selectAll('.peerConnectionNodeWrapper').transition().attr('opacity', 1);
