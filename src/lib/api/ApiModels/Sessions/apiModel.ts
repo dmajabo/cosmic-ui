@@ -90,15 +90,17 @@ export interface IAllSessionsRes {
 }
 
 export interface ISankeyNode {
-  node: number;
-  name: string;
+  node: number | string;
+  name: string | string;
   type: SankeyNodeType | string;
+  source?: INetworkSegmentInfo;
+  destination?: INetworkBytesToSegment;
 }
 
 export interface ISankeyLink {
-  source: number;
-  target: number;
-  value: number;
+  source: number | string;
+  target: number | string;
+  value: number | string;
 }
 
 export interface ISankeyData {
@@ -149,3 +151,72 @@ export interface INetworkSessionsBetweenSegments {
 export interface ITesseractGetSessionsBetweenSegmentsResponse {
   sessionsBetweenSegments: INetworkSessionsBetweenSegments[];
 }
+
+export interface INetworkSegmentInfo {
+  segmentId: string;
+  segmentName: string;
+}
+
+export interface INetworkBytesToSegment {
+  segmentInfo: INetworkSegmentInfo;
+  bytes: string;
+}
+export interface INetworkBytesBetweenSegments {
+  sourceSegment: INetworkSegmentInfo;
+  bytesToDestSegments: INetworkBytesToSegment[];
+}
+export interface ITesseractGetBytesBetweenSegmentsResponse {
+  bytesBetweenSegments: INetworkBytesBetweenSegments[];
+}
+
+// FOR TESTING
+export const createTestData_SANKEY = () => {
+  const _obj: ITesseractGetBytesBetweenSegmentsResponse = {
+    bytesBetweenSegments: createBytesData(),
+  };
+  return _obj;
+};
+
+const createBytesData = (): INetworkBytesBetweenSegments[] => {
+  const _nodes: INetworkBytesBetweenSegments[] = [];
+  for (let i = 0; i < 5; i++) {
+    const element: INetworkBytesBetweenSegments = createNode(i);
+    _nodes.push(element);
+  }
+  return _nodes;
+};
+
+const createNode = (i: number): INetworkBytesBetweenSegments => {
+  const _obj: INetworkBytesBetweenSegments = {
+    sourceSegment: createSegmentInfo(i),
+    bytesToDestSegments: [],
+  };
+  const _bytes = [];
+  for (let j = 0; j < i + 1; j++) {
+    const element = createByte(i, _obj.sourceSegment);
+    _bytes.push(element);
+  }
+  _obj.bytesToDestSegments = _bytes;
+  return _obj;
+};
+
+const createSegmentInfo = (i: number): INetworkSegmentInfo => {
+  const _obj: INetworkSegmentInfo = {
+    segmentId: `source_${i}`,
+    segmentName: `source_${i}`,
+  };
+  return _obj;
+};
+
+const createByte = (i: number, seg: INetworkSegmentInfo): INetworkBytesToSegment => {
+  const _obj: INetworkBytesToSegment = {
+    segmentInfo: seg,
+    bytes: getRandomValue(i * 10, i * 20),
+  };
+  return _obj;
+};
+
+const getRandomValue = (min: number, max: number): string => {
+  const _num = Math.max(10, Math.ceil(Math.random() * (max - min) + min));
+  return `${_num}`;
+};

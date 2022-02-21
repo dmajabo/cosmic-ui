@@ -11,6 +11,7 @@ import RegionCollapsedNode from './RegionCollapsedNode';
 
 interface Props {
   dataItem: ITopoRegionNode;
+  onCenteredToNode: (node: any, width: number, height: number) => void;
 }
 
 const RegionNode: React.FC<Props> = (props: Props) => {
@@ -73,7 +74,14 @@ const RegionNode: React.FC<Props> = (props: Props) => {
           <>
             {props.dataItem.children.map((row, ri) => {
               return row.map((it, i) => (
-                <NetworkVnetNode key={`${it.uiId}vnet`} parentId={`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}childrensLayer`} region={props.dataItem} item={it} onClick={onVpcClick} />
+                <NetworkVnetNode
+                  key={`${it.uiId}vnet`}
+                  parentId={`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}childrensLayer`}
+                  region={props.dataItem}
+                  item={it}
+                  onClick={onVpcClick}
+                  onCenteredToNode={props.onCenteredToNode}
+                />
               ));
             })}
           </>

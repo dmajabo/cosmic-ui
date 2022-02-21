@@ -36,7 +36,7 @@ interface Props {
 
 const Graph: React.FC<Props> = (props: Props) => {
   const { topology } = useTopologyV2DataContext();
-  const { transform, onZoomInit, onZoomIn, onZoomOut, onZoomChange, onCentered, onUnsubscribe } = useZoom({ svgId: TOPOLOGY_IDS.SVG, rootId: TOPOLOGY_IDS.G_ROOT });
+  const { transform, onZoomInit, onZoomIn, onZoomOut, onZoomChange, onCentered, onCenteredToNode, onUnsubscribe } = useZoom({ svgId: TOPOLOGY_IDS.SVG, rootId: TOPOLOGY_IDS.G_ROOT });
 
   React.useEffect(() => {
     if (!props.onlyRefreshAvaible) {
@@ -101,9 +101,19 @@ const Graph: React.FC<Props> = (props: Props) => {
                 {topology.regions ? Object.keys(topology.regions).map(key => <RegionNodeTopContainer key={`nodeWrapperTopLayer${topology.regions[key].uiId}`} region={topology.regions[key]} />) : null}
 
                 {topology.links && Object.keys(topology.links).length ? <LinksWrapper links={topology.links} /> : null}
-                {topology.accounts ? Object.keys(topology.accounts).map(key => <AccountNode key={`accountChildren${topology.accounts[key].uiId}`} dataItem={topology.accounts[key]} />) : null}
-                {topology.sites ? Object.keys(topology.sites).map(key => <SiteNode key={`siteChildrenLayer${topology.sites[key].uiId}`} dataItem={topology.sites[key]} />) : null}
-                {topology.regions ? Object.keys(topology.regions).map(key => <RegionNode key={`regionChildrenLayer${topology.regions[key].uiId}`} dataItem={topology.regions[key]} />) : null}
+                {topology.accounts
+                  ? Object.keys(topology.accounts).map(key => (
+                      <AccountNode key={`accountChildren${topology.accounts[key].uiId}`} dataItem={topology.accounts[key]} onCenteredToNode={onCenteredToNode} />
+                    ))
+                  : null}
+                {topology.sites
+                  ? Object.keys(topology.sites).map(key => <SiteNode key={`siteChildrenLayer${topology.sites[key].uiId}`} dataItem={topology.sites[key]} onCenteredToNode={onCenteredToNode} />)
+                  : null}
+                {topology.regions
+                  ? Object.keys(topology.regions).map(key => (
+                      <RegionNode key={`regionChildrenLayer${topology.regions[key].uiId}`} dataItem={topology.regions[key]} onCenteredToNode={onCenteredToNode} />
+                    ))
+                  : null}
               </GContainer>
             </StyledMap>
             {/* {topology.originSegmentsData && topology.originSegmentsData.length ? <SegmentsLegend /> : null} */}

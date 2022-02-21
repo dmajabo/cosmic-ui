@@ -7,9 +7,12 @@ import { APP_PAGES, IPage } from 'lib/Routes/model';
 import history from 'utils/history';
 import { getSessionStoragePreference, updateSessionStoragePreference } from 'lib/helpers/localStorageHelpers';
 import { OKULIS_LOCAL_STORAGE_KEYS } from 'lib/api/http/utils';
+import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
+declare const pendo: any;
 interface LayoutWithHeaderFooterSidebarProps {}
 
 const LayoutWithHeaderFooterSidebar: React.FC<LayoutWithHeaderFooterSidebarProps> = props => {
+  const { user } = React.useContext<UserContextState>(UserContext);
   const [currentPage, setCurrentPage] = React.useState<IPage>(null);
   const [isOpenSidebar, setIsOpenSidebar] = React.useState(false);
   const [isReadyToShow, setIsReadyToShow] = React.useState(false);
@@ -42,6 +45,10 @@ const LayoutWithHeaderFooterSidebar: React.FC<LayoutWithHeaderFooterSidebarProps
   const onGoTo = (page: IPage) => {
     // setIsOpenSidebar(false);
     if (currentPage && page.id === currentPage.id) return;
+    pendo.track('ROUTE', {
+      page: match.url + page.path,
+      user: user.sub,
+    });
     setCurrentPage(page);
     history.push(match.url + page.path);
   };

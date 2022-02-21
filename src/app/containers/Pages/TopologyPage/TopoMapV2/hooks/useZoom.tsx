@@ -209,6 +209,22 @@ export function useZoom(props: IProps) {
     return { width: right - left, height: bottom - top, left: left, rigth: right, top: top, bottom: bottom };
   };
 
+  const onCenteredToNode = (selectedNode: any, width: number, height: number) => {
+    const { svgCenterX, svgCenterY } = getSvgCenter();
+    const d3Svg = d3.select(`#${svgId}`);
+    const { x, y } = selectedNode;
+    const translateX = -x + svgCenterX - width; // - size.halfWidth
+    const translateY = -y + svgCenterY - height; // - size.halfHeight
+    d3Svg.call(zoom.transform, d3.zoomIdentity.translate(translateX, translateY).scale(1));
+  };
+
+  const getSvgCenter = () => {
+    const svg = document.getElementById(svgId).getBoundingClientRect();
+    const svgCenterX = svg.width / 2;
+    const svgCenterY = svg.height / 2;
+    return { svg, svgCenterX, svgCenterY };
+  };
+
   return {
     zoomValue,
     transform,
@@ -217,6 +233,7 @@ export function useZoom(props: IProps) {
     onZoomOut,
     onZoomChange,
     onCentered,
+    onCenteredToNode,
     onUnsubscribe,
   };
 }
