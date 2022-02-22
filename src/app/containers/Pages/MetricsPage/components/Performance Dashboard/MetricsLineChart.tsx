@@ -60,7 +60,6 @@ const COLORS = [
   '#01579B',
   '#880E4F',
   '#7B1FA2',
-  '#EF9A9A',
   '#C5E1A5',
   '#C2185B',
   '#0277BD',
@@ -89,6 +88,23 @@ const COLORS = [
   '#1A237E',
 ];
 const ANOMALY_POINT_COLOR = 'red';
+
+const addNullPointsForUnavailableData = (array: number[][]) => {
+  let data = [];
+  data.push(array[0]);
+  array.forEach((point, index) => {
+    if (index > 0) {
+      const prevTimestamp = array[index - 1][0];
+      if (point[0] - prevTimestamp > 1000 * 60 * 10) {
+        data.push([prevTimestamp + 1, null, null]);
+        data.push(point);
+      } else {
+        data.push(point);
+      }
+    }
+  });
+  return data;
+};
 
 export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataValueSuffix, inputData }) => {
   const [data, setData] = useState([]);
@@ -122,7 +138,7 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
         tooltip: {
           useHTML: true,
           pointFormat: `
-          <div><b>Test:</b> {point.rowName}</div><br />
+          <br /><div><b>Test:</b> {point.rowName}</div><br />
           <div><b>Device:</b> {point.deviceName}</div><br />
           <div><b>Destination:</b> {point.destination}</div><br />
           <div><b>Value:</b> {point.y}{point.dataValueSuffix}</div><br />
@@ -133,7 +149,7 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
     const anomalyData: ChartData[] = selectedRows.map(row => ({
       id: `${row.name}_anomaly`,
       name: `${row.name}_anomaly`,
-      data: sortBy(inputData[`${row.id}_anomaly`], 'time').map((item, index) => {
+      data: sortBy(inputData[`${row.id}_anomaly`], 'time').map(item => {
         const timestamp = DateTime.fromFormat(item.time, OLD_TIME_FORMAT).toUTC().toMillis();
 
         return {
@@ -167,40 +183,48 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
           `,
       },
     }));
-    const thresholdData: AreaChartData[] = selectedRows.map(row => ({
-      id: `${row.name}_threshold`,
-      name: `${row.name}_threshold`,
-      data: sortBy(inputData[`${row.id}_threshold`], 'time').map((item, index) => {
+    const thresholdData: AreaChartData[] = selectedRows.map(row => {
+      const thresholdSeriesData = sortBy(inputData[`${row.id}_threshold`], 'time').map((item, index) => {
         const timestamp = DateTime.fromFormat(item.time, OLD_TIME_FORMAT).toUTC().toMillis();
-
         return [timestamp, dataValueSuffix === 'mbps' ? Number(item.value) / 1000 : Number(Number.parseFloat(item.value).toFixed(2))];
-      }),
-      linkedTo: `${row.name} &#9654 ${row.sourceDevice}`,
-      states: {
-        hover: {
-          lineWidthPlus: 0,
+      });
+      const data = addNullPointsForUnavailableData(thresholdSeriesData);
+      return {
+        id: `${row.name}_threshold`,
+        name: `${row.name}_threshold`,
+        data: data,
+        linkedTo: `${row.name} &#9654 ${row.sourceDevice}`,
+        lineWidth: 1,
+        states: {
+          hover: {
+            lineWidthPlus: 0,
+          },
         },
-      },
-      zIndex: 1,
-      tooltip: {
-        useHTML: true,
-        pointFormat: `
+        color: 'rgba(239,154,154,0.4)',
+        dashStyle: 'LongDash',
+        zIndex: 1,
+        tooltip: {
+          useHTML: true,
+          pointFormat: `
           <div><b>Threshold:</b> {point.y}{point.dataValueSuffix}</div><br />
           `,
-      },
-    }));
+        },
+      };
+    });
     const areaData: AreaChartData[] = selectedRows.map(row => {
       const sortedUpperboundData = sortBy(inputData[`${row.id}_upperbound`], 'time');
+      const areaSeriesData = sortBy(inputData[`${row.id}_lowerbound`], 'time').map((item, index) => {
+        const timestamp = DateTime.fromFormat(item.time, OLD_TIME_FORMAT).toUTC();
+        return [
+          timestamp.toMillis(),
+          dataValueSuffix === 'mbps' ? Number((Number(item.value) / 1000).toFixed(2)) : Number(Number.parseFloat(item.value).toFixed(2)),
+          dataValueSuffix === 'mbps' ? Number((Number(sortedUpperboundData[index].value) / 1000).toFixed(2)) : Number(Number.parseFloat(sortedUpperboundData[index].value).toFixed(2)),
+        ];
+      });
+      const data = addNullPointsForUnavailableData(areaSeriesData);
       return {
         name: `${row.name}_bounds`,
-        data: sortBy(inputData[`${row.id}_lowerbound`], 'time').map((item, index) => {
-          const timestamp = DateTime.fromFormat(item.time, OLD_TIME_FORMAT).toUTC();
-          return [
-            timestamp.toMillis(),
-            dataValueSuffix === 'mbps' ? Number((Number(item.value) / 1000).toFixed(2)) : Number(Number.parseFloat(item.value).toFixed(2)),
-            dataValueSuffix === 'mbps' ? Number((Number(sortedUpperboundData[index].value) / 1000).toFixed(2)) : Number(Number.parseFloat(sortedUpperboundData[index].value).toFixed(2)),
-          ];
-        }),
+        data: data,
         type: 'arearange',
         turboThreshold: inputData[row.id].length,
         linkedTo: `${row.name} &#9654 ${row.sourceDevice}`,
@@ -216,7 +240,7 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
           useHTML: true,
           pointFormat: `
           <div><b>Upperbound: </b>{point.high}</div><br />
-          <div><b>Lowerbound: </b>{point.low}</div><br /><br />
+          <div><b>Lowerbound: </b>{point.low}</div><br />
           `,
         },
       };

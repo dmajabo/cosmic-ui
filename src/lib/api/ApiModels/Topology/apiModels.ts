@@ -288,15 +288,16 @@ export interface INetworkEgressOnlyGateway extends IBaseEntity<string> {
 }
 
 export interface INetworkPortForwardingRule extends IBaseEntity<string> {
-  extId: string;
-  name: string;
-  protocol: string;
-  publicPort: string;
-  localPort: string;
-  uplink: string;
-  allowedIps: string[];
-  ownerId: string;
-  regionCode: string;
+  readonly extId: string;
+  readonly name: string;
+  readonly protocol: string;
+  readonly publicPort: string;
+  readonly localPort: string;
+  readonly uplink: string;
+  readonly allowedIps: string[];
+  readonly ownerId: string;
+  readonly regionCode: string;
+  readonly lanIp?: string;
 }
 export interface INetworkPortForwardingConfig extends IBaseEntity<string> {
   name: string;
