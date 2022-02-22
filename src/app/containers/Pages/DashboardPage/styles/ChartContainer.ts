@@ -15,7 +15,7 @@ interface DashboardStyleProps {
 export const GridContainer = styled.div`
   // https://cssgrid-generator.netlify.app/
   display: grid;
-  grid-template-columns: 55% 45%;
+  grid-template-columns: calc(55% - 15px) calc(45% - 15px);
   grid-template-rows: repeat(2, 1fr);
   grid-column-gap: 30px;
   grid-row-gap: 30px;

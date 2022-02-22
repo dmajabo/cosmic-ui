@@ -15,8 +15,7 @@ export const LegendItem = styled.div`
   display: inline-flex;
   flex-shrink: 0;
   margin: 10px;
-  min-width: 76px;
-  max-width: 120px;
+  width: 200px;
   overflow: hidden;
   align-items: center;
   cursor: pointer;
@@ -71,9 +70,6 @@ export const LegendLeft = styled.div`
   ${LegendWrapper}
   left: 0;
   direction: rtl;
-  ${LegendItem} {
-    justify-content: flex-end;
-  }
 `;
 
 export const LegendBottom = styled.div<WrapProps>`

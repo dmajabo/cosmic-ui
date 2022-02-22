@@ -8,7 +8,7 @@ import SitesCollapsedNode from './SitesCollapsedNode';
 
 interface Props {
   dataItem: ITopoSitesNode;
-  onCenteredToNode: (node: any, width: number, height: number) => void;
+  onCenteredToNode: (node: any, panelWidth: number) => void;
 }
 
 const SiteNode: React.FC<Props> = (props: Props) => {

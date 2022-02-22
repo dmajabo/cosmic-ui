@@ -12,7 +12,7 @@ interface Props {
   region: ITopoRegionNode;
   item: INetworkVNetNode;
   onClick: (item: INetworkVNetNode) => void;
-  onCenteredToNode: (node: INetworkVNetNode, width: number, height: number) => void;
+  onCenteredToNode: (node: INetworkVNetNode, panelWidth: number) => void;
 }
 
 const NetworkVnetNode: React.FC<Props> = (props: Props) => {
@@ -22,8 +22,9 @@ const NetworkVnetNode: React.FC<Props> = (props: Props) => {
 
   React.useEffect(() => {
     if (topology.selectedNode && topology.selectedNode.extId === props.item.extId && !isNodeSelected) {
+      helper.onUnHoverRegionChildNode(nodeRef.current, props.parentId, props.item.uiId);
       setIsNodeSelected(true);
-      props.onCenteredToNode(props.item, NODES_CONSTANTS.NETWORK_VNET.collapse.r, NODES_CONSTANTS.NETWORK_VNET.collapse.r);
+      props.onCenteredToNode(props.item, topology.topoPanelWidth);
     } else if (!topology.selectedNode || (topology.selectedNode && topology.selectedNode !== props.item.extId)) {
       setIsNodeSelected(false);
     }
@@ -34,6 +35,7 @@ const NetworkVnetNode: React.FC<Props> = (props: Props) => {
   };
 
   const onMouseEnter = () => {
+    if (topology.blockTooltip) return;
     helper.onHoverRegionChildNode(nodeRef.current, props.parentId, props.item.uiId);
     // links.forEach(link => {
     //   const _vps = _regG.select(`g[data-id='${link.to.nodeType}${link.to.id}']`);

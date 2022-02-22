@@ -59,7 +59,7 @@ const InOutBound: React.FC<Props> = (props: Props) => {
           totalStyle={{ fontSize: 28, fontLabelSize: 12, offsetY: 0, offsetLabelY: 18 }}
           donutRadius={{ innerRadius: 1.75, outerRadius: 0.85, textOuteOffset: 0.3, hoverOuterRadius: 0.875 }}
           legendStyles={{ flexWrap: 'nowrap', overflow: 'visible' }}
-          legendItemStyle={{ width: '50%', justifyContent: 'center' }}
+          legendItemStyle={{ width: 'calc(50% - 8px)', justifyContent: 'center' }}
         />
       )}
       {!error && !data && (
