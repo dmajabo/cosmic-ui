@@ -99,17 +99,15 @@ const getEmptyJSON = (json: PolicyLogDetails) => {
 const getPolicyLogJSON = (firstValue: string, secondValue: string, policyType: string) => {
   if (policyType === PolicyType.Network) {
     return {};
-  } else {
-    return firstValue ? JSON.parse(firstValue) : getEmptyJSON(JSON.parse(secondValue));
   }
+  return firstValue ? JSON.parse(firstValue) : getEmptyJSON(JSON.parse(secondValue));
 };
 
 const getConfigDiffJSON = (firstValue: string, secondValue: string, policyType: string) => {
   if (policyType === PolicyType.Network) {
     return firstValue ? JSON.parse(firstValue) : getEmptyJSON(JSON.parse(secondValue));
-  } else {
-    return {};
   }
+  return {};
 };
 
 export const PolicyLogDetailsDialog: React.FC<PolicyLogDetailsProps> = ({ isOpen, handleClose, selectedPolicyLogData }) => {
