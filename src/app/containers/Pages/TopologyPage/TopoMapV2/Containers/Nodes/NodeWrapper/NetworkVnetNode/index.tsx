@@ -13,6 +13,7 @@ interface Props {
   item: INetworkVNetNode;
   onClick: (item: INetworkVNetNode) => void;
   onCenteredToNode: (node: INetworkVNetNode, panelWidth: number) => void;
+  onCenteredMap: () => void;
 }
 
 const NetworkVnetNode: React.FC<Props> = (props: Props) => {
@@ -27,6 +28,9 @@ const NetworkVnetNode: React.FC<Props> = (props: Props) => {
       props.onCenteredToNode(props.item, topology.topoPanelWidth);
     } else if (!topology.selectedNode || (topology.selectedNode && topology.selectedNode !== props.item.extId)) {
       setIsNodeSelected(false);
+    }
+    if (isNodeSelected && !topology.selectedNode) {
+      props.onCenteredMap();
     }
   }, [topology.selectedNode]);
 
@@ -64,6 +68,7 @@ const NetworkVnetNode: React.FC<Props> = (props: Props) => {
   //   const tooltip = _node.select(`#tooltip${props.item.uiId}`);
   //   tooltip.style('display', 'none');
   // };
+  if (!props.item.visible) return null;
   return (
     <g
       ref={nodeRef}

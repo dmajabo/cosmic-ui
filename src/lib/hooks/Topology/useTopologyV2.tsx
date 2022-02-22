@@ -11,8 +11,8 @@ import {
   FilterEntityOptions,
   FilterEntityTypes,
   FilterSeverityOptions,
+  IMapped_Segment,
   IPanelBar,
-  ITempSegmentObjData,
   ITopoAccountNode,
   ITopoLink,
   ITopologyPreparedMapDataV2,
@@ -23,12 +23,14 @@ import {
 } from './models';
 import { AlertSeverity } from 'lib/api/ApiModels/Workflow/apiModel';
 // import { updateRegionHeight } from './helpers/buildNodeHelpers';
-import { ISegmentSegmentP } from 'lib/api/ApiModels/Policy/Segment';
+import { ISegmentSegmentP, SegmentSegmentType } from 'lib/api/ApiModels/Policy/Segment';
 import { OKULIS_LOCAL_STORAGE_KEYS } from 'lib/api/http/utils';
 import { getSessionStoragePreference, getSessionStoragePreferences, StoragePreferenceKeys, updateSessionStoragePreference } from 'lib/helpers/localStorageHelpers';
 import { updateLinkNodesPosition, updateLinksVisibleStateBySpecificNode, updateLinkVisibleState, updateVpnLinks } from './helpers/buildlinkHelper';
 import { updateCollapseExpandAccounts, updateCollapseExpandSites, updateRegionNodes } from './helpers/buildNodeHelpers';
 import _ from 'lodash';
+import { getRegionChildrenOffsetY, setRegionsCoord, setUpRegionChildCoord } from './helpers/coordinateHelper';
+import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
 
 export interface TopologyV2ContextType {
   topoPanel: IPanelBar<TopologyPanelTypes>;
@@ -44,7 +46,7 @@ export interface TopologyV2ContextType {
   onPanelWidthChange: (width: number) => void;
 
   links: IObject<ITopoLink<any, any, any>>;
-  segments: ITempSegmentObjData;
+  segments: IMapped_Segment[];
   accounts: IObject<ITopoAccountNode>;
   sites: IObject<ITopoSitesNode>;
   regions: IObject<ITopoRegionNode>;
@@ -74,7 +76,7 @@ export interface TopologyV2ContextType {
   entities: FilterEntityOptions;
   severity: FilterSeverityOptions;
   onSelectFilterOption: (groupType: TopoFilterTypes, type: FilterEntityTypes, _selected: boolean) => void;
-
+  onSelectSegmentFilterOption: (node: IMapped_Segment, index: number, visible: boolean) => void;
   blockTooltip: boolean;
 }
 export function useTopologyV2Context(): TopologyV2ContextType {
@@ -87,7 +89,7 @@ export function useTopologyV2Context(): TopologyV2ContextType {
   const [regions, setRegionsNodes] = React.useState<IObject<ITopoRegionNode>>(null);
 
   const [links, setLinks] = React.useState<IObject<ITopoLink<any, any, any>>>(null);
-  const [segments, setSegments] = React.useState<ITempSegmentObjData>(null);
+  const [segments, setSegments] = React.useState<IMapped_Segment[]>(null);
   const [selectedNode, setSelectedNode] = React.useState<ITopoAccountNode | ITopoSitesNode | ITopoRegionNode>(null);
   const [regionStructures, setRegionStructures] = React.useState<ITopoRegionNode[]>([]);
   const [entities, setEntities] = React.useState<FilterEntityOptions>(_.cloneDeep(DEFAULT_ENTITY_OPTIONS));
@@ -102,7 +104,7 @@ export function useTopologyV2Context(): TopologyV2ContextType {
 
   const [topoPanelWidth, setTopoPanelWidth] = React.useState<number>(450);
   const linksRef = React.useRef<IObject<ITopoLink<any, any, any>>>(links);
-  const segmentsRef = React.useRef<ITempSegmentObjData>(segments);
+  const segmentsRef = React.useRef<IMapped_Segment[]>(segments);
 
   React.useEffect(() => {
     const _preference = getSessionStoragePreferences(OKULIS_LOCAL_STORAGE_KEYS.OKULIS_PREFERENCE, [
@@ -308,14 +310,6 @@ export function useTopologyV2Context(): TopologyV2ContextType {
       setAccountsNodes(_obj);
       return;
     }
-    if (groupType === TopoFilterTypes.Sites) {
-      const _obj: IObject<ITopoSitesNode> = _.cloneDeep(sites);
-      _obj[type].visible = selected;
-      const _links: IObject<ITopoLink<any, any, any>> = updateLinksVisibleStateBySpecificNode(links, _obj[type].dataItem.id, regions, _obj, accounts);
-      setLinks(_links);
-      setSitesNodes(_obj);
-      return;
-    }
     if (groupType === TopoFilterTypes.Regions) {
       const _obj: IObject<ITopoRegionNode> = _.cloneDeep(regions);
       _obj[type].visible = selected;
@@ -324,6 +318,36 @@ export function useTopologyV2Context(): TopologyV2ContextType {
       setRegionsNodes(_obj);
       return;
     }
+  };
+
+  const onSelectSegmentFilterOption = (segment: IMapped_Segment, index: number, _selected: boolean) => {
+    const _segments: IMapped_Segment[] = segmentsRef.current.slice();
+    _segments[index].selected = _selected;
+    if (segment.type === SegmentSegmentType.SITE) {
+      const _obj: IObject<ITopoSitesNode> = _.cloneDeep(sites);
+      _obj[segment.extId].visible = _selected;
+      const _links: IObject<ITopoLink<any, any, any>> = updateLinksVisibleStateBySpecificNode(links, _obj[segment.extId].dataItem.id, regions, _obj, accounts);
+      setLinks(_links);
+      setSitesNodes(_obj);
+    } else if (segment.type === SegmentSegmentType.NETWORK) {
+      const _obj: IObject<ITopoRegionNode> = _.cloneDeep(regions);
+      const ids = [];
+      segment.children.forEach(vnet => {
+        _obj[vnet.parentId].children[vnet.rowIndex][vnet.childIndex].visible = _selected;
+        ids.push(vnet.parentId);
+      });
+      ids.forEach(id => {
+        let _offsetY = getRegionChildrenOffsetY(_obj[id].webAcls.length, NODES_CONSTANTS.WEB_ACL.collapse);
+        _offsetY += getRegionChildrenOffsetY(_obj[id].peerConnections.length, NODES_CONSTANTS.PEERING_CONNECTION.collapse);
+        setUpRegionChildCoord(_obj[id], _obj[id].children, _obj[id].width, NODES_CONSTANTS.NETWORK_VNET.collapse, _offsetY);
+      });
+      // _obj[segment.extId].visible = _selected;
+      // const _links: IObject<ITopoLink<any, any, any>> = updateLinksVisibleStateBySpecificNode(links, _obj[segment.extId].dataItem.id, regions, _obj, accounts);
+      // setLinks(_links);
+      setRegionsNodes(_obj);
+    }
+    segmentsRef.current = _segments;
+    setSegments(_segments);
   };
 
   const onUnselectNode = () => {
@@ -365,7 +389,6 @@ export function useTopologyV2Context(): TopologyV2ContextType {
 
     onChangeSitesPage,
 
-    segments,
     selectedNode,
     searchQuery,
     selectedType,
@@ -395,7 +418,9 @@ export function useTopologyV2Context(): TopologyV2ContextType {
 
     entities,
     severity,
+    segments,
     onSelectFilterOption,
+    onSelectSegmentFilterOption,
 
     blockTooltip,
   };

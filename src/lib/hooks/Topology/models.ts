@@ -1,4 +1,4 @@
-import { ISegmentSegmentP } from 'lib/api/ApiModels/Policy/Segment';
+import { ISegmentSegmentP, SegmentSegmentType } from 'lib/api/ApiModels/Policy/Segment';
 import { INetworkDevice, INetworkRegion, INetworkVNetwork, INetworkVNetworkPeeringConnection, INetworkWebAcl, INetworkwEdge, VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
 import { AlertSeverity } from 'lib/api/ApiModels/Workflow/apiModel';
 import { IBaseEntity, ICollapsed, ICoord, IFilterOption, IObject, ISize, IVisible } from 'lib/models/general';
@@ -136,15 +136,17 @@ export interface ITopoRegionNode extends ITopoNode<INetworkRegion>, ICoord, ISiz
   webAcls: INetworkWebAclNode[][];
 }
 
-export interface ITempSegment {
+export interface IMapped_Segment {
   id: string;
   extId: string;
   dataItem: ISegmentSegmentP;
-  type: TopoNodeTypes.DEVICE | TopoNodeTypes.VNET;
+  type: SegmentSegmentType;
   children: (IDeviceNode | INetworkVNetNode)[];
+  uiId: string;
+  selected: boolean;
 }
 export interface ITempSegmentObjData {
-  [key: string]: ITempSegment;
+  [key: string]: IMapped_Segment;
 }
 
 export interface ITopologyPreparedMapDataV2 {
@@ -153,7 +155,7 @@ export interface ITopologyPreparedMapDataV2 {
   regions: IObject<ITopoRegionNode>;
 
   links: IObject<ITopoLink<any, any, any>>;
-  segments: ITempSegmentObjData;
+  segments: IMapped_Segment[];
 }
 
 export enum TopoFilterTypes {
@@ -161,7 +163,7 @@ export enum TopoFilterTypes {
   Severity = 'Severity',
   Regions = 'Regions',
   Accounts = 'Accounts',
-  Sites = 'Sites',
+  SEGMENT = 'Segment',
 }
 
 export enum FilterEntityTypes {

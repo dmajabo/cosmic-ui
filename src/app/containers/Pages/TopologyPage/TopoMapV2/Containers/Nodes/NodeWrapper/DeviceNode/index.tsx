@@ -8,6 +8,7 @@ import { select } from 'd3-selection';
 interface Props {
   item: IDeviceNode;
   onCenteredToNode: (node: IDeviceNode, panelWidth: number) => void;
+  onCenteredMap: () => void;
 }
 
 const DeviceNode: React.FC<Props> = (props: Props) => {
@@ -21,6 +22,9 @@ const DeviceNode: React.FC<Props> = (props: Props) => {
       props.onCenteredToNode(props.item, topology.topoPanelWidth);
     } else if (!topology.selectedNode || (topology.selectedNode && topology.selectedNode !== props.item.extId)) {
       setIsNodeSelected(false);
+    }
+    if (isNodeSelected && !topology.selectedNode) {
+      props.onCenteredMap();
     }
   }, [topology.selectedNode]);
 

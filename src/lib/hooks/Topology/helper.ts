@@ -1,4 +1,4 @@
-import { INetworkVNetNode, INetworkVNetworkPeeringConnectionNode, INetworkWebAclNode, ITopoLink, TopoNodeTypes } from 'lib/hooks/Topology/models';
+import { IMapped_Segment, INetworkVNetNode, INetworkVNetworkPeeringConnectionNode, INetworkWebAclNode, ITopoLink } from 'lib/hooks/Topology/models';
 import { INetworkOrg, INetworkRegion, VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
 
 import {
@@ -32,9 +32,10 @@ import { buildLinks } from './helpers/buildlinkHelper';
 import { updateTopLevelItems } from './helpers/coordinateHelper';
 import { getBeautifulRowsCount, getRegionChildrenCounts } from './helpers/rowsHelper';
 import { getChunksFromArray } from 'lib/helpers/arrayHelper';
-import { ISegmentSegmentP } from 'lib/api/ApiModels/Policy/Segment';
+import { ISegmentSegmentP, SegmentSegmentType } from 'lib/api/ApiModels/Policy/Segment';
 import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
 import { IObject } from 'lib/models/general';
+import uuid from 'react-uuid';
 // import { jsonClone } from 'lib/helpers/cloneHelper';
 
 export const createAccounts = (accounts: IObject<ITopoAccountNode>, _data: INetworkOrg[]) => {
@@ -68,12 +69,17 @@ export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[]
   const sites: IObject<ITopoSitesNode> = {};
   const devicesInDefaultSegment: IDeviceNode[] = [];
   const segmentTempObject: ITempSegmentObjData = {};
+  const segmentsFilteredOptions: IMapped_Segment[] = [];
 
   if (_segments && _segments.length) {
+    segmentTempObject['test'] = { id: 'test', extId: 'test', dataItem: _segments[0], children: [], type: SegmentSegmentType.NETWORK, uiId: uuid(), selected: true };
     _segments.forEach((s, i) => {
-      const _segment: ITopoSitesNode = createSitesNode(s);
-      segmentTempObject[_segment.dataItem.extId] = { id: s.id, extId: s.id, dataItem: s, children: [], type: null };
-      sites[_segment.dataItem.extId] = _segment;
+      const _ms: IMapped_Segment = { id: s.id, extId: s.id, dataItem: s, children: [], type: s.segType, uiId: uuid(), selected: true };
+      if (s.segType === SegmentSegmentType.SITE) {
+        const _segment: ITopoSitesNode = createSitesNode(s);
+        sites[_segment.dataItem.extId] = _segment;
+      }
+      segmentTempObject[_ms.extId] = _ms;
     });
   }
 
@@ -94,8 +100,10 @@ export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[]
             row.map((v, i) => {
               const _vnet: INetworkVNetNode = createVnetNode(_objR.dataItem.extId, org, row.length, orgI, ri, i, v, segmentTempObject[v.segmentId]);
               if (segmentTempObject[v.segmentId]) {
-                segmentTempObject[v.segmentId].type = TopoNodeTypes.VNET;
                 segmentTempObject[v.segmentId].children.push(_vnet);
+              } else {
+                // for test
+                segmentTempObject['test'].children.push(_vnet);
               }
               return _vnet;
             }),
@@ -132,7 +140,6 @@ export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[]
           region.devices.forEach((d, i) => {
             const _device: IDeviceNode = createDeviceNode(org, orgI, d, sites[d.segmentId]);
             if (_device.segmentId && segmentTempObject[_device.segmentId]) {
-              segmentTempObject[_device.segmentId].type = TopoNodeTypes.DEVICE;
               segmentTempObject[_device.segmentId].children.push(_device);
             } else {
               devicesInDefaultSegment.push(_device);
@@ -171,10 +178,14 @@ export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[]
       return _pageRow.map((row, rowI) => row.map((v, i) => updateDeviceNode(DEFAULT_GROUP_ID, v, pageI, rowI, row.length, i))).flat();
     });
   }
+
   if (Object.keys(segmentTempObject).length) {
     Object.keys(segmentTempObject).forEach(key => {
       const _s = segmentTempObject[key];
-      if (!_s.type || _s.type !== TopoNodeTypes.DEVICE) {
+      if (_s.children && _s.children.length) {
+        segmentsFilteredOptions.push(_s);
+      }
+      if (!_s.type || _s.type !== SegmentSegmentType.SITE || (_s.type === SegmentSegmentType.SITE && (!_s.children || !_s.children.length))) {
         delete sites[_s.extId];
         return;
       }
@@ -190,7 +201,7 @@ export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[]
 
   updateTopLevelItems(filter, regions, accounts, sites);
   const _links: IObject<ITopoLink<any, any, any>> = buildLinks(filter, regions, accounts, sites);
-  return { accounts: accounts, sites: sites, regions: regions, links: _links, segments: segmentTempObject };
+  return { accounts: accounts, sites: sites, regions: regions, links: _links, segments: segmentsFilteredOptions };
 };
 
 const buildRegionName = (org: INetworkOrg, region: INetworkRegion): string => {

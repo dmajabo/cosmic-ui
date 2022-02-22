@@ -12,6 +12,7 @@ import RegionCollapsedNode from './RegionCollapsedNode';
 interface Props {
   dataItem: ITopoRegionNode;
   onCenteredToNode: (node: any, panelWidth: number) => void;
+  onCenteredMap: () => void;
 }
 
 const RegionNode: React.FC<Props> = (props: Props) => {
@@ -49,6 +50,7 @@ const RegionNode: React.FC<Props> = (props: Props) => {
                   counterStyles={NODES_CONSTANTS.WEB_ACL.countStyles}
                   labelStyles={NODES_CONSTANTS.WEB_ACL.labelHtmlStyles}
                   onCenteredToNode={props.onCenteredToNode}
+                  onCenteredMap={props.onCenteredMap}
                 />
               ));
             })}
@@ -82,6 +84,7 @@ const RegionNode: React.FC<Props> = (props: Props) => {
                   item={it}
                   onClick={onVpcClick}
                   onCenteredToNode={props.onCenteredToNode}
+                  onCenteredMap={props.onCenteredMap}
                 />
               ));
             })}

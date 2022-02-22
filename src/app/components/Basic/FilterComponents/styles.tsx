@@ -112,6 +112,16 @@ export const GroupItemIcon = styled.span`
 interface CircleProps {
   color?: string;
 }
+
+export const GroupItemColor = styled.span<CircleProps>`
+  display: inline-block;
+  margin: auto 10px auto 0;
+  width: 18px;
+  height: 18px;
+  border-radius: 6px;
+  background: ${props => props.color || 'transparent'};
+`;
+
 export const GroupItemCircle = styled.div<CircleProps>`
   display: inline-block;
   width: 12px;

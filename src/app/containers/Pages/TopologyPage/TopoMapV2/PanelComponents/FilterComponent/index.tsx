@@ -5,20 +5,24 @@ import { PanelContent } from 'app/components/Basic/PanelBar/styles';
 import { PanelHeader, PanelTitle } from '../styles';
 import FilterGroup from 'app/components/Basic/FilterComponents/FilterGroup';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
-import { TopoFilterTypes } from 'lib/hooks/Topology/models';
+import { IMapped_Segment, TopoFilterTypes } from 'lib/hooks/Topology/models';
 import FilterEntityGroup from './FilterEntityGroup';
 // import FilterSeverityGroup from './FilterSeverityGroup';
 import FilterNodesGroup from './FilterNodesGroup';
 import { regionFilterIcon, accountFilterIcon } from 'app/components/SVGIcons/topologyIcons/TopoMapV2Icons/filterPanelIcon';
-import { ciscoMerakiLogoIcon } from 'app/components/SVGIcons/topologyIcons/ciscoMerakiLogo';
+import FilterSegmentsGroup from './FilterSegmentsGroup';
 
 interface IProps {}
 
 const FilterComponent: React.FC<IProps> = (props: IProps) => {
   const { topology } = useTopologyV2DataContext();
 
-  const onSelectFilterOption = (groupType: TopoFilterTypes, type: any, selected: boolean) => {
-    topology.onSelectFilterOption(groupType, type, selected);
+  const onSelectFilterOption = (groupType: TopoFilterTypes, v: any, selected: boolean) => {
+    topology.onSelectFilterOption(groupType, v, selected);
+  };
+
+  const onSelectSegmentFilterOption = (segment: IMapped_Segment, index: number, selected: boolean) => {
+    topology.onSelectSegmentFilterOption(segment, index, selected);
   };
 
   return (
@@ -32,7 +36,7 @@ const FilterComponent: React.FC<IProps> = (props: IProps) => {
             <FilterEntityGroup type={TopoFilterTypes.Entities} data={topology.entities} onClick={onSelectFilterOption} />
           </FilterGroup>
           <FilterGroup maxGroupHeight="unset" label="Segments" styles={{ margin: '0' }}>
-            <FilterNodesGroup type={TopoFilterTypes.Sites} icon={ciscoMerakiLogoIcon(20)} iconStyles={{ width: '20px', height: '20px' }} data={topology.sites} onClick={onSelectFilterOption} />
+            <FilterSegmentsGroup iconStyles={{ width: '20px', height: '20px' }} data={topology.segments} onClick={onSelectSegmentFilterOption} />
           </FilterGroup>
           {/* <FilterGroup maxGroupHeight="260px" label="Health Severity" styles={{ margin: '0 0 5px 0' }}>
             <FilterSeverityGroup type={TopoFilterTypes.Severity} data={topology.severity} onClick={onSelectFilterOption} />

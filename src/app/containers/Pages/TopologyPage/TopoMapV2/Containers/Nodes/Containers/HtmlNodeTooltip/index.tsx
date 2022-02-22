@@ -12,7 +12,7 @@ interface Props {
 const HtmlNodeTooltip: React.FC<Props> = ({ id, name, x, y, minWidth }) => {
   return (
     <NodeTooltipWrapper id={id} x={x} y={y} width="1" height="1" className="htmlNodeTooltip">
-      <NodeTooltipBg className="container" minWidth={minWidth}>
+      <NodeTooltipBg className="container" minWidth={minWidth} padding="8px 12px">
         {name}
       </NodeTooltipBg>
     </NodeTooltipWrapper>

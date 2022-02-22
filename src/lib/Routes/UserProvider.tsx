@@ -56,6 +56,7 @@ export const UserProvider: React.FC = ({ children }) => {
   };
 
   const onInitPendo = (u: User) => {
+    console.log(u);
     if (process.env.NODE_ENV !== 'production' || !u) return;
     pendo.initialize({
       visitor: {
@@ -70,7 +71,7 @@ export const UserProvider: React.FC = ({ children }) => {
       },
 
       account: {
-        id: 'Okulis.io', // Highly recommended
+        id: process.env.REACT_APP_API_ENDPOINT_PRODUCTION, // Highly recommended
         // name:         // Optional
         // is_paying:    // Recommended if using Pendo Feedback
         // monthly_value:// Recommended if using Pendo Feedback

@@ -76,6 +76,10 @@ const Graph: React.FC<Props> = (props: Props) => {
     topology.onPanelWidthChange(w);
   };
 
+  const onCenteredMap = () => {
+    onCentered(topology.accounts, topology.sites, topology.regions);
+  };
+
   return (
     <>
       <HeadeerAction
@@ -114,15 +118,17 @@ const Graph: React.FC<Props> = (props: Props) => {
                 {topology.links && Object.keys(topology.links).length ? <LinksWrapper links={topology.links} /> : null}
                 {topology.accounts
                   ? Object.keys(topology.accounts).map(key => (
-                      <AccountNode key={`accountChildren${topology.accounts[key].uiId}`} dataItem={topology.accounts[key]} onCenteredToNode={onCenteredToNode} />
+                      <AccountNode key={`accountChildren${topology.accounts[key].uiId}`} dataItem={topology.accounts[key]} onCenteredToNode={onCenteredToNode} onCenteredMap={onCenteredMap} />
                     ))
                   : null}
                 {topology.sites
-                  ? Object.keys(topology.sites).map(key => <SiteNode key={`siteChildrenLayer${topology.sites[key].uiId}`} dataItem={topology.sites[key]} onCenteredToNode={onCenteredToNode} />)
+                  ? Object.keys(topology.sites).map(key => (
+                      <SiteNode key={`siteChildrenLayer${topology.sites[key].uiId}`} dataItem={topology.sites[key]} onCenteredToNode={onCenteredToNode} onCenteredMap={onCenteredMap} />
+                    ))
                   : null}
                 {topology.regions
                   ? Object.keys(topology.regions).map(key => (
-                      <RegionNode key={`regionChildrenLayer${topology.regions[key].uiId}`} dataItem={topology.regions[key]} onCenteredToNode={onCenteredToNode} />
+                      <RegionNode key={`regionChildrenLayer${topology.regions[key].uiId}`} dataItem={topology.regions[key]} onCenteredToNode={onCenteredToNode} onCenteredMap={onCenteredMap} />
                     ))
                   : null}
               </GContainer>

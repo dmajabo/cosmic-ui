@@ -9,6 +9,7 @@ import AccountCollapsedNode from './AccountCollapsedNode';
 interface Props {
   dataItem: ITopoAccountNode;
   onCenteredToNode: (node: any, panelWidth: number) => void;
+  onCenteredMap: () => void;
 }
 
 const AccountNode: React.FC<Props> = (props: Props) => {
@@ -32,7 +33,7 @@ const AccountNode: React.FC<Props> = (props: Props) => {
   return (
     <g id={`${NODES_CONSTANTS.ACCOUNT.type}${props.dataItem.uiId}childrensLayer`} className="topologyNode" data-type={NODES_CONSTANTS.ACCOUNT.type}>
       {props.dataItem.children && props.dataItem.children.length
-        ? props.dataItem.children.map(it => <NetworkWEdgeNode key={`${it.uiId}wedge`} item={it} onCenteredToNode={props.onCenteredToNode} />)
+        ? props.dataItem.children.map(it => <NetworkWEdgeNode key={`${it.uiId}wedge`} item={it} onCenteredToNode={props.onCenteredToNode} onCenteredMap={props.onCenteredMap} />)
         : null}
     </g>
   );

@@ -8,6 +8,7 @@ import { select } from 'd3-selection';
 interface Props {
   item: ITGWNode;
   onCenteredToNode: (node: ITGWNode, panelWidth: number) => void;
+  onCenteredMap: () => void;
 }
 
 const NetworkWEdgeNode: React.FC<Props> = (props: Props) => {
@@ -22,6 +23,9 @@ const NetworkWEdgeNode: React.FC<Props> = (props: Props) => {
       props.onCenteredToNode(props.item, topology.topoPanelWidth);
     } else if (!topology.selectedNode || (topology.selectedNode && topology.selectedNode !== props.item.extId)) {
       setIsNodeSelected(false);
+    }
+    if (isNodeSelected && !topology.selectedNode) {
+      props.onCenteredMap();
     }
   }, [topology.selectedNode]);
 

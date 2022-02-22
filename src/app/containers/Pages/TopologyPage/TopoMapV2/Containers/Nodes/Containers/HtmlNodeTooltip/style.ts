@@ -3,6 +3,7 @@ import styled from 'styled-components';
 interface Props {
   minWidth?: string;
   transform?: string;
+  padding?: string;
 }
 
 export const NodeTooltipBg = styled.div<Props>`
@@ -14,7 +15,7 @@ export const NodeTooltipBg = styled.div<Props>`
   word-wrap: break-word;
   text-align: center;
   min-height: 16px;
-  padding: 8px 12px;
+  padding: ${props => props.padding || '20px'};
   background: var(--_primaryBg);
   transform: ${props => props.transform || 'translateY(-50%)'};
   border-radius: 6px;

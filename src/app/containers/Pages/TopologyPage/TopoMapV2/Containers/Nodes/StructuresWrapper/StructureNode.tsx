@@ -69,6 +69,7 @@ const StructureNode: React.FC<Props> = (props: Props) => {
                   counterStyles={NODES_CONSTANTS.WEB_ACL.structureStyles.countStyles}
                   labelStyles={NODES_CONSTANTS.WEB_ACL.structureStyles.labelHtmlStyles}
                   onCenteredToNode={() => {}}
+                  onCenteredMap={() => {}}
                 />
               ));
             })}

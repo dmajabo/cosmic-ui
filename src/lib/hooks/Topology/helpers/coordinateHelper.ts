@@ -140,19 +140,20 @@ export const setRegionChildrenCoords = (
   }
 };
 
-const getRegionChildrenOffsetY = (rows: number, styleObj: ICollapseStyles): number => {
+export const getRegionChildrenOffsetY = (rows: number, styleObj: ICollapseStyles): number => {
   const h = styleObj.r ? styleObj.r * 2 : styleObj.height;
   const y = rows * (h + styleObj.spaceY) + NODES_CONSTANTS.REGION.expanded.contentPadding;
   return y;
 };
 
-const setUpRegionChildCoord = (region: ITopoRegionNode, items: any[], nodeWidth: number, styleObj: ICollapseStyles, offsetY: number) => {
+export const setUpRegionChildCoord = (region: ITopoRegionNode, items: any[], nodeWidth: number, styleObj: ICollapseStyles, offsetY: number) => {
   if (!items || !items.length) return;
   const w = styleObj.r ? styleObj.r * 2 : styleObj.width;
   const h = styleObj.r ? styleObj.r * 2 : styleObj.height;
   items.forEach((subArray, rowIndex) => {
-    const offsetX = getStartChildRowOffsetX(nodeWidth, subArray.length, styleObj.width, styleObj.spaceX);
-    subArray.forEach((it, index) => {
+    const _visibleItems = subArray.filter(it => it.visible);
+    const offsetX = getStartChildRowOffsetX(nodeWidth, _visibleItems.length, styleObj.width, styleObj.spaceX);
+    _visibleItems.forEach((it, index) => {
       it.x = index === 0 ? region.x + offsetX : region.x + offsetX + (w + styleObj.spaceX) * index;
       it.y =
         rowIndex === 0
@@ -280,6 +281,21 @@ export const centeredRegionNodes = (nodes: IObject<ITopoRegionNode>, filter: Fil
     setRegionChildrenCoords(filter, nodes[key].children, nodes[key].peerConnections, nodes[key].webAcls, nodes[key]);
   }
 };
+
+// export const centeredRegionNodes = (nodes: IObject<ITopoRegionNode>, filter: FilterEntityOptions) => {
+//   let maxNodeHeight: number = 0;
+//   const _startYPos = STANDART_DISPLAY_RESOLUTION_V2.height / 2 - NODES_CONSTANTS.ACCOUNT.spaceY * 1.5;
+//   for (const key in nodes) {
+//     if (nodes[key].height > maxNodeHeight) {
+//       maxNodeHeight = nodes[key].height;
+//     }
+//   }
+//   for (const key in nodes) {
+//     nodes[key].y = _startYPos - nodes[key].height;
+//     set_Vertical_Coord_TopoNode(nodes[key], maxNodeHeight);
+//     setRegionChildrenCoords(filter, nodes[key].children, nodes[key].peerConnections, nodes[key].webAcls, nodes[key]);
+//   }
+// };
 
 // export const getExpandedPosition = (direction: DirectionType, expandedWidth: number, expandedHeight: number, collapse: ICollapseStyles): IPosition => {
 //   if (direction === DirectionType.CENTER) return getExpandedToCenter(expandedWidth, expandedHeight, collapse);

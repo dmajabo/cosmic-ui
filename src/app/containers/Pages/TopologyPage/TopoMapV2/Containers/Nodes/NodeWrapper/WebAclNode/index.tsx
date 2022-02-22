@@ -15,6 +15,7 @@ interface Props {
   labelStyles: ILabelHtmlStyles;
   onClick: (item: INetworkWebAclNode) => void;
   onCenteredToNode: (node: INetworkWebAclNode, panelWidth: number) => void;
+  onCenteredMap: () => void;
 }
 
 const WebAclNode: React.FC<Props> = (props: Props) => {
@@ -28,6 +29,9 @@ const WebAclNode: React.FC<Props> = (props: Props) => {
       props.onCenteredToNode(props.item, topology.topoPanelWidth);
     } else if (!topology.selectedNode || (topology.selectedNode && topology.selectedNode !== props.item.extId)) {
       setIsNodeSelected(false);
+    }
+    if (isNodeSelected && !topology.selectedNode) {
+      props.onCenteredMap();
     }
   }, [topology.selectedNode]);
 

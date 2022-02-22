@@ -12,7 +12,7 @@ import {
   INetworkWebAclNode,
   FilterEntityOptions,
   ITopoSitesNode,
-  ITempSegment,
+  IMapped_Segment,
 } from '../models';
 import uuid from 'react-uuid';
 import { ISegmentSegmentP } from 'lib/api/ApiModels/Policy/Segment';
@@ -106,7 +106,7 @@ export const createVnetNode = (
   rowIndex: number,
   childIndex: number,
   node: INetworkVNetwork,
-  segment: ITempSegment,
+  segment: IMapped_Segment,
 ): INetworkVNetNode => {
   const _x = childIndex * (NODES_CONSTANTS.NETWORK_VNET.collapse.width + NODES_CONSTANTS.NETWORK_VNET.collapse.spaceX);
   const _y = rowIndex * (NODES_CONSTANTS.NETWORK_VNET.collapse.height + NODES_CONSTANTS.NETWORK_VNET.collapse.spaceY);
