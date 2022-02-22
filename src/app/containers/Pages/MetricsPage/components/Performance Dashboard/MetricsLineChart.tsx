@@ -194,12 +194,14 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
         name: `${row.name}_threshold`,
         data: data,
         linkedTo: `${row.name} &#9654 ${row.sourceDevice}`,
+        lineWidth: 1,
         states: {
           hover: {
             lineWidthPlus: 0,
           },
         },
-        color: 'rgb(239,154,154)',
+        color: 'rgba(239,154,154,0.4)',
+        dashStyle: 'LongDash',
         zIndex: 1,
         tooltip: {
           useHTML: true,
