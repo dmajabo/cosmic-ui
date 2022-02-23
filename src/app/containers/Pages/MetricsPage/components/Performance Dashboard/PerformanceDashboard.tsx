@@ -35,7 +35,7 @@ export const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ netw
   const [finalTableData, setFinalTableData] = useState<FinalTableData[]>([]);
   const [merakiOrganizations, setMerakiOrganizations] = useState<Organization[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [isError, setIsError] = useState<boolean>(false);
+  // const [isError, setIsError] = useState<boolean>(false);
 
   useEffect(() => {
     if (!isEmpty(organizations) && selectedTabName === TabName.Performance) {
@@ -72,11 +72,11 @@ export const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ netw
         setIsLoading(false);
       } else {
         setIsLoading(false);
-        setIsError(true);
+        // setIsError(true);
       }
     } else {
       setIsLoading(false);
-      setIsError(true);
+      // setIsError(true);
     }
   };
 
@@ -132,13 +132,17 @@ export const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ netw
         <div className={classes.pageCenter}>
           <LoadingIndicator />
         </div>
-      ) : isError ? (
-        <AbsLoaderWrapper width="100%" height="100%">
-          <ErrorMessage fontSize={28} margin="auto">
-            Something went wrong. Please refresh page
-          </ErrorMessage>
-        </AbsLoaderWrapper>
-      ) : !isEmpty(merakiOrganizations) && !isEmpty(finalTableData) ? (
+      ) : /*
+         : isError ? (
+        // <AbsLoaderWrapper width="100%" height="100%">
+        //   <ErrorMessage fontSize={28} margin="auto">
+        //     Something went wrong. Please refresh page
+        //   </ErrorMessage>
+        // </AbsLoaderWrapper>
+      )
+        
+        */
+      !isEmpty(merakiOrganizations) && !isEmpty(finalTableData) ? (
         <SLATestList
           updateSlaTest={updateSlaTest}
           deleteSlaTest={deleteSlaTest}

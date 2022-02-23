@@ -36,6 +36,11 @@ export enum AwsLogStorageType {
   S3 = 'S3',
 }
 
+export enum ControllerAccessMode {
+  READ_ONLY = 'READ_ONLY',
+  READ_WRITE = 'READ_WRITE',
+}
+
 export interface IAwsFlowLogPolicy {
   enable: boolean;
   logStorageType: AwsLogStorageType;
@@ -62,6 +67,7 @@ export interface IAzurePolicy {
 
 export interface IMeraki_Account extends IAccount {
   merakiPol: IMerakiPolicy;
+  accessMode: ControllerAccessMode;
 }
 
 export interface IAWS_Account extends IAccount {

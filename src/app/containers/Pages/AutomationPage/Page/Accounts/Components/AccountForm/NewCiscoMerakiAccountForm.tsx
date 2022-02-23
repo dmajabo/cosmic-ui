@@ -1,11 +1,10 @@
 import React, { useContext } from 'react';
-import { IMeraki_Account } from 'lib/api/ApiModels/Accounts/apiModel';
+import { ControllerAccessMode, IMeraki_Account } from 'lib/api/ApiModels/Accounts/apiModel';
 import { ModalContent, ModalFooter, ModalOverflowContainer } from '../../styles/styles';
 import { StepItemFormRow } from './styles';
 import StepItem from './StepItem';
 import TextInput from 'app/components/Inputs/TextInput';
 import PrimaryButton from 'app/components/Buttons/PrimaryButton';
-import { jsonClone } from 'lib/helpers/cloneHelper';
 import AccountFormHeader from './AccountFormHeader';
 // import CheckBox from 'app/components/Inputs/Checkbox/CheckBox';
 import { useGet, usePost, usePut } from 'lib/api/http/useAxiosHook';
@@ -16,6 +15,10 @@ import { IBaseEntity } from 'lib/models/general';
 import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 import { PolicyApi } from 'lib/api/ApiModels/Services/policy';
 import { GetControllerVendorResponse } from 'lib/api/http/SharedTypes';
+import RadioButton from 'app/components/Inputs/RadioButton';
+import _ from 'lodash';
+import { InputLabel } from 'app/components/Inputs/styles/Label';
+import { InputWrapper, TextInputWrapper } from 'app/components/Inputs/TextInput/styles';
 interface Props {
   isEditMode: boolean;
   dataItem: IMeraki_Account;
@@ -32,7 +35,7 @@ const NewCiscoMerakiAccountForm: React.FC<Props> = (props: Props) => {
   const [isValid, setIsValid] = React.useState<boolean>(false);
   const { response: vendorResponse, onGet: onGetVendors } = useGet<GetControllerVendorResponse>();
   React.useEffect(() => {
-    const _dataItem: IMeraki_Account = jsonClone(props.dataItem);
+    const _dataItem: IMeraki_Account = _.cloneDeep(props.dataItem);
     setIsValid(onValidate(_dataItem));
     setDataItem(_dataItem);
   }, []);
@@ -68,14 +71,21 @@ const NewCiscoMerakiAccountForm: React.FC<Props> = (props: Props) => {
   };
 
   const onChangeField = (value: string | null, field: string) => {
-    const _item: IMeraki_Account = { ...dataItem };
+    const _item: IMeraki_Account = _.cloneDeep(dataItem);
     _item[field] = value;
     setIsValid(onValidate(_item));
     setDataItem(_item);
   };
 
+  const handleAccessChange = (checked: boolean, value: any) => {
+    const _item: IMeraki_Account = _.cloneDeep(dataItem);
+    _item.accessMode = value as ControllerAccessMode;
+    setIsValid(onValidate(_item));
+    setDataItem(_item);
+  };
+
   const onChangePolicyField = (value: string | null, field: string) => {
-    const _item: IMeraki_Account = { ...dataItem };
+    const _item: IMeraki_Account = _.cloneDeep(dataItem);
     _item.merakiPol[field] = value;
     setIsValid(onValidate(_item));
     setDataItem(_item);
@@ -158,9 +168,31 @@ const NewCiscoMerakiAccountForm: React.FC<Props> = (props: Props) => {
                 required
               />
             </StepItemFormRow>
-            {/* <StepItemFormRow margin="0">
-              <CheckBox label="Enable Syslog Collection" isChecked={dataItem.merakiPol.flowlogPol.enableSyslog} toggleCheckboxChange={onEnabledPolicyChange} />
-            </StepItemFormRow> */}
+            <StepItemFormRow margin="0">
+              <TextInputWrapper>
+                <InputLabel>Access</InputLabel>
+                <InputWrapper>
+                  <RadioButton
+                    checked={dataItem.accessMode === ControllerAccessMode.READ_ONLY}
+                    onValueChange={handleAccessChange}
+                    value={ControllerAccessMode.READ_ONLY}
+                    label="Read-only"
+                    name="Access-buttons"
+                    wrapstyles={{ margin: '0 20px 12px 0' }}
+                  />
+                  <RadioButton
+                    checked={dataItem.accessMode === ControllerAccessMode.READ_WRITE}
+                    onValueChange={handleAccessChange}
+                    value={ControllerAccessMode.READ_WRITE}
+                    label="Read-Write"
+                    name="Access-buttons"
+                    wrapstyles={{ margin: '0 auto 12px 0' }}
+                  />
+                </InputWrapper>
+              </TextInputWrapper>
+
+              {/* <CheckBox label="Enable Syslog Collection" isChecked={dataItem.merakiPol.flowlogPol.enableSyslog} toggleCheckboxChange={onEnabledPolicyChange} /> */}
+            </StepItemFormRow>
           </StepItem>
         </ModalOverflowContainer>
         {(postLoading || postUpdateLoading || getLoading) && (

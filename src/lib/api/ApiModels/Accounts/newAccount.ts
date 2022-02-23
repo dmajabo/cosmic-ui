@@ -1,4 +1,4 @@
-import { AccountVendorTypes, AwsLogStorageType, IAWS_Account, IMeraki_Account } from './apiModel';
+import { AccountVendorTypes, AwsLogStorageType, ControllerAccessMode, IAWS_Account, IMeraki_Account } from './apiModel';
 
 export const createNewCiscoMerakiAccount = () => {
   const _obj: IMeraki_Account = {
@@ -13,6 +13,7 @@ export const createNewCiscoMerakiAccount = () => {
         enableSyslog: false,
       },
     },
+    accessMode: ControllerAccessMode.READ_ONLY,
   };
   return _obj;
 };
