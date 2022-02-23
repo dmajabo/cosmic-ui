@@ -11,7 +11,6 @@ import { DataTable, DataTablePFSEvent } from 'primereact/datatable';
 import * as gridHelper from 'lib/helpers/gridHelper';
 import { TopoApi } from 'lib/api/ApiModels/Services/topo';
 import { IObject } from 'lib/models/general';
-import { InventoryPanelTypes } from 'lib/hooks/Policy/models';
 import { TableWrapper } from 'app/components/Basic/Table/PrimeTableStyles';
 import { Column } from 'primereact/column';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
@@ -21,6 +20,7 @@ import { paramBuilder } from 'lib/api/ApiModels/paramBuilders';
 import Paging from 'app/components/Basic/Paging';
 import { AccountVendorTypes } from 'lib/api/ApiModels/Accounts/apiModel';
 import * as cellTemplates from 'app/components/Basic/Table/CellTemplates';
+import { InventoryPanelTypes } from 'lib/hooks/Policy/models';
 
 interface Props {}
 
@@ -87,10 +87,15 @@ const SecurityGroupsTable: React.FC<Props> = (props: Props) => {
     setSortObject(_sortObject);
   };
 
-  const onSelectRow = (id: string) => {
+  const onSelectRow = (e: React.ChangeEvent<HTMLInputElement>, id: string) => {
+    const _dataItem: INetworkSecurityGroup = data.find(it => it.extId === id);
+    if (!_dataItem) return;
     const _obj: IObject<string> = gridHelper.multySelectionRowHelper(selectedRows, id);
-    const _dataItems: INetworkSecurityGroup[] = _obj ? data.filter(it => (_obj[it.extId] ? it : null)) : null;
-    policy.onTooglePanel(InventoryPanelTypes.SecurityGroups, _dataItems);
+    if (_obj && _obj[id]) {
+      policy.onTooglePanel({ type: InventoryPanelTypes.SecurityGroups, dataItem: _dataItem });
+    } else {
+      policy.onRemoveTablePanel({ type: InventoryPanelTypes.SecurityGroups, dataItem: _dataItem });
+    }
     setSelectedRows(_obj);
   };
 
@@ -98,7 +103,7 @@ const SecurityGroupsTable: React.FC<Props> = (props: Props) => {
   //   onSelectRow(e.data.extId);
   // };
 
-  const checkboxTemplate = (rowData: INetworkSecurityGroup) => cellTemplates.cellCheckboxTemplate(!!(selectedRows && selectedRows[rowData.extId]), () => onSelectRow(rowData.extId));
+  const checkboxTemplate = (rowData: INetworkSecurityGroup) => cellTemplates.cellCheckboxTemplate(!!(selectedRows && selectedRows[rowData.extId]), e => onSelectRow(e, rowData.extId));
 
   const onChangeCurrentPage = (_page: number) => {
     setCurrentPage(_page);

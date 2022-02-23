@@ -1,15 +1,15 @@
 import React from 'react';
 import { ITab } from 'lib/models/tabs';
-import { InventoryPanelTypes, PolicyTabTypes, POLICY_TABS } from './models';
+import { InventoryPanelDataItem, InventoryPanelTypes, PolicyTabTypes, POLICY_TABS } from './models';
 import { IPanel } from '../Topology/models';
-import { INetworkRouteTable, INetworkSecurityGroup } from 'lib/api/ApiModels/Topology/apiModels';
 import { useHistory } from 'react-router-dom';
 
 export interface PolicyContextType {
   selectedTab: ITab<PolicyTabTypes>;
   onChangeSelectedTab: (_tabIndex: number) => void;
-  panel: IPanel<InventoryPanelTypes, (INetworkRouteTable | INetworkSecurityGroup)[]>;
-  onTooglePanel: (type: InventoryPanelTypes, dataItems: (INetworkRouteTable | INetworkSecurityGroup)[]) => void;
+  panel: IPanel<InventoryPanelTypes, InventoryPanelDataItem[]>;
+  onTooglePanel: (dataItem: InventoryPanelDataItem) => void;
+  onRemoveTablePanel: (dataItem: InventoryPanelDataItem) => void;
   onClosePanel: () => void;
   panelWidth: number;
   onPanelWidthChange: (width: number) => void;
@@ -27,7 +27,7 @@ const getSpecificTabFromHistory = (history: any): ITab<PolicyTabTypes> => {
 export function usePolicyContext(): PolicyContextType {
   const history = useHistory();
   const [selectedTab, setSelectedTab] = React.useState<ITab<PolicyTabTypes>>(getSpecificTabFromHistory(history));
-  const [panel, setPanel] = React.useState<IPanel<InventoryPanelTypes, (INetworkRouteTable | INetworkSecurityGroup)[]>>({ show: false, type: null, dataItem: null });
+  const [panel, setPanel] = React.useState<IPanel<InventoryPanelTypes, InventoryPanelDataItem[]>>({ show: false, type: null, dataItem: null });
   const [panelWidth, setPanelWidth] = React.useState<number>(450);
 
   const onChangeSelectedTab = (_tabIndex: number) => {
@@ -36,13 +36,24 @@ export function usePolicyContext(): PolicyContextType {
     setSelectedTab(POLICY_TABS[key]);
   };
 
-  const onTooglePanel = (type: InventoryPanelTypes, dataItems: (INetworkRouteTable | INetworkSecurityGroup)[]) => {
-    if (panel && panel.show && (!dataItems || !dataItems.length)) {
+  const onTooglePanel = (dataItem: InventoryPanelDataItem) => {
+    if (panel && panel.show && panel.dataItem && panel.dataItem.length) {
+      const _arr = panel.dataItem.slice();
+      _arr.push(dataItem);
+      setPanel({ ...panel, dataItem: _arr });
+      return;
+    }
+    const _panel: IPanel<InventoryPanelTypes, InventoryPanelDataItem[]> = { show: true, type: InventoryPanelTypes.InventoryPanel, dataItem: [dataItem] };
+    setPanel(_panel);
+  };
+
+  const onRemoveTablePanel = (data: InventoryPanelDataItem) => {
+    const _arr = panel.dataItem.filter(it => it.type !== data.type || it.dataItem.extId !== data.dataItem.extId);
+    if (!_arr || !_arr.length) {
       setPanel({ show: false, type: null, dataItem: null });
       return;
     }
-    const _panel: IPanel<InventoryPanelTypes, (INetworkRouteTable | INetworkSecurityGroup)[]> = { show: true, type: type, dataItem: dataItems };
-    setPanel(_panel);
+    setPanel({ ...panel, dataItem: _arr });
   };
 
   const onClosePanel = () => {
@@ -57,6 +68,7 @@ export function usePolicyContext(): PolicyContextType {
     selectedTab,
     panel,
     onTooglePanel,
+    onRemoveTablePanel,
     onClosePanel,
     onChangeSelectedTab,
 

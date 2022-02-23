@@ -4,7 +4,7 @@ import { TabsStyles } from 'app/components/Tabs/TabsStyles';
 import { TabComponentProps } from 'app/components/Tabs/TabComponentProps';
 import TabPanel from 'app/components/Tabs/TabPanel';
 import { usePolicyDataContext } from 'lib/hooks/Policy/usePolicyDataContext';
-import { InventoryPanelTypes, POLICY_TABS } from 'lib/hooks/Policy/models';
+import { InventoryPanelDataItem, POLICY_TABS } from 'lib/hooks/Policy/models';
 import { TabsWrapperStyles } from '../Shared/styles';
 import Segments from './Page/Segments';
 //import Rules from './Page/Rules';
@@ -12,12 +12,10 @@ import Segments from './Page/Segments';
 // import { AccountVendorTypes } from 'lib/api/ApiModels/Accounts/apiModel';
 import Inventory from './Page/Inventory';
 // import ResizablePanel from 'app/components/Basic/PanelBar/ResizablePanel';
-import RoutesPanel from './Page/Inventory/Panels/RoutesPanel';
 // import { OKULIS_LOCAL_STORAGE_KEYS } from 'lib/api/http/utils';
-import SecurityGroupsPanel from './Page/Inventory/Panels/SecurityGroupsPanel';
-import { INetworkRouteTable, INetworkSecurityGroup } from 'lib/api/ApiModels/Topology/apiModels';
 import { ChildrenContainer, PageWrapper } from 'app/components/Basic/PageLayoutComponents/styles';
 import ResizablePanel from 'app/components/Basic/PanelBar/ResizablePanel';
+import PanelItemsWrapper from './Page/Inventory/Panels/PanelItemsWrapper';
 // import Rules from './Page/Rules';
 
 interface IProps {}
@@ -97,8 +95,7 @@ const MainPage: React.FC<IProps> = (props: IProps) => {
           onPanelWidthChange={onPanelWidthChange}
           // storageKey={OKULIS_LOCAL_STORAGE_KEYS.OKULIS_INVENTORY_PANEL_WIDTH}
         >
-          {policy && policy.panel && policy.panel.type === InventoryPanelTypes.Routes && <RoutesPanel dataItem={policy.panel.dataItem as INetworkRouteTable[]} />}
-          {policy && policy.panel && policy.panel.type === InventoryPanelTypes.SecurityGroups && <SecurityGroupsPanel dataItem={policy.panel.dataItem as INetworkSecurityGroup[]} />}
+          <PanelItemsWrapper dataItems={policy.panel.dataItem as InventoryPanelDataItem[]} />
         </ResizablePanel>
       )}
     </PageWrapper>

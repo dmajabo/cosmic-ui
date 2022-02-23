@@ -141,6 +141,10 @@ export interface IRoutesGridColumns {
   description: IGridColumnField;
   routes: IGridColumnField;
   numberOfRoutes: IGridColumnField;
+  parentId: IGridColumnField;
+  parentType: IGridColumnField;
+  vnets: IGridColumnField;
+  wedges: IGridColumnField;
 }
 
 export const RoutesColumns: IRoutesGridColumns = {
@@ -189,6 +193,50 @@ export const RoutesColumns: IRoutesGridColumns = {
     width: '170px',
     minWidth: '170px',
     maxWidth: '170px',
+    hide: false,
+    sortable: true,
+  },
+  parentId: {
+    label: 'Associated Resource',
+    resField: 'parentId',
+    id: 'routesparentId',
+    field: 'parentId',
+    width: '200px',
+    minWidth: '200px',
+    maxWidth: '200px',
+    hide: false,
+    sortable: true,
+  },
+  parentType: {
+    label: 'Associated Resource Type',
+    resField: 'parentType',
+    id: 'routesparentType',
+    field: 'parentType',
+    width: '240px',
+    minWidth: '240px',
+    maxWidth: '240px',
+    hide: false,
+    sortable: true,
+  },
+  vnets: {
+    label: 'Vnets',
+    resField: 'vnets',
+    id: 'routesvnets',
+    field: 'vnets',
+    width: '160px',
+    minWidth: '160px',
+    maxWidth: '160px',
+    hide: false,
+    sortable: true,
+  },
+  wedges: {
+    label: 'Wedges',
+    resField: 'wedges',
+    id: 'routeswedges',
+    field: 'wedges',
+    width: '200px',
+    minWidth: '200px',
+    maxWidth: '200px',
     hide: false,
     sortable: true,
   },

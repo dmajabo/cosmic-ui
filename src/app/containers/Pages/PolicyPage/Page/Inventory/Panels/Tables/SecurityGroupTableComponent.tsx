@@ -79,8 +79,6 @@ const SecurityGroupTableComponent: React.FC<Props> = (props: Props) => {
           }
         });
       }
-      console.log('in', _in);
-      console.log('out', _out);
       setInboundData(_in);
       setOutboundData(_out);
     } else {
@@ -108,7 +106,7 @@ const SecurityGroupTableComponent: React.FC<Props> = (props: Props) => {
     <PanelTableWrapper margin="0 0 40px 0">
       <ActionRowStyles height="30px" margin="0 0 10px 0" zIndex="unset">
         <ActionPart>
-          <GridLabel className="textOverflowEllips">{props.dataItem.name || props.dataItem.extId}</GridLabel>
+          <GridLabel className="textOverflowEllips">Security Group: {props.dataItem.name || props.dataItem.extId}</GridLabel>
         </ActionPart>
       </ActionRowStyles>
       <PanelTabWrapper>

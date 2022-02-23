@@ -1,3 +1,4 @@
+import { INetworkRouteTable, INetworkSecurityGroup } from 'lib/api/ApiModels/Topology/apiModels';
 import { ITab } from 'lib/models/tabs';
 
 export enum PolicyTabTypes {
@@ -7,8 +8,14 @@ export enum PolicyTabTypes {
 }
 
 export enum InventoryPanelTypes {
+  InventoryPanel = 'InventoryPanel',
   Routes = 'Routes',
   SecurityGroups = 'SecurityGroups',
+}
+
+export interface InventoryPanelDataItem {
+  type: InventoryPanelTypes;
+  dataItem: INetworkRouteTable | INetworkSecurityGroup;
 }
 
 interface IPolicyTabs {

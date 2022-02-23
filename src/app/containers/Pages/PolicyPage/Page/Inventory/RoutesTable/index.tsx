@@ -16,17 +16,23 @@ import { TopoApi } from 'lib/api/ApiModels/Services/topo';
 import { ComponentTableStyles, LayerWrapper } from '../styles';
 import { IObject } from 'lib/models/general';
 import { usePolicyDataContext } from 'lib/hooks/Policy/usePolicyDataContext';
-import { InventoryPanelTypes } from 'lib/hooks/Policy/models';
 import Paging from 'app/components/Basic/Paging';
 import { paramBuilder } from 'lib/api/ApiModels/paramBuilders';
 import * as cellTemplates from 'app/components/Basic/Table/CellTemplates';
+import { InventoryPanelTypes } from 'lib/hooks/Policy/models';
 
 interface Props {}
 
 const RoutesTable: React.FC<Props> = (props: Props) => {
   const userContext = React.useContext<UserContextState>(UserContext);
   const { policy } = usePolicyDataContext();
-  const [columns, setColumns] = React.useState<IGridColumnField[]>([{ ...RoutesColumns.name }, { ...RoutesColumns.numberOfRoutes }, { ...RoutesColumns.extId }]);
+  const [columns, setColumns] = React.useState<IGridColumnField[]>([
+    { ...RoutesColumns.name },
+    { ...RoutesColumns.parentId },
+    { ...RoutesColumns.parentType },
+    { ...RoutesColumns.numberOfRoutes },
+    { ...RoutesColumns.extId },
+  ]);
   const { response, loading, error, onGet } = useGet<IToposvcListRouteTableResponse>();
   const [data, setData] = React.useState<INetworkRouteTable[]>([]);
   const [totalCount, setTotalCount] = React.useState<number>(0);
@@ -80,10 +86,15 @@ const RoutesTable: React.FC<Props> = (props: Props) => {
     setSortObject(_sortObject);
   };
 
-  const onSelectRow = (id: string) => {
+  const onSelectRow = (e: React.ChangeEvent<HTMLInputElement>, id: string) => {
+    const _dataItem: INetworkRouteTable = data.find(it => it.extId === id);
+    if (!_dataItem) return;
     const _obj: IObject<string> = gridHelper.multySelectionRowHelper(selectedRows, id);
-    const _dataItems: INetworkRouteTable[] = _obj ? data.filter(it => (_obj[it.extId] ? it : null)) : null;
-    policy.onTooglePanel(InventoryPanelTypes.Routes, _dataItems);
+    if (_obj && _obj[id]) {
+      policy.onTooglePanel({ type: InventoryPanelTypes.Routes, dataItem: _dataItem });
+    } else {
+      policy.onRemoveTablePanel({ type: InventoryPanelTypes.Routes, dataItem: _dataItem });
+    }
     setSelectedRows(_obj);
   };
 
@@ -91,7 +102,7 @@ const RoutesTable: React.FC<Props> = (props: Props) => {
   //   onSelectRow(e.data.extId);
   // };
 
-  const checkboxTemplate = (rowData: INetworkRouteTable) => cellTemplates.cellCheckboxTemplate(!!(selectedRows && selectedRows[rowData.extId]), () => onSelectRow(rowData.extId));
+  const checkboxTemplate = (rowData: INetworkRouteTable) => cellTemplates.cellCheckboxTemplate(!!(selectedRows && selectedRows[rowData.extId]), e => onSelectRow(e, rowData.extId));
 
   const onChangeCurrentPage = (_page: number) => {
     setCurrentPage(_page);

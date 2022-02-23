@@ -83,6 +83,10 @@ export interface INetworkRouteTable extends IBaseEntity<string> {
   ownerId: string;
   regionCode: string;
   numberOfRoutes: number;
+  parentId: string;
+  parentType: string;
+  vnets: [];
+  wedges: [];
 }
 
 export interface INetworkCidr extends IBaseEntity<string> {
