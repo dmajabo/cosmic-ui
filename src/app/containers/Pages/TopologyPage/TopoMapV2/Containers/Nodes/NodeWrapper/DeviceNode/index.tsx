@@ -1,12 +1,13 @@
 import React from 'react';
-import { NODES_CONSTANTS, TOPOLOGY_IDS } from '../../../../model';
+import { NODES_CONSTANTS } from '../../../../model';
 import { IDeviceNode, TopologyPanelTypes } from 'lib/hooks/Topology/models';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 import HtmlNodeLabel from '../../Containers/HtmlNodeLabel';
-import HtmlNodeTooltip from '../../Containers/HtmlNodeTooltip';
-import { select } from 'd3-selection';
+import HtmlDeviceTooltip from '../../Containers/HtmlNodeTooltip/HtmlDeviceTooltip';
+import * as helper from 'app/containers/Pages/TopologyPage/TopoMapV2/Containers/Nodes/NodeWrapper/RegionNode/helper';
 interface Props {
   item: IDeviceNode;
+  parentId: string;
   onCenteredToNode: (node: IDeviceNode, panelWidth: number) => void;
   onCenteredMap: () => void;
 }
@@ -34,19 +35,21 @@ const DeviceNode: React.FC<Props> = (props: Props) => {
 
   const onMouseEnter = () => {
     if (topology.blockTooltip) return;
-    select(`#${TOPOLOGY_IDS.SVG}`).selectAll('.htmlNodeTooltip').style('display', 'none');
-    const _node = select(nodeRef.current);
-    _node.raise();
-    const tooltip = _node.select(`#tooltip${props.item.uiId}`);
-    tooltip.style('display', 'initial');
+    helper.onHoverDeviceChildNode(nodeRef.current, props.parentId, props.item.uiId);
+    // select(`#${TOPOLOGY_IDS.SVG}`).selectAll('.htmlNodeTooltip').style('display', 'none');
+    // const _node = select(nodeRef.current);
+    // _node.raise();
+    // const tooltip = _node.select(`#tooltip${props.item.uiId}`);
+    // tooltip.style('display', 'initial');
   };
 
   const onMouseLeave = () => {
-    const _node = select(nodeRef.current);
-    const tooltip = _node.select(`#tooltip${props.item.uiId}`);
-    if (tooltip && tooltip.node()) {
-      tooltip.style('display', 'none');
-    }
+    helper.onUnHoverDeviceChildNode(nodeRef.current, props.parentId, props.item.uiId);
+    // const _node = select(nodeRef.current);
+    // const tooltip = _node.select(`#tooltip${props.item.uiId}`);
+    // if (tooltip && tooltip.node()) {
+    //   tooltip.style('display', 'none');
+    // }
   };
 
   return (
@@ -80,7 +83,7 @@ const DeviceNode: React.FC<Props> = (props: Props) => {
           pointerEvents="none"
         />
         <HtmlNodeLabel name={props.item.name || props.item.extId} labelStyles={NODES_CONSTANTS.DEVICE.labelHtmlStyles} />
-        <HtmlNodeTooltip id={`tooltip${props.item.uiId}`} name="Meraki Device" x={NODES_CONSTANTS.DEVICE.collapse.width + 5} y={NODES_CONSTANTS.DEVICE.collapse.height / 2} minWidth="120px" />
+        <HtmlDeviceTooltip id={`tooltip${props.item.uiId}`} item={props.item} x={NODES_CONSTANTS.DEVICE.collapse.width + 5} y={NODES_CONSTANTS.DEVICE.collapse.height / 2} minWidth="120px" />
       </g>
     </>
   );

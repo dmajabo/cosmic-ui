@@ -96,4 +96,30 @@ const onUnHoverRegionChildNode = (node: any, parentId: string, nodeId: string, h
   // });
 };
 
-export { onHoverRegionChildNode, onUnHoverRegionChildNode, onHoverPeerConnectionNode, onUnHoverPeerConnectionNode };
+const onHoverDeviceChildNode = (node: any, parentId: string, nodeId: string, highLightNodeClass?: string) => {
+  const _node = select(node);
+  _node.raise();
+  select(`#${TOPOLOGY_IDS.SVG}`).selectAll('.htmlNodeTooltip').style('display', 'none');
+  const tooltip = _node.select(`#tooltip${nodeId}`);
+  tooltip.style('display', 'initial');
+
+  const _g = select(`#${parentId}`);
+  _g.raise();
+  _g.selectAll('.deviceNodeWrapper').transition().attr('opacity', 0.5);
+  _node.interrupt();
+  _node.attr('opacity', 1);
+  if (highLightNodeClass) {
+    _node.classed(highLightNodeClass, true);
+  }
+};
+
+const onUnHoverDeviceChildNode = (node: any, parentId: string, nodeId: string, highLightNodeClass?: string) => {
+  const _node = select(node);
+  const tooltip = _node.select(`#tooltip${nodeId}`);
+  if (!tooltip || !tooltip.node()) return;
+  tooltip.style('display', 'none');
+  const _g = select(`#${parentId}`);
+  _g.selectAll('.deviceNodeWrapper').transition().attr('opacity', 1);
+};
+
+export { onHoverRegionChildNode, onUnHoverRegionChildNode, onHoverPeerConnectionNode, onUnHoverPeerConnectionNode, onHoverDeviceChildNode, onUnHoverDeviceChildNode };

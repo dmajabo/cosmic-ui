@@ -32,10 +32,13 @@ const DevicePanel: React.FC<IProps> = (props: IProps) => {
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
   };
+  console.log(props.dataItem);
   return (
     <>
       <PanelHeader direction="column" align="unset">
-        <PanelTitle>Site: {props.dataItem.name ? props.dataItem.name : props.dataItem.extId}</PanelTitle>
+        <PanelTitle>Device: {props.dataItem.name ? props.dataItem.name : props.dataItem.extId}</PanelTitle>
+        {props.dataItem.vnetworks && props.dataItem.vnetworks.length && <PanelTitle>Network: {props.dataItem.vnetworks[0].name}</PanelTitle>}
+        {props.dataItem.model && <PanelTitle>Model: {props.dataItem.model}</PanelTitle>}
       </PanelHeader>
       <PanelTabWrapper>
         <Tabs
