@@ -101,7 +101,7 @@ export interface IAlertChannel extends IBaseEntity<string> {
   webhookPolicy?: IAlertWebhookChannel;
   isDefault: boolean;
   alertMetaIds: string[];
-  verificationStatus: IAlertVerificationStatus;
+  // verificationStatus: IAlertVerificationStatus;
 }
 export interface IAlertChannelRes extends IBaseTotalCount, IBasePages {
   channels: IAlertChannel[];
@@ -128,11 +128,11 @@ export const createChannel = (type: AlertChannelType): IAlertChannel => {
     isDefault: false,
     channelType: type,
     alertMetaIds: [],
-    verificationStatus: {
-      emailChannelStatus: {
-        emailStatuses: {},
-      },
-    },
+    // verificationStatus: {
+    //   emailChannelStatus: {
+    //     emailStatuses: {},
+    //   },
+    // },
     emailPolicy: {
       receiverEmailIds: [],
       emailSubjectPrefix: '',

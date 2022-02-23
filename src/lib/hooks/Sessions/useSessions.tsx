@@ -2,7 +2,7 @@ import React from 'react';
 import { ITab } from 'lib/models/tabs';
 import { SessionsTabTypes, SESSIONS_TABS } from './model';
 import { PAGING_DEFAULT_PAGE_SIZE } from 'lib/models/general';
-import { ISession } from 'lib/api/ApiModels/Sessions/apiModel';
+import { INetworkSession } from 'lib/api/ApiModels/Sessions/apiModel';
 import { getFromBase64, OKULIS_LOCAL_STORAGE_KEYS } from 'lib/api/http/utils';
 import { getSessionStoragePreferences, StoragePreferenceKeys, updateSessionStoragePreference } from 'lib/helpers/localStorageHelpers';
 import { convertStringToNumber } from 'lib/helpers/general';
@@ -12,7 +12,7 @@ import { ISessionsLogPreference, ISessionsLogStitchPreference, IUserPreference }
 export interface SessionsContextType {
   selectedTab: ITab<SessionsTabTypes>;
   sessionsCount: number;
-  sessionsData: ISession[];
+  sessionsData: INetworkSession[];
   sessionsCurrentPage: number;
   sessionsPageSize: number;
   sessionsPeriod: SESSIONS_TIME_RANGE_QUERY_TYPES;
@@ -26,7 +26,7 @@ export interface SessionsContextType {
   onUpdateLogSitchPreference: (tabs: ISessionsLogStitchPreference[]) => void;
   onChangePageSize: (_size: number, _page?: number) => void;
   onChangeCurrentPage: (_page: number) => void;
-  onSetSessionsData: (_items: ISession[], _count: number | string) => void;
+  onSetSessionsData: (_items: INetworkSession[], _count: number | string) => void;
   onChangeSelectedTab: (_tabIndex: number) => void;
   onChangeSelectedPeriod: (_value: SESSIONS_TIME_RANGE_QUERY_TYPES, _page: SessionsTabTypes) => void;
   onChangeSwitch: (_value: boolean, _page: SessionsTabTypes) => void;
@@ -36,7 +36,7 @@ export interface SessionsContextType {
 }
 export function useSessionsContext(): SessionsContextType {
   const [selectedTab, setSelectedTab] = React.useState<ITab<SessionsTabTypes>>(SESSIONS_TABS[0]);
-  const [sessionsData, setSessionsData] = React.useState<ISession[]>([]);
+  const [sessionsData, setSessionsData] = React.useState<INetworkSession[]>([]);
   const [sessionsCount, setSessionsCount] = React.useState<number>(0);
   const [sessionsPageSize, setSessionsPageSize] = React.useState<number>(PAGING_DEFAULT_PAGE_SIZE);
   const [sessionsCurrentPage, setSessionsCurrentPage] = React.useState<number>(1);
@@ -100,7 +100,7 @@ export function useSessionsContext(): SessionsContextType {
     setSessionsLogColumnPreferencesStitch_True(columns);
   };
 
-  const onSetSessionsData = (resItems: ISession[], resCount: number | string) => {
+  const onSetSessionsData = (resItems: INetworkSession[], resCount: number | string) => {
     if (!resItems || !resItems.length) {
       const _total = convertStringToNumber(resCount);
       setSessionsData([]);

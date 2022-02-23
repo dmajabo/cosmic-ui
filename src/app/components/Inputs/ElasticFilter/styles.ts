@@ -11,7 +11,7 @@ export const ElasticFilterWrapper = styled.div`
   margin-bottom: 40px;
   background: var(--_primaryBg);
   flex-shrink: 0;
-  z-index: 1;
+  z-index: 2;
 `;
 
 export const ElasticLabel = styled.div`

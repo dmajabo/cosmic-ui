@@ -120,12 +120,12 @@ const EmailConfiguration: React.FC<Props> = (props: Props) => {
         {channel && channel.emailPolicy && channel.emailPolicy.receiverEmailIds && channel.emailPolicy.receiverEmailIds.length ? (
           <>
             {channel.emailPolicy.receiverEmailIds.map((it, index) => (
-              <PolicyItem key={`emailTag${it}`} tag={it} index={index} verificationStatus={channel.verificationStatus} onDeleteEmail={onDeleteEmail} />
+              <PolicyItem key={`emailTag${it}`} tag={it} index={index} onDeleteEmail={onDeleteEmail} />
             ))}
             <SecondaryButton
               iconWidth="10px"
               iconHeight="10px"
-              styles={{ display: 'inline-flex', alignItems: 'center', height: '30px', padding: '0px 12px', margin: '3px 6px 3px 0px' }}
+              styles={{ display: 'inline-flex', alignItems: 'center', height: '30px', padding: '8px 12px', margin: '3px 6px 3px 0px', border: 'none', verticalAlign: 'top' }}
               withoutBorder
               label="Clear all"
               icon={closeSmallIcon}

@@ -1,6 +1,6 @@
 import React from 'react';
 import { DataGrid, GridRenderCellParams, GridValueFormatterParams } from '@mui/x-data-grid';
-import { ISession } from 'lib/api/ApiModels/Sessions/apiModel';
+import { INetworkSession } from 'lib/api/ApiModels/Sessions/apiModel';
 import { GridStyles } from 'app/components/Grid/GridStyles';
 import TableHeader from './TableHeader';
 import { AccountVendorTypes } from 'lib/api/ApiModels/Accounts/apiModel';
@@ -24,7 +24,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useSessionsDataContext } from 'lib/hooks/Sessions/useSessionsDataContext';
 interface Props {
-  data: ISession[];
+  data: INetworkSession[];
   logCount: number;
   error: string;
   pageSize: number;
@@ -37,7 +37,7 @@ interface Props {
 const Table: React.FC<Props> = (props: Props) => {
   const { sessions } = useSessionsDataContext();
   const userContext = React.useContext<UserContextState>(UserContext);
-  const [dataRows, setDataRows] = React.useState<ISession[]>(props.data || []);
+  const [dataRows, setDataRows] = React.useState<INetworkSession[]>(props.data || []);
   const { error, onPost } = usePost<IPreferenceRes, any>();
   const [columns, setColumns] = React.useState<IColumn[]>([
     {

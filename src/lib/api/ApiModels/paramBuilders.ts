@@ -24,6 +24,13 @@ export interface IElasticFilterModel {
   field: IElasticField;
 }
 
+export enum GENERAL_TIME_RANGE_QUERY_TYPES {
+  // LAST_HOUR = 'LAST_HOUR',
+  LAST_DAY = 'LAST_DAY',
+  LAST_WEEK = 'LAST_WEEK',
+  // LAST_MONTH = 'LAST_MONTH',
+}
+
 export enum ALERT_TIME_RANGE_QUERY_TYPES {
   // LAST_HOUR = 'ALERT_QUERY_LAST_HOUR',
   LAST_DAY = 'ALERT_QUERY_LAST_DAY',
@@ -72,7 +79,7 @@ export enum TAGS_RESOURCE_TYPE {
 export interface IParam {
   start_from?: number;
   page_size?: number;
-  time_range?: ALERT_TIME_RANGE_QUERY_TYPES | AUDIT_LOGS_TIME_RANGE_QUERY_TYPES | SESSIONS_TIME_RANGE_QUERY_TYPES | TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES;
+  time_range?: string | ALERT_TIME_RANGE_QUERY_TYPES | AUDIT_LOGS_TIME_RANGE_QUERY_TYPES | SESSIONS_TIME_RANGE_QUERY_TYPES | TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES | GENERAL_TIME_RANGE_QUERY_TYPES;
   search_type?: STITCHED_TYPES;
   filters?: string;
   filterSuffics?: ElasticFilterSuffics;
@@ -136,6 +143,51 @@ export const sessionsParamBuilder = ({ size, currentPage, time_range, stitchOnly
   return param;
 };
 
+export const stitchSessionsParamBuilder = ({ size, time_range, filters, filterSuffics, nextPageKey }): IParam => {
+  let param: IParam = {};
+  param.page_size = size;
+  param.time_range = convertTimePeriodToQueryGeneral(time_range);
+  if (nextPageKey) {
+    param.next_page_key = nextPageKey;
+  }
+  if (filters && filters.length) {
+    const arr = filters.map(item => {
+      if (typeof item === 'string') {
+        return item;
+      }
+      const _el: IElasticFilterModel = item as IElasticFilterModel;
+      if (_el.field.queryType === IQuryFieldtype.STRING) {
+        const fieldValue = filterSuffics ? `${_el.field.searchField}.${filterSuffics}` : _el.field.searchField;
+        let _v = _el.field.valueTransform ? _el.field.valueTransform(_el.value) : _el.value;
+        if (!_v) {
+          return `(${fieldValue}:NULL)`;
+        }
+        return `(${fieldValue}:${_v})`;
+      }
+      if (filterSuffics && filterSuffics === ElasticFilterSuffics.AUTOCOMPLETE) {
+        return `(${_el.field.searchField}.${filterSuffics}:${_el.value})`;
+      }
+      return `(${_el.field.searchField}:${_el.value})`;
+    });
+    param.filters = arr.join('');
+  }
+  if (!Object.keys(param).length) return null;
+  return param;
+};
+
+export const stitchSessionLogParamBuilder = ({ size, time_range, currentPage, vendor }): IParam => {
+  let param: IParam = {};
+  param.device_vendor = vendor;
+  param.time_range = convertTimePeriodToQueryGeneral(time_range);
+  if (currentPage || currentPage === 0) {
+    const _size = size || PAGING_DEFAULT_PAGE_SIZE;
+    param.start_from = (currentPage - 1) * _size;
+  }
+  param.page_size = size;
+  if (!Object.keys(param).length) return null;
+  return param;
+};
+
 export interface ITopologyQueryParam {
   timestamp: number;
 }
@@ -167,14 +219,14 @@ export const convertTimePeriodToQueryDays = (value: string): string => {
   return null;
 };
 
-export const convertTimePeriodToQueryGeneral = (value: string): TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES => {
+export const convertTimePeriodToQueryGeneral = (value: string): GENERAL_TIME_RANGE_QUERY_TYPES => {
   if (!value) return null;
   const _v: string = value.toUpperCase();
-  // if (_v.includes('LAST_HOUR')) return TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES.LAST_HOUR;
-  if (_v.includes('LAST_DAY')) return TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES.LAST_DAY;
-  if (_v.includes('LAST_WEEK')) return TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES.LAST_WEEK;
-  // if (_v.includes('LAST_MONTH')) return TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES.LAST_MONTH;
-  return TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES.LAST_WEEK;
+  // if (_v.includes('LAST_HOUR')) return GENERAL_TIME_RANGE_QUERY_TYPES.LAST_HOUR;
+  if (_v.includes('LAST_DAY')) return GENERAL_TIME_RANGE_QUERY_TYPES.LAST_DAY;
+  if (_v.includes('LAST_WEEK')) return GENERAL_TIME_RANGE_QUERY_TYPES.LAST_WEEK;
+  // if (_v.includes('LAST_MONTH')) return GENERAL_TIME_RANGE_QUERY_TYPES.LAST_MONTH;
+  return GENERAL_TIME_RANGE_QUERY_TYPES.LAST_WEEK;
 };
 
 export const getAlertLogParam = (type: ModelalertType, time_range: ALERT_TIME_RANGE_QUERY_TYPES, size: number, currentPage: number, alert_states?: AlertState): IParam => {

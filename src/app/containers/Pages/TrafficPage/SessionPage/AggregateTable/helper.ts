@@ -1,5 +1,5 @@
 import { AccountVendorTypes } from 'lib/api/ApiModels/Accounts/apiModel';
-import { IBuckets, ISession } from 'lib/api/ApiModels/Sessions/apiModel';
+import { IBuckets, INetworkSession } from 'lib/api/ApiModels/Sessions/apiModel';
 import { IAggregateRow, IGroupedData, IState } from './models';
 import { ciscoMerakiLogoIcon } from 'app/components/SVGIcons/topologyIcons/ciscoMerakiLogo';
 import { awsIcon } from 'app/components/SVGIcons/topologyIcons/aws';
@@ -20,12 +20,12 @@ export const buildAggregatedData = (data: IBuckets[]): IAggregateRow[] => {
 const buildRow = (bucket: IBuckets): IAggregateRow => {
   const _groupData = getGroupedData(bucket);
   let _vendors: IState[] = _groupData && _groupData.vendors ? Object.keys(_groupData.vendors).map(key => getVendorObject(_groupData.vendors[key])) : [];
-  const _topLevel: ISession = generateTopLevelSessionItem(bucket);
+  const _topLevel: INetworkSession = generateTopLevelSessionItem(bucket);
   const _row: IAggregateRow = { session: _topLevel, data: _groupData.groupData, vendors: _vendors };
   return _row;
 };
 
-const generateTopLevelSessionItem = (bucket: IBuckets): ISession => {
+const generateTopLevelSessionItem = (bucket: IBuckets): INetworkSession => {
   if (!bucket.sessions || !bucket.sessions.length) {
     const _item = _.cloneDeep(bucket.sessions[0]);
     _item.id = bucket.key;

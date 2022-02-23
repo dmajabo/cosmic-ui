@@ -1,4 +1,4 @@
-import { ISession } from 'lib/api/ApiModels/Sessions/apiModel';
+import { INetworkSession } from 'lib/api/ApiModels/Sessions/apiModel';
 
 export interface IState {
   icon: any;
@@ -6,11 +6,11 @@ export interface IState {
 }
 
 export interface IGroupedData {
-  [key: string]: ISession[];
+  [key: string]: INetworkSession[];
 }
 
 export interface IAggregateRow {
-  session: ISession;
+  session: INetworkSession;
   data: IGroupedData;
   vendors: IState[];
 }

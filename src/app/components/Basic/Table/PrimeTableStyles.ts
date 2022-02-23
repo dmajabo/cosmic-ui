@@ -164,6 +164,18 @@ export const TableWrapper = styled.div`
       height: 100%;
     }
   }
+  .stitchedTable .p-rowgroup-footer {
+    display: none;
+  }
+  .p-datatable-wrapper .p-datatable-table .p-rowgroup-header td {
+    white-space: nowrap;
+    padding: 20px 20px 20px 50px;
+  }
+  .p-datatable-wrapper .p-rowgroup-header-name {
+    display: inline-flex;
+    font-family: 'DMSans';
+    font-size: 16px;
+  }
 `;
 
 export const NestedTableWrapper = styled.div`
@@ -244,5 +256,16 @@ export const CellSegment = styled.div<CellValueProps>`
   }
   span.name {
     display: inline-block;
+  }
+`;
+
+export const VendorTdWrapper = styled.span`
+  font-family: 'DMSans';
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  margin-right: 16px;
+  &:last-child {
+    margin-right: 0px;
   }
 `;

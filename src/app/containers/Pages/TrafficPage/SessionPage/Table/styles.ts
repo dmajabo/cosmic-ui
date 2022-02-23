@@ -12,6 +12,7 @@ export const GridHeaderWrapper = styled.div`
 
 export const GridLabelWrapper = styled.div`
   display: flex;
+  align-items: center;
   flex-shrink: 0;
   width: auto;
   margin-right: auto;

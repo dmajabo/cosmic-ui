@@ -18,7 +18,7 @@ const TriggerChannel: React.FC<Props> = (props: Props) => {
         emails={props.channel.emailPolicy.receiverEmailIds}
         name={props.channel.name || DEFAULT_EMAIL_CHANNEL_NAME}
         icon={emailIconSmall}
-        verificationStatus={props.channel.verificationStatus}
+        // verificationStatus={props.channel.verificationStatus}
       />
     );
   }

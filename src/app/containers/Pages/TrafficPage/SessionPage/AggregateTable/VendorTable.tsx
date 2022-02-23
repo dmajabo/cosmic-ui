@@ -1,5 +1,5 @@
 import React from 'react';
-import { ISession } from 'lib/api/ApiModels/Sessions/apiModel';
+import { INetworkSession } from 'lib/api/ApiModels/Sessions/apiModel';
 // import { SessionGridColumns } from '../models';
 import { GridStyles } from 'app/components/Grid/GridStyles';
 import { DataGrid } from '@mui/x-data-grid';
@@ -12,7 +12,7 @@ import { IColumn } from 'lib/models/grid';
 
 interface Props {
   label: string;
-  data: ISession[];
+  data: INetworkSession[];
   columns: IColumn[];
   isLast: boolean;
 }

@@ -1,5 +1,6 @@
 import { IBaseEntity } from 'lib/models/general';
 import { AccountVendorTypes } from '../Accounts/apiModel';
+import { IBaseTotalCount } from '../generalApiModel';
 
 export enum SankeyNodeType {
   SANKEY_NETWORK = 'SANKEY_NETWORK',
@@ -12,7 +13,7 @@ export enum NetworkPolicyAction {
   DENY = 'DENY',
 }
 
-export interface ISession extends IBaseEntity<string> {
+export interface INetworkSession extends IBaseEntity<string> {
   timestamp: string;
   sessionId: string;
   readonly flowId: string;
@@ -80,13 +81,49 @@ export interface ISession extends IBaseEntity<string> {
 export interface IBuckets {
   key: string;
   docCount: number;
-  sessions: ISession[];
+  sessions: INetworkSession[];
 }
 
 export interface IAllSessionsRes {
   count: string | number;
-  sessions: ISession[];
+  sessions: INetworkSession[];
   buckets: IBuckets[];
+}
+
+export interface INetworkVendorSessionSummary extends IBaseEntity<string> {
+  sessionId: string;
+  sourceIp: string;
+  sourcePort: string;
+  sourceSegmentId: string;
+  sourceSegmentName: string;
+  destIp: string;
+  destPort: string;
+  destSegmentId: string;
+  destSegmentName: string;
+  protocol: string;
+  deviceVendor: string;
+  uuId?: string;
+}
+export interface INetworkSessionSummary {
+  sessionId: string;
+  vendorSessionSummary: INetworkVendorSessionSummary[];
+}
+export interface ITesseractListStitchedSessionsResponse extends IBaseTotalCount {
+  nextPageKey: string;
+  sessionSummary: INetworkSessionSummary[];
+}
+
+export interface INetworkVendorSessions {
+  deviceVendor: string;
+  session: INetworkSession[];
+}
+export interface INetworkSessionDetail {
+  sessionId: string;
+  vendorSessions: INetworkVendorSessions[];
+}
+export interface ITesseractGetStitchedSessionResponse {
+  nextPageKey: string;
+  sessions: INetworkSessionDetail;
 }
 
 export interface ISankeyNode {

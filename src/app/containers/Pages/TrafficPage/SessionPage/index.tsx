@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { ActionPart, ActionRowStyles, ContentWrapper, PageContentWrapper, TableWrapper } from '../../Shared/styles';
 import { useGet } from 'lib/api/http/useAxiosHook';
-import { IAllSessionsRes, ISession } from 'lib/api/ApiModels/Sessions/apiModel';
+import { IAllSessionsRes, INetworkSession, ITesseractListStitchedSessionsResponse } from 'lib/api/ApiModels/Sessions/apiModel';
 import Table from './Table';
 // import Dropdown from 'app/components/Inputs/Dropdown';
 import { SessionsTabTypes } from 'lib/hooks/Sessions/model';
@@ -12,12 +12,20 @@ import LoadingIndicator from 'app/components/Loading';
 import ElasticFilter from 'app/components/Inputs/ElasticFilter';
 import { FilterOpperatorsList, SessionElasticFieldItems } from './models';
 import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
-import AggregateTable from './AggregateTable';
+import StitchedTable from './StitchedTable';
 import { convertStringToNumber } from 'lib/helpers/general';
 import { useSessionsDataContext } from 'lib/hooks/Sessions/useSessionsDataContext';
 import IconButton from 'app/components/Buttons/IconButton';
 import { refreshIcon } from 'app/components/SVGIcons/refresh';
-import { convertPeriodToUserFriendlyString, ElasticFilterSuffics, IElasticField, IElasticFilterModel, sessionsParamBuilder, SESSIONS_TIME_RANGE_QUERY_TYPES } from 'lib/api/ApiModels/paramBuilders';
+import {
+  convertPeriodToUserFriendlyString,
+  ElasticFilterSuffics,
+  IElasticField,
+  IElasticFilterModel,
+  sessionsParamBuilder,
+  SESSIONS_TIME_RANGE_QUERY_TYPES,
+  stitchSessionsParamBuilder,
+} from 'lib/api/ApiModels/paramBuilders';
 import { TesseractApi } from 'lib/api/ApiModels/Services/tesseract';
 import MatSelect from 'app/components/Inputs/MatSelect';
 
@@ -27,9 +35,10 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
   const { sessions } = useSessionsDataContext();
   const userContext = useContext<UserContextState>(UserContext);
   const { response, loading, error, onGet } = useGet<IAllSessionsRes>();
-  const { response: aggregRes, loading: loadingAggreg, error: errorAggreg, onGet: onGetAggregatedData } = useGet<IAllSessionsRes>();
-  const [sessionsData, setSessionsData] = React.useState<ISession[]>([]);
-  const [aggregatedData, setAggregatedData] = React.useState<IAllSessionsRes>(null);
+  const { response: aggregRes, loading: loadingAggreg, error: errorAggreg, onGet: onGetStitchedData } = useGet<ITesseractListStitchedSessionsResponse>();
+  const [aggregatedData, setAggregatedData] = React.useState<ITesseractListStitchedSessionsResponse>(null);
+  const [sessionsData, setSessionsData] = React.useState<INetworkSession[]>([]);
+
   const [totalCount, setTotalCount] = React.useState<number>(0);
   const [aggregCount, setAggregTotalCount] = React.useState<number>(0);
 
@@ -54,11 +63,10 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
 
   React.useEffect(() => {
     if (aggregRes) {
-      const _total = convertStringToNumber(aggregRes.count);
       setSessionsData([]);
       setTotalCount(0);
       setAggregatedData(aggregRes);
-      setAggregTotalCount(_total);
+      setAggregTotalCount(aggregRes.totalCount);
       return;
     }
     setSessionsData([]);
@@ -68,6 +76,17 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
   }, [aggregRes]);
 
   const onRefresh = () => {
+    if (sessions.sessionsStitch) {
+      const _param = stitchSessionsParamBuilder({
+        size: sessions.sessionsPageSize,
+        time_range: sessions.sessionsPeriod,
+        filters: sessions.sessionsFilter,
+        filterSuffics: ElasticFilterSuffics.KEYWORD,
+        nextPageKey: null,
+      });
+      loadAggregatedData(_param);
+      return;
+    }
     const _param = sessionsParamBuilder({
       size: sessions.sessionsPageSize,
       currentPage: sessions.sessionsCurrentPage,
@@ -76,14 +95,21 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
       filters: sessions.sessionsFilter,
       filterSuffics: ElasticFilterSuffics.KEYWORD,
     });
-    if (sessions.sessionsStitch) {
-      loadAggregatedData(_param);
-      return;
-    }
     loadSessionsData(_param);
   };
 
   const onTryToLoadData = (pageSize: number, page: number, time: SESSIONS_TIME_RANGE_QUERY_TYPES, stitch: boolean, filterValue: (IElasticFilterModel | string)[]) => {
+    if (stitch) {
+      const _param = stitchSessionsParamBuilder({
+        size: pageSize,
+        time_range: time,
+        filters: filterValue,
+        filterSuffics: ElasticFilterSuffics.KEYWORD,
+        nextPageKey: null,
+      });
+      loadAggregatedData(_param);
+      return;
+    }
     const _param = sessionsParamBuilder({
       size: pageSize,
       currentPage: page,
@@ -92,15 +118,11 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
       filters: filterValue,
       filterSuffics: ElasticFilterSuffics.KEYWORD,
     });
-    if (stitch) {
-      loadAggregatedData(_param);
-      return;
-    }
     loadSessionsData(_param);
   };
 
   const loadAggregatedData = async _param => {
-    await onGetAggregatedData(TesseractApi.getAggregatedSessions(), userContext.accessToken!, _param);
+    await onGetStitchedData(TesseractApi.getStitchedSessions(), userContext.accessToken!, _param);
   };
 
   const loadSessionsData = async _param => {
@@ -164,15 +186,17 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
     sessions.onChangeFilter(_items);
   };
 
-  const onLoadDataEnd = (res: IAllSessionsRes) => {
-    const _total = convertStringToNumber(res.count);
+  const onLoadDataEnd = (res: ITesseractListStitchedSessionsResponse | IAllSessionsRes) => {
     if (sessions.sessionsStitch) {
-      setAggregTotalCount(_total);
-      setAggregatedData(res);
+      const _res = res as ITesseractListStitchedSessionsResponse;
+      setAggregTotalCount(_res.totalCount);
+      setAggregatedData(_res);
       return;
     }
+    const _res = res as IAllSessionsRes;
+    const _total = convertStringToNumber(_res.count);
     setTotalCount(_total);
-    setSessionsData(res.sessions);
+    setSessionsData(_res.sessions);
   };
 
   const onGetPossibleValues = (res: IAllSessionsRes, filteredField: IElasticField, stitch?: boolean): string[] => {
@@ -218,7 +242,7 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
           <IconButton styles={{ margin: '0 0 0 20px', flexShrink: 0, border: '1px solid transparent' }} icon={refreshIcon} title="Reload" onClick={onRefresh} />
         </ActionPart>
       </ActionRowStyles>
-      <PageContentWrapper>
+      <PageContentWrapper style={{ flexGrow: 1 }}>
         <ElasticFilter
           placeholder="Search Filter"
           applayedFilterItems={sessions.sessionsFilter}
@@ -228,17 +252,17 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
           onAddFilter={onAddFilter}
           onClearAllFilter={onClearFilter}
           onChangeOperator={onChangeOperator}
-          url={!sessions.sessionsStitch ? TesseractApi.getAllSessions() : TesseractApi.getAggregatedSessions()}
+          url={!sessions.sessionsStitch ? TesseractApi.getAllSessions() : TesseractApi.getStitchedSessions()}
           timePeriod={sessions.sessionsPeriod}
           stitch={sessions.sessionsStitch}
           onLoadDataEnd={onLoadDataEnd}
           onMapRes={onGetPossibleValues}
           onRefresh={onRefresh}
-          paramBuilder={sessionsParamBuilder}
+          paramBuilder={!sessions.sessionsStitch ? sessionsParamBuilder : stitchSessionsParamBuilder}
         />
         <ContentWrapper style={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
-          <TableWrapper style={{ minHeight: 'unset', height: '100%', flexGrow: 1 }}>
-            {!sessions.sessionsStitch && (
+          {!sessions.sessionsStitch && (
+            <TableWrapper style={{ minHeight: 'unset', height: '100%', flexGrow: 1 }}>
               <Table
                 currentPage={sessions.sessionsCurrentPage}
                 onChangeCurrentPage={onChangeCurrentPage}
@@ -248,24 +272,26 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
                 pageSize={sessions.sessionsPageSize}
                 onChangePageSize={onChangePageSize}
               />
-            )}
-            {sessions.sessionsStitch && (
-              <AggregateTable
-                currentPage={sessions.sessionsCurrentPage}
-                onChangeCurrentPage={onChangeCurrentPage}
-                error={errorAggreg && errorAggreg.message ? errorAggreg.message : null}
-                data={aggregatedData && aggregatedData.buckets ? aggregatedData.buckets : []}
-                logCount={aggregCount}
-                pageSize={sessions.sessionsPageSize}
-                onChangePageSize={onChangePageSize}
-              />
-            )}
-            {(loading || loadingAggreg) && (
-              <AbsLoaderWrapper width="100%" height="calc(100% - 50px)" top="50px" zIndex={1}>
-                <LoadingIndicator margin="auto" />
-              </AbsLoaderWrapper>
-            )}
-          </TableWrapper>
+
+              {loading && (
+                <AbsLoaderWrapper width="100%" height="calc(100% - 50px)" top="50px" zIndex={1}>
+                  <LoadingIndicator margin="auto" />
+                </AbsLoaderWrapper>
+              )}
+            </TableWrapper>
+          )}
+          {sessions.sessionsStitch && (
+            <StitchedTable
+              currentPage={sessions.sessionsCurrentPage}
+              onChangeCurrentPage={onChangeCurrentPage}
+              loading={loadingAggreg}
+              error={errorAggreg && errorAggreg.message ? errorAggreg.message : null}
+              data={aggregatedData && aggregatedData.sessionSummary ? aggregatedData.sessionSummary : []}
+              logCount={aggregCount}
+              pageSize={sessions.sessionsPageSize}
+              onChangePageSize={onChangePageSize}
+            />
+          )}
         </ContentWrapper>
       </PageContentWrapper>
     </>
