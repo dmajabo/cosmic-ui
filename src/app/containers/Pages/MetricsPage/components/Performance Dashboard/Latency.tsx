@@ -129,27 +129,6 @@ export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange, netwo
           </div>
         )}
       </div>
-      <hr className={classes.hrLine} />
-      <div className={classes.flexContainer}>
-        <div>
-          <div className={classes.itemTitle}>Median latency</div>
-        </div>
-      </div>
-      <div className={classes.lineChartContainer}>
-        {!isEmpty(selectedRows) ? (
-          heatMapLatency.length === selectedRows.length ? (
-            <Heatmap data={heatMapLatency} selectedRows={testIdToName} legendData={LATENCY_HEATMAP_LEGEND} dataSuffix="ms" />
-          ) : (
-            <div className={classes.noChartContainer}>
-              <LoadingIndicator />
-            </div>
-          )
-        ) : (
-          <div className={classes.noChartContainer}>
-            <span className={classes.noChartText}>To see the data select SLA Tests on top</span>
-          </div>
-        )}
-      </div>
     </div>
   );
 };

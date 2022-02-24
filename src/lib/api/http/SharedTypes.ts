@@ -509,6 +509,7 @@ interface TelemetryMetrics {
 interface TelemetryMetricsTags {
   readonly extId: string;
   readonly name: string;
+  readonly networkName: string;
   readonly type: string;
 }
 

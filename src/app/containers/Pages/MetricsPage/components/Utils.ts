@@ -43,7 +43,7 @@ export const getChartXAxisLabel = (metricsData: MultiLineMetricsData[]) => {
 
 export const getConnectivityMetrics = (response: GetTelemetryMetricsResponse) =>
   response.metrics.map(item => {
-    const name = item.tags.name;
+    const name = item.tags.networkName || 'Unknown';
     const metrics = item.ts.reduce((acc, nextValue) => {
       const formattedTimeString = DateTime.fromFormat(getCorrectedTimeString(nextValue.time), INPUT_TIME_FORMAT).toUTC().toFormat(HEALTH_TABLE_TIME_FORMAT);
       const milliseconds = DateTime.fromFormat(formattedTimeString, HEALTH_TABLE_TIME_FORMAT).toMillis();
@@ -66,7 +66,7 @@ export const getHealthTableData = (connectivityMetrics: ConnectivityMetricsData[
     const sortedTimeString = sortBy(Object.keys(nextValue.metrics));
     const itemTableData: HealthTableData[] = sortedTimeString.map(timeItem => ({
       time: DateTime.fromMillis(Number(timeItem)).toFormat(HEALTH_TABLE_TIME_FORMAT),
-      value: nextValue.metrics[timeItem],
+      value: Number((nextValue.metrics[timeItem] / 12).toFixed(0)),
       connection: nextValue.name,
     }));
     return acc.concat(itemTableData);
