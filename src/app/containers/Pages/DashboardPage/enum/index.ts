@@ -22,6 +22,16 @@ export interface OnPremDevicesResponse {
   readonly devices: Device[];
 }
 
+export interface AnomalySummary {
+  readonly descString: string;
+  readonly timestamp: string;
+}
+
+export interface AnomaliesResponse {
+  readonly anomalySummary: AnomalySummary[];
+  readonly totalCount: number;
+}
+
 export interface SitesGridColumns {
   name: IGridColumnField;
   uplinkType: IGridColumnField;

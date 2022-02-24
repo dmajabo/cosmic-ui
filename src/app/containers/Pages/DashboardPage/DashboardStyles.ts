@@ -219,7 +219,7 @@ export const DashboardStyles = makeStyles(
         marginRight: '20px',
         display: 'inline-flex',
         maxWidth: '29px',
-        width: '29px',
+        width: '50px',
         height: '29px',
         maxHeight: '29px',
         justifyContent: 'center',
@@ -231,22 +231,33 @@ export const DashboardStyles = makeStyles(
         lineHeight: '18px',
         color: '#ffffff',
       },
-      popupContainer: {
-        fontSize: 20,
-      },
       ciscoPopupIcon: {
         backgroundImage: `url(${cisco_sites})`,
         width: 50,
         height: 70,
         marginTop: 40,
       },
-      flexCenter: {
+      popupContainer: {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
         height: 40,
       },
-      textCenter: {},
+      verticalCenter: {
+        marginTop: '10%',
+      },
+      horizontalCenter: {
+        margin: 'auto',
+      },
+      loadMoreButton: {
+        cursor: 'pointer',
+        marginTop: 10,
+        padding: 10,
+        borderRadius: 6,
+        border: '1px solid #cbd2dc',
+        textAlign: 'center',
+        width: 120,
+      },
     }),
   {
     index: 1,

@@ -10,7 +10,7 @@ import { DashboardItemContainer, DashboardItemContent, DashboardItemLabel, GridC
 import InOutBound from './components/ManagmentItem/InOutBound';
 import ManagementLayer7 from './components/ManagmentItem/ManagementLayer7';
 import ManagementDrifts from './components/ManagmentItem/ManagementDrifts';
-import { DashboardSitesViewTab, Device, OnPremDevicesResponse, SITES_COLUMNS, SITES_DATA } from './enum';
+import { AnomaliesResponse, AnomalySummary, DashboardSitesViewTab, Device, OnPremDevicesResponse, SITES_COLUMNS, SITES_DATA } from './enum';
 import { Feature, Map } from './components/Map/Map';
 import { useGet } from 'lib/api/http/useAxiosHook';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
@@ -21,6 +21,10 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import Paging from 'app/components/Basic/Paging';
 import { PAGING_DEFAULT_PAGE_SIZE } from 'lib/models/general';
+import { AlertApi } from 'lib/api/ApiModels/Services/alert';
+import sortBy from 'lodash/sortBy';
+import { isEmpty } from 'lodash';
+import { EmptyText } from 'app/components/Basic/NoDataStyles/NoDataStyles';
 
 const Tab = styled(TabUnstyled)`
   color: #848da3;
@@ -61,6 +65,8 @@ const TabsList = styled(TabsListUnstyled)`
   align-content: space-between;
 `;
 
+const BASE_ANOMALIES_PAGE_SIZE = 10;
+
 const DashboardPage: React.FC = () => {
   const classes = DashboardStyles();
   const userContext = useContext<UserContextState>(UserContext);
@@ -69,15 +75,21 @@ const DashboardPage: React.FC = () => {
   const [totalCount, setTotalCount] = React.useState<number>(0);
   const [currentPage, setCurrentPage] = React.useState<number>(1);
   const [pageSize, setPageSize] = React.useState<number>(PAGING_DEFAULT_PAGE_SIZE);
+  const [anomalies, setAnomalies] = useState<AnomalySummary[]>([]);
+  const [anomaliesPageSize, setAnomaliesPageSize] = useState<number>(BASE_ANOMALIES_PAGE_SIZE);
 
   const { loading, error, response, onGet } = useGet<OnPremDevicesResponse>();
+  const { response: anomaliesResponse, loading: anomaliesLoading, error: anomaliesError, onGet: getAnomalies } = useGet<AnomaliesResponse>();
 
   const onTabChange = (event: React.SyntheticEvent<Element, Event>, value: string | number) => {
     setSitesViewTabName(value as DashboardSitesViewTab);
   };
 
+  const getAnomalySummaryPage = (pageSize: number) => getAnomalies(AlertApi.getAnomalies(), userContext.accessToken!, { pageSize: pageSize });
+
   useEffect(() => {
     onGet(TopoApi.getOnPremDeviceList(), userContext.accessToken!);
+    getAnomalySummaryPage(anomaliesPageSize);
   }, []);
 
   const convertDataToFeatures = useCallback(
@@ -94,6 +106,18 @@ const DashboardPage: React.FC = () => {
     },
     [response],
   );
+
+  const loadMoreAnomalies = () => {
+    const newPageSize = anomaliesPageSize + BASE_ANOMALIES_PAGE_SIZE;
+    setAnomaliesPageSize(newPageSize);
+    getAnomalySummaryPage(newPageSize);
+  };
+
+  useEffect(() => {
+    if (anomaliesResponse && anomaliesResponse.anomalySummary && anomaliesResponse.anomalySummary.length) {
+      setAnomalies(anomaliesResponse.anomalySummary);
+    }
+  }, [anomaliesResponse]);
 
   const onChangeCurrentPage = (_page: number) => {
     setCurrentPage(_page);
@@ -209,42 +233,38 @@ const DashboardPage: React.FC = () => {
           <div className={classes.dashboardLabelContainer}>
             <DashboardItemLabel style={{ marginBottom: '0px' }}>Anomalies</DashboardItemLabel>
             <div className={classes.pillContainer} style={{ marginLeft: '4px' }}>
-              <span className={classes.pillText}>{response?.totalCount}</span>
+              <span className={classes.pillText}>{anomaliesResponse?.totalCount}</span>
             </div>
           </div>
           <div className={classes.anomaliesRowsContainer}>
-            <div className={classes.anomalyRow}>
-              <div className={classes.severityLabelContainer}>
-                <span className={classes.severityLabel}>H</span>
+            {anomaliesLoading && (
+              <div className={classes.verticalCenter}>
+                <LoadingIndicator margin="auto" />
               </div>
-              <div>
-                <span>Breeze Latency Anomaly went up by 10% from last week</span>
+            )}
+
+            {anomaliesError && <div>Something went wrong. Please try again</div>}
+
+            {!anomaliesLoading && isEmpty(anomalies) && (
+              <div className={classes.verticalCenter}>
+                <EmptyText>No Data</EmptyText>
               </div>
-            </div>
-            <div className={classes.anomalyRow}>
-              <div className={classes.severityLabelContainer}>
-                <span className={classes.severityLabel}>H</span>
-              </div>
-              <div>
-                <span>Breeze Latency Anomaly went up by 10% from last week</span>
-              </div>
-            </div>
-            <div className={classes.anomalyRow}>
-              <div className={classes.severityLabelContainer}>
-                <span className={classes.severityLabel}>H</span>
-              </div>
-              <div>
-                <span>Breeze Latency Anomaly went up by 10% from last week</span>
-              </div>
-            </div>
-            <div className={classes.anomalyRow}>
-              <div className={classes.severityLabelContainer}>
-                <span className={classes.severityLabel}>H</span>
-              </div>
-              <div>
-                <span>Breeze Latency Anomaly went up by 10% from last week</span>
-              </div>
-            </div>
+            )}
+            {!anomaliesLoading &&
+              !anomaliesError &&
+              anomalies.map(anomaly => (
+                <div key={anomaly.timestamp} className={classes.anomalyRow}>
+                  <div className={classes.severityLabelContainer}>
+                    <span className={classes.severityLabel}>H</span>
+                  </div>
+                  <div>
+                    <span>{anomaly.descString}</span>
+                  </div>
+                </div>
+              ))}
+          </div>
+          <div hidden={anomaliesResponse?.totalCount < anomaliesPageSize || true} className={`${classes.horizontalCenter} ${classes.loadMoreButton}`} onClick={loadMoreAnomalies}>
+            Load More
           </div>
         </DashboardItemContainer>
       </GridItemContainer>

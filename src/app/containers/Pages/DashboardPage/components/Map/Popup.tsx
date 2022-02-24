@@ -10,9 +10,9 @@ export const Popup: React.FC<PopupProps> = ({ properties }) => {
   const classes = DashboardStyles();
   return (
     <>
-      <div className={classes.flexCenter}>
+      <div className={classes.popupContainer}>
         <div className={classes.ciscoPopupIcon} />
-        <h3 className={classes.textCenter}>{properties.title}</h3>
+        <h3>{properties.title}</h3>
       </div>
       <p>{properties.city_name}</p>
     </>
