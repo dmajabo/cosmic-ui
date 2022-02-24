@@ -1,5 +1,5 @@
 import { useMetricsDataContext } from 'lib/hooks/Metrics/useMetricsDataContent';
-import { isNumber } from 'lodash';
+import isNumber from 'lodash/isNumber';
 import uniq from 'lodash/uniq';
 import React from 'react';
 import styled from 'styled-components';
@@ -41,7 +41,7 @@ export const HealthTable: React.FC<HealthTableProps> = ({ tableData }) => {
 
   const getItemStyle = (data: number) => {
     const rangeColor = metrics.rangePreference.find(item => data >= item.from && data <= item.to)?.color || '';
-    if (data && rangeColor) {
+    if (isNumber(data) && rangeColor) {
       const style: React.CSSProperties = {
         backgroundColor: rangeColor,
         border: '1px solid white',

@@ -34,6 +34,10 @@ export interface NetworkObject {
   readonly name: string;
 }
 
+export interface DeviceToNetworkMap {
+  [extId: string]: string;
+}
+
 const TIME_RANGE_OPTIONS: LookbackSelectOption[] = [
   {
     label: LookbackLabel.oneDay,
@@ -57,6 +61,12 @@ export const Sites: React.FC<SitesProps> = ({ networks, devices, orgError, orgLo
   const handleTimeRangeChange = (value: LookbackSelectOption) => setTimeRange(value);
 
   const getDeviceIds = () => uniq(devices.map(device => device.extId));
+
+  const getDeviceToNetworkMap = (): DeviceToNetworkMap =>
+    devices.reduce((acc, nextValue) => {
+      acc[nextValue.extId] = nextValue.networkId;
+      return acc;
+    }, {});
 
   const getNetworks = () => {
     const networkIds = uniq(devices.map(device => device.networkId));
@@ -111,7 +121,7 @@ export const Sites: React.FC<SitesProps> = ({ networks, devices, orgError, orgLo
         </div>
         <NetworkUsageHealth selectedTabName={selectedTabName} networks={getNetworks()} timeRange={timeRange} />
         <ConnectivityHealth selectedTabName={selectedTabName} timeRange={timeRange} onOpenPanel={onOpenPanel} />
-        <DeviceHealth selectedTabName={selectedTabName} devices={getDeviceIds()} timeRange={timeRange} />
+        <DeviceHealth selectedTabName={selectedTabName} deviceToNetworkMap={getDeviceToNetworkMap()} devices={getDeviceIds()} timeRange={timeRange} />
       </PageWithPanelWrapperStyles>
       <PanelBar
         styles={{ position: 'fixed', top: APP_HEADER_HEIGHT, right: '0', maxHeight: `calc(100% - ${APP_HEADER_HEIGHT})`, zIndex: 11 }}

@@ -14,6 +14,8 @@ interface LineChartProps {
   readonly xAxisText?: string;
   readonly yAxisText?: string;
   readonly timeFormat?: string;
+  readonly sharedMarker?: boolean;
+  readonly showAdditionalTooltipItem?: boolean;
 }
 
 const INPUT_TIME_FORMAT: string = 'yyyy-MM-dd HH:mm:ss ZZZ z';
@@ -75,12 +77,12 @@ const COLOURS = [
   '#1A237E',
 ];
 
-export const MultiLineChart: React.FC<LineChartProps> = ({ dataValueSuffix, inputData, xAxisText, yAxisText, chartHeight, chartWidth }) => {
+export const MultiLineChart: React.FC<LineChartProps> = ({ dataValueSuffix, inputData, xAxisText, yAxisText, chartHeight, chartWidth, sharedMarker = false, showAdditionalTooltipItem = false }) => {
   const series = inputData.map(item => {
     const metrics = item.metrics.map(metric => {
       const timeString = getCorrectedTimeString(metric.time);
       const timestamp = DateTime.fromFormat(timeString, INPUT_TIME_FORMAT).toUTC();
-      return { x: timestamp.toMillis(), y: Number(metric.value) };
+      return { x: timestamp.toMillis(), y: Number(metric.value), additionalTooltipItemLabel: item.additionalTooltipItemLabel, additionalTooltipItemValue: item.additionalTooltipItemValue };
     });
     return {
       name: item.name,
@@ -111,8 +113,13 @@ export const MultiLineChart: React.FC<LineChartProps> = ({ dataValueSuffix, inpu
       tickInterval: 24 * 3600 * 1000,
     },
     tooltip: {
-      shared: true,
-      crosshairs: true,
+      shared: sharedMarker,
+      crosshairs: sharedMarker,
+      useHTML: true,
+      pointFormat: `<br /><div><b>Series Name: </b>{series.name}</div>
+        <div><b>Value: </b>{point.y}</div>
+        ${showAdditionalTooltipItem ? `<div><b>{point.additionalTooltipItemLabel}: </b>{point.additionalTooltipItemValue}</div>` : ''}
+        `,
       valueSuffix: dataValueSuffix ? ` ${dataValueSuffix}` : '',
     },
     plotOptions: {
