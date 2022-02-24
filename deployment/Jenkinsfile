@@ -23,13 +23,13 @@ pipeline {
                 sh "echo EXTEND_ESLINT=true >> ${env.WORKSPACE}/.env.local"
                 sh "echo FAST_REFRESH=true >> ${env.WORKSPACE}/.env.local"
                 sh "echo GENERATE_SOURCEMAP=false >> ${env.WORKSPACE}/.env.local"
-                sh "echo REACT_APP_API_ENDPOINT_PRODUCTION=${env.REACT_APP_API_ENDPOINT_PRODUCTION} >> ${env.WORKSPACE}/.env.local"
-                sh "echo REACT_APP_AUTH0_DOMAIN=${env.REACT_APP_AUTH0_DOMAIN} >> ${env.WORKSPACE}/.env.local"
-                sh "echo REACT_APP_AUTH0_CLIENT_ID=${env.REACT_APP_AUTH0_CLIENT_ID} >> ${env.WORKSPACE}/.env.local"
+                sh "echo REACT_APP_API_ENDPOINT_PRODUCTION=${env.JENKINS_REACT_APP_API_ENDPOINT_PRODUCTION_DEV01} >> ${env.WORKSPACE}/.env.local"
+                sh "echo REACT_APP_AUTH0_DOMAIN=${env.JENKINS_REACT_APP_AUTH0_DOMAIN_DEV01} >> ${env.WORKSPACE}/.env.local"
+                sh "echo REACT_APP_AUTH0_CLIENT_ID=${env.JENKINS_REACT_APP_AUTH0_CLIENT_ID_DEV01} >> ${env.WORKSPACE}/.env.local"
                 sh "echo REACT_APP_VERSION=0.1.${BUILD_NUMBER}-build >> ${env.WORKSPACE}/.env.local"
                 sh 'echo REACT_APP_DEPLOYED_AT=$(date +%s) >> $WORKSPACE/.env.local'
                 sh 'echo REACT_APP_AUTH0_AUDIENCE=dev01-cosmic >> $WORKSPACE/.env.local'
-                sh "echo REACT_APP_MAPBOX_TOKEN=${env.REACT_APP_MAPBOX_TOKEN} >>${env.WORKSPACE}/.env.local"
+                sh "echo REACT_APP_MAPBOX_TOKEN=${env.JENKINS_REACT_APP_MAPBOX_TOKEN_DEV01} >>${env.WORKSPACE}/.env.local"
                 sh 'yarn install'
                 sh 'yarn build --prod'
             }
