@@ -11,6 +11,6 @@ export const createNewMetricsRange = (): IFlowPreferenceRange => ({
 
 export const DEFAULT_METRICS_RANGES: IFlowPreferenceRange[] = [
   { id: uuid(), color: '#75B472', name: '', from: 0, to: 10 },
-  { id: uuid(), color: '#FFC568', name: '', from: 11, to: 30 },
-  { id: uuid(), color: '#DF6060', name: '', from: 31, to: 50 },
+  { id: uuid(), color: '#FFC568', name: '', from: 11, to: 50 },
+  { id: uuid(), color: '#DF6060', name: '', from: 51, to: 100 },
 ];

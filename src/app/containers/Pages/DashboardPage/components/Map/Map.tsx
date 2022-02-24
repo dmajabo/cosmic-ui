@@ -3,10 +3,16 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import React, { useEffect } from 'react';
 import { DashboardStyles } from '../../DashboardStyles';
 import './Map.css';
+import ReactDOMServer from 'react-dom/server';
+import { Popup } from './Popup';
+import { DeviceMetrics } from '../../enum';
 // @ts-ignore
 // eslint-disable-next-line import/no-webpack-loader-syntax
 mapboxgl.workerClass = require('worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker').default;
 
+export interface Properties extends DeviceMetrics {
+  readonly title: string;
+}
 export interface Feature {
   readonly type: string;
   readonly geometry: {
@@ -14,10 +20,7 @@ export interface Feature {
     readonly name: string;
     readonly coordinates: [number, number];
   };
-  readonly properties: {
-    readonly title: string;
-    readonly description: string;
-  };
+  readonly properties: Properties;
 }
 
 export interface GeoJSON {
@@ -48,7 +51,7 @@ export const Map: React.FC<MapProps> = ({ features }) => {
         dragRotate: false,
       });
 
-      for (const { geometry } of features) {
+      for (const { geometry, properties } of features) {
         // create a HTML element for each feature
         const el = document.createElement('div');
         el.className = 'cisco-marker';
@@ -57,10 +60,10 @@ export const Map: React.FC<MapProps> = ({ features }) => {
           element: el,
         })
           .setLngLat(geometry.coordinates)
-          // .setPopup(
-          //   new mapboxgl.Popup({ offset: 40 }) // add popups
-          //     .setHTML(`<h3>${properties.title}</h3><p>${properties.description}</p>`),
-          // )
+          .setPopup(
+            new mapboxgl.Popup({ offset: [-10, -75] }) // add popups
+              .setHTML(ReactDOMServer.renderToString(<Popup properties={properties} />)),
+          )
           .addTo(map);
       }
     }

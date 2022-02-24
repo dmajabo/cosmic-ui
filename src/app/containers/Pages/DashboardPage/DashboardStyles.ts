@@ -1,5 +1,6 @@
 import { Theme } from '@mui/material';
 import { createStyles, makeStyles } from '@mui/styles';
+import cisco_sites from './Icons/cisco_sites.svg';
 
 export const DashboardStyles = makeStyles(
   (theme: Theme) =>
@@ -37,6 +38,9 @@ export const DashboardStyles = makeStyles(
         marginLeft: '20px',
         backgroundColor: '#437FEC',
         borderRadius: '20px',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
       },
       pillText: {
         fontSize: '12px',
@@ -189,6 +193,88 @@ export const DashboardStyles = makeStyles(
         paddingTop: 20,
         paddingLeft: 60,
         cursor: 'pointer',
+      },
+      dashboardLabelContainer: {
+        display: 'flex',
+        alignItems: 'center',
+      },
+      anomaliesRowsContainer: {
+        marginTop: '20px',
+        maxHeight: '177px',
+        height: '177px',
+        overflowY: 'auto',
+        border: '1px solid #E7EDF9',
+        borderBottom: 0,
+      },
+      anomalyRow: {
+        paddingTop: '20px',
+        paddingBottom: '20px',
+        borderBottom: '1px solid #E7EDF9',
+        padding: '25px 30px 22px 20px',
+        display: 'inline-flex',
+      },
+      severityLabelContainer: {
+        backgroundColor: '#DC4545',
+        borderRadius: '50%',
+        marginRight: '20px',
+        display: 'inline-flex',
+        maxWidth: '29px',
+        width: '50px',
+        height: '29px',
+        maxHeight: '29px',
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+      severityLabel: {
+        fontWeight: 500,
+        fontSize: '14px',
+        lineHeight: '18px',
+        color: '#ffffff',
+      },
+      ciscoPopupIcon: {
+        backgroundImage: `url(${cisco_sites})`,
+        width: 50,
+        height: 70,
+        marginTop: 40,
+      },
+      popupContainer: {
+        textAlign: 'left',
+      },
+      verticalCenter: {
+        marginTop: '10%',
+      },
+      horizontalCenter: {
+        margin: 'auto',
+      },
+      loadMoreButton: {
+        cursor: 'pointer',
+        marginTop: 10,
+        padding: 10,
+        borderRadius: 6,
+        border: '1px solid #cbd2dc',
+        textAlign: 'center',
+        width: 120,
+      },
+      popupItemContainer: {
+        padding: 5,
+      },
+      popupContentLabel: {
+        fontSize: 14,
+        fontWeight: 600,
+        color: 'black',
+      },
+      popupContentValue: {
+        fontSize: 14,
+        fontWeight: 500,
+        color: '#848DA3',
+      },
+      timeDiffContainer: {
+        width: 150,
+      },
+      timeDiffText: {
+        fontSize: 14,
+        fontWeight: 400,
+        color: '#848DA3',
       },
     }),
   {

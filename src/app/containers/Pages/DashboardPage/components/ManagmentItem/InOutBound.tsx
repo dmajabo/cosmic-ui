@@ -25,8 +25,8 @@ const InOutBound: React.FC<Props> = (props: Props) => {
   React.useEffect(() => {
     if (response) {
       const _data: PieDataItem[] = [
-        { name: 'Inb', id: 'Inb', value: response.inbount ? response.inbount.count : 0, hide: false, color: 'var(--_warningColor)' },
-        { name: 'Outb', id: 'Outb', value: response.outbound ? response.outbound.count : 0, hide: false, color: 'var(--_highlightColor)' },
+        { name: 'Inbound', id: 'Inb', value: response.inbount ? response.inbount.count : 0, hide: false, color: 'var(--_warningColor)' },
+        { name: 'Outbound', id: 'Outb', value: response.outbound ? response.outbound.count : 0, hide: false, color: 'var(--_highlightColor)' },
       ];
       setData(_data);
     } else {

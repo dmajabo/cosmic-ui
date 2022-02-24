@@ -3,12 +3,12 @@ import isEmpty from 'lodash/isEmpty';
 
 export const GetSelectedOrganizationName = (organizations: Organization[], orgId: string) => {
   const selectedOrganization = organizations.find(organization => organization.extId === orgId);
-  return selectedOrganization?.name || '';
+  return selectedOrganization?.name || orgId;
 };
 
 export const GetSelectedNetworkName = (networks: Vnet[], networkId: string) => {
   const selectedNetwork = networks.find(network => network.extId === networkId);
-  return selectedNetwork?.name || '';
+  return selectedNetwork?.name || networkId;
 };
 
 export const GetDevicesString = (devices: Device[], sourceNetworkExtId: string) => {

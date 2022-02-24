@@ -142,27 +142,6 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange,
           </div>
         )}
       </div>
-      <hr className={classes.hrLine} />
-      <div className={classes.flexContainer}>
-        <div>
-          <span className={classes.itemTitle}>Average packet loss</span>
-        </div>
-      </div>
-      <div className={classes.lineChartContainer}>
-        {!isEmpty(selectedRows) ? (
-          heatMapPacketLoss.length === selectedRows.length ? (
-            <Heatmap data={heatMapPacketLoss} selectedRows={testIdToName} legendData={PACKET_LOSS_HEATMAP_LEGEND} dataSuffix="%" />
-          ) : (
-            <div className={classes.noChartContainer}>
-              <LoadingIndicator />
-            </div>
-          )
-        ) : (
-          <div className={classes.noChartContainer}>
-            <span className={classes.noChartText}>To see the data select SLA Tests on top</span>
-          </div>
-        )}
-      </div>
     </div>
   );
 };

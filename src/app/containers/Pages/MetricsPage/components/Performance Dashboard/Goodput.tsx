@@ -127,27 +127,6 @@ export const Goodput: React.FC<GoodputProps> = ({ selectedRows, timeRange, netwo
           </div>
         )}
       </div>
-      <hr className={classes.hrLine} />
-      <div className={classes.flexContainer}>
-        <div>
-          <div className={classes.itemTitle}>Median Goodput</div>
-        </div>
-      </div>
-      <div className={classes.lineChartContainer}>
-        {!isEmpty(selectedRows) ? (
-          heatMapGoodput.length === selectedRows.length ? (
-            <Heatmap data={heatMapGoodput} selectedRows={testIdToName} legendData={GOODPUT_HEATMAP_LEGEND} dataSuffix="mbps" />
-          ) : (
-            <div className={classes.noChartContainer}>
-              <LoadingIndicator />
-            </div>
-          )
-        ) : (
-          <div className={classes.noChartContainer}>
-            <span className={classes.noChartText}>To see the data select SLA Tests on top</span>
-          </div>
-        )}
-      </div>
     </div>
   );
 };

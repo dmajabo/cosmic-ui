@@ -13,14 +13,16 @@ import { LookbackSelectOption } from 'app/containers/Pages/AnalyticsPage/compone
 import { IMetrickQueryParam } from 'lib/api/ApiModels/Metrics/apiModel';
 import { getChartXAxisLabel, isMetricsEmpty } from '../Utils';
 import { TabName } from '../..';
+import { DeviceToNetworkMap } from '.';
 
 interface DeviceHealthProps {
   readonly devices: string[];
   readonly timeRange: LookbackSelectOption;
+  readonly deviceToNetworkMap: DeviceToNetworkMap;
   readonly selectedTabName: TabName;
 }
 
-export const DeviceHealth: React.FC<DeviceHealthProps> = ({ devices, timeRange, selectedTabName }) => {
+export const DeviceHealth: React.FC<DeviceHealthProps> = ({ devices, timeRange, selectedTabName, deviceToNetworkMap }) => {
   const classes = MetricsStyles();
   const userContext = useContext<UserContextState>(UserContext);
   const { response, loading, error, onGetChainData } = useGetChainData();
@@ -45,7 +47,7 @@ export const DeviceHealth: React.FC<DeviceHealthProps> = ({ devices, timeRange, 
     if (response) {
       const metricsData: MultiLineMetricsData[] = devices.map(device => {
         const tsData: MetricsData[] = response[device].metrics.keyedmap.reduce((acc, nextValue) => acc.concat(nextValue.ts), []);
-        return { name: device, metrics: tsData };
+        return { name: device, metrics: tsData, additionalTooltipItemLabel: 'Network Name', additionalTooltipItemValue: deviceToNetworkMap[device] };
       });
       setMetricsData(metricsData);
     }
@@ -63,7 +65,7 @@ export const DeviceHealth: React.FC<DeviceHealthProps> = ({ devices, timeRange, 
           <EmptyText>No Data</EmptyText>
         ) : (
           <Chart>
-            <MultiLineChart inputData={metricsData} yAxisText="score" xAxisText={getChartXAxisLabel(metricsData)} />
+            <MultiLineChart inputData={metricsData} yAxisText="score" xAxisText={getChartXAxisLabel(metricsData)} showAdditionalTooltipItem />
           </Chart>
         )}
       </ChartContainerStyles>

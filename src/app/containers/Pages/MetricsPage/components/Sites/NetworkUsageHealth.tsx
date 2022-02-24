@@ -66,7 +66,7 @@ export const NetworkUsageHealth: React.FC<NetworkUsageHealthProps> = ({ networks
           <EmptyText>No Data</EmptyText>
         ) : (
           <Chart>
-            <MultiLineChart dataValueSuffix="bytes" inputData={metricsData} yAxisText="bytes" xAxisText={getChartXAxisLabel(metricsData)} />
+            <MultiLineChart dataValueSuffix="bytes" inputData={metricsData} yAxisText="bytes" xAxisText={getChartXAxisLabel(metricsData)} sharedMarker />
           </Chart>
         )}
       </ChartContainerStyles>

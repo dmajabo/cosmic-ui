@@ -45,7 +45,7 @@ const ManagementDrifts: React.FC<Props> = (props: Props) => {
       {!error && data !== null && (
         <ChartContent>
           <ChartValue color="var(--_orangeColor)">{data}</ChartValue>
-          <ChartValueLabel>from last week</ChartValueLabel>
+          {/* <ChartValueLabel>from last week</ChartValueLabel> */}
         </ChartContent>
       )}
       {!error && data === null && (

@@ -194,7 +194,7 @@ export const PerformanceDashboardStyles = makeStyles(
         fontWeight: 400,
       },
       noChartContainer: {
-        padding: 150,
+        padding: 250,
         textAlign: 'center',
       },
       deleteTest: {

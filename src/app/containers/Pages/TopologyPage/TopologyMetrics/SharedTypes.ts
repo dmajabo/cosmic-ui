@@ -41,5 +41,7 @@ export interface GetMetricsResponse {
 
 export interface MultiLineMetricsData {
   readonly name: string;
+  readonly additionalTooltipItemValue?: string;
+  readonly additionalTooltipItemLabel?: string;
   readonly metrics: MetricsData[];
 }

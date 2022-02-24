@@ -35,7 +35,7 @@ export const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ netw
   const [finalTableData, setFinalTableData] = useState<FinalTableData[]>([]);
   const [merakiOrganizations, setMerakiOrganizations] = useState<Organization[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  // const [isError, setIsError] = useState<boolean>(false);
+  const [isError, setIsError] = useState<boolean>(false);
 
   useEffect(() => {
     if (!isEmpty(organizations) && selectedTabName === TabName.Performance) {
@@ -50,15 +50,12 @@ export const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ netw
     if (!isEmpty(responseData)) {
       if (Array.isArray(responseData.slaTests) && !isEmpty(responseData.slaTests)) {
         const testData: FinalTableData[] = responseData.slaTests.map(test => {
-          const selectedOrganizationName = GetSelectedOrganizationName(merakiOrganizations, test.sourceOrgId);
-          const allDevices: string = GetDevicesString(devices, test.sourceNwExtId);
-          const selectedNetworkName = GetSelectedNetworkName(networks, test.sourceNwExtId);
           return {
             id: test.testId,
             name: test.name,
-            sourceOrg: selectedOrganizationName,
-            sourceNetwork: selectedNetworkName,
-            sourceDevice: allDevices,
+            sourceOrg: test.sourceOrgId,
+            sourceNetwork: test.sourceNwExtId,
+            sourceDevice: '',
             destination: test.destination,
             interface: test.interface,
             description: test.description,
@@ -75,15 +72,26 @@ export const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ netw
       }
     } else {
       setIsLoading(false);
-      // setIsError(true);
+      setIsError(true);
     }
   };
 
   useEffect(() => {
-    if (!isEmpty(merakiOrganizations)) {
-      getSLATests();
-    }
-  }, [merakiOrganizations]);
+    getSLATests();
+  }, []);
+
+  const newTableData = finalTableData.map(test => {
+    const selectedOrganizationName = GetSelectedOrganizationName(merakiOrganizations, test.sourceOrg);
+    const allDevices: string = GetDevicesString(devices, test.sourceNetwork);
+    const selectedNetworkName = GetSelectedNetworkName(networks, test.sourceNetwork);
+    const { sourceDevice, sourceNetwork, sourceOrg, ...rest } = test;
+    return {
+      ...rest,
+      sourceDevice: allDevices,
+      sourceNetwork: selectedNetworkName,
+      sourceOrg: selectedOrganizationName,
+    };
+  });
 
   const addSlaTest = async (submitData: CreateSLATestRequest) => {
     const responseData = await apiClient.createSLATest(submitData);
@@ -131,25 +139,14 @@ export const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ netw
         <div className={classes.pageCenter}>
           <LoadingIndicator />
         </div>
-      ) : /*
-         : isError ? (
-        // <AbsLoaderWrapper width="100%" height="100%">
-        //   <ErrorMessage fontSize={28} margin="auto">
-        //     Something went wrong. Please refresh page
-        //   </ErrorMessage>
-        // </AbsLoaderWrapper>
-      )
-        
-        */
-      !isEmpty(merakiOrganizations) && !isEmpty(finalTableData) ? (
-        <SLATestList
-          updateSlaTest={updateSlaTest}
-          deleteSlaTest={deleteSlaTest}
-          networks={networks}
-          merakiOrganizations={merakiOrganizations}
-          finalTableData={finalTableData}
-          addSlaTest={addSlaTest}
-        />
+      ) : isError ? (
+        <AbsLoaderWrapper width="100%" height="100%">
+          <ErrorMessage fontSize={28} margin="auto">
+            Something went wrong. Please refresh page
+          </ErrorMessage>
+        </AbsLoaderWrapper>
+      ) : !isEmpty(finalTableData) ? (
+        <SLATestList updateSlaTest={updateSlaTest} deleteSlaTest={deleteSlaTest} networks={networks} merakiOrganizations={merakiOrganizations} finalTableData={newTableData} addSlaTest={addSlaTest} />
       ) : (
         <CreateSLATest networks={networks} merakiOrganizations={merakiOrganizations} addSlaTest={addSlaTest} popup={false} closeSlaTest={noop} />
       )}
