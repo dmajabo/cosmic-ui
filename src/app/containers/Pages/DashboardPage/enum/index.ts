@@ -22,6 +22,27 @@ export interface OnPremDevicesResponse {
   readonly devices: Device[];
 }
 
+export interface DeviceMetrics {
+  readonly availibility: string;
+  readonly bytesReceivedUsage: number;
+  readonly bytesSendUsage: number;
+  readonly extId: string;
+  readonly goodput: number;
+  readonly latency: number;
+  readonly name: string;
+  readonly packetloss: number;
+  readonly uplinkType: string;
+}
+
+export interface DeviceMetricsResponse {
+  readonly deviceMetrics: DeviceMetrics[];
+}
+
+export interface MapDeviceDataResponse {
+  readonly devices: OnPremDevicesResponse;
+  readonly deviceMetrics: DeviceMetricsResponse;
+}
+
 export interface AnomalySummary {
   readonly descString: string;
   readonly timestamp: string;
@@ -30,6 +51,18 @@ export interface AnomalySummary {
 export interface AnomaliesResponse {
   readonly anomalySummary: AnomalySummary[];
   readonly totalCount: number;
+}
+
+export interface SitesData {
+  readonly name: string;
+  readonly uplinkType: string;
+  readonly availability: string;
+  readonly totalUsage: string;
+  readonly avgBandwidth: string;
+  readonly latency: string;
+  readonly jitter: string;
+  readonly packetLoss: string;
+  readonly goodput: string;
 }
 
 export interface SitesGridColumns {

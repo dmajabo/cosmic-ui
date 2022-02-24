@@ -11,10 +11,27 @@ export const Popup: React.FC<PopupProps> = ({ properties }) => {
   return (
     <>
       <div className={classes.popupContainer}>
-        <div className={classes.ciscoPopupIcon} />
-        <h3>{properties.title}</h3>
+        <div className={classes.popupItemContainer}>
+          <span className={classes.popupContentLabel}>Network Name: </span>
+          <span className={classes.popupContentValue}>{properties.name}</span>
+        </div>
+        <div className={classes.popupItemContainer}>
+          <span className={classes.popupContentLabel}>Device: </span>
+          <span className={classes.popupContentValue}>{properties.extId}</span>
+        </div>
+        <div className={classes.popupItemContainer}>
+          <span className={classes.popupContentLabel}>Packet Loss: </span>
+          <span className={classes.popupContentValue}>{`${properties.packetloss} %`}</span>
+        </div>
+        <div className={classes.popupItemContainer}>
+          <span className={classes.popupContentLabel}>Latency: </span>
+          <span className={classes.popupContentValue}>{`${properties.latency.toFixed(2)} ms`}</span>
+        </div>
+        <div className={classes.popupItemContainer}>
+          <span className={classes.popupContentLabel}>Goodput: </span>
+          <span className={classes.popupContentValue}>{`${properties.goodput / 1000} mbps`}</span>
+        </div>
       </div>
-      <p>{properties.city_name}</p>
     </>
   );
 };

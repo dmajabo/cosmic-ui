@@ -64,7 +64,7 @@ export const Sites: React.FC<SitesProps> = ({ networks, devices, orgError, orgLo
 
   const getDeviceToNetworkMap = (): DeviceToNetworkMap =>
     devices.reduce((acc, nextValue) => {
-      acc[nextValue.extId] = nextValue.networkId;
+      acc[nextValue.extId] = getNetworks().find(network => network.id === nextValue.networkId)?.name;
       return acc;
     }, {});
 

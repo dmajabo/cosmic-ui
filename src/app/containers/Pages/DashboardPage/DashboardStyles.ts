@@ -238,10 +238,7 @@ export const DashboardStyles = makeStyles(
         marginTop: 40,
       },
       popupContainer: {
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: 40,
+        textAlign: 'left',
       },
       verticalCenter: {
         marginTop: '10%',
@@ -257,6 +254,27 @@ export const DashboardStyles = makeStyles(
         border: '1px solid #cbd2dc',
         textAlign: 'center',
         width: 120,
+      },
+      popupItemContainer: {
+        padding: 5,
+      },
+      popupContentLabel: {
+        fontSize: 14,
+        fontWeight: 600,
+        color: 'black',
+      },
+      popupContentValue: {
+        fontSize: 14,
+        fontWeight: 500,
+        color: '#848DA3',
+      },
+      timeDiffContainer: {
+        width: 150,
+      },
+      timeDiffText: {
+        fontSize: 14,
+        fontWeight: 400,
+        color: '#848DA3',
       },
     }),
   {

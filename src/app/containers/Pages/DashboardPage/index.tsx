@@ -10,9 +10,9 @@ import { DashboardItemContainer, DashboardItemContent, DashboardItemLabel, GridC
 import InOutBound from './components/ManagmentItem/InOutBound';
 import ManagementLayer7 from './components/ManagmentItem/ManagementLayer7';
 import ManagementDrifts from './components/ManagmentItem/ManagementDrifts';
-import { AnomaliesResponse, AnomalySummary, DashboardSitesViewTab, Device, OnPremDevicesResponse, SITES_COLUMNS, SITES_DATA } from './enum';
+import { AnomaliesResponse, AnomalySummary, DashboardSitesViewTab, Device, DeviceMetrics, MapDeviceDataResponse, OnPremDevicesResponse, SitesData, SITES_COLUMNS, SITES_DATA } from './enum';
 import { Feature, Map } from './components/Map/Map';
-import { useGet } from 'lib/api/http/useAxiosHook';
+import { useGet, useGetChainData } from 'lib/api/http/useAxiosHook';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { TopoApi } from 'lib/api/ApiModels/Services/topo';
 import LoadingIndicator from 'app/components/Loading';
@@ -25,6 +25,9 @@ import { AlertApi } from 'lib/api/ApiModels/Services/alert';
 import sortBy from 'lodash/sortBy';
 import { isEmpty } from 'lodash';
 import { EmptyText } from 'app/components/Basic/NoDataStyles/NoDataStyles';
+import { TelemetryApi } from 'lib/api/ApiModels/Services/telemetry';
+import { DateTime } from 'luxon';
+import { getCorrectedTimeString } from '../MetricsPage/components/Utils';
 
 const Tab = styled(TabUnstyled)`
   color: #848da3;
@@ -67,6 +70,8 @@ const TabsList = styled(TabsListUnstyled)`
 
 const BASE_ANOMALIES_PAGE_SIZE = 10;
 
+const INPUT_TIME_FORMAT = 'yyyy-MM-dd HH:mm:ss ZZZ z';
+
 const DashboardPage: React.FC = () => {
   const classes = DashboardStyles();
   const userContext = useContext<UserContextState>(UserContext);
@@ -78,7 +83,7 @@ const DashboardPage: React.FC = () => {
   const [anomalies, setAnomalies] = useState<AnomalySummary[]>([]);
   const [anomaliesPageSize, setAnomaliesPageSize] = useState<number>(BASE_ANOMALIES_PAGE_SIZE);
 
-  const { loading, error, response, onGet } = useGet<OnPremDevicesResponse>();
+  const { loading, error, response, onGetChainData } = useGetChainData<MapDeviceDataResponse>();
   const { response: anomaliesResponse, loading: anomaliesLoading, error: anomaliesError, onGet: getAnomalies } = useGet<AnomaliesResponse>();
 
   const onTabChange = (event: React.SyntheticEvent<Element, Event>, value: string | number) => {
@@ -88,21 +93,43 @@ const DashboardPage: React.FC = () => {
   const getAnomalySummaryPage = (pageSize: number) => getAnomalies(AlertApi.getAnomalies(), userContext.accessToken!, { pageSize: pageSize });
 
   useEffect(() => {
-    onGet(TopoApi.getOnPremDeviceList(), userContext.accessToken!);
+    onGetChainData([TopoApi.getOnPremDeviceList(), TelemetryApi.getDeviceMetrics()], ['devices', 'deviceMetrics'], userContext.accessToken!, { startTime: '-1d', endTime: '-0m' });
     getAnomalySummaryPage(anomaliesPageSize);
   }, []);
 
   const convertDataToFeatures = useCallback(
-    (devices: Device[] = []): Feature[] => {
-      return devices.map(device => ({
-        type: 'Feature',
-        properties: { title: device.extId, city_name: device.cityName },
-        geometry: {
-          coordinates: [device.lon, device.lat],
-          type: 'Point',
-          name: device.id,
-        },
-      }));
+    (devices: Device[] = [], deviceMetrics: DeviceMetrics[] = []): Feature[] => {
+      return devices.map(device => {
+        const selectedDeviceMetrics: DeviceMetrics = deviceMetrics.find(deviceMetric => device.extId === deviceMetric.extId);
+        return {
+          type: 'Feature',
+          properties: { title: device.extId, ...selectedDeviceMetrics },
+          geometry: {
+            coordinates: [device.lon, device.lat],
+            type: 'Point',
+            name: device.id,
+          },
+        };
+      });
+    },
+    [response],
+  );
+
+  const convertDataToSitesData = useCallback(
+    (deviceMetrics: DeviceMetrics[] = []): SitesData[] => {
+      return deviceMetrics.map(device => {
+        return {
+          name: device?.extId || '',
+          uplinkType: device?.uplinkType || '',
+          availability: device?.availibility || '',
+          totalUsage: `${device?.bytesSendUsage || ''} ${device?.bytesReceivedUsage || ''}`,
+          avgBandwidth: '',
+          latency: `${device?.latency.toFixed(2)} ms` || '',
+          packetLoss: `${device?.packetloss}%` || '',
+          goodput: `${device?.goodput / 1000} mbps`,
+          jitter: '',
+        };
+      });
     },
     [response],
   );
@@ -145,7 +172,7 @@ const DashboardPage: React.FC = () => {
             <div className={classes.sitesHeaderLeftSection}>
               <span className={classes.sites}>Devices</span>
               <div className={classes.pillContainer}>
-                <span className={classes.pillText}>{response?.totalCount}</span>
+                <span className={classes.pillText}>{response?.devices.totalCount}</span>
               </div>
             </div>
             <TabsUnstyled value={sitesViewTabName} onChange={onTabChange}>
@@ -163,14 +190,14 @@ const DashboardPage: React.FC = () => {
 
           {!loading && sitesViewTabName === DashboardSitesViewTab.Map && (
             <div className={classes.mapContainerMain}>
-              <Map features={convertDataToFeatures(response?.devices)} />
+              <Map features={convertDataToFeatures(response?.devices.devices, response?.deviceMetrics.deviceMetrics)} />
             </div>
           )}
 
           {!loading && sitesViewTabName === DashboardSitesViewTab.List && (
             <>
               <TableWrapper className={classes.tableWrapper}>
-                <DataTable className="tableSM fixedToParentHeight" id="meraki_sites" responsiveLayout="scroll" value={SITES_DATA} scrollable>
+                <DataTable className="tableSM fixedToParentHeight" id="meraki_sites" responsiveLayout="scroll" value={convertDataToSitesData(response?.deviceMetrics.deviceMetrics)} scrollable>
                   <Column
                     headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700 }}
                     style={{
@@ -178,12 +205,6 @@ const DashboardPage: React.FC = () => {
                     }}
                     field={SITES_COLUMNS.name.field}
                     header={SITES_COLUMNS.name.label}
-                  ></Column>
-                  <Column
-                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700 }}
-                    style={{ minWidth: SITES_COLUMNS.totalUsage.minWidth }}
-                    field={SITES_COLUMNS.totalUsage.field}
-                    header={SITES_COLUMNS.totalUsage.label}
                   ></Column>
                   <Column
                     headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700 }}
@@ -213,6 +234,7 @@ const DashboardPage: React.FC = () => {
                 currentPage={currentPage}
                 onChangePage={onChangeCurrentPage}
                 onChangePageSize={onChangePageSize}
+                pagingWrapStyles={{ display: totalCount < pageSize ? 'none' : '' }}
               />
             </>
           )}
@@ -252,16 +274,31 @@ const DashboardPage: React.FC = () => {
             )}
             {!anomaliesLoading &&
               !anomaliesError &&
-              anomalies.map(anomaly => (
-                <div key={anomaly.timestamp} className={classes.anomalyRow}>
-                  <div className={classes.severityLabelContainer}>
-                    <span className={classes.severityLabel}>H</span>
+              anomalies.map(anomaly => {
+                const now = DateTime.now();
+                const timestamp = DateTime.fromFormat(getCorrectedTimeString(anomaly.timestamp), INPUT_TIME_FORMAT);
+                const diff = now.diff(timestamp, ['years', 'months', 'days', 'hours', 'minutes']).toObject();
+                let diffString: string[] = [];
+                ['years', 'months', 'days', 'hours', 'minutes'].forEach(item => {
+                  if (diff[item] > 0) {
+                    diffString.push(`${Math.round(diff[item])} ${item} ago`);
+                    return;
+                  }
+                });
+                return (
+                  <div key={anomaly.timestamp} className={classes.anomalyRow}>
+                    <div className={classes.severityLabelContainer}>
+                      <span className={classes.severityLabel}>H</span>
+                    </div>
+                    <div>
+                      <span>{anomaly.descString}</span>
+                    </div>
+                    <div className={classes.timeDiffContainer}>
+                      <span className={classes.timeDiffText}>{diffString[0]}</span>
+                    </div>
                   </div>
-                  <div>
-                    <span>{anomaly.descString}</span>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
           </div>
           <div hidden={anomaliesResponse?.totalCount < anomaliesPageSize || true} className={`${classes.horizontalCenter} ${classes.loadMoreButton}`} onClick={loadMoreAnomalies}>
             Load More

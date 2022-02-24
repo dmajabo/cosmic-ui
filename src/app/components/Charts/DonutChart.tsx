@@ -236,7 +236,7 @@ const DonutChart: React.FC<Props> = (props: Props) => {
                   {total}
                 </TextStyle>
                 <TextStyle dx="0" dy={props.totalStyle ? props.totalStyle.offsetLabelY : '36'} fSize={props.totalStyle ? props.totalStyle.fontLabelSize : 14} color="var(--_defaultColor)">
-                  Drops
+                  Rules
                 </TextStyle>
               </g>
             </>

@@ -66,7 +66,7 @@ export const getHealthTableData = (connectivityMetrics: ConnectivityMetricsData[
     const sortedTimeString = sortBy(Object.keys(nextValue.metrics));
     const itemTableData: HealthTableData[] = sortedTimeString.map(timeItem => ({
       time: DateTime.fromMillis(Number(timeItem)).toFormat(HEALTH_TABLE_TIME_FORMAT),
-      value: Number((nextValue.metrics[timeItem] / 12).toFixed(0)),
+      value: Math.round(Number((nextValue.metrics[timeItem] / 12).toFixed(0))),
       connection: nextValue.name,
     }));
     return acc.concat(itemTableData);
