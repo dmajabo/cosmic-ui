@@ -84,7 +84,7 @@ const DashboardPage: React.FC = () => {
     (devices: Device[] = []): Feature[] => {
       return devices.map(device => ({
         type: 'Feature',
-        properties: { title: '', description: '' },
+        properties: { title: device.extId, city_name: device.cityName },
         geometry: {
           coordinates: [device.lon, device.lat],
           type: 'Point',
@@ -119,7 +119,7 @@ const DashboardPage: React.FC = () => {
         <DashboardItemContainer>
           <div className={classes.sitesHeader}>
             <div className={classes.sitesHeaderLeftSection}>
-              <span className={classes.sites}>Sites</span>
+              <span className={classes.sites}>Devices</span>
               <div className={classes.pillContainer}>
                 <span className={classes.pillText}>{response?.totalCount}</span>
               </div>
@@ -157,39 +157,15 @@ const DashboardPage: React.FC = () => {
                   ></Column>
                   <Column
                     headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700 }}
-                    style={{ minWidth: SITES_COLUMNS.uplinkType.minWidth }}
-                    field={SITES_COLUMNS.uplinkType.field}
-                    header={SITES_COLUMNS.uplinkType.label}
-                  ></Column>
-                  <Column
-                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700 }}
-                    style={{ minWidth: SITES_COLUMNS.availability.minWidth }}
-                    field={SITES_COLUMNS.availability.field}
-                    header={SITES_COLUMNS.availability.label}
-                  ></Column>
-                  <Column
-                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700 }}
                     style={{ minWidth: SITES_COLUMNS.totalUsage.minWidth }}
                     field={SITES_COLUMNS.totalUsage.field}
                     header={SITES_COLUMNS.totalUsage.label}
                   ></Column>
                   <Column
                     headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700 }}
-                    style={{ minWidth: SITES_COLUMNS.avgBandwidth.minWidth }}
-                    field={SITES_COLUMNS.avgBandwidth.field}
-                    header={SITES_COLUMNS.avgBandwidth.label}
-                  ></Column>
-                  <Column
-                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700 }}
                     style={{ minWidth: SITES_COLUMNS.latency.minWidth }}
                     field={SITES_COLUMNS.latency.field}
                     header={SITES_COLUMNS.latency.label}
-                  ></Column>
-                  <Column
-                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700 }}
-                    style={{ minWidth: SITES_COLUMNS.jitter.minWidth }}
-                    field={SITES_COLUMNS.jitter.field}
-                    header={SITES_COLUMNS.jitter.label}
                   ></Column>
                   <Column
                     headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700 }}
@@ -230,7 +206,46 @@ const DashboardPage: React.FC = () => {
       </GridItemContainer>
       <GridItemContainer gridArea="2 / 2 / 3 / 3">
         <DashboardItemContainer>
-          <DashboardItemLabel>Anomalies</DashboardItemLabel>
+          <div className={classes.dashboardLabelContainer}>
+            <DashboardItemLabel style={{ marginBottom: '0px' }}>Anomalies</DashboardItemLabel>
+            <div className={classes.pillContainer} style={{ marginLeft: '4px' }}>
+              <span className={classes.pillText}>{response?.totalCount}</span>
+            </div>
+          </div>
+          <div className={classes.anomaliesRowsContainer}>
+            <div className={classes.anomalyRow}>
+              <div className={classes.severityLabelContainer}>
+                <span className={classes.severityLabel}>H</span>
+              </div>
+              <div>
+                <span>Breeze Latency Anomaly went up by 10% from last week</span>
+              </div>
+            </div>
+            <div className={classes.anomalyRow}>
+              <div className={classes.severityLabelContainer}>
+                <span className={classes.severityLabel}>H</span>
+              </div>
+              <div>
+                <span>Breeze Latency Anomaly went up by 10% from last week</span>
+              </div>
+            </div>
+            <div className={classes.anomalyRow}>
+              <div className={classes.severityLabelContainer}>
+                <span className={classes.severityLabel}>H</span>
+              </div>
+              <div>
+                <span>Breeze Latency Anomaly went up by 10% from last week</span>
+              </div>
+            </div>
+            <div className={classes.anomalyRow}>
+              <div className={classes.severityLabelContainer}>
+                <span className={classes.severityLabel}>H</span>
+              </div>
+              <div>
+                <span>Breeze Latency Anomaly went up by 10% from last week</span>
+              </div>
+            </div>
+          </div>
         </DashboardItemContainer>
       </GridItemContainer>
     </GridContainer>

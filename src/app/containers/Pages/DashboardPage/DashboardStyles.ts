@@ -1,5 +1,6 @@
 import { Theme } from '@mui/material';
 import { createStyles, makeStyles } from '@mui/styles';
+import cisco_sites from './Icons/cisco_sites.svg';
 
 export const DashboardStyles = makeStyles(
   (theme: Theme) =>
@@ -37,6 +38,9 @@ export const DashboardStyles = makeStyles(
         marginLeft: '20px',
         backgroundColor: '#437FEC',
         borderRadius: '20px',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
       },
       pillText: {
         fontSize: '12px',
@@ -190,6 +194,59 @@ export const DashboardStyles = makeStyles(
         paddingLeft: 60,
         cursor: 'pointer',
       },
+      dashboardLabelContainer: {
+        display: 'flex',
+        alignItems: 'center',
+      },
+      anomaliesRowsContainer: {
+        marginTop: '20px',
+        maxHeight: '177px',
+        height: '177px',
+        overflowY: 'auto',
+        border: '1px solid #E7EDF9',
+        borderBottom: 0,
+      },
+      anomalyRow: {
+        paddingTop: '20px',
+        paddingBottom: '20px',
+        borderBottom: '1px solid #E7EDF9',
+        padding: '25px 30px 22px 20px',
+        display: 'inline-flex',
+      },
+      severityLabelContainer: {
+        backgroundColor: '#DC4545',
+        borderRadius: '50%',
+        marginRight: '20px',
+        display: 'inline-flex',
+        maxWidth: '29px',
+        width: '29px',
+        height: '29px',
+        maxHeight: '29px',
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+      severityLabel: {
+        fontWeight: 500,
+        fontSize: '14px',
+        lineHeight: '18px',
+        color: '#ffffff',
+      },
+      popupContainer: {
+        fontSize: 20,
+      },
+      ciscoPopupIcon: {
+        backgroundImage: `url(${cisco_sites})`,
+        width: 50,
+        height: 70,
+        marginTop: 40,
+      },
+      flexCenter: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: 40,
+      },
+      textCenter: {},
     }),
   {
     index: 1,

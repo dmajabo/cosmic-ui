@@ -9,9 +9,10 @@ export interface Device {
   readonly id: string;
   readonly name: string;
   readonly description: string;
+  readonly extId: string;
   readonly ownerId: string;
   readonly regionCode: string;
-  readonly city_name: string;
+  readonly cityName: string;
   readonly lat: number;
   readonly lon: number;
 }
