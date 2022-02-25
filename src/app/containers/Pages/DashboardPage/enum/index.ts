@@ -11,7 +11,7 @@ interface Tag {
 }
 
 interface Vnetwork {
-  readonly clients: number;
+  readonly numberOfOnetClients: number;
   readonly tags: Tag[];
 }
 
