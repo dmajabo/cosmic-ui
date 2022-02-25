@@ -130,7 +130,7 @@ const DashboardPage: React.FC = () => {
           packetLoss: `${deviceMetric?.packetloss}%` || '',
           goodput: `${deviceMetric?.goodput / 1000} mbps`,
           jitter: '',
-          clients: selectedDevice?.vnetworks.reduce((acc, vnetwork) => acc + vnetwork.clients, 0),
+          clients: selectedDevice?.vnetworks.reduce((acc, vnetwork) => acc + vnetwork.numberOfOnetClients, 0),
           tags: tagArray.join(),
         };
       });
