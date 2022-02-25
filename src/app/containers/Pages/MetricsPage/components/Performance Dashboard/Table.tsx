@@ -25,6 +25,7 @@ interface TableProps {
   readonly onSelectedRowsUpdate: Function;
   readonly columns: Column[];
   readonly data: Data[];
+  readonly defaultSelectedTestId: number;
 }
 
 const Styles = styled.div`
@@ -65,8 +66,11 @@ const Styles = styled.div`
   }
 `;
 
-const Table: React.FC<TableProps> = ({ onSelectedRowsUpdate, columns, data }) => {
+const Table: React.FC<TableProps> = ({ onSelectedRowsUpdate, columns, data, defaultSelectedTestId }) => {
   const classes = PerformanceDashboardStyles();
+
+  const selectedRowsObject = {};
+  selectedRowsObject[defaultSelectedTestId] = true;
 
   const {
     getTableProps,
@@ -87,6 +91,9 @@ const Table: React.FC<TableProps> = ({ onSelectedRowsUpdate, columns, data }) =>
     {
       columns,
       data,
+      initialState: {
+        selectedRowIds: selectedRowsObject,
+      },
     },
     useSortBy,
     usePagination,

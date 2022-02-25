@@ -25,6 +25,7 @@ const OutboundTable = (props: Props) => {
   const [data, setData] = React.useState<INetworkRule[]>([]);
   const [totalCount, setTotalCount] = React.useState<number>(0);
   const [columns, setColumns] = React.useState<IGridColumnField[]>([
+    { ...Layer3Columns.networkName },
     { ...Layer3Columns.policy, body: (d: INetworkRule) => cellTemplates.cellClassNameTemplate(d.policy || 'Allow', 'cellToCapitalize') },
     { ...Layer3Columns.protocol, body: (d: INetworkRule) => cellTemplates.cellClassNameTemplate(d.ipProtocol, 'cellToUpperCase') },
     { ...Layer3Columns.source, body: (d: INetworkRule) => cellTemplates.cellValueFromArrayTemplate(d.srcCidrs, 'name') },
@@ -32,6 +33,7 @@ const OutboundTable = (props: Props) => {
     { ...Layer3Columns.destination, body: (d: INetworkRule) => cellTemplates.cellValueFromArrayTemplate(d.destCidrs, 'name') },
     { ...Layer3Columns.destinationPort },
     { ...Layer3Columns.comment },
+    { ...Layer3Columns.description },
     { ...Layer3Columns.logging, body: (d: INetworkRule) => cellTemplates.cellCheckMarkTemplate(d.syslogEnabled) },
     // { ...Layer3Columns.portRange, body: d => rangeBodyTemplate(d) },
   ]);
@@ -100,7 +102,7 @@ const OutboundTable = (props: Props) => {
   };
 
   return (
-    <ComponentTableStyles>
+    <ComponentTableStyles style={{ display: data.length ? '' : 'none' }}>
       <InventoryTableHeader label="Outbound Rules" total={totalCount} columns={columnsRef.current} onColumnClick={onChangeColumn} onColumnOrderChange={onChangeOrder} />
       <TableWrapper style={{ minHeight: !data || !data.length ? '300px' : 'auto' }}>
         <DataTable

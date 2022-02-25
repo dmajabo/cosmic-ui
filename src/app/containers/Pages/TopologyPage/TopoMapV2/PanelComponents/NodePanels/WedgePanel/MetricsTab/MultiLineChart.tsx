@@ -82,7 +82,7 @@ export const MultiLineChart: React.FC<LineChartProps> = ({ dataValueSuffix, inpu
     const metrics = item.metrics.map(metric => {
       const timeString = getCorrectedTimeString(metric.time);
       const timestamp = DateTime.fromFormat(timeString, INPUT_TIME_FORMAT).toUTC();
-      return { x: timestamp.toMillis(), y: Number(metric.value), additionalTooltipItemLabel: item.additionalTooltipItemLabel, additionalTooltipItemValue: item.additionalTooltipItemValue };
+      return { x: timestamp.toMillis(), y: Number(metric.value), additionalTooltipItemValue: item.additionalTooltipItemValue };
     });
     return {
       name: item.name,
@@ -116,10 +116,9 @@ export const MultiLineChart: React.FC<LineChartProps> = ({ dataValueSuffix, inpu
       shared: sharedMarker,
       crosshairs: sharedMarker,
       useHTML: true,
-      pointFormat: `<br /><div><b>Series Name: </b>{series.name}</div>
-        <div><b>Value: </b>{point.y}</div>
-        ${showAdditionalTooltipItem ? `<div><b>{point.additionalTooltipItemLabel}: </b>{point.additionalTooltipItemValue}</div>` : ''}
-        `,
+      pointFormat: showAdditionalTooltipItem
+        ? `<div><div><b>{point.additionalTooltipItemValue}</b></div><div></div><b>Value </b>{point.y:,.0f}</div>`
+        : `<div><div><b>{series.name}</b><div><b>Value </b>{point.y:,.0f}</div></div></div>`,
       valueSuffix: dataValueSuffix ? ` ${dataValueSuffix}` : '',
     },
     plotOptions: {

@@ -116,18 +116,22 @@ const DashboardPage: React.FC = () => {
   );
 
   const convertDataToSitesData = useCallback(
-    (deviceMetrics: DeviceMetrics[] = []): SitesData[] => {
-      return deviceMetrics.map(device => {
+    (devices: Device[] = [], deviceMetrics: DeviceMetrics[] = []): SitesData[] => {
+      return deviceMetrics.map(deviceMetric => {
+        const selectedDevice = devices.find(device => device.extId === deviceMetric.extId);
+        const tagArray = selectedDevice?.vnetworks.reduce((acc, vnetwork) => acc.concat(vnetwork.tags), []).map(tag => tag.value);
         return {
-          name: device?.extId || '',
-          uplinkType: device?.uplinkType || '',
-          availability: device?.availibility || '',
-          totalUsage: `${device?.bytesSendUsage || ''} ${device?.bytesReceivedUsage || ''}`,
+          name: deviceMetric?.name || '',
+          uplinkType: deviceMetric?.uplinkType || '',
+          availability: deviceMetric?.availibility || '',
+          totalUsage: `${deviceMetric?.bytesSendUsage || ''} ${deviceMetric?.bytesReceivedUsage || ''}`,
           avgBandwidth: '',
-          latency: `${device?.latency.toFixed(2)} ms` || '',
-          packetLoss: `${device?.packetloss}%` || '',
-          goodput: `${device?.goodput / 1000} mbps`,
+          latency: `${deviceMetric?.latency.toFixed(2)} ms` || '',
+          packetLoss: `${deviceMetric?.packetloss}%` || '',
+          goodput: `${deviceMetric?.goodput / 1000} mbps`,
           jitter: '',
+          clients: selectedDevice?.vnetworks.reduce((acc, vnetwork) => acc + vnetwork.clients, 0),
+          tags: tagArray.join(),
         };
       });
     },
@@ -170,7 +174,7 @@ const DashboardPage: React.FC = () => {
         <DashboardItemContainer>
           <div className={classes.sitesHeader}>
             <div className={classes.sitesHeaderLeftSection}>
-              <span className={classes.sites}>Devices</span>
+              <span className={classes.sites}>Sites</span>
               <div className={classes.pillContainer}>
                 <span className={classes.pillText}>{response?.devices.totalCount}</span>
               </div>
@@ -197,7 +201,13 @@ const DashboardPage: React.FC = () => {
           {!loading && sitesViewTabName === DashboardSitesViewTab.List && (
             <>
               <TableWrapper className={classes.tableWrapper}>
-                <DataTable className="tableSM fixedToParentHeight" id="meraki_sites" responsiveLayout="scroll" value={convertDataToSitesData(response?.deviceMetrics.deviceMetrics)} scrollable>
+                <DataTable
+                  className="tableSM fixedToParentHeight"
+                  id="meraki_sites"
+                  responsiveLayout="scroll"
+                  value={convertDataToSitesData(response?.devices.devices, response?.deviceMetrics.deviceMetrics)}
+                  scrollable
+                >
                   <Column
                     headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700 }}
                     style={{
@@ -205,6 +215,18 @@ const DashboardPage: React.FC = () => {
                     }}
                     field={SITES_COLUMNS.name.field}
                     header={SITES_COLUMNS.name.label}
+                  ></Column>
+                  <Column
+                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700 }}
+                    style={{ minWidth: SITES_COLUMNS.clients.minWidth }}
+                    field={SITES_COLUMNS.clients.field}
+                    header={SITES_COLUMNS.clients.label}
+                  ></Column>
+                  <Column
+                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700 }}
+                    style={{ minWidth: SITES_COLUMNS.tags.minWidth }}
+                    field={SITES_COLUMNS.tags.field}
+                    header={SITES_COLUMNS.tags.label}
                   ></Column>
                   <Column
                     headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700 }}

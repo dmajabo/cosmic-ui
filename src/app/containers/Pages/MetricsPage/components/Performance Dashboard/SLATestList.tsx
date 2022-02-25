@@ -111,6 +111,21 @@ const columns: Column[] = [
 
 const COLUMNS_POPOVER = 'columns-popover';
 
+const getDefaultSelectedTestId = (tests: FinalTableData[]) => {
+  const testsWithIndex = tests.map((test, index) => ({ ...test, index: index }));
+  const validTestIds = testsWithIndex
+    .filter(test => {
+      if (!isNaN(Number(test.averageQoe.packetLoss)) && !isNaN(Number(test.averageQoe.latency))) {
+        if (Number(test.averageQoe.latency) > 0) {
+          return true;
+        }
+      }
+      return false;
+    })
+    .map(test => test.index);
+  return validTestIds[0];
+};
+
 export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteSlaTest, networks, merakiOrganizations, finalTableData, addSlaTest }) => {
   const classes = PerformanceDashboardStyles();
 
@@ -286,7 +301,7 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
           </div>
         </div>
         <div className={classes.tableContainer}>
-          <Table onSelectedRowsUpdate={onSelectedRowsUpdate} columns={selectedColumns} data={data} />
+          <Table onSelectedRowsUpdate={onSelectedRowsUpdate} columns={selectedColumns} data={data} defaultSelectedTestId={getDefaultSelectedTestId(finalTableData)} />
         </div>
       </div>
       <div className={classes.itemContainer}>

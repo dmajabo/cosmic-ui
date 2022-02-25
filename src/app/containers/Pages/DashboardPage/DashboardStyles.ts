@@ -255,16 +255,23 @@ export const DashboardStyles = makeStyles(
         textAlign: 'center',
         width: 120,
       },
+      popupHeaderContainer: {
+        padding: 10,
+      },
       popupItemContainer: {
-        padding: 5,
+        padding: '5px 5px 5px 10px',
+      },
+      popupTitle: {
+        fontSize: '16px',
+        fontWeight: 600,
       },
       popupContentLabel: {
-        fontSize: 14,
+        fontSize: '12px',
         fontWeight: 600,
         color: 'black',
       },
       popupContentValue: {
-        fontSize: 14,
+        fontSize: '12px',
         fontWeight: 500,
         color: '#848DA3',
       },
@@ -276,6 +283,7 @@ export const DashboardStyles = makeStyles(
         fontWeight: 400,
         color: '#848DA3',
       },
+      popupHr: {},
     }),
   {
     index: 1,

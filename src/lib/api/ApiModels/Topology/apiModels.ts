@@ -18,6 +18,7 @@ export enum ToposvcRuleType {
   L3_Inbound = 'L3_Inbound',
   L3_Outbound = 'L3_Outbound',
   L7_Outbound = 'L7_Outbound',
+  Cellular_Firewall = 'Cellular_Firewall',
 }
 
 export interface ITopologyGroup {
@@ -109,22 +110,23 @@ export interface INetworkSubnet extends IBaseEntity<string> {
 }
 
 export interface INetworkRule extends IBaseEntity<string> {
-  name: string;
-  ruleType: string;
-  destCidrs: INetworkCidr[];
-  srcCidrs: INetworkCidr[];
-  cidrs: INetworkCidr[];
-  fromPort: string;
-  toPort: string;
-  ipProtocol: string;
-  syslogEnabled: boolean;
-  comment: string;
-  policy: string;
-  ownerId: string;
-  regionCode: string;
-  extId: string;
-  description: string;
-  refSGroup: string;
+  readonly name: string;
+  readonly ruleType: string;
+  readonly destCidrs: INetworkCidr[];
+  readonly srcCidrs: INetworkCidr[];
+  readonly cidrs: INetworkCidr[];
+  readonly fromPort: string;
+  readonly toPort: string;
+  readonly ipProtocol: string;
+  readonly syslogEnabled: boolean;
+  readonly comment: string;
+  readonly policy: string;
+  readonly ownerId: string;
+  readonly regionCode: string;
+  readonly extId: string;
+  readonly description: string;
+  readonly refSGroup: string;
+  readonly networkName: string;
 }
 
 export interface INetworkSecurityGroup extends IBaseEntity<string> {

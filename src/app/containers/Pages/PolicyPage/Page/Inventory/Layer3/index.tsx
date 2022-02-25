@@ -3,6 +3,7 @@ import H2 from 'app/components/Basic/H2';
 import InboundTable from './InboundTable';
 import OutboundTable from './OutboundTable';
 import { LayerWrapper } from '../styles';
+import CellularTable from './CellularTable';
 
 interface Props {}
 
@@ -12,6 +13,7 @@ const Layer3 = (props: Props) => {
       <H2>Layer 3</H2>
       <InboundTable />
       <OutboundTable />
+      <CellularTable />
     </LayerWrapper>
   );
 };

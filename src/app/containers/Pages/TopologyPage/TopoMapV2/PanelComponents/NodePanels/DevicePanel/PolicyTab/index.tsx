@@ -9,6 +9,9 @@ import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 import { TopoApi } from 'lib/api/ApiModels/Services/topo';
 import { toTimestamp } from 'lib/api/ApiModels/paramBuilders';
 import { IDeviceNode } from 'lib/hooks/Topology/models';
+import { TableHeaderStyles } from 'app/components/Basic/Table/styles';
+import { RuleTableContainer } from './styles';
+import LoadingIndicator from 'app/components/Loading';
 
 interface IProps {
   dataItem: IDeviceNode;
@@ -18,7 +21,9 @@ const PolicyTab: React.FC<IProps> = (props: IProps) => {
   const { topology } = useTopologyV2DataContext();
   const userContext = useContext<UserContextState>(UserContext);
   const { response, loading, error, onGet } = useGet<IToposvcListSecurityGroupResponse>();
-  const [data, setData] = React.useState<INetworkRule[]>([]);
+  const [inboundData, setInboundData] = React.useState<INetworkRule[]>([]);
+  const [outboundData, setOutboundData] = React.useState<INetworkRule[]>([]);
+  const [cellularData, setCellularData] = React.useState<INetworkRule[]>([]);
 
   React.useEffect(() => {
     const _param: IResourceQueryParam = getQueryResourceParam(SecurityGroupsResourceTypes.VNetwork, props.dataItem.vnetworks[0].extId);
@@ -30,16 +35,26 @@ const PolicyTab: React.FC<IProps> = (props: IProps) => {
 
   React.useEffect(() => {
     if (response !== null && response[PolicyResKeyEnum.SecurityGroups] !== undefined) {
-      const _data = [];
+      const _inboundData = [];
+      const _outboundData = [];
+      const _cellularData = [];
       response[PolicyResKeyEnum.SecurityGroups].forEach(it => {
         if (!it.rules || !it.rules.length) {
           return;
         }
         it.rules.forEach(rule => {
-          _data.push(rule);
+          if (rule.ruleType === 'l3_inbound') {
+            _inboundData.push(rule);
+          } else if (rule.ruleType === 'l3_outbound') {
+            _outboundData.push(rule);
+          } else {
+            _cellularData.push(rule);
+          }
         });
       });
-      setData(_data);
+      setInboundData(_inboundData);
+      setOutboundData(_outboundData);
+      setCellularData(_cellularData);
     }
   }, [response]);
 
@@ -50,9 +65,35 @@ const PolicyTab: React.FC<IProps> = (props: IProps) => {
     await onGet(url, userContext.accessToken!, params);
   };
   // title={PolicyTableKeyEnum.Inbound}
-  return (
+  return loading && !inboundData.length && !outboundData.length && !cellularData.length ? (
     <>
-      <PolicyTable styles={{ margin: '0 0 20px 0', flexDirection: 'column' }} data={data} showLoader={loading} error={error ? error.message : null} />
+      <RuleTableContainer>
+        <TableHeaderStyles>Inbound Rules</TableHeaderStyles>
+        <PolicyTable styles={{ margin: '0 0 20px 0', flexDirection: 'column' }} data={[]} showLoader={loading} />
+      </RuleTableContainer>
+      <RuleTableContainer>
+        <TableHeaderStyles>Outbound Rules</TableHeaderStyles>
+        <PolicyTable styles={{ margin: '0 0 20px 0', flexDirection: 'column' }} data={[]} showLoader={loading} />
+      </RuleTableContainer>
+      <RuleTableContainer>
+        <TableHeaderStyles>Cellular Rules</TableHeaderStyles>
+        <PolicyTable styles={{ margin: '0 0 20px 0', flexDirection: 'column' }} data={[]} showLoader={loading} />
+      </RuleTableContainer>
+    </>
+  ) : (
+    <>
+      <RuleTableContainer style={{ display: inboundData.length ? '' : 'none' }}>
+        <TableHeaderStyles>Inbound Rules</TableHeaderStyles>
+        <PolicyTable styles={{ margin: '0 0 20px 0', flexDirection: 'column' }} data={inboundData} showLoader={loading} error={error ? error.message : null} />
+      </RuleTableContainer>
+      <RuleTableContainer style={{ display: outboundData.length ? '' : 'none' }}>
+        <TableHeaderStyles>Outbound Rules</TableHeaderStyles>
+        <PolicyTable styles={{ margin: '0 0 20px 0', flexDirection: 'column' }} data={outboundData} showLoader={loading} error={error ? error.message : null} />
+      </RuleTableContainer>
+      <RuleTableContainer style={{ display: cellularData.length ? '' : 'none' }}>
+        <TableHeaderStyles>Cellular Rules</TableHeaderStyles>
+        <PolicyTable styles={{ margin: '0 0 20px 0', flexDirection: 'column' }} data={cellularData} showLoader={loading} error={error ? error.message : null} />
+      </RuleTableContainer>
     </>
   );
 };
