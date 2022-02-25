@@ -47,7 +47,7 @@ export const DeviceHealth: React.FC<DeviceHealthProps> = ({ devices, timeRange, 
     if (response) {
       const metricsData: MultiLineMetricsData[] = devices.map(device => {
         const tsData: MetricsData[] = response[device].metrics.keyedmap.reduce((acc, nextValue) => acc.concat(nextValue.ts), []);
-        return { name: device, metrics: tsData, additionalTooltipItemLabel: 'Network Name', additionalTooltipItemValue: deviceToNetworkMap[device] };
+        return { name: device, metrics: tsData, additionalTooltipItemValue: deviceToNetworkMap[device] };
       });
       setMetricsData(metricsData);
     }

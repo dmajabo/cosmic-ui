@@ -29,6 +29,9 @@ const PolicyTable: React.FC<Props> = (props: Props) => {
                 #
               </TableCell>
               <TableCell style={{ minWidth: '80px' }} className={classes.tableHeadCell}>
+                Network Name
+              </TableCell>
+              <TableCell style={{ minWidth: '80px' }} className={classes.tableHeadCell}>
                 Source
               </TableCell>
               <TableCell className={classes.tableHeadCell} style={{ minWidth: '110px' }}>
@@ -41,6 +44,9 @@ const PolicyTable: React.FC<Props> = (props: Props) => {
                 Protocol
               </TableCell>
               <TableCell className={classes.tableHeadCell} style={{ minWidth: '110px' }}>
+                Description
+              </TableCell>
+              <TableCell className={classes.tableHeadCell} style={{ minWidth: '110px' }}>
                 Policy
               </TableCell>
             </TableRow>
@@ -51,12 +57,14 @@ const PolicyTable: React.FC<Props> = (props: Props) => {
                   return (
                     <TableRow hover tabIndex={-1} key={`tableRow${row.id || row.name}${rowIndex}`} className={classes.row}>
                       <TableCell className={classes.tableCell}>{rowIndex + 1}</TableCell>
+                      <TableCell className={classes.tableCell}>{row.networkName}</TableCell>
                       <TableCell className={classes.tableCell}>{row.srcCidrs && row.srcCidrs.length && row.srcCidrs[0].name ? row.srcCidrs[0].name : '*'}</TableCell>
                       <TableCell className={classes.tableCell}>{row.fromPort}</TableCell>
                       <TableCell className={classes.tableCell}>{row.destCidrs && row.destCidrs.length && row.destCidrs[0].name ? row.destCidrs[0].name : '*'}</TableCell>
                       <TableCell className={classes.tableCell} style={{ textTransform: 'uppercase' }}>
                         {row.ipProtocol}
                       </TableCell>
+                      <TableCell className={classes.tableCell}>{row.description}</TableCell>
                       <TableCell className={classes.tableCell}>{row.policy}</TableCell>
                     </TableRow>
                   );

@@ -19,7 +19,7 @@ import { TopoApi } from 'lib/api/ApiModels/Services/topo';
 import * as cellTemplates from 'app/components/Basic/Table/CellTemplates';
 interface Props {}
 
-const InboundTable = (props: Props) => {
+const CellularTable = (props: Props) => {
   const userContext = React.useContext<UserContextState>(UserContext);
   const { response, loading, error, onGet } = useGet<IToposvcGetRulesResponse>();
   const [data, setData] = React.useState<INetworkRule[]>([]);
@@ -99,12 +99,12 @@ const InboundTable = (props: Props) => {
 
   const getDataAsync = async (_pageSize: number, _currentPage: number) => {
     const _param = paramBuilder(_pageSize, _currentPage);
-    await onGet(TopoApi.getRules(ToposvcRuleType.L3_Inbound), userContext.accessToken!, _param);
+    await onGet(TopoApi.getRules(ToposvcRuleType.Cellular_Firewall), userContext.accessToken!, _param);
   };
 
   return (
     <ComponentTableStyles style={{ display: data.length ? '' : 'none' }}>
-      <InventoryTableHeader label="Inbound Rules" total={totalCount} columns={columnsRef.current} onColumnClick={onChangeColumn} onColumnOrderChange={onChangeOrder} />
+      <InventoryTableHeader label="Cellular Rules" total={totalCount} columns={columnsRef.current} onColumnClick={onChangeColumn} onColumnOrderChange={onChangeOrder} />
       <TableWrapper style={{ minHeight: !data || !data.length ? '300px' : 'auto' }}>
         <DataTable
           className="table"
@@ -157,4 +157,4 @@ const InboundTable = (props: Props) => {
   );
 };
 
-export default React.memo(InboundTable);
+export default React.memo(CellularTable);

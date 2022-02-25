@@ -195,7 +195,7 @@ const DonutChart: React.FC<Props> = (props: Props) => {
             <>
               <g transform={`translate(${centerX}, ${centerY})`}>
                 {arcs.map((arc, i) => {
-                  if (arc.data.hide) return null;
+                  if (arc.data.hide || !arc.data) return null;
                   return (
                     <g id={`arcG${arc.index}`} data-value={arc.data.value} key={`path${i}${arc.data.name}`} onClick={arc.onClick} style={{ cursor: 'pointer' }}>
                       <path id={`arc${arc.index}`} d={arc.path} fill={arc.color} stroke="var(--_primaryBg)" strokeWidth="2.5" />
@@ -210,6 +210,9 @@ const DonutChart: React.FC<Props> = (props: Props) => {
                       >
                         <div
                           id={`arcValue${arc.index}`}
+                          title={`${arc.data.name}: ${arc.data.value}`}
+                          onMouseEnter={arc.onMouseEnter}
+                          onMouseLeave={arc.onMouseLeave}
                           style={{
                             fontFamily: 'DMSans',
                             fontWeight: 'bold',
@@ -243,63 +246,6 @@ const DonutChart: React.FC<Props> = (props: Props) => {
           ) : null}
         </svg>
       </ChartWrapContainer>
-      {props.legendPosition === 'bottom' && (
-        <LegendBottom height={props.donutHeight} style={props.legendStyles}>
-          {arcs.map(it => {
-            return (
-              <LegendItem
-                title={`${it.data.name}: ${it.data.value}`}
-                key={`leftLEgendItem${it.data.name}`}
-                onClick={() => onLegendItemClick(it.index)}
-                onMouseEnter={it.onMouseEnter}
-                onMouseLeave={it.onMouseLeave}
-                style={props.legendItemStyle}
-              >
-                <LegendColor color={it.color} hide={it.data.hide} />
-                <LegendLabel hide={it.data.hide}>{it.data.name}</LegendLabel>
-              </LegendItem>
-            );
-          })}
-        </LegendBottom>
-      )}
-      {props.legendPosition === 'both' && (
-        <LegendLeft>
-          {arcs.map(it => {
-            if (!it.isLeftArc) return null;
-            return (
-              <LegendItem
-                title={`${it.data.name}: ${it.data.value}`}
-                key={`leftLEgendItem${it.data.name}`}
-                onClick={() => onLegendItemClick(it.index)}
-                onMouseEnter={it.onMouseEnter}
-                onMouseLeave={it.onMouseLeave}
-              >
-                <LegendColor color={it.color} hide={it.data.hide} />
-                <LegendLabel hide={it.data.hide}>{it.data.name}</LegendLabel>
-              </LegendItem>
-            );
-          })}
-        </LegendLeft>
-      )}
-      {props.legendPosition === 'both' && (
-        <LegendRight>
-          {arcs.map(it => {
-            if (it.isLeftArc) return null;
-            return (
-              <LegendItem
-                key={`rightLEgendItem${it.data.name}`}
-                title={`${it.data.name}: ${it.data.value}`}
-                onClick={() => onLegendItemClick(it.index)}
-                onMouseEnter={it.onMouseEnter}
-                onMouseLeave={it.onMouseLeave}
-              >
-                <LegendColor color={it.color} hide={it.data.hide} />
-                <LegendLabel hide={it.data.hide}>{it.data.name}</LegendLabel>
-              </LegendItem>
-            );
-          })}
-        </LegendRight>
-      )}
     </ChartLegendWrapContainer>
   );
 };

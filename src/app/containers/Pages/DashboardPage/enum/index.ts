@@ -5,6 +5,16 @@ export enum DashboardSitesViewTab {
   List = 'list',
 }
 
+interface Tag {
+  readonly key: string;
+  readonly value: string;
+}
+
+interface Vnetwork {
+  readonly clients: number;
+  readonly tags: Tag[];
+}
+
 export interface Device {
   readonly id: string;
   readonly name: string;
@@ -15,6 +25,7 @@ export interface Device {
   readonly cityName: string;
   readonly lat: number;
   readonly lon: number;
+  readonly vnetworks: Vnetwork[];
 }
 
 export interface OnPremDevicesResponse {
@@ -63,6 +74,8 @@ export interface SitesData {
   readonly jitter: string;
   readonly packetLoss: string;
   readonly goodput: string;
+  readonly clients: number;
+  readonly tags: string;
 }
 
 export interface SitesGridColumns {
@@ -75,6 +88,8 @@ export interface SitesGridColumns {
   jitter: IGridColumnField;
   packetLoss: IGridColumnField;
   goodput: IGridColumnField;
+  clients: IGridColumnField;
+  tags: IGridColumnField;
 }
 
 export const SITES_COLUMNS: SitesGridColumns = {
@@ -131,6 +146,18 @@ export const SITES_COLUMNS: SitesGridColumns = {
     resField: 'goodput',
     field: 'goodput',
     minWidth: '100px',
+  },
+  clients: {
+    label: 'CLIENTS',
+    resField: 'clients',
+    field: 'clients',
+    minWidth: '160px',
+  },
+  tags: {
+    label: 'TAGS',
+    resField: 'tags',
+    field: 'tags',
+    minWidth: '160px',
   },
 };
 

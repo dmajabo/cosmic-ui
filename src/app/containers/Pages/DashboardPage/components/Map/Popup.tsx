@@ -1,3 +1,4 @@
+import isNumber from 'lodash/isNumber';
 import React from 'react';
 import { DashboardStyles } from '../../DashboardStyles';
 import { Properties } from './Map';
@@ -11,25 +12,21 @@ export const Popup: React.FC<PopupProps> = ({ properties }) => {
   return (
     <>
       <div className={classes.popupContainer}>
-        <div className={classes.popupItemContainer}>
-          <span className={classes.popupContentLabel}>Network Name: </span>
-          <span className={classes.popupContentValue}>{properties.name}</span>
+        <div className={classes.popupHeaderContainer}>
+          <span className={classes.popupTitle}>{properties.name}</span>
         </div>
-        <div className={classes.popupItemContainer}>
-          <span className={classes.popupContentLabel}>Device: </span>
-          <span className={classes.popupContentValue}>{properties.extId}</span>
-        </div>
+        <hr className={classes.popupHr} />
         <div className={classes.popupItemContainer}>
           <span className={classes.popupContentLabel}>Packet Loss: </span>
-          <span className={classes.popupContentValue}>{`${properties.packetloss} %`}</span>
+          <span className={classes.popupContentValue}>{isNumber(properties.packetloss) ? `${properties.packetloss}%` : 'NaN'}</span>
         </div>
         <div className={classes.popupItemContainer}>
           <span className={classes.popupContentLabel}>Latency: </span>
-          <span className={classes.popupContentValue}>{`${properties.latency.toFixed(2)} ms`}</span>
+          <span className={classes.popupContentValue}>{isNumber(properties.latency) ? `${properties.latency.toFixed(2)} ms` : 'NaN'}</span>
         </div>
         <div className={classes.popupItemContainer}>
           <span className={classes.popupContentLabel}>Goodput: </span>
-          <span className={classes.popupContentValue}>{`${properties.goodput / 1000} mbps`}</span>
+          <span className={classes.popupContentValue}>{isNumber(properties.goodput) ? `${properties.goodput / 1000} mbps` : 'NaN'}</span>
         </div>
       </div>
     </>

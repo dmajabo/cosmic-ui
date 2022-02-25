@@ -141,7 +141,7 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
           <br /><div><b>Test:</b> {point.rowName}</div><br />
           <div><b>Device:</b> {point.deviceName}</div><br />
           <div><b>Destination:</b> {point.destination}</div><br />
-          <div><b>Value:</b> {point.y}{point.dataValueSuffix}</div><br />
+          <div><b>Value:</b> {point.y:,.0f}{point.dataValueSuffix}</div><br />
           `,
         },
       };
@@ -179,7 +179,7 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
       tooltip: {
         useHTML: true,
         pointFormat: `
-          <div><b>Anomaly:</b> {point.y}{point.dataValueSuffix}</div><br />
+          <div><b>Anomaly:</b> {point.y:,.0f}{point.dataValueSuffix}</div><br />
           `,
       },
     }));
@@ -206,7 +206,7 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
         tooltip: {
           useHTML: true,
           pointFormat: `
-          <div><b>Threshold:</b> {point.y}{point.dataValueSuffix}</div><br />
+          <div><b>Threshold:</b> {point.y:,.0f}{point.dataValueSuffix}</div><br />
           `,
         },
       };
@@ -239,8 +239,8 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
         tooltip: {
           useHTML: true,
           pointFormat: `
-          <div><b>Upperbound: </b>{point.high}</div><br />
-          <div><b>Lowerbound: </b>{point.low}</div><br />
+          <div><b>Upperbound: </b>{point.high:,.0f}</div><br />
+          <div><b>Lowerbound: </b>{point.low:,.0f}</div><br />
           `,
         },
       };

@@ -1,16 +1,18 @@
 import { IGridColumnField } from 'lib/models/grid';
 
 export interface ILayer3GridColumns {
-  id: IGridColumnField;
-  policy: IGridColumnField;
-  protocol: IGridColumnField;
-  source: IGridColumnField;
-  sourcePort: IGridColumnField;
-  destination: IGridColumnField;
-  destinationPort: IGridColumnField;
-  comment: IGridColumnField;
-  logging: IGridColumnField;
-  portRange: IGridColumnField;
+  readonly id: IGridColumnField;
+  readonly policy: IGridColumnField;
+  readonly protocol: IGridColumnField;
+  readonly source: IGridColumnField;
+  readonly sourcePort: IGridColumnField;
+  readonly destination: IGridColumnField;
+  readonly destinationPort: IGridColumnField;
+  readonly comment: IGridColumnField;
+  readonly logging: IGridColumnField;
+  readonly portRange: IGridColumnField;
+  readonly networkName: IGridColumnField;
+  readonly description: IGridColumnField;
 }
 
 export const Layer3Columns: ILayer3GridColumns = {
@@ -20,6 +22,15 @@ export const Layer3Columns: ILayer3GridColumns = {
     id: 'layer3Id',
     field: 'id',
     width: '40px',
+    hide: false,
+    sortable: false,
+  },
+  networkName: {
+    label: 'Network',
+    resField: 'networkName',
+    id: 'layer3NetworkName',
+    field: 'networkName',
+    width: '200px',
     hide: false,
     sortable: false,
   },
@@ -64,6 +75,15 @@ export const Layer3Columns: ILayer3GridColumns = {
     resField: 'destCidrs',
     id: 'layer3destination',
     field: 'destCidrs',
+    width: '200px',
+    hide: false,
+    sortable: true,
+  },
+  description: {
+    label: 'Description',
+    resField: 'description',
+    id: 'layer3desctiption',
+    field: 'description',
     width: '200px',
     hide: false,
     sortable: true,
