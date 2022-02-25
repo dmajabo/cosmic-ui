@@ -29,6 +29,7 @@ const Layer7 = (props: Props) => {
   const [data, setData] = React.useState<INetworkL7Rule[]>([]);
   const [totalCount, setTotalCount] = React.useState<number>(0);
   const [columns, setColumns] = React.useState<IGridColumnField[]>([
+    { ...Layer7Columns.networkName },
     { ...Layer7Columns.policy, body: d => policyBodyTemplate(d) },
     { ...Layer7Columns.application, body: d => applicationBodyTemplate(d) },
   ]);

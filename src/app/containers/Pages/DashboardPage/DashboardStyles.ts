@@ -19,7 +19,7 @@ export const DashboardStyles = makeStyles(
       },
       tableWrapper: {
         width: '100%',
-        maxHeight: 'calc(100% - 154px)',
+        maxHeight: 'calc(100% - 10px)',
         height: 'auto',
         flexGrow: 'unset',
         margin: '0 0 auto 0',
@@ -200,8 +200,8 @@ export const DashboardStyles = makeStyles(
       },
       anomaliesRowsContainer: {
         marginTop: '20px',
-        maxHeight: '177px',
-        height: '177px',
+        maxHeight: '220px',
+        height: '220px',
         overflowY: 'auto',
         border: '1px solid #E7EDF9',
         borderBottom: 0,

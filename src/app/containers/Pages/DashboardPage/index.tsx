@@ -28,6 +28,7 @@ import { EmptyText } from 'app/components/Basic/NoDataStyles/NoDataStyles';
 import { TelemetryApi } from 'lib/api/ApiModels/Services/telemetry';
 import { DateTime } from 'luxon';
 import { getCorrectedTimeString } from '../MetricsPage/components/Utils';
+import BandwidthComponent from '../TrafficPage/Trends/Components/BandwidthComponent';
 
 const Tab = styled(TabUnstyled)`
   color: #848da3;
@@ -124,7 +125,7 @@ const DashboardPage: React.FC = () => {
           name: deviceMetric?.name || '',
           uplinkType: deviceMetric?.uplinkType || '',
           availability: deviceMetric?.availibility || '',
-          totalUsage: `${deviceMetric?.bytesSendUsage || ''} ${deviceMetric?.bytesReceivedUsage || ''}`,
+          totalUsage: `${deviceMetric?.bytesSendUsage} MB ${deviceMetric?.bytesReceivedUsage} MB`,
           avgBandwidth: '',
           latency: `${deviceMetric?.latency.toFixed(2)} ms` || '',
           packetLoss: `${deviceMetric?.packetloss}%` || '',
@@ -170,7 +171,7 @@ const DashboardPage: React.FC = () => {
 
   return (
     <GridContainer>
-      <GridItemContainer gridArea="1 / 1 / 3 / 2" minResponciveHeight="500px">
+      <GridItemContainer gridArea="1 / 1 / 2 / 2" minResponciveHeight="500px">
         <DashboardItemContainer>
           <div className={classes.sitesHeader}>
             <div className={classes.sitesHeaderLeftSection}>
@@ -218,6 +219,14 @@ const DashboardPage: React.FC = () => {
                   ></Column>
                   <Column
                     headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700 }}
+                    style={{
+                      minWidth: SITES_COLUMNS.totalUsage.minWidth,
+                    }}
+                    field={SITES_COLUMNS.totalUsage.field}
+                    header={SITES_COLUMNS.totalUsage.label}
+                  ></Column>
+                  <Column
+                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700 }}
                     style={{ minWidth: SITES_COLUMNS.clients.minWidth }}
                     field={SITES_COLUMNS.clients.field}
                     header={SITES_COLUMNS.clients.label}
@@ -260,6 +269,14 @@ const DashboardPage: React.FC = () => {
               />
             </>
           )}
+        </DashboardItemContainer>
+      </GridItemContainer>
+      <GridItemContainer gridArea="2 / 1 / 2 / 2">
+        <DashboardItemContainer>
+          <DashboardItemLabel>Sankey</DashboardItemLabel>
+          <DashboardItemContent>
+            <BandwidthComponent />
+          </DashboardItemContent>
         </DashboardItemContainer>
       </GridItemContainer>
       <GridItemContainer gridArea="1 / 2 / 2 / 3">
