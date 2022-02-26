@@ -1,6 +1,17 @@
 import { ICollapseStyles, NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
+import { IAppNode } from 'lib/api/ApiModels/Topology/apiModels';
 import { IObject, ISize, STANDART_DISPLAY_RESOLUTION_V2 } from 'lib/models/general';
-import { FilterEntityOptions, IDeviceNode, INetworkVNetNode, INetworkVNetworkPeeringConnectionNode, INetworkWebAclNode, ITopoAccountNode, ITopoRegionNode, ITopoSitesNode } from '../models';
+import {
+  FilterEntityOptions,
+  IDeviceNode,
+  INetworkVNetNode,
+  INetworkVNetworkPeeringConnectionNode,
+  INetworkWebAclNode,
+  ITopoAccountNode,
+  ITopoAppNode,
+  ITopoRegionNode,
+  ITopoSitesNode,
+} from '../models';
 import { getCollapseExpandState } from './buildNodeHelpers';
 import {
   getChildContainerWidth,
@@ -13,10 +24,18 @@ import {
   set_Horizontal_Coord_TopoNode,
 } from './sizeHelpers';
 
-export const updateTopLevelItems = (filter: FilterEntityOptions, regions: IObject<ITopoRegionNode>, accounts: IObject<ITopoAccountNode>, sites: IObject<ITopoSitesNode>) => {
+export const updateTopLevelItems = (
+  filter: FilterEntityOptions,
+  regions: IObject<ITopoRegionNode>,
+  accounts: IObject<ITopoAccountNode>,
+  sites: IObject<ITopoSitesNode>,
+  appNodes: IObject<ITopoAppNode>,
+) => {
   let regionSizes: ISize = { width: 0, height: 0 };
   let accountSizes: ISize = { width: 0, height: 0 };
   let sitesSizes: ISize = { width: 0, height: 0 };
+  let appNodesSizes: ISize = { width: 0, height: 0 };
+
   if (accounts && Object.keys(accounts).length) {
     const _startYPos = STANDART_DISPLAY_RESOLUTION_V2.height / 2;
     accountSizes = updateAccountItems(filter.transit.selected, accounts, _startYPos);
@@ -28,6 +47,10 @@ export const updateTopLevelItems = (filter: FilterEntityOptions, regions: IObjec
   if (sites && Object.keys(sites).length) {
     const _startYPos = STANDART_DISPLAY_RESOLUTION_V2.height / 2 + NODES_CONSTANTS.ACCOUNT.spaceY * 1.5;
     sitesSizes = updateSitesItems(filter.sites.selected, sites, _startYPos);
+  }
+  if (appNodes && Object.keys(appNodes).length) {
+    const _startYPos = STANDART_DISPLAY_RESOLUTION_V2.height / 2 + NODES_CONSTANTS.ACCOUNT.spaceY * 1.5;
+    appNodesSizes = updateAppNodesItems(filter.sites.selected, appNodes, _startYPos);
   }
   setRegionsCoord(filter, regions, regionSizes, STANDART_DISPLAY_RESOLUTION_V2.width);
   setAccountsCoord(accounts, accountSizes, STANDART_DISPLAY_RESOLUTION_V2.width);
@@ -218,6 +241,31 @@ const setUpAccountChildCoord = (account: ITopoAccountNode, items: any[]) => {
 
 // Set coord for sites, devices
 export const updateSitesItems = (showChildrens: boolean, items: IObject<ITopoSitesNode>, offsetY: number): ISize => {
+  if (!items || !Object.keys(items).length) return { width: 0, height: 0 };
+  let offsetX = 0;
+  let maxNodeHeight = 0;
+  Object.keys(items).forEach((key, i) => {
+    if (!showChildrens || !items[key].children || !items[key].children.length) {
+      items[key].collapsed = true;
+    }
+    if (items[key].children && items[key].children.length && items[key].children[0].length) {
+      const _rowWidth = getRowsWidth(items[key].children[0][0].itemsInRow, NODES_CONSTANTS.DEVICE.collapse.width, NODES_CONSTANTS.DEVICE.collapse.spaceX);
+      const _width = getTotalNodeWidth(_rowWidth, NODES_CONSTANTS.SITES.expanded.contentPadding * 2);
+      const _rows = Math.max(1, Math.ceil(items[key].children[0].length / items[key].children[0][0].itemsInRow));
+      const _rowsHeight = getChildContainerHeight(true, _rows, NODES_CONSTANTS.SITES.expanded.contentPadding, NODES_CONSTANTS.DEVICE.collapse.height, NODES_CONSTANTS.DEVICE.collapse.spaceY);
+      const _height = getTotalNodeHeight(_rowsHeight, NODES_CONSTANTS.SITES.headerHeight, NODES_CONSTANTS.SITES.expanded.contentPadding);
+      items[key].width = Math.max(_width, NODES_CONSTANTS.SITES.expanded.minWidth);
+      items[key].height = Math.max(_height, NODES_CONSTANTS.SITES.expanded.minHeight);
+    }
+    items[key].y = offsetY;
+    items[key].x = offsetX;
+    maxNodeHeight = Math.max(maxNodeHeight, items[key].height);
+    offsetX = offsetX + items[key].width + NODES_CONSTANTS.SITES.spaceX;
+  });
+  return { width: offsetX, height: maxNodeHeight };
+};
+
+export const updateAppNodesItems = (showChildrens: boolean, items: IObject<ITopoAppNode>, offsetY: number): ISize => {
   if (!items || !Object.keys(items).length) return { width: 0, height: 0 };
   let offsetX = 0;
   let maxNodeHeight = 0;

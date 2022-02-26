@@ -16,6 +16,7 @@ import { createTopologyQueryParam, ITopologyQueryParam } from 'lib/api/ApiModels
 import { TopoApi } from 'lib/api/ApiModels/Services/topo';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
+import { TelemetryApi } from 'lib/api/ApiModels/Services/telemetry';
 
 interface IProps {}
 
@@ -58,7 +59,7 @@ const TopoMapV2: React.FC<IProps> = (props: IProps) => {
   const onTryLoadData = async () => {
     const _st = topology.selectedTime || null;
     const param: ITopologyQueryParam = createTopologyQueryParam(_st);
-    await onGetChainData([PolicyApi.getSegments(), TopoApi.getAllOrganizations()], ['segments', 'organizations'], userContext.accessToken!, param);
+    await onGetChainData([PolicyApi.getSegments(), TopoApi.getAllOrganizations(), TelemetryApi.getAppAccess()], ['segments', 'organizations', 'siteAccessInfo'], userContext.accessToken!, param);
   };
 
   const onReloadData = async (startTime: Date | null) => {

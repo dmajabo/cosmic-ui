@@ -1,4 +1,4 @@
-import { INetworkDevice } from './../../../api/ApiModels/Topology/apiModels';
+import { INetworkDevice, ITopoTopoNode } from './../../../api/ApiModels/Topology/apiModels';
 import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
 import { INetworkOrg, INetworkwEdge, INetworkVNetwork, INetworkVNetworkPeeringConnection, INetworkRegion, INetworkWebAcl } from 'lib/api/ApiModels/Topology/apiModels';
 import {
@@ -13,6 +13,7 @@ import {
   FilterEntityOptions,
   ITopoSitesNode,
   IMapped_Segment,
+  ITopoAppNode,
 } from '../models';
 import uuid from 'react-uuid';
 import { ISegmentSegmentP } from 'lib/api/ApiModels/Policy/Segment';
@@ -55,6 +56,24 @@ export const createSitesNode = (item: ISegmentSegmentP): ITopoSitesNode => {
     visible: true,
     collapsed: false,
     children: [],
+    currentPage: 0,
+  };
+  return _obj;
+};
+
+export const createApplicationNode = (item: ITopoTopoNode): ITopoAppNode => {
+  const _obj: ITopoAppNode = {
+    dataItem: { ...item, extId: item.nodeId },
+    uiId: uuid(),
+    type: TopoNodeTypes.APPLICATION,
+    totalChildrenCount: 0,
+    width: 0,
+    height: 0,
+    x: 0,
+    y: 0,
+    visible: true,
+    collapsed: false,
+    // children: [],
     currentPage: 0,
   };
   return _obj;

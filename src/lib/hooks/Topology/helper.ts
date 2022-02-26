@@ -1,5 +1,5 @@
-import { IMapped_Segment, INetworkVNetNode, INetworkVNetworkPeeringConnectionNode, INetworkWebAclNode, ITopoLink } from 'lib/hooks/Topology/models';
-import { INetworkOrg, INetworkRegion, VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
+import { IMapped_Segment, INetworkVNetNode, INetworkVNetworkPeeringConnectionNode, INetworkWebAclNode, ITopoAppNode, ITopoLink } from 'lib/hooks/Topology/models';
+import { AppAccessApiResponse, AppNodeType, IAppNode, INetworkOrg, INetworkRegion, VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
 
 import {
   ITopoRegionNode,
@@ -27,6 +27,7 @@ import {
   createWebAclNode,
   createWedgeNode,
   updateDeviceNode,
+  createApplicationNode,
 } from './helpers/buildNodeHelpers';
 import { buildLinks } from './helpers/buildlinkHelper';
 import { updateTopLevelItems } from './helpers/coordinateHelper';
@@ -63,13 +64,14 @@ export const createAccounts = (accounts: IObject<ITopoAccountNode>, _data: INetw
   });
 };
 
-export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[], _segments: ISegmentSegmentP[]): ITopologyPreparedMapDataV2 => {
+export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[], _segments: ISegmentSegmentP[], appNodes: AppAccessApiResponse): ITopologyPreparedMapDataV2 => {
   const regions: IObject<ITopoRegionNode> = {};
   const accounts: IObject<ITopoAccountNode> = {};
   const sites: IObject<ITopoSitesNode> = {};
   const devicesInDefaultSegment: IDeviceNode[] = [];
   const segmentTempObject: ITempSegmentObjData = {};
   const segmentsFilteredOptions: IMapped_Segment[] = [];
+  let applicationNodes: IObject<ITopoAppNode> = {};
 
   if (_segments && _segments.length) {
     segmentTempObject['test'] = { id: 'test', extId: 'test', dataItem: _segments[0], children: [], type: SegmentSegmentType.NETWORK, uiId: uuid(), selected: true };
@@ -199,9 +201,19 @@ export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[]
     });
   }
 
-  updateTopLevelItems(filter, regions, accounts, sites);
+  // app nodes
+  applicationNodes = appNodes.siteAccessInfo.nodes.reduce((accu, nextItem) => {
+    if (nextItem.nodeType === AppNodeType.Application) {
+      const tempAppNode = createApplicationNode(nextItem);
+      accu[tempAppNode.dataItem.extId] = { ...tempAppNode, name: segmentTempObject[nextItem.nodeId]?.dataItem?.name, description: segmentTempObject[nextItem.nodeId]?.dataItem?.description };
+    }
+    return accu;
+  }, {});
+
+  updateTopLevelItems(filter, regions, accounts, sites, applicationNodes);
   const _links: IObject<ITopoLink<any, any, any>> = buildLinks(filter, regions, accounts, sites);
-  return { accounts: accounts, sites: sites, regions: regions, links: _links, segments: segmentsFilteredOptions };
+
+  return { accounts: accounts, sites: sites, regions: regions, links: _links, segments: segmentsFilteredOptions, appNodes: applicationNodes };
 };
 
 const buildRegionName = (org: INetworkOrg, region: INetworkRegion): string => {

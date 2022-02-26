@@ -2,7 +2,7 @@ import * as React from 'react';
 import { IObject, IPosition, ISelectedListItem, ITimeTypes, TIME_PERIOD } from 'lib/models/general';
 import { jsonClone } from 'lib/helpers/cloneHelper';
 // import { EntityTypes, IEntity } from 'lib/models/entites';
-import { INetworkOrg, ITopologyDataRes } from 'lib/api/ApiModels/Topology/apiModels';
+import { IAppNode, INetworkOrg, ITopologyDataRes, ITopoTopoNode } from 'lib/api/ApiModels/Topology/apiModels';
 import { ITimeMinMaxRange } from 'app/components/Inputs/TimeSlider/helpers';
 import { createTopology } from './helper';
 import {
@@ -14,6 +14,7 @@ import {
   IMapped_Segment,
   IPanelBar,
   ITopoAccountNode,
+  ITopoAppNode,
   ITopoLink,
   ITopologyPreparedMapDataV2,
   ITopoRegionNode,
@@ -50,7 +51,7 @@ export interface TopologyV2ContextType {
   accounts: IObject<ITopoAccountNode>;
   sites: IObject<ITopoSitesNode>;
   regions: IObject<ITopoRegionNode>;
-
+  applicationNodes: IObject<ITopoAppNode>;
   onChangeSitesPage: (sitesId: string, page: number) => void;
 
   selectedNode: any;
@@ -86,6 +87,7 @@ export function useTopologyV2Context(): TopologyV2ContextType {
 
   const [accounts, setAccountsNodes] = React.useState<IObject<ITopoAccountNode>>(null);
   const [sites, setSitesNodes] = React.useState<IObject<ITopoSitesNode>>(null);
+  const [applicationNodes, setApplicationNodes] = React.useState<IObject<ITopoAppNode>>(null);
   const [regions, setRegionsNodes] = React.useState<IObject<ITopoRegionNode>>(null);
 
   const [links, setLinks] = React.useState<IObject<ITopoLink<any, any, any>>>(null);
@@ -158,14 +160,18 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     }
     const _orgObj: INetworkOrg[] = res.organizations && res.organizations.organizations ? jsonClone(res.organizations.organizations) : null;
     const _segmentsObj: ISegmentSegmentP[] = res.segments && res.segments.segments ? jsonClone(res.segments.segments) : [];
-    const _data: ITopologyPreparedMapDataV2 = createTopology(entities, _orgObj, _segmentsObj);
+    const _data: ITopologyPreparedMapDataV2 = createTopology(entities, _orgObj, _segmentsObj, res.siteAccessInfo);
+
     if (_data) {
+      console.log(_data);
       setAccountsNodes(_data.accounts);
       setSitesNodes(_data.sites);
       setRegionsNodes(_data.regions);
 
       setLinks(_data.links);
       setSegments(_data.segments);
+
+      setApplicationNodes(_data.appNodes);
       linksRef.current = _data.links;
       segmentsRef.current = _data.segments;
       // nodesRef.current = _data.nodes;
@@ -423,5 +429,6 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     onSelectSegmentFilterOption,
 
     blockTooltip,
+    applicationNodes,
   };
 }

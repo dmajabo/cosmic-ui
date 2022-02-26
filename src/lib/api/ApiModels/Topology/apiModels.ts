@@ -503,6 +503,7 @@ export interface ITopologyMapData {
 export interface ITopologyDataRes {
   segments: IPolicysvcListSegmentPsResponse;
   organizations: ITopologyMapData;
+  siteAccessInfo: AppAccessApiResponse;
 }
 
 export interface ICloudVNetworkP extends IBaseEntity<string> {
@@ -577,4 +578,46 @@ export interface IToposvcGetRouteTableByExtIdResponse {
 
 export interface IToposvcGetSecurityGroupByExtIdResponse {
   securityGroup: INetworkSecurityGroup;
+}
+
+export enum AppNodeType {
+  Application = 'NODE_TYPE_APPLICATION',
+  Site = 'NODE_TYPE_SITE',
+}
+
+export enum AppNodeMemberType {
+  Network = 'MEMBER_TYPE_NETWORK',
+  Application = 'MEMBER_TYPE_APPLICATION',
+}
+
+interface TopoNodeMember extends IBaseEntity<string> {
+  name: string;
+  memberId: string;
+  memberType: AppNodeMemberType;
+}
+
+export interface ITopoTopoNode extends IBaseEntity<string> {
+  nodeId: string;
+  segmentId: string;
+  nodeType: AppNodeType;
+  members: TopoNodeMember;
+  extId?: string; // on ui
+}
+
+export interface AppAccessLink {
+  readonly destinationId: string;
+  readonly sourceId: string;
+  readonly value: string;
+}
+
+export interface AppAccessApiResponse {
+  readonly siteAccessInfo: {
+    links: AppAccessLink[];
+    nodes: ITopoTopoNode[];
+  };
+}
+
+export interface IAppNode extends ITopoTopoNode {
+  name?: string;
+  description?: string;
 }
