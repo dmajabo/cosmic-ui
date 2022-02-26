@@ -217,6 +217,15 @@ export const updateAccountItems = (showChildrens: boolean, items: IObject<ITopoA
   return { width: offsetX, height: maxNodeHeight };
 };
 
+export const setAppNodesCoord = (items: IObject<ITopoAppNode>, size: ISize, svgWidth: number) => {
+  if (!items || !Object.keys(items).length) return;
+  const hvw = svgWidth / 2;
+  Object.keys(items).forEach(key => {
+    set_Horizontal_Coord_TopoNode(items[key], hvw, size.width);
+    set_Vertical_Coord_TopoNode(items[key], size.height);
+  });
+};
+
 export const setAccountsCoord = (items: IObject<ITopoAccountNode>, size: ISize, svgWidth: number) => {
   if (!items || !Object.keys(items).length) return;
   const hvw = svgWidth / 2;
@@ -270,22 +279,21 @@ export const updateAppNodesItems = (showChildrens: boolean, items: IObject<ITopo
   let offsetX = 0;
   let maxNodeHeight = 0;
   Object.keys(items).forEach((key, i) => {
-    if (!showChildrens || !items[key].children || !items[key].children.length) {
+    if (!showChildrens) {
       items[key].collapsed = true;
     }
-    if (items[key].children && items[key].children.length && items[key].children[0].length) {
-      const _rowWidth = getRowsWidth(items[key].children[0][0].itemsInRow, NODES_CONSTANTS.DEVICE.collapse.width, NODES_CONSTANTS.DEVICE.collapse.spaceX);
-      const _width = getTotalNodeWidth(_rowWidth, NODES_CONSTANTS.SITES.expanded.contentPadding * 2);
-      const _rows = Math.max(1, Math.ceil(items[key].children[0].length / items[key].children[0][0].itemsInRow));
-      const _rowsHeight = getChildContainerHeight(true, _rows, NODES_CONSTANTS.SITES.expanded.contentPadding, NODES_CONSTANTS.DEVICE.collapse.height, NODES_CONSTANTS.DEVICE.collapse.spaceY);
-      const _height = getTotalNodeHeight(_rowsHeight, NODES_CONSTANTS.SITES.headerHeight, NODES_CONSTANTS.SITES.expanded.contentPadding);
-      items[key].width = Math.max(_width, NODES_CONSTANTS.SITES.expanded.minWidth);
-      items[key].height = Math.max(_height, NODES_CONSTANTS.SITES.expanded.minHeight);
-    }
-    items[key].y = offsetY;
-    items[key].x = offsetX;
+    // if (items[key].children && items[key].children.length) {
+    const _rowWidth = getRowsWidth(1, NODES_CONSTANTS.NETWORK_WEDGE.collapse.width, NODES_CONSTANTS.NETWORK_WEDGE.collapse.spaceX);
+    const _width = getTotalNodeWidth(_rowWidth, NODES_CONSTANTS.ACCOUNT.expanded.contentPadding * 2);
+    const _rowsHeight = getChildContainerHeight(true, 1, NODES_CONSTANTS.ACCOUNT.expanded.contentPadding, NODES_CONSTANTS.NETWORK_WEDGE.collapse.height, NODES_CONSTANTS.NETWORK_WEDGE.collapse.spaceY);
+    const _height = getTotalNodeHeight(_rowsHeight, NODES_CONSTANTS.ACCOUNT.headerHeight, NODES_CONSTANTS.ACCOUNT.expanded.contentPadding);
+    items[key].width = Math.max(_width, NODES_CONSTANTS.ACCOUNT.expanded.minWidth);
+    items[key].height = Math.max(_height, NODES_CONSTANTS.ACCOUNT.expanded.minHeight);
+    // }
     maxNodeHeight = Math.max(maxNodeHeight, items[key].height);
-    offsetX = offsetX + items[key].width + NODES_CONSTANTS.SITES.spaceX;
+    items[key].y = offsetY - maxNodeHeight / 2;
+    items[key].x = offsetX;
+    offsetX = offsetX + items[key].width + NODES_CONSTANTS.ACCOUNT.spaceX;
   });
   return { width: offsetX, height: maxNodeHeight };
 };
