@@ -296,13 +296,18 @@ const Triggers: React.FC<Props> = (props: Props) => {
             header={TriggerGridColumns.category.label}
           ></Column>
           <Column
-            style={{ width: TriggerGridColumns.severity.width, verticalAlign: 'top' }}
+            style={{ width: TriggerGridColumns.severity.width, verticalAlign: 'top', lineHeight: '40px' }}
             sortable
             field={TriggerGridColumns.severity.field}
             header={TriggerGridColumns.severity.label}
             body={severityBodyTemplate}
           ></Column>
-          <Column style={{ maxWidth: '600px', verticalAlign: 'top' }} field={TriggerGridColumns.channels.field} header={TriggerGridColumns.channels.label} body={channelsBodyTemplate}></Column>
+          <Column
+            style={{ maxWidth: '600px', verticalAlign: 'top', lineHeight: '40px' }}
+            field={TriggerGridColumns.channels.field}
+            header={TriggerGridColumns.channels.label}
+            body={channelsBodyTemplate}
+          ></Column>
           <Column
             style={{ width: TriggerGridColumns.triggerCount.width, verticalAlign: 'top', lineHeight: '40px' }}
             field={TriggerGridColumns.triggerCount.field}

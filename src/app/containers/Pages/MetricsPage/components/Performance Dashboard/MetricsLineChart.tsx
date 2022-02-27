@@ -8,6 +8,12 @@ import sortBy from 'lodash/sortBy';
 import HighchartsMore from 'highcharts/highcharts-more';
 HighchartsMore(Highcharts);
 
+Highcharts.setOptions({
+  lang: {
+    thousandsSep: ',',
+  },
+});
+
 interface DataPoint {
   readonly x: number;
   readonly y: number;
