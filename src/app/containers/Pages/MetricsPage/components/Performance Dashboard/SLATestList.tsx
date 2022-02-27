@@ -256,24 +256,6 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
             <span className={classes.itemTitle}>SLA Tests</span>
           </div>
           <div>
-            <span className={classes.marginButton}>
-              <input type="text" value={searchText} className={classes.searchBar} onChange={handleSearchTextChange} placeholder="Search" />
-              <span className={classes.searchIcon}>
-                <SearchIcon />
-              </span>
-            </span>
-            <span className={classes.marginButton}>
-              <SecondaryButtonwithEvent
-                label={
-                  <>
-                    <span className={classes.otherButtonText}>COLUMNS</span>
-                    <ColumnsIcon />
-                  </>
-                }
-                active={isColumnsPopoverOpen}
-                onClick={handleColmunsClick}
-              />
-            </span>
             <Popover
               id={columnsPopoverId}
               open={isColumnsPopoverOpen}
@@ -298,26 +280,8 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
               </FormGroup>
             </Popover>
             <PrimaryButton height="50px" label="CREATE SLA TEST" icon={addIcon} onClick={handleToggle} />
-          </div>
-        </div>
-        <div className={classes.tableContainer}>
-          <Table onSelectedRowsUpdate={onSelectedRowsUpdate} columns={selectedColumns} data={data} defaultSelectedTestId={getDefaultSelectedTestId(finalTableData)} />
-        </div>
-      </div>
-      <div className={classes.itemContainer}>
-        <TabsUnstyled value={tab} onChange={handleTabChange}>
-          <div className={classes.tabTitleContainer}>
-            <div className={classes.performanceTabContainer}>
-              <TabsList>
-                <Tab value={MetricTabValue.packetLoss}>{MetricTabValue.packetLoss.toUpperCase()}</Tab>
-                <Tab value={MetricTabValue.latency}>{MetricTabValue.latency.toUpperCase()}</Tab>
-                <Tab value={MetricTabValue.goodput}>{MetricTabValue.goodput.toUpperCase()}</Tab>
-              </TabsList>
-            </div>
             <MatSelect
               id="SLATestTimePeriod"
-              label="Time Range:"
-              labelStyles={{ margin: 'auto 10px auto 0' }}
               value={timeRangeOptions.find(time => time.value === timeRange)}
               options={timeRangeOptions}
               onChange={e => setTimeRange(e.value)}
@@ -327,16 +291,13 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
               selectStyles={{ height: '50px', width: 'auto', minWidth: '240px' }}
             />
           </div>
-          <TabPanel value={MetricTabValue.packetLoss}>
-            <PacketLoss timeRange={timeRange} selectedRows={selectedRows} networks={networks} />
-          </TabPanel>
-          <TabPanel value={MetricTabValue.latency}>
-            <Latency timeRange={timeRange} selectedRows={selectedRows} networks={networks} />
-          </TabPanel>
-          <TabPanel value={MetricTabValue.goodput}>
-            <Goodput timeRange={timeRange} selectedRows={selectedRows} networks={networks} />
-          </TabPanel>
-        </TabsUnstyled>
+        </div>
+        <PacketLoss timeRange={timeRange} selectedRows={selectedRows} networks={networks} />
+        <Latency timeRange={timeRange} selectedRows={selectedRows} networks={networks} />
+        <Goodput timeRange={timeRange} selectedRows={selectedRows} networks={networks} />
+        <div className={classes.tableContainer}>
+          <Table onSelectedRowsUpdate={onSelectedRowsUpdate} columns={selectedColumns} data={data} defaultSelectedTestId={getDefaultSelectedTestId(finalTableData)} />
+        </div>
       </div>
       <Backdrop style={{ color: '#fff', zIndex: 5 }} open={createToggle}>
         <CreateSLATest networks={networks} merakiOrganizations={merakiOrganizations} addSlaTest={addTest} popup={true} closeSlaTest={handleClose} />

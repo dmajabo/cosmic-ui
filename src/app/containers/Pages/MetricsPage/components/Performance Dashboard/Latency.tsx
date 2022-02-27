@@ -10,6 +10,7 @@ import Heatmap, { LegendData } from './Heatmap';
 import { HeatMapData, Vnet } from 'lib/api/http/SharedTypes';
 import isEmpty from 'lodash/isEmpty';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
+import { GridLabel } from 'app/containers/Pages/TrafficPage/SessionPage/Table/styles';
 
 interface LatencyProps {
   readonly selectedRows: Data[];
@@ -110,7 +111,7 @@ export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange, netwo
     <div>
       <div className={classes.flexContainer}>
         <div>
-          <div className={classes.itemTitle}>Latency summary</div>
+          <GridLabel style={{ fontSize: 18 }}>Latency summary</GridLabel>
         </div>
       </div>
       <div className={classes.lineChartContainer}>
