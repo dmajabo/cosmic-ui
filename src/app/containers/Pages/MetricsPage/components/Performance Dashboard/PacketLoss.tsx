@@ -9,6 +9,7 @@ import Heatmap, { LegendData } from './Heatmap';
 import { HeatMapData, Vnet } from 'lib/api/http/SharedTypes';
 import isEmpty from 'lodash/isEmpty';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
+import { GridLabel } from 'app/containers/Pages/TrafficPage/SessionPage/Table/styles';
 
 interface PacketLossProps {
   readonly selectedRows: Data[];
@@ -123,7 +124,7 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange,
     <div>
       <div className={classes.flexContainer}>
         <div>
-          <div className={classes.itemTitle}>Packet Loss summary</div>
+          <GridLabel style={{ fontSize: 18 }}>Packet Loss summary</GridLabel>
         </div>
       </div>
       <div className={classes.lineChartContainer}>

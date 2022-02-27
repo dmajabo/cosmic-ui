@@ -10,6 +10,7 @@ import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import LoadingIndicator from 'app/components/Loading';
 import { HeatMapData, Vnet } from 'lib/api/http/SharedTypes';
 import Heatmap, { LegendData } from './Heatmap';
+import { GridLabel } from 'app/containers/Pages/TrafficPage/SessionPage/Table/styles';
 
 interface GoodputProps {
   readonly selectedRows: Data[];
@@ -108,7 +109,7 @@ export const Goodput: React.FC<GoodputProps> = ({ selectedRows, timeRange, netwo
     <div>
       <div className={classes.flexContainer}>
         <div>
-          <div className={classes.itemTitle}>Goodput summary</div>
+          <GridLabel style={{ fontSize: 18 }}>Goodput summary</GridLabel>
         </div>
       </div>
       <div className={classes.lineChartContainer}>
