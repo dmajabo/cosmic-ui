@@ -29,6 +29,8 @@ import { DateTime } from 'luxon';
 import { getCorrectedTimeString } from '../MetricsPage/components/Utils';
 import BandwidthComponent from '../TrafficPage/Trends/Components/BandwidthComponent';
 import { downRedArrow, upGreenArrow } from 'app/components/SVGIcons/arrows';
+import { useHistory } from 'react-router-dom';
+import { ROUTE } from 'lib/Routes/model';
 
 const Tab = styled(TabUnstyled)`
   color: #848da3;
@@ -77,6 +79,7 @@ export const AVAILABILITY_TIME_FORMAT = 'EEE, MMM dd yyyy, hh:mm a';
 
 const DashboardPage: React.FC = () => {
   const classes = DashboardStyles();
+  const history = useHistory();
   const userContext = useContext<UserContextState>(UserContext);
   const [sitesViewTabName, setSitesViewTabName] = useState<DashboardSitesViewTab>(DashboardSitesViewTab.Map);
 
@@ -190,6 +193,10 @@ const DashboardPage: React.FC = () => {
     }
     setPageSize(size);
     // onTryLoadAlertMetaData(size, currentPage, selectedPeriod);
+  };
+
+  const onAnomalyClick = () => {
+    history.push(ROUTE.app + ROUTE.metrics);
   };
 
   return (
@@ -362,7 +369,7 @@ const DashboardPage: React.FC = () => {
                   }
                 });
                 return (
-                  <div key={`${anomaly.timestamp}_${anomaly.descString}`} className={classes.anomalyRow}>
+                  <div key={`${anomaly.timestamp}_${anomaly.descString}`} className={classes.anomalyRow} onClick={onAnomalyClick}>
                     <div className={classes.troubleshootContainer}>
                       <div className={classes.severityLabelContainer}>
                         <span className={classes.severityLabel}>H</span>
