@@ -22,13 +22,13 @@ import { Column } from 'primereact/column';
 import Paging from 'app/components/Basic/Paging';
 import { PAGING_DEFAULT_PAGE_SIZE } from 'lib/models/general';
 import { AlertApi } from 'lib/api/ApiModels/Services/alert';
-import sortBy from 'lodash/sortBy';
-import { isEmpty } from 'lodash';
+import isEmpty from 'lodash/isEmpty';
 import { EmptyText } from 'app/components/Basic/NoDataStyles/NoDataStyles';
 import { TelemetryApi } from 'lib/api/ApiModels/Services/telemetry';
 import { DateTime } from 'luxon';
 import { getCorrectedTimeString } from '../MetricsPage/components/Utils';
 import BandwidthComponent from '../TrafficPage/Trends/Components/BandwidthComponent';
+import { downRedArrow, upGreenArrow } from 'app/components/SVGIcons/arrows';
 
 const Tab = styled(TabUnstyled)`
   color: #848da3;
@@ -71,7 +71,9 @@ const TabsList = styled(TabsListUnstyled)`
 
 const BASE_ANOMALIES_PAGE_SIZE = 10;
 
-const INPUT_TIME_FORMAT = 'yyyy-MM-dd HH:mm:ss ZZZ z';
+export const INPUT_TIME_FORMAT = 'yyyy-MM-dd HH:mm:ss ZZZ z';
+
+export const AVAILABILITY_TIME_FORMAT = 'EEE, MMM dd yyyy, hh:mm a';
 
 const DashboardPage: React.FC = () => {
   const classes = DashboardStyles();
@@ -104,7 +106,7 @@ const DashboardPage: React.FC = () => {
         const selectedDeviceMetrics: DeviceMetrics = deviceMetrics.find(deviceMetric => device.extId === deviceMetric.extId);
         return {
           type: 'Feature',
-          properties: { title: device.extId, ...selectedDeviceMetrics },
+          properties: { title: device.extId, uplinks: device.uplinks, ...selectedDeviceMetrics },
           geometry: {
             coordinates: [device.lon, device.lat],
             type: 'Point',
@@ -121,18 +123,39 @@ const DashboardPage: React.FC = () => {
       return deviceMetrics.map(deviceMetric => {
         const selectedDevice = devices.find(device => device.extId === deviceMetric.extId);
         const tagArray = selectedDevice?.vnetworks.reduce((acc, vnetwork) => acc.concat(vnetwork.tags), []).map(tag => tag.value);
+        const bytesSent = deviceMetric?.bytesSendUsage / 1000000;
+        const bytesRecieved = deviceMetric?.bytesReceivedUsage / 1000000;
         return {
           name: deviceMetric?.name || '',
-          uplinkType: deviceMetric?.uplinkType || '',
-          availability: deviceMetric?.availibility || '',
-          totalUsage: `${deviceMetric?.bytesSendUsage} MB ${deviceMetric?.bytesReceivedUsage} MB`,
+          totalUsage: (
+            <div>
+              <span className={classes.totalUsageIcon}>{upGreenArrow}</span>
+              <span title="Bytes Sent">{`${bytesSent > 0 ? bytesSent.toFixed(2) : 0} MB`}</span>
+              <span className={classes.totalUsageIcon}>{downRedArrow}</span>
+              <span title="Bytes Recieved">{`${bytesRecieved > 0 ? bytesRecieved.toFixed(2) : 0} MB`}</span>
+            </div>
+          ),
           avgBandwidth: '',
           latency: `${deviceMetric?.latency.toFixed(2)} ms` || '',
           packetLoss: `${deviceMetric?.packetloss}%` || '',
           goodput: `${deviceMetric?.goodput / 1000} mbps`,
           jitter: '',
           clients: selectedDevice?.vnetworks.reduce((acc, vnetwork) => acc + vnetwork.numberOfOnetClients, 0),
-          tags: tagArray.join(),
+          tags: tagArray.join(', '),
+          uplinks: selectedDevice.uplinks.map(uplink => uplink.name).join(', '),
+          availability: isEmpty(deviceMetric.availabilityMetrics) ? (
+            <div />
+          ) : (
+            <div className={classes.connectivityContainer}>
+              {deviceMetric.availabilityMetrics?.map(item => {
+                const timestamp = DateTime.fromFormat(getCorrectedTimeString(item.time), INPUT_TIME_FORMAT).toFormat(AVAILABILITY_TIME_FORMAT);
+                if (Number(item.value) > 0) {
+                  return <div title={timestamp} key={item.time} className={classes.connectivityUnavailableItem} />;
+                }
+                return <div title={timestamp} key={item.time} className={classes.connectivityAvailableItem} />;
+              })}
+            </div>
+          ),
         };
       });
     },
@@ -220,6 +243,14 @@ const DashboardPage: React.FC = () => {
                   <Column
                     headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700 }}
                     style={{
+                      minWidth: SITES_COLUMNS.uplinks.minWidth,
+                    }}
+                    field={SITES_COLUMNS.uplinks.field}
+                    header={SITES_COLUMNS.uplinks.label}
+                  ></Column>
+                  <Column
+                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700 }}
+                    style={{
                       minWidth: SITES_COLUMNS.totalUsage.minWidth,
                     }}
                     field={SITES_COLUMNS.totalUsage.field}
@@ -254,6 +285,12 @@ const DashboardPage: React.FC = () => {
                     style={{ minWidth: SITES_COLUMNS.goodput.minWidth }}
                     field={SITES_COLUMNS.goodput.field}
                     header={SITES_COLUMNS.goodput.label}
+                  ></Column>
+                  <Column
+                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700 }}
+                    style={{ minWidth: SITES_COLUMNS.availability.minWidth }}
+                    field={SITES_COLUMNS.availability.field}
+                    header={SITES_COLUMNS.availability.label}
                   ></Column>
                 </DataTable>
               </TableWrapper>
@@ -325,12 +362,14 @@ const DashboardPage: React.FC = () => {
                   }
                 });
                 return (
-                  <div key={anomaly.timestamp} className={classes.anomalyRow}>
-                    <div className={classes.severityLabelContainer}>
-                      <span className={classes.severityLabel}>H</span>
-                    </div>
-                    <div>
-                      <span>{anomaly.descString}</span>
+                  <div key={`${anomaly.timestamp}_${anomaly.descString}`} className={classes.anomalyRow}>
+                    <div className={classes.troubleshootContainer}>
+                      <div className={classes.severityLabelContainer}>
+                        <span className={classes.severityLabel}>H</span>
+                      </div>
+                      <div>
+                        <span>{anomaly.descString}</span>
+                      </div>
                     </div>
                     <div className={classes.timeDiffContainer}>
                       <span className={classes.timeDiffText}>{diffString[0]}</span>
@@ -339,7 +378,7 @@ const DashboardPage: React.FC = () => {
                 );
               })}
           </div>
-          <div hidden={anomaliesResponse?.totalCount < anomaliesPageSize || true} className={`${classes.horizontalCenter} ${classes.loadMoreButton}`} onClick={loadMoreAnomalies}>
+          <div hidden={anomaliesResponse?.totalCount < anomaliesPageSize} className={`${classes.horizontalCenter} ${classes.loadMoreButton}`} onClick={loadMoreAnomalies}>
             Load More
           </div>
         </DashboardItemContainer>

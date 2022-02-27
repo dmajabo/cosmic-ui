@@ -25,7 +25,7 @@ const InOutBound: React.FC<Props> = (props: Props) => {
   React.useEffect(() => {
     if (response) {
       const _data: PieDataItem[] = [
-        { name: 'Inbound', id: 'Inb', value: response.inbount ? response.inbount.count : 0, hide: false, color: 'var(--_warningColor)' },
+        { name: 'Cellular', id: 'Cell', value: response.cellular ? response.cellular.count : 0, hide: false, color: 'var(--_warningColor)' },
         { name: 'Outbound', id: 'Outb', value: response.outbound ? response.outbound.count : 0, hide: false, color: 'var(--_highlightColor)' },
       ];
       setData(_data);
@@ -41,7 +41,7 @@ const InOutBound: React.FC<Props> = (props: Props) => {
   }, [error]);
 
   const onTryLoadData = async () => {
-    await onGetChainData([TopoApi.getRulesCount(ToposvcRuleType.L3_Inbound), TopoApi.getRulesCount(ToposvcRuleType.L3_Outbound)], ['inbount', 'outbound'], accessToken!);
+    await onGetChainData([TopoApi.getRulesCount(ToposvcRuleType.Cellular_Firewall), TopoApi.getRulesCount(ToposvcRuleType.L3_Outbound)], ['cellular', 'outbound'], accessToken!);
   };
   return (
     <ChartItem style={props.styles}>

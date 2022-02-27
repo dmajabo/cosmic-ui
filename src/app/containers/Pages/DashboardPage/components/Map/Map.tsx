@@ -5,13 +5,14 @@ import { DashboardStyles } from '../../DashboardStyles';
 import './Map.css';
 import ReactDOMServer from 'react-dom/server';
 import { Popup } from './Popup';
-import { DeviceMetrics } from '../../enum';
+import { DeviceMetrics, Uplink } from '../../enum';
 // @ts-ignore
 // eslint-disable-next-line import/no-webpack-loader-syntax
 mapboxgl.workerClass = require('worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker').default;
 
 export interface Properties extends DeviceMetrics {
   readonly title: string;
+  readonly uplinks: Uplink[];
 }
 export interface Feature {
   readonly type: string;

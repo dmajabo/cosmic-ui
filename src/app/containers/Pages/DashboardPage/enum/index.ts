@@ -15,6 +15,15 @@ interface Vnetwork {
   readonly tags: Tag[];
 }
 
+export interface Uplink {
+  readonly id: string;
+  readonly name: string;
+  readonly extId: string;
+  readonly ownerId: string;
+  readonly regionCode: string;
+  readonly status: string;
+}
+
 export interface Device {
   readonly id: string;
   readonly name: string;
@@ -26,11 +35,17 @@ export interface Device {
   readonly lat: number;
   readonly lon: number;
   readonly vnetworks: Vnetwork[];
+  readonly uplinks: Uplink[];
 }
 
 export interface OnPremDevicesResponse {
   readonly totalCount: number;
   readonly devices: Device[];
+}
+
+interface AvailabilityMetric {
+  readonly time: string;
+  readonly value: string;
 }
 
 export interface DeviceMetrics {
@@ -43,6 +58,7 @@ export interface DeviceMetrics {
   readonly name: string;
   readonly packetloss: number;
   readonly uplinkType: string;
+  readonly availabilityMetrics: AvailabilityMetric[];
 }
 
 export interface DeviceMetricsResponse {
@@ -66,9 +82,8 @@ export interface AnomaliesResponse {
 
 export interface SitesData {
   readonly name: string;
-  readonly uplinkType: string;
-  readonly availability: string;
-  readonly totalUsage: string;
+  readonly uplinks: string;
+  readonly totalUsage: JSX.Element;
   readonly avgBandwidth: string;
   readonly latency: string;
   readonly jitter: string;
@@ -76,20 +91,21 @@ export interface SitesData {
   readonly goodput: string;
   readonly clients: number;
   readonly tags: string;
+  readonly availability: JSX.Element;
 }
 
 export interface SitesGridColumns {
-  name: IGridColumnField;
-  uplinkType: IGridColumnField;
-  availability: IGridColumnField;
-  totalUsage: IGridColumnField;
-  avgBandwidth: IGridColumnField;
-  latency: IGridColumnField;
-  jitter: IGridColumnField;
-  packetLoss: IGridColumnField;
-  goodput: IGridColumnField;
-  clients: IGridColumnField;
-  tags: IGridColumnField;
+  readonly name: IGridColumnField;
+  readonly uplinks: IGridColumnField;
+  readonly totalUsage: IGridColumnField;
+  readonly avgBandwidth: IGridColumnField;
+  readonly latency: IGridColumnField;
+  readonly jitter: IGridColumnField;
+  readonly packetLoss: IGridColumnField;
+  readonly goodput: IGridColumnField;
+  readonly clients: IGridColumnField;
+  readonly tags: IGridColumnField;
+  readonly availability: IGridColumnField;
 }
 
 export const SITES_COLUMNS: SitesGridColumns = {
@@ -99,23 +115,17 @@ export const SITES_COLUMNS: SitesGridColumns = {
     field: 'name',
     minWidth: '200px',
   },
-  uplinkType: {
-    label: 'UPLINK TYPE',
-    resField: 'uplinkType',
-    field: 'uplinkType',
-    minWidth: '140px',
-  },
-  availability: {
-    label: 'AVAILABILITY',
-    resField: 'availability',
-    field: 'availability',
-    minWidth: '100px',
+  uplinks: {
+    label: 'ACTIVE UPLINKS',
+    resField: 'uplinks',
+    field: 'uplinks',
+    minWidth: '160px',
   },
   totalUsage: {
     label: 'TOTAL USAGE',
     resField: 'totalUsage',
     field: 'totalUsage',
-    minWidth: '160px',
+    minWidth: '200px',
   },
   avgBandwidth: {
     label: 'AVG. BANDWIDTH',
@@ -151,13 +161,19 @@ export const SITES_COLUMNS: SitesGridColumns = {
     label: 'CLIENTS',
     resField: 'clients',
     field: 'clients',
-    minWidth: '160px',
+    minWidth: '100px',
   },
   tags: {
     label: 'TAGS',
     resField: 'tags',
     field: 'tags',
     minWidth: '160px',
+  },
+  availability: {
+    label: 'AVAILABILITY',
+    resField: 'availability',
+    field: 'availability',
+    minWidth: '200px',
   },
 };
 
