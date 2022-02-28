@@ -23,32 +23,6 @@ interface Props {
 }
 
 const ApplicationCollapsedNode: React.FC<Props> = (props: Props) => {
-  const dx = props.application.width / 2 - NODES_CONSTANTS.APPLICATION.collapse.width / 2;
-  const dy = props.application.height / 2 - NODES_CONSTANTS.APPLICATION.collapse.height / 2;
-
-  //   return (
-  //     <g transform={`translate(${dx}, ${dy})`}>
-  //       <rect
-  //         id={props.dragId}
-  //         fill={NODES_CONSTANTS.APPLICATION.collapse.bgColor}
-  //         width={NODES_CONSTANTS.APPLICATION.expanded.minWidth}
-  //         height={NODES_CONSTANTS.APPLICATION.expanded.minHeight}
-  //         rx={NODES_CONSTANTS.APPLICATION.collapse.borderRadius}
-  //         ry={NODES_CONSTANTS.APPLICATION.collapse.borderRadius}
-  //         pointerEvents="all"
-  //         cursor="pointer"
-  //       />
-  //       <use
-  //         pointerEvents="none"
-  //         href={`#${NODES_CONSTANTS.APPLICATION.type}`}
-  //         width={NODES_CONSTANTS.APPLICATION.collapse.iconWidth}
-  //         height={NODES_CONSTANTS.APPLICATION.collapse.iconHeight}
-  //         x={NODES_CONSTANTS.APPLICATION.collapse.iconOffsetX}
-  //         y={NODES_CONSTANTS.APPLICATION.collapse.iconOffsetY}
-  //       />
-  //       <NodeCollapsedName id={props.application.dataItem.id} label={props.application.dataItem.name} stylesObj={NODES_CONSTANTS.APPLICATION.labelCollapsedStyles} />
-  //     </g>
-  //   );
   return (
     <TransitionContainer id={`expandNodeWrapper${props.application.dataItem.id}`} stateIn={props.show} origin="unset" transform="none">
       <g style={{ cursor: 'pointer' }}>
