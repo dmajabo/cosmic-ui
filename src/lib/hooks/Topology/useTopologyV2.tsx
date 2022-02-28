@@ -2,7 +2,7 @@ import * as React from 'react';
 import { IObject, IPosition, ISelectedListItem, ITimeTypes, TIME_PERIOD } from 'lib/models/general';
 import { jsonClone } from 'lib/helpers/cloneHelper';
 // import { EntityTypes, IEntity } from 'lib/models/entites';
-import { IAppNode, INetworkOrg, ITopologyDataRes, ITopoTopoNode } from 'lib/api/ApiModels/Topology/apiModels';
+import { AppAccessApiResponse, IAppNode, INetworkOrg, ITopologyDataRes, ITopoTopoNode } from 'lib/api/ApiModels/Topology/apiModels';
 import { ITimeMinMaxRange } from 'app/components/Inputs/TimeSlider/helpers';
 import { createTopology } from './helper';
 import {
@@ -79,6 +79,7 @@ export interface TopologyV2ContextType {
   onSelectFilterOption: (groupType: TopoFilterTypes, type: FilterEntityTypes, _selected: boolean) => void;
   onSelectSegmentFilterOption: (node: IMapped_Segment, index: number, visible: boolean) => void;
   blockTooltip: boolean;
+  appAccessApiResponse: AppAccessApiResponse;
 }
 export function useTopologyV2Context(): TopologyV2ContextType {
   const [topoPanel, setTopoPanel] = React.useState<IPanelBar<TopologyPanelTypes>>({ show: false, type: null });
@@ -88,6 +89,7 @@ export function useTopologyV2Context(): TopologyV2ContextType {
   const [accounts, setAccountsNodes] = React.useState<IObject<ITopoAccountNode>>(null);
   const [sites, setSitesNodes] = React.useState<IObject<ITopoSitesNode>>(null);
   const [applicationNodes, setApplicationNodes] = React.useState<IObject<ITopoAppNode>>(null);
+  const [appAccessApiResponse, setAppAccessApiResponse] = React.useState<AppAccessApiResponse>(null);
   const [regions, setRegionsNodes] = React.useState<IObject<ITopoRegionNode>>(null);
 
   const [links, setLinks] = React.useState<IObject<ITopoLink<any, any, any>>>(null);
@@ -170,12 +172,12 @@ export function useTopologyV2Context(): TopologyV2ContextType {
 
       setLinks(_data.links);
       setSegments(_data.segments);
-
       setApplicationNodes(_data.appNodes);
       linksRef.current = _data.links;
       segmentsRef.current = _data.segments;
       // nodesRef.current = _data.nodes;
     }
+    setAppAccessApiResponse(res.siteAccessInfo);
     setOriginSegmentsData(_segmentsObj);
     setOriginData(_orgObj);
   };
@@ -430,5 +432,6 @@ export function useTopologyV2Context(): TopologyV2ContextType {
 
     blockTooltip,
     applicationNodes,
+    appAccessApiResponse,
   };
 }

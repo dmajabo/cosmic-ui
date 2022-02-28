@@ -600,7 +600,7 @@ export interface ITopoTopoNode extends IBaseEntity<string> {
   nodeId: string;
   segmentId: string;
   nodeType: AppNodeType;
-  members: TopoNodeMember;
+  members: TopoNodeMember[];
   extId?: string; // on ui
 }
 

@@ -31,6 +31,7 @@ export enum TopologyPanelTypes {
   Device = ' device',
   Wedge = 'wedge',
   WebAcl = 'webAcl',
+  Application = 'Application',
 }
 
 export enum TopoNodeTypes {

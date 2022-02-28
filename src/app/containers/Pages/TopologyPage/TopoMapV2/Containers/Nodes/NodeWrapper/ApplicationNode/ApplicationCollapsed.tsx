@@ -8,7 +8,6 @@ import { ExtraSpaceBreeze } from './icons/ExtraSpaceBreeze';
 import { MsTeams } from './icons/MsTeams';
 import { Microsoft } from './icons/Microsoft';
 import { Google } from './icons/Google';
-import { ciscoMerakiLogoIcon } from 'app/components/SVGIcons/topologyIcons/ciscoMerakiLogo';
 import { CiscoMeraki } from './icons/CiscoMeraki';
 import { Salesforce } from './icons/Salesforce';
 import { Workday } from './icons/Workday';

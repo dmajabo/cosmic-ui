@@ -23,6 +23,7 @@ import SitesNodeTopContainer from '../Containers/Nodes/NodeWrapper/SitesNode/Sit
 import LinksWrapper from '../Containers/Links';
 import ResizablePanel from 'app/components/Basic/PanelBar/ResizablePanel';
 import ApplicationNode from '../Containers/Nodes/NodeWrapper/ApplicationNode/ApplicationNode';
+import { ApplicationPanel } from '../PanelComponents/NodePanels/ApplicationPanel';
 // import { STANDART_DISPLAY_RESOLUTION_V2 } from 'lib/models/general';
 // import SegmentsComponent from '../PanelComponents/Segments/SegmentsComponent';
 
@@ -157,6 +158,7 @@ const Graph: React.FC<Props> = (props: Props) => {
             {topology.topoPanel.type === TopologyPanelTypes.WebAcl && <WebAclPanel dataItem={topology.topoPanel.dataItem} />}
             {topology.topoPanel.type === TopologyPanelTypes.Device && <DevicePanel dataItem={topology.topoPanel.dataItem} />}
             {topology.topoPanel.type === TopologyPanelTypes.Wedge && <WedgePanel dataItem={topology.topoPanel.dataItem} />}
+            {topology.topoPanel.type === TopologyPanelTypes.Application && <ApplicationPanel dataItem={topology.topoPanel.dataItem} />}
           </ResizablePanel>
         </ContainerWithMetrics>
       )}

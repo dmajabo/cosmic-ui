@@ -1,5 +1,6 @@
 import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
-import { ITopoAppNode } from 'lib/hooks/Topology/models';
+import { ITopoAppNode, TopologyPanelTypes } from 'lib/hooks/Topology/models';
+import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 import React from 'react';
 import ApplicationCollapsedNode from './ApplicationCollapsed';
 
@@ -10,6 +11,10 @@ interface Props {
 }
 
 const ApplicationNode: React.FC<Props> = (props: Props) => {
+  const { topology } = useTopologyV2DataContext();
+  const onClick = () => {
+    topology.onToogleTopoPanel(TopologyPanelTypes.Application, true, props.dataItem);
+  };
   if (!props.dataItem.visible) return null;
   //   if (props.dataItem.collapsed || !topology.entities.transit.selected) {
   return (
@@ -17,6 +22,7 @@ const ApplicationNode: React.FC<Props> = (props: Props) => {
       id={`application${props.dataItem.uiId}`}
       // onMouseEnter={onMouseEnter}
       // onMouseLeave={onMouseLeave}
+      onClick={onClick}
       className="topologyNode"
       transform={`translate(${props.dataItem.x}, ${props.dataItem.y})`}
       data-type={'application'}
