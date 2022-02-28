@@ -15,6 +15,15 @@ interface Vnetwork {
   readonly tags: Tag[];
 }
 
+export interface Uplink {
+  readonly id: string;
+  readonly name: string;
+  readonly extId: string;
+  readonly ownerId: string;
+  readonly regionCode: string;
+  readonly status: string;
+}
+
 export interface Device {
   readonly id: string;
   readonly name: string;
@@ -26,11 +35,17 @@ export interface Device {
   readonly lat: number;
   readonly lon: number;
   readonly vnetworks: Vnetwork[];
+  readonly uplinks: Uplink[];
 }
 
 export interface OnPremDevicesResponse {
   readonly totalCount: number;
   readonly devices: Device[];
+}
+
+export interface AvailabilityMetric {
+  readonly time: string;
+  readonly value: string;
 }
 
 export interface DeviceMetrics {
@@ -43,6 +58,7 @@ export interface DeviceMetrics {
   readonly name: string;
   readonly packetloss: number;
   readonly uplinkType: string;
+  readonly availabilityMetrics: AvailabilityMetric[];
 }
 
 export interface DeviceMetricsResponse {
@@ -66,9 +82,8 @@ export interface AnomaliesResponse {
 
 export interface SitesData {
   readonly name: string;
-  readonly uplinkType: string;
-  readonly availability: string;
-  readonly totalUsage: string;
+  readonly uplinks: string;
+  readonly totalUsage: JSX.Element;
   readonly avgBandwidth: string;
   readonly latency: string;
   readonly jitter: string;
@@ -76,20 +91,21 @@ export interface SitesData {
   readonly goodput: string;
   readonly clients: number;
   readonly tags: string;
+  readonly availability: JSX.Element;
 }
 
 export interface SitesGridColumns {
-  name: IGridColumnField;
-  uplinkType: IGridColumnField;
-  availability: IGridColumnField;
-  totalUsage: IGridColumnField;
-  avgBandwidth: IGridColumnField;
-  latency: IGridColumnField;
-  jitter: IGridColumnField;
-  packetLoss: IGridColumnField;
-  goodput: IGridColumnField;
-  clients: IGridColumnField;
-  tags: IGridColumnField;
+  readonly name: IGridColumnField;
+  readonly uplinks: IGridColumnField;
+  readonly totalUsage: IGridColumnField;
+  readonly avgBandwidth: IGridColumnField;
+  readonly latency: IGridColumnField;
+  readonly jitter: IGridColumnField;
+  readonly packetLoss: IGridColumnField;
+  readonly goodput: IGridColumnField;
+  readonly clients: IGridColumnField;
+  readonly tags: IGridColumnField;
+  readonly availability: IGridColumnField;
 }
 
 export const SITES_COLUMNS: SitesGridColumns = {
@@ -97,67 +113,67 @@ export const SITES_COLUMNS: SitesGridColumns = {
     label: 'NAME',
     resField: 'name',
     field: 'name',
-    minWidth: '200px',
+    minWidth: '120px',
   },
-  uplinkType: {
-    label: 'UPLINK TYPE',
-    resField: 'uplinkType',
-    field: 'uplinkType',
-    minWidth: '140px',
-  },
-  availability: {
-    label: 'AVAILABILITY',
-    resField: 'availability',
-    field: 'availability',
-    minWidth: '100px',
+  uplinks: {
+    label: 'ACTIVE UPLINKS',
+    resField: 'uplinks',
+    field: 'uplinks',
+    minWidth: '80px',
   },
   totalUsage: {
     label: 'TOTAL USAGE',
     resField: 'totalUsage',
     field: 'totalUsage',
-    minWidth: '160px',
+    minWidth: '170px',
   },
   avgBandwidth: {
     label: 'AVG. BANDWIDTH',
     resField: 'avgBandwidth',
     field: 'avgBandwidth',
-    minWidth: '160px',
+    minWidth: '50px',
   },
   latency: {
     label: 'LATENCY',
     resField: 'latency',
     field: 'latency',
-    minWidth: '100px',
+    minWidth: '70px',
   },
   jitter: {
     label: 'JITTER',
     resField: 'jitter',
     field: 'jitter',
-    minWidth: '100px',
+    minWidth: '70px',
   },
   packetLoss: {
     label: 'PACKET LOSS',
     resField: 'packetLoss',
     field: 'packetLoss',
-    minWidth: '100px',
+    minWidth: '70px',
   },
   goodput: {
     label: 'GOODPUT',
     resField: 'goodput',
     field: 'goodput',
-    minWidth: '100px',
+    minWidth: '70px',
   },
   clients: {
     label: 'CLIENTS',
     resField: 'clients',
     field: 'clients',
-    minWidth: '160px',
+    minWidth: '30px',
   },
   tags: {
     label: 'TAGS',
     resField: 'tags',
     field: 'tags',
-    minWidth: '160px',
+    minWidth: '120px',
+  },
+  availability: {
+    label: 'AVAILABILITY',
+    resField: 'availability',
+    field: 'availability',
+    minWidth: '120px',
   },
 };
 

@@ -10,6 +10,9 @@ import Heatmap, { LegendData } from './Heatmap';
 import { HeatMapData, Vnet } from 'lib/api/http/SharedTypes';
 import isEmpty from 'lodash/isEmpty';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
+import { GridLabel } from 'app/containers/Pages/TrafficPage/SessionPage/Table/styles';
+import { Chart, ChartContainerStyles } from 'app/components/ChartContainer/styles';
+import { EmptyText } from 'app/components/Basic/NoDataStyles/NoDataStyles';
 
 interface LatencyProps {
   readonly selectedRows: Data[];
@@ -107,28 +110,22 @@ export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange, netwo
   }, [selectedRows, timeRange]);
 
   return (
-    <div>
-      <div className={classes.flexContainer}>
-        <div>
-          <div className={classes.itemTitle}>Latency summary</div>
-        </div>
-      </div>
-      <div className={classes.lineChartContainer}>
+    <div className={classes.pageComponentBackground}>
+      <div className={classes.pageComponentTitle}> Latency summary</div>
+      <ChartContainerStyles style={{ maxWidth: '100%', minHeight: 420, maxHeight: 420 }}>
         {!isEmpty(selectedRows) ? (
           // latencyData contains 5 keys for each row. One for the data, one for anomaly, one for upperbound, one for lowerbound and one for threshold
           Object.keys(latencyData).length / 5 === selectedRows.length ? (
-            <MetricsLineChart dataValueSuffix="ms" selectedRows={selectedRows} inputData={latencyData} />
+            <Chart>
+              <MetricsLineChart dataValueSuffix="ms" selectedRows={selectedRows} inputData={latencyData} />
+            </Chart>
           ) : (
-            <div className={classes.noChartContainer}>
-              <LoadingIndicator />
-            </div>
+            <LoadingIndicator margin="auto" />
           )
         ) : (
-          <div className={classes.noChartContainer}>
-            <span className={classes.noChartText}>To see the data select SLA Tests on top</span>
-          </div>
+          <EmptyText> To see the data select SLA Tests</EmptyText>
         )}
-      </div>
+      </ChartContainerStyles>
     </div>
   );
 };

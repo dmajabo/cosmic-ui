@@ -14,7 +14,6 @@ export const PerformanceDashboardStyles = makeStyles(
       },
       slaTestListContainer: {
         paddingTop: 20,
-        backgroundColor: 'var(--_primaryBg)',
       },
       itemContainer: {
         width: '100%',
@@ -295,6 +294,21 @@ export const PerformanceDashboardStyles = makeStyles(
         position: 'absolute',
         right: 15,
         bottom: 0,
+      },
+      endFlexContainer: {
+        display: 'flex',
+        justifyContent: 'flex-end',
+      },
+      pageComponentBackground: {
+        backgroundColor: 'white',
+        padding: 40,
+        marginTop: 30,
+      },
+      pageComponentTitle: {
+        fontSize: 22,
+        fontWeight: 700,
+        color: '#05143A',
+        marginBottom: 30,
       },
     }),
   {

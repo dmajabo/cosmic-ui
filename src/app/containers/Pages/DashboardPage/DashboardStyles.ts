@@ -19,7 +19,7 @@ export const DashboardStyles = makeStyles(
       },
       tableWrapper: {
         width: '100%',
-        maxHeight: 'calc(100% - 154px)',
+        maxHeight: 'calc(100% - 50px)',
         height: 'auto',
         flexGrow: 'unset',
         margin: '0 0 auto 0',
@@ -200,8 +200,8 @@ export const DashboardStyles = makeStyles(
       },
       anomaliesRowsContainer: {
         marginTop: '20px',
-        maxHeight: '177px',
-        height: '177px',
+        maxHeight: '220px',
+        height: '220px',
         overflowY: 'auto',
         border: '1px solid #E7EDF9',
         borderBottom: 0,
@@ -212,6 +212,8 @@ export const DashboardStyles = makeStyles(
         borderBottom: '1px solid #E7EDF9',
         padding: '25px 30px 22px 20px',
         display: 'inline-flex',
+        justifyContent: 'space-between',
+        width: '100%',
       },
       severityLabelContainer: {
         backgroundColor: '#DC4545',
@@ -219,7 +221,7 @@ export const DashboardStyles = makeStyles(
         marginRight: '20px',
         display: 'inline-flex',
         maxWidth: '29px',
-        width: '50px',
+        width: '29px',
         height: '29px',
         maxHeight: '29px',
         justifyContent: 'center',
@@ -228,6 +230,7 @@ export const DashboardStyles = makeStyles(
       severityLabel: {
         fontWeight: 500,
         fontSize: '14px',
+        padding: 10,
         lineHeight: '18px',
         color: '#ffffff',
       },
@@ -277,6 +280,7 @@ export const DashboardStyles = makeStyles(
       },
       timeDiffContainer: {
         width: 150,
+        textAlign: 'right',
       },
       timeDiffText: {
         fontSize: 14,
@@ -284,6 +288,28 @@ export const DashboardStyles = makeStyles(
         color: '#848DA3',
       },
       popupHr: {},
+      totalUsageIcon: {
+        padding: '0px 5px 0px 5px',
+      },
+      connectivityContainer: {
+        border: '1px solid black',
+        height: 30,
+        display: 'flex',
+      },
+      connectivityAvailableItem: {
+        width: 2,
+        background: 'green',
+      },
+      connectivityUnavailableItem: {
+        width: 2,
+        background: 'red',
+      },
+      popupConnectivityContainer: {
+        border: '1px solid black',
+        height: 20,
+        display: 'flex',
+        marginLeft: 10,
+      },
     }),
   {
     index: 1,

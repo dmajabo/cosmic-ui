@@ -159,6 +159,7 @@ const NewCiscoMerakiAccountForm: React.FC<Props> = (props: Props) => {
             </StepItemFormRow>
             <StepItemFormRow>
               <TextInput
+                type="password"
                 id="editorAccountApiKey"
                 name="apiKey"
                 value={dataItem.merakiPol.apiKey}

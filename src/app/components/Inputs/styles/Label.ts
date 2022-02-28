@@ -5,7 +5,7 @@ interface Props {
 export const InputLabel = styled.label<Props>`
   font-style: normal;
   font-weight: bold;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 16px;
   text-transform: uppercase;
   color: ${props => (props.disabled ? 'var(--_disabledTextColor)' : 'var(--_defaultInputColor)')};

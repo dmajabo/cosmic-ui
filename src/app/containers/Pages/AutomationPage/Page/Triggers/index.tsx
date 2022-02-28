@@ -289,20 +289,25 @@ const Triggers: React.FC<Props> = (props: Props) => {
             field={TriggerGridColumns.name.field}
             header={TriggerGridColumns.name.label}
           ></Column>
-          <Column
+          {/* <Column
             style={{ width: TriggerGridColumns.category.width, verticalAlign: 'top', lineHeight: '40px' }}
             sortable
             field={TriggerGridColumns.category.field}
             header={TriggerGridColumns.category.label}
-          ></Column>
+          ></Column> */}
           <Column
-            style={{ width: TriggerGridColumns.severity.width, verticalAlign: 'top' }}
+            style={{ width: TriggerGridColumns.severity.width, verticalAlign: 'top', lineHeight: '40px' }}
             sortable
             field={TriggerGridColumns.severity.field}
             header={TriggerGridColumns.severity.label}
             body={severityBodyTemplate}
           ></Column>
-          <Column style={{ maxWidth: '600px', verticalAlign: 'top' }} field={TriggerGridColumns.channels.field} header={TriggerGridColumns.channels.label} body={channelsBodyTemplate}></Column>
+          <Column
+            style={{ maxWidth: '600px', verticalAlign: 'top', lineHeight: '40px' }}
+            field={TriggerGridColumns.channels.field}
+            header={TriggerGridColumns.channels.label}
+            body={channelsBodyTemplate}
+          ></Column>
           <Column
             style={{ width: TriggerGridColumns.triggerCount.width, verticalAlign: 'top', lineHeight: '40px' }}
             field={TriggerGridColumns.triggerCount.field}

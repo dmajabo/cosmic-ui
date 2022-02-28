@@ -56,7 +56,6 @@ export const UserProvider: React.FC = ({ children }) => {
   };
 
   const onInitPendo = (u: User) => {
-    console.log(u);
     if (process.env.NODE_ENV !== 'production' || !u) return;
     pendo.initialize({
       visitor: {

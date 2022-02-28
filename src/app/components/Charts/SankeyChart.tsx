@@ -44,7 +44,7 @@ const SankeyChart: React.FC<Props> = (props: Props) => {
   return (
     <ChartWrapContainer>
       {resizeListener}
-      <svg id="sankeyChartContainerSvg" width="100" height="100" fill="none" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
+      <svg id="sankeyChartContainerSvg" width="100" height="25" fill="none" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
         {visibleData && (
           <g id="sankeyHeader" opacity="0">
             <g transform="translate(30, 10)">

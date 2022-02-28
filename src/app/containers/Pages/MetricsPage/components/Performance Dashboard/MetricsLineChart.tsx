@@ -8,6 +8,12 @@ import sortBy from 'lodash/sortBy';
 import HighchartsMore from 'highcharts/highcharts-more';
 HighchartsMore(Highcharts);
 
+Highcharts.setOptions({
+  lang: {
+    thousandsSep: ',',
+  },
+});
+
 interface DataPoint {
   readonly x: number;
   readonly y: number;
@@ -218,7 +224,9 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
         return [
           timestamp.toMillis(),
           dataValueSuffix === 'mbps' ? Number((Number(item.value) / 1000).toFixed(2)) : Number(Number.parseFloat(item.value).toFixed(2)),
-          dataValueSuffix === 'mbps' ? Number((Number(sortedUpperboundData[index].value) / 1000).toFixed(2)) : Number(Number.parseFloat(sortedUpperboundData[index].value).toFixed(2)),
+          dataValueSuffix === 'mbps'
+            ? Number((Number(sortedUpperboundData[index]?.value || 'NaN') / 1000).toFixed(2))
+            : Number(Number.parseFloat(sortedUpperboundData[index]?.value || 'NaN').toFixed(2)),
         ];
       });
       const data = addNullPointsForUnavailableData(areaSeriesData);
@@ -258,7 +266,6 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
   const lineChartOptions = {
     chart: {
       zoomType: 'xy',
-      height: 500,
     },
     time: {
       useUTC: false,

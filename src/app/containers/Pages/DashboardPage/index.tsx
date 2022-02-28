@@ -10,7 +10,7 @@ import { DashboardItemContainer, DashboardItemContent, DashboardItemLabel, GridC
 import InOutBound from './components/ManagmentItem/InOutBound';
 import ManagementLayer7 from './components/ManagmentItem/ManagementLayer7';
 import ManagementDrifts from './components/ManagmentItem/ManagementDrifts';
-import { AnomaliesResponse, AnomalySummary, DashboardSitesViewTab, Device, DeviceMetrics, MapDeviceDataResponse, OnPremDevicesResponse, SitesData, SITES_COLUMNS, SITES_DATA } from './enum';
+import { AnomaliesResponse, AnomalySummary, AvailabilityMetric, DashboardSitesViewTab, Device, DeviceMetrics, MapDeviceDataResponse, SitesData, SITES_COLUMNS } from './enum';
 import { Feature, Map } from './components/Map/Map';
 import { useGet, useGetChainData } from 'lib/api/http/useAxiosHook';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
@@ -22,19 +22,21 @@ import { Column } from 'primereact/column';
 import Paging from 'app/components/Basic/Paging';
 import { PAGING_DEFAULT_PAGE_SIZE } from 'lib/models/general';
 import { AlertApi } from 'lib/api/ApiModels/Services/alert';
-import sortBy from 'lodash/sortBy';
-import { isEmpty } from 'lodash';
+import isEmpty from 'lodash/isEmpty';
 import { EmptyText } from 'app/components/Basic/NoDataStyles/NoDataStyles';
 import { TelemetryApi } from 'lib/api/ApiModels/Services/telemetry';
 import { DateTime } from 'luxon';
 import { getCorrectedTimeString } from '../MetricsPage/components/Utils';
+import { downRedArrow, upGreenArrow } from 'app/components/SVGIcons/arrows';
+import { useHistory } from 'react-router-dom';
+import { ROUTE } from 'lib/Routes/model';
 
 const Tab = styled(TabUnstyled)`
   color: #848da3;
   cursor: pointer;
   font-size: 12px;
   background: #f3f6fc;
-  padding: 15px 40px 15px 40px;
+  padding: 6px 40px 6px 40px;
   border: none;
   border-radius: 6px;
   display: flex;
@@ -70,10 +72,26 @@ const TabsList = styled(TabsListUnstyled)`
 
 const BASE_ANOMALIES_PAGE_SIZE = 10;
 
-const INPUT_TIME_FORMAT = 'yyyy-MM-dd HH:mm:ss ZZZ z';
+export const INPUT_TIME_FORMAT = 'yyyy-MM-dd HH:mm:ss ZZZ z';
+
+export const AVAILABILITY_TIME_FORMAT = 'EEE, MMM dd yyyy, hh:mm a';
+
+export const getAvailabilityArray = (availabilityArray: AvailabilityMetric[]): AvailabilityMetric[] => {
+  if (isEmpty(availabilityArray)) {
+    const availability: AvailabilityMetric[] = [];
+    const time = DateTime.now().minus({ days: 1 });
+    for (let index = 0; index < 48; index++) {
+      availability.push({ time: time.toFormat(INPUT_TIME_FORMAT), value: '0' });
+      time.plus({ minutes: 30 });
+    }
+    return availability;
+  }
+  return availabilityArray;
+};
 
 const DashboardPage: React.FC = () => {
   const classes = DashboardStyles();
+  const history = useHistory();
   const userContext = useContext<UserContextState>(UserContext);
   const [sitesViewTabName, setSitesViewTabName] = useState<DashboardSitesViewTab>(DashboardSitesViewTab.Map);
 
@@ -103,7 +121,7 @@ const DashboardPage: React.FC = () => {
         const selectedDeviceMetrics: DeviceMetrics = deviceMetrics.find(deviceMetric => device.extId === deviceMetric.extId);
         return {
           type: 'Feature',
-          properties: { title: device.extId, ...selectedDeviceMetrics },
+          properties: { title: device.extId, uplinks: device.uplinks, ...selectedDeviceMetrics },
           geometry: {
             coordinates: [device.lon, device.lat],
             type: 'Point',
@@ -120,18 +138,43 @@ const DashboardPage: React.FC = () => {
       return deviceMetrics.map(deviceMetric => {
         const selectedDevice = devices.find(device => device.extId === deviceMetric.extId);
         const tagArray = selectedDevice?.vnetworks.reduce((acc, vnetwork) => acc.concat(vnetwork.tags), []).map(tag => tag.value);
+        const bytesSent = deviceMetric?.bytesSendUsage / 1000000;
+        const bytesRecieved = deviceMetric?.bytesReceivedUsage / 1000000;
+        const availabilityArray = getAvailabilityArray(deviceMetric.availabilityMetrics);
+
         return {
           name: deviceMetric?.name || '',
-          uplinkType: deviceMetric?.uplinkType || '',
-          availability: deviceMetric?.availibility || '',
-          totalUsage: `${deviceMetric?.bytesSendUsage || ''} ${deviceMetric?.bytesReceivedUsage || ''}`,
+          totalUsage: (
+            <div className={classes.troubleshootContainer}>
+              <div>
+                <span className={classes.totalUsageIcon}>{upGreenArrow}</span>
+                <span title="Bytes Sent">{`${bytesSent > 0 ? bytesSent.toFixed(2) : 0} MB`}</span>
+              </div>
+              <div>
+                <span className={classes.totalUsageIcon}>{downRedArrow}</span>
+                <span title="Bytes Recieved">{`${bytesRecieved > 0 ? bytesRecieved.toFixed(2) : 0} MB`}</span>
+              </div>
+            </div>
+          ),
           avgBandwidth: '',
           latency: `${deviceMetric?.latency.toFixed(2)} ms` || '',
           packetLoss: `${deviceMetric?.packetloss}%` || '',
           goodput: `${deviceMetric?.goodput / 1000} mbps`,
           jitter: '',
           clients: selectedDevice?.vnetworks.reduce((acc, vnetwork) => acc + vnetwork.numberOfOnetClients, 0),
-          tags: tagArray.join(),
+          tags: tagArray.join(', '),
+          uplinks: selectedDevice.uplinks.map(uplink => uplink.name).join(', '),
+          availability: (
+            <div className={classes.connectivityContainer}>
+              {availabilityArray?.map(item => {
+                const timestamp = DateTime.fromFormat(getCorrectedTimeString(item.time), INPUT_TIME_FORMAT).toFormat(AVAILABILITY_TIME_FORMAT);
+                if (Number(item.value) > 0) {
+                  return <div title={timestamp} key={item.time} className={classes.connectivityUnavailableItem} />;
+                }
+                return <div title={timestamp} key={item.time} className={classes.connectivityAvailableItem} />;
+              })}
+            </div>
+          ),
         };
       });
     },
@@ -166,6 +209,10 @@ const DashboardPage: React.FC = () => {
     }
     setPageSize(size);
     // onTryLoadAlertMetaData(size, currentPage, selectedPeriod);
+  };
+
+  const onAnomalyClick = () => {
+    history.push(ROUTE.app + ROUTE.metrics);
   };
 
   return (
@@ -209,42 +256,73 @@ const DashboardPage: React.FC = () => {
                   scrollable
                 >
                   <Column
-                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700 }}
+                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, wordBreak: 'normal' }}
                     style={{
                       minWidth: SITES_COLUMNS.name.minWidth,
+                      padding: 5,
+                      wordWrap: 'break-word',
+                      wordBreak: 'break-all',
                     }}
                     field={SITES_COLUMNS.name.field}
                     header={SITES_COLUMNS.name.label}
                   ></Column>
                   <Column
-                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700 }}
-                    style={{ minWidth: SITES_COLUMNS.clients.minWidth }}
+                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, wordBreak: 'normal' }}
+                    style={{
+                      minWidth: SITES_COLUMNS.uplinks.minWidth,
+                      padding: 5,
+                      wordWrap: 'break-word',
+                      wordBreak: 'break-all',
+                    }}
+                    field={SITES_COLUMNS.uplinks.field}
+                    header={SITES_COLUMNS.uplinks.label}
+                  ></Column>
+                  <Column
+                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, wordBreak: 'normal' }}
+                    style={{
+                      minWidth: SITES_COLUMNS.totalUsage.minWidth,
+                      padding: 5,
+                      wordWrap: 'break-word',
+                      wordBreak: 'break-all',
+                    }}
+                    field={SITES_COLUMNS.totalUsage.field}
+                    header={SITES_COLUMNS.totalUsage.label}
+                  ></Column>
+                  <Column
+                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, wordBreak: 'normal' }}
+                    style={{ minWidth: SITES_COLUMNS.clients.minWidth, padding: 5, wordWrap: 'break-word', wordBreak: 'break-all' }}
                     field={SITES_COLUMNS.clients.field}
                     header={SITES_COLUMNS.clients.label}
                   ></Column>
                   <Column
-                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700 }}
-                    style={{ minWidth: SITES_COLUMNS.tags.minWidth }}
+                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, wordBreak: 'normal' }}
+                    style={{ minWidth: SITES_COLUMNS.tags.minWidth, padding: 5, wordWrap: 'break-word', wordBreak: 'break-all' }}
                     field={SITES_COLUMNS.tags.field}
                     header={SITES_COLUMNS.tags.label}
                   ></Column>
                   <Column
-                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700 }}
-                    style={{ minWidth: SITES_COLUMNS.latency.minWidth }}
+                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, wordBreak: 'normal' }}
+                    style={{ minWidth: SITES_COLUMNS.latency.minWidth, padding: 5, wordWrap: 'break-word', wordBreak: 'normal' }}
                     field={SITES_COLUMNS.latency.field}
                     header={SITES_COLUMNS.latency.label}
                   ></Column>
                   <Column
-                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700 }}
-                    style={{ minWidth: SITES_COLUMNS.packetLoss.minWidth }}
+                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, wordBreak: 'normal' }}
+                    style={{ minWidth: SITES_COLUMNS.packetLoss.minWidth, padding: 5, wordWrap: 'break-word', wordBreak: 'normal' }}
                     field={SITES_COLUMNS.packetLoss.field}
                     header={SITES_COLUMNS.packetLoss.label}
                   ></Column>
                   <Column
-                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700 }}
-                    style={{ minWidth: SITES_COLUMNS.goodput.minWidth }}
+                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, wordBreak: 'normal' }}
+                    style={{ minWidth: SITES_COLUMNS.goodput.minWidth, padding: 5, wordWrap: 'break-word', wordBreak: 'normal' }}
                     field={SITES_COLUMNS.goodput.field}
                     header={SITES_COLUMNS.goodput.label}
+                  ></Column>
+                  <Column
+                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, wordBreak: 'normal' }}
+                    style={{ minWidth: SITES_COLUMNS.availability.minWidth, padding: 5, wordWrap: 'break-word', wordBreak: 'break-all' }}
+                    field={SITES_COLUMNS.availability.field}
+                    header={SITES_COLUMNS.availability.label}
                   ></Column>
                 </DataTable>
               </TableWrapper>
@@ -276,9 +354,6 @@ const DashboardPage: React.FC = () => {
         <DashboardItemContainer>
           <div className={classes.dashboardLabelContainer}>
             <DashboardItemLabel style={{ marginBottom: '0px' }}>Anomalies</DashboardItemLabel>
-            <div className={classes.pillContainer} style={{ marginLeft: '4px' }}>
-              <span className={classes.pillText}>{anomaliesResponse?.totalCount}</span>
-            </div>
           </div>
           <div className={classes.anomaliesRowsContainer}>
             {anomaliesLoading && (
@@ -308,12 +383,14 @@ const DashboardPage: React.FC = () => {
                   }
                 });
                 return (
-                  <div key={anomaly.timestamp} className={classes.anomalyRow}>
-                    <div className={classes.severityLabelContainer}>
-                      <span className={classes.severityLabel}>H</span>
-                    </div>
-                    <div>
-                      <span>{anomaly.descString}</span>
+                  <div key={`${anomaly.timestamp}_${anomaly.descString}`} className={classes.anomalyRow} onClick={onAnomalyClick}>
+                    <div className={classes.troubleshootContainer}>
+                      <div className={classes.severityLabelContainer}>
+                        <span className={classes.severityLabel}>H</span>
+                      </div>
+                      <div>
+                        <span>{anomaly.descString}</span>
+                      </div>
                     </div>
                     <div className={classes.timeDiffContainer}>
                       <span className={classes.timeDiffText}>{diffString[0]}</span>
@@ -321,9 +398,9 @@ const DashboardPage: React.FC = () => {
                   </div>
                 );
               })}
-          </div>
-          <div hidden={anomaliesResponse?.totalCount < anomaliesPageSize || true} className={`${classes.horizontalCenter} ${classes.loadMoreButton}`} onClick={loadMoreAnomalies}>
-            Load More
+            <div hidden={anomaliesLoading ? true : anomaliesResponse?.totalCount < anomaliesPageSize} className={`${classes.horizontalCenter} ${classes.loadMoreButton}`} onClick={loadMoreAnomalies}>
+              Load More
+            </div>
           </div>
         </DashboardItemContainer>
       </GridItemContainer>

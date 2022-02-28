@@ -568,7 +568,7 @@ export interface IToposvcGetCountResponse {
   count: number;
 }
 export interface IInOutBoundRes {
-  inbount: IToposvcGetCountResponse;
+  cellular: IToposvcGetCountResponse;
   outbound: IToposvcGetCountResponse;
 }
 

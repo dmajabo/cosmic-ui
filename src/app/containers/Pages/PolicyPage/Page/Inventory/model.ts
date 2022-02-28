@@ -129,6 +129,7 @@ export const Layer3Columns: ILayer3GridColumns = {
 export interface ILayer7GridColumns {
   policy: IGridColumnField;
   application: IGridColumnField;
+  networkName: IGridColumnField;
 }
 
 export const Layer7Columns: ILayer7GridColumns = {
@@ -137,7 +138,17 @@ export const Layer7Columns: ILayer7GridColumns = {
     resField: 'policy',
     id: 'layer7policy',
     field: 'policy',
-    width: '50%',
+    width: '33%',
+    minWidth: '200px',
+    hide: false,
+    sortable: true,
+  },
+  networkName: {
+    label: 'Network',
+    resField: 'network',
+    id: 'layer7network',
+    field: 'network',
+    width: '33%',
     minWidth: '200px',
     hide: false,
     sortable: true,
@@ -147,7 +158,7 @@ export const Layer7Columns: ILayer7GridColumns = {
     resField: 'ipProtocol',
     id: 'layer3ipProtocol',
     field: 'ipProtocol',
-    width: '50%',
+    width: '33%',
     minWidth: '200px',
     maxWidth: '600px',
     hide: false,
