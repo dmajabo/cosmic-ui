@@ -1,9 +1,8 @@
 import { Tab, Tabs } from '@mui/material';
 import { AccountVendorTypes } from 'lib/api/ApiModels/Accounts/apiModel';
-import { PolicyApi } from 'lib/api/ApiModels/Services/policy';
 import { TopoApi } from 'lib/api/ApiModels/Services/topo';
-import { Device, GetControllerVendorResponse, MetricsTopoMap, Organization, Vnet } from 'lib/api/http/SharedTypes';
-import { useGet, useGetChainData } from 'lib/api/http/useAxiosHook';
+import { Device, MetricsTopoMap, Organization, Vnet } from 'lib/api/http/SharedTypes';
+import { useGetChainData } from 'lib/api/http/useAxiosHook';
 import { MetricsProvider, useMetricsActions } from 'lib/hooks/Metrics/useMetricsDataContent';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import React, { useContext, useEffect, useState } from 'react';

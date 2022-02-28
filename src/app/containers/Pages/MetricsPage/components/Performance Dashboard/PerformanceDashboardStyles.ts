@@ -112,7 +112,7 @@ export const PerformanceDashboardStyles = makeStyles(
         alignItems: 'center',
       },
       slaFormElementContainer: {
-        width: 560,
+        width: 700,
         padding: 20,
         backgroundColor: 'var(--_primaryBg)',
       },

@@ -1,4 +1,4 @@
-import { Backdrop } from '@mui/material';
+import { Backdrop, Dialog, DialogContent, DialogTitle } from '@mui/material';
 import React, { useContext, useMemo, useState } from 'react';
 import { PerformanceDashboardStyles } from './PerformanceDashboardStyles';
 import Table, { Data } from './Table';
@@ -13,6 +13,11 @@ import { createApiClient } from 'lib/api/http/apiClient';
 import { addIcon } from 'app/components/SVGIcons/addIcon';
 import PrimaryButton from 'app/components/Buttons/PrimaryButton';
 import MatSelect from 'app/components/Inputs/MatSelect';
+import { ContainerWithMetrics } from 'app/containers/Pages/TopologyPage/TopoMapV2/styles';
+import ResizablePanel from 'app/components/Basic/PanelBar/ResizablePanel';
+import SecondaryButtonwithEvent from 'app/containers/Pages/AnalyticsPage/components/SecondaryButtonwithEvent';
+import { filterIcon } from 'app/components/SVGIcons/filter';
+import CloseIcon from '../../icons/performance dashboard/close';
 
 interface SLATestListProps {
   readonly finalTableData: FinalTableData[];
@@ -45,10 +50,6 @@ const columns: Column[] = [
     accessor: ColumnAccessor.destination,
   },
   {
-    Header: 'DESCRIPTION',
-    accessor: ColumnAccessor.description,
-  },
-  {
     Header: 'AVERAGE QOE',
     accessor: ColumnAccessor.averageQoe,
   },
@@ -72,6 +73,7 @@ const getDefaultSelectedTestId = (tests: FinalTableData[]) => {
 export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteSlaTest, networks, merakiOrganizations, finalTableData, addSlaTest }) => {
   const classes = PerformanceDashboardStyles();
 
+  const [isSlaTestPanelOpen, setIsSlaTestPanelOpen] = useState<boolean>(false);
   const [createToggle, setCreateToggle] = React.useState<boolean>(false);
   const [selectedRows, setSelectedRows] = useState<Data[]>([]);
   const [timeRange, setTimeRange] = useState<string>('-7d');
@@ -115,6 +117,9 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
 
   const isTestDataInvalid = (averageQoe: MetricAvgQoe) => isNaN(Number(averageQoe.packetLoss)) && isNaN(Number(averageQoe.latency));
 
+  const onSlaTestPanelOpen = () => setIsSlaTestPanelOpen(true);
+  const onSlaTestPanelClose = () => setIsSlaTestPanelOpen(false);
+
   const data = useMemo(
     () =>
       finalTableData.map(item => {
@@ -149,6 +154,7 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
       <div className={classes.endFlexContainer}>
         <div>
           <PrimaryButton height="50px" label="CREATE SLA TEST" icon={addIcon} onClick={handleToggle} />
+          <SecondaryButtonwithEvent styles={{ marginLeft: 10 }} height="50px" label="SELECT TESTS" icon={filterIcon} onClick={onSlaTestPanelOpen} />
           <MatSelect
             id="SLATestTimePeriod"
             label="Show"
@@ -166,10 +172,6 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
       <PacketLoss timeRange={timeRange} selectedRows={selectedRows} networks={networks} />
       <Latency timeRange={timeRange} selectedRows={selectedRows} networks={networks} />
       <Goodput timeRange={timeRange} selectedRows={selectedRows} networks={networks} />
-      <div className={classes.pageComponentBackground}>
-        <div className={classes.pageComponentTitle}>SLA Tests</div>
-        <Table onSelectedRowsUpdate={onSelectedRowsUpdate} columns={columns} data={data} defaultSelectedTestId={getDefaultSelectedTestId(finalTableData)} />
-      </div>
       <Backdrop style={{ color: '#fff', zIndex: 5 }} open={createToggle}>
         <CreateSLATest networks={networks} merakiOrganizations={merakiOrganizations} addSlaTest={addTest} popup={true} closeSlaTest={handleClose} />
       </Backdrop>
@@ -184,6 +186,21 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
           closeSlaTest={handleClose}
         />
       </Backdrop>
+      <Dialog open={isSlaTestPanelOpen} maxWidth="md" fullWidth>
+        <DialogTitle>
+          <div className={classes.flexContainer}>
+            <div>
+              <span className={classes.itemTitle}>SLA Tests</span>
+            </div>
+            <div style={{ cursor: 'pointer' }} onClick={onSlaTestPanelClose}>
+              <CloseIcon />
+            </div>
+          </div>
+        </DialogTitle>
+        <DialogContent>
+          <Table onSelectedRowsUpdate={onSelectedRowsUpdate} columns={columns} data={data} defaultSelectedTestId={getDefaultSelectedTestId(finalTableData)} />
+        </DialogContent>
+      </Dialog>
     </>
   );
 };

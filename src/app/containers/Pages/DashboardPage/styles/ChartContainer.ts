@@ -20,7 +20,7 @@ export const GridContainer = styled.div`
   grid-column-gap: 30px;
   grid-row-gap: 30px;
   width: 100%;
-  height: calc(100vh - 81px);
+  height: calc(100% - 81px);
   padding: 40px;
 
   @media (max-width: ${device_LL - 1 + 'px'}) {

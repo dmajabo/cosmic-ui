@@ -41,7 +41,7 @@ const ManagementDrifts: React.FC<Props> = (props: Props) => {
 
   return (
     <ChartItem style={props.styles}>
-      <ChartTitle>Configuration Drifts</ChartTitle>
+      <ChartTitle>Config Drifts</ChartTitle>
       {!error && data !== null && (
         <ChartContent>
           <ChartValue color="var(--_orangeColor)">{data}</ChartValue>
