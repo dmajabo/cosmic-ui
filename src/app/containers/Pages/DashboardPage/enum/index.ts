@@ -43,7 +43,7 @@ export interface OnPremDevicesResponse {
   readonly devices: Device[];
 }
 
-interface AvailabilityMetric {
+export interface AvailabilityMetric {
   readonly time: string;
   readonly value: string;
 }

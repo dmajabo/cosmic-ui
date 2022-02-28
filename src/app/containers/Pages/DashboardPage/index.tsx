@@ -10,7 +10,7 @@ import { DashboardItemContainer, DashboardItemContent, DashboardItemLabel, GridC
 import InOutBound from './components/ManagmentItem/InOutBound';
 import ManagementLayer7 from './components/ManagmentItem/ManagementLayer7';
 import ManagementDrifts from './components/ManagmentItem/ManagementDrifts';
-import { AnomaliesResponse, AnomalySummary, DashboardSitesViewTab, Device, DeviceMetrics, MapDeviceDataResponse, OnPremDevicesResponse, SitesData, SITES_COLUMNS, SITES_DATA } from './enum';
+import { AnomaliesResponse, AnomalySummary, AvailabilityMetric, DashboardSitesViewTab, Device, DeviceMetrics, MapDeviceDataResponse, SitesData, SITES_COLUMNS } from './enum';
 import { Feature, Map } from './components/Map/Map';
 import { useGet, useGetChainData } from 'lib/api/http/useAxiosHook';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
@@ -27,7 +27,6 @@ import { EmptyText } from 'app/components/Basic/NoDataStyles/NoDataStyles';
 import { TelemetryApi } from 'lib/api/ApiModels/Services/telemetry';
 import { DateTime } from 'luxon';
 import { getCorrectedTimeString } from '../MetricsPage/components/Utils';
-import BandwidthComponent from '../TrafficPage/Trends/Components/BandwidthComponent';
 import { downRedArrow, upGreenArrow } from 'app/components/SVGIcons/arrows';
 import { useHistory } from 'react-router-dom';
 import { ROUTE } from 'lib/Routes/model';
@@ -121,6 +120,19 @@ const DashboardPage: React.FC = () => {
     [response],
   );
 
+  const getAvailabilityArray = (availabilityArray: AvailabilityMetric[]): AvailabilityMetric[] => {
+    if (isEmpty(availabilityArray)) {
+      const availability: AvailabilityMetric[] = [];
+      const time = DateTime.now().minus({ days: 1 });
+      for (let index = 0; index < 48; index++) {
+        availability.push({ time: time.toFormat(INPUT_TIME_FORMAT), value: '0' });
+        time.plus({ minutes: 30 });
+      }
+      return availability;
+    }
+    return availabilityArray;
+  };
+
   const convertDataToSitesData = useCallback(
     (devices: Device[] = [], deviceMetrics: DeviceMetrics[] = []): SitesData[] => {
       return deviceMetrics.map(deviceMetric => {
@@ -128,6 +140,8 @@ const DashboardPage: React.FC = () => {
         const tagArray = selectedDevice?.vnetworks.reduce((acc, vnetwork) => acc.concat(vnetwork.tags), []).map(tag => tag.value);
         const bytesSent = deviceMetric?.bytesSendUsage / 1000000;
         const bytesRecieved = deviceMetric?.bytesReceivedUsage / 1000000;
+        const availabilityArray = getAvailabilityArray(deviceMetric.availabilityMetrics);
+
         return {
           name: deviceMetric?.name || '',
           totalUsage: (
@@ -150,11 +164,9 @@ const DashboardPage: React.FC = () => {
           clients: selectedDevice?.vnetworks.reduce((acc, vnetwork) => acc + vnetwork.numberOfOnetClients, 0),
           tags: tagArray.join(', '),
           uplinks: selectedDevice.uplinks.map(uplink => uplink.name).join(', '),
-          availability: isEmpty(deviceMetric.availabilityMetrics) ? (
-            <div />
-          ) : (
+          availability: (
             <div className={classes.connectivityContainer}>
-              {deviceMetric.availabilityMetrics?.map(item => {
+              {availabilityArray?.map(item => {
                 const timestamp = DateTime.fromFormat(getCorrectedTimeString(item.time), INPUT_TIME_FORMAT).toFormat(AVAILABILITY_TIME_FORMAT);
                 if (Number(item.value) > 0) {
                   return <div title={timestamp} key={item.time} className={classes.connectivityUnavailableItem} />;
@@ -328,14 +340,6 @@ const DashboardPage: React.FC = () => {
           )}
         </DashboardItemContainer>
       </GridItemContainer>
-      {/* <GridItemContainer gridArea="2 / 1 / 2 / 2">
-        <DashboardItemContainer>
-          <DashboardItemLabel>Sankey</DashboardItemLabel>
-          <DashboardItemContent>
-            <BandwidthComponent />
-          </DashboardItemContent>
-        </DashboardItemContainer>
-      </GridItemContainer> */}
       <GridItemContainer gridArea="1 / 2 / 2 / 3">
         <DashboardItemContainer>
           <DashboardItemLabel>Management</DashboardItemLabel>
@@ -394,9 +398,9 @@ const DashboardPage: React.FC = () => {
                   </div>
                 );
               })}
-          </div>
-          <div hidden={anomaliesResponse?.totalCount < anomaliesPageSize} className={`${classes.horizontalCenter} ${classes.loadMoreButton}`} onClick={loadMoreAnomalies}>
-            Load More
+            <div hidden={anomaliesLoading ? true : anomaliesResponse?.totalCount < anomaliesPageSize} className={`${classes.horizontalCenter} ${classes.loadMoreButton}`} onClick={loadMoreAnomalies}>
+              Load More
+            </div>
           </div>
         </DashboardItemContainer>
       </GridItemContainer>

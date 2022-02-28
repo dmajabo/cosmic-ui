@@ -19,7 +19,7 @@ export const DashboardStyles = makeStyles(
       },
       tableWrapper: {
         width: '100%',
-        maxHeight: 'calc(100% - 10px)',
+        maxHeight: 'calc(100% - 50px)',
         height: 'auto',
         flexGrow: 'unset',
         margin: '0 0 auto 0',
