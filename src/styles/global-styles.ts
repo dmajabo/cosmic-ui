@@ -9,7 +9,7 @@ export const device_XSM = 576;
 export const device_SM = 576;
 export const device_M = 768;
 export const device_L = 1024;
-export const device_LL = 1440;
+export const device_LL = 1300;
 export const device_XL = 1600;
 export const device_XXL = 1920;
 
