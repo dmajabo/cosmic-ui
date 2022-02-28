@@ -15,7 +15,7 @@ import {
 } from '../models';
 import uuid from 'react-uuid';
 import { IObject } from 'lib/models/general';
-import _ from 'lodash';
+import _, { cloneDeep } from 'lodash';
 
 export const buildLinks = (
   filter: FilterEntityOptions,
@@ -68,27 +68,19 @@ export const buildLinks = (
 };
 
 export const buildSiteToAppNodeLinks = (sites: IObject<ITopoSitesNode>, appNodes: IObject<ITopoAppNode>, origLink: AppAccessLink, links: IObject<ITopoLink<any, ITGWNode, any>>) => {
-  const from = sites[origLink.sourceId];
-  const to = appNodes[origLink.destinationId];
-  console.log(from);
-  console.log(to);
-  console.log('___________');
+  const from = cloneDeep(sites[origLink.sourceId]);
+  // from.x = from.x + 115;
+  // from.y = from.y - 25;
+
+  const to = cloneDeep(appNodes[origLink.destinationId]);
+  // to.y = to.y + to.height;
+  // to.x = to.x + to.width / 2.4;
+
   if (!from || !to) {
     return;
   }
   const nl: ITopoLink<INetworkVNetNode, ITGWNode, INetworkNetworkLink> = createTopoLink(TopoLinkTypes.NetworkNetworkLink, from, to, from, to, null, null);
   links[nl.extId] = nl;
-
-  // Object.keys(accounts).forEach(key => {
-  //   if (!accounts[key].children || !accounts[key].children.length) return;
-  //   accounts[key].children.forEach(tgw => {
-  //     if (!tgw.networkLinks || !tgw.networkLinks.length) return;
-  //     const _link: INetworkNetworkLink = tgw.networkLinks.find(it => (it.vnet ? vnet.name === it.vnet.name : vnet.extId === it.peerExtId));
-  //     if (!_link) return;
-  //     const nl: ITopoLink<INetworkVNetNode, ITGWNode, INetworkNetworkLink> = createTopoLink(TopoLinkTypes.NetworkNetworkLink, vnet, tgw, region, accounts[key], region, _link);
-  //     links[nl.extId] = nl;
-  //   });
-  // });
 };
 
 const buildPeerLinks = (
