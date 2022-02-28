@@ -30,7 +30,6 @@ const FilterComponent: React.FC<IProps> = (props: IProps) => {
   const entities: FilterEntityOptions = cloneDeep(topology.entities);
   entities.peer_connections.hide = true;
   entities.transit.hide = true;
-  entities.transit.hide = true;
   entities.vpc.hide = true;
   entities.web_acls.hide = true;
 
