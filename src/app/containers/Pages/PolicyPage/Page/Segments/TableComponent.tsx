@@ -32,7 +32,11 @@ const TableComponent: React.FC<Props> = (props: Props) => {
   const [sortObject, setSortObject] = React.useState<ISortObject>(null);
 
   const colorBodyTemplate = (rowData: ISegmentSegmentP) => {
-    return <ColorValue margin="auto 20px auto 0" color={rowData.color} />;
+    if (rowData.segType === SegmentSegmentType.NETWORK) return <ColorValue margin="auto 0 auto 0" color={rowData.color} borderRadius="50%" />;
+    if (rowData.segType === SegmentSegmentType.SITE) return <ColorValue margin="auto 0 auto 0" color={rowData.color || '#009688'} borderRadius="50%" />;
+    if (rowData.segType === SegmentSegmentType.APPLICATION) return <ColorValue margin="auto 0 auto 0" color={rowData.color} borderRadius="50%" />;
+    if (rowData.segType === SegmentSegmentType.EXTERNAL) return <ColorValue margin="auto 0 auto 0" color={rowData.color || '#F9A825'} borderRadius="50%" />;
+    return <ColorValue margin="auto 0 auto 0" color={rowData.color} borderRadius="50%" />;
   };
 
   const typeBodyTemplate = (rowData: ISegmentSegmentP) => {
@@ -83,34 +87,46 @@ const TableComponent: React.FC<Props> = (props: Props) => {
           sortMode="single"
         >
           <Column
-            style={{ width: SegmentsGridColumns.color.width, minWidth: SegmentsGridColumns.color.width, maxWidth: SegmentsGridColumns.color.width, textAlign: 'center', verticalAlign: 'middle' }}
+            headerStyle={{ fontSize: 12, fontWeight: 'bold' }}
+            style={{ minWidth: SegmentsGridColumns.name.width, fontSize: 16, fontWeight: 'normal' }}
+            sortable={SegmentsGridColumns.name.sortable}
+            field={SegmentsGridColumns.name.field}
+            header={SegmentsGridColumns.name.label}
+          ></Column>
+          <Column
+            headerStyle={{ fontSize: 12, fontWeight: 'bold' }}
+            style={{ minWidth: SegmentsGridColumns.color.width, fontSize: 16, fontWeight: 'normal' }}
             sortable={SegmentsGridColumns.color.sortable}
             field={SegmentsGridColumns.color.field}
             header={SegmentsGridColumns.color.label}
             body={colorBodyTemplate}
           ></Column>
           <Column
-            style={{ minWidth: SegmentsGridColumns.name.width }}
-            sortable={SegmentsGridColumns.name.sortable}
-            field={SegmentsGridColumns.name.field}
-            header={SegmentsGridColumns.name.label}
-          ></Column>
-          <Column
-            style={{ minWidth: SegmentsGridColumns.type.width }}
+            headerStyle={{ fontSize: 12, fontWeight: 'bold' }}
+            style={{ minWidth: SegmentsGridColumns.type.width, fontSize: 16, fontWeight: 'normal' }}
             sortable={SegmentsGridColumns.type.sortable}
             field={SegmentsGridColumns.type.field}
             header={SegmentsGridColumns.type.label}
             body={typeBodyTemplate}
           ></Column>
           <Column
-            style={{ maxWidth: '600px' }}
+            headerStyle={{ fontSize: 12, fontWeight: 'bold' }}
+            style={{ maxWidth: '600px', fontSize: 16, fontWeight: 'normal' }}
             sortable={SegmentsGridColumns.id.sortable}
             field={SegmentsGridColumns.id.field}
             header={SegmentsGridColumns.id.label}
             body={sourceBodyTemplate}
           ></Column>
           <Column
-            style={{ textAlign: 'center', width: SegmentsGridColumns.isSystemSegment.width, minWidth: SegmentsGridColumns.isSystemSegment.width, maxWidth: SegmentsGridColumns.isSystemSegment.width }}
+            headerStyle={{ fontSize: 12, fontWeight: 'bold' }}
+            style={{
+              textAlign: 'center',
+              width: SegmentsGridColumns.isSystemSegment.width,
+              minWidth: SegmentsGridColumns.isSystemSegment.width,
+              maxWidth: SegmentsGridColumns.isSystemSegment.width,
+              fontSize: 16,
+              fontWeight: 'normal',
+            }}
             sortable={SegmentsGridColumns.isSystemSegment.sortable}
             field={SegmentsGridColumns.isSystemSegment.field}
             header={SegmentsGridColumns.isSystemSegment.label}

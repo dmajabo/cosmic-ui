@@ -289,12 +289,12 @@ const Triggers: React.FC<Props> = (props: Props) => {
             field={TriggerGridColumns.name.field}
             header={TriggerGridColumns.name.label}
           ></Column>
-          <Column
+          {/* <Column
             style={{ width: TriggerGridColumns.category.width, verticalAlign: 'top', lineHeight: '40px' }}
             sortable
             field={TriggerGridColumns.category.field}
             header={TriggerGridColumns.category.label}
-          ></Column>
+          ></Column> */}
           <Column
             style={{ width: TriggerGridColumns.severity.width, verticalAlign: 'top', lineHeight: '40px' }}
             sortable

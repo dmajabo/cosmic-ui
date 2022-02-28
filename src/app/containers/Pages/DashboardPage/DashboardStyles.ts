@@ -289,7 +289,7 @@ export const DashboardStyles = makeStyles(
       },
       popupHr: {},
       totalUsageIcon: {
-        padding: '0px 10px 0px 10px',
+        padding: '0px 5px 0px 5px',
       },
       connectivityContainer: {
         border: '2px solid black',
@@ -297,11 +297,11 @@ export const DashboardStyles = makeStyles(
         display: 'flex',
       },
       connectivityAvailableItem: {
-        width: 3,
+        width: 2,
         background: 'green',
       },
       connectivityUnavailableItem: {
-        width: 3,
+        width: 2,
         background: 'red',
       },
     }),

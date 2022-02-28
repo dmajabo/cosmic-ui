@@ -210,6 +210,7 @@ const NewAwsAccountForm: React.FC<Props> = (props: Props) => {
             <StepItemFormRow>
               <TextInput
                 id="editorAccountAccessKey"
+                type="password"
                 name="accessKey"
                 value={dataItem.awsPol.accessKey}
                 label="Access key"
@@ -222,6 +223,7 @@ const NewAwsAccountForm: React.FC<Props> = (props: Props) => {
               <TextInput
                 id="editorAccountSecretKey"
                 name="secret"
+                type="password"
                 value={dataItem.awsPol.secret}
                 label="Secret key"
                 onChange={v => onChangePolicyField(v, 'secret')}

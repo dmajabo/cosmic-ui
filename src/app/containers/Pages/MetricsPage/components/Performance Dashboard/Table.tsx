@@ -29,8 +29,6 @@ interface TableProps {
 }
 
 const Styles = styled.div`
-  padding: 1rem;
-
   table {
     border-spacing: 0;
     width: 100%;
