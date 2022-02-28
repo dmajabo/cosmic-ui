@@ -16,6 +16,7 @@ import { createTopologyQueryParam, ITopologyQueryParam } from 'lib/api/ApiModels
 import { TopoApi } from 'lib/api/ApiModels/Services/topo';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
+import { TelemetryApi } from 'lib/api/ApiModels/Services/telemetry';
 
 interface IProps {}
 
@@ -40,7 +41,7 @@ const TopoMapV2: React.FC<IProps> = (props: IProps) => {
       topology.onSetData(null);
       interval = setInterval(() => {
         onTryLoadData();
-      }, 15000);
+      }, 60000);
     } else if (interval) {
       clearInterval(interval);
     }
@@ -57,13 +58,24 @@ const TopoMapV2: React.FC<IProps> = (props: IProps) => {
 
   const onTryLoadData = async () => {
     const _st = topology.selectedTime || null;
-    const param: ITopologyQueryParam = createTopologyQueryParam(_st);
-    await onGetChainData([PolicyApi.getSegments(), TopoApi.getAllOrganizations()], ['segments', 'organizations'], userContext.accessToken!, param);
+    let param: ITopologyQueryParam = createTopologyQueryParam(_st);
+    if (param) {
+      param.startTime = '-6h';
+    } else {
+      param = { startTime: '-6h', timestamp: null };
+    }
+
+    await onGetChainData([PolicyApi.getSegments(), TopoApi.getAllOrganizations(), TelemetryApi.getAppAccess()], ['segments', 'organizations', 'siteAccessInfo'], userContext.accessToken!, param);
   };
 
   const onReloadData = async (startTime: Date | null) => {
-    const param: ITopologyQueryParam = createTopologyQueryParam(startTime);
-    await onGetChainData([PolicyApi.getSegments(), TopoApi.getAllOrganizations()], ['segments', 'organizations'], userContext.accessToken!, param);
+    let param: ITopologyQueryParam = createTopologyQueryParam(startTime);
+    if (param) {
+      param.startTime = '-6h';
+    } else {
+      param = { startTime: '-6h', timestamp: null };
+    }
+    await onGetChainData([PolicyApi.getSegments(), TopoApi.getAllOrganizations(), TelemetryApi.getAppAccess()], ['segments', 'organizations', 'siteAccessInfo'], userContext.accessToken!, param);
   };
 
   return (

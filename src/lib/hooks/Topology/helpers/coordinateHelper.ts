@@ -1,6 +1,16 @@
 import { ICollapseStyles, NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
 import { IObject, ISize, STANDART_DISPLAY_RESOLUTION_V2 } from 'lib/models/general';
-import { FilterEntityOptions, IDeviceNode, INetworkVNetNode, INetworkVNetworkPeeringConnectionNode, INetworkWebAclNode, ITopoAccountNode, ITopoRegionNode, ITopoSitesNode } from '../models';
+import {
+  FilterEntityOptions,
+  IDeviceNode,
+  INetworkVNetNode,
+  INetworkVNetworkPeeringConnectionNode,
+  INetworkWebAclNode,
+  ITopoAccountNode,
+  ITopoAppNode,
+  ITopoRegionNode,
+  ITopoSitesNode,
+} from '../models';
 import { getCollapseExpandState } from './buildNodeHelpers';
 import {
   getChildContainerWidth,
@@ -13,10 +23,18 @@ import {
   set_Horizontal_Coord_TopoNode,
 } from './sizeHelpers';
 
-export const updateTopLevelItems = (filter: FilterEntityOptions, regions: IObject<ITopoRegionNode>, accounts: IObject<ITopoAccountNode>, sites: IObject<ITopoSitesNode>) => {
+export const updateTopLevelItems = (
+  filter: FilterEntityOptions,
+  regions: IObject<ITopoRegionNode>,
+  accounts: IObject<ITopoAccountNode>,
+  sites: IObject<ITopoSitesNode>,
+  appNodes: IObject<ITopoAppNode>,
+) => {
   let regionSizes: ISize = { width: 0, height: 0 };
   let accountSizes: ISize = { width: 0, height: 0 };
   let sitesSizes: ISize = { width: 0, height: 0 };
+  let appNodesSizes: ISize = { width: 0, height: 0 };
+
   if (accounts && Object.keys(accounts).length) {
     const _startYPos = STANDART_DISPLAY_RESOLUTION_V2.height / 2;
     accountSizes = updateAccountItems(filter.transit.selected, accounts, _startYPos);
@@ -29,9 +47,14 @@ export const updateTopLevelItems = (filter: FilterEntityOptions, regions: IObjec
     const _startYPos = STANDART_DISPLAY_RESOLUTION_V2.height / 2 + NODES_CONSTANTS.ACCOUNT.spaceY * 1.5;
     sitesSizes = updateSitesItems(filter.sites.selected, sites, _startYPos);
   }
+  if (appNodes && Object.keys(appNodes).length) {
+    const _startYPos = STANDART_DISPLAY_RESOLUTION_V2.height / 3;
+    appNodesSizes = updateAppNodesItems(filter.sites.selected, appNodes, _startYPos);
+  }
   setRegionsCoord(filter, regions, regionSizes, STANDART_DISPLAY_RESOLUTION_V2.width);
   setAccountsCoord(accounts, accountSizes, STANDART_DISPLAY_RESOLUTION_V2.width);
   setSitesCoord(sites, sitesSizes, STANDART_DISPLAY_RESOLUTION_V2.width);
+  setAppNodesCoord(appNodes, appNodesSizes, STANDART_DISPLAY_RESOLUTION_V2.width);
 };
 
 // Set coord for vpc, vnets, peer-connections, waf
@@ -194,6 +217,15 @@ export const updateAccountItems = (showChildrens: boolean, items: IObject<ITopoA
   return { width: offsetX, height: maxNodeHeight };
 };
 
+export const setAppNodesCoord = (items: IObject<ITopoAppNode>, size: ISize, svgWidth: number) => {
+  if (!items || !Object.keys(items).length) return;
+  const hvw = svgWidth / 2;
+  Object.keys(items).forEach(key => {
+    set_Horizontal_Coord_TopoNode(items[key], hvw, size.width);
+    set_Vertical_Coord_TopoNode(items[key], size.height);
+  });
+};
+
 export const setAccountsCoord = (items: IObject<ITopoAccountNode>, size: ISize, svgWidth: number) => {
   if (!items || !Object.keys(items).length) return;
   const hvw = svgWidth / 2;
@@ -238,6 +270,30 @@ export const updateSitesItems = (showChildrens: boolean, items: IObject<ITopoSit
     items[key].x = offsetX;
     maxNodeHeight = Math.max(maxNodeHeight, items[key].height);
     offsetX = offsetX + items[key].width + NODES_CONSTANTS.SITES.spaceX;
+  });
+  return { width: offsetX, height: maxNodeHeight };
+};
+
+export const updateAppNodesItems = (showChildrens: boolean, items: IObject<ITopoAppNode>, offsetY: number): ISize => {
+  if (!items || !Object.keys(items).length) return { width: 0, height: 0 };
+  let offsetX = 0;
+  let maxNodeHeight = 0;
+  Object.keys(items).forEach((key, i) => {
+    if (!showChildrens) {
+      items[key].collapsed = true;
+    }
+    // if (items[key].children && items[key].children.length) {
+    const _rowWidth = getRowsWidth(1, NODES_CONSTANTS.NETWORK_WEDGE.collapse.width, NODES_CONSTANTS.NETWORK_WEDGE.collapse.spaceX);
+    const _width = getTotalNodeWidth(_rowWidth, NODES_CONSTANTS.ACCOUNT.expanded.contentPadding * 2);
+    const _rowsHeight = getChildContainerHeight(true, 1, NODES_CONSTANTS.ACCOUNT.expanded.contentPadding, NODES_CONSTANTS.NETWORK_WEDGE.collapse.height, NODES_CONSTANTS.NETWORK_WEDGE.collapse.spaceY);
+    const _height = getTotalNodeHeight(_rowsHeight, NODES_CONSTANTS.ACCOUNT.headerHeight, NODES_CONSTANTS.ACCOUNT.expanded.contentPadding);
+    items[key].width = Math.max(_width, NODES_CONSTANTS.ACCOUNT.expanded.minWidth);
+    items[key].height = Math.max(_height, NODES_CONSTANTS.ACCOUNT.expanded.minHeight);
+    // }
+    maxNodeHeight = Math.max(maxNodeHeight, items[key].height);
+    items[key].y = offsetY - maxNodeHeight / 2;
+    items[key].x = offsetX;
+    offsetX = offsetX + items[key].width + NODES_CONSTANTS.ACCOUNT.spaceX;
   });
   return { width: offsetX, height: maxNodeHeight };
 };

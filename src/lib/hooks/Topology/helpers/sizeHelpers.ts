@@ -1,4 +1,4 @@
-import { ITopoAccountNode, ITopoRegionNode, ITopoSitesNode } from '../models';
+import { ITopoAccountNode, ITopoAppNode, ITopoRegionNode, ITopoSitesNode } from '../models';
 
 export const getRowsWidth = (_count: number, width: number, spaceX: number): number => {
   if (!_count || _count === 0) return 0;
@@ -34,12 +34,12 @@ export const getChildContainerHeight = (visible: boolean, rows: number, containe
   return _h + containerPadding;
 };
 
-export const set_Vertical_Coord_TopoNode = (node: ITopoRegionNode | ITopoSitesNode | ITopoAccountNode, height: number) => {
+export const set_Vertical_Coord_TopoNode = (node: ITopoRegionNode | ITopoSitesNode | ITopoAccountNode | ITopoAppNode, height: number) => {
   if (node.height < height) {
     node.y = node.y - height / 2 + node.height / 2;
   }
 };
 
-export const set_Horizontal_Coord_TopoNode = (node: ITopoRegionNode | ITopoSitesNode | ITopoAccountNode, halfDispayWidth: number, rowWidth: number) => {
+export const set_Horizontal_Coord_TopoNode = (node: ITopoRegionNode | ITopoSitesNode | ITopoAccountNode | ITopoAppNode, halfDispayWidth: number, rowWidth: number) => {
   node.x = node.x + halfDispayWidth - rowWidth / 2;
 };

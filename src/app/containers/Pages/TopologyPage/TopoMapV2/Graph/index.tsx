@@ -22,6 +22,8 @@ import SiteNode from '../Containers/Nodes/NodeWrapper/SitesNode/SiteNode';
 import SitesNodeTopContainer from '../Containers/Nodes/NodeWrapper/SitesNode/SitesNodeTopContainer';
 import LinksWrapper from '../Containers/Links';
 import ResizablePanel from 'app/components/Basic/PanelBar/ResizablePanel';
+import ApplicationNode from '../Containers/Nodes/NodeWrapper/ApplicationNode/ApplicationNode';
+import { ApplicationPanel } from '../PanelComponents/NodePanels/ApplicationPanel';
 // import { STANDART_DISPLAY_RESOLUTION_V2 } from 'lib/models/general';
 // import SegmentsComponent from '../PanelComponents/Segments/SegmentsComponent';
 
@@ -131,6 +133,18 @@ const Graph: React.FC<Props> = (props: Props) => {
                       <RegionNode key={`regionChildrenLayer${topology.regions[key].uiId}`} dataItem={topology.regions[key]} onCenteredToNode={onCenteredToNode} onCenteredMap={onCenteredMap} />
                     ))
                   : null}
+                {topology.applicationNodes
+                  ? Object.keys(topology.applicationNodes).map(key => {
+                      return (
+                        <ApplicationNode
+                          key={`applicationChildrenLayer${topology.applicationNodes[key].uiId}`}
+                          dataItem={topology.applicationNodes[key]}
+                          onCenteredToNode={onCenteredToNode}
+                          onCenteredMap={onCenteredMap}
+                        />
+                      );
+                    })
+                  : null}
               </GContainer>
               {/* <line x1="50%" y1="0" x2="50%" y2="100%" fill="red" stroke="red" strokeWidth="1" />
               <line x1="0" y1="50%" x2="100%" y2="50%" fill="red" stroke="red" strokeWidth="1" /> */}
@@ -144,6 +158,7 @@ const Graph: React.FC<Props> = (props: Props) => {
             {topology.topoPanel.type === TopologyPanelTypes.WebAcl && <WebAclPanel dataItem={topology.topoPanel.dataItem} />}
             {topology.topoPanel.type === TopologyPanelTypes.Device && <DevicePanel dataItem={topology.topoPanel.dataItem} />}
             {topology.topoPanel.type === TopologyPanelTypes.Wedge && <WedgePanel dataItem={topology.topoPanel.dataItem} />}
+            {topology.topoPanel.type === TopologyPanelTypes.Application && <ApplicationPanel dataItem={topology.topoPanel.dataItem} />}
           </ResizablePanel>
         </ContainerWithMetrics>
       )}

@@ -39,11 +39,11 @@ interface TitleProps {
 }
 export const PanelTitle = styled.div<TitleProps>`
   font-style: normal;
-  font-weight: 700;
+  font-weight: normal;
   font-size: 22px;
   color: var(--_primaryTextColor);
-  white-space: nowrap;
-  overflow: hidden;
+  white-space: pre-line;
+  word-break: break-word;
   text-overflow: ellipsis;
   flex-shrink: 0;
   max-width: ${props => props.maxWidth || '100%'};
