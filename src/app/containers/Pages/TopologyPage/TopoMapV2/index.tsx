@@ -75,7 +75,7 @@ const TopoMapV2: React.FC<IProps> = (props: IProps) => {
     } else {
       param = { startTime: '-6h', timestamp: null };
     }
-    await onGetChainData([PolicyApi.getSegments(), TopoApi.getAllOrganizations()], ['segments', 'organizations'], userContext.accessToken!, param);
+    await onGetChainData([PolicyApi.getSegments(), TopoApi.getAllOrganizations(), TelemetryApi.getAppAccess()], ['segments', 'organizations', 'siteAccessInfo'], userContext.accessToken!, param);
   };
 
   return (

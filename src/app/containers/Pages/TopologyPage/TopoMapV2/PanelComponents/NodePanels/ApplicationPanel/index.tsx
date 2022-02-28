@@ -1,8 +1,7 @@
 import OverflowContainer from 'app/components/Basic/OverflowContainer/styles';
-import { PanelTitle } from 'app/containers/Pages/TrafficPage/Trends/styles';
 import { ITopoAppNode } from 'lib/hooks/Topology/models';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
-import { PanelHeader } from '../../styles';
+import { PanelHeader, PanelTitle, SubPanelTitle } from '../../styles';
 import MemberTable from './MemberTable';
 import SiteTable from './SiteTable';
 
@@ -25,11 +24,11 @@ export const ApplicationPanel: React.FC<ApplicationPanelProps> = props => {
       <PanelHeader direction="column" align="unset">
         <PanelTitle>{props.dataItem.dataItem.name ? props.dataItem.dataItem.name : props.dataItem.dataItem.extId}</PanelTitle>
       </PanelHeader>
-      <PanelTitle>Sites</PanelTitle>
 
       <OverflowContainer>
+        <SubPanelTitle style={{ marginBottom: '30px' }}>Sites</SubPanelTitle>
         <SiteTable showLoader={false} data={siteNames} />
-        <PanelTitle>Members</PanelTitle>
+        <SubPanelTitle style={{ marginBottom: '30px' }}>Members</SubPanelTitle>
         <MemberTable showLoader={false} data={members} />
       </OverflowContainer>
     </>

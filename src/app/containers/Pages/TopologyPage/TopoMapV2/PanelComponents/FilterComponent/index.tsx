@@ -40,10 +40,10 @@ const FilterComponent: React.FC<IProps> = (props: IProps) => {
       </PanelHeader>
       <OverflowContainer>
         <PanelContent>
-          <FilterGroup maxGroupHeight="260px" defaultOpen label="Entities" styles={{ margin: '0 0 5px 0' }}>
+          {/* <FilterGroup maxGroupHeight="260px" defaultOpen label="Entities" styles={{ margin: '0 0 5px 0' }}>
             <FilterEntityGroup type={TopoFilterTypes.Entities} data={entities} onClick={onSelectFilterOption} />
-          </FilterGroup>
-          <FilterGroup maxGroupHeight="unset" label="Segments" styles={{ margin: '0' }}>
+          </FilterGroup> */}
+          <FilterGroup maxGroupHeight="unset" label="Site Segments" styles={{ margin: '0' }}>
             <FilterSegmentsGroup iconStyles={{ width: '20px', height: '20px' }} data={topology.segments} onClick={onSelectSegmentFilterOption} />
           </FilterGroup>
           {/* <FilterGroup maxGroupHeight="260px" label="Health Severity" styles={{ margin: '0 0 5px 0' }}>
