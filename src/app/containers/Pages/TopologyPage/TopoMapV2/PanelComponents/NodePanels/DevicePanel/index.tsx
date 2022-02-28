@@ -9,6 +9,7 @@ import TabPanel from 'app/components/Tabs/TabPanel';
 import { TabsStyles } from 'app/components/Tabs/TabsStyles';
 import PolicyTab from './PolicyTab';
 import { IDeviceNode } from 'lib/hooks/Topology/models';
+import { ApplicationTab } from './ApplicationTab';
 
 interface IProps {
   dataItem: IDeviceNode;
@@ -55,12 +56,17 @@ const DevicePanel: React.FC<IProps> = (props: IProps) => {
         >
           {/* <Tab disableRipple label="Metrics" classes={{ selected: classes.tabSelected }} {...TabComponentProps(0)} className={classes.tab} /> */}
           <Tab disableRipple label="Policy" classes={{ selected: classes.tabSelected }} {...TabComponentProps(0)} className={classes.tab} />
+          <Tab disableRipple label="Applications" classes={{ selected: classes.tabSelected }} {...TabComponentProps(1)} className={classes.tab} />
         </Tabs>
       </PanelTabWrapper>
 
       <OverflowContainer>
         <TabPanel value={value} index={0}>
           <PolicyTab dataItem={props.dataItem} />
+        </TabPanel>
+        <TabPanel value={value} index={1}>
+          {/* <PolicyTab dataItem={props.dataItem} /> */}
+          <ApplicationTab dataItem={props.dataItem} />
         </TabPanel>
         {/* <MetricsTab dataItem={props.dataItem} /> */}
       </OverflowContainer>

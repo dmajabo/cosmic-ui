@@ -168,7 +168,7 @@ export interface INodes_Types {
   ACCOUNT: IAccountNode;
   DATA_CENTER: IDataCenterNode;
   SITES: ISitesNode;
-
+  APPLICATION: IAccountNode;
   // SECOND LEVEL
   NETWORK_WEDGE: INetworkWEdgeNode;
   NETWORK_VNET: INetworkVNetworkNode;
@@ -231,6 +231,72 @@ export const NODES_CONSTANTS: INodes_Types = {
     },
     labelCollapsedStyles: {
       x: 31,
+      y: 84,
+      textAnchor: 'middle',
+      fill: 'var(--_primaryTextColor)',
+      fontSize: 12,
+    },
+    labelExpandedStyles: {
+      x: 33, // 25 + 8
+      y: 0,
+      strBtnColor: 'var(--_highlightColor)',
+      strBtnFontSize: 10,
+      textAnchor: 'unset',
+      fill: 'var(--_primaryTextColor)',
+      fontSize: 12,
+    },
+  },
+  APPLICATION: {
+    type: TopoNodeTypes.APPLICATION,
+    iconId: TopoNodeTypes.APPLICATION,
+    headerHeight: 30,
+    spaceX: 100,
+    spaceY: 175,
+    countStyles: {
+      x: 4,
+      y: -8,
+      width: 54,
+      height: 16,
+      br: 8,
+      fill: 'var(--_pButtonBg)',
+      color: 'var(--_primaryBg)',
+      fontSize: '10px',
+      lineHeight: '11px',
+      cWidth: 'auto',
+      cMinWidth: '100%',
+    },
+    collapse: {
+      width: 75,
+      height: 140,
+      iconWidth: 32,
+      iconHeight: 21,
+      iconOffsetX: 15, // 62 / 2 - 32 / 2
+      iconOffsetY: 20.5, // 62 / 2 - 21 / 2
+      bgColor: 'var(--_regionExpandedBg)',
+      borderRadius: 6,
+    },
+    expanded: {
+      marker: {
+        width: 30,
+        height: 30,
+        viewBox: '0 0 30 30',
+        iconWidth: 18.5,
+        iconHeight: 11.5,
+        iconOffsetX: 5.75, // 30 / 2 - 18.5 / 2
+        iconOffsetY: 9.25, // 30 / 2 - 11.5 / 2
+        bgColor: 'var(--_accountBg)',
+        borderRadius: 6,
+      },
+      minWidth: 240,
+      minHeight: 128,
+      minOffsetX: -89, // 62 / 2 - 240 / 2
+      minOffsetY: -33, // 31 - 128 / 2
+      bgColor: 'var(--_regionExpandedBg)',
+      borderRadius: 6,
+      contentPadding: 20,
+    },
+    labelCollapsedStyles: {
+      x: 41,
       y: 84,
       textAnchor: 'middle',
       fill: 'var(--_primaryTextColor)',

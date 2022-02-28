@@ -1,4 +1,4 @@
-import { INetworkNetworkLink, INetworkVpnLink, INetworkVpnLinkState } from 'lib/api/ApiModels/Topology/apiModels';
+import { AppAccessLink, INetworkNetworkLink, INetworkVpnLink, INetworkVpnLinkState } from 'lib/api/ApiModels/Topology/apiModels';
 import {
   INetworkVNetNode,
   ITGWNode,
@@ -11,12 +11,20 @@ import {
   INetworkVNetworkPeeringConnectionNode,
   FilterEntityTypes,
   FilterEntityOptions,
+  ITopoAppNode,
 } from '../models';
 import uuid from 'react-uuid';
 import { IObject } from 'lib/models/general';
-import _ from 'lodash';
+import _, { cloneDeep } from 'lodash';
 
-export const buildLinks = (filter: FilterEntityOptions, regions: IObject<ITopoRegionNode>, accounts: IObject<ITopoAccountNode>, sites: IObject<ITopoSitesNode>): IObject<ITopoLink<any, any, any>> => {
+export const buildLinks = (
+  filter: FilterEntityOptions,
+  regions: IObject<ITopoRegionNode>,
+  accounts: IObject<ITopoAccountNode>,
+  sites: IObject<ITopoSitesNode>,
+  appNodes: IObject<ITopoAppNode>,
+  appOrigLinks: AppAccessLink[],
+): IObject<ITopoLink<any, any, any>> => {
   let _links: IObject<ITopoLink<any, ITGWNode, any>> = {};
   if (regions && Object.keys(regions).length) {
     Object.keys(regions).forEach(key => {
@@ -49,8 +57,30 @@ export const buildLinks = (filter: FilterEntityOptions, regions: IObject<ITopoRe
       });
     });
   }
+  if (appOrigLinks.length) {
+    console.log(appOrigLinks.length);
+    appOrigLinks.forEach(orginLink => {
+      buildSiteToAppNodeLinks(sites, appNodes, orginLink, _links);
+    });
+  }
   if (!Object.keys(_links).length) return null;
   return _links;
+};
+
+export const buildSiteToAppNodeLinks = (sites: IObject<ITopoSitesNode>, appNodes: IObject<ITopoAppNode>, origLink: AppAccessLink, links: IObject<ITopoLink<any, ITGWNode, any>>) => {
+  const from = cloneDeep(sites[origLink.sourceId]);
+  // from.x = from.x + 115;
+  // from.y = from.y - 25;
+
+  const to = cloneDeep(appNodes[origLink.destinationId]);
+  // to.y = to.y + to.height;
+  // to.x = to.x + to.width / 2.4;
+
+  if (!from || !to) {
+    return;
+  }
+  const nl: ITopoLink<INetworkVNetNode, ITGWNode, INetworkNetworkLink> = createTopoLink(TopoLinkTypes.NetworkNetworkLink, from, to, from, to, null, null);
+  links[nl.extId] = nl;
 };
 
 const buildPeerLinks = (

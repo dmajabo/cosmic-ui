@@ -7,4 +7,5 @@ export const TelemetryApi = {
   getDeviceLoad: (id: string) => `telemetry/api/v1/metrics/device/${id}/load`,
   getNetworkUsage: (id: string) => `telemetry/api/v1/metrics/network/${id}/usage`,
   getDeviceMetrics: () => 'telemetry/api/v1/metrics/devices',
+  getAppAccess: () => '/telemetry/api/v1/telemetry/site/appaccess',
 };

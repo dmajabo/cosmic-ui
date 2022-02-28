@@ -1,5 +1,5 @@
 import { ISegmentSegmentP, SegmentSegmentType } from 'lib/api/ApiModels/Policy/Segment';
-import { INetworkDevice, INetworkRegion, INetworkVNetwork, INetworkVNetworkPeeringConnection, INetworkWebAcl, INetworkwEdge, VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
+import { IAppNode, INetworkDevice, INetworkRegion, INetworkVNetwork, INetworkVNetworkPeeringConnection, INetworkWebAcl, INetworkwEdge, VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
 import { AlertSeverity } from 'lib/api/ApiModels/Workflow/apiModel';
 import { IBaseEntity, ICollapsed, ICoord, IFilterOption, IObject, ISize, IVisible } from 'lib/models/general';
 
@@ -31,6 +31,7 @@ export enum TopologyPanelTypes {
   Device = ' device',
   Wedge = 'wedge',
   WebAcl = 'webAcl',
+  Application = 'Application',
 }
 
 export enum TopoNodeTypes {
@@ -45,6 +46,7 @@ export enum TopoNodeTypes {
   PEERING_CONNECTION = 'peerConnection',
   WEB_ACL = 'webAcl',
   DEVICE_GROUP_LINK = 'devGroupLink',
+  APPLICATION = 'APPLICATION',
 }
 
 export enum DirectionType {
@@ -129,6 +131,11 @@ export interface ITopoSitesNode extends ITopoNode<ISegmentSegmentP>, ICoord, ISi
   currentPage: number;
 }
 
+//TODO: Double check this interface
+export interface ITopoAppNode extends ITopoNode<IAppNode>, ICoord, ISize, ICollapsed, IVisible {
+  currentPage: number;
+}
+
 export interface ITopoRegionNode extends ITopoNode<INetworkRegion>, ICoord, ISize, ICollapsed, IVisible {
   orgId: string;
   children: INetworkVNetNode[][];
@@ -153,7 +160,7 @@ export interface ITopologyPreparedMapDataV2 {
   accounts: IObject<ITopoAccountNode>;
   sites: IObject<ITopoSitesNode>;
   regions: IObject<ITopoRegionNode>;
-
+  appNodes: IObject<ITopoAppNode>;
   links: IObject<ITopoLink<any, any, any>>;
   segments: IMapped_Segment[];
 }
