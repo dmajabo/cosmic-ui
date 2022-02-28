@@ -40,7 +40,7 @@ const SecurityGroupsTable: React.FC<Props> = (props: Props) => {
   const [selectedRows, setSelectedRows] = React.useState<IObject<string>>(null);
   const [sortObject, setSortObject] = React.useState<ISortObject>(null);
   const [currentPage, setCurrentPage] = React.useState<number>(1);
-  const [pageSize, setPageSize] = React.useState<number>(20);
+  const [pageSize, setPageSize] = React.useState<number>(5);
   const columnsRef = React.useRef(columns);
 
   React.useEffect(() => {
@@ -174,7 +174,7 @@ const SecurityGroupsTable: React.FC<Props> = (props: Props) => {
           )}
         </TableWrapper>
         <Paging
-          pageSizeValues={[10, 20]}
+          pageSizeValues={[5, 10, 20]}
           count={totalCount}
           disabled={!data.length}
           pageSize={pageSize}

@@ -1,13 +1,12 @@
 import { downRedArrow, upGreenArrow } from 'app/components/SVGIcons/arrows';
 import { getCorrectedTimeString } from 'app/containers/Pages/MetricsPage/components/Utils';
-import { isEmpty } from 'lodash';
+import startCase from 'lodash/startCase';
 import isNumber from 'lodash/isNumber';
 import { DateTime } from 'luxon';
 import React from 'react';
 import { AVAILABILITY_TIME_FORMAT, getAvailabilityArray, INPUT_TIME_FORMAT } from '../..';
 import { DashboardStyles } from '../../DashboardStyles';
 import { Properties } from './Map';
-import { UplinksTable } from './UplinksTable';
 
 interface PopupProps {
   readonly properties: Properties;
@@ -57,12 +56,13 @@ export const Popup: React.FC<PopupProps> = ({ properties }) => {
           <span className={classes.popupContentLabel}>Goodput: </span>
           <span className={classes.popupContentValue}>{isNumber(properties.goodput) ? `${properties.goodput / 1000} mbps` : 'NaN'}</span>
         </div>
-
         <div className={classes.popupItemContainer}>
-          <span className={classes.popupContentLabel}>Uplinks: </span>
-        </div>
-        <div className={classes.popupItemContainer}>
-          <UplinksTable resourceData={properties.uplinks} />
+          {properties.uplinks.map(item => (
+            <div>
+              <span className={classes.popupContentLabel}>{`${startCase(item.name)}(Uplink): `}</span>
+              <span className={classes.popupContentValue}>{` ${startCase(item.status)}`}</span>
+            </div>
+          ))}
         </div>
       </div>
     </>
