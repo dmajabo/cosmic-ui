@@ -19,7 +19,7 @@ export const DashboardStyles = makeStyles(
       },
       tableWrapper: {
         width: '100%',
-        maxHeight: 'calc(100% - 10px)',
+        maxHeight: 'calc(100% - 50px)',
         height: 'auto',
         flexGrow: 'unset',
         margin: '0 0 auto 0',
@@ -289,20 +289,26 @@ export const DashboardStyles = makeStyles(
       },
       popupHr: {},
       totalUsageIcon: {
-        padding: '0px 10px 0px 10px',
+        padding: '0px 5px 0px 5px',
       },
       connectivityContainer: {
-        border: '2px solid black',
+        border: '1px solid black',
         height: 30,
         display: 'flex',
       },
       connectivityAvailableItem: {
-        width: 3,
+        width: 2,
         background: 'green',
       },
       connectivityUnavailableItem: {
-        width: 3,
+        width: 2,
         background: 'red',
+      },
+      popupConnectivityContainer: {
+        border: '1px solid black',
+        height: 20,
+        display: 'flex',
+        marginLeft: 10,
       },
     }),
   {

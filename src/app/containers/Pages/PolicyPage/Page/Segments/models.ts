@@ -17,7 +17,7 @@ export const SegmentsGridColumns: ISegmentsGridColumns = {
     label: '',
     sortable: true,
     hide: false,
-    width: '80px',
+    width: '20px',
   },
   name: {
     resField: 'name',

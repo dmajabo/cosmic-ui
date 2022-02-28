@@ -266,7 +266,6 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
   const lineChartOptions = {
     chart: {
       zoomType: 'xy',
-      height: 500,
     },
     time: {
       useUTC: false,

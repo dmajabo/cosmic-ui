@@ -222,7 +222,6 @@ const DonutChart: React.FC<Props> = (props: Props) => {
                             textAlign: 'center',
                             direction: arc.labelPos[0] < 0 ? 'rtl' : 'ltr',
                             whiteSpace: 'nowrap',
-                            display: 'inline-block',
                             transform: 'translateX(-50%)',
                             ...props.arcLabelStyle,
                           }}

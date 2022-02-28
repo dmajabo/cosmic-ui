@@ -10,7 +10,7 @@ import { DashboardItemContainer, DashboardItemContent, DashboardItemLabel, GridC
 import InOutBound from './components/ManagmentItem/InOutBound';
 import ManagementLayer7 from './components/ManagmentItem/ManagementLayer7';
 import ManagementDrifts from './components/ManagmentItem/ManagementDrifts';
-import { AnomaliesResponse, AnomalySummary, DashboardSitesViewTab, Device, DeviceMetrics, MapDeviceDataResponse, OnPremDevicesResponse, SitesData, SITES_COLUMNS, SITES_DATA } from './enum';
+import { AnomaliesResponse, AnomalySummary, AvailabilityMetric, DashboardSitesViewTab, Device, DeviceMetrics, MapDeviceDataResponse, SitesData, SITES_COLUMNS } from './enum';
 import { Feature, Map } from './components/Map/Map';
 import { useGet, useGetChainData } from 'lib/api/http/useAxiosHook';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
@@ -27,7 +27,6 @@ import { EmptyText } from 'app/components/Basic/NoDataStyles/NoDataStyles';
 import { TelemetryApi } from 'lib/api/ApiModels/Services/telemetry';
 import { DateTime } from 'luxon';
 import { getCorrectedTimeString } from '../MetricsPage/components/Utils';
-import BandwidthComponent from '../TrafficPage/Trends/Components/BandwidthComponent';
 import { downRedArrow, upGreenArrow } from 'app/components/SVGIcons/arrows';
 import { useHistory } from 'react-router-dom';
 import { ROUTE } from 'lib/Routes/model';
@@ -37,7 +36,7 @@ const Tab = styled(TabUnstyled)`
   cursor: pointer;
   font-size: 12px;
   background: #f3f6fc;
-  padding: 15px 40px 15px 40px;
+  padding: 6px 40px 6px 40px;
   border: none;
   border-radius: 6px;
   display: flex;
@@ -76,6 +75,19 @@ const BASE_ANOMALIES_PAGE_SIZE = 10;
 export const INPUT_TIME_FORMAT = 'yyyy-MM-dd HH:mm:ss ZZZ z';
 
 export const AVAILABILITY_TIME_FORMAT = 'EEE, MMM dd yyyy, hh:mm a';
+
+export const getAvailabilityArray = (availabilityArray: AvailabilityMetric[]): AvailabilityMetric[] => {
+  if (isEmpty(availabilityArray)) {
+    const availability: AvailabilityMetric[] = [];
+    const time = DateTime.now().minus({ days: 1 });
+    for (let index = 0; index < 48; index++) {
+      availability.push({ time: time.toFormat(INPUT_TIME_FORMAT), value: '0' });
+      time.plus({ minutes: 30 });
+    }
+    return availability;
+  }
+  return availabilityArray;
+};
 
 const DashboardPage: React.FC = () => {
   const classes = DashboardStyles();
@@ -128,14 +140,20 @@ const DashboardPage: React.FC = () => {
         const tagArray = selectedDevice?.vnetworks.reduce((acc, vnetwork) => acc.concat(vnetwork.tags), []).map(tag => tag.value);
         const bytesSent = deviceMetric?.bytesSendUsage / 1000000;
         const bytesRecieved = deviceMetric?.bytesReceivedUsage / 1000000;
+        const availabilityArray = getAvailabilityArray(deviceMetric.availabilityMetrics);
+
         return {
           name: deviceMetric?.name || '',
           totalUsage: (
-            <div>
-              <span className={classes.totalUsageIcon}>{upGreenArrow}</span>
-              <span title="Bytes Sent">{`${bytesSent > 0 ? bytesSent.toFixed(2) : 0} MB`}</span>
-              <span className={classes.totalUsageIcon}>{downRedArrow}</span>
-              <span title="Bytes Recieved">{`${bytesRecieved > 0 ? bytesRecieved.toFixed(2) : 0} MB`}</span>
+            <div className={classes.troubleshootContainer}>
+              <div>
+                <span className={classes.totalUsageIcon}>{upGreenArrow}</span>
+                <span title="Bytes Sent">{`${bytesSent > 0 ? bytesSent.toFixed(2) : 0} MB`}</span>
+              </div>
+              <div>
+                <span className={classes.totalUsageIcon}>{downRedArrow}</span>
+                <span title="Bytes Recieved">{`${bytesRecieved > 0 ? bytesRecieved.toFixed(2) : 0} MB`}</span>
+              </div>
             </div>
           ),
           avgBandwidth: '',
@@ -146,11 +164,9 @@ const DashboardPage: React.FC = () => {
           clients: selectedDevice?.vnetworks.reduce((acc, vnetwork) => acc + vnetwork.numberOfOnetClients, 0),
           tags: tagArray.join(', '),
           uplinks: selectedDevice.uplinks.map(uplink => uplink.name).join(', '),
-          availability: isEmpty(deviceMetric.availabilityMetrics) ? (
-            <div />
-          ) : (
+          availability: (
             <div className={classes.connectivityContainer}>
-              {deviceMetric.availabilityMetrics?.map(item => {
+              {availabilityArray?.map(item => {
                 const timestamp = DateTime.fromFormat(getCorrectedTimeString(item.time), INPUT_TIME_FORMAT).toFormat(AVAILABILITY_TIME_FORMAT);
                 if (Number(item.value) > 0) {
                   return <div title={timestamp} key={item.time} className={classes.connectivityUnavailableItem} />;
@@ -201,7 +217,7 @@ const DashboardPage: React.FC = () => {
 
   return (
     <GridContainer>
-      <GridItemContainer gridArea="1 / 1 / 2 / 2" minResponciveHeight="500px">
+      <GridItemContainer gridArea="1 / 1 / 3 / 2" minResponciveHeight="500px">
         <DashboardItemContainer>
           <div className={classes.sitesHeader}>
             <div className={classes.sitesHeaderLeftSection}>
@@ -240,62 +256,71 @@ const DashboardPage: React.FC = () => {
                   scrollable
                 >
                   <Column
-                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700 }}
+                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, wordBreak: 'normal' }}
                     style={{
                       minWidth: SITES_COLUMNS.name.minWidth,
+                      padding: 5,
+                      wordWrap: 'break-word',
+                      wordBreak: 'break-all',
                     }}
                     field={SITES_COLUMNS.name.field}
                     header={SITES_COLUMNS.name.label}
                   ></Column>
                   <Column
-                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700 }}
+                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, wordBreak: 'normal' }}
                     style={{
                       minWidth: SITES_COLUMNS.uplinks.minWidth,
+                      padding: 5,
+                      wordWrap: 'break-word',
+                      wordBreak: 'break-all',
                     }}
                     field={SITES_COLUMNS.uplinks.field}
                     header={SITES_COLUMNS.uplinks.label}
                   ></Column>
                   <Column
-                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700 }}
+                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, wordBreak: 'normal' }}
                     style={{
                       minWidth: SITES_COLUMNS.totalUsage.minWidth,
+                      padding: 5,
+                      wordWrap: 'break-word',
+                      wordBreak: 'break-all',
                     }}
                     field={SITES_COLUMNS.totalUsage.field}
                     header={SITES_COLUMNS.totalUsage.label}
                   ></Column>
                   <Column
-                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700 }}
-                    style={{ minWidth: SITES_COLUMNS.clients.minWidth }}
+                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, wordBreak: 'normal' }}
+                    style={{ minWidth: SITES_COLUMNS.clients.minWidth, padding: 5, wordWrap: 'break-word', wordBreak: 'break-all' }}
                     field={SITES_COLUMNS.clients.field}
                     header={SITES_COLUMNS.clients.label}
                   ></Column>
                   <Column
-                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700 }}
-                    style={{ minWidth: SITES_COLUMNS.tags.minWidth }}
+                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, wordBreak: 'normal' }}
+                    style={{ minWidth: SITES_COLUMNS.tags.minWidth, padding: 5, wordWrap: 'break-word', wordBreak: 'break-all' }}
                     field={SITES_COLUMNS.tags.field}
                     header={SITES_COLUMNS.tags.label}
                   ></Column>
                   <Column
-                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700 }}
-                    style={{ minWidth: SITES_COLUMNS.latency.minWidth }}
+                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, wordBreak: 'normal' }}
+                    style={{ minWidth: SITES_COLUMNS.latency.minWidth, padding: 5, wordWrap: 'break-word', wordBreak: 'normal' }}
                     field={SITES_COLUMNS.latency.field}
                     header={SITES_COLUMNS.latency.label}
                   ></Column>
                   <Column
-                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700 }}
-                    style={{ minWidth: SITES_COLUMNS.packetLoss.minWidth }}
+                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, wordBreak: 'normal' }}
+                    style={{ minWidth: SITES_COLUMNS.packetLoss.minWidth, padding: 5, wordWrap: 'break-word', wordBreak: 'normal' }}
                     field={SITES_COLUMNS.packetLoss.field}
                     header={SITES_COLUMNS.packetLoss.label}
                   ></Column>
                   <Column
-                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700 }}
-                    style={{ minWidth: SITES_COLUMNS.goodput.minWidth }}
+                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, wordBreak: 'normal' }}
+                    style={{ minWidth: SITES_COLUMNS.goodput.minWidth, padding: 5, wordWrap: 'break-word', wordBreak: 'normal' }}
                     field={SITES_COLUMNS.goodput.field}
                     header={SITES_COLUMNS.goodput.label}
                   ></Column>
                   <Column
-                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700 }}
-                    style={{ minWidth: SITES_COLUMNS.availability.minWidth }}
+                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, wordBreak: 'normal' }}
+                    style={{ minWidth: SITES_COLUMNS.availability.minWidth, padding: 5, wordWrap: 'break-word', wordBreak: 'break-all' }}
                     field={SITES_COLUMNS.availability.field}
                     header={SITES_COLUMNS.availability.label}
                   ></Column>
@@ -315,14 +340,6 @@ const DashboardPage: React.FC = () => {
           )}
         </DashboardItemContainer>
       </GridItemContainer>
-      <GridItemContainer gridArea="2 / 1 / 2 / 2">
-        <DashboardItemContainer>
-          <DashboardItemLabel>Sankey</DashboardItemLabel>
-          <DashboardItemContent>
-            <BandwidthComponent />
-          </DashboardItemContent>
-        </DashboardItemContainer>
-      </GridItemContainer>
       <GridItemContainer gridArea="1 / 2 / 2 / 3">
         <DashboardItemContainer>
           <DashboardItemLabel>Management</DashboardItemLabel>
@@ -337,9 +354,6 @@ const DashboardPage: React.FC = () => {
         <DashboardItemContainer>
           <div className={classes.dashboardLabelContainer}>
             <DashboardItemLabel style={{ marginBottom: '0px' }}>Anomalies</DashboardItemLabel>
-            <div className={classes.pillContainer} style={{ marginLeft: '4px' }}>
-              <span className={classes.pillText}>{anomaliesResponse?.totalCount}</span>
-            </div>
           </div>
           <div className={classes.anomaliesRowsContainer}>
             {anomaliesLoading && (
@@ -384,9 +398,9 @@ const DashboardPage: React.FC = () => {
                   </div>
                 );
               })}
-          </div>
-          <div hidden={anomaliesResponse?.totalCount < anomaliesPageSize} className={`${classes.horizontalCenter} ${classes.loadMoreButton}`} onClick={loadMoreAnomalies}>
-            Load More
+            <div hidden={anomaliesLoading ? true : anomaliesResponse?.totalCount < anomaliesPageSize} className={`${classes.horizontalCenter} ${classes.loadMoreButton}`} onClick={loadMoreAnomalies}>
+              Load More
+            </div>
           </div>
         </DashboardItemContainer>
       </GridItemContainer>

@@ -61,13 +61,14 @@ export const GridCellTotalTag = styled.span`
 interface PropsCellColor {
   color?: string;
   margin?: string;
+  borderRadius?: string;
 }
 export const ColorValue = styled.span<PropsCellColor>`
   background: ${props => props.color || 'transparent'};
   display: inline-block;
-  width: 20px;
-  height: 20px;
-  border-radius: 4px;
+  width: 12px;
+  height: 12px;
+  border-radius: ${props => props.borderRadius || '4px'};
   margin: ${props => props.margin || 'auto'};
   vertical-align: middle;
 `;
