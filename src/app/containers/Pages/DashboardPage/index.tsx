@@ -76,6 +76,19 @@ export const INPUT_TIME_FORMAT = 'yyyy-MM-dd HH:mm:ss ZZZ z';
 
 export const AVAILABILITY_TIME_FORMAT = 'EEE, MMM dd yyyy, hh:mm a';
 
+export const getAvailabilityArray = (availabilityArray: AvailabilityMetric[]): AvailabilityMetric[] => {
+  if (isEmpty(availabilityArray)) {
+    const availability: AvailabilityMetric[] = [];
+    const time = DateTime.now().minus({ days: 1 });
+    for (let index = 0; index < 48; index++) {
+      availability.push({ time: time.toFormat(INPUT_TIME_FORMAT), value: '0' });
+      time.plus({ minutes: 30 });
+    }
+    return availability;
+  }
+  return availabilityArray;
+};
+
 const DashboardPage: React.FC = () => {
   const classes = DashboardStyles();
   const history = useHistory();
@@ -119,19 +132,6 @@ const DashboardPage: React.FC = () => {
     },
     [response],
   );
-
-  const getAvailabilityArray = (availabilityArray: AvailabilityMetric[]): AvailabilityMetric[] => {
-    if (isEmpty(availabilityArray)) {
-      const availability: AvailabilityMetric[] = [];
-      const time = DateTime.now().minus({ days: 1 });
-      for (let index = 0; index < 48; index++) {
-        availability.push({ time: time.toFormat(INPUT_TIME_FORMAT), value: '0' });
-        time.plus({ minutes: 30 });
-      }
-      return availability;
-    }
-    return availabilityArray;
-  };
 
   const convertDataToSitesData = useCallback(
     (devices: Device[] = [], deviceMetrics: DeviceMetrics[] = []): SitesData[] => {

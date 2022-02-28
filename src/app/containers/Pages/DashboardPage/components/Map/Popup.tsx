@@ -4,7 +4,7 @@ import { isEmpty } from 'lodash';
 import isNumber from 'lodash/isNumber';
 import { DateTime } from 'luxon';
 import React from 'react';
-import { AVAILABILITY_TIME_FORMAT, INPUT_TIME_FORMAT } from '../..';
+import { AVAILABILITY_TIME_FORMAT, getAvailabilityArray, INPUT_TIME_FORMAT } from '../..';
 import { DashboardStyles } from '../../DashboardStyles';
 import { Properties } from './Map';
 import { UplinksTable } from './UplinksTable';
@@ -26,19 +26,15 @@ export const Popup: React.FC<PopupProps> = ({ properties }) => {
         <hr className={classes.popupHr} />
         <div className={`${classes.popupItemContainer} ${classes.troubleshootContainer}`}>
           <div className={classes.popupContentLabel}>Availability: </div>
-          {isEmpty(properties.availabilityMetrics) ? (
-            <div />
-          ) : (
-            <div className={classes.connectivityContainer}>
-              {properties.availabilityMetrics?.map(item => {
-                const timestamp = DateTime.fromFormat(getCorrectedTimeString(item.time), INPUT_TIME_FORMAT).toFormat(AVAILABILITY_TIME_FORMAT);
-                if (Number(item.value) > 0) {
-                  return <div title={timestamp} key={item.time} className={classes.connectivityUnavailableItem} />;
-                }
-                return <div title={timestamp} key={item.time} className={classes.connectivityAvailableItem} />;
-              })}
-            </div>
-          )}
+          <div className={classes.popupConnectivityContainer}>
+            {getAvailabilityArray(properties.availabilityMetrics).map(item => {
+              const timestamp = DateTime.fromFormat(getCorrectedTimeString(item.time), INPUT_TIME_FORMAT).toFormat(AVAILABILITY_TIME_FORMAT);
+              if (Number(item.value) > 0) {
+                return <div title={timestamp} key={item.time} className={classes.connectivityUnavailableItem} />;
+              }
+              return <div title={timestamp} key={item.time} className={classes.connectivityAvailableItem} />;
+            })}
+          </div>
         </div>
         <div className={classes.popupItemContainer}>
           <span className={classes.popupContentLabel}>Total Usage: </span>
