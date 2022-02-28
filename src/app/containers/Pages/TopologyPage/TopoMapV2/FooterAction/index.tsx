@@ -77,7 +77,7 @@ const FooterAction: React.FC<IProps> = (props: IProps) => {
           <div>Query for metrics: {topology && topology.timeRange ? getTimeQueryMetricsString(topology.timeRange) : 'current day. In Query - params will be empty'}</div>
           <div>Query for topology: {selectedTime ? toTimestamp(selectedTime) : 'Query - params will be empty'}</div>
         </div> */}
-        <Toogle selectedValue={selectedPeriod} values={TIME_PERIOD} onChange={onChangeTimePeriod} />
+        <Toogle selectedValue={selectedPeriod} values={TIME_PERIOD.filter(timePeriod => timePeriod.value !== ITimeTypes.MONTH)} onChange={onChangeTimePeriod} />
         <CalendarComponent onChange={onSetCurrentDay} selectedDay={selectedTime} />
         <SliderWrapper>
           <TimeSlider onUpdateRange={onUpdateRange} selectedCalendarDay={selectedTime} currentPeriod={selectedPeriod ? selectedPeriod.value : null} onUpdate={onUpdateTime} />

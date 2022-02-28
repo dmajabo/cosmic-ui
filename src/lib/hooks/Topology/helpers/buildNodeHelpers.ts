@@ -63,7 +63,7 @@ export const createSitesNode = (item: ISegmentSegmentP): ITopoSitesNode => {
 
 export const createApplicationNode = (item: ITopoTopoNode): ITopoAppNode => {
   const _obj: ITopoAppNode = {
-    dataItem: { ...item, extId: item.nodeId },
+    dataItem: { ...item, extId: item.nodeId, name: '', description: '' },
     uiId: uuid(),
     type: TopoNodeTypes.APPLICATION,
     totalChildrenCount: 0,

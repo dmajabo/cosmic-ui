@@ -1,5 +1,4 @@
 import { ICollapseStyles, NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
-import { IAppNode } from 'lib/api/ApiModels/Topology/apiModels';
 import { IObject, ISize, STANDART_DISPLAY_RESOLUTION_V2 } from 'lib/models/general';
 import {
   FilterEntityOptions,
@@ -49,12 +48,13 @@ export const updateTopLevelItems = (
     sitesSizes = updateSitesItems(filter.sites.selected, sites, _startYPos);
   }
   if (appNodes && Object.keys(appNodes).length) {
-    const _startYPos = STANDART_DISPLAY_RESOLUTION_V2.height / 2 + NODES_CONSTANTS.ACCOUNT.spaceY * 1.5;
+    const _startYPos = STANDART_DISPLAY_RESOLUTION_V2.height / 3;
     appNodesSizes = updateAppNodesItems(filter.sites.selected, appNodes, _startYPos);
   }
   setRegionsCoord(filter, regions, regionSizes, STANDART_DISPLAY_RESOLUTION_V2.width);
   setAccountsCoord(accounts, accountSizes, STANDART_DISPLAY_RESOLUTION_V2.width);
   setSitesCoord(sites, sitesSizes, STANDART_DISPLAY_RESOLUTION_V2.width);
+  setAppNodesCoord(appNodes, appNodesSizes, STANDART_DISPLAY_RESOLUTION_V2.width);
 };
 
 // Set coord for vpc, vnets, peer-connections, waf

@@ -1,15 +1,5 @@
 import { ISegmentSegmentP, SegmentSegmentType } from 'lib/api/ApiModels/Policy/Segment';
-import {
-  IAppNode,
-  INetworkDevice,
-  INetworkRegion,
-  INetworkVNetwork,
-  INetworkVNetworkPeeringConnection,
-  INetworkWebAcl,
-  INetworkwEdge,
-  ITopoTopoNode,
-  VendorTypes,
-} from 'lib/api/ApiModels/Topology/apiModels';
+import { IAppNode, INetworkDevice, INetworkRegion, INetworkVNetwork, INetworkVNetworkPeeringConnection, INetworkWebAcl, INetworkwEdge, VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
 import { AlertSeverity } from 'lib/api/ApiModels/Workflow/apiModel';
 import { IBaseEntity, ICollapsed, ICoord, IFilterOption, IObject, ISize, IVisible } from 'lib/models/general';
 
@@ -141,7 +131,7 @@ export interface ITopoSitesNode extends ITopoNode<ISegmentSegmentP>, ICoord, ISi
 }
 
 //TODO: Double check this interface
-export interface ITopoAppNode extends ITopoNode<ITopoTopoNode>, ICoord, ISize, ICollapsed, IVisible {
+export interface ITopoAppNode extends ITopoNode<IAppNode>, ICoord, ISize, ICollapsed, IVisible {
   currentPage: number;
 }
 

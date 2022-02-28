@@ -132,7 +132,7 @@ const Graph: React.FC<Props> = (props: Props) => {
                       <RegionNode key={`regionChildrenLayer${topology.regions[key].uiId}`} dataItem={topology.regions[key]} onCenteredToNode={onCenteredToNode} onCenteredMap={onCenteredMap} />
                     ))
                   : null}
-                {/* {topology.applicationNodes
+                {topology.applicationNodes
                   ? Object.keys(topology.applicationNodes).map(key => {
                       return (
                         <ApplicationNode
@@ -143,7 +143,7 @@ const Graph: React.FC<Props> = (props: Props) => {
                         />
                       );
                     })
-                  : null} */}
+                  : null}
               </GContainer>
               {/* <line x1="50%" y1="0" x2="50%" y2="100%" fill="red" stroke="red" strokeWidth="1" />
               <line x1="0" y1="50%" x2="100%" y2="50%" fill="red" stroke="red" strokeWidth="1" /> */}

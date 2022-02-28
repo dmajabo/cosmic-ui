@@ -205,13 +205,15 @@ export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[]
   applicationNodes = appNodes.siteAccessInfo.nodes.reduce((accu, nextItem) => {
     if (nextItem.nodeType === AppNodeType.Application) {
       const tempAppNode = createApplicationNode(nextItem);
-      accu[tempAppNode.dataItem.extId] = { ...tempAppNode, name: segmentTempObject[nextItem.nodeId]?.dataItem?.name, description: segmentTempObject[nextItem.nodeId]?.dataItem?.description };
+      tempAppNode.dataItem.name = segmentTempObject[nextItem.nodeId]?.dataItem?.name || '';
+      tempAppNode.dataItem.description = segmentTempObject[nextItem.nodeId]?.dataItem?.description || '';
+      accu[tempAppNode.dataItem.extId] = tempAppNode;
     }
     return accu;
   }, {});
 
   updateTopLevelItems(filter, regions, accounts, sites, applicationNodes);
-  const _links: IObject<ITopoLink<any, any, any>> = buildLinks(filter, regions, accounts, sites);
+  const _links: IObject<ITopoLink<any, any, any>> = buildLinks(filter, regions, accounts, sites, applicationNodes, appNodes.siteAccessInfo.links);
 
   return { accounts: accounts, sites: sites, regions: regions, links: _links, segments: segmentsFilteredOptions, appNodes: applicationNodes };
 };

@@ -618,6 +618,6 @@ export interface AppAccessApiResponse {
 }
 
 export interface IAppNode extends ITopoTopoNode {
-  name?: string;
-  description?: string;
+  name: string;
+  description: string;
 }
