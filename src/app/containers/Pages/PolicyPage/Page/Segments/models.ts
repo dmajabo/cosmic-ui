@@ -49,7 +49,7 @@ export const SegmentsGridColumns: ISegmentsGridColumns = {
   isSystemSegment: {
     resField: 'isSystemSegment',
     field: 'isSystemSegment',
-    label: 'System Defined',
+    label: 'Auto Defined',
     sortable: true,
     hide: false,
     width: '140px',

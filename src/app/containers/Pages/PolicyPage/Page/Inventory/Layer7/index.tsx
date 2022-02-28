@@ -35,7 +35,7 @@ const Layer7 = (props: Props) => {
   ]);
   const [sortObject, setSortObject] = React.useState<ISortObject>(null);
   const [currentPage, setCurrentPage] = React.useState<number>(1);
-  const [pageSize, setPageSize] = React.useState<number>(20);
+  const [pageSize, setPageSize] = React.useState<number>(5);
   const columnsRef = React.useRef(columns);
   const containerRef = React.useRef<HTMLDivElement>(null);
   React.useEffect(() => {
@@ -141,7 +141,7 @@ const Layer7 = (props: Props) => {
           )}
         </TableWrapper>
         <Paging
-          pageSizeValues={[10, 20]}
+          pageSizeValues={[5, 10, 20]}
           count={totalCount}
           disabled={!data.length}
           pageSize={pageSize}

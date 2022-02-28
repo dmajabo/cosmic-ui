@@ -78,7 +78,7 @@ const Paging: React.FC<Props> = (props: Props) => {
           selectedValue={props.pageSize}
           values={props.pageSizeValues || [20, 50, 100]}
           onSelectValue={onPageSizeChange}
-          position="above"
+          position="below"
         />
       </SelectWrapper>
       {show && <DisplayRange count={props.count} currentPage={props.currentPage} pageSize={props.pageSize} />}

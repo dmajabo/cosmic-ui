@@ -1,5 +1,5 @@
 import React from 'react';
-import { AccountStatus, IAWS_Account, IAZURE_Account, IMeraki_Account } from 'lib/api/ApiModels/Accounts/apiModel';
+import { AccountStatus, AccountVendorTypes, IAWS_Account, IAZURE_Account, IMeraki_Account } from 'lib/api/ApiModels/Accounts/apiModel';
 import { AccountItemDescription, AccountItemFooter, AccountItemHeader, AccountItemTitle, AccountItemWrapper, StatusLabel, StatusWrapper } from './styles';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import { getAccountIcon } from '../AccountForm/helper';
@@ -13,6 +13,12 @@ interface Props {
   onEdit: (item: IMeraki_Account | IAWS_Account | IAZURE_Account) => void;
   onDelete: (id: string) => void;
 }
+
+const DEFAULT_AWS_DESC = 'Securely Connect to AWS Console';
+const DEFAULT_MERAKI_DESC = 'Securely Connect to Meraki Console';
+
+const getDescriptionString = (description: string, vendor: AccountVendorTypes) => (description ? description : vendor === AccountVendorTypes.CISCO_MERAKI ? DEFAULT_MERAKI_DESC : DEFAULT_AWS_DESC);
+
 const AccountItem: React.FC<Props> = (props: Props) => {
   const onEdit = () => {
     props.onEdit(props.dataItem);
@@ -27,7 +33,7 @@ const AccountItem: React.FC<Props> = (props: Props) => {
         <AccountItemTitle>{props.dataItem.name}</AccountItemTitle>
         <IconWrapper classes="visibleOnHover" onClick={onDelete} styles={{ position: 'absolute', top: '-5px', right: '0' }} width="20px" height="20px" icon={deleteIcon()} />
       </AccountItemHeader>
-      <AccountItemDescription>{props.dataItem.description}</AccountItemDescription>
+      <AccountItemDescription>{getDescriptionString(props.dataItem.description, props.dataItem.vendor)}</AccountItemDescription>
       <AccountItemFooter>
         {props.dataItem.status && (
           <StatusWrapper state={props.dataItem.status}>
