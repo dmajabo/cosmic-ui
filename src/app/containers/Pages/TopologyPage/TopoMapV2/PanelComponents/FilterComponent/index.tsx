@@ -44,10 +44,10 @@ const FilterComponent: React.FC<IProps> = (props: IProps) => {
           {/* <FilterGroup maxGroupHeight="260px" defaultOpen label="Entities" styles={{ margin: '0 0 5px 0' }}>
             <FilterEntityGroup type={TopoFilterTypes.Entities} data={entities} onClick={onSelectFilterOption} />
           </FilterGroup> */}
-          <FilterGroup maxGroupHeight="unset" label="Site Segments" styles={{ margin: '0' }}>
+          <FilterGroup maxGroupHeight="unset" label="Site Segments" styles={{ margin: '0' }} defaultOpen={true}>
             <FilterSegmentsGroup iconStyles={{ width: '20px', height: '20px' }} data={topology.segments} onClick={onSelectSegmentFilterOption} />
           </FilterGroup>
-          <FilterGroup maxGroupHeight="unset" label="External Segments" styles={{ margin: '0' }}>
+          <FilterGroup maxGroupHeight="unset" label="External Segments" styles={{ margin: '0' }} defaultOpen={true}>
             <FilterApplicationGroup iconStyles={{ width: '20px', height: '20px' }} data={topology.applicationFilterOptions} onClick={onApplicationFilterOption} />
           </FilterGroup>
           {/* <FilterGroup maxGroupHeight="260px" label="Health Severity" styles={{ margin: '0 0 5px 0' }}>

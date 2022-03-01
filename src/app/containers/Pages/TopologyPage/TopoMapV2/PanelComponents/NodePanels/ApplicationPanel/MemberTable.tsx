@@ -9,7 +9,7 @@ import { TableStyles } from 'app/components/Basic/Table/TableStyles';
 import { MemberAppNodeData, TopoNodeMember } from 'lib/api/ApiModels/Topology/apiModels';
 import { convertSecondsToString } from '../../utils';
 
-export interface MemberRow extends Pick<TopoNodeMember, 'name'>, MemberAppNodeData {}
+export interface MemberRow extends Pick<TopoNodeMember, 'name'>, Omit<MemberAppNodeData, 'vnetworkExtid' | 'vnetworkName'> {}
 
 interface Props {
   data: MemberRow[];
@@ -26,7 +26,7 @@ const MemberTable: React.FC<Props> = (props: Props) => {
         <Table stickyHeader aria-label="sticky table" className={classes.table}>
           <TableHead>
             <TableRow>
-              <TableCell style={{ minWidth: '80px' }} className={classes.tableHeadCell}>
+              <TableCell style={{ minWidth: '60px' }} className={classes.tableHeadCell}>
                 Destination
               </TableCell>
               <TableCell style={{ minWidth: '80px' }} className={classes.tableHeadCell}>

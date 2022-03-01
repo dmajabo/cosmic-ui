@@ -10,6 +10,7 @@ import { convertSecondsToString } from '../../../utils';
 
 export interface TrafficTableRowData extends Pick<MemberAppNodeData, 'sent' | 'recv' | 'flows' | 'activeTime'> {
   name: string;
+  destinationName: string;
 }
 
 interface ApplicationTableProps {
@@ -29,6 +30,9 @@ export const ApplicationTable: React.FC<ApplicationTableProps> = props => {
             <TableRow>
               <TableCell style={{ minWidth: '80px' }} className={classes.tableHeadCell}>
                 Application Name
+              </TableCell>
+              <TableCell style={{ minWidth: '80px' }} className={classes.tableHeadCell}>
+                Network/Site
               </TableCell>
               <TableCell style={{ minWidth: '60px' }} className={classes.tableHeadCell}>
                 Sent
@@ -50,6 +54,7 @@ export const ApplicationTable: React.FC<ApplicationTableProps> = props => {
                   return (
                     <TableRow hover tabIndex={-1} key={`tableRow${row}${rowIndex}`} className={classes.row}>
                       <TableCell className={classes.tableCell}>{row.name}</TableCell>
+                      <TableCell className={classes.tableCell}>{row.destinationName}</TableCell>
                       <TableCell className={classes.tableCell}>{row.sent}</TableCell>
                       <TableCell className={classes.tableCell}>{row.recv}</TableCell>
                       <TableCell className={classes.tableCell}>{row.flows}</TableCell>

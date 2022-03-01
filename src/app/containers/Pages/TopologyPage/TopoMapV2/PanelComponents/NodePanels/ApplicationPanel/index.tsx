@@ -7,7 +7,7 @@ import { AppNodeType } from 'lib/api/ApiModels/Topology/apiModels';
 import { ITopoAppNode } from 'lib/hooks/Topology/models';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 import { useState } from 'react';
-import { PanelHeader, PanelTabWrapper, PanelTitle, SubPanelTitle } from '../../styles';
+import { PanelHeader, PanelTabWrapper, PanelTitle } from '../../styles';
 import MemberTable, { MemberRow } from './MemberTable';
 import SiteTable from './SiteTable';
 
@@ -28,7 +28,7 @@ export const ApplicationPanel: React.FC<ApplicationPanelProps> = props => {
       return topology.sites[link.sourceId].dataItem.name;
     });
 
-  const node = topology.appAccessApiResponse.siteAccessInfo.nodes.find(node => node.nodeId === props.dataItem.dataItem.nodeId);
+  const node = topology.appAccessApiResponse.siteAccessInfo.nodes.find(node => node.nodeId === props.dataItem.dataItem.nodeId && node.nodeType === AppNodeType.Application);
   const members: MemberRow[] = node
     ? node.members
         .map(member => {
