@@ -1,5 +1,5 @@
 import { Typography } from '@mui/material';
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { usePagination, useRowSelect, useSortBy, useTable } from 'react-table';
 import styled from 'styled-components';
 import { PerformanceDashboardStyles } from './PerformanceDashboardStyles';
@@ -66,6 +66,7 @@ const Styles = styled.div`
 
 const Table: React.FC<TableProps> = ({ onSelectedRowsUpdate, columns, data, selectedRowsObject }) => {
   const classes = PerformanceDashboardStyles();
+  const didMount = useRef(false);
 
   const {
     getTableProps,
@@ -135,10 +136,12 @@ const Table: React.FC<TableProps> = ({ onSelectedRowsUpdate, columns, data, sele
   );
 
   useEffect(() => {
-    const selectedRows = selectedFlatRows.map(row => {
-      return row.original;
-    });
-    onSelectedRowsUpdate(selectedRows);
+    if (didMount.current) {
+      const selectedRows = selectedFlatRows.map(row => {
+        return row.original;
+      });
+      onSelectedRowsUpdate(selectedRows);
+    } else didMount.current = true;
   }, [selectedFlatRows]);
 
   return (
