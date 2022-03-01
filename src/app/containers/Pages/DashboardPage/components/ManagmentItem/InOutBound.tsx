@@ -8,6 +8,9 @@ import LoadingIndicator from 'app/components/Loading';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import DonutChart, { PieDataItem } from 'app/components/Charts/DonutChart';
+import history from 'utils/history';
+import { ROUTE } from 'lib/Routes/model';
+import { POLICY_TABS } from 'lib/hooks/Policy/models';
 
 interface Props {
   styles?: Object;
@@ -43,6 +46,11 @@ const InOutBound: React.FC<Props> = (props: Props) => {
   const onTryLoadData = async () => {
     await onGetChainData([TopoApi.getRulesCount(ToposvcRuleType.Cellular_Firewall), TopoApi.getRulesCount(ToposvcRuleType.L3_Outbound)], ['cellular', 'outbound'], accessToken!);
   };
+
+  const onItemClick = (_item: PieDataItem) => {
+    history.push(ROUTE.app + ROUTE.policy, { tab: POLICY_TABS.inventory.id, tableId: ToposvcRuleType.L7_Outbound });
+  };
+
   return (
     <ChartItem style={props.styles}>
       <ChartTitle>Layer 3</ChartTitle>
@@ -60,6 +68,7 @@ const InOutBound: React.FC<Props> = (props: Props) => {
           donutRadius={{ innerRadius: 1.75, outerRadius: 0.85, textOuteOffset: 0.3, hoverOuterRadius: 0.875 }}
           legendStyles={{ flexWrap: 'nowrap', overflow: 'visible' }}
           legendItemStyle={{ width: 'calc(50% - 8px)', justifyContent: 'center' }}
+          onItemClick={onItemClick}
         />
       )}
       {!error && !data && (
