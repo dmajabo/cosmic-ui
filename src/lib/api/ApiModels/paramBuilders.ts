@@ -252,7 +252,7 @@ export const convertPeriodToUserFriendlyString = (value: any): string => {
   if (!value) return null;
   if (value.includes('LAST_HOUR')) return 'Last hour';
   if (value.includes('LAST_DAY')) return 'Last day';
-  if (value.includes('LAST_WEEK')) return 'Last 7 days';
+  if (value.includes('LAST_WEEK')) return 'Last week';
   if (value.includes('LAST_MONTH')) return 'Last month';
   return value;
 };

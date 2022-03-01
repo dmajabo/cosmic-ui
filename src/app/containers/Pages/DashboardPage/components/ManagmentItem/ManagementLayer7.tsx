@@ -50,7 +50,7 @@ const ManagementLayer7: React.FC<Props> = (props: Props) => {
     <ChartItem style={props.styles}>
       <ChartTitle>Layer 7</ChartTitle>
       {!error && data !== null && (
-        <ChartContent onClick={onClick}>
+        <ChartContent onClick={onClick} style={{ cursor: 'pointer' }}>
           <ChartValue color="var(--_errorColor)">{data}</ChartValue>
           <ChartValueLabel>Firewall Rules</ChartValueLabel>
         </ChartContent>

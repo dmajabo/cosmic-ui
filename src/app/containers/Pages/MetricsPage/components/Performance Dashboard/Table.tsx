@@ -64,6 +64,8 @@ const Styles = styled.div`
   }
 `;
 
+const getCheckboxDisabledStatus = (invalid: boolean, checked: boolean, selectedTwoCheckboxes: boolean): boolean => (invalid ? true : selectedTwoCheckboxes ? (checked ? false : true) : false);
+
 const Table: React.FC<TableProps> = ({ onSelectedRowsUpdate, columns, data, selectedRowsObject }) => {
   const classes = PerformanceDashboardStyles();
   const didMount = useRef(false);
@@ -74,6 +76,7 @@ const Table: React.FC<TableProps> = ({ onSelectedRowsUpdate, columns, data, sele
     headerGroups,
     prepareRow,
     page,
+    rows,
     canPreviousPage,
     canNextPage,
     pageCount,
@@ -98,37 +101,19 @@ const Table: React.FC<TableProps> = ({ onSelectedRowsUpdate, columns, data, sele
       hooks.visibleColumns.push(columns => [
         {
           id: 'selection',
-          Header: ({ toggleRowSelected, isAllPageRowsSelected, page }) => {
-            const modifiedOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-              page.forEach(row => {
-                //check each row if it is not disabled
-                !data[row.index].isTestDataInvalid && toggleRowSelected(row.id, event.currentTarget.checked);
-              });
-            };
-
-            //Count number of selectable and selected rows in the current page to determine the state of select all checkbox
-            let selectableRowsInCurrentPage = 0;
-            let selectedRowsInCurrentPage = 0;
-            page.forEach(row => {
-              row.isSelected && selectedRowsInCurrentPage++;
-              !data[row.index].isTestDataInvalid && selectableRowsInCurrentPage++;
-            });
-
-            //If there are no selectable rows in the current page select all checkbox will be disabled
-            const disabled = selectableRowsInCurrentPage === 0;
-            const checked = (isAllPageRowsSelected || selectableRowsInCurrentPage === selectedRowsInCurrentPage) && !disabled;
-
+          Cell: ({ row, page }) => {
+            let selectedRowsInCurrentPage = page.reduce((acc, test) => {
+              if (test.isSelected) {
+                acc++;
+              }
+              return acc;
+            }, 0);
             return (
               <div>
-                <IndeterminateCheckbox onChange={modifiedOnChange} checked={checked} disabled={disabled} />
+                <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} disabled={getCheckboxDisabledStatus(data[row.index].isTestDataInvalid, row.isSelected, selectedRowsInCurrentPage === 2)} />
               </div>
             );
           },
-          Cell: ({ row }) => (
-            <div>
-              <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} disabled={data[row.index].isTestDataInvalid} />
-            </div>
-          ),
         },
         ...columns,
       ]);
