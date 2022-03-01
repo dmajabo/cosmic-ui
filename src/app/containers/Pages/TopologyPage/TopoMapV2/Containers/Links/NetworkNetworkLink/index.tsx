@@ -52,7 +52,6 @@ const NetworkNetworkLink: React.FC<IProps> = (props: IProps) => {
   };
 
   if (!props.visible || !fromCoord || !toCoord) return null;
-
   return (
     <line
       className={`topologyLink ${isSelected ? 'selectedTopoLevel1Link' : ''}`}
