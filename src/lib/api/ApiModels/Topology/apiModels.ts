@@ -590,10 +590,21 @@ export enum AppNodeMemberType {
   Application = 'MEMBER_TYPE_APPLICATION',
 }
 
-interface TopoNodeMember extends IBaseEntity<string> {
+export interface MemberAppNodeData {
+  protocol: string;
+  port: string;
+  sent: string;
+  recv: string;
+  flows: string;
+  clients: string;
+  activeTime: string;
+}
+
+export interface TopoNodeMember extends IBaseEntity<string> {
   name: string;
   memberId: string;
   memberType: AppNodeMemberType;
+  appNodeData: MemberAppNodeData;
 }
 
 export interface ITopoTopoNode extends IBaseEntity<string> {
