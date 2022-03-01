@@ -10,7 +10,19 @@ import { DashboardItemContainer, DashboardItemContent, DashboardItemLabel, GridC
 import InOutBound from './components/ManagmentItem/InOutBound';
 import ManagementLayer7 from './components/ManagmentItem/ManagementLayer7';
 import ManagementDrifts from './components/ManagmentItem/ManagementDrifts';
-import { AnomaliesResponse, AnomalySummary, AvailabilityMetric, DashboardSitesViewTab, Device, DeviceMetrics, MapDeviceDataResponse, SitesData, SITES_COLUMNS } from './enum';
+import {
+  AnomaliesResponse,
+  AnomalySummary,
+  AvailabilityMetric,
+  DashboardSitesViewTab,
+  Device,
+  DeviceMetrics,
+  DeviceMetricsResponse,
+  MapDeviceDataResponse,
+  OnPremDevicesResponse,
+  SitesData,
+  SITES_COLUMNS,
+} from './enum';
 import { Feature, Map } from './components/Map/Map';
 import { useGet, useGetChainData } from 'lib/api/http/useAxiosHook';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
@@ -101,7 +113,8 @@ const DashboardPage: React.FC = () => {
   const [anomalies, setAnomalies] = useState<AnomalySummary[]>([]);
   const [anomaliesPageSize, setAnomaliesPageSize] = useState<number>(BASE_ANOMALIES_PAGE_SIZE);
 
-  const { loading, error, response, onGetChainData } = useGetChainData<MapDeviceDataResponse>();
+  const { response: devicesResponse, loading: devicesLoading, error: devicesError, onGet: getDevices } = useGet<OnPremDevicesResponse>();
+  const { response: deviceMetricsResponse, onGet: getDeviceMetrics } = useGet<DeviceMetricsResponse>();
   const { response: anomaliesResponse, loading: anomaliesLoading, error: anomaliesError, onGet: getAnomalies } = useGet<AnomaliesResponse>();
 
   const onTabChange = (event: React.SyntheticEvent<Element, Event>, value: string | number) => {
@@ -111,17 +124,17 @@ const DashboardPage: React.FC = () => {
   const getAnomalySummaryPage = (pageSize: number) => getAnomalies(AlertApi.getAnomalies(), userContext.accessToken!, { pageSize: pageSize });
 
   useEffect(() => {
-    onGetChainData([TopoApi.getOnPremDeviceList(), TelemetryApi.getDeviceMetrics()], ['devices', 'deviceMetrics'], userContext.accessToken!, { startTime: '-1d', endTime: '-0m' });
+    getDevices(TopoApi.getOnPremDeviceList(), userContext.accessToken!);
+    getDeviceMetrics(TelemetryApi.getDeviceMetrics(), userContext.accessToken!, { startTime: '-1d', endTime: '-0m' });
     getAnomalySummaryPage(anomaliesPageSize);
   }, []);
 
   const convertDataToFeatures = useCallback(
-    (devices: Device[] = [], deviceMetrics: DeviceMetrics[] = []): Feature[] => {
+    (devices: Device[] = []): Feature[] => {
       return devices.map(device => {
-        const selectedDeviceMetrics: DeviceMetrics = deviceMetrics.find(deviceMetric => device.extId === deviceMetric.extId);
         return {
           type: 'Feature',
-          properties: { title: device.extId, uplinks: device.uplinks, ...selectedDeviceMetrics },
+          properties: { title: device.extId, uplinks: device.uplinks },
           geometry: {
             coordinates: [device.lon, device.lat],
             type: 'Point',
@@ -130,7 +143,7 @@ const DashboardPage: React.FC = () => {
         };
       });
     },
-    [response],
+    [devicesResponse],
   );
 
   const convertDataToSitesData = useCallback(
@@ -178,7 +191,7 @@ const DashboardPage: React.FC = () => {
         };
       });
     },
-    [response],
+    [devicesResponse, deviceMetricsResponse],
   );
 
   const loadMoreAnomalies = () => {
@@ -223,7 +236,7 @@ const DashboardPage: React.FC = () => {
             <div className={classes.sitesHeaderLeftSection}>
               <span className={classes.sites}>Sites</span>
               <div className={classes.pillContainer}>
-                <span className={classes.pillText}>{response?.devices.totalCount}</span>
+                <span className={classes.pillText}>{devicesResponse?.totalCount}</span>
               </div>
             </div>
             <TabsUnstyled value={sitesViewTabName} onChange={onTabChange}>
@@ -235,24 +248,24 @@ const DashboardPage: React.FC = () => {
               </div>
             </TabsUnstyled>
           </div>
-          {loading && <LoadingIndicator margin="auto" />}
+          {devicesLoading && <LoadingIndicator margin="auto" />}
 
-          {error && <div>Something went wrong. Please try again</div>}
+          {devicesError && <div>Something went wrong. Please try again</div>}
 
-          {!loading && sitesViewTabName === DashboardSitesViewTab.Map && (
+          {!devicesLoading && sitesViewTabName === DashboardSitesViewTab.Map && (
             <div className={classes.mapContainerMain}>
-              <Map features={convertDataToFeatures(response?.devices.devices, response?.deviceMetrics.deviceMetrics)} />
+              <Map features={convertDataToFeatures(devicesResponse?.devices)} deviceMetrics={deviceMetricsResponse?.deviceMetrics || []} />
             </div>
           )}
 
-          {!loading && sitesViewTabName === DashboardSitesViewTab.List && (
+          {!devicesLoading && sitesViewTabName === DashboardSitesViewTab.List && (
             <>
               <TableWrapper className={classes.tableWrapper}>
                 <DataTable
                   className="tableSM fixedToParentHeight"
                   id="meraki_sites"
                   responsiveLayout="scroll"
-                  value={convertDataToSitesData(response?.devices.devices, response?.deviceMetrics.deviceMetrics)}
+                  value={convertDataToSitesData(devicesResponse?.devices || [], deviceMetricsResponse?.deviceMetrics || [])}
                   scrollable
                 >
                   <Column
@@ -354,6 +367,11 @@ const DashboardPage: React.FC = () => {
         <DashboardItemContainer>
           <div className={classes.dashboardLabelContainer}>
             <DashboardItemLabel style={{ marginBottom: '0px' }}>Anomalies</DashboardItemLabel>
+            {anomaliesResponse?.anomalyCount && anomaliesResponse?.anomalyCount !== -1 ? (
+              <div className={classes.pillContainer}>
+                <span className={classes.pillText}>{anomaliesResponse?.anomalyCount}</span>
+              </div>
+            ) : null}
           </div>
           <div className={classes.anomaliesRowsContainer}>
             {anomaliesLoading && (
@@ -383,14 +401,23 @@ const DashboardPage: React.FC = () => {
                   }
                 });
                 return (
-                  <div key={`${anomaly.timestamp}_${anomaly.descString}`} className={classes.anomalyRow} onClick={onAnomalyClick}>
+                  <div key={`${anomaly.timestamp}_${anomaly.descString}_${anomaly.boldDescString}_${anomaly.regularDescString}`} className={classes.anomalyRow} onClick={onAnomalyClick}>
                     <div className={classes.troubleshootContainer}>
                       <div className={classes.severityLabelContainer}>
                         <span className={classes.severityLabel}>H</span>
                       </div>
-                      <div>
-                        <span>{anomaly.descString}</span>
-                      </div>
+                      {anomaly.boldDescString && anomaly.regularDescString ? (
+                        <div>
+                          <span>
+                            <b>{anomaly.boldDescString}</b>
+                          </span>
+                          <span>{anomaly.regularDescString}</span>
+                        </div>
+                      ) : (
+                        <div>
+                          <span>{anomaly.descString}</span>
+                        </div>
+                      )}
                     </div>
                     <div className={classes.timeDiffContainer}>
                       <span className={classes.timeDiffText}>{diffString[0]}</span>

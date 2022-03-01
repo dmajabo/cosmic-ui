@@ -58,6 +58,7 @@ export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange, netwo
   const classes = PerformanceDashboardStyles();
 
   const [latencyData, setLatencyData] = useState<MetricKeyValue>({});
+  const [anomalyCount, setAnomalyCount] = useState<number>(0);
   const [heatMapLatency, setHeatMapLatency] = useState<HeatMapData[]>([]);
 
   const userContext = useContext<UserContextState>(UserContext);
@@ -71,16 +72,20 @@ export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange, netwo
   useEffect(() => {
     const getLatencyMetrics = async () => {
       const latencyChartData: MetricKeyValue = {};
+      let totalAnomalyCount = 0;
       const promises = selectedRows.map(row => apiClient.getLatencyMetrics(row.sourceDevice, row.destination, timeRange, row.id));
       Promise.all(promises).then(values => {
         values.forEach(item => {
+          const anomalyArray = item.metrics.keyedmap.find(item => item.key === LATENCY_ANOMALY)?.ts || [];
+          totalAnomalyCount = totalAnomalyCount + anomalyArray.length;
           latencyChartData[item.testId] = item.metrics.keyedmap.find(item => item.key === LATENCY)?.ts || [];
-          latencyChartData[`${item.testId}_anomaly`] = item.metrics.keyedmap.find(item => item.key === LATENCY_ANOMALY)?.ts || [];
+          latencyChartData[`${item.testId}_anomaly`] = anomalyArray;
           latencyChartData[`${item.testId}_upperbound`] = item.metrics.keyedmap.find(item => item.key === LATENCY_UPPERBOUND)?.ts || [];
           latencyChartData[`${item.testId}_lowerbound`] = item.metrics.keyedmap.find(item => item.key === LATENCY_LOWERBOUND)?.ts || [];
           latencyChartData[`${item.testId}_threshold`] = item.metrics.keyedmap.find(item => item.key === LATENCY_THRESHOLD)?.ts || [];
         });
         setLatencyData(latencyChartData);
+        setAnomalyCount(totalAnomalyCount);
       });
     };
 
@@ -111,7 +116,7 @@ export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange, netwo
 
   return (
     <div className={classes.pageComponentBackground}>
-      <div className={classes.pageComponentTitle}> Latency summary</div>
+      <div className={classes.pageComponentTitle}>{`Latency summary ${isEmpty(latencyData) ? '' : `(${anomalyCount})`}`}</div>
       <ChartContainerStyles style={{ maxWidth: '100%', minHeight: 420, maxHeight: 420 }}>
         {!isEmpty(selectedRows) ? (
           // latencyData contains 5 keys for each row. One for the data, one for anomaly, one for upperbound, one for lowerbound and one for threshold

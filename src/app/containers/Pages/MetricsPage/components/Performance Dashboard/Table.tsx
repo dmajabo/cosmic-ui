@@ -25,11 +25,10 @@ interface TableProps {
   readonly onSelectedRowsUpdate: Function;
   readonly columns: Column[];
   readonly data: Data[];
-  readonly defaultSelectedTestId: number;
+  readonly selectedRowsObject: Record<string, boolean>;
 }
 
 const Styles = styled.div`
-  width: 100%;
   table {
     border-spacing: 0;
     width: 100%;
@@ -65,11 +64,8 @@ const Styles = styled.div`
   }
 `;
 
-const Table: React.FC<TableProps> = ({ onSelectedRowsUpdate, columns, data, defaultSelectedTestId }) => {
+const Table: React.FC<TableProps> = ({ onSelectedRowsUpdate, columns, data, selectedRowsObject }) => {
   const classes = PerformanceDashboardStyles();
-
-  const selectedRowsObject = {};
-  selectedRowsObject[defaultSelectedTestId] = true;
 
   const {
     getTableProps,

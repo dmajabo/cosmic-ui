@@ -13,11 +13,10 @@ import { createApiClient } from 'lib/api/http/apiClient';
 import { addIcon } from 'app/components/SVGIcons/addIcon';
 import PrimaryButton from 'app/components/Buttons/PrimaryButton';
 import MatSelect from 'app/components/Inputs/MatSelect';
-import { ContainerWithMetrics } from 'app/containers/Pages/TopologyPage/TopoMapV2/styles';
-import ResizablePanel from 'app/components/Basic/PanelBar/ResizablePanel';
 import SecondaryButtonwithEvent from 'app/containers/Pages/AnalyticsPage/components/SecondaryButtonwithEvent';
 import { filterIcon } from 'app/components/SVGIcons/filter';
 import CloseIcon from '../../icons/performance dashboard/close';
+import { isEmpty } from 'lodash';
 
 interface SLATestListProps {
   readonly finalTableData: FinalTableData[];
@@ -55,27 +54,77 @@ const columns: Column[] = [
   },
 ];
 
-const getDefaultSelectedTestId = (tests: FinalTableData[]) => {
-  const testsWithIndex = tests.map((test, index) => ({ ...test, index: index }));
-  const validTestIds = testsWithIndex
-    .filter(test => {
-      if (!isNaN(Number(test.averageQoe.packetLoss)) && !isNaN(Number(test.averageQoe.latency))) {
-        if (Number(test.averageQoe.latency) > 0) {
-          return true;
+const LOCAL_STORAGE_SELECTED_TESTS_KEY = 'selectedSLATests';
+
+const isTestDataInvalid = (averageQoe: MetricAvgQoe) => isNaN(Number(averageQoe.packetLoss)) && isNaN(Number(averageQoe.latency));
+
+const getDefaultSelectedTestId = (tests: FinalTableData[], selectedRows: Data[]): Record<string, boolean> => {
+  const testsWithIndex: FinalTableData[] = tests.map((test, index) => ({ ...test, index: index }));
+  if (isEmpty(selectedRows)) {
+    const validTestIds = testsWithIndex
+      .filter(test => {
+        if (!isNaN(Number(test.averageQoe.packetLoss)) && !isNaN(Number(test.averageQoe.latency))) {
+          if (Number(test.averageQoe.latency) > 0) {
+            return true;
+          }
         }
+        return false;
+      })
+      .map(test => test.index);
+    const selectedRowsObject: Record<string, boolean> = {};
+    selectedRowsObject[validTestIds[0].toString()] = true;
+    return selectedRowsObject;
+  } else {
+    const selectedTests = selectedRows.map(test => test.id);
+    const selectedRowsObject: Record<string, boolean> = testsWithIndex.reduce((acc, test) => {
+      if (selectedTests.includes(test.id)) {
+        acc[test.index.toString()] = true;
+      } else {
+        acc[test.index.toString()] = false;
       }
-      return false;
-    })
-    .map(test => test.index);
-  return validTestIds[0];
+      return acc;
+    }, {});
+    return selectedRowsObject;
+  }
+};
+
+const getSelectedTests = (finalTableData: FinalTableData[]) => {
+  const tests: Data[] = JSON.parse(localStorage.getItem(LOCAL_STORAGE_SELECTED_TESTS_KEY));
+  if (isEmpty(tests)) {
+    const validTests: Data[] = finalTableData
+      .filter(test => {
+        if (!isNaN(Number(test.averageQoe.packetLoss)) && !isNaN(Number(test.averageQoe.latency))) {
+          if (Number(test.averageQoe.latency) > 0) {
+            return true;
+          }
+        }
+        return false;
+      })
+      .map(test => {
+        const { averageQoe, hits, ...rest } = test;
+        return { ...rest, averageQoe: <></>, hits: <></>, isTestDataInvalid: isTestDataInvalid(test.averageQoe) };
+      })
+      .slice(0, 1);
+    return validTests;
+  } else {
+    return tests;
+  }
 };
 
 export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteSlaTest, networks, merakiOrganizations, finalTableData, addSlaTest }) => {
   const classes = PerformanceDashboardStyles();
 
+  const deleteTest = (testId: string) => deleteSlaTest(testId);
+
+  const getTestDataToUpdate = async (testId: string) => {
+    const responseData = await apiClient.getSLATest(testId);
+    setTestDataToUpdate(responseData);
+    handleUpdateTestToggle();
+  };
+
   const [isSlaTestPanelOpen, setIsSlaTestPanelOpen] = useState<boolean>(false);
   const [createToggle, setCreateToggle] = React.useState<boolean>(false);
-  const [selectedRows, setSelectedRows] = useState<Data[]>([]);
+  const [selectedRows, setSelectedRows] = useState<Data[]>(getSelectedTests(finalTableData));
   const [timeRange, setTimeRange] = useState<string>('-7d');
   const [testDataToUpdate, setTestDataToUpdate] = useState<SLATest>({
     testId: '',
@@ -105,17 +154,18 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
     addSlaTest(value);
   };
 
-  const onSelectedRowsUpdate = (value: Data[]) => setSelectedRows(value);
-
-  const deleteTest = (testId: string) => deleteSlaTest(testId);
-
-  const getTestDataToUpdate = async (testId: string) => {
-    const responseData = await apiClient.getSLATest(testId);
-    setTestDataToUpdate(responseData);
-    handleUpdateTestToggle();
+  const onSelectedRowsUpdate = (value: Data[]) => {
+    setSelectedRows(value);
+    localStorage.setItem(
+      LOCAL_STORAGE_SELECTED_TESTS_KEY,
+      JSON.stringify(
+        value.map(item => {
+          const { averageQoe, ...rest } = item;
+          return rest;
+        }),
+      ),
+    );
   };
-
-  const isTestDataInvalid = (averageQoe: MetricAvgQoe) => isNaN(Number(averageQoe.packetLoss)) && isNaN(Number(averageQoe.latency));
 
   const onSlaTestPanelOpen = () => setIsSlaTestPanelOpen(true);
   const onSlaTestPanelClose = () => setIsSlaTestPanelOpen(false);
@@ -172,21 +222,7 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
       <PacketLoss timeRange={timeRange} selectedRows={selectedRows} networks={networks} />
       <Latency timeRange={timeRange} selectedRows={selectedRows} networks={networks} />
       <Goodput timeRange={timeRange} selectedRows={selectedRows} networks={networks} />
-      <Backdrop style={{ color: '#fff', zIndex: 5 }} open={createToggle}>
-        <CreateSLATest networks={networks} merakiOrganizations={merakiOrganizations} addSlaTest={addTest} popup={true} closeSlaTest={handleClose} />
-      </Backdrop>
-      <Backdrop style={{ color: '#fff', zIndex: 5 }} open={updateTestToggle}>
-        <CreateSLATest
-          updateSlaTest={updateSlaTest}
-          slaTestDataToUpdate={testDataToUpdate}
-          isUpdateTest={true}
-          networks={networks}
-          merakiOrganizations={merakiOrganizations}
-          popup={true}
-          closeSlaTest={handleClose}
-        />
-      </Backdrop>
-      <Dialog open={isSlaTestPanelOpen} maxWidth="md" fullWidth>
+      <Dialog open={isSlaTestPanelOpen} maxWidth="md" fullWidth style={{ zIndex: 3 }}>
         <DialogTitle>
           <div className={classes.flexContainer}>
             <div>
@@ -198,8 +234,22 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
           </div>
         </DialogTitle>
         <DialogContent>
-          <Table onSelectedRowsUpdate={onSelectedRowsUpdate} columns={columns} data={data} defaultSelectedTestId={getDefaultSelectedTestId(finalTableData)} />
+          <Table onSelectedRowsUpdate={onSelectedRowsUpdate} columns={columns} data={data} selectedRowsObject={getDefaultSelectedTestId(finalTableData, selectedRows)} />
         </DialogContent>
+      </Dialog>
+      <Dialog fullWidth open={createToggle} style={{ zIndex: 5 }}>
+        <CreateSLATest networks={networks} merakiOrganizations={merakiOrganizations} addSlaTest={addTest} popup={true} closeSlaTest={handleClose} />
+      </Dialog>
+      <Dialog fullWidth open={updateTestToggle} style={{ zIndex: 5 }}>
+        <CreateSLATest
+          updateSlaTest={updateSlaTest}
+          slaTestDataToUpdate={testDataToUpdate}
+          isUpdateTest={true}
+          networks={networks}
+          merakiOrganizations={merakiOrganizations}
+          popup={true}
+          closeSlaTest={handleClose}
+        />
       </Dialog>
     </>
   );

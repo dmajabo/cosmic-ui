@@ -121,7 +121,7 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
         id: `${row.name} &#9654 ${row.sourceDevice}`,
         name: `${row.name} &#9654 ${row.sourceDevice}`,
         data: sortBy(inputData[row.id], 'time').map(item => {
-          const timestamp = DateTime.fromFormat(item.time, OLD_TIME_FORMAT).toUTC();
+          const timestamp = DateTime.fromFormat(item.time, OLD_TIME_FORMAT).toLocal();
           return {
             x: timestamp.toMillis(),
             y: dataValueSuffix === 'mbps' ? Number(item.value) / 1000 : Number(Number.parseFloat(item.value).toFixed(2)),
@@ -134,8 +134,7 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
               },
             },
             dataValueSuffix: dataValueSuffix,
-            rowName: row.name,
-            deviceName: row.sourceDevice,
+            networkName: row.sourceNetwork,
             destination: row.destination,
           };
         }),
@@ -144,8 +143,7 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
         tooltip: {
           useHTML: true,
           pointFormat: `
-          <br /><div><b>Test:</b> {point.rowName}</div><br />
-          <div><b>Device:</b> {point.deviceName}</div><br />
+          <br /><div><b>Network:</b> {point.networkName}</div><br />
           <div><b>Destination:</b> {point.destination}</div><br />
           <div><b>Value:</b> {point.y:,.0f}{point.dataValueSuffix}</div><br />
           `,
@@ -167,8 +165,6 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
             symbol: 'circle',
           },
           dataValueSuffix: dataValueSuffix,
-          rowName: row.name,
-          deviceName: row.sourceDevice,
           destination: row.destination,
         };
       }),
@@ -212,7 +208,7 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
         tooltip: {
           useHTML: true,
           pointFormat: `
-          <div><b>Threshold:</b> {point.y:,.0f}{point.dataValueSuffix}</div><br />
+          <div><b>Threshold:</b> {point.y:,.0f}${dataValueSuffix}</div><br />
           `,
         },
       };
@@ -247,8 +243,8 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
         tooltip: {
           useHTML: true,
           pointFormat: `
-          <div><b>Upperbound: </b>{point.high:,.0f}</div><br />
-          <div><b>Lowerbound: </b>{point.low:,.0f}</div><br />
+          <div><b>Upperbound: </b>{point.high:,.0f}${dataValueSuffix}</div><br />
+          <div><b>Lowerbound: </b>{point.low:,.0f}${dataValueSuffix}</div><br />
           `,
         },
       };
@@ -266,6 +262,9 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
   const lineChartOptions = {
     chart: {
       zoomType: 'xy',
+      time: {
+        useUTC: false,
+      },
     },
     time: {
       useUTC: false,
@@ -283,6 +282,7 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
     },
     tooltip: {
       shared: true,
+      xDateFormat: '%A, %b %d, %l:%M %p',
     },
     plotOptions: {
       series: {

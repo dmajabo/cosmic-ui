@@ -38,7 +38,7 @@ const Sidebar: React.FC<SidebarProps> = props => {
             ))}
           </List>
         </ContentWrapper>
-        <ToogleButton onClick={props.onToogleSideBar}>{toggleSideBarIcon}</ToogleButton>
+        {/* <ToogleButton onClick={props.onToogleSideBar}>{toggleSideBarIcon}</ToogleButton> */}
       </ToogleWrapper>
     </WrapSidebar>
   );

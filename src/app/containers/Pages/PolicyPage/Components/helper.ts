@@ -410,10 +410,12 @@ const checkExtRules = (items: ISegmentExternalSegMatchRuleP[]): boolean => {
       valid = false;
       break;
     }
-    const _obj: [boolean, string[]] = Validator.isValidIPv4CidrNotation(element.matchValue);
-    if (!_obj[0]) {
-      valid = false;
-      break;
+    if (element.matchValue && !isNaN(Number(element.matchValue?.replace('.', '').replace('/', '')))) {
+      const _obj: [boolean, string[]] = Validator.isValidIPv4CidrNotation(element.matchValue);
+      if (!_obj[0]) {
+        valid = false;
+        break;
+      }
     }
   }
   return valid;

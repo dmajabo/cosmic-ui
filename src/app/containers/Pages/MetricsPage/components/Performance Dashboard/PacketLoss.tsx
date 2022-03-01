@@ -71,6 +71,7 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange,
   const classes = PerformanceDashboardStyles();
 
   const [packetLossData, setPacketLossData] = useState<MetricKeyValue>({});
+  const [anomalyCount, setAnomalyCount] = useState<number>(0);
   const [heatMapPacketLoss, setHeatMapPacketLoss] = useState<HeatMapData[]>([]);
 
   const testIdToName: TestIdToName = selectedRows.reduce((accu, nextValue) => {
@@ -84,16 +85,20 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange,
   useEffect(() => {
     const getPacketLossMetrics = async () => {
       const packetLossChartData: MetricKeyValue = {};
+      let totalAnomalyCount = 0;
       const promises = selectedRows.map(row => apiClient.getPacketLossMetrics(row.sourceDevice, row.destination, timeRange, row.id));
       Promise.all(promises).then(values => {
         values.forEach(item => {
+          const anomalyArray = item.metrics.keyedmap.find(item => item.key === PACKET_LOSS_ANOMALY)?.ts || [];
+          totalAnomalyCount = totalAnomalyCount + anomalyArray.length;
           packetLossChartData[item.testId] = item.metrics.keyedmap.find(item => item.key === PACKET_LOSS)?.ts || [];
-          packetLossChartData[`${item.testId}_anomaly`] = item.metrics.keyedmap.find(item => item.key === PACKET_LOSS_ANOMALY)?.ts || [];
+          packetLossChartData[`${item.testId}_anomaly`] = anomalyArray;
           packetLossChartData[`${item.testId}_upperbound`] = item.metrics.keyedmap.find(item => item.key === PACKET_LOSS_UPPERBOUND)?.ts || [];
           packetLossChartData[`${item.testId}_lowerbound`] = item.metrics.keyedmap.find(item => item.key === PACKET_LOSS_LOWERBOUND)?.ts || [];
           packetLossChartData[`${item.testId}_threshold`] = item.metrics.keyedmap.find(item => item.key === PACKET_LOSS_THRESHOLD)?.ts || [];
         });
         setPacketLossData(packetLossChartData);
+        setAnomalyCount(totalAnomalyCount);
       });
     };
 
@@ -124,7 +129,7 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange,
 
   return (
     <div className={classes.pageComponentBackground}>
-      <div className={classes.pageComponentTitle}>Packet Loss summary</div>
+      <div className={classes.pageComponentTitle}>{`Packet Loss summary ${isEmpty(packetLossData) ? '' : `(${anomalyCount})`}`}</div>
       <ChartContainerStyles style={{ maxWidth: '100%', minHeight: 420, maxHeight: 420 }}>
         {!isEmpty(selectedRows) ? (
           // packetLossData contains 5 keys for each row. One for the data, one for anomaly, one for upperbound,one for lowerbound and one for threshold
