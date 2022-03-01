@@ -5,10 +5,15 @@ import { EmptyText } from 'app/components/Basic/NoDataStyles/NoDataStyles';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
-import { ISegmentSegmentP } from 'lib/api/ApiModels/Policy/Segment';
+import { MemberAppNodeData } from 'lib/api/ApiModels/Topology/apiModels';
+import { convertSecondsToString } from '../../../utils';
+
+export interface TrafficTableRowData extends Pick<MemberAppNodeData, 'sent' | 'recv' | 'flows' | 'activeTime'> {
+  name: string;
+}
 
 interface ApplicationTableProps {
-  data: ISegmentSegmentP[];
+  data: TrafficTableRowData[];
   showLoader: boolean;
   error?: string;
   styles?: Object;
@@ -25,6 +30,18 @@ export const ApplicationTable: React.FC<ApplicationTableProps> = props => {
               <TableCell style={{ minWidth: '80px' }} className={classes.tableHeadCell}>
                 Application Name
               </TableCell>
+              <TableCell style={{ minWidth: '60px' }} className={classes.tableHeadCell}>
+                Sent
+              </TableCell>
+              <TableCell style={{ minWidth: '60px' }} className={classes.tableHeadCell}>
+                Received
+              </TableCell>
+              <TableCell style={{ minWidth: '60px' }} className={classes.tableHeadCell}>
+                Flows
+              </TableCell>
+              <TableCell style={{ minWidth: '80px' }} className={classes.tableHeadCell}>
+                Active Time
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -33,6 +50,10 @@ export const ApplicationTable: React.FC<ApplicationTableProps> = props => {
                   return (
                     <TableRow hover tabIndex={-1} key={`tableRow${row}${rowIndex}`} className={classes.row}>
                       <TableCell className={classes.tableCell}>{row.name}</TableCell>
+                      <TableCell className={classes.tableCell}>{row.sent}</TableCell>
+                      <TableCell className={classes.tableCell}>{row.recv}</TableCell>
+                      <TableCell className={classes.tableCell}>{row.flows}</TableCell>
+                      <TableCell className={classes.tableCell}>{convertSecondsToString(row.activeTime)}</TableCell>
                     </TableRow>
                   );
                 })
