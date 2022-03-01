@@ -4,9 +4,9 @@ import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { MetricsStyles } from '../../MetricsStyles';
 import isEmpty from 'lodash/isEmpty';
 import sortBy from 'lodash/sortBy';
-import { LookbackSelectOption } from 'app/containers/Pages/AnalyticsPage/components/Metrics Explorer/LookbackTimeTab';
+import { LookbackSelectOption, LookbackValue } from 'app/containers/Pages/AnalyticsPage/components/Metrics Explorer/LookbackTimeTab';
 import { TelemetryApi } from 'lib/api/ApiModels/Services/telemetry';
-import { GetTelemetryMetricsResponse, TransitMetricsParams } from 'lib/api/http/SharedTypes';
+import { ConnectivityHealthParams, GetTelemetryMetricsResponse, TransitMetricsParams } from 'lib/api/http/SharedTypes';
 import { DateTime } from 'luxon';
 import { getConnectivityMetrics, getCorrectedTimeString, getHealthTableData } from '../Utils';
 import LoadingIndicator from 'app/components/Loading';
@@ -45,13 +45,13 @@ export const ConnectivityHealth: React.FC<ConnectivityHealthProps> = ({ timeRang
 
   useEffect(() => {
     if (selectedTabName === TabName.Sites) {
-      const params: TransitMetricsParams = {
-        type: 'DeviceConnectionState',
-        metricNames: CONNECTIVITY_HEALTH_METRIC_NAMES,
+      const lastDays = timeRange.value === LookbackValue.oneDay ? '1' : timeRange.value === LookbackValue.oneWeek ? '7' : '30';
+      const params: ConnectivityHealthParams = {
         startTime: timeRange.value,
         endTime: '-0m',
+        lastDays: lastDays,
       };
-      onGet(TelemetryApi.getAllMetrics(), userContext.accessToken!, params);
+      onGet(TelemetryApi.getConnectivityHealth(), userContext.accessToken!, params);
     }
   }, [timeRange, selectedTabName]);
 

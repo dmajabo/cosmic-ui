@@ -26,18 +26,20 @@ const ExternalRule: React.FC<Props> = (props: Props) => {
     }
   }, [value]);
   const onChangeValue = (value: string | null) => {
-    const validObj: [boolean, string[]] = Validator.isValidIPv4CidrNotation(value);
-    if (validObj && validObj.length) {
-      if (!validObj[0] && validObj[1] && validObj[1].length && validObj[1][0].length) {
-        setError(validObj[1][0]);
-      } else if (!validObj[0] && (!validObj[1] || !validObj[1].length || !validObj[1][0].length)) {
-        setError('Something incorrect');
-      }
-      if (validObj[0]) {
+    if (value && !isNaN(Number(value?.replace('.', '').replace('/', '')))) {
+      const validObj: [boolean, string[]] = Validator.isValidIPv4CidrNotation(value);
+      if (validObj && validObj.length) {
+        if (!validObj[0] && validObj[1] && validObj[1].length && validObj[1][0].length) {
+          setError(validObj[1][0]);
+        } else if (!validObj[0] && (!validObj[1] || !validObj[1].length || !validObj[1][0].length)) {
+          setError('Something incorrect');
+        }
+        if (validObj[0]) {
+          setError(null);
+        }
+      } else if (error) {
         setError(null);
       }
-    } else if (error) {
-      setError(null);
     }
     setItem({ ...item, matchValue: value });
   };
@@ -52,11 +54,11 @@ const ExternalRule: React.FC<Props> = (props: Props) => {
           id={`${props.index}extMatchValueType`}
           name="extMatchKey"
           value={item.matchValue}
-          label="IP"
+          label="IP or URL"
           onChange={onChangeValue}
           disabled={!item.matchKey}
           styles={{ height: '72px', minHeight: '72px', width: 'calc(100% - 50px)', margin: '0' }}
-          placeholder="10.0.0.0/0"
+          placeholder="10.0.0.0/0 or google.com"
           required
           inputStyles={{ height: '50px' }}
         />

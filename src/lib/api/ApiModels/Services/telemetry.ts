@@ -8,4 +8,5 @@ export const TelemetryApi = {
   getNetworkUsage: (id: string) => `telemetry/api/v1/metrics/network/${id}/usage`,
   getDeviceMetrics: () => 'telemetry/api/v1/metrics/devices',
   getAppAccess: () => '/telemetry/api/v1/telemetry/site/appaccess',
+  getConnectivityHealth: () => '/telemetry/api/v1/metrics/connectivityhealth',
 };

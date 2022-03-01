@@ -25,12 +25,12 @@ const OutboundTable = (props: Props) => {
   const [data, setData] = React.useState<INetworkRule[]>([]);
   const [totalCount, setTotalCount] = React.useState<number>(0);
   const [columns, setColumns] = React.useState<IGridColumnField[]>([
-    { ...Layer3Columns.networkName },
+    { ...Layer3Columns.networkName, minWidth: '200px' },
     { ...Layer3Columns.policy, body: (d: INetworkRule) => cellTemplates.cellClassNameTemplate(d.policy || 'Allow', 'cellToCapitalize') },
     { ...Layer3Columns.protocol, body: (d: INetworkRule) => cellTemplates.cellClassNameTemplate(d.ipProtocol, 'cellToUpperCase') },
     { ...Layer3Columns.source, body: (d: INetworkRule) => cellTemplates.cellValueFromArrayTemplate(d.srcCidrs, 'name') },
     { ...Layer3Columns.sourcePort },
-    { ...Layer3Columns.destination, body: (d: INetworkRule) => cellTemplates.cellValueFromArrayTemplate(d.destCidrs, 'name') },
+    { ...Layer3Columns.destination, body: (d: INetworkRule) => cellTemplates.cellValueFromArrayTemplate(d.destCidrs, 'name'), maxWidth: '500px' },
     { ...Layer3Columns.destinationPort },
     { ...Layer3Columns.comment },
     { ...Layer3Columns.description },

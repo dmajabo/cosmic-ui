@@ -30,7 +30,7 @@ export const MetricsStyles = makeStyles(
         paddingTop: 10,
         width: '100%',
         backgroundColor: 'var(--_appBg)',
-        zIndex: 5,
+        zIndex: 2,
       },
       endFlexContainer: {
         display: 'flex',

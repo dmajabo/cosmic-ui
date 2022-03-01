@@ -10,7 +10,7 @@ import { DeviceMetrics, Uplink } from '../../enum';
 // eslint-disable-next-line import/no-webpack-loader-syntax
 mapboxgl.workerClass = require('worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker').default;
 
-export interface Properties extends DeviceMetrics {
+export interface Properties {
   readonly title: string;
   readonly uplinks: Uplink[];
 }
@@ -31,6 +31,7 @@ export interface GeoJSON {
 
 interface MapProps {
   readonly features: Feature[];
+  readonly deviceMetrics: DeviceMetrics[];
 }
 
 mapboxgl.accessToken = process.env['REACT_APP_MAPBOX_TOKEN'];
@@ -40,18 +41,17 @@ const LATITUDE = 43.023;
 const LONGITUDE = -95.288;
 const INITIAL_ZOOM_LEVEL = 3;
 
-export const Map: React.FC<MapProps> = ({ features }) => {
+export const Map: React.FC<MapProps> = ({ features, deviceMetrics }) => {
   useEffect(() => {
+    const map = new mapboxgl.Map({
+      container: 'map',
+      style: MAPBOX_STYLE_URL,
+      center: [LONGITUDE, LATITUDE],
+      zoom: INITIAL_ZOOM_LEVEL,
+      attributionControl: false,
+      dragRotate: false,
+    });
     if (features.length) {
-      const map = new mapboxgl.Map({
-        container: 'map',
-        style: MAPBOX_STYLE_URL,
-        center: [LONGITUDE, LATITUDE],
-        zoom: INITIAL_ZOOM_LEVEL,
-        attributionControl: false,
-        dragRotate: false,
-      });
-
       for (const { geometry, properties } of features) {
         // create a HTML element for each feature
         const el = document.createElement('div');
@@ -63,12 +63,12 @@ export const Map: React.FC<MapProps> = ({ features }) => {
           .setLngLat(geometry.coordinates)
           .setPopup(
             new mapboxgl.Popup({ offset: [-10, -75] }) // add popups
-              .setHTML(ReactDOMServer.renderToString(<Popup properties={properties} />)),
+              .setHTML(ReactDOMServer.renderToString(<Popup properties={properties} deviceMetrics={deviceMetrics} />)),
           )
           .addTo(map);
       }
     }
-  }, [features]);
+  }, [deviceMetrics]);
 
   const classes = DashboardStyles();
 

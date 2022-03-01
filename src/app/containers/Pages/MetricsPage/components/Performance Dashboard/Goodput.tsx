@@ -57,6 +57,7 @@ export const Goodput: React.FC<GoodputProps> = ({ selectedRows, timeRange, netwo
   const classes = PerformanceDashboardStyles();
 
   const [goodputData, setGoodputData] = useState<MetricKeyValue>({});
+  const [anomalyCount, setAnomalyCount] = useState<number>(0);
   const [heatMapGoodput, setHeatMapGoodput] = useState<HeatMapData[]>([]);
 
   const userContext = useContext<UserContextState>(UserContext);
@@ -71,9 +72,12 @@ export const Goodput: React.FC<GoodputProps> = ({ selectedRows, timeRange, netwo
   useEffect(() => {
     const getGoodputMetrics = async () => {
       const goodputChartData: MetricKeyValue = {};
+      let totalAnomalyCount = 0;
       const promises = selectedRows.map(row => apiClient.getGoodputMetrics(row.sourceDevice, row.destination, timeRange, row.id));
       Promise.all(promises).then(values => {
         values.forEach(item => {
+          const anomalyArray = item.metrics.keyedmap.find(item => item.key === GOODPUT_ANOMALY)?.ts || [];
+          totalAnomalyCount = totalAnomalyCount + anomalyArray.length;
           goodputChartData[item.testId] = item.metrics.keyedmap.find(item => item.key === GOODPUT)?.ts || [];
           goodputChartData[`${item.testId}_anomaly`] = item.metrics.keyedmap.find(item => item.key === GOODPUT_ANOMALY)?.ts || [];
           goodputChartData[`${item.testId}_upperbound`] = item.metrics.keyedmap.find(item => item.key === GOODPUT_UPPERBOUND)?.ts || [];
@@ -81,6 +85,7 @@ export const Goodput: React.FC<GoodputProps> = ({ selectedRows, timeRange, netwo
           goodputChartData[`${item.testId}_threshold`] = item.metrics.keyedmap.find(item => item.key === GOODPUT_THRESHOLD)?.ts || [];
         });
         setGoodputData(goodputChartData);
+        setAnomalyCount(totalAnomalyCount);
       });
     };
     const getHeatMapGoodput = async () => {
@@ -108,7 +113,7 @@ export const Goodput: React.FC<GoodputProps> = ({ selectedRows, timeRange, netwo
 
   return (
     <div className={classes.pageComponentBackground}>
-      <div className={classes.pageComponentTitle}>Goodput summary</div>
+      <div className={classes.pageComponentTitle}>{`Goodput summary ${isEmpty(goodputData) ? '' : `(${anomalyCount})`}`}</div>
       <ChartContainerStyles style={{ maxWidth: '100%', minHeight: 420, maxHeight: 420 }}>
         {!isEmpty(selectedRows) ? (
           // goodputData contains 5 keys for each row. One for the data, one for anomaly, one for upperbound,one for lowerbound and one for threshold

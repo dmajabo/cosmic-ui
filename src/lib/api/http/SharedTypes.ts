@@ -187,6 +187,7 @@ export interface FinalTableData {
   readonly description: string;
   readonly averageQoe: AverageQoe;
   readonly isTestDataInvalid?: boolean;
+  readonly index?: number;
 }
 
 export enum ColumnAccessor {
@@ -497,6 +498,12 @@ export interface TransitMetricsParams {
   readonly metricNames: string[];
   readonly startTime: string;
   readonly endTime: string;
+}
+
+export interface ConnectivityHealthParams {
+  readonly startTime: string;
+  readonly endTime: string;
+  readonly lastDays: string;
 }
 
 interface TelemetryMetrics {

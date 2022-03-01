@@ -1,4 +1,4 @@
-import { Button } from '@mui/material';
+import { Button, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import React, { useState, useEffect } from 'react';
 import { PerformanceDashboardStyles } from './PerformanceDashboardStyles';
 import Select from 'react-select';
@@ -89,9 +89,17 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ slaTestDataToUpdat
     return networkOptions;
   };
 
+  const getSourceOrgOptions = () => {
+    const orgOptions: SelectOptions[] = merakiOrganizations.map(org => ({
+      value: org.extId,
+      label: org.name,
+    }));
+    return orgOptions;
+  };
+
   const populateFormFields = (testData: SLATest) => {
     setName(testData.name);
-    const currentSourceOrg = sourceOrganizationOptions.find(item => item.value === testData.sourceOrgId) || { label: '', value: '' };
+    const currentSourceOrg = getSourceOrgOptions().find(item => item.value === testData.sourceOrgId) || { label: '', value: '' };
     setSourceOrg(currentSourceOrg);
     const currentSourceNetwork = getSourceNetworkOptions(testData.sourceOrgId).find(item => item.value === testData.sourceNwExtId) || { label: '', value: '' };
     setSourceNetwork(currentSourceNetwork);
@@ -173,8 +181,8 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ slaTestDataToUpdat
   const shouldSubmitButtonEnable = () => (name && sourceOrg.label && sourceNetwork.label && destination.label ? false : true);
 
   return (
-    <div className={classes.createSlaTestContainer}>
-      <div className={classes.slaFormElementContainer}>
+    <>
+      <DialogTitle>
         <div className={classes.flexContainer}>
           <div>
             <span className={classes.itemTitle}>{updateSlaTest ? 'Edit SLA Test' : 'Create SLA Test'}</span>
@@ -185,6 +193,8 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ slaTestDataToUpdat
             </div>
           )}
         </div>
+      </DialogTitle>
+      <DialogContent>
         <div className={classes.formInputContainer}>
           <span className={classes.tableHeaderText}>NAME</span>
           <input className={classes.slaInput} type="text" value={name} onChange={e => setName(e.target.value)} />
@@ -197,21 +207,21 @@ export const CreateSLATest: React.FC<CreateSLATestProps> = ({ slaTestDataToUpdat
           <span className={classes.tableHeaderText}>DESCRIPTION</span>
           <input className={classes.slaInput} type="text" value={description} onChange={e => setDescription(e.target.value)} />
         </div>
-        <div className={classes.slaTestButtonConatiner}>
-          <Button
-            className={classes.slaFormButton}
-            disabled={shouldSubmitButtonEnable()}
-            variant="contained"
-            color="primary"
-            fullWidth={true}
-            size="large"
-            onClick={updateSlaTest ? handleFormUpdate : handleFormSubmit}
-            disableElevation
-          >
-            <span className={classes.slaTestButtonText}>{updateSlaTest ? 'EDIT SLA TEST' : 'CREATE SLA TEST'}</span>
-          </Button>
-        </div>
-      </div>
-    </div>
+      </DialogContent>
+      <DialogActions>
+        <Button
+          className={classes.slaFormButton}
+          disabled={shouldSubmitButtonEnable()}
+          variant="contained"
+          color="primary"
+          fullWidth={true}
+          size="large"
+          onClick={updateSlaTest ? handleFormUpdate : handleFormSubmit}
+          disableElevation
+        >
+          <span className={classes.slaTestButtonText}>{updateSlaTest ? 'EDIT SLA TEST' : 'CREATE SLA TEST'}</span>
+        </Button>
+      </DialogActions>
+    </>
   );
 };

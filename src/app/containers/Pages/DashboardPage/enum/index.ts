@@ -73,11 +73,14 @@ export interface MapDeviceDataResponse {
 export interface AnomalySummary {
   readonly descString: string;
   readonly timestamp: string;
+  readonly boldDescString: string;
+  readonly regularDescString: string;
 }
 
 export interface AnomaliesResponse {
   readonly anomalySummary: AnomalySummary[];
   readonly totalCount: number;
+  readonly anomalyCount: number;
 }
 
 export interface SitesData {
