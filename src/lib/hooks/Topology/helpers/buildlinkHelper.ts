@@ -58,7 +58,6 @@ export const buildLinks = (
     });
   }
   if (appOrigLinks.length) {
-    console.log(appOrigLinks.length);
     appOrigLinks.forEach(orginLink => {
       buildSiteToAppNodeLinks(sites, appNodes, orginLink, _links);
     });
@@ -69,8 +68,9 @@ export const buildLinks = (
 
 export const buildSiteToAppNodeLinks = (sites: IObject<ITopoSitesNode>, appNodes: IObject<ITopoAppNode>, origLink: AppAccessLink, links: IObject<ITopoLink<any, ITGWNode, any>>) => {
   const from = cloneDeep(sites[origLink.sourceId]);
-  // from.x = from.x + 115;
-  // from.y = from.y - 25;
+
+  from.x = from.x + 115;
+  from.y = from.y - 25;
 
   const to = cloneDeep(appNodes[origLink.destinationId]);
   // to.y = to.y + to.height;
@@ -262,19 +262,18 @@ export const updateLinkVisibleState = (
   return _links;
 };
 
-export const updateLinksVisibleStateBySpecificNode = (
+export const hideLinksFromUnselctedAppNode = (
   links: IObject<ITopoLink<any, any, any>>,
   nodeId: string,
-  regions: IObject<ITopoRegionNode>,
+  applicationNodes: IObject<ITopoAppNode>,
   sites: IObject<ITopoSitesNode>,
-  accounts: IObject<ITopoAccountNode>,
 ): IObject<ITopoLink<any, any, any>> => {
   if (!links || !Object.keys(links).length) return null;
   const _links: IObject<ITopoLink<any, any, any>> = _.cloneDeep(links);
   for (let key in _links) {
     if (_links[key].fromParent.dataItem.extId === nodeId || _links[key].toParent.dataItem.extId === nodeId) {
-      const from = getTopoParentNode(regions, sites, accounts, _links[key].fromParent.dataItem.extId);
-      const to = getTopoParentNode(regions, sites, accounts, _links[key].toParent.dataItem.extId);
+      const from = sites[_links[key].fromParent.dataItem.extId];
+      const to = applicationNodes[nodeId];
       _links[key].visible = from.visible && to.visible ? true : false;
       continue;
     }
@@ -282,10 +281,34 @@ export const updateLinksVisibleStateBySpecificNode = (
   return _links;
 };
 
-const getTopoParentNode = (regions: IObject<ITopoRegionNode>, sites: IObject<ITopoSitesNode>, accounts: IObject<ITopoAccountNode>, extId: string) => {
+export const updateLinksVisibleStateBySpecificNode = (
+  links: IObject<ITopoLink<any, any, any>>,
+  nodeId: string,
+  regions: IObject<ITopoRegionNode>,
+  sites: IObject<ITopoSitesNode>,
+  accounts: IObject<ITopoAccountNode>,
+  applicationNodes: IObject<ITopoAppNode>,
+): IObject<ITopoLink<any, any, any>> => {
+  if (!links || !Object.keys(links).length) return null;
+  const _links: IObject<ITopoLink<any, any, any>> = _.cloneDeep(links);
+  for (let key in _links) {
+    if (_links[key].fromParent.dataItem.extId === nodeId || _links[key].toParent.dataItem.extId === nodeId) {
+      const from = getTopoParentNode(regions, sites, accounts, _links[key].fromParent.dataItem.extId, applicationNodes);
+      const to = getTopoParentNode(regions, sites, accounts, _links[key].toParent.dataItem.extId, applicationNodes);
+      _links[key].visible = from.visible && to.visible ? true : false;
+      continue;
+    }
+  }
+  return _links;
+};
+
+const getTopoParentNode = (regions: IObject<ITopoRegionNode>, sites: IObject<ITopoSitesNode>, accounts: IObject<ITopoAccountNode>, extId: string, applicationNodes: IObject<ITopoAppNode>) => {
   if (regions && regions[extId]) return regions[extId];
   if (sites && sites[extId]) return sites[extId];
   if (accounts && accounts[extId]) return accounts[extId];
+  if (applicationNodes && applicationNodes[extId]) {
+    return applicationNodes[extId];
+  }
   return null;
 };
 
