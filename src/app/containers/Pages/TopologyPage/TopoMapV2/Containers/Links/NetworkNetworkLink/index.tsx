@@ -52,13 +52,13 @@ const NetworkNetworkLink: React.FC<IProps> = (props: IProps) => {
   };
 
   if (!props.visible || !fromCoord || !toCoord) return null;
-
   return (
     <line
       className={`topologyLink ${isSelected ? 'selectedTopoLevel1Link' : ''}`}
       fill="var(--_defaultLinkFill)"
       stroke="var(--_defaultLinkFill)"
       strokeWidth="1"
+      strokeDasharray="4, 2"
       // data-fromchildid={`${props.dataItem.from.nodeType}${props.dataItem.fromNode.child.id}`}
       // data-tochildid={`${props.dataItem.toNode.child.nodeType}${props.dataItem.toNode.child.id}`}
       // data-fromparentid={`${props.dataItem.fromNode.parent.type}${props.dataItem.fromNode.parent.dataItem.id}`}

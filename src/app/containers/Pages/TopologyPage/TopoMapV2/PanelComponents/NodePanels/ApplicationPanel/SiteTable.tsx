@@ -22,9 +22,6 @@ const SiteTable: React.FC<Props> = (props: Props) => {
         <Table stickyHeader aria-label="sticky table" className={classes.table}>
           <TableHead>
             <TableRow>
-              <TableCell className={classes.tableHeadCell} style={{ minWidth: '20px' }}>
-                #
-              </TableCell>
               <TableCell style={{ minWidth: '80px' }} className={classes.tableHeadCell}>
                 Site Name
               </TableCell>
@@ -35,7 +32,6 @@ const SiteTable: React.FC<Props> = (props: Props) => {
               ? props.data.map((row, rowIndex) => {
                   return (
                     <TableRow hover tabIndex={-1} key={`tableRow${row}${rowIndex}`} className={classes.row}>
-                      <TableCell className={classes.tableCell}>{rowIndex + 1}</TableCell>
                       <TableCell className={classes.tableCell}>{row}</TableCell>
                     </TableRow>
                   );

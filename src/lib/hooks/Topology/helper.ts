@@ -1,4 +1,4 @@
-import { IMapped_Segment, INetworkVNetNode, INetworkVNetworkPeeringConnectionNode, INetworkWebAclNode, ITopoAppNode, ITopoLink } from 'lib/hooks/Topology/models';
+import { IMapped_Application, IMapped_Segment, INetworkVNetNode, INetworkVNetworkPeeringConnectionNode, INetworkWebAclNode, ITopoAppNode, ITopoLink } from 'lib/hooks/Topology/models';
 import { AppAccessApiResponse, AppNodeType, IAppNode, INetworkOrg, INetworkRegion, VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
 
 import {
@@ -71,6 +71,7 @@ export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[]
   const devicesInDefaultSegment: IDeviceNode[] = [];
   const segmentTempObject: ITempSegmentObjData = {};
   const segmentsFilteredOptions: IMapped_Segment[] = [];
+  const applicationFilterOptions: IMapped_Application[] = [];
   let applicationNodes: IObject<ITopoAppNode> = {};
 
   if (_segments && _segments.length) {
@@ -205,17 +206,29 @@ export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[]
   applicationNodes = appNodes.siteAccessInfo.nodes.reduce((accu, nextItem) => {
     if (nextItem.nodeType === AppNodeType.Application) {
       const tempAppNode = createApplicationNode(nextItem);
-      tempAppNode.dataItem.name = segmentTempObject[nextItem.nodeId]?.dataItem?.name || '';
+      tempAppNode.dataItem.name = segmentTempObject[nextItem.nodeId]?.dataItem?.name || 'UNKNOWN';
       tempAppNode.dataItem.description = segmentTempObject[nextItem.nodeId]?.dataItem?.description || '';
       accu[tempAppNode.dataItem.extId] = tempAppNode;
+      const _ma: IMapped_Application = {
+        id: nextItem.nodeId,
+        extId: nextItem.nodeId,
+        dataItem: {
+          ...nextItem,
+          name: tempAppNode.dataItem.name,
+          description: tempAppNode.dataItem.description,
+        },
+        type: nextItem.nodeType,
+        uiId: uuid(),
+        selected: true,
+      };
+      applicationFilterOptions.push(_ma);
     }
     return accu;
   }, {});
-
   updateTopLevelItems(filter, regions, accounts, sites, applicationNodes);
   const _links: IObject<ITopoLink<any, any, any>> = buildLinks(filter, regions, accounts, sites, applicationNodes, appNodes.siteAccessInfo.links);
 
-  return { accounts: accounts, sites: sites, regions: regions, links: _links, segments: segmentsFilteredOptions, appNodes: applicationNodes };
+  return { accounts: accounts, sites: sites, regions: regions, links: _links, segments: segmentsFilteredOptions, appNodes: applicationNodes, applicationFilterOptions };
 };
 
 const buildRegionName = (org: INetworkOrg, region: INetworkRegion): string => {

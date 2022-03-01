@@ -6,9 +6,13 @@ import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import { EmptyText } from 'app/components/Basic/NoDataStyles/NoDataStyles';
 import { TableStyles } from 'app/components/Basic/Table/TableStyles';
+import { MemberAppNodeData, TopoNodeMember } from 'lib/api/ApiModels/Topology/apiModels';
+import { convertSecondsToString } from '../../utils';
+
+export interface MemberRow extends Pick<TopoNodeMember, 'name'>, Omit<MemberAppNodeData, 'vnetworkExtid' | 'vnetworkName'> {}
 
 interface Props {
-  data: string[];
+  data: MemberRow[];
   showLoader: boolean;
   error?: string;
   styles?: Object;
@@ -22,11 +26,26 @@ const MemberTable: React.FC<Props> = (props: Props) => {
         <Table stickyHeader aria-label="sticky table" className={classes.table}>
           <TableHead>
             <TableRow>
-              <TableCell className={classes.tableHeadCell} style={{ minWidth: '20px' }}>
-                #
+              <TableCell style={{ minWidth: '60px' }} className={classes.tableHeadCell}>
+                Destination
               </TableCell>
               <TableCell style={{ minWidth: '80px' }} className={classes.tableHeadCell}>
-                Member Name
+                Protocol
+              </TableCell>
+              <TableCell style={{ minWidth: '80px' }} className={classes.tableHeadCell}>
+                Port
+              </TableCell>
+              <TableCell style={{ minWidth: '60px' }} className={classes.tableHeadCell}>
+                Sent
+              </TableCell>
+              <TableCell style={{ minWidth: '60px' }} className={classes.tableHeadCell}>
+                Received
+              </TableCell>
+              <TableCell style={{ minWidth: '60px' }} className={classes.tableHeadCell}>
+                Flows
+              </TableCell>
+              <TableCell style={{ minWidth: '80px' }} className={classes.tableHeadCell}>
+                Active Time
               </TableCell>
             </TableRow>
           </TableHead>
@@ -35,8 +54,13 @@ const MemberTable: React.FC<Props> = (props: Props) => {
               ? props.data.map((row, rowIndex) => {
                   return (
                     <TableRow hover tabIndex={-1} key={`tableRow${row}${rowIndex}`} className={classes.row}>
-                      <TableCell className={classes.tableCell}>{rowIndex + 1}</TableCell>
-                      <TableCell className={classes.tableCell}>{row}</TableCell>
+                      <TableCell className={classes.tableCell}>{row.name}</TableCell>
+                      <TableCell className={classes.tableCell}>{row.protocol}</TableCell>
+                      <TableCell className={classes.tableCell}>{row.port}</TableCell>
+                      <TableCell className={classes.tableCell}>{row.sent}</TableCell>
+                      <TableCell className={classes.tableCell}>{row.recv}</TableCell>
+                      <TableCell className={classes.tableCell}>{row.flows}</TableCell>
+                      <TableCell className={classes.tableCell}>{convertSecondsToString(row.activeTime)}</TableCell>
                     </TableRow>
                   );
                 })

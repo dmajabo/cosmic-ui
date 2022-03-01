@@ -17,6 +17,7 @@ import { TopoApi } from 'lib/api/ApiModels/Services/topo';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 import { TelemetryApi } from 'lib/api/ApiModels/Services/telemetry';
+import { DateTime } from 'luxon';
 
 interface IProps {}
 
@@ -59,21 +60,25 @@ const TopoMapV2: React.FC<IProps> = (props: IProps) => {
   const onTryLoadData = async () => {
     const _st = topology.selectedTime || null;
     let param: ITopologyQueryParam = createTopologyQueryParam(_st);
+    const defaultStartTime = DateTime.local().minus({ hours: 6 }).toMillis();
+
     if (param) {
-      param.startTime = '-6h';
+      param.startTime = param.timestamp;
     } else {
-      param = { startTime: '-6h', timestamp: null };
+      param = { startTime: defaultStartTime, timestamp: null };
     }
 
     await onGetChainData([PolicyApi.getSegments(), TopoApi.getAllOrganizations(), TelemetryApi.getAppAccess()], ['segments', 'organizations', 'siteAccessInfo'], userContext.accessToken!, param);
   };
 
   const onReloadData = async (startTime: Date | null) => {
+    const defaultStartTime = DateTime.local().minus({ hours: 6 }).toMillis();
+
     let param: ITopologyQueryParam = createTopologyQueryParam(startTime);
     if (param) {
-      param.startTime = '-6h';
+      param.startTime = param.timestamp;
     } else {
-      param = { startTime: '-6h', timestamp: null };
+      param = { startTime: defaultStartTime, timestamp: null };
     }
     await onGetChainData([PolicyApi.getSegments(), TopoApi.getAllOrganizations(), TelemetryApi.getAppAccess()], ['segments', 'organizations', 'siteAccessInfo'], userContext.accessToken!, param);
   };

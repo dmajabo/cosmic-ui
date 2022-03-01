@@ -1,5 +1,15 @@
 import { ISegmentSegmentP, SegmentSegmentType } from 'lib/api/ApiModels/Policy/Segment';
-import { IAppNode, INetworkDevice, INetworkRegion, INetworkVNetwork, INetworkVNetworkPeeringConnection, INetworkWebAcl, INetworkwEdge, VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
+import {
+  AppNodeType,
+  IAppNode,
+  INetworkDevice,
+  INetworkRegion,
+  INetworkVNetwork,
+  INetworkVNetworkPeeringConnection,
+  INetworkWebAcl,
+  INetworkwEdge,
+  VendorTypes,
+} from 'lib/api/ApiModels/Topology/apiModels';
 import { AlertSeverity } from 'lib/api/ApiModels/Workflow/apiModel';
 import { IBaseEntity, ICollapsed, ICoord, IFilterOption, IObject, ISize, IVisible } from 'lib/models/general';
 
@@ -152,6 +162,16 @@ export interface IMapped_Segment {
   uiId: string;
   selected: boolean;
 }
+
+export interface IMapped_Application {
+  id: string;
+  extId: string;
+  dataItem: IAppNode;
+  type: AppNodeType;
+  uiId: string;
+  selected: boolean;
+}
+
 export interface ITempSegmentObjData {
   [key: string]: IMapped_Segment;
 }
@@ -163,6 +183,7 @@ export interface ITopologyPreparedMapDataV2 {
   appNodes: IObject<ITopoAppNode>;
   links: IObject<ITopoLink<any, any, any>>;
   segments: IMapped_Segment[];
+  applicationFilterOptions: IMapped_Application[];
 }
 
 export enum TopoFilterTypes {
@@ -179,6 +200,7 @@ export enum FilterEntityTypes {
   VPC = 'vpc',
   PEERING_CONNECTIONS = 'peer_connections',
   WEB_ACLS = 'web_acls',
+  APPLICATION = 'application',
 }
 
 export interface FilterEntityOptions {
@@ -187,6 +209,7 @@ export interface FilterEntityOptions {
   web_acls: IFilterOption<FilterEntityTypes>;
   peer_connections: IFilterOption<FilterEntityTypes>;
   vpc: IFilterOption<FilterEntityTypes>;
+  applications: IFilterOption<FilterEntityTypes>;
 }
 
 export interface FilterSeverityOptions {
@@ -225,6 +248,12 @@ export const DEFAULT_ENTITY_OPTIONS: FilterEntityOptions = {
     selected: true,
     label: 'VPC',
     index: 4,
+  },
+  applications: {
+    type: FilterEntityTypes.APPLICATION,
+    selected: true,
+    label: 'Applications',
+    index: 5,
   },
 };
 

@@ -11,6 +11,7 @@ import {
   FilterEntityOptions,
   FilterEntityTypes,
   FilterSeverityOptions,
+  IMapped_Application,
   IMapped_Segment,
   IPanelBar,
   ITopoAccountNode,
@@ -27,7 +28,7 @@ import { AlertSeverity } from 'lib/api/ApiModels/Workflow/apiModel';
 import { ISegmentSegmentP, SegmentSegmentType } from 'lib/api/ApiModels/Policy/Segment';
 import { OKULIS_LOCAL_STORAGE_KEYS } from 'lib/api/http/utils';
 import { getSessionStoragePreference, getSessionStoragePreferences, StoragePreferenceKeys, updateSessionStoragePreference } from 'lib/helpers/localStorageHelpers';
-import { updateLinkNodesPosition, updateLinksVisibleStateBySpecificNode, updateLinkVisibleState, updateVpnLinks } from './helpers/buildlinkHelper';
+import { hideLinksFromUnselctedAppNode, updateLinkNodesPosition, updateLinksVisibleStateBySpecificNode, updateLinkVisibleState, updateVpnLinks } from './helpers/buildlinkHelper';
 import { updateCollapseExpandAccounts, updateCollapseExpandSites, updateRegionNodes } from './helpers/buildNodeHelpers';
 import _ from 'lodash';
 import { getRegionChildrenOffsetY, setRegionsCoord, setUpRegionChildCoord } from './helpers/coordinateHelper';
@@ -80,6 +81,8 @@ export interface TopologyV2ContextType {
   onSelectSegmentFilterOption: (node: IMapped_Segment, index: number, visible: boolean) => void;
   blockTooltip: boolean;
   appAccessApiResponse: AppAccessApiResponse;
+  applicationFilterOptions: IMapped_Application[];
+  onApplicationFilterOption: (app: IMapped_Application, index: number, selected: boolean) => void;
 }
 export function useTopologyV2Context(): TopologyV2ContextType {
   const [topoPanel, setTopoPanel] = React.useState<IPanelBar<TopologyPanelTypes>>({ show: false, type: null });
@@ -87,6 +90,7 @@ export function useTopologyV2Context(): TopologyV2ContextType {
   const [originSegmentsData, setOriginSegmentsData] = React.useState<ISegmentSegmentP[] | null>(null);
 
   const [accounts, setAccountsNodes] = React.useState<IObject<ITopoAccountNode>>(null);
+  const [applicationFilterOptions, setApplicationFilterOptions] = React.useState<IMapped_Application[]>(null);
   const [sites, setSitesNodes] = React.useState<IObject<ITopoSitesNode>>(null);
   const [applicationNodes, setApplicationNodes] = React.useState<IObject<ITopoAppNode>>(null);
   const [appAccessApiResponse, setAppAccessApiResponse] = React.useState<AppAccessApiResponse>(null);
@@ -109,6 +113,7 @@ export function useTopologyV2Context(): TopologyV2ContextType {
   const [topoPanelWidth, setTopoPanelWidth] = React.useState<number>(450);
   const linksRef = React.useRef<IObject<ITopoLink<any, any, any>>>(links);
   const segmentsRef = React.useRef<IMapped_Segment[]>(segments);
+  const appFiltersRef = React.useRef<IMapped_Application[]>(applicationFilterOptions);
 
   React.useEffect(() => {
     const _preference = getSessionStoragePreferences(OKULIS_LOCAL_STORAGE_KEYS.OKULIS_PREFERENCE, [
@@ -158,6 +163,7 @@ export function useTopologyV2Context(): TopologyV2ContextType {
       setOriginData(null);
       linksRef.current = null;
       segmentsRef.current = null;
+      appFiltersRef.current = null;
       return;
     }
     const _orgObj: INetworkOrg[] = res.organizations && res.organizations.organizations ? jsonClone(res.organizations.organizations) : null;
@@ -173,8 +179,11 @@ export function useTopologyV2Context(): TopologyV2ContextType {
       setLinks(_data.links);
       setSegments(_data.segments);
       setApplicationNodes(_data.appNodes);
+      setApplicationFilterOptions(_data.applicationFilterOptions);
+
       linksRef.current = _data.links;
       segmentsRef.current = _data.segments;
+      appFiltersRef.current = _data.applicationFilterOptions;
       // nodesRef.current = _data.nodes;
     }
     setAppAccessApiResponse(res.siteAccessInfo);
@@ -313,7 +322,7 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     if (groupType === TopoFilterTypes.Accounts) {
       const _obj: IObject<ITopoAccountNode> = _.cloneDeep(accounts);
       _obj[type].visible = selected;
-      const _links: IObject<ITopoLink<any, any, any>> = updateLinksVisibleStateBySpecificNode(links, _obj[type].dataItem.extId, regions, sites, _obj);
+      const _links: IObject<ITopoLink<any, any, any>> = updateLinksVisibleStateBySpecificNode(links, _obj[type].dataItem.extId, regions, sites, _obj, applicationNodes);
       setLinks(_links);
       setAccountsNodes(_obj);
       return;
@@ -321,11 +330,23 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     if (groupType === TopoFilterTypes.Regions) {
       const _obj: IObject<ITopoRegionNode> = _.cloneDeep(regions);
       _obj[type].visible = selected;
-      const _links: IObject<ITopoLink<any, any, any>> = updateLinksVisibleStateBySpecificNode(links, _obj[type].dataItem.extId, _obj, sites, accounts);
+      const _links: IObject<ITopoLink<any, any, any>> = updateLinksVisibleStateBySpecificNode(links, _obj[type].dataItem.extId, _obj, sites, accounts, applicationNodes);
       setLinks(_links);
       setRegionsNodes(_obj);
       return;
     }
+  };
+
+  const onSelectApplicationFilterOption = (application: IMapped_Application, index: number, _selected: boolean) => {
+    const _applications: IMapped_Application[] = appFiltersRef.current.slice();
+    _applications[index].selected = _selected;
+    const _obj: IObject<ITopoAppNode> = _.cloneDeep(applicationNodes);
+
+    _obj[application.extId].visible = _selected;
+    const _links: IObject<ITopoLink<any, any, any>> = hideLinksFromUnselctedAppNode(links, _obj[application.extId].dataItem.extId, _obj, sites);
+    setLinks(_links);
+    setApplicationNodes(_obj);
+    setApplicationFilterOptions(_applications);
   };
 
   const onSelectSegmentFilterOption = (segment: IMapped_Segment, index: number, _selected: boolean) => {
@@ -334,7 +355,7 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     if (segment.type === SegmentSegmentType.SITE) {
       const _obj: IObject<ITopoSitesNode> = _.cloneDeep(sites);
       _obj[segment.extId].visible = _selected;
-      const _links: IObject<ITopoLink<any, any, any>> = updateLinksVisibleStateBySpecificNode(links, _obj[segment.extId].dataItem.id, regions, _obj, accounts);
+      const _links: IObject<ITopoLink<any, any, any>> = updateLinksVisibleStateBySpecificNode(links, _obj[segment.extId].dataItem.id, regions, _obj, accounts, applicationNodes);
       setLinks(_links);
       setSitesNodes(_obj);
     } else if (segment.type === SegmentSegmentType.NETWORK) {
@@ -433,5 +454,7 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     blockTooltip,
     applicationNodes,
     appAccessApiResponse,
+    applicationFilterOptions,
+    onApplicationFilterOption: onSelectApplicationFilterOption,
   };
 }

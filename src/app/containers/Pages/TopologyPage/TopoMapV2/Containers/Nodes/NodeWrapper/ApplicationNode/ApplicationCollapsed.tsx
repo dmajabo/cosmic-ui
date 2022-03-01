@@ -38,7 +38,7 @@ const ApplicationCollapsedNode: React.FC<Props> = (props: Props) => {
         <g transform="translate(0, 0)">
           <NodeMarker iconId={NODES_CONSTANTS.APPLICATION.iconId} fill={'#05143A'} stylesObj={NODES_CONSTANTS.SITES.expanded.marker} />
           <NodeExpandedName
-            name={props.application.dataItem.name || 'Unknown'}
+            name={props.application.dataItem.name}
             nodeWidth={props.application.width}
             markerWidth={NODES_CONSTANTS.SITES.expanded.marker.width}
             height={NODES_CONSTANTS.SITES.expanded.marker.height}

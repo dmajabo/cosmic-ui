@@ -148,7 +148,7 @@ export const Layer7Columns: ILayer7GridColumns = {
     label: 'Network',
     resField: 'network',
     id: 'layer7network',
-    field: 'network',
+    field: 'networkName',
     width: '33%',
     minWidth: '200px',
     hide: false,

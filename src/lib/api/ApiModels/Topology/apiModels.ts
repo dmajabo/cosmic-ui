@@ -559,6 +559,7 @@ export interface INetworkL7Rule extends IBaseEntity<string> {
   policy: string;
   valueType: string;
   values: INetworkL7RuleValue[];
+  networkName: string;
 }
 export interface IToposvcGetL7RulesResponse extends IBaseTotalCount {
   rules: INetworkL7Rule[];
@@ -590,10 +591,23 @@ export enum AppNodeMemberType {
   Application = 'MEMBER_TYPE_APPLICATION',
 }
 
-interface TopoNodeMember extends IBaseEntity<string> {
+export interface MemberAppNodeData {
+  protocol: string;
+  port: string;
+  sent: string;
+  recv: string;
+  flows: string;
+  clients: string;
+  activeTime: string;
+  vnetworkExtid: string;
+  vnetworkName: string;
+}
+
+export interface TopoNodeMember extends IBaseEntity<string> {
   name: string;
   memberId: string;
   memberType: AppNodeMemberType;
+  appNodeData: MemberAppNodeData;
 }
 
 export interface ITopoTopoNode extends IBaseEntity<string> {

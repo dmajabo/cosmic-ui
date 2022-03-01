@@ -55,7 +55,7 @@ const DevicePanel: React.FC<IProps> = (props: IProps) => {
         >
           {/* <Tab disableRipple label="Metrics" classes={{ selected: classes.tabSelected }} {...TabComponentProps(0)} className={classes.tab} /> */}
           <Tab disableRipple label="Policy" classes={{ selected: classes.tabSelected }} {...TabComponentProps(0)} className={classes.tab} />
-          <Tab disableRipple label="Applications" classes={{ selected: classes.tabSelected }} {...TabComponentProps(1)} className={classes.tab} />
+          <Tab disableRipple label="Traffic" classes={{ selected: classes.tabSelected }} {...TabComponentProps(1)} className={classes.tab} />
         </Tabs>
       </PanelTabWrapper>
 
@@ -64,10 +64,8 @@ const DevicePanel: React.FC<IProps> = (props: IProps) => {
           <PolicyTab dataItem={props.dataItem} />
         </TabPanel>
         <TabPanel value={value} index={1}>
-          {/* <PolicyTab dataItem={props.dataItem} /> */}
           <ApplicationTab dataItem={props.dataItem} />
         </TabPanel>
-        {/* <MetricsTab dataItem={props.dataItem} /> */}
       </OverflowContainer>
     </>
   );
