@@ -222,7 +222,7 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
       <PacketLoss timeRange={timeRange} selectedRows={selectedRows} networks={networks} />
       <Latency timeRange={timeRange} selectedRows={selectedRows} networks={networks} />
       <Goodput timeRange={timeRange} selectedRows={selectedRows} networks={networks} />
-      <Dialog open={isSlaTestPanelOpen} maxWidth="md" fullWidth style={{ zIndex: 3 }}>
+      <Dialog open={isSlaTestPanelOpen} maxWidth="md" fullWidth style={{ zIndex: 3, maxHeight: '85vh', marginTop: '15vh' }}>
         <DialogTitle>
           <div className={classes.flexContainer}>
             <div>
@@ -237,10 +237,10 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
           <Table onSelectedRowsUpdate={onSelectedRowsUpdate} columns={columns} data={data} selectedRowsObject={getDefaultSelectedTestId(finalTableData, selectedRows)} />
         </DialogContent>
       </Dialog>
-      <Dialog fullWidth open={createToggle} style={{ zIndex: 5 }}>
+      <Dialog fullWidth open={createToggle} style={{ zIndex: 5, maxHeight: '85vh', marginTop: '15vh' }}>
         <CreateSLATest networks={networks} merakiOrganizations={merakiOrganizations} addSlaTest={addTest} popup={true} closeSlaTest={handleClose} />
       </Dialog>
-      <Dialog fullWidth open={updateTestToggle} style={{ zIndex: 5 }}>
+      <Dialog fullWidth open={updateTestToggle} style={{ zIndex: 5, maxHeight: '85vh', marginTop: '15vh' }}>
         <CreateSLATest
           updateSlaTest={updateSlaTest}
           slaTestDataToUpdate={testDataToUpdate}
