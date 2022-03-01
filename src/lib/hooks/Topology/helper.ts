@@ -205,7 +205,7 @@ export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[]
   applicationNodes = appNodes.siteAccessInfo.nodes.reduce((accu, nextItem) => {
     if (nextItem.nodeType === AppNodeType.Application) {
       const tempAppNode = createApplicationNode(nextItem);
-      tempAppNode.dataItem.name = segmentTempObject[nextItem.nodeId]?.dataItem?.name || '';
+      tempAppNode.dataItem.name = segmentTempObject[nextItem.nodeId]?.dataItem?.name || 'UNKNOWN';
       tempAppNode.dataItem.description = segmentTempObject[nextItem.nodeId]?.dataItem?.description || '';
       accu[tempAppNode.dataItem.extId] = tempAppNode;
     }
