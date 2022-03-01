@@ -96,15 +96,6 @@ export const Sites: React.FC<SitesProps> = ({ networks, devices, orgError, orgLo
       <PageWithPanelWrapperStyles padding="0" width={showSettingsPanel ? 'calc(100% - 520px)' : '100%'}>
         <div className={classes.endFlexContainer}>
           <div>
-            <SecondaryButtonwithEvent
-              label={
-                <>
-                  <span className={classes.otherButtonText}>FILTER</span>
-                  <FilterIcon />
-                </>
-              }
-              onClick={noop}
-            />
             <MatSelect
               id="cloudTimePeriod"
               label="Show"
