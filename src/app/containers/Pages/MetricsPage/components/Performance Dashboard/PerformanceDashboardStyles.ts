@@ -310,6 +310,27 @@ export const PerformanceDashboardStyles = makeStyles(
         color: '#05143A',
         marginBottom: 30,
       },
+      pageComponentTitleContainer: {
+        display: 'flex',
+        justifyContent: 'flex-start',
+      },
+      pillContainer: {
+        marginLeft: '20px',
+        marginTop: '10px',
+        backgroundColor: '#437FEC',
+        borderRadius: '20px',
+        display: 'flex',
+        height: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+      pillText: {
+        fontSize: '12px',
+        fontWeight: 500,
+        color: '#FFFFFF',
+        lineHeight: '16px',
+        padding: '2px 10px 2px 10px',
+      },
     }),
   {
     index: 1,

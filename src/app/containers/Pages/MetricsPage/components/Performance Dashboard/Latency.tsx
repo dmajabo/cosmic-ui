@@ -116,7 +116,12 @@ export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange, netwo
 
   return (
     <div className={classes.pageComponentBackground}>
-      <div className={classes.pageComponentTitle}>{`Latency summary ${isEmpty(latencyData) ? '' : `(${anomalyCount})`}`}</div>
+      <div className={classes.pageComponentTitleContainer}>
+        <div className={classes.pageComponentTitle}>Latency summary</div>
+        <div className={classes.pillContainer}>
+          <span className={classes.pillText}>{anomalyCount}</span>
+        </div>
+      </div>
       <ChartContainerStyles style={{ maxWidth: '100%', minHeight: 420, maxHeight: 420 }}>
         {!isEmpty(selectedRows) ? (
           // latencyData contains 5 keys for each row. One for the data, one for anomaly, one for upperbound, one for lowerbound and one for threshold

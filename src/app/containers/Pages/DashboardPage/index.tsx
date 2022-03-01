@@ -40,8 +40,8 @@ import { TelemetryApi } from 'lib/api/ApiModels/Services/telemetry';
 import { DateTime } from 'luxon';
 import { getCorrectedTimeString } from '../MetricsPage/components/Utils';
 import { downRedArrow, upGreenArrow } from 'app/components/SVGIcons/arrows';
-import { useHistory } from 'react-router-dom';
 import { ROUTE } from 'lib/Routes/model';
+import history from 'utils/history';
 
 const Tab = styled(TabUnstyled)`
   color: #848da3;
@@ -103,7 +103,6 @@ export const getAvailabilityArray = (availabilityArray: AvailabilityMetric[]): A
 
 const DashboardPage: React.FC = () => {
   const classes = DashboardStyles();
-  const history = useHistory();
   const userContext = useContext<UserContextState>(UserContext);
   const [sitesViewTabName, setSitesViewTabName] = useState<DashboardSitesViewTab>(DashboardSitesViewTab.Map);
 

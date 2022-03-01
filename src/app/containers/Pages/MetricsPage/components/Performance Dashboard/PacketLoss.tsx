@@ -129,7 +129,12 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange,
 
   return (
     <div className={classes.pageComponentBackground}>
-      <div className={classes.pageComponentTitle}>{`Packet Loss summary ${isEmpty(packetLossData) ? '' : `(${anomalyCount})`}`}</div>
+      <div className={classes.pageComponentTitleContainer}>
+        <div className={classes.pageComponentTitle}>Packet Loss summary</div>
+        <div className={classes.pillContainer}>
+          <span className={classes.pillText}>{anomalyCount}</span>
+        </div>
+      </div>
       <ChartContainerStyles style={{ maxWidth: '100%', minHeight: 420, maxHeight: 420 }}>
         {!isEmpty(selectedRows) ? (
           // packetLossData contains 5 keys for each row. One for the data, one for anomaly, one for upperbound,one for lowerbound and one for threshold
