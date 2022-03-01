@@ -14,7 +14,7 @@ interface LayoutWithHeaderFooterSidebarProps {
 }
 export const WrapperContent = styled.main<LayoutWithHeaderFooterSidebarProps>`
   width: ${props => (props.isOpen ? `calc(100% - ${sideBarOpenWidth})` : `calc(100% - ${sideBarCloseWidth})`)};
-  min-height: ${`calc(100% - ${APP_HEADER_HEIGHT})`};
+  min-height: ${`calc(100vh - ${APP_HEADER_HEIGHT})`};
   transition: margin-left ${DEFAULT_TRANSITION}, width ${DEFAULT_TRANSITION};
   margin: ${APP_HEADER_HEIGHT} 0 0 ${props => (props.isOpen ? sideBarOpenWidth : sideBarCloseWidth)};
   display: flex;
