@@ -58,7 +58,9 @@ const MemberTable: React.FC<Props> = (props: Props) => {
                   return (
                     <TableRow hover tabIndex={-1} key={`tableRow${row}${rowIndex}`} className={classes.row}>
                       <TableCell className={classes.tableCell}>{row.vnetworkName}</TableCell>
-                      <TableCell className={classes.tableCell}>{row.name}</TableCell>
+                      <TableCell style={{ maxWidth: '300px' }} className={classes.tableCell}>
+                        {row.name}
+                      </TableCell>
                       <TableCell className={classes.tableCell}>{row.protocol}</TableCell>
                       <TableCell className={classes.tableCell}>{row.port}</TableCell>
                       <TableCell className={classes.tableCell}>{convertBytesToHumanReadableString(row.sent)}</TableCell>

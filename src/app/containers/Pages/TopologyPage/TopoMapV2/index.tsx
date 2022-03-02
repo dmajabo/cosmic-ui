@@ -67,6 +67,7 @@ const TopoMapV2: React.FC<IProps> = (props: IProps) => {
     } else {
       param = { startTime: defaultStartTime, timestamp: null };
     }
+    param.exclAppMembers = true;
 
     await onGetChainData([PolicyApi.getSegments(), TopoApi.getAllOrganizations(), TelemetryApi.getAppAccess()], ['segments', 'organizations', 'siteAccessInfo'], userContext.accessToken!, param);
   };
@@ -80,6 +81,7 @@ const TopoMapV2: React.FC<IProps> = (props: IProps) => {
     } else {
       param = { startTime: defaultStartTime, timestamp: null };
     }
+    param.exclAppMembers = true;
     await onGetChainData([PolicyApi.getSegments(), TopoApi.getAllOrganizations(), TelemetryApi.getAppAccess()], ['segments', 'organizations', 'siteAccessInfo'], userContext.accessToken!, param);
   };
 
