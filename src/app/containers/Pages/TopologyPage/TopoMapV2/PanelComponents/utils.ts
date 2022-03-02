@@ -17,3 +17,25 @@ export function convertSecondsToString(seconds: string): string {
     return inHoursInNum <= 1 ? `${inHoursInNum} hour` : `${inHoursInNum} hours`;
   }
 }
+
+export function convertBytesToHumanReadableString(bytes: string): string {
+  const bytesInNum = parseInt(bytes);
+  if (!bytes) {
+    return '-';
+  }
+
+  const kbs = bytesInNum / 1000;
+
+  if (kbs < 1000) {
+    return `${kbs} KB`;
+  } else {
+    const mbs = kbs / 1000;
+
+    if (mbs >= 1000) {
+      const gbs = mbs / 1000;
+      return `${gbs} GB`;
+    } else {
+      return `${mbs} MB`;
+    }
+  }
+}

@@ -30,23 +30,20 @@ export const ApplicationPanel: React.FC<ApplicationPanelProps> = props => {
 
   const node = topology.appAccessApiResponse.siteAccessInfo.nodes.find(node => node.nodeId === props.dataItem.dataItem.nodeId && node.nodeType === AppNodeType.Application);
   const members: MemberRow[] = node
-    ? node.members
-        .map(member => {
-          if (node.nodeType !== AppNodeType.Application) {
-            return undefined;
-          }
-          return {
-            activeTime: member.appNodeData.activeTime,
-            clients: member.appNodeData.clients,
-            flows: member.appNodeData.flows,
-            port: member.appNodeData.port,
-            protocol: member.appNodeData.protocol,
-            recv: member.appNodeData.recv,
-            sent: member.appNodeData.sent,
-            name: member.name,
-          };
-        })
-        .filter(row => row)
+    ? node.members.map(member => {
+        return {
+          activeTime: member.appNodeData.activeTime,
+          clients: member.appNodeData.clients,
+          flows: member.appNodeData.flows,
+          port: member.appNodeData.port,
+          protocol: member.appNodeData.protocol,
+          recv: member.appNodeData.recv,
+          sent: member.appNodeData.sent,
+          name: member.name,
+          vnetworkName: member.appNodeData.vnetworkName,
+          vnetworkExtid: member.appNodeData.vnetworkExtid,
+        };
+      })
     : [];
 
   return (

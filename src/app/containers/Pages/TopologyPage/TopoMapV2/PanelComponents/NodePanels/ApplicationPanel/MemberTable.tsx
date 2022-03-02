@@ -7,9 +7,9 @@ import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import { EmptyText } from 'app/components/Basic/NoDataStyles/NoDataStyles';
 import { TableStyles } from 'app/components/Basic/Table/TableStyles';
 import { MemberAppNodeData, TopoNodeMember } from 'lib/api/ApiModels/Topology/apiModels';
-import { convertSecondsToString } from '../../utils';
+import { convertBytesToHumanReadableString, convertSecondsToString } from '../../utils';
 
-export interface MemberRow extends Pick<TopoNodeMember, 'name'>, Omit<MemberAppNodeData, 'vnetworkExtid' | 'vnetworkName'> {}
+export interface MemberRow extends Pick<TopoNodeMember, 'name'>, MemberAppNodeData {}
 
 interface Props {
   data: MemberRow[];
@@ -28,6 +28,9 @@ const MemberTable: React.FC<Props> = (props: Props) => {
             <TableRow>
               <TableCell style={{ minWidth: '60px' }} className={classes.tableHeadCell}>
                 Destination
+              </TableCell>
+              <TableCell style={{ minWidth: '60px' }} className={classes.tableHeadCell}>
+                Network/Site
               </TableCell>
               <TableCell style={{ minWidth: '80px' }} className={classes.tableHeadCell}>
                 Protocol
@@ -55,10 +58,11 @@ const MemberTable: React.FC<Props> = (props: Props) => {
                   return (
                     <TableRow hover tabIndex={-1} key={`tableRow${row}${rowIndex}`} className={classes.row}>
                       <TableCell className={classes.tableCell}>{row.name}</TableCell>
+                      <TableCell className={classes.tableCell}>{row.vnetworkName}</TableCell>
                       <TableCell className={classes.tableCell}>{row.protocol}</TableCell>
                       <TableCell className={classes.tableCell}>{row.port}</TableCell>
-                      <TableCell className={classes.tableCell}>{row.sent}</TableCell>
-                      <TableCell className={classes.tableCell}>{row.recv}</TableCell>
+                      <TableCell className={classes.tableCell}>{convertBytesToHumanReadableString(row.sent)}</TableCell>
+                      <TableCell className={classes.tableCell}>{convertBytesToHumanReadableString(row.recv)}</TableCell>
                       <TableCell className={classes.tableCell}>{row.flows}</TableCell>
                       <TableCell className={classes.tableCell}>{convertSecondsToString(row.activeTime)}</TableCell>
                     </TableRow>

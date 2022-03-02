@@ -30,7 +30,7 @@ export const ApplicationTab: React.FC<ApplicationTabProps> = props => {
         if (member.appNodeData.vnetworkExtid === props.dataItem.networkId && name) {
           const _traffic: TrafficTableRowData = {
             activeTime: member.appNodeData.activeTime,
-            destinationName: member.name,
+            destination: member.name,
             flows: member.appNodeData.flows,
             name,
             recv: member.appNodeData.recv,

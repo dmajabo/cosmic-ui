@@ -6,11 +6,11 @@ import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import LoadingIndicator from 'app/components/Loading';
 import { MemberAppNodeData } from 'lib/api/ApiModels/Topology/apiModels';
-import { convertSecondsToString } from '../../../utils';
+import { convertBytesToHumanReadableString, convertSecondsToString } from '../../../utils';
 
 export interface TrafficTableRowData extends Pick<MemberAppNodeData, 'sent' | 'recv' | 'flows' | 'activeTime'> {
   name: string;
-  destinationName: string;
+  destination: string;
 }
 
 interface ApplicationTableProps {
@@ -31,8 +31,8 @@ export const ApplicationTable: React.FC<ApplicationTableProps> = props => {
               <TableCell style={{ minWidth: '80px' }} className={classes.tableHeadCell}>
                 Application Name
               </TableCell>
-              <TableCell style={{ minWidth: '80px' }} className={classes.tableHeadCell}>
-                Network/Site
+              <TableCell style={{ minWidth: '50px', maxWidth: '80px' }} className={classes.tableHeadCell}>
+                Destination
               </TableCell>
               <TableCell style={{ minWidth: '60px' }} className={classes.tableHeadCell}>
                 Sent
@@ -54,9 +54,9 @@ export const ApplicationTable: React.FC<ApplicationTableProps> = props => {
                   return (
                     <TableRow hover tabIndex={-1} key={`tableRow${row}${rowIndex}`} className={classes.row}>
                       <TableCell className={classes.tableCell}>{row.name}</TableCell>
-                      <TableCell className={classes.tableCell}>{row.destinationName}</TableCell>
-                      <TableCell className={classes.tableCell}>{row.sent}</TableCell>
-                      <TableCell className={classes.tableCell}>{row.recv}</TableCell>
+                      <TableCell className={classes.tableCell}>{row.destination}</TableCell>
+                      <TableCell className={classes.tableCell}>{convertBytesToHumanReadableString(row.sent)}</TableCell>
+                      <TableCell className={classes.tableCell}>{convertBytesToHumanReadableString(row.recv)}</TableCell>
                       <TableCell className={classes.tableCell}>{row.flows}</TableCell>
                       <TableCell className={classes.tableCell}>{convertSecondsToString(row.activeTime)}</TableCell>
                     </TableRow>
