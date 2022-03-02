@@ -1,6 +1,6 @@
 import React from 'react';
 // import { select } from 'd3-selection';
-import { FilterEntityOptions, INetworkVNetNode, ITGWNode, ITopoLink } from 'lib/hooks/Topology/models';
+import { FilterEntityOptions, INetworkVNetNode, ITGWNode, ITopoLink, TopoNodeTypes } from 'lib/hooks/Topology/models';
 import { INetworkNetworkLink } from 'lib/api/ApiModels/Topology/apiModels';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 import { NODES_CONSTANTS } from '../../../model';
@@ -24,7 +24,20 @@ const NetworkNetworkLink: React.FC<IProps> = (props: IProps) => {
   }, [props.dataItem, topology.entities]);
 
   React.useEffect(() => {
+    //TODO: Change this logic. This is written specifically for an edge between app node and site node
+    let shouldHighlightLink = false;
+
     if (topology.selectedNode && (topology.selectedNode.uiId === props.dataItem.from.uiId || topology.selectedNode.uiId === props.dataItem.to.uiId)) {
+      shouldHighlightLink = true;
+    } else if (
+      topology.selectedNode &&
+      topology.selectedNode.type?.toLowerCase() !== TopoNodeTypes.APPLICATION.toLowerCase() &&
+      (topology.selectedNode.parentId === (props.dataItem as any).from?.dataItem?.id || topology.selectedNode.parentId === (props.dataItem as any).to?.dataItem?.id)
+    ) {
+      shouldHighlightLink = true;
+    }
+
+    if (shouldHighlightLink) {
       setIsSelected(true);
     } else if (isSelected) {
       setIsSelected(false);
