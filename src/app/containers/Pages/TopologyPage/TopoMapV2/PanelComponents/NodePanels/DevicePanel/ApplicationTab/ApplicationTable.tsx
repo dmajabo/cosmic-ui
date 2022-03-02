@@ -31,13 +31,13 @@ export const ApplicationTable: React.FC<ApplicationTableProps> = props => {
               <TableCell style={{ minWidth: '80px' }} className={classes.tableHeadCell}>
                 Application
               </TableCell>
-              <TableCell style={{ minWidth: '50px', maxWidth: '80px' }} className={classes.tableHeadCell}>
+              <TableCell style={{ minWidth: '60px' }} className={classes.tableHeadCell}>
                 Destination
               </TableCell>
-              <TableCell style={{ minWidth: '50px', maxWidth: '80px' }} className={classes.tableHeadCell}>
+              <TableCell style={{ minWidth: '50px' }} className={classes.tableHeadCell}>
                 Protocol
               </TableCell>
-              <TableCell style={{ minWidth: '50px', maxWidth: '80px' }} className={classes.tableHeadCell}>
+              <TableCell style={{ minWidth: '50px' }} className={classes.tableHeadCell}>
                 Port
               </TableCell>
               <TableCell style={{ minWidth: '60px' }} className={classes.tableHeadCell}>
@@ -60,7 +60,9 @@ export const ApplicationTable: React.FC<ApplicationTableProps> = props => {
                   return (
                     <TableRow hover tabIndex={-1} key={`tableRow${row}${rowIndex}`} className={classes.row}>
                       <TableCell className={classes.tableCell}>{row.name}</TableCell>
-                      <TableCell className={classes.tableCell}>{row.destination}</TableCell>
+                      <TableCell style={{ maxWidth: '300px' }} className={classes.tableCell}>
+                        {row.destination}
+                      </TableCell>
                       <TableCell className={classes.tableCell}>{row.protocol}</TableCell>
                       <TableCell className={classes.tableCell}>{row.port}</TableCell>
                       <TableCell className={classes.tableCell}>{convertBytesToHumanReadableString(row.sent)}</TableCell>
