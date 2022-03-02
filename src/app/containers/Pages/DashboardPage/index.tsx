@@ -172,7 +172,7 @@ const DashboardPage: React.FC = () => {
           ),
           avgBandwidth: '',
           latency: `${deviceMetric?.latency.toFixed(2)} ms` || '',
-          packetLoss: `${deviceMetric?.packetloss}%` || '',
+          packetLoss: `${deviceMetric?.packetloss > 0 ? deviceMetric?.packetloss.toFixed(2) : deviceMetric?.packetloss}%` || '',
           goodput: `${deviceMetric?.goodput / 1000} mbps`,
           jitter: '',
           clients: selectedDevice?.vnetworks.reduce((acc, vnetwork) => acc + vnetwork.numberOfOnetClients, 0),
