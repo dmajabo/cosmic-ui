@@ -214,6 +214,7 @@ export const DashboardStyles = makeStyles(
         display: 'inline-flex',
         justifyContent: 'space-between',
         width: '100%',
+        cursor: 'pointer',
       },
       severityLabelContainer: {
         backgroundColor: '#DC4545',

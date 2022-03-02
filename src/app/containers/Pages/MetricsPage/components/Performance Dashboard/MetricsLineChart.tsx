@@ -124,7 +124,7 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
           const timestamp = DateTime.fromFormat(item.time, OLD_TIME_FORMAT).toLocal();
           return {
             x: timestamp.toMillis(),
-            y: dataValueSuffix === 'mbps' ? Number(item.value) / 1000 : Number(Number.parseFloat(item.value).toFixed(2)),
+            y: dataValueSuffix === 'mbps' ? Number(item.value) / 1000 : Number.parseFloat(item.value),
             marker: {
               enabled: false,
             },
@@ -145,7 +145,7 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
           pointFormat: `
           <br /><div><b>Network:</b> {point.networkName}</div><br />
           <div><b>Destination:</b> {point.destination}</div><br />
-          <div><b>Value:</b> {point.y:,.0f}{point.dataValueSuffix}</div><br />
+          <div><b>Value:</b> ${dataValueSuffix === '%' ? '{point.y:,.2f}' : '{point.y:,.0f}'}{point.dataValueSuffix}</div><br />
           `,
         },
       };
@@ -181,7 +181,7 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
       tooltip: {
         useHTML: true,
         pointFormat: `
-          <div><b>Anomaly:</b> {point.y:,.0f}{point.dataValueSuffix}</div><br />
+          <div><b>Anomaly:</b> ${dataValueSuffix === '%' ? '{point.y:,.2f}' : '{point.y:,.0f}'}{point.dataValueSuffix}</div><br />
           `,
       },
     }));
@@ -208,7 +208,7 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
         tooltip: {
           useHTML: true,
           pointFormat: `
-          <div><b>Threshold:</b> {point.y:,.0f}${dataValueSuffix}</div><br />
+          <div><b>Threshold:</b> ${dataValueSuffix === '%' ? '{point.y:,.2f}' : '{point.y:,.0f}'}${dataValueSuffix}</div><br />
           `,
         },
       };
@@ -243,8 +243,8 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
         tooltip: {
           useHTML: true,
           pointFormat: `
-          <div><b>Upperbound: </b>{point.high:,.0f}${dataValueSuffix}</div><br />
-          <div><b>Lowerbound: </b>{point.low:,.0f}${dataValueSuffix}</div><br />
+          <div><b>Upperbound: </b>${dataValueSuffix === '%' ? '{point.y:,.2f}' : '{point.y:,.0f}'}${dataValueSuffix}</div><br />
+          <div><b>Lowerbound: </b>${dataValueSuffix === '%' ? '{point.y:,.2f}' : '{point.y:,.0f}'}${dataValueSuffix}</div><br />
           `,
         },
       };

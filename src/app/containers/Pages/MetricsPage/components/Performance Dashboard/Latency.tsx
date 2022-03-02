@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { createApiClient } from 'lib/api/http/apiClient';
 import { PerformanceDashboardStyles } from './PerformanceDashboardStyles';
 import { MetricsLineChart } from './MetricsLineChart';
@@ -13,6 +13,9 @@ import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { GridLabel } from 'app/containers/Pages/TrafficPage/SessionPage/Table/styles';
 import { Chart, ChartContainerStyles } from 'app/components/ChartContainer/styles';
 import { EmptyText } from 'app/components/Basic/NoDataStyles/NoDataStyles';
+import { useHistory } from 'react-router-dom';
+import { LocationState } from '../..';
+import { ModelalertType } from 'lib/api/ApiModels/Workflow/apiModel';
 
 interface LatencyProps {
   readonly selectedRows: Data[];
@@ -29,26 +32,16 @@ const LATENCY_THRESHOLD = 'latency_threshold';
 export const LATENCY_HEATMAP_LEGEND: LegendData[] = [
   {
     low: 0.01,
-    high: 30,
+    high: 75,
     color: '#52984E',
   },
   {
-    low: 30.01,
-    high: 50,
+    low: 75.01,
+    high: 150,
     color: '#FED0AB',
   },
   {
-    low: 50.01,
-    high: 80,
-    color: '#FFC568',
-  },
-  {
-    low: 80.01,
-    high: 120,
-    color: '#F69442',
-  },
-  {
-    low: 120.01,
+    low: 150.01,
     high: Infinity,
     color: '#DC4545',
   },
@@ -68,6 +61,18 @@ export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange, netwo
     accu[nextValue.id] = nextValue.name;
     return accu;
   }, {});
+
+  const history = useHistory();
+  const scrollRef = useRef(null);
+
+  useEffect(() => {
+    if (history && history && history.location.state) {
+      const state = history.location.state as LocationState;
+      if (state.anomalyType === ModelalertType.ANOMALY_LATENCY) {
+        scrollRef.current.scrollIntoView();
+      }
+    }
+  }, []);
 
   useEffect(() => {
     const getLatencyMetrics = async () => {
@@ -115,7 +120,7 @@ export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange, netwo
   }, [selectedRows, timeRange]);
 
   return (
-    <div className={classes.pageComponentBackground}>
+    <div ref={scrollRef} className={classes.pageComponentBackground}>
       <div className={classes.pageComponentTitleContainer}>
         <div className={classes.pageComponentTitle}>Latency summary</div>
         <div className={classes.pillContainer}>

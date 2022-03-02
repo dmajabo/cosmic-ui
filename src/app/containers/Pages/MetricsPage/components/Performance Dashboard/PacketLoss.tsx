@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { createApiClient } from 'lib/api/http/apiClient';
 import { PerformanceDashboardStyles } from './PerformanceDashboardStyles';
 import { MetricsLineChart } from './MetricsLineChart';
@@ -12,6 +12,9 @@ import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { GridLabel } from 'app/containers/Pages/TrafficPage/SessionPage/Table/styles';
 import { Chart, ChartContainerStyles } from 'app/components/ChartContainer/styles';
 import { EmptyText } from 'app/components/Basic/NoDataStyles/NoDataStyles';
+import { useHistory } from 'react-router-dom';
+import { LocationState } from '../..';
+import { ModelalertType } from 'lib/api/ApiModels/Workflow/apiModel';
 
 interface PacketLossProps {
   readonly selectedRows: Data[];
@@ -42,26 +45,21 @@ const PACKET_LOSS_THRESHOLD = 'packetloss_threshold';
 export const PACKET_LOSS_HEATMAP_LEGEND: LegendData[] = [
   {
     low: 0,
-    high: 10,
+    high: 20,
     color: '#52984E',
   },
   {
-    low: 11,
-    high: 20,
+    low: 21,
+    high: 50,
     color: '#FED0AB',
   },
   {
-    low: 21,
-    high: 40,
+    low: 51,
+    high: 75,
     color: '#FFC568',
   },
   {
-    low: 41,
-    high: 50,
-    color: '#F69442',
-  },
-  {
-    low: 50,
+    low: 75,
     high: Infinity,
     color: '#DC4545',
   },
@@ -69,7 +67,6 @@ export const PACKET_LOSS_HEATMAP_LEGEND: LegendData[] = [
 
 export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange, networks }) => {
   const classes = PerformanceDashboardStyles();
-
   const [packetLossData, setPacketLossData] = useState<MetricKeyValue>({});
   const [anomalyCount, setAnomalyCount] = useState<number>(0);
   const [heatMapPacketLoss, setHeatMapPacketLoss] = useState<HeatMapData[]>([]);
@@ -81,6 +78,18 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange,
 
   const userContext = useContext<UserContextState>(UserContext);
   const apiClient = createApiClient(userContext.accessToken!);
+
+  const history = useHistory();
+  const scrollRef = useRef(null);
+
+  useEffect(() => {
+    if (history && history && history.location.state) {
+      const state = history.location.state as LocationState;
+      if (state.anomalyType === ModelalertType.ANOMALY_PACKETLOSS) {
+        scrollRef.current.scrollIntoView();
+      }
+    }
+  }, []);
 
   useEffect(() => {
     const getPacketLossMetrics = async () => {
@@ -128,7 +137,7 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange,
   }, [selectedRows, timeRange]);
 
   return (
-    <div className={classes.pageComponentBackground}>
+    <div ref={scrollRef} className={classes.pageComponentBackground}>
       <div className={classes.pageComponentTitleContainer}>
         <div className={classes.pageComponentTitle}>Packet Loss summary</div>
         <div className={classes.pillContainer}>

@@ -192,8 +192,9 @@ export const NestedTableWrapper = styled.div`
 `;
 
 const getColor = (state: AlertState) => {
-  if (state === AlertState.OK || state === AlertState.ACTIVE) return 'var(--_successColor)';
-  if (state === AlertState.CLEARED) return 'var(--_highlightColor)';
+  if (state === AlertState.ACTIVE) return 'var(--_errorColor)';
+  if (state === AlertState.OK) return 'var(--_highlightColor)';
+  if (state === AlertState.CLEARED) return 'var(--_successColor)';
   return 'var(--_primaryTextColor)';
 };
 

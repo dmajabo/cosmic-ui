@@ -57,6 +57,7 @@ export const DUMMY_SLA_TEST_DATA: FinalTableData[] = [
     sourceDevice: 'ASFG328965293',
     description: 'vpc 1',
     destination: '8.8.8.8',
+    sourceNetworkId: '',
     averageQoe: {
       packetLoss: '5',
       latency: '16',

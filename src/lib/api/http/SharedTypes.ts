@@ -188,6 +188,7 @@ export interface FinalTableData {
   readonly averageQoe: AverageQoe;
   readonly isTestDataInvalid?: boolean;
   readonly index?: number;
+  readonly sourceNetworkId: string;
 }
 
 export enum ColumnAccessor {

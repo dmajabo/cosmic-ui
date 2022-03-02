@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { createApiClient } from 'lib/api/http/apiClient';
 import { PerformanceDashboardStyles } from './PerformanceDashboardStyles';
 import { MetricsLineChart } from './MetricsLineChart';
@@ -12,6 +12,9 @@ import { HeatMapData, Vnet } from 'lib/api/http/SharedTypes';
 import Heatmap, { LegendData } from './Heatmap';
 import { GridLabel } from 'app/containers/Pages/TrafficPage/SessionPage/Table/styles';
 import { Chart, ChartContainerStyles } from 'app/components/ChartContainer/styles';
+import { useHistory } from 'react-router-dom';
+import { LocationState } from '../..';
+import { ModelalertType } from 'lib/api/ApiModels/Workflow/apiModel';
 
 interface GoodputProps {
   readonly selectedRows: Data[];
@@ -69,6 +72,18 @@ export const Goodput: React.FC<GoodputProps> = ({ selectedRows, timeRange, netwo
     return accu;
   }, {});
 
+  const history = useHistory();
+  const scrollRef = useRef(null);
+
+  useEffect(() => {
+    if (history && history && history.location.state) {
+      const state = history.location.state as LocationState;
+      if (state.anomalyType === ModelalertType.ANOMALY_GOODPUT) {
+        scrollRef.current.scrollIntoView();
+      }
+    }
+  }, []);
+
   useEffect(() => {
     const getGoodputMetrics = async () => {
       const goodputChartData: MetricKeyValue = {};
@@ -112,7 +127,7 @@ export const Goodput: React.FC<GoodputProps> = ({ selectedRows, timeRange, netwo
   }, [selectedRows, timeRange]);
 
   return (
-    <div className={classes.pageComponentBackground}>
+    <div ref={scrollRef} className={classes.pageComponentBackground}>
       <div className={classes.pageComponentTitleContainer}>
         <div className={classes.pageComponentTitle}>Goodput summary</div>
         <div className={classes.pillContainer}>
@@ -127,9 +142,7 @@ export const Goodput: React.FC<GoodputProps> = ({ selectedRows, timeRange, netwo
               <MetricsLineChart dataValueSuffix="mbps" selectedRows={selectedRows} inputData={goodputData} />
             </Chart>
           ) : (
-            <div className={classes.noChartContainer}>
-              <LoadingIndicator />
-            </div>
+            <LoadingIndicator margin="auto" />
           )
         ) : (
           <div className={classes.noChartContainer}>

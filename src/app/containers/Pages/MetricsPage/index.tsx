@@ -1,11 +1,13 @@
 import { Tab, Tabs } from '@mui/material';
 import { AccountVendorTypes } from 'lib/api/ApiModels/Accounts/apiModel';
 import { TopoApi } from 'lib/api/ApiModels/Services/topo';
+import { ModelalertType } from 'lib/api/ApiModels/Workflow/apiModel';
 import { Device, MetricsTopoMap, Organization, Vnet } from 'lib/api/http/SharedTypes';
 import { useGetChainData } from 'lib/api/http/useAxiosHook';
 import { MetricsProvider, useMetricsActions } from 'lib/hooks/Metrics/useMetricsDataContent';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import React, { useContext, useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { TabsWrapperStyles } from '../Shared/styles';
 import { Cloud } from './components/Cloud';
 import { PerformanceDashboard } from './components/Performance Dashboard/PerformanceDashboard';
@@ -39,16 +41,29 @@ function a11yProps(title: string) {
   };
 }
 
+export interface LocationState {
+  readonly tabName: TabName;
+  readonly deviceId: string;
+  readonly destination: string;
+  readonly anomalyType: ModelalertType;
+}
+
+const getInitialTab = (history: any) => {
+  if (!history || !history.location || !history.location.state) return TabName.Performance;
+  const state = history.location.state as LocationState;
+  return state.tabName;
+};
+
 const MetricsPage: React.FC = () => {
   const classes = MetricsStyles();
   const metricsActions = useMetricsActions();
   const userContext = useContext<UserContextState>(UserContext);
   const { response, loading, error, onGetChainData } = useGetChainData<MetricsTopoMap>();
-
+  const history = useHistory<LocationState>();
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [networks, setNetworks] = useState<Vnet[]>([]);
   const [devices, setDevices] = useState<Device[]>([]);
-  const [selectedTabName, setSelectedTabName] = useState<TabName>(TabName.Performance);
+  const [selectedTabName, setSelectedTabName] = useState<TabName>(getInitialTab(history));
   const [isAwsConfigured, setIsAwsConfigured] = useState<boolean>(false);
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: TabName) => setSelectedTabName(newValue);

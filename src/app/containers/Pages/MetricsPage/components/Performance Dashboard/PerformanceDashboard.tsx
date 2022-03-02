@@ -29,7 +29,6 @@ interface PerformanceDashboardProps {
 
 export const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ networks, organizations, devices, orgLoading, orgError, selectedTabName }) => {
   const classes = PerformanceDashboardStyles();
-
   const userContext = useContext<UserContextState>(UserContext);
   const apiClient = createApiClient(userContext.accessToken!);
   const [finalTableData, setFinalTableData] = useState<FinalTableData[]>([]);
@@ -59,6 +58,7 @@ export const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ netw
             destination: test.destination,
             interface: test.interface,
             description: test.description,
+            sourceNetworkId: test.sourceNwExtId,
             averageQoe: {
               packetLoss: test.metrics.avgPacketLoss.value,
               latency: test.metrics.avgLatency.value,
@@ -146,7 +146,15 @@ export const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ netw
           </ErrorMessage>
         </AbsLoaderWrapper>
       ) : !isEmpty(finalTableData) ? (
-        <SLATestList updateSlaTest={updateSlaTest} deleteSlaTest={deleteSlaTest} networks={networks} merakiOrganizations={merakiOrganizations} finalTableData={newTableData} addSlaTest={addSlaTest} />
+        <SLATestList
+          updateSlaTest={updateSlaTest}
+          deleteSlaTest={deleteSlaTest}
+          networks={networks}
+          merakiOrganizations={merakiOrganizations}
+          finalTableData={newTableData}
+          addSlaTest={addSlaTest}
+          devices={devices}
+        />
       ) : (
         <CreateSLATest networks={networks} merakiOrganizations={merakiOrganizations} addSlaTest={addSlaTest} popup={false} closeSlaTest={noop} />
       )}
