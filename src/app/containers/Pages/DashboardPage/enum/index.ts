@@ -1,3 +1,4 @@
+import { ModelalertType } from 'lib/api/ApiModels/Workflow/apiModel';
 import { IGridColumnField } from 'lib/models/grid';
 
 export enum DashboardSitesViewTab {
@@ -75,6 +76,9 @@ export interface AnomalySummary {
   readonly timestamp: string;
   readonly boldDescString: string;
   readonly regularDescString: string;
+  readonly destinationIp: string;
+  readonly deviceId: string;
+  readonly anomalyType: ModelalertType;
 }
 
 export interface AnomaliesResponse {

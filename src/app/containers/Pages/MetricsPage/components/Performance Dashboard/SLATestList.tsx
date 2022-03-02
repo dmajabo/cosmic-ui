@@ -3,7 +3,7 @@ import React, { useContext, useMemo, useState } from 'react';
 import { PerformanceDashboardStyles } from './PerformanceDashboardStyles';
 import Table, { Data } from './Table';
 import { CreateSLATest } from './CreateSLATest';
-import { Column, FinalTableData, SLATest, UpdateSLATestRequest, ColumnAccessor, AverageQoe as MetricAvgQoe, Organization, Vnet } from 'lib/api/http/SharedTypes';
+import { Column, FinalTableData, SLATest, UpdateSLATestRequest, ColumnAccessor, AverageQoe as MetricAvgQoe, Organization, Vnet, Device } from 'lib/api/http/SharedTypes';
 import { PacketLoss } from './PacketLoss';
 import { Latency } from './Latency';
 import AverageQoe from './AverageQoe';
@@ -17,12 +17,15 @@ import SecondaryButtonwithEvent from 'app/containers/Pages/AnalyticsPage/compone
 import { filterIcon } from 'app/components/SVGIcons/filter';
 import CloseIcon from '../../icons/performance dashboard/close';
 import { isEmpty } from 'lodash';
+import { useHistory } from 'react-router-dom';
+import { LocationState } from '../..';
 
 interface SLATestListProps {
   readonly finalTableData: FinalTableData[];
   readonly addSlaTest: Function;
   readonly merakiOrganizations: Organization[];
   readonly networks: Vnet[];
+  readonly devices: Device[];
   readonly deleteSlaTest: Function;
   readonly updateSlaTest: (submitData: UpdateSLATestRequest) => void;
 }
@@ -88,32 +91,44 @@ const getDefaultSelectedTestId = (tests: FinalTableData[], selectedRows: Data[])
   }
 };
 
-const getSelectedTests = (finalTableData: FinalTableData[]) => {
-  const tests: Data[] = JSON.parse(localStorage.getItem(LOCAL_STORAGE_SELECTED_TESTS_KEY));
-  if (isEmpty(tests)) {
-    const validTests: Data[] = finalTableData
-      .filter(test => {
-        if (!isNaN(Number(test.averageQoe.packetLoss)) && !isNaN(Number(test.averageQoe.latency))) {
-          if (Number(test.averageQoe.latency) > 0) {
-            return true;
+const getSelectedTests = (finalTableData: FinalTableData[], history: any, devices: Device[]) => {
+  if (!history || !history.location || !history.location.state) {
+    const tests: Data[] = JSON.parse(localStorage.getItem(LOCAL_STORAGE_SELECTED_TESTS_KEY));
+    if (isEmpty(tests)) {
+      const validTests: Data[] = finalTableData
+        .filter(test => {
+          if (!isNaN(Number(test.averageQoe.packetLoss)) && !isNaN(Number(test.averageQoe.latency))) {
+            if (Number(test.averageQoe.latency) > 0) {
+              return true;
+            }
           }
-        }
-        return false;
-      })
+          return false;
+        })
+        .map(test => {
+          const { averageQoe, hits, ...rest } = test;
+          return { ...rest, averageQoe: <></>, hits: <></>, isTestDataInvalid: isTestDataInvalid(test.averageQoe) };
+        })
+        .slice(0, 1);
+      return validTests;
+    } else {
+      return tests;
+    }
+  } else {
+    const state = history.location.state as LocationState;
+    const networkId = devices.find(device => device.extId === state?.deviceId || '')?.networkId;
+    const selectedTests: Data[] = finalTableData
+      .filter(test => (test.sourceNetworkId === networkId && test.destination === state?.destination) || '')
       .map(test => {
         const { averageQoe, hits, ...rest } = test;
         return { ...rest, averageQoe: <></>, hits: <></>, isTestDataInvalid: isTestDataInvalid(test.averageQoe) };
-      })
-      .slice(0, 1);
-    return validTests;
-  } else {
-    return tests;
+      });
+    return selectedTests;
   }
 };
 
-export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteSlaTest, networks, merakiOrganizations, finalTableData, addSlaTest }) => {
+export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteSlaTest, networks, merakiOrganizations, finalTableData, addSlaTest, devices }) => {
   const classes = PerformanceDashboardStyles();
-
+  const history = useHistory();
   const deleteTest = (testId: string) => deleteSlaTest(testId);
 
   const getTestDataToUpdate = async (testId: string) => {
@@ -124,7 +139,7 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
 
   const [isSlaTestPanelOpen, setIsSlaTestPanelOpen] = useState<boolean>(false);
   const [createToggle, setCreateToggle] = React.useState<boolean>(false);
-  const [selectedRows, setSelectedRows] = useState<Data[]>(getSelectedTests(finalTableData));
+  const [selectedRows, setSelectedRows] = useState<Data[]>(getSelectedTests(finalTableData, history, devices));
   const [timeRange, setTimeRange] = useState<string>('-7d');
   const [testDataToUpdate, setTestDataToUpdate] = useState<SLATest>({
     testId: '',

@@ -340,16 +340,11 @@ const EditModal: React.FC<IProps> = (props: IProps) => {
         )}
       </ModalContent>
       <ModalFooter style={{ height: '60px' }}>
-        {activeStep === 0 && <PrimaryButton disabled={!completed.step_1} styles={{ width: '100%', height: '100%' }} label="Next" onClick={() => setActiveStep(1)} />}
+        {activeStep === 0 && <PrimaryButton disabled={false} styles={{ width: '100%', height: '100%' }} label="Next" onClick={() => setActiveStep(1)} />}
         {activeStep === 1 && (
           <>
             <SecondaryButton styles={{ width: 'calc(50% - 10px)', height: '100%', margin: '0 10px 0 0' }} label="Back" onClick={() => setActiveStep(0)} />
-            <PrimaryButton
-              styles={{ width: 'calc(50% - 10px)', height: '100%', margin: '0 0px 0 10px' }}
-              label={segment.id ? 'Update segment' : 'Add segment'}
-              onClick={onSave}
-              disabled={!hasChanges || !completed.step_1 || !completed.step_2}
-            />
+            <PrimaryButton styles={{ width: 'calc(50% - 10px)', height: '100%', margin: '0 0px 0 10px' }} label={segment.id ? 'Update segment' : 'Add segment'} onClick={onSave} disabled={false} />
           </>
         )}
       </ModalFooter>

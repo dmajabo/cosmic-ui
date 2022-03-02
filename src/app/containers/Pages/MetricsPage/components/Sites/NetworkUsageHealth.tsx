@@ -46,9 +46,11 @@ export const NetworkUsageHealth: React.FC<NetworkUsageHealthProps> = ({ networks
     if (response) {
       const metricsData: MultiLineMetricsData[] = [];
       networks.forEach(network => {
-        response[network.id].metrics.keyedmap.forEach(item => {
-          metricsData.push({ name: `${network.name} ${item.key}`, metrics: item.ts });
-        });
+        response[network.id].metrics.keyedmap
+          .filter(item => item.key !== 'bytesRecvd')
+          .forEach(item => {
+            metricsData.push({ name: `${network.name} ${item.key}`, metrics: item.ts });
+          });
       });
       setMetricsData(metricsData);
     }
@@ -66,7 +68,7 @@ export const NetworkUsageHealth: React.FC<NetworkUsageHealthProps> = ({ networks
           <EmptyText>No Data</EmptyText>
         ) : (
           <Chart>
-            <MultiLineChart dataValueSuffix="bytes" inputData={metricsData} yAxisText="bytes" xAxisText={getChartXAxisLabel(metricsData)} sharedMarker />
+            <MultiLineChart dataValueSuffix="bytes" inputData={metricsData} yAxisText="bytes" xAxisText={getChartXAxisLabel(metricsData)} />
           </Chart>
         )}
       </ChartContainerStyles>

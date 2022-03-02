@@ -42,6 +42,8 @@ import { getCorrectedTimeString } from '../MetricsPage/components/Utils';
 import { downRedArrow, upGreenArrow } from 'app/components/SVGIcons/arrows';
 import { ROUTE } from 'lib/Routes/model';
 import history from 'utils/history';
+import { ModelalertType } from 'lib/api/ApiModels/Workflow/apiModel';
+import { LocationState, TabName } from '../MetricsPage';
 
 const Tab = styled(TabUnstyled)`
   color: #848da3;
@@ -223,8 +225,9 @@ const DashboardPage: React.FC = () => {
     // onTryLoadAlertMetaData(size, currentPage, selectedPeriod);
   };
 
-  const onAnomalyClick = () => {
-    history.push(ROUTE.app + ROUTE.metrics);
+  const onAnomalyClick = (deviceId: string, destinationIp: string, anomalyType: ModelalertType) => {
+    const locationState: LocationState = { anomalyType: anomalyType, destination: destinationIp, deviceId: deviceId, tabName: TabName.Performance };
+    history.push(ROUTE.app + ROUTE.metrics, locationState);
   };
 
   return (
@@ -400,16 +403,18 @@ const DashboardPage: React.FC = () => {
                   }
                 });
                 return (
-                  <div key={`${anomaly.timestamp}_${anomaly.descString}_${anomaly.boldDescString}_${anomaly.regularDescString}`} className={classes.anomalyRow} onClick={onAnomalyClick}>
+                  <div
+                    key={`${anomaly.timestamp}_${anomaly.descString}_${anomaly.boldDescString}_${anomaly.regularDescString}`}
+                    className={classes.anomalyRow}
+                    onClick={() => onAnomalyClick(anomaly.deviceId, anomaly.destinationIp, anomaly.anomalyType)}
+                  >
                     <div className={classes.troubleshootContainer}>
                       <div className={classes.severityLabelContainer}>
                         <span className={classes.severityLabel}>H</span>
                       </div>
                       {anomaly.boldDescString && anomaly.regularDescString ? (
                         <div>
-                          <span>
-                            <b>{anomaly.boldDescString}</b>
-                          </span>
+                          <span>{anomaly.boldDescString}</span>
                           <span>{anomaly.regularDescString}</span>
                         </div>
                       ) : (
