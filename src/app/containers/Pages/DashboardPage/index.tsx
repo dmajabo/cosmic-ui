@@ -369,11 +369,6 @@ const DashboardPage: React.FC = () => {
         <DashboardItemContainer>
           <div className={classes.dashboardLabelContainer}>
             <DashboardItemLabel style={{ marginBottom: '0px' }}>Anomalies</DashboardItemLabel>
-            {anomaliesResponse?.anomalyCount && anomaliesResponse?.anomalyCount !== -1 ? (
-              <div className={classes.pillContainer}>
-                <span className={classes.pillText}>{anomaliesResponse?.anomalyCount}</span>
-              </div>
-            ) : null}
           </div>
           <div className={classes.anomaliesRowsContainer}>
             {anomaliesLoading && (
