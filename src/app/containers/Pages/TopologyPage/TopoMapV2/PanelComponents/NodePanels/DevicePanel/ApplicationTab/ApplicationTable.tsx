@@ -8,7 +8,7 @@ import LoadingIndicator from 'app/components/Loading';
 import { MemberAppNodeData } from 'lib/api/ApiModels/Topology/apiModels';
 import { convertBytesToHumanReadableString, convertSecondsToString } from '../../../utils';
 
-export interface TrafficTableRowData extends Pick<MemberAppNodeData, 'sent' | 'recv' | 'flows' | 'activeTime'> {
+export interface TrafficTableRowData extends Pick<MemberAppNodeData, 'sent' | 'recv' | 'flows' | 'activeTime' | 'port' | 'protocol'> {
   name: string;
   destination: string;
 }
@@ -29,10 +29,16 @@ export const ApplicationTable: React.FC<ApplicationTableProps> = props => {
           <TableHead>
             <TableRow>
               <TableCell style={{ minWidth: '80px' }} className={classes.tableHeadCell}>
-                Application Name
+                Application
               </TableCell>
               <TableCell style={{ minWidth: '50px', maxWidth: '80px' }} className={classes.tableHeadCell}>
                 Destination
+              </TableCell>
+              <TableCell style={{ minWidth: '50px', maxWidth: '80px' }} className={classes.tableHeadCell}>
+                Protocol
+              </TableCell>
+              <TableCell style={{ minWidth: '50px', maxWidth: '80px' }} className={classes.tableHeadCell}>
+                Port
               </TableCell>
               <TableCell style={{ minWidth: '60px' }} className={classes.tableHeadCell}>
                 Sent
@@ -55,6 +61,8 @@ export const ApplicationTable: React.FC<ApplicationTableProps> = props => {
                     <TableRow hover tabIndex={-1} key={`tableRow${row}${rowIndex}`} className={classes.row}>
                       <TableCell className={classes.tableCell}>{row.name}</TableCell>
                       <TableCell className={classes.tableCell}>{row.destination}</TableCell>
+                      <TableCell className={classes.tableCell}>{row.protocol}</TableCell>
+                      <TableCell className={classes.tableCell}>{row.port}</TableCell>
                       <TableCell className={classes.tableCell}>{convertBytesToHumanReadableString(row.sent)}</TableCell>
                       <TableCell className={classes.tableCell}>{convertBytesToHumanReadableString(row.recv)}</TableCell>
                       <TableCell className={classes.tableCell}>{row.flows}</TableCell>

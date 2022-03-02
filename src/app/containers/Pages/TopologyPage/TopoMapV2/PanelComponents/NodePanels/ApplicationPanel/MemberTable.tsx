@@ -27,10 +27,10 @@ const MemberTable: React.FC<Props> = (props: Props) => {
           <TableHead>
             <TableRow>
               <TableCell style={{ minWidth: '60px' }} className={classes.tableHeadCell}>
-                Destination
+                Network/Site
               </TableCell>
               <TableCell style={{ minWidth: '60px' }} className={classes.tableHeadCell}>
-                Network/Site
+                Destination
               </TableCell>
               <TableCell style={{ minWidth: '80px' }} className={classes.tableHeadCell}>
                 Protocol
@@ -57,8 +57,8 @@ const MemberTable: React.FC<Props> = (props: Props) => {
               ? props.data.map((row, rowIndex) => {
                   return (
                     <TableRow hover tabIndex={-1} key={`tableRow${row}${rowIndex}`} className={classes.row}>
-                      <TableCell className={classes.tableCell}>{row.name}</TableCell>
                       <TableCell className={classes.tableCell}>{row.vnetworkName}</TableCell>
+                      <TableCell className={classes.tableCell}>{row.name}</TableCell>
                       <TableCell className={classes.tableCell}>{row.protocol}</TableCell>
                       <TableCell className={classes.tableCell}>{row.port}</TableCell>
                       <TableCell className={classes.tableCell}>{convertBytesToHumanReadableString(row.sent)}</TableCell>

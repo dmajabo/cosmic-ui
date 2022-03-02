@@ -14,12 +14,7 @@ export const ApplicationTab: React.FC<ApplicationTabProps> = props => {
   links.forEach(link => {
     const maybeSegment = topology.originSegmentsData.find(itm => itm.id === link.destinationId);
     const appNodeInfo = topology.appAccessApiResponse.siteAccessInfo.nodes.find(node => node.nodeId === link.destinationId && node.nodeType === AppNodeType.Application);
-    let name: string,
-      sent: string,
-      recv: string,
-      flows: string,
-      activeTime: string,
-      destinationName: string = '';
+    let name: string = '';
 
     if (maybeSegment) {
       name = maybeSegment.name;
@@ -35,6 +30,8 @@ export const ApplicationTab: React.FC<ApplicationTabProps> = props => {
             name,
             recv: member.appNodeData.recv,
             sent: member.appNodeData.sent,
+            protocol: member.appNodeData.protocol,
+            port: member.appNodeData.port,
           };
           data.push(_traffic);
         }
