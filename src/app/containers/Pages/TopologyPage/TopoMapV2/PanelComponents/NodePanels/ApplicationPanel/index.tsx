@@ -3,13 +3,12 @@ import OverflowContainer from 'app/components/Basic/OverflowContainer/styles';
 import { TabComponentProps } from 'app/components/Tabs/TabComponentProps';
 import TabPanel from 'app/components/Tabs/TabPanel';
 import { TabsStyles } from 'app/components/Tabs/TabsStyles';
-import { AppNodeType } from 'lib/api/ApiModels/Topology/apiModels';
 import { ITopoAppNode } from 'lib/hooks/Topology/models';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 import { useState } from 'react';
 import { PanelHeader, PanelTabWrapper, PanelTitle } from '../../styles';
-import MemberTable, { MemberRow } from './MemberTable';
 import SiteTable from './SiteTable';
+import { TrafficTab } from './TrafficTab';
 
 interface ApplicationPanelProps {
   dataItem: ITopoAppNode;
@@ -27,27 +26,6 @@ export const ApplicationPanel: React.FC<ApplicationPanelProps> = props => {
     .map(link => {
       return topology.sites[link.sourceId].dataItem.name;
     });
-
-  const node = topology.appAccessApiResponse.siteAccessInfo.nodes.find(node => node.nodeId === props.dataItem.dataItem.nodeId && node.nodeType === AppNodeType.Application);
-  const members: MemberRow[] = node
-    ? node.members
-        .map(member => {
-          if (node.nodeType !== AppNodeType.Application) {
-            return undefined;
-          }
-          return {
-            activeTime: member.appNodeData.activeTime,
-            clients: member.appNodeData.clients,
-            flows: member.appNodeData.flows,
-            port: member.appNodeData.port,
-            protocol: member.appNodeData.protocol,
-            recv: member.appNodeData.recv,
-            sent: member.appNodeData.sent,
-            name: member.name,
-          };
-        })
-        .filter(row => row)
-    : [];
 
   return (
     <>
@@ -76,7 +54,7 @@ export const ApplicationPanel: React.FC<ApplicationPanelProps> = props => {
           <SiteTable showLoader={false} data={siteNames} />
         </TabPanel>
         <TabPanel value={value} index={1}>
-          <MemberTable showLoader={false} data={members} />
+          <TrafficTab dataItem={props.dataItem} />
         </TabPanel>
       </OverflowContainer>
     </>

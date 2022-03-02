@@ -7,7 +7,9 @@ export function convertSecondsToString(seconds: string): string {
   if (inHours > 24) {
     const inDays = inHours / 24;
     const remainingHours = inDays % 24;
-    return `${inDays.toFixed(0)} days, ${remainingHours.toFixed(0)} hours`;
+    const daysString = parseInt(inDays.toFixed(0)) <= 1 ? 'day' : 'days';
+    const hoursString = parseInt(remainingHours.toFixed(0)) <= 1 ? 'hour' : 'hours';
+    return `${inDays.toFixed(0)} ${daysString}, ${remainingHours.toFixed(0)} ${hoursString}`;
   } else {
     if (inHours < 1) {
       const minutes = (inHours * 60).toFixed(0);
@@ -15,5 +17,27 @@ export function convertSecondsToString(seconds: string): string {
     }
     const inHoursInNum = parseInt(inHours.toFixed(0));
     return inHoursInNum <= 1 ? `${inHoursInNum} hour` : `${inHoursInNum} hours`;
+  }
+}
+
+export function convertBytesToHumanReadableString(bytes: string): string {
+  const bytesInNum = parseInt(bytes);
+  if (!bytes) {
+    return '-';
+  }
+
+  const kbs = bytesInNum / 1000;
+
+  if (kbs < 1000) {
+    return `${kbs} KB`;
+  } else {
+    const mbs = kbs / 1000;
+
+    if (mbs >= 1000) {
+      const gbs = mbs / 1000;
+      return `${gbs} GB`;
+    } else {
+      return `${mbs} MB`;
+    }
   }
 }
