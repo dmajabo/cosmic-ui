@@ -15,7 +15,7 @@ export const TableWrapper = styled.div`
     width: 100%;
     height: 100%;
     font-family: 'DMSans';
-    font-size: 14px;
+    font-size: 16px;
     &.tableFixed {
       .p-datatable-table {
         table-layout: fixed;
@@ -99,7 +99,7 @@ export const TableWrapper = styled.div`
         height: 12px;
         line-height: 4px;
         text-align: center;
-        font-size: 14px;
+        font-size: 16px;
         color: inherit !important;
       }
       .pi-sort-alt {
@@ -117,8 +117,8 @@ export const TableWrapper = styled.div`
       border: none;
       color: var(--_primaryTextColor);
       padding: 16px 10px;
-      font-weight: 500;
-      font-size: 14px;
+      font-weight: normal;
+      font-size: 16px;
       line-height: 18px;
       font-family: 'DMSans';
       text-align: left;
