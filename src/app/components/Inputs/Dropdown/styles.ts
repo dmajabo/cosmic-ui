@@ -6,7 +6,6 @@ interface Props {
 }
 export const DropdownWrapper = styled.div<Props>`
   display: inline-flex;
-  width: auto;
   align-items: center;
   flex-wrap: nowrap;
   font-style: normal;
@@ -25,7 +24,7 @@ export const SelectWrapper = styled.div`
   background: var(--_primaryWhiteColor);
   border-radius: 6px;
   outline: 0;
-  padding: 8px 24px 8px 16px;
+  padding: 8px 16px 8px 16px;
   border: 1px solid;
   border-color: var(--_primaryWhiteColor);
   cursor: pointer;
@@ -43,16 +42,18 @@ export const SelectWrapper = styled.div`
 `;
 
 export const DropWrapper = styled.div`
-  position: relative;
+  position: absolute;
+  display: flex;
+  justify-content: center;
   width: 180px;
   height: 40px;
 `;
 
 export const DisplayValueStyles = styled.div`
   color: var(--_disabledTextColor);
-  text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
+  padding-right: 50px;
   font-weight: inherit;
   font-size: inherit;
   &.filled {
@@ -76,7 +77,7 @@ export const ListWrapper = styled.div<ListProps>`
   position: absolute;
   top: ${props => (props.position === 'above' ? 'unset' : 'calc(100% + 2px)')};
   bottom: ${props => (props.position === 'above' ? 'calc(100% + 2px)' : 'unset')};
-  left: 0;
+  right: 40px;
   width: 100%;
   max-height: 278px;
   height: auto;

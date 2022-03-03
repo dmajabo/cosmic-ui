@@ -7,7 +7,7 @@ export const PagingWrapper = styled.div`
   height: 80px;
   align-items: center;
   width: 100%;
-  overflow-x: hidden;
+  overflow: hidden;
 `;
 
 export const DisplayRangeStyles = styled.span`
@@ -44,4 +44,8 @@ export const SelectLabel = styled.div<LabelProps>`
   flex-shrink: 0;
   margin: ${props => props.margin || '0'};
   color: var(--_disabledTextColor);
+`;
+
+export const RelativePositionContainer = styled.div`
+  position: relative;
 `;
