@@ -86,11 +86,11 @@ const Dropdown: React.FC<IProps> = (props: IProps) => {
             {props.label} {props.required && <Required>*</Required>}
           </InputLabel>
         )}
-        {props.labelBefore && <>{props.labelBefore}</>}
         <DropWrapper style={props.wrapStyles}>
+          {props.labelBefore && <>{props.labelBefore}</>}
           <SelectWrapper style={props.selectStyles} onClick={onToogleDropdown} className={showPopup ? 'active' : ''}>
             <DisplayValue selectedItem={selectedItemLabel} placeholder={props.placeholder} />
-            <IconWrapper styles={{ position: 'absolute', right: '12px', top: 'calc(50% - 6px)', width: '12px', height: '12px' }} icon={arrowBottomIcon} />
+            <IconWrapper styles={{ display: 'flex', width: '12px', height: '12px' }} icon={arrowBottomIcon} />
           </SelectWrapper>
           {showPopup && (
             <ListWrapper position={props.position}>
@@ -99,8 +99,8 @@ const Dropdown: React.FC<IProps> = (props: IProps) => {
               ))}
             </ListWrapper>
           )}
+          {props.labelAfter && <>{props.labelAfter}</>}
         </DropWrapper>
-        {props.labelAfter && <>{props.labelAfter}</>}
       </DropdownWrapper>
     </ClickAwayListener>
   );

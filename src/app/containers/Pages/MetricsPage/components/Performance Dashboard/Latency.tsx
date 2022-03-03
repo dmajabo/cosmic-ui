@@ -2,15 +2,13 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import { createApiClient } from 'lib/api/http/apiClient';
 import { PerformanceDashboardStyles } from './PerformanceDashboardStyles';
 import { MetricsLineChart } from './MetricsLineChart';
-import InfoIcon from '../../icons/performance dashboard/info';
 import LoadingIndicator from 'app/components/Loading';
-import { MetricKeyValue, TestIdToName } from './PacketLoss';
+import { MetricKeyValue } from './PacketLoss';
 import { Data } from './Table';
-import Heatmap, { LegendData } from './Heatmap';
-import { HeatMapData, Vnet } from 'lib/api/http/SharedTypes';
+import { LegendData } from './Heatmap';
+import { Vnet } from 'lib/api/http/SharedTypes';
 import isEmpty from 'lodash/isEmpty';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
-import { GridLabel } from 'app/containers/Pages/TrafficPage/SessionPage/Table/styles';
 import { Chart, ChartContainerStyles } from 'app/components/ChartContainer/styles';
 import { EmptyText } from 'app/components/Basic/NoDataStyles/NoDataStyles';
 import { useHistory } from 'react-router-dom';
@@ -52,15 +50,9 @@ export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange, netwo
 
   const [latencyData, setLatencyData] = useState<MetricKeyValue>({});
   const [anomalyCount, setAnomalyCount] = useState<number>(0);
-  const [heatMapLatency, setHeatMapLatency] = useState<HeatMapData[]>([]);
 
   const userContext = useContext<UserContextState>(UserContext);
   const apiClient = createApiClient(userContext.accessToken!);
-
-  const testIdToName: TestIdToName = selectedRows.reduce((accu, nextValue) => {
-    accu[nextValue.id] = nextValue.name;
-    return accu;
-  }, {});
 
   const history = useHistory();
   const scrollRef = useRef(null);
@@ -94,28 +86,10 @@ export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange, netwo
       });
     };
 
-    const getHeatMapLatency = async () => {
-      const promises = selectedRows.map(row => {
-        const rowNetworkId = networks.find(network => network.name === row.sourceNetwork)?.extId || '';
-        return apiClient.getHeatmapLatency(rowNetworkId, row.destination, timeRange, row.id);
-      });
-      Promise.all(promises).then(values => {
-        const heatMapLatency: HeatMapData[] = values.map(item => {
-          return {
-            testId: item.testId,
-            metrics: item.avgMetric.resourceMetric,
-          };
-        });
-        setHeatMapLatency(heatMapLatency);
-      });
-    };
-
     getLatencyMetrics();
-    getHeatMapLatency();
 
     return () => {
       setLatencyData({});
-      setHeatMapLatency([]);
     };
   }, [selectedRows, timeRange]);
 

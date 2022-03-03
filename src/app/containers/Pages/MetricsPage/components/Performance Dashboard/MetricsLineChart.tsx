@@ -139,7 +139,7 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
           };
         }),
         zIndex: 1,
-        turboThreshold: inputData[row.id].length,
+        turboThreshold: inputData[row.id]?.length || 0,
         tooltip: {
           useHTML: true,
           pointFormat: `
@@ -169,7 +169,7 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
         };
       }),
       linkedTo: `${row.name} &#9654 ${row.sourceDevice}`,
-      turboThreshold: inputData[row.id].length,
+      turboThreshold: inputData[row.id]?.length || 0,
       color: ANOMALY_POINT_COLOR,
       states: {
         hover: {
@@ -230,7 +230,7 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
         name: `${row.name}_bounds`,
         data: data,
         type: 'arearange',
-        turboThreshold: inputData[row.id].length,
+        turboThreshold: inputData[row.id]?.length || 0,
         linkedTo: `${row.name} &#9654 ${row.sourceDevice}`,
         color: 'rgb(235,240,250)',
         zIndex: 0,

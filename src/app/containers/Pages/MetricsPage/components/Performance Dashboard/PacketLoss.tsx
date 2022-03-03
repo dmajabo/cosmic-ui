@@ -2,14 +2,12 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import { createApiClient } from 'lib/api/http/apiClient';
 import { PerformanceDashboardStyles } from './PerformanceDashboardStyles';
 import { MetricsLineChart } from './MetricsLineChart';
-import InfoIcon from '../../icons/performance dashboard/info';
 import LoadingIndicator from 'app/components/Loading';
 import { Data } from './Table';
-import Heatmap, { LegendData } from './Heatmap';
-import { HeatMapData, Vnet } from 'lib/api/http/SharedTypes';
+import { LegendData } from './Heatmap';
+import { Vnet } from 'lib/api/http/SharedTypes';
 import isEmpty from 'lodash/isEmpty';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
-import { GridLabel } from 'app/containers/Pages/TrafficPage/SessionPage/Table/styles';
 import { Chart, ChartContainerStyles } from 'app/components/ChartContainer/styles';
 import { EmptyText } from 'app/components/Basic/NoDataStyles/NoDataStyles';
 import { useHistory } from 'react-router-dom';
@@ -69,12 +67,6 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange,
   const classes = PerformanceDashboardStyles();
   const [packetLossData, setPacketLossData] = useState<MetricKeyValue>({});
   const [anomalyCount, setAnomalyCount] = useState<number>(0);
-  const [heatMapPacketLoss, setHeatMapPacketLoss] = useState<HeatMapData[]>([]);
-
-  const testIdToName: TestIdToName = selectedRows.reduce((accu, nextValue) => {
-    accu[nextValue.id] = nextValue.name;
-    return accu;
-  }, {});
 
   const userContext = useContext<UserContextState>(UserContext);
   const apiClient = createApiClient(userContext.accessToken!);
@@ -111,28 +103,10 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedRows, timeRange,
       });
     };
 
-    const getHeatMapPacketLoss = async () => {
-      const promises = selectedRows.map(row => {
-        const rowNetworkId = networks.find(network => network.name === row.sourceNetwork)?.extId || '';
-        return apiClient.getHeatmapPacketLoss(rowNetworkId, row.destination, timeRange, row.id);
-      });
-      Promise.all(promises).then(values => {
-        const heatMapPacketLoss: HeatMapData[] = values.map(item => {
-          return {
-            testId: item.testId,
-            metrics: item.avgMetric.resourceMetric,
-          };
-        });
-        setHeatMapPacketLoss(heatMapPacketLoss);
-      });
-    };
-
     getPacketLossMetrics();
-    getHeatMapPacketLoss();
 
     return () => {
       setPacketLossData({});
-      setHeatMapPacketLoss([]);
     };
   }, [selectedRows, timeRange]);
 
