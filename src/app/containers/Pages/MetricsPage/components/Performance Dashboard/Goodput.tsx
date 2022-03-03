@@ -2,15 +2,13 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import { createApiClient } from 'lib/api/http/apiClient';
 import { PerformanceDashboardStyles } from './PerformanceDashboardStyles';
 import { MetricsLineChart } from './MetricsLineChart';
-import InfoIcon from '../../icons/performance dashboard/info';
-import { MetricKeyValue, TestIdToName } from './PacketLoss';
+import { MetricKeyValue } from './PacketLoss';
 import { Data } from './Table';
 import isEmpty from 'lodash/isEmpty';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import LoadingIndicator from 'app/components/Loading';
-import { HeatMapData, Vnet } from 'lib/api/http/SharedTypes';
-import Heatmap, { LegendData } from './Heatmap';
-import { GridLabel } from 'app/containers/Pages/TrafficPage/SessionPage/Table/styles';
+import { Vnet } from 'lib/api/http/SharedTypes';
+import { LegendData } from './Heatmap';
 import { Chart, ChartContainerStyles } from 'app/components/ChartContainer/styles';
 import { useHistory } from 'react-router-dom';
 import { LocationState } from '../..';
@@ -61,16 +59,10 @@ export const Goodput: React.FC<GoodputProps> = ({ selectedRows, timeRange, netwo
 
   const [goodputData, setGoodputData] = useState<MetricKeyValue>({});
   const [anomalyCount, setAnomalyCount] = useState<number>(0);
-  const [heatMapGoodput, setHeatMapGoodput] = useState<HeatMapData[]>([]);
 
   const userContext = useContext<UserContextState>(UserContext);
 
   const apiClient = createApiClient(userContext.accessToken!);
-
-  const testIdToName: TestIdToName = selectedRows.reduce((accu, nextValue) => {
-    accu[nextValue.id] = nextValue.name;
-    return accu;
-  }, {});
 
   const history = useHistory();
   const scrollRef = useRef(null);
@@ -103,26 +95,11 @@ export const Goodput: React.FC<GoodputProps> = ({ selectedRows, timeRange, netwo
         setAnomalyCount(totalAnomalyCount);
       });
     };
-    const getHeatMapGoodput = async () => {
-      const promises = selectedRows.map(row => {
-        const rowNetworkId = networks.find(network => network.name === row.sourceNetwork)?.extId || '';
-        return apiClient.getHeatmapGoodput(rowNetworkId, row.destination, timeRange, row.id);
-      });
-      Promise.all(promises).then(values => {
-        const heatMapGoodput: HeatMapData[] = values.map(item => ({
-          testId: item.testId,
-          metrics: item.avgMetric.resourceMetric,
-        }));
-        setHeatMapGoodput(heatMapGoodput);
-      });
-    };
 
     getGoodputMetrics();
-    getHeatMapGoodput();
 
     return () => {
       setGoodputData({});
-      setHeatMapGoodput([]);
     };
   }, [selectedRows, timeRange]);
 

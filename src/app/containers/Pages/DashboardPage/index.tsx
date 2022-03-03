@@ -10,21 +10,9 @@ import { DashboardItemContainer, DashboardItemContent, DashboardItemLabel, GridC
 import InOutBound from './components/ManagmentItem/InOutBound';
 import ManagementLayer7 from './components/ManagmentItem/ManagementLayer7';
 import ManagementDrifts from './components/ManagmentItem/ManagementDrifts';
-import {
-  AnomaliesResponse,
-  AnomalySummary,
-  AvailabilityMetric,
-  DashboardSitesViewTab,
-  Device,
-  DeviceMetrics,
-  DeviceMetricsResponse,
-  MapDeviceDataResponse,
-  OnPremDevicesResponse,
-  SitesData,
-  SITES_COLUMNS,
-} from './enum';
+import { AnomaliesResponse, AnomalySummary, AvailabilityMetric, DashboardSitesViewTab, Device, DeviceMetrics, DeviceMetricsResponse, OnPremDevicesResponse, SitesData, SITES_COLUMNS } from './enum';
 import { Feature, Map } from './components/Map/Map';
-import { useGet, useGetChainData } from 'lib/api/http/useAxiosHook';
+import { useGet } from 'lib/api/http/useAxiosHook';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { TopoApi } from 'lib/api/ApiModels/Services/topo';
 import LoadingIndicator from 'app/components/Loading';
@@ -149,6 +137,7 @@ const DashboardPage: React.FC = () => {
 
   const convertDataToSitesData = useCallback(
     (devices: Device[] = [], deviceMetrics: DeviceMetrics[] = []): SitesData[] => {
+      setTotalCount(devicesResponse?.totalCount || 0);
       return deviceMetrics.map(deviceMetric => {
         const selectedDevice = devices.find(device => device.extId === deviceMetric.extId);
         const tagArray = selectedDevice?.vnetworks.reduce((acc, vnetwork) => acc.concat(vnetwork.tags), []).map(tag => tag.value);
