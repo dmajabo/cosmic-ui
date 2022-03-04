@@ -69,5 +69,13 @@ export const ApplicationTab: React.FC<ApplicationTabProps> = props => {
     }
     onGet(url, userContext.accessToken!, params);
   };
-  return <ApplicationTable error={error ? error.message : null} showLoader={loading} data={rowData} />;
+  return (
+    <>
+      {loading ? (
+        <ApplicationTable error={error ? error.message : null} showLoader={loading} data={[]} />
+      ) : (
+        <ApplicationTable error={error ? error.message : null} showLoader={loading} data={rowData} />
+      )}
+    </>
+  );
 };

@@ -50,12 +50,13 @@ export const TrafficTab: React.FC<TrafficTabProps> = props => {
       setRowData(members);
     }
   }, [response]);
-  const getAsyncData = (url: string, params: any) => {
+  const getAsyncData = async (url: string, params: any) => {
     if (!url || !params) {
       return;
     }
-    onGet(url, userContext.accessToken!, params);
+    await onGet(url, userContext.accessToken!, params);
   };
-
-  return <MemberTable showLoader={loading} error={error ? error.message : null} data={rowData} />;
+  return (
+    <>{loading ? <MemberTable showLoader={loading} error={error ? error.message : null} data={[]} /> : <MemberTable showLoader={loading} error={error ? error.message : null} data={rowData} />}</>
+  );
 };
