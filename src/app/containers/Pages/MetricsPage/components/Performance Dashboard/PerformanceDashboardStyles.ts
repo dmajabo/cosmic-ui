@@ -331,6 +331,10 @@ export const PerformanceDashboardStyles = makeStyles(
         lineHeight: '16px',
         padding: '2px 10px 2px 10px',
       },
+      slaTestPanelContainer: {
+        overflow: 'scroll',
+        paddingBottom: 50,
+      },
     }),
   {
     index: 1,

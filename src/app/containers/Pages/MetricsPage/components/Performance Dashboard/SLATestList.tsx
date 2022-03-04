@@ -21,6 +21,8 @@ import { useHistory } from 'react-router-dom';
 import { LocationState } from '../..';
 import ResizablePanel from 'app/components/Basic/PanelBar/ResizablePanel';
 import { APP_HEADER_HEIGHT } from 'lib/constants/general';
+import { PanelHeader, PanelTitle } from 'app/containers/Pages/TopologyPage/TopoMapV2/PanelComponents/styles';
+import FilterGroup from 'app/components/Basic/FilterComponents/FilterGroup';
 
 interface SLATestListProps {
   readonly finalTableData: FinalTableData[];
@@ -93,11 +95,11 @@ const getDefaultSelectedTestId = (tests: FinalTableData[], selectedRows: Data[])
   }
 };
 
-const getSelectedTests = (finalTableData: FinalTableData[], history: any, devices: Device[]) => {
+const getSelectedTests = (tableData: FinalTableData[], history: any, devices: Device[]) => {
   if (!history || !history.location || !history.location.state) {
     const tests: Data[] = JSON.parse(localStorage.getItem(LOCAL_STORAGE_SELECTED_TESTS_KEY));
     if (isEmpty(tests)) {
-      const validTests: Data[] = finalTableData
+      const validTests: Data[] = tableData
         .filter(test => {
           if (!isNaN(Number(test.averageQoe.packetLoss)) && !isNaN(Number(test.averageQoe.latency))) {
             if (Number(test.averageQoe.latency) > 0) {
@@ -118,7 +120,7 @@ const getSelectedTests = (finalTableData: FinalTableData[], history: any, device
   } else {
     const state = history.location.state as LocationState;
     const networkId = devices.find(device => device.extId === state?.deviceId || '')?.networkId;
-    const selectedTests: Data[] = finalTableData
+    const selectedTests: Data[] = tableData
       .filter(test => (test.sourceNetworkId === networkId && test.destination === state?.destination) || '')
       .map(test => {
         const { averageQoe, hits, ...rest } = test;
@@ -140,9 +142,10 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
   };
 
   const [isSlaTestPanelOpen, setIsSlaTestPanelOpen] = useState<boolean>(false);
-  const [panelWidth, setPanelWidth] = useState<number>(300);
+  const [filteredTableData, setFilteredTableData] = useState<FinalTableData[]>(finalTableData);
+  const [panelWidth, setPanelWidth] = useState<number>(600);
   const [createToggle, setCreateToggle] = React.useState<boolean>(false);
-  const [selectedRows, setSelectedRows] = useState<Data[]>(getSelectedTests(finalTableData, history, devices));
+  const [selectedRows, setSelectedRows] = useState<Data[]>(getSelectedTests(filteredTableData, history, devices));
   const [timeRange, setTimeRange] = useState<string>('-7d');
   const [testDataToUpdate, setTestDataToUpdate] = useState<SLATest>({
     testId: '',
@@ -191,7 +194,7 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
 
   const data = useMemo(
     () =>
-      finalTableData.map(item => {
+      filteredTableData.map(item => {
         return {
           id: item.id,
           name: item.name,
@@ -204,7 +207,7 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
           isTestDataInvalid: isTestDataInvalid(item.averageQoe),
         };
       }),
-    [finalTableData],
+    [filteredTableData],
   );
 
   const timeRangeOptions = [
@@ -244,7 +247,7 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
       <Dialog fullWidth open={createToggle} style={{ zIndex: 5, maxHeight: '85vh', marginTop: '15vh' }}>
         <CreateSLATest networks={networks} merakiOrganizations={merakiOrganizations} addSlaTest={addTest} popup={true} closeSlaTest={handleClose} />
       </Dialog>
-      <Dialog fullWidth open={updateTestToggle} style={{ zIndex: 5, maxHeight: '85vh', marginTop: '15vh' }}>
+      <Dialog fullWidth open={updateTestToggle} style={{ zIndex: 5, maxHeight: '85vh', marginTop: '15vh', overflow: 'auto' }}>
         <CreateSLATest
           updateSlaTest={updateSlaTest}
           slaTestDataToUpdate={testDataToUpdate}
@@ -262,10 +265,17 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
         onHidePanel={onSlaTestPanelClose}
         onPanelWidthChange={onPanelWidthChange}
       >
-        <div>
-          <span className={classes.itemTitle}>SLA Tests</span>
+        <div className={classes.slaTestPanelContainer}>
+          <PanelHeader direction="column" align="unset">
+            <PanelTitle>Filters</PanelTitle>
+          </PanelHeader>
+          <FilterGroup maxGroupHeight="unset" label="Sites" styles={{ margin: '0' }} defaultOpen={true}></FilterGroup>
+          <FilterGroup maxGroupHeight="unset" label="Tags" styles={{ margin: '0' }} defaultOpen={true}></FilterGroup>
+          <PanelHeader direction="column" align="unset" margin="20px 0">
+            <PanelTitle>SLA Tests</PanelTitle>
+          </PanelHeader>
+          <Table onSelectedRowsUpdate={onSelectedRowsUpdate} columns={columns} data={data} selectedRowsObject={getDefaultSelectedTestId(filteredTableData, selectedRows)} />
         </div>
-        <Table onSelectedRowsUpdate={onSelectedRowsUpdate} columns={columns} data={data} selectedRowsObject={getDefaultSelectedTestId(finalTableData, selectedRows)} />
       </ResizablePanel>
     </>
   );
