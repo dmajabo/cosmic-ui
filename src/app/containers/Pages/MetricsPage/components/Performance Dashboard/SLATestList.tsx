@@ -19,6 +19,8 @@ import CloseIcon from '../../icons/performance dashboard/close';
 import { isEmpty } from 'lodash';
 import { useHistory } from 'react-router-dom';
 import { LocationState } from '../..';
+import ResizablePanel from 'app/components/Basic/PanelBar/ResizablePanel';
+import { APP_HEADER_HEIGHT } from 'lib/constants/general';
 
 interface SLATestListProps {
   readonly finalTableData: FinalTableData[];
@@ -138,6 +140,7 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
   };
 
   const [isSlaTestPanelOpen, setIsSlaTestPanelOpen] = useState<boolean>(false);
+  const [panelWidth, setPanelWidth] = useState<number>(300);
   const [createToggle, setCreateToggle] = React.useState<boolean>(false);
   const [selectedRows, setSelectedRows] = useState<Data[]>(getSelectedTests(finalTableData, history, devices));
   const [timeRange, setTimeRange] = useState<string>('-7d');
@@ -184,6 +187,7 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
 
   const onSlaTestPanelOpen = () => setIsSlaTestPanelOpen(true);
   const onSlaTestPanelClose = () => setIsSlaTestPanelOpen(false);
+  const onPanelWidthChange = (width: number) => setPanelWidth(width);
 
   const data = useMemo(
     () =>
@@ -237,21 +241,6 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
       <PacketLoss timeRange={timeRange} selectedRows={selectedRows} networks={networks} />
       <Latency timeRange={timeRange} selectedRows={selectedRows} networks={networks} />
       <Goodput timeRange={timeRange} selectedRows={selectedRows} networks={networks} />
-      <Dialog open={isSlaTestPanelOpen} maxWidth="md" fullWidth style={{ zIndex: 3, maxHeight: '85vh', marginTop: '15vh' }}>
-        <DialogTitle>
-          <div className={classes.flexContainer}>
-            <div>
-              <span className={classes.itemTitle}>SLA Tests</span>
-            </div>
-            <div style={{ cursor: 'pointer' }} onClick={onSlaTestPanelClose}>
-              <CloseIcon />
-            </div>
-          </div>
-        </DialogTitle>
-        <DialogContent>
-          <Table onSelectedRowsUpdate={onSelectedRowsUpdate} columns={columns} data={data} selectedRowsObject={getDefaultSelectedTestId(finalTableData, selectedRows)} />
-        </DialogContent>
-      </Dialog>
       <Dialog fullWidth open={createToggle} style={{ zIndex: 5, maxHeight: '85vh', marginTop: '15vh' }}>
         <CreateSLATest networks={networks} merakiOrganizations={merakiOrganizations} addSlaTest={addTest} popup={true} closeSlaTest={handleClose} />
       </Dialog>
@@ -266,6 +255,18 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
           closeSlaTest={handleClose}
         />
       </Dialog>
+      <ResizablePanel
+        styles={{ position: 'fixed', right: 0, top: APP_HEADER_HEIGHT, height: '100vh', float: 'right' }}
+        show={isSlaTestPanelOpen}
+        panelWidth={panelWidth}
+        onHidePanel={onSlaTestPanelClose}
+        onPanelWidthChange={onPanelWidthChange}
+      >
+        <div>
+          <span className={classes.itemTitle}>SLA Tests</span>
+        </div>
+        <Table onSelectedRowsUpdate={onSelectedRowsUpdate} columns={columns} data={data} selectedRowsObject={getDefaultSelectedTestId(finalTableData, selectedRows)} />
+      </ResizablePanel>
     </>
   );
 };
