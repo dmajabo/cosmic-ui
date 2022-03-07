@@ -230,14 +230,14 @@ const DashboardPage: React.FC = () => {
                 <span className={classes.pillText}>{devicesResponse?.totalCount}</span>
               </div>
             </div>
-            <TabsUnstyled value={sitesViewTabName} onChange={onTabChange}>
+            {/* <TabsUnstyled value={sitesViewTabName} onChange={onTabChange}>
               <div className={classes.tabListContainer}>
                 <TabsList>
                   <Tab value={DashboardSitesViewTab.Map}>{DashboardSitesViewTab.Map.toUpperCase()}</Tab>
                   <Tab value={DashboardSitesViewTab.List}>{DashboardSitesViewTab.List.toUpperCase()}</Tab>
                 </TabsList>
               </div>
-            </TabsUnstyled>
+            </TabsUnstyled> */}
           </div>
           {devicesLoading && <LoadingIndicator margin="auto" />}
 
