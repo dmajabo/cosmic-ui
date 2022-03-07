@@ -47,24 +47,6 @@ export const DUMMY_ANOMALY_TABLE_DATA: AnomalyExperienceTableData[] = [
   },
 ];
 
-export const DUMMY_SLA_TEST_DATA: FinalTableData[] = [
-  {
-    hits: 20,
-    id: 'tempvp1 id',
-    name: 'VPC 1',
-    sourceOrg: 'Okulis',
-    sourceNetwork: 'N2358730528KG8',
-    sourceDevice: 'ASFG328965293',
-    description: 'vpc 1',
-    destination: '8.8.8.8',
-    sourceNetworkId: '',
-    averageQoe: {
-      packetLoss: '5',
-      latency: '16',
-    },
-  },
-];
-
 export const DUMMY_SESSION_LOGS_DATA: AnomalySessionLogsData[] = [
   {
     hits: 20,

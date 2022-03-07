@@ -10,13 +10,16 @@ import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { createApiClient } from 'lib/api/http/apiClient';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
-import { GetDevicesString, GetSelectedNetworkName, GetSelectedOrganizationName } from './filterFunctions';
+import { GetDevicesString, GetSelectedNetworkName, GetSelectedOrganizationName, getTestSegmentIds } from './filterFunctions';
 import { CreateSLATest } from './CreateSLATest';
 import './Toastify.css';
 import { VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
 import { AxiosError } from 'axios';
 import { TabName } from '../..';
 import noop from 'lodash/noop';
+import { useGet } from 'lib/api/http/useAxiosHook';
+import { IPolicysvcListSegmentPsResponse, ISegmentSegmentP, SegmentSegmentType } from 'lib/api/ApiModels/Policy/Segment';
+import { PolicyApi } from 'lib/api/ApiModels/Services/policy';
 
 interface PerformanceDashboardProps {
   readonly organizations: Organization[];
@@ -35,6 +38,8 @@ export const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ netw
   const [merakiOrganizations, setMerakiOrganizations] = useState<Organization[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isError, setIsError] = useState<boolean>(false);
+  const [siteSegments, setSiteSegments] = useState<ISegmentSegmentP[]>([]);
+  const { response, onGet } = useGet<IPolicysvcListSegmentPsResponse>();
 
   useEffect(() => {
     if (!isEmpty(organizations) && selectedTabName === TabName.Performance) {
@@ -59,6 +64,7 @@ export const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ netw
             interface: test.interface,
             description: test.description,
             sourceNetworkId: test.sourceNwExtId,
+            segmentIds: [],
             averageQoe: {
               packetLoss: test.metrics.avgPacketLoss.value,
               latency: test.metrics.avgLatency.value,
@@ -78,18 +84,27 @@ export const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ netw
 
   useEffect(() => {
     getSLATests();
+    onGet(PolicyApi.getSegments(), userContext.accessToken!);
   }, []);
+
+  useEffect(() => {
+    if (response && response.segments && response.segments.length) {
+      setSiteSegments(response.segments.filter(segment => segment.segType === SegmentSegmentType.SITE));
+    }
+  }, [response]);
 
   const newTableData = finalTableData.map(test => {
     const selectedOrganizationName = GetSelectedOrganizationName(merakiOrganizations, test.sourceOrg);
     const allDevices: string = GetDevicesString(devices, test.sourceNetwork);
     const selectedNetworkName = GetSelectedNetworkName(networks, test.sourceNetwork);
+    const segmentIds = getTestSegmentIds(devices, test.sourceNetwork);
     const { sourceDevice, sourceNetwork, sourceOrg, ...rest } = test;
     return {
       ...rest,
       sourceDevice: allDevices,
       sourceNetwork: selectedNetworkName,
       sourceOrg: selectedOrganizationName,
+      segmentIds: segmentIds,
     };
   });
 
@@ -154,6 +169,7 @@ export const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ netw
           finalTableData={newTableData}
           addSlaTest={addSlaTest}
           devices={devices}
+          siteSegments={siteSegments}
         />
       ) : (
         <CreateSLATest networks={networks} merakiOrganizations={merakiOrganizations} addSlaTest={addSlaTest} popup={false} closeSlaTest={noop} />

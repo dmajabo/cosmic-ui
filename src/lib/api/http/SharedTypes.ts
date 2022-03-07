@@ -15,6 +15,7 @@ export interface Device {
   readonly privateIp: string;
   readonly publicIp: string;
   readonly vpnLinks: Vpn;
+  readonly segmentId: string;
 }
 
 interface NetworkLink {
@@ -79,6 +80,15 @@ interface Vm {
   readonly nic: Nic[];
 }
 
+export interface Tag {
+  readonly id: string;
+  readonly key: string;
+  readonly ownerId: string;
+  readonly regionCode: string;
+  readonly value: string;
+  readonly networkIds?: string[];
+}
+
 export interface Vnet {
   readonly id: string;
   readonly name: string;
@@ -89,6 +99,7 @@ export interface Vnet {
   readonly vms: Vm[];
   readonly cidr: null;
   readonly vendorType: VendorTypes;
+  readonly tags: Tag[];
 }
 
 export interface Organization {
@@ -189,6 +200,7 @@ export interface FinalTableData {
   readonly isTestDataInvalid?: boolean;
   readonly index?: number;
   readonly sourceNetworkId: string;
+  readonly segmentIds: string[];
 }
 
 export enum ColumnAccessor {

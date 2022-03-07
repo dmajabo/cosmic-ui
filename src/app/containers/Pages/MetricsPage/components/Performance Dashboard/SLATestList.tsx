@@ -1,9 +1,9 @@
-import { Dialog, DialogContent, DialogTitle } from '@mui/material';
-import React, { useContext, useMemo, useState } from 'react';
+import { Dialog } from '@mui/material';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { PerformanceDashboardStyles } from './PerformanceDashboardStyles';
 import Table, { Data } from './Table';
 import { CreateSLATest } from './CreateSLATest';
-import { Column, FinalTableData, SLATest, UpdateSLATestRequest, ColumnAccessor, AverageQoe as MetricAvgQoe, Organization, Vnet, Device } from 'lib/api/http/SharedTypes';
+import { Column, FinalTableData, SLATest, UpdateSLATestRequest, ColumnAccessor, AverageQoe as MetricAvgQoe, Organization, Vnet, Device, Tag } from 'lib/api/http/SharedTypes';
 import { PacketLoss } from './PacketLoss';
 import { Latency } from './Latency';
 import AverageQoe from './AverageQoe';
@@ -15,15 +15,18 @@ import PrimaryButton from 'app/components/Buttons/PrimaryButton';
 import MatSelect from 'app/components/Inputs/MatSelect';
 import SecondaryButtonwithEvent from 'app/containers/Pages/AnalyticsPage/components/SecondaryButtonwithEvent';
 import { filterIcon } from 'app/components/SVGIcons/filter';
-import CloseIcon from '../../icons/performance dashboard/close';
-import { isEmpty } from 'lodash';
+import { isEmpty, uniq, uniqBy } from 'lodash';
 import { useHistory } from 'react-router-dom';
 import { LocationState } from '../..';
 import ResizablePanel from 'app/components/Basic/PanelBar/ResizablePanel';
 import { APP_HEADER_HEIGHT } from 'lib/constants/general';
 import { PanelHeader, PanelTitle } from 'app/containers/Pages/TopologyPage/TopoMapV2/PanelComponents/styles';
 import FilterGroup from 'app/components/Basic/FilterComponents/FilterGroup';
-
+import { FilterTagsGroup, FilterTagsOption } from './FilterTagsGroup';
+import produce from 'immer';
+import { ISegmentSegmentP } from 'lib/api/ApiModels/Policy/Segment';
+import { IMapped_Segment } from 'lib/hooks/Topology/models';
+import FilterSegmentsGroup from 'app/containers/Pages/TopologyPage/TopoMapV2/PanelComponents/FilterComponent/FilterSegmentsGroup';
 interface SLATestListProps {
   readonly finalTableData: FinalTableData[];
   readonly addSlaTest: Function;
@@ -32,6 +35,7 @@ interface SLATestListProps {
   readonly devices: Device[];
   readonly deleteSlaTest: Function;
   readonly updateSlaTest: (submitData: UpdateSLATestRequest) => void;
+  readonly siteSegments: ISegmentSegmentP[];
 }
 
 const columns: Column[] = [
@@ -61,12 +65,28 @@ const columns: Column[] = [
   },
 ];
 
+const timeRangeOptions = [
+  {
+    value: '-1d',
+    label: 'Last day',
+  },
+  {
+    value: '-7d',
+    label: 'Last week',
+  },
+];
+
 const LOCAL_STORAGE_SELECTED_TESTS_KEY = 'selectedSLATests';
+const LOCAL_STORAGE_SELECTED_TAGS = 'selectedTags';
+const LOCAL_STORAGE_SELECTED_SITE_SEGMENTS = 'selectedSiteSegments';
 
 const isTestDataInvalid = (averageQoe: MetricAvgQoe) => isNaN(Number(averageQoe.packetLoss)) && isNaN(Number(averageQoe.latency));
 
 const getDefaultSelectedTestId = (tests: FinalTableData[], selectedRows: Data[]): Record<string, boolean> => {
   const testsWithIndex: FinalTableData[] = tests.map((test, index) => ({ ...test, index: index }));
+  if (isEmpty(testsWithIndex)) {
+    return {};
+  }
   if (isEmpty(selectedRows)) {
     const validTestIds = testsWithIndex
       .filter(test => {
@@ -130,7 +150,66 @@ const getSelectedTests = (tableData: FinalTableData[], history: any, devices: De
   }
 };
 
-export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteSlaTest, networks, merakiOrganizations, finalTableData, addSlaTest, devices }) => {
+const getTagOptions = (networks: Vnet[]): FilterTagsOption[] => {
+  const localTags: FilterTagsOption[] = JSON.parse(localStorage.getItem(LOCAL_STORAGE_SELECTED_TAGS));
+  const networkTags: FilterTagsOption[] = [];
+  for (const network of networks) {
+    for (const tag of network.tags) {
+      const duplicateTagIndex = networkTags.findIndex(duplicateTag => duplicateTag.key === tag.key);
+      if (duplicateTagIndex != -1) {
+        networkTags[duplicateTagIndex].networkIds.push(network.extId);
+      } else {
+        networkTags.push({ ...tag, isSelected: true, networkIds: [network.extId] });
+      }
+    }
+  }
+  if (isEmpty(localTags)) {
+    return networkTags;
+  }
+  return networkTags.map(tag => {
+    const localTag = localTags.find(localTag => localTag.key === tag.key);
+    return localTag ? localTag : tag;
+  });
+};
+
+const getSitesSegmentsOptions = (siteSegments: ISegmentSegmentP[]) => {
+  const localSiteSegments: IMapped_Segment[] = JSON.parse(localStorage.getItem(LOCAL_STORAGE_SELECTED_SITE_SEGMENTS));
+  const siteSegmentOptions: IMapped_Segment[] = siteSegments.map((segment, index) => ({
+    id: segment.id,
+    extId: segment.extId,
+    children: [],
+    dataItem: segment,
+    type: segment.segType,
+    uiId: index.toString(),
+    selected: true,
+  }));
+  if (isEmpty(localSiteSegments)) {
+    return siteSegmentOptions;
+  }
+  return siteSegmentOptions.map(segment => {
+    const localSiteSegment = localSiteSegments.find(localSiteSegment => localSiteSegment.id === segment.id);
+    return localSiteSegment ? localSiteSegment : segment;
+  });
+};
+
+const getFilteredTableData = (tableData: FinalTableData[], tagsOptions: FilterTagsOption[], siteSegmentsOptions: IMapped_Segment[]) => {
+  const networks = uniq(
+    tagsOptions.reduce((acc, nextValue) => {
+      const newAcc = acc.concat(nextValue.isSelected ? nextValue.networkIds : []);
+      return newAcc;
+    }, []),
+  );
+  const segmentIds = uniq(
+    siteSegmentsOptions.reduce((acc, nextValue) => {
+      const newAcc = acc.concat(nextValue.selected ? nextValue.id : []);
+      return newAcc;
+    }, []),
+  );
+  const filteredTableData = tableData.filter(test => networks.includes(test.sourceNetworkId)).filter(test => test.segmentIds.some(id => segmentIds.includes(id)));
+  return filteredTableData;
+};
+
+export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteSlaTest, networks, merakiOrganizations, finalTableData, addSlaTest, devices, siteSegments }) => {
   const classes = PerformanceDashboardStyles();
   const history = useHistory();
   const deleteTest = (testId: string) => deleteSlaTest(testId);
@@ -142,10 +221,12 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
   };
 
   const [isSlaTestPanelOpen, setIsSlaTestPanelOpen] = useState<boolean>(false);
-  const [filteredTableData, setFilteredTableData] = useState<FinalTableData[]>(finalTableData);
+  const [tagsOptions, setTagsOptions] = useState<FilterTagsOption[]>(getTagOptions(networks));
+  const [sitesSegmentsOptions, setSitesSegmentsOptions] = useState<IMapped_Segment[]>(getSitesSegmentsOptions(siteSegments));
+  const [filteredTableData, setFilteredTableData] = useState<FinalTableData[]>([]);
   const [panelWidth, setPanelWidth] = useState<number>(600);
   const [createToggle, setCreateToggle] = React.useState<boolean>(false);
-  const [selectedRows, setSelectedRows] = useState<Data[]>(getSelectedTests(filteredTableData, history, devices));
+  const [selectedRows, setSelectedRows] = useState<Data[]>(getSelectedTests(finalTableData, history, devices));
   const [timeRange, setTimeRange] = useState<string>('-7d');
   const [testDataToUpdate, setTestDataToUpdate] = useState<SLATest>({
     testId: '',
@@ -192,6 +273,28 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
   const onSlaTestPanelClose = () => setIsSlaTestPanelOpen(false);
   const onPanelWidthChange = (width: number) => setPanelWidth(width);
 
+  const onTagClick = (index: number, isSelected: boolean) => {
+    const newTagOptions = produce(tagsOptions, draft => {
+      draft[index].isSelected = isSelected;
+    });
+    setTagsOptions(newTagOptions);
+    localStorage.setItem(LOCAL_STORAGE_SELECTED_TAGS, JSON.stringify(newTagOptions));
+  };
+
+  const onSegmentClick = (node: IMapped_Segment, index: number, selected: boolean) => {
+    const newSiteSegmentsOptions = produce(sitesSegmentsOptions, draft => {
+      draft[index].selected = selected;
+    });
+    setSitesSegmentsOptions(newSiteSegmentsOptions);
+    localStorage.setItem(LOCAL_STORAGE_SELECTED_SITE_SEGMENTS, JSON.stringify(newSiteSegmentsOptions));
+  };
+
+  useEffect(() => {
+    if (!isEmpty(tagsOptions)) {
+      setFilteredTableData(getFilteredTableData(finalTableData, tagsOptions, sitesSegmentsOptions));
+    }
+  }, [tagsOptions, finalTableData, sitesSegmentsOptions]);
+
   const data = useMemo(
     () =>
       filteredTableData.map(item => {
@@ -209,17 +312,6 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
       }),
     [filteredTableData],
   );
-
-  const timeRangeOptions = [
-    {
-      value: '-1d',
-      label: 'Last day',
-    },
-    {
-      value: '-7d',
-      label: 'Last week',
-    },
-  ];
 
   return (
     <>
@@ -269,8 +361,12 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
           <PanelHeader direction="column" align="unset">
             <PanelTitle>Filters</PanelTitle>
           </PanelHeader>
-          <FilterGroup maxGroupHeight="unset" label="Sites" styles={{ margin: '0' }} defaultOpen={true}></FilterGroup>
-          <FilterGroup maxGroupHeight="unset" label="Tags" styles={{ margin: '0' }} defaultOpen={true}></FilterGroup>
+          <FilterGroup maxGroupHeight="unset" label="Site Segments" styles={{ margin: '0' }} defaultOpen={true}>
+            <FilterSegmentsGroup data={sitesSegmentsOptions} onClick={onSegmentClick} />
+          </FilterGroup>
+          <FilterGroup maxGroupHeight="unset" label="Tags" styles={{ margin: '0' }} defaultOpen={true}>
+            <FilterTagsGroup data={tagsOptions} onClick={onTagClick} />
+          </FilterGroup>
           <PanelHeader direction="column" align="unset" margin="20px 0">
             <PanelTitle>SLA Tests</PanelTitle>
           </PanelHeader>

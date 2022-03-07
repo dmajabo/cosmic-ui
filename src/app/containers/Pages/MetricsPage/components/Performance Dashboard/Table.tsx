@@ -110,7 +110,7 @@ const Table: React.FC<TableProps> = ({ onSelectedRowsUpdate, columns, data, sele
             }, 0);
             return (
               <div>
-                <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} disabled={getCheckboxDisabledStatus(data[row.index].isTestDataInvalid, row.isSelected, selectedRowsInCurrentPage === 2)} />
+                <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} disabled={getCheckboxDisabledStatus(data[row.index]?.isTestDataInvalid, row.isSelected, selectedRowsInCurrentPage === 2)} />
               </div>
             );
           },
@@ -155,7 +155,7 @@ const Table: React.FC<TableProps> = ({ onSelectedRowsUpdate, columns, data, sele
             page.map((row, i) => {
               prepareRow(row);
               return (
-                <tr {...row.getRowProps()} className={data[i].isTestDataInvalid ? 'invalidData' : ''}>
+                <tr {...row.getRowProps()} className={data[i]?.isTestDataInvalid ? 'invalidData' : ''}>
                   {row.cells.map(cell => {
                     return (
                       <td {...cell.getCellProps()}>

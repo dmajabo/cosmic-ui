@@ -21,3 +21,11 @@ export const GetDevicesString = (devices: Device[], sourceNetworkExtId: string) 
     return '';
   }
 };
+
+export const getTestSegmentIds = (devices: Device[], sourceNetworkExtId: string) => {
+  if (isEmpty(devices)) {
+    return [];
+  } else {
+    return devices.filter(device => device.networkId === sourceNetworkExtId).map(device => device.segmentId);
+  }
+};
