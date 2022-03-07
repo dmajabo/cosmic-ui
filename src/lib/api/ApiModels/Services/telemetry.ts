@@ -9,4 +9,7 @@ export const TelemetryApi = {
   getDeviceMetrics: () => 'telemetry/api/v1/metrics/devices',
   getAppAccess: () => '/telemetry/api/v1/telemetry/site/appaccess',
   getConnectivityHealth: () => '/telemetry/api/v1/metrics/connectivityhealth',
+  getTopologySegments: () => '/telemetry/api/v1/telemetry/metrics/traffic/topology/segments',
+  getAggregatedTrafficByNetworkId: (networkId: string) => `/telemetry/api/v1/telemetry/metrics/traffic/aggregated/network/${networkId}`,
+  getTrafficDataByNetworkExtIdAppId: (networkId: string, appId: string) => `/telemetry/api/v1/telemetry/metrics/traffic/dests/nw/${networkId}/app/${appId}`,
 };

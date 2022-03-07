@@ -58,11 +58,11 @@ const PolicyTab: React.FC<IProps> = (props: IProps) => {
     }
   }, [response]);
 
-  const getDataAsync = async (url: string, params: any) => {
+  const getDataAsync = (url: string, params: any) => {
     if (!url || !params) {
       return;
     }
-    await onGet(url, userContext.accessToken!, params);
+    onGet(url, userContext.accessToken!, params);
   };
   // title={PolicyTableKeyEnum.Inbound}
   return loading && !inboundData.length && !outboundData.length && !cellularData.length ? (

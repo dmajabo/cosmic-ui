@@ -69,7 +69,12 @@ const TopoMapV2: React.FC<IProps> = (props: IProps) => {
     }
     param.exclAppMembers = true;
 
-    await onGetChainData([PolicyApi.getSegments(), TopoApi.getAllOrganizations(), TelemetryApi.getAppAccess()], ['segments', 'organizations', 'siteAccessInfo'], userContext.accessToken!, param);
+    await onGetChainData(
+      [PolicyApi.getSegments(), TopoApi.getAllOrganizations(), TelemetryApi.getAppAccess(), TelemetryApi.getTopologySegments()],
+      ['segments', 'organizations', 'siteAccessInfo', 'topology'],
+      userContext.accessToken!,
+      param,
+    );
   };
 
   const onReloadData = async (startTime: Date | null) => {
@@ -82,7 +87,12 @@ const TopoMapV2: React.FC<IProps> = (props: IProps) => {
       param = { startTime: defaultStartTime, timestamp: null };
     }
     param.exclAppMembers = true;
-    await onGetChainData([PolicyApi.getSegments(), TopoApi.getAllOrganizations(), TelemetryApi.getAppAccess()], ['segments', 'organizations', 'siteAccessInfo'], userContext.accessToken!, param);
+    await onGetChainData(
+      [PolicyApi.getSegments(), TopoApi.getAllOrganizations(), TelemetryApi.getAppAccess(), TelemetryApi.getTopologySegments()],
+      ['segments', 'organizations', 'siteAccessInfo', 'topology'],
+      userContext.accessToken!,
+      param,
+    );
   };
 
   return (
