@@ -21,7 +21,7 @@ export const ApplicationPanel: React.FC<ApplicationPanelProps> = props => {
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => setValue(newValue);
 
   const { topology } = useTopologyV2DataContext();
-  const siteNames = topology.appAccessApiResponse.siteAccessInfo.links
+  const siteNames = topology.topologTrafficSegmentsApiResponse.topology.links
     .filter(link => link.destinationId === props.dataItem.dataItem.nodeId)
     .map(link => {
       return topology.sites[link.sourceId].dataItem.name;

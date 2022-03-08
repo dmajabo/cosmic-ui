@@ -503,7 +503,7 @@ export interface ITopologyMapData {
 export interface ITopologyDataRes {
   segments: IPolicysvcListSegmentPsResponse;
   organizations: ITopologyMapData;
-  siteAccessInfo: AppAccessApiResponse;
+  topology: TopologySegmentsApiResponse;
 }
 
 export interface ICloudVNetworkP extends IBaseEntity<string> {
@@ -622,13 +622,65 @@ export interface AppAccessLink {
   readonly destinationId: string;
   readonly sourceId: string;
   readonly value: string;
+  readonly bytesSent: string;
+  readonly bytesRcvd: string;
+  readonly flows: string;
+  readonly clients: string;
+  readonly activeTime: string;
 }
 
-export interface AppAccessApiResponse {
-  readonly siteAccessInfo: {
+export interface TopologySegmentsApiResponse {
+  readonly topology: {
     links: AppAccessLink[];
     nodes: ITopoTopoNode[];
   };
+}
+
+interface AggregatedNetworkTraffic {
+  resource: string;
+  nodeType: string;
+  totalBytesSent: string;
+  totalBytesRcvd: string;
+  totalFlows: string;
+  totalClients: string;
+  totalActiveTime: string;
+}
+
+interface AggregatedNetworkTrafficStat {
+  readonly traffic: AggregatedNetworkTraffic[];
+}
+
+export interface AgrregatedNetowrkTrafficApiResponse {
+  readonly trafficStat: AggregatedNetworkTrafficStat;
+}
+
+interface AppMetricsData {
+  time: string;
+  activeTime: string;
+  application: string;
+  destination: string;
+  flows: string;
+  numclients: string;
+  port: string;
+  protocol: string;
+  recv: string;
+  sent: string;
+  recvrate: 0;
+  sentrate: 0;
+  sourceSegmentId: string;
+  destSegmentId: string;
+  key: string;
+  networkExtId: string;
+  networkName: string;
+}
+
+interface AppMetrics {
+  resourceId: string;
+  appmetrics: AppMetricsData[];
+}
+export interface NetworkTrafficByAppIdNetworkExtIdApiResponse {
+  totalCount: number;
+  appmetrics: AppMetrics;
 }
 
 export interface IAppNode extends ITopoTopoNode {

@@ -1,6 +1,6 @@
-import { ITopologyQueryParam, toTimestamp } from 'lib/api/ApiModels/paramBuilders';
+import { IParam, ITopologyQueryParam, paramBuilder, toTimestamp } from 'lib/api/ApiModels/paramBuilders';
 import { TelemetryApi } from 'lib/api/ApiModels/Services/telemetry';
-import { AppAccessApiResponse, AppNodeType } from 'lib/api/ApiModels/Topology/apiModels';
+import { AgrregatedNetowrkTrafficApiResponse, AppNodeType } from 'lib/api/ApiModels/Topology/apiModels';
 import { useGet } from 'lib/api/http/useAxiosHook';
 import { ITopoAppNode } from 'lib/hooks/Topology/models';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
@@ -16,46 +16,76 @@ export const TrafficTab: React.FC<TrafficTabProps> = props => {
   const { topology } = useTopologyV2DataContext();
   const [rowData, setRowData] = useState<MemberRow[]>([]);
   const userContext = useContext<UserContextState>(UserContext);
-  const { response, loading, error, onGet } = useGet<AppAccessApiResponse>();
+  const [currentPageSize, setCurrentPageSize] = useState<number>(20);
+  const [currentPageNo, setCurrentPageNo] = useState<number>(1);
+  const { response, loading, error, onGet } = useGet<AgrregatedNetowrkTrafficApiResponse>();
 
   useEffect(() => {
-    const params: ITopologyQueryParam = { timestamp: null, exclAppMembers: false };
-
-    if (topology.selectedTime) {
-      params.timestamp = toTimestamp(topology.selectedTime);
-      params.startTime = toTimestamp(topology.selectedTime);
-    }
-    getAsyncData(TelemetryApi.getAppAccess(), params);
-  }, [props.dataItem, topology.selectedTime]);
+    console.log(props.dataItem);
+    getAsyncData(TelemetryApi.getTrafficDataByAppId(props.dataItem.dataItem.nodeId), currentPageSize, currentPageNo);
+  }, [props.dataItem, topology?.selectedTime]);
 
   useEffect(() => {
-    if (response && response.siteAccessInfo) {
-      const node = response.siteAccessInfo.nodes.find(node => node.nodeId === props.dataItem.dataItem?.nodeId && node.nodeType === AppNodeType.Application);
-      const members: MemberRow[] = node
-        ? node.members.map(member => {
-            return {
-              activeTime: member.appNodeData.activeTime,
-              clients: member.appNodeData.clients,
-              flows: member.appNodeData.flows,
-              port: member.appNodeData.port,
-              protocol: member.appNodeData.protocol,
-              recv: member.appNodeData.recv,
-              sent: member.appNodeData.sent,
-              name: member.name,
-              vnetworkName: member.appNodeData.vnetworkName,
-              vnetworkExtid: member.appNodeData.vnetworkExtid,
-            };
-          })
-        : [];
+    if (response && response.trafficStat && response.trafficStat.traffic) {
+      const members: MemberRow[] = response.trafficStat.traffic.map(trafficInfo => {
+        let name = '';
+        topology.originData.forEach(item => {
+          item.regions.forEach(region => {
+            region.vnets.forEach(vnet => {
+              if (vnet.extId === trafficInfo.resource) {
+                name = vnet.name;
+              }
+            });
+          });
+        });
+
+        return {
+          activeTime: trafficInfo.totalActiveTime,
+          noOfClients: trafficInfo.totalClients,
+          flows: trafficInfo.totalFlows,
+          recv: trafficInfo.totalBytesRcvd,
+          sent: trafficInfo.totalBytesSent,
+          name: name,
+          resourceId: props.dataItem.dataItem.nodeId,
+          networkId: trafficInfo.resource,
+        };
+      });
       setRowData(members);
     }
   }, [response]);
-  const getAsyncData = (url: string, params: any) => {
-    if (!url || !params) {
-      return;
+
+  const getAsyncData = (url: string, pageSize: number, pageNo: number) => {
+    const params: ITopologyQueryParam & IParam = { timestamp: null };
+
+    if (topology.selectedTime) {
+      params.timestamp = toTimestamp(topology.selectedTime);
     }
-    onGet(url, userContext.accessToken!, params);
+    const paginationParams = paramBuilder(pageSize, pageNo);
+    params.page_start = paginationParams.start_from;
+    delete paginationParams.start_from;
+    onGet(url, userContext.accessToken!, { ...params, ...paginationParams });
   };
 
-  return <MemberTable showLoader={loading} error={error ? error.message : null} data={rowData} />;
+  const onPageSizeChange = (size: number, page: number) => {
+    setCurrentPageNo(page);
+    setCurrentPageSize(size);
+    getAsyncData(TelemetryApi.getTrafficDataByAppId(props.dataItem.dataItem.nodeId), size, page);
+  };
+
+  const onPageChange = (page: number) => {
+    setCurrentPageNo(page);
+    getAsyncData(TelemetryApi.getTrafficDataByAppId(props.dataItem.dataItem.nodeId), currentPageSize, page);
+  };
+
+  return (
+    <MemberTable
+      onChangeCurrentPage={onPageChange}
+      onChangePageSize={onPageSizeChange}
+      currentPage={currentPageNo}
+      pageSize={currentPageSize}
+      showLoader={loading}
+      error={error ? error.message : null}
+      data={loading ? [] : rowData}
+    />
+  );
 };

@@ -1,16 +1,24 @@
-import { TableWrapperStyles } from 'app/components/Basic/Table/styles';
-import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
-import { TableStyles } from 'app/components/Basic/Table/TableStyles';
-import { EmptyText } from 'app/components/Basic/NoDataStyles/NoDataStyles';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
-import { AbsLoaderWrapper } from 'app/components/Loading/styles';
+import Paging from 'app/components/Basic/Paging';
+import { TableWrapper } from 'app/components/Basic/Table/PrimeTableStyles';
+import IconWrapper from 'app/components/Buttons/IconWrapper';
 import LoadingIndicator from 'app/components/Loading';
+import { AbsLoaderWrapper } from 'app/components/Loading/styles';
+import { arrowBottomIcon } from 'app/components/SVGIcons/arrows';
 import { MemberAppNodeData } from 'lib/api/ApiModels/Topology/apiModels';
+import { DEFAULT_TRANSITION } from 'lib/constants/general';
+import { Column } from 'primereact/column';
+import { DataTable } from 'primereact/datatable';
+import { useState } from 'react';
 import { convertBytesToHumanReadableString, convertSecondsToString } from '../../../utils';
+import { NestedTrafficTable } from '../../NestedTrafficTable';
+import { AppTrafficColumns } from './columns';
 
-export interface TrafficTableRowData extends Pick<MemberAppNodeData, 'sent' | 'recv' | 'flows' | 'activeTime' | 'port' | 'protocol'> {
+export interface TrafficTableRowData extends Pick<MemberAppNodeData, 'sent' | 'recv' | 'flows' | 'activeTime'> {
   name: string;
-  destination: string;
+  resourceId: string;
+  networkId: string;
+  noOfClients: string;
 }
 
 interface ApplicationTableProps {
@@ -18,83 +26,117 @@ interface ApplicationTableProps {
   showLoader: boolean;
   error?: string;
   styles?: Object;
+  pageSize: number;
+  currentPage: number;
+  onChangeCurrentPage: (page: number) => void;
+  onChangePageSize: (size: number, page: number) => void;
 }
 
-export const ApplicationTable: React.FC<ApplicationTableProps> = props => {
-  const classes = TableStyles();
+export const AppTable: React.FC<ApplicationTableProps> = props => {
+  const [expandedRowsMapper, setExpandedRowsMapper] = useState<{ [key: string]: boolean }>(null);
+
+  const onRowToggle = (rowData: TrafficTableRowData) => {
+    if (!expandedRowsMapper) {
+      const _obj = {};
+      _obj[rowData.resourceId] = true;
+      setExpandedRowsMapper(_obj);
+      return;
+    }
+    const _obj = { ...expandedRowsMapper };
+    if (!_obj[rowData.resourceId]) {
+      _obj[rowData.resourceId] = true;
+      setExpandedRowsMapper(_obj);
+      return;
+    }
+    delete _obj[rowData.resourceId];
+    if (!Object.keys(_obj).length) {
+      setExpandedRowsMapper(null);
+      return;
+    }
+    setExpandedRowsMapper(_obj);
+  };
+
+  const expanderBodyTemplate = (rowData: TrafficTableRowData) => {
+    return (
+      <IconWrapper
+        width="12px"
+        height="12px"
+        styles={{ verticalAlign: 'middle', transform: expandedRowsMapper && expandedRowsMapper[rowData.resourceId] ? 'rotate(0)' : 'rotate(-90deg)', transition: `transform ${DEFAULT_TRANSITION}` }}
+        icon={arrowBottomIcon}
+        onClick={e => onRowToggle(rowData)}
+      />
+    );
+  };
+
+  const renderRowTemplate = (rowData: TrafficTableRowData) => {
+    return <NestedTrafficTable networkId={rowData.networkId} resourceId={rowData.resourceId} />;
+  };
+
   return (
-    <TableWrapperStyles style={props.styles}>
-      <TableContainer className={classes.container}>
-        <Table stickyHeader aria-label="sticky table" className={classes.table}>
-          <TableHead>
-            <TableRow>
-              <TableCell style={{ minWidth: '80px' }} className={classes.tableHeadCell}>
-                Application
-              </TableCell>
-              <TableCell style={{ minWidth: '60px' }} className={classes.tableHeadCell}>
-                Destination
-              </TableCell>
-              <TableCell style={{ minWidth: '50px' }} className={classes.tableHeadCell}>
-                Protocol
-              </TableCell>
-              <TableCell style={{ minWidth: '50px' }} className={classes.tableHeadCell}>
-                Port
-              </TableCell>
-              <TableCell style={{ minWidth: '60px' }} className={classes.tableHeadCell}>
-                Sent
-              </TableCell>
-              <TableCell style={{ minWidth: '60px' }} className={classes.tableHeadCell}>
-                Received
-              </TableCell>
-              <TableCell style={{ minWidth: '60px' }} className={classes.tableHeadCell}>
-                Flows
-              </TableCell>
-              <TableCell style={{ minWidth: '80px' }} className={classes.tableHeadCell}>
-                Active Time
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {props.data && props.data.length
-              ? props.data.map((row, rowIndex) => {
-                  return (
-                    <TableRow hover tabIndex={-1} key={`tableRow${row}${rowIndex}`} className={classes.row}>
-                      <TableCell className={classes.tableCell}>{row.name}</TableCell>
-                      <TableCell style={{ maxWidth: '300px' }} className={classes.tableCell}>
-                        {row.destination}
-                      </TableCell>
-                      <TableCell className={classes.tableCell}>{row.protocol}</TableCell>
-                      <TableCell className={classes.tableCell}>{row.port}</TableCell>
-                      <TableCell className={classes.tableCell}>{convertBytesToHumanReadableString(row.sent)}</TableCell>
-                      <TableCell className={classes.tableCell}>{convertBytesToHumanReadableString(row.recv)}</TableCell>
-                      <TableCell className={classes.tableCell}>{row.flows}</TableCell>
-                      <TableCell className={classes.tableCell}>{convertSecondsToString(row.activeTime)}</TableCell>
-                    </TableRow>
-                  );
-                })
-              : null}
-            {(!props.data || !props.data.length) && !props.showLoader && !props.error && (
-              <TableRow className={classes.row}>
-                <TableCell className={classes.tableCell} colSpan={5}>
-                  <EmptyText>No data</EmptyText>
-                </TableCell>
-              </TableRow>
-            )}
-            {(!props.data || !props.data.length) && !props.showLoader && props.error && (
-              <TableRow className={classes.row}>
-                <TableCell className={classes.tableCell} colSpan={5}>
-                  <ErrorMessage>{props.error}</ErrorMessage>
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+    <>
+      <TableWrapper>
+        <DataTable value={props.data} rowExpansionTemplate={renderRowTemplate} responsiveLayout="scroll" className="tableSM fixedToParentHeight" expandedRows={expandedRowsMapper} dataKey="resourceId">
+          <Column expander={true} body={expanderBodyTemplate} style={{ width: '1em' }} />
+          <Column
+            field={AppTrafficColumns.network.field}
+            header={AppTrafficColumns.network.label}
+            style={{ minWidth: AppTrafficColumns.network.minWidth }}
+            sortable={AppTrafficColumns.network.sortable}
+          />
+          <Column
+            body={(rowData: TrafficTableRowData) => <>{convertBytesToHumanReadableString(rowData.sent)}</>}
+            field={AppTrafficColumns.sent.field}
+            header={AppTrafficColumns.sent.label}
+            style={{ minWidth: AppTrafficColumns.sent.minWidth }}
+            sortable={AppTrafficColumns.sent.sortable}
+          />
+          <Column
+            body={(rowData: TrafficTableRowData) => <>{convertBytesToHumanReadableString(rowData.recv)}</>}
+            field={AppTrafficColumns.received.field}
+            header={AppTrafficColumns.received.label}
+            style={{ minWidth: AppTrafficColumns.received.minWidth }}
+            sortable={AppTrafficColumns.received.sortable}
+          />
+          <Column field={AppTrafficColumns.flows.field} header={AppTrafficColumns.flows.label} style={{ minWidth: AppTrafficColumns.flows.minWidth }} sortable={AppTrafficColumns.flows.sortable} />
+          <Column
+            field={AppTrafficColumns.activeTime.field}
+            header={AppTrafficColumns.activeTime.label}
+            style={{ minWidth: AppTrafficColumns.activeTime.minWidth }}
+            sortable={AppTrafficColumns.activeTime.sortable}
+            body={(rowData: TrafficTableRowData) => <>{convertSecondsToString(rowData.activeTime)}</>}
+          />
+          <Column
+            field={AppTrafficColumns.noOfClients.field}
+            header={AppTrafficColumns.noOfClients.label}
+            style={{ minWidth: AppTrafficColumns.noOfClients.minWidth }}
+            sortable={AppTrafficColumns.noOfClients.sortable}
+          />
+        </DataTable>
         {props.showLoader && (
-          <AbsLoaderWrapper width="100%" height="calc(100% - 42px)" top="42px">
-            <LoadingIndicator margin="auto" width="24px" height="24px" />
+          <AbsLoaderWrapper width="100%" height="calc(100% - 70px)" top="70px">
+            <LoadingIndicator margin="auto" />
           </AbsLoaderWrapper>
         )}
-      </TableContainer>
-    </TableWrapperStyles>
+
+        {props.error && (
+          <AbsLoaderWrapper width="100%" height="calc(100% - 70px)" top="70px" opacity="1">
+            <ErrorMessage margin="auto" fontSize={20}>
+              {props.error || 'Something went wrong'}
+            </ErrorMessage>
+          </AbsLoaderWrapper>
+        )}
+      </TableWrapper>
+      <Paging
+        count={props.data.length}
+        disabled={!props.data.length}
+        pageSize={props.pageSize}
+        currentPage={props.currentPage}
+        onChangePage={props.onChangeCurrentPage}
+        onChangePageSize={props.onChangePageSize}
+        hideLabelAfter={true}
+        showFirstButton={false}
+        showLastButton={false}
+      />
+    </>
   );
 };

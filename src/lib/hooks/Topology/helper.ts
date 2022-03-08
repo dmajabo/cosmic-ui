@@ -1,42 +1,42 @@
+import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
+import { ISegmentSegmentP, SegmentSegmentType } from 'lib/api/ApiModels/Policy/Segment';
+import { AppNodeType, INetworkOrg, INetworkRegion, TopologySegmentsApiResponse, VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
+import { getChunksFromArray } from 'lib/helpers/arrayHelper';
 import { IMapped_Application, IMapped_Segment, INetworkVNetNode, INetworkVNetworkPeeringConnectionNode, INetworkWebAclNode, ITopoAppNode, ITopoLink } from 'lib/hooks/Topology/models';
-import { AppAccessApiResponse, AppNodeType, IAppNode, INetworkOrg, INetworkRegion, VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
-
+import { IObject } from 'lib/models/general';
+import uuid from 'react-uuid';
+import { buildLinks } from './helpers/buildlinkHelper';
 import {
-  ITopoRegionNode,
-  ITGWNode,
-  FilterEntityOptions,
-  VPCS_IN_ROW,
-  PEER_CONNECTION_IN_ROW,
-  WEB_ACL_IN_ROW,
-  ITopoSitesNode,
-  DEV_IN_PAGE,
-  IDeviceNode,
-  ITopoAccountNode,
-  DEV_IN_ROW,
-  DEFAULT_GROUP_ID,
-  ITempSegmentObjData,
-  ITopologyPreparedMapDataV2,
-} from './models';
-import {
+  createAccountNode,
+  createApplicationNode,
   createDeviceNode,
   createPeerConnectionNode,
   createSitesNode,
-  createAccountNode,
   createTopoRegionNode,
   createVnetNode,
   createWebAclNode,
   createWedgeNode,
   updateDeviceNode,
-  createApplicationNode,
 } from './helpers/buildNodeHelpers';
-import { buildLinks } from './helpers/buildlinkHelper';
 import { updateTopLevelItems } from './helpers/coordinateHelper';
 import { getBeautifulRowsCount, getRegionChildrenCounts } from './helpers/rowsHelper';
-import { getChunksFromArray } from 'lib/helpers/arrayHelper';
-import { ISegmentSegmentP, SegmentSegmentType } from 'lib/api/ApiModels/Policy/Segment';
-import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
-import { IObject } from 'lib/models/general';
-import uuid from 'react-uuid';
+import {
+  DEFAULT_GROUP_ID,
+  DEV_IN_PAGE,
+  DEV_IN_ROW,
+  FilterEntityOptions,
+  IDeviceNode,
+  ITempSegmentObjData,
+  ITGWNode,
+  ITopoAccountNode,
+  ITopologyPreparedMapDataV2,
+  ITopoRegionNode,
+  ITopoSitesNode,
+  PEER_CONNECTION_IN_ROW,
+  VPCS_IN_ROW,
+  WEB_ACL_IN_ROW,
+} from './models';
+
 // import { jsonClone } from 'lib/helpers/cloneHelper';
 
 export const createAccounts = (accounts: IObject<ITopoAccountNode>, _data: INetworkOrg[]) => {
@@ -64,7 +64,7 @@ export const createAccounts = (accounts: IObject<ITopoAccountNode>, _data: INetw
   });
 };
 
-export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[], _segments: ISegmentSegmentP[], appNodes: AppAccessApiResponse): ITopologyPreparedMapDataV2 => {
+export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[], _segments: ISegmentSegmentP[], appNodes: TopologySegmentsApiResponse): ITopologyPreparedMapDataV2 => {
   const regions: IObject<ITopoRegionNode> = {};
   const accounts: IObject<ITopoAccountNode> = {};
   const sites: IObject<ITopoSitesNode> = {};
@@ -203,7 +203,7 @@ export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[]
   }
 
   // app nodes
-  applicationNodes = appNodes.siteAccessInfo.nodes.reduce((accu, nextItem) => {
+  applicationNodes = appNodes.topology.nodes.reduce((accu, nextItem) => {
     if (nextItem.nodeType === AppNodeType.Application) {
       const tempAppNode = createApplicationNode(nextItem);
       tempAppNode.dataItem.name = segmentTempObject[nextItem.nodeId]?.dataItem?.name || 'UNKNOWN';
@@ -226,7 +226,7 @@ export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[]
     return accu;
   }, {});
   updateTopLevelItems(filter, regions, accounts, sites, applicationNodes);
-  const _links: IObject<ITopoLink<any, any, any>> = buildLinks(filter, regions, accounts, sites, applicationNodes, appNodes.siteAccessInfo.links);
+  const _links: IObject<ITopoLink<any, any, any>> = buildLinks(filter, regions, accounts, sites, applicationNodes, appNodes.topology.links);
 
   return { accounts: accounts, sites: sites, regions: regions, links: _links, segments: segmentsFilteredOptions, appNodes: applicationNodes, applicationFilterOptions };
 };
