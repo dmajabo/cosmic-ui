@@ -1,7 +1,7 @@
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import { TableWrapper } from 'app/components/Basic/Table/PrimeTableStyles';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
-import { ITopologyQueryParam, toTimestamp } from 'lib/api/ApiModels/paramBuilders';
+import { IParam, ITopologyQueryParam, paramBuilder, toTimestamp } from 'lib/api/ApiModels/paramBuilders';
 import { TelemetryApi } from 'lib/api/ApiModels/Services/telemetry';
 import { MemberAppNodeData, NetworkTrafficByAppIdNetworkExtIdApiResponse } from 'lib/api/ApiModels/Topology/apiModels';
 import { useGet } from 'lib/api/http/useAxiosHook';
@@ -13,6 +13,7 @@ import { useContext, useEffect, useState } from 'react';
 import { convertBytesToHumanReadableString, convertSecondsToString } from '../utils';
 import { AppTrafficColumns, AppTrafficNestedColumns } from './DevicePanel/ApplicationTab/columns';
 import LoadingIndicator from 'app/components/Loading';
+import Paging from 'app/components/Basic/Paging';
 
 export interface NestedTrafficTableRowData extends Pick<MemberAppNodeData, 'sent' | 'recv' | 'flows' | 'activeTime' | 'port' | 'protocol'> {
   destination: string;
@@ -21,17 +22,14 @@ export interface NestedTrafficTableRowData extends Pick<MemberAppNodeData, 'sent
 
 export const NestedTrafficTable: React.FC<{ networkId: string; resourceId: string }> = ({ networkId, resourceId }) => {
   const { topology } = useTopologyV2DataContext();
-  const [rows, setRows] = useState<NestedTrafficTableRowData[]>([]);
+  const [rows, setRows] = useState<{ rows: NestedTrafficTableRowData[]; totalRows: number }>({ rows: [], totalRows: 0 });
   const userContext = useContext<UserContextState>(UserContext);
   const { loading, response, error, onGet } = useGet<NetworkTrafficByAppIdNetworkExtIdApiResponse>();
+  const [currentPageSize, setCurrentPageSize] = useState<number>(20);
+  const [currentPageNo, setCurrentPageNo] = useState<number>(1);
 
   useEffect(() => {
-    const params: ITopologyQueryParam = { timestamp: null };
-
-    if (topology.selectedTime) {
-      params.timestamp = toTimestamp(topology.selectedTime);
-    }
-    getAsyncData(networkId, resourceId, params);
+    getAsyncData(networkId, resourceId, currentPageSize, currentPageNo);
   }, [networkId, resourceId]);
 
   useEffect(() => {
@@ -48,18 +46,39 @@ export const NestedTrafficTable: React.FC<{ networkId: string; resourceId: strin
           noOfClients: trafficData.numclients,
         };
       });
-      setRows(subRows);
+      setRows({
+        rows: subRows,
+        totalRows: response.totalCount,
+      });
     }
   }, [response]);
 
-  const getAsyncData = (networkExtId: string, appId: string, params?: any) => {
-    onGet(TelemetryApi.getTrafficDataByNetworkExtIdAppId(networkExtId, appId), userContext.accessToken!, params);
+  const getAsyncData = (networkExtId: string, appId: string, pageSize: number, pageNo: number) => {
+    const params: ITopologyQueryParam & IParam = { timestamp: null };
+
+    if (topology.selectedTime) {
+      params.timestamp = toTimestamp(topology.selectedTime);
+    }
+    const paginationParams = paramBuilder(pageSize, pageNo);
+    params.page_start = paginationParams.start_from;
+    delete paginationParams.start_from;
+    onGet(TelemetryApi.getTrafficDataByNetworkExtIdAppId(networkExtId, appId), userContext.accessToken!, { ...params, ...paginationParams });
   };
 
+  const onPageSizeChange = (size: number, page: number) => {
+    setCurrentPageNo(page);
+    setCurrentPageSize(size);
+    getAsyncData(networkId, resourceId, size, page);
+  };
+
+  const onPageChange = (page: number) => {
+    setCurrentPageNo(page);
+    getAsyncData(networkId, resourceId, currentPageSize, page);
+  };
   return (
     <>
       <TableWrapper>
-        <DataTable value={rows} responsiveLayout="scroll" className="tableSM fixedToParentHeight">
+        <DataTable value={rows.rows} responsiveLayout="scroll" className="tableSM fixedToParentHeight">
           <Column
             field={AppTrafficNestedColumns.destination.field}
             header={AppTrafficNestedColumns.destination.label}
@@ -109,7 +128,17 @@ export const NestedTrafficTable: React.FC<{ networkId: string; resourceId: strin
           </AbsLoaderWrapper>
         )}
       </TableWrapper>
-      {/* <Paging count={props.logCount} disabled={!props.data.length} pageSize={props.pageSize} currentPage={props.currentPage} onChangePage={onChangeCurrentPage} onChangePageSize={onChangePageSize} /> */}
+      <Paging
+        hideLabelAfter={true}
+        showFirstButton={false}
+        showLastButton={false}
+        count={rows.totalRows}
+        disabled={!rows.rows.length}
+        pageSize={currentPageSize}
+        currentPage={currentPageNo}
+        onChangePage={onPageChange}
+        onChangePageSize={onPageSizeChange}
+      />
     </>
   );
 };
