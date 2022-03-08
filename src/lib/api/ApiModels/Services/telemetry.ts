@@ -12,4 +12,5 @@ export const TelemetryApi = {
   getTopologySegments: () => '/telemetry/api/v1/telemetry/metrics/traffic/topology/segments',
   getAggregatedTrafficByNetworkId: (networkId: string) => `/telemetry/api/v1/telemetry/metrics/traffic/aggregated/network/${networkId}`,
   getTrafficDataByNetworkExtIdAppId: (networkId: string, appId: string) => `/telemetry/api/v1/telemetry/metrics/traffic/dests/nw/${networkId}/app/${appId}`,
+  getTrafficDataByAppId: (appId: string) => `/telemetry/api/v1/telemetry/metrics/traffic/aggregated/app/${appId}`,
 };

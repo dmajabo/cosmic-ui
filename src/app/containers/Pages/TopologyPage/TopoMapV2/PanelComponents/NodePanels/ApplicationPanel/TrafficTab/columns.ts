@@ -1,6 +1,6 @@
 import { IGridColumnField } from 'lib/models/grid';
 
-export interface IAppTrafficTColumns {
+export interface ISiteTrafficColumns {
   network: IGridColumnField;
   sent: IGridColumnField;
   received: IGridColumnField;
@@ -9,11 +9,11 @@ export interface IAppTrafficTColumns {
   noOfClients: IGridColumnField;
 }
 
-export interface IAppTrafficNestedColumns extends Omit<IAppTrafficTColumns, 'network'> {
+export interface ISiteTrafficNestedColumns extends Omit<ISiteTrafficColumns, 'network'> {
   destination: IGridColumnField;
 }
 
-export const AppTrafficColumns: IAppTrafficTColumns = {
+export const SiteTrafficColumns: ISiteTrafficColumns = {
   network: {
     label: 'Network/SITE',
     field: 'name',
@@ -58,8 +58,8 @@ export const AppTrafficColumns: IAppTrafficTColumns = {
   },
 };
 
-export const AppTrafficNestedColumns: IAppTrafficNestedColumns = {
-  ...AppTrafficColumns,
+export const SiteTrafficNestedColumns: ISiteTrafficNestedColumns = {
+  ...SiteTrafficColumns,
   destination: {
     label: 'Destination',
     field: 'destination',

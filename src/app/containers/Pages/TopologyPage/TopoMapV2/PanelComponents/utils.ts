@@ -29,15 +29,15 @@ export function convertBytesToHumanReadableString(bytes: string): string {
   const kbs = bytesInNum / 1000;
 
   if (kbs < 1000) {
-    return `${kbs} KB`;
+    return `${kbs.toFixed(2)} KB`;
   } else {
     const mbs = kbs / 1000;
 
     if (mbs >= 1000) {
       const gbs = mbs / 1000;
-      return `${gbs} GB`;
+      return `${gbs.toFixed(2)} GB`;
     } else {
-      return `${mbs} MB`;
+      return `${mbs.toFixed(2)} MB`;
     }
   }
 }
