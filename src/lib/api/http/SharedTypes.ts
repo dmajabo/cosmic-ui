@@ -1,5 +1,6 @@
 import { MetricsData } from 'app/containers/Pages/TopologyPage/TopologyMetrics/SharedTypes';
 import { AccountVendorTypes } from '../ApiModels/Accounts/apiModel';
+import { ISegmentSegmentP } from '../ApiModels/Policy/Segment';
 import { VendorTypes } from '../ApiModels/Topology/apiModels';
 import { SeverityLevel } from './utils';
 
@@ -200,7 +201,8 @@ export interface FinalTableData {
   readonly isTestDataInvalid?: boolean;
   readonly index?: number;
   readonly sourceNetworkId: string;
-  readonly segmentIds: string[];
+  readonly segments: ISegmentSegmentP[];
+  readonly tags: Tag[];
 }
 
 export enum ColumnAccessor {
@@ -247,6 +249,8 @@ export enum ColumnAccessor {
   dataProcessed = 'dataProcessed',
   totalCost = 'totalCost',
   value = 'value',
+  tags = 'tags',
+  segments = 'segments',
   //TODO: change below enum params when api is integrated
   interfaceSource = 'interfaceSource',
   interfaceDestination = 'interfaceDestination',

@@ -335,6 +335,13 @@ export const PerformanceDashboardStyles = makeStyles(
         overflow: 'scroll',
         paddingBottom: 50,
       },
+      tableHeaderContainer: {
+        display: 'flex',
+        justifyContent: 'space-between',
+      },
+      tableHeaderTitle: {
+        paddingTop: 5,
+      },
     }),
   {
     index: 1,

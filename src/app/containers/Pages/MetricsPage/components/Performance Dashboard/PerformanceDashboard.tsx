@@ -10,7 +10,7 @@ import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { createApiClient } from 'lib/api/http/apiClient';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
-import { GetDevicesString, GetSelectedNetworkName, GetSelectedOrganizationName, getTestSegmentIds } from './filterFunctions';
+import { GetDevicesString, getNetworkTags, GetSelectedNetworkName, GetSelectedOrganizationName, getTestSegments } from './filterFunctions';
 import { CreateSLATest } from './CreateSLATest';
 import './Toastify.css';
 import { VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
@@ -64,7 +64,8 @@ export const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ netw
             interface: test.interface,
             description: test.description,
             sourceNetworkId: test.sourceNwExtId,
-            segmentIds: [],
+            segments: [],
+            tags: [],
             averageQoe: {
               packetLoss: test.metrics.avgPacketLoss.value,
               latency: test.metrics.avgLatency.value,
@@ -97,14 +98,16 @@ export const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ netw
     const selectedOrganizationName = GetSelectedOrganizationName(merakiOrganizations, test.sourceOrg);
     const allDevices: string = GetDevicesString(devices, test.sourceNetwork);
     const selectedNetworkName = GetSelectedNetworkName(networks, test.sourceNetwork);
-    const segmentIds = getTestSegmentIds(devices, test.sourceNetwork);
-    const { sourceDevice, sourceNetwork, sourceOrg, ...rest } = test;
+    const segments = getTestSegments(devices, test.sourceNetwork, siteSegments);
+    const networkTags = getNetworkTags(test.sourceNetwork, networks);
+    const { sourceDevice, sourceNetwork, sourceOrg, tags, ...rest } = test;
     return {
       ...rest,
       sourceDevice: allDevices,
       sourceNetwork: selectedNetworkName,
       sourceOrg: selectedOrganizationName,
-      segmentIds: segmentIds,
+      segments: segments,
+      tags: networkTags,
     };
   });
 

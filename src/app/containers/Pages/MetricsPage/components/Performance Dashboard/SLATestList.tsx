@@ -1,7 +1,7 @@
 import { Dialog } from '@mui/material';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { PerformanceDashboardStyles } from './PerformanceDashboardStyles';
-import Table, { Data } from './Table';
+import Table from './Table';
 import { CreateSLATest } from './CreateSLATest';
 import { Column, FinalTableData, SLATest, UpdateSLATestRequest, ColumnAccessor, AverageQoe as MetricAvgQoe, Organization, Vnet, Device, Tag } from 'lib/api/http/SharedTypes';
 import { PacketLoss } from './PacketLoss';
@@ -15,18 +15,17 @@ import PrimaryButton from 'app/components/Buttons/PrimaryButton';
 import MatSelect from 'app/components/Inputs/MatSelect';
 import SecondaryButtonwithEvent from 'app/containers/Pages/AnalyticsPage/components/SecondaryButtonwithEvent';
 import { filterIcon } from 'app/components/SVGIcons/filter';
-import { isEmpty, uniq, uniqBy } from 'lodash';
+import { isEmpty, uniqBy } from 'lodash';
 import { useHistory } from 'react-router-dom';
 import { LocationState } from '../..';
 import ResizablePanel from 'app/components/Basic/PanelBar/ResizablePanel';
 import { APP_HEADER_HEIGHT } from 'lib/constants/general';
 import { PanelHeader, PanelTitle } from 'app/containers/Pages/TopologyPage/TopoMapV2/PanelComponents/styles';
-import FilterGroup from 'app/components/Basic/FilterComponents/FilterGroup';
-import { FilterTagsGroup, FilterTagsOption } from './FilterTagsGroup';
 import produce from 'immer';
 import { ISegmentSegmentP } from 'lib/api/ApiModels/Policy/Segment';
 import { IMapped_Segment } from 'lib/hooks/Topology/models';
-import FilterSegmentsGroup from 'app/containers/Pages/TopologyPage/TopoMapV2/PanelComponents/FilterComponent/FilterSegmentsGroup';
+import { FilterHeader, FilterTagsOption } from './FilterHeader';
+
 interface SLATestListProps {
   readonly finalTableData: FinalTableData[];
   readonly addSlaTest: Function;
@@ -37,33 +36,6 @@ interface SLATestListProps {
   readonly updateSlaTest: (submitData: UpdateSLATestRequest) => void;
   readonly siteSegments: ISegmentSegmentP[];
 }
-
-const columns: Column[] = [
-  {
-    Header: 'NAME',
-    accessor: ColumnAccessor.name,
-  },
-  {
-    Header: 'SOURCE ORGANIZATION',
-    accessor: ColumnAccessor.sourceOrg,
-  },
-  {
-    Header: 'SOURCE NETWORK',
-    accessor: ColumnAccessor.sourceNetwork,
-  },
-  {
-    Header: 'SOURCE DEVICE',
-    accessor: ColumnAccessor.sourceDevice,
-  },
-  {
-    Header: 'DESTINATION',
-    accessor: ColumnAccessor.destination,
-  },
-  {
-    Header: 'AVERAGE QOE',
-    accessor: ColumnAccessor.averageQoe,
-  },
-];
 
 const timeRangeOptions = [
   {
@@ -77,12 +49,12 @@ const timeRangeOptions = [
 ];
 
 const LOCAL_STORAGE_SELECTED_TESTS_KEY = 'selectedSLATests';
-const LOCAL_STORAGE_SELECTED_TAGS = 'selectedTags';
-const LOCAL_STORAGE_SELECTED_SITE_SEGMENTS = 'selectedSiteSegments';
+const LOCAL_STORAGE_SELECTED_TAGS = 'selectedDeviceTags';
+const LOCAL_STORAGE_SELECTED_SITE_SEGMENTS = 'selectedSites';
 
 const isTestDataInvalid = (averageQoe: MetricAvgQoe) => isNaN(Number(averageQoe.packetLoss)) && isNaN(Number(averageQoe.latency));
 
-const getDefaultSelectedTestId = (tests: FinalTableData[], selectedRows: Data[]): Record<string, boolean> => {
+const getDefaultSelectedTestId = (tests: FinalTableData[], selectedRows: FinalTableData[]): Record<string, boolean> => {
   const testsWithIndex: FinalTableData[] = tests.map((test, index) => ({ ...test, index: index }));
   if (isEmpty(testsWithIndex)) {
     return {};
@@ -117,9 +89,9 @@ const getDefaultSelectedTestId = (tests: FinalTableData[], selectedRows: Data[])
 
 const getSelectedTests = (tableData: FinalTableData[], history: any, devices: Device[]) => {
   if (!history || !history.location || !history.location.state) {
-    const tests: Data[] = JSON.parse(localStorage.getItem(LOCAL_STORAGE_SELECTED_TESTS_KEY));
+    const tests: FinalTableData[] = JSON.parse(localStorage.getItem(LOCAL_STORAGE_SELECTED_TESTS_KEY));
     if (isEmpty(tests)) {
-      const validTests: Data[] = tableData
+      const validTests: FinalTableData[] = tableData
         .filter(test => {
           if (!isNaN(Number(test.averageQoe.packetLoss)) && !isNaN(Number(test.averageQoe.latency))) {
             if (Number(test.averageQoe.latency) > 0) {
@@ -129,8 +101,7 @@ const getSelectedTests = (tableData: FinalTableData[], history: any, devices: De
           return false;
         })
         .map(test => {
-          const { averageQoe, hits, ...rest } = test;
-          return { ...rest, averageQoe: <></>, hits: <></>, isTestDataInvalid: isTestDataInvalid(test.averageQoe) };
+          return { ...test, isTestDataInvalid: isTestDataInvalid(test.averageQoe) };
         })
         .slice(0, 1);
       return validTests;
@@ -140,41 +111,42 @@ const getSelectedTests = (tableData: FinalTableData[], history: any, devices: De
   } else {
     const state = history.location.state as LocationState;
     const networkId = devices.find(device => device.extId === state?.deviceId || '')?.networkId;
-    const selectedTests: Data[] = tableData
+    const selectedTests: FinalTableData[] = tableData
       .filter(test => (test.sourceNetworkId === networkId && test.destination === state?.destination) || '')
       .map(test => {
-        const { averageQoe, hits, ...rest } = test;
-        return { ...rest, averageQoe: <></>, hits: <></>, isTestDataInvalid: isTestDataInvalid(test.averageQoe) };
+        return { ...test, isTestDataInvalid: isTestDataInvalid(test.averageQoe) };
       });
     return selectedTests;
   }
 };
 
-const getTagOptions = (networks: Vnet[]): FilterTagsOption[] => {
+const getTagOptions = (tableData: FinalTableData[]): FilterTagsOption[] => {
   const localTags: FilterTagsOption[] = JSON.parse(localStorage.getItem(LOCAL_STORAGE_SELECTED_TAGS));
-  const networkTags: FilterTagsOption[] = [];
-  for (const network of networks) {
-    for (const tag of network.tags) {
-      const duplicateTagIndex = networkTags.findIndex(duplicateTag => duplicateTag.key === tag.key);
-      if (duplicateTagIndex != -1) {
-        networkTags[duplicateTagIndex].networkIds.push(network.extId);
-      } else {
-        networkTags.push({ ...tag, isSelected: true, networkIds: [network.extId] });
-      }
-    }
-  }
+  const networkTags: FilterTagsOption[] = uniqBy(
+    tableData.reduce((acc, test) => {
+      const newAcc = acc.concat(test.tags);
+      return newAcc;
+    }, []),
+    'value',
+  ).map(tag => ({ ...tag, selected: true }));
   if (isEmpty(localTags)) {
     return networkTags;
   }
   return networkTags.map(tag => {
-    const localTag = localTags.find(localTag => localTag.key === tag.key);
+    const localTag = localTags.find(localTag => localTag.value === tag.value);
     return localTag ? localTag : tag;
   });
 };
 
-const getSitesSegmentsOptions = (siteSegments: ISegmentSegmentP[]) => {
+const getSitesSegmentsOptions = (tableData: FinalTableData[]) => {
   const localSiteSegments: IMapped_Segment[] = JSON.parse(localStorage.getItem(LOCAL_STORAGE_SELECTED_SITE_SEGMENTS));
-  const siteSegmentOptions: IMapped_Segment[] = siteSegments.map((segment, index) => ({
+  const siteSegmentOptions: IMapped_Segment[] = uniqBy(
+    tableData.reduce((acc, test) => {
+      const newAcc = acc.concat(test.segments);
+      return newAcc;
+    }, []),
+    'id',
+  ).map((segment, index) => ({
     id: segment.id,
     extId: segment.extId,
     children: [],
@@ -193,20 +165,9 @@ const getSitesSegmentsOptions = (siteSegments: ISegmentSegmentP[]) => {
 };
 
 const getFilteredTableData = (tableData: FinalTableData[], tagsOptions: FilterTagsOption[], siteSegmentsOptions: IMapped_Segment[]) => {
-  const networks = uniq(
-    tagsOptions.reduce((acc, nextValue) => {
-      const newAcc = acc.concat(nextValue.isSelected ? nextValue.networkIds : []);
-      return newAcc;
-    }, []),
-  );
-  const segmentIds = uniq(
-    siteSegmentsOptions.reduce((acc, nextValue) => {
-      const newAcc = acc.concat(nextValue.selected ? nextValue.id : []);
-      return newAcc;
-    }, []),
-  );
-  const filteredTableData = tableData.filter(test => networks.includes(test.sourceNetworkId)).filter(test => test.segmentIds.some(id => segmentIds.includes(id)));
-  return filteredTableData;
+  const selectedTags = tagsOptions.filter(tag => tag.selected).map(tag => tag.value);
+  const selectedSites = siteSegmentsOptions.filter(site => site.selected).map(site => site.id);
+  return tableData.filter(test => test.tags.some(tag => selectedTags.includes(tag.value))).filter(test => test.segments.some(segment => selectedSites.includes(segment.id)));
 };
 
 export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteSlaTest, networks, merakiOrganizations, finalTableData, addSlaTest, devices, siteSegments }) => {
@@ -221,12 +182,12 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
   };
 
   const [isSlaTestPanelOpen, setIsSlaTestPanelOpen] = useState<boolean>(false);
-  const [tagsOptions, setTagsOptions] = useState<FilterTagsOption[]>(getTagOptions(networks));
-  const [sitesSegmentsOptions, setSitesSegmentsOptions] = useState<IMapped_Segment[]>(getSitesSegmentsOptions(siteSegments));
+  const [tagsOptions, setTagsOptions] = useState<FilterTagsOption[]>(getTagOptions(finalTableData));
+  const [sitesSegmentsOptions, setSitesSegmentsOptions] = useState<IMapped_Segment[]>(getSitesSegmentsOptions(finalTableData));
   const [filteredTableData, setFilteredTableData] = useState<FinalTableData[]>([]);
   const [panelWidth, setPanelWidth] = useState<number>(600);
   const [createToggle, setCreateToggle] = React.useState<boolean>(false);
-  const [selectedRows, setSelectedRows] = useState<Data[]>(getSelectedTests(finalTableData, history, devices));
+  const [selectedRows, setSelectedRows] = useState<FinalTableData[]>(getSelectedTests(finalTableData, history, devices));
   const [timeRange, setTimeRange] = useState<string>('-7d');
   const [testDataToUpdate, setTestDataToUpdate] = useState<SLATest>({
     testId: '',
@@ -256,7 +217,7 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
     addSlaTest(value);
   };
 
-  const onSelectedRowsUpdate = (value: Data[]) => {
+  const onSelectedRowsUpdate = (value: FinalTableData[]) => {
     setSelectedRows(value);
     localStorage.setItem(
       LOCAL_STORAGE_SELECTED_TESTS_KEY,
@@ -273,15 +234,15 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
   const onSlaTestPanelClose = () => setIsSlaTestPanelOpen(false);
   const onPanelWidthChange = (width: number) => setPanelWidth(width);
 
-  const onTagClick = (index: number, isSelected: boolean) => {
+  const onTagClick = (index: number, selected: boolean) => {
     const newTagOptions = produce(tagsOptions, draft => {
-      draft[index].isSelected = isSelected;
+      draft[index].selected = selected;
     });
     setTagsOptions(newTagOptions);
     localStorage.setItem(LOCAL_STORAGE_SELECTED_TAGS, JSON.stringify(newTagOptions));
   };
 
-  const onSegmentClick = (node: IMapped_Segment, index: number, selected: boolean) => {
+  const onSegmentClick = (index: number, selected: boolean) => {
     const newSiteSegmentsOptions = produce(sitesSegmentsOptions, draft => {
       draft[index].selected = selected;
     });
@@ -289,29 +250,66 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
     localStorage.setItem(LOCAL_STORAGE_SELECTED_SITE_SEGMENTS, JSON.stringify(newSiteSegmentsOptions));
   };
 
+  const columns: Column[] = useMemo(
+    () => [
+      {
+        Header: 'NAME',
+        accessor: ColumnAccessor.name,
+      },
+      {
+        Header: <FilterHeader title="TAGS" onItemClick={onTagClick} tagOptions={tagsOptions} />,
+        accessor: ColumnAccessor.tags,
+        Cell: props => {
+          const tagNames = props.row.original.tags.map((tag: Tag) => tag.value);
+          return tagNames.join(', ');
+        },
+      },
+      {
+        Header: <FilterHeader title="SITES" onItemClick={onSegmentClick} segmentOptions={sitesSegmentsOptions} />,
+        accessor: ColumnAccessor.segments,
+        Cell: props => {
+          const siteNames = props.row.original.segments.map((segment: ISegmentSegmentP) => segment.name);
+          return siteNames.join(', ');
+        },
+      },
+      {
+        Header: 'SOURCE ORGANIZATION',
+        accessor: ColumnAccessor.sourceOrg,
+      },
+      {
+        Header: 'SOURCE NETWORK',
+        accessor: ColumnAccessor.sourceNetwork,
+      },
+      {
+        Header: 'SOURCE DEVICE',
+        accessor: ColumnAccessor.sourceDevice,
+      },
+      {
+        Header: 'DESTINATION',
+        accessor: ColumnAccessor.destination,
+      },
+      {
+        Header: 'AVERAGE QOE',
+        accessor: ColumnAccessor.averageQoe,
+        Cell: props => (
+          <AverageQoe
+            updateTest={getTestDataToUpdate}
+            deleteTest={deleteTest}
+            packetLoss={props.row.original.averageQoe.packetLoss}
+            latency={props.row.original.averageQoe.latency}
+            testId={props.row.original.id}
+          />
+        ),
+      },
+    ],
+    [finalTableData, tagsOptions, sitesSegmentsOptions],
+  );
+
   useEffect(() => {
     if (!isEmpty(tagsOptions)) {
       setFilteredTableData(getFilteredTableData(finalTableData, tagsOptions, sitesSegmentsOptions));
     }
   }, [tagsOptions, finalTableData, sitesSegmentsOptions]);
-
-  const data = useMemo(
-    () =>
-      filteredTableData.map(item => {
-        return {
-          id: item.id,
-          name: item.name,
-          sourceOrg: item.sourceOrg,
-          sourceNetwork: item.sourceNetwork,
-          sourceDevice: item.sourceDevice,
-          destination: item.destination,
-          description: item.description,
-          averageQoe: <AverageQoe updateTest={getTestDataToUpdate} deleteTest={deleteTest} packetLoss={item.averageQoe.packetLoss} latency={item.averageQoe.latency} testId={item.id} />,
-          isTestDataInvalid: isTestDataInvalid(item.averageQoe),
-        };
-      }),
-    [filteredTableData],
-  );
 
   return (
     <>
@@ -358,7 +356,7 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
         onPanelWidthChange={onPanelWidthChange}
       >
         <div className={classes.slaTestPanelContainer}>
-          <PanelHeader direction="column" align="unset">
+          {/* <PanelHeader direction="column" align="unset">
             <PanelTitle>Filters</PanelTitle>
           </PanelHeader>
           <FilterGroup maxGroupHeight="unset" label="Site Segments" styles={{ margin: '0' }} defaultOpen={true}>
@@ -366,11 +364,11 @@ export const SLATestList: React.FC<SLATestListProps> = ({ updateSlaTest, deleteS
           </FilterGroup>
           <FilterGroup maxGroupHeight="unset" label="Tags" styles={{ margin: '0' }} defaultOpen={true}>
             <FilterTagsGroup data={tagsOptions} onClick={onTagClick} />
-          </FilterGroup>
+          </FilterGroup> */}
           <PanelHeader direction="column" align="unset" margin="20px 0">
             <PanelTitle>SLA Tests</PanelTitle>
           </PanelHeader>
-          <Table onSelectedRowsUpdate={onSelectedRowsUpdate} columns={columns} data={data} selectedRowsObject={getDefaultSelectedTestId(filteredTableData, selectedRows)} />
+          <Table onSelectedRowsUpdate={onSelectedRowsUpdate} columns={columns} data={filteredTableData} selectedRowsObject={getDefaultSelectedTestId(finalTableData, selectedRows)} />
         </div>
       </ResizablePanel>
     </>

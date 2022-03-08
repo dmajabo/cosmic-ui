@@ -4,9 +4,8 @@ import { PerformanceDashboardStyles } from './PerformanceDashboardStyles';
 import { MetricsLineChart } from './MetricsLineChart';
 import LoadingIndicator from 'app/components/Loading';
 import { MetricKeyValue } from './PacketLoss';
-import { Data } from './Table';
 import { LegendData } from './Heatmap';
-import { Vnet } from 'lib/api/http/SharedTypes';
+import { FinalTableData, Vnet } from 'lib/api/http/SharedTypes';
 import isEmpty from 'lodash/isEmpty';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { Chart, ChartContainerStyles } from 'app/components/ChartContainer/styles';
@@ -16,7 +15,7 @@ import { LocationState } from '../..';
 import { ModelalertType } from 'lib/api/ApiModels/Workflow/apiModel';
 
 interface LatencyProps {
-  readonly selectedRows: Data[];
+  readonly selectedRows: FinalTableData[];
   readonly timeRange: string;
   readonly networks: Vnet[];
 }
