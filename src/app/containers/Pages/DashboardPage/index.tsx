@@ -137,7 +137,6 @@ const DashboardPage: React.FC = () => {
 
   const convertDataToSitesData = useCallback(
     (devices: Device[] = [], deviceMetrics: DeviceMetrics[] = []): SitesData[] => {
-      setTotalCount(devicesResponse?.totalCount || 0);
       return deviceMetrics.map(deviceMetric => {
         const selectedDevice = devices.find(device => device.extId === deviceMetric.extId);
         const tagArray = selectedDevice?.vnetworks.reduce((acc, vnetwork) => acc.concat(vnetwork.tags), []).map(tag => tag.value);
