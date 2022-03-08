@@ -97,7 +97,7 @@ const Table: React.FC<TableProps> = ({ onSelectedRowsUpdate, columns, data, sele
             }, 0);
             return (
               <div>
-                <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} disabled={getCheckboxDisabledStatus(data[row.index]?.isTestDataInvalid, row.isSelected, selectedRowsInCurrentPage === 2)} />
+                <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} disabled={getCheckboxDisabledStatus(data[row.index]?.isTestDataInvalid, row.isSelected, selectedRowsInCurrentPage >= 2)} />
               </div>
             );
           },

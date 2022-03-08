@@ -27,7 +27,8 @@ export const getTestSegments = (devices: Device[], sourceNetworkExtId: string, s
   if (isEmpty(devices)) {
     return [];
   } else {
-    return devices.filter(device => device.networkId === sourceNetworkExtId).map(device => sites.find(site => site.id === device.segmentId));
+    const deviceSegmentIds = devices.filter(device => device.networkId === sourceNetworkExtId).map(device => device.segmentId);
+    return sites.filter(site => deviceSegmentIds.includes(site.id));
   }
 };
 
