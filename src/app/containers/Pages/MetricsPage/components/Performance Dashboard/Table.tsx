@@ -3,28 +3,15 @@ import React, { useEffect, useRef } from 'react';
 import { usePagination, useRowSelect, useSortBy, useTable } from 'react-table';
 import styled from 'styled-components';
 import { PerformanceDashboardStyles } from './PerformanceDashboardStyles';
-import { Column } from 'lib/api/http/SharedTypes';
+import { Column, FinalTableData } from 'lib/api/http/SharedTypes';
 import IndeterminateCheckbox from './IndeterminateCheckbox';
 import SortIcon from '../../icons/performance dashboard/sort';
 import { isEmpty } from 'lodash';
 
-export interface Data {
-  readonly id: string;
-  readonly name: string;
-  readonly sourceOrg: string;
-  readonly sourceNetwork: string;
-  readonly sourceDevice: string;
-  readonly destination: string;
-  readonly description: string;
-  readonly averageQoe: JSX.Element;
-  readonly hits?: JSX.Element;
-  readonly isTestDataInvalid?: boolean;
-}
-
 interface TableProps {
   readonly onSelectedRowsUpdate: Function;
   readonly columns: Column[];
-  readonly data: Data[];
+  readonly data: FinalTableData[];
   readonly selectedRowsObject: Record<string, boolean>;
 }
 
@@ -101,8 +88,8 @@ const Table: React.FC<TableProps> = ({ onSelectedRowsUpdate, columns, data, sele
       hooks.visibleColumns.push(columns => [
         {
           id: 'selection',
-          Cell: ({ row, page }) => {
-            let selectedRowsInCurrentPage = page.reduce((acc, test) => {
+          Cell: ({ row, rows }) => {
+            let selectedRowsInCurrentPage = rows.reduce((acc, test) => {
               if (test.isSelected) {
                 acc++;
               }
@@ -110,7 +97,7 @@ const Table: React.FC<TableProps> = ({ onSelectedRowsUpdate, columns, data, sele
             }, 0);
             return (
               <div>
-                <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} disabled={getCheckboxDisabledStatus(data[row.index].isTestDataInvalid, row.isSelected, selectedRowsInCurrentPage === 2)} />
+                <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} disabled={getCheckboxDisabledStatus(data[row.index]?.isTestDataInvalid, row.isSelected, selectedRowsInCurrentPage >= 2)} />
               </div>
             );
           },
@@ -135,14 +122,22 @@ const Table: React.FC<TableProps> = ({ onSelectedRowsUpdate, columns, data, sele
         <thead>
           {headerGroups.map(headerGroup => (
             <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map(column => (
-                <th {...column.getHeaderProps(column.getSortByToggleProps())}>
-                  <div className={classes.tableHeaderText}>
-                    {column.render('Header')}
-                    <span className={classes.sortIcon}>{column.Header === 'NAME' ? <SortIcon /> : <span />}</span>
-                  </div>
-                </th>
-              ))}
+              {headerGroup.headers.map(column =>
+                column.Header === 'NAME' ? (
+                  <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                    <div className={classes.tableHeaderText}>
+                      {column.render('Header')}
+                      <span className={classes.sortIcon}>
+                        <SortIcon />
+                      </span>
+                    </div>
+                  </th>
+                ) : (
+                  <th {...column.getHeaderProps()}>
+                    <div className={classes.tableHeaderText}>{column.render('Header')}</div>
+                  </th>
+                ),
+              )}
             </tr>
           ))}
         </thead>
@@ -155,7 +150,7 @@ const Table: React.FC<TableProps> = ({ onSelectedRowsUpdate, columns, data, sele
             page.map((row, i) => {
               prepareRow(row);
               return (
-                <tr {...row.getRowProps()} className={data[i].isTestDataInvalid ? 'invalidData' : ''}>
+                <tr {...row.getRowProps()} className={data[i]?.isTestDataInvalid ? 'invalidData' : ''}>
                   {row.cells.map(cell => {
                     return (
                       <td {...cell.getCellProps()}>

@@ -331,6 +331,17 @@ export const PerformanceDashboardStyles = makeStyles(
         lineHeight: '16px',
         padding: '2px 10px 2px 10px',
       },
+      slaTestPanelContainer: {
+        overflow: 'scroll',
+        paddingBottom: 50,
+      },
+      tableHeaderContainer: {
+        display: 'flex',
+        justifyContent: 'space-between',
+      },
+      tableHeaderTitle: {
+        paddingTop: 5,
+      },
     }),
   {
     index: 1,

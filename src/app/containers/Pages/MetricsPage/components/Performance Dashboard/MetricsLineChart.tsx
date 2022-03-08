@@ -3,9 +3,9 @@ import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import { DateTime } from 'luxon';
 import { MetricKeyValue } from './PacketLoss';
-import { Data } from './Table';
 import sortBy from 'lodash/sortBy';
 import HighchartsMore from 'highcharts/highcharts-more';
+import { FinalTableData } from 'lib/api/http/SharedTypes';
 HighchartsMore(Highcharts);
 
 Highcharts.setOptions({
@@ -31,7 +31,7 @@ interface AreaChartData {
 
 interface LineChartProps {
   readonly dataValueSuffix?: string;
-  readonly selectedRows: Data[];
+  readonly selectedRows: FinalTableData[];
   readonly inputData: MetricKeyValue;
   readonly timeFormat?: string;
 }

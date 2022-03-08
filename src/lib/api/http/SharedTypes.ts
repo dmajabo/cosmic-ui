@@ -1,5 +1,6 @@
 import { MetricsData } from 'app/containers/Pages/TopologyPage/TopologyMetrics/SharedTypes';
 import { AccountVendorTypes } from '../ApiModels/Accounts/apiModel';
+import { ISegmentSegmentP } from '../ApiModels/Policy/Segment';
 import { VendorTypes } from '../ApiModels/Topology/apiModels';
 import { SeverityLevel } from './utils';
 
@@ -15,6 +16,7 @@ export interface Device {
   readonly privateIp: string;
   readonly publicIp: string;
   readonly vpnLinks: Vpn;
+  readonly segmentId: string;
 }
 
 interface NetworkLink {
@@ -79,6 +81,15 @@ interface Vm {
   readonly nic: Nic[];
 }
 
+export interface Tag {
+  readonly id: string;
+  readonly key: string;
+  readonly ownerId: string;
+  readonly regionCode: string;
+  readonly value: string;
+  readonly networkIds?: string[];
+}
+
 export interface Vnet {
   readonly id: string;
   readonly name: string;
@@ -89,6 +100,7 @@ export interface Vnet {
   readonly vms: Vm[];
   readonly cidr: null;
   readonly vendorType: VendorTypes;
+  readonly tags: Tag[];
 }
 
 export interface Organization {
@@ -189,6 +201,8 @@ export interface FinalTableData {
   readonly isTestDataInvalid?: boolean;
   readonly index?: number;
   readonly sourceNetworkId: string;
+  readonly segments: ISegmentSegmentP[];
+  readonly tags: Tag[];
 }
 
 export enum ColumnAccessor {
@@ -235,6 +249,8 @@ export enum ColumnAccessor {
   dataProcessed = 'dataProcessed',
   totalCost = 'totalCost',
   value = 'value',
+  tags = 'tags',
+  segments = 'segments',
   //TODO: change below enum params when api is integrated
   interfaceSource = 'interfaceSource',
   interfaceDestination = 'interfaceDestination',
