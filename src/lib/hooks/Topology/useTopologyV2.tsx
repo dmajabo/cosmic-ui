@@ -1,10 +1,20 @@
-import * as React from 'react';
-import { IObject, IPosition, ISelectedListItem, ITimeTypes, TIME_PERIOD } from 'lib/models/general';
-import { jsonClone } from 'lib/helpers/cloneHelper';
-// import { EntityTypes, IEntity } from 'lib/models/entites';
-import { AppAccessApiResponse, IAppNode, INetworkOrg, ITopologyDataRes, ITopoTopoNode } from 'lib/api/ApiModels/Topology/apiModels';
 import { ITimeMinMaxRange } from 'app/components/Inputs/TimeSlider/helpers';
+import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
+// import { updateRegionHeight } from './helpers/buildNodeHelpers';
+import { ISegmentSegmentP, SegmentSegmentType } from 'lib/api/ApiModels/Policy/Segment';
+// import { EntityTypes, IEntity } from 'lib/models/entites';
+import { INetworkOrg, ITopologyDataRes, TopologySegmentsApiResponse } from 'lib/api/ApiModels/Topology/apiModels';
+import { AlertSeverity } from 'lib/api/ApiModels/Workflow/apiModel';
+import { OKULIS_LOCAL_STORAGE_KEYS } from 'lib/api/http/utils';
+import { jsonClone } from 'lib/helpers/cloneHelper';
+import { getSessionStoragePreference, getSessionStoragePreferences, StoragePreferenceKeys, updateSessionStoragePreference } from 'lib/helpers/localStorageHelpers';
+import { IObject, IPosition, ISelectedListItem, ITimeTypes, TIME_PERIOD } from 'lib/models/general';
+import _ from 'lodash';
+import * as React from 'react';
 import { createTopology } from './helper';
+import { hideLinksFromUnselctedAppNode, updateLinkNodesPosition, updateLinksVisibleStateBySpecificNode, updateLinkVisibleState, updateVpnLinks } from './helpers/buildlinkHelper';
+import { updateCollapseExpandAccounts, updateCollapseExpandSites, updateRegionNodes } from './helpers/buildNodeHelpers';
+import { getRegionChildrenOffsetY, setUpRegionChildCoord } from './helpers/coordinateHelper';
 import {
   DEFAULT_ENTITY_OPTIONS,
   DEFAULT_SEVERITY_OPTIONS,
@@ -23,16 +33,6 @@ import {
   TopoFilterTypes,
   TopologyPanelTypes,
 } from './models';
-import { AlertSeverity } from 'lib/api/ApiModels/Workflow/apiModel';
-// import { updateRegionHeight } from './helpers/buildNodeHelpers';
-import { ISegmentSegmentP, SegmentSegmentType } from 'lib/api/ApiModels/Policy/Segment';
-import { OKULIS_LOCAL_STORAGE_KEYS } from 'lib/api/http/utils';
-import { getSessionStoragePreference, getSessionStoragePreferences, StoragePreferenceKeys, updateSessionStoragePreference } from 'lib/helpers/localStorageHelpers';
-import { hideLinksFromUnselctedAppNode, updateLinkNodesPosition, updateLinksVisibleStateBySpecificNode, updateLinkVisibleState, updateVpnLinks } from './helpers/buildlinkHelper';
-import { updateCollapseExpandAccounts, updateCollapseExpandSites, updateRegionNodes } from './helpers/buildNodeHelpers';
-import _ from 'lodash';
-import { getRegionChildrenOffsetY, setRegionsCoord, setUpRegionChildCoord } from './helpers/coordinateHelper';
-import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
 
 export interface TopologyV2ContextType {
   topoPanel: IPanelBar<TopologyPanelTypes>;
@@ -80,7 +80,7 @@ export interface TopologyV2ContextType {
   onSelectFilterOption: (groupType: TopoFilterTypes, type: FilterEntityTypes, _selected: boolean) => void;
   onSelectSegmentFilterOption: (node: IMapped_Segment, index: number, visible: boolean) => void;
   blockTooltip: boolean;
-  appAccessApiResponse: AppAccessApiResponse;
+  topologTrafficSegmentsApiResponse: TopologySegmentsApiResponse;
   applicationFilterOptions: IMapped_Application[];
   onApplicationFilterOption: (app: IMapped_Application, index: number, selected: boolean) => void;
 }
@@ -93,7 +93,7 @@ export function useTopologyV2Context(): TopologyV2ContextType {
   const [applicationFilterOptions, setApplicationFilterOptions] = React.useState<IMapped_Application[]>(null);
   const [sites, setSitesNodes] = React.useState<IObject<ITopoSitesNode>>(null);
   const [applicationNodes, setApplicationNodes] = React.useState<IObject<ITopoAppNode>>(null);
-  const [appAccessApiResponse, setAppAccessApiResponse] = React.useState<AppAccessApiResponse>(null);
+  const [topologTrafficSegmentsApiResponse, setTopologTrafficSegmentsApiResponse] = React.useState<TopologySegmentsApiResponse>(null);
   const [regions, setRegionsNodes] = React.useState<IObject<ITopoRegionNode>>(null);
 
   const [links, setLinks] = React.useState<IObject<ITopoLink<any, any, any>>>(null);
@@ -168,7 +168,7 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     }
     const _orgObj: INetworkOrg[] = res.organizations && res.organizations.organizations ? jsonClone(res.organizations.organizations) : null;
     const _segmentsObj: ISegmentSegmentP[] = res.segments && res.segments.segments ? jsonClone(res.segments.segments) : [];
-    const _data: ITopologyPreparedMapDataV2 = createTopology(entities, _orgObj, _segmentsObj, res.siteAccessInfo);
+    const _data: ITopologyPreparedMapDataV2 = createTopology(entities, _orgObj, _segmentsObj, res.topology);
 
     if (_data) {
       // console.log(_data.links);
@@ -186,7 +186,7 @@ export function useTopologyV2Context(): TopologyV2ContextType {
       appFiltersRef.current = _data.applicationFilterOptions;
       // nodesRef.current = _data.nodes;
     }
-    setAppAccessApiResponse(res.siteAccessInfo);
+    setTopologTrafficSegmentsApiResponse(res.topology);
     setOriginSegmentsData(_segmentsObj);
     setOriginData(_orgObj);
   };
@@ -453,7 +453,7 @@ export function useTopologyV2Context(): TopologyV2ContextType {
 
     blockTooltip,
     applicationNodes,
-    appAccessApiResponse,
+    topologTrafficSegmentsApiResponse,
     applicationFilterOptions,
     onApplicationFilterOption: onSelectApplicationFilterOption,
   };

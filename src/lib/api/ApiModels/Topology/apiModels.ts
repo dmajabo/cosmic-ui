@@ -503,7 +503,7 @@ export interface ITopologyMapData {
 export interface ITopologyDataRes {
   segments: IPolicysvcListSegmentPsResponse;
   organizations: ITopologyMapData;
-  siteAccessInfo: AppAccessApiResponse;
+  topology: TopologySegmentsApiResponse;
 }
 
 export interface ICloudVNetworkP extends IBaseEntity<string> {
@@ -627,13 +627,6 @@ export interface AppAccessLink {
   readonly flows: string;
   readonly clients: string;
   readonly activeTime: string;
-}
-
-export interface AppAccessApiResponse {
-  readonly siteAccessInfo: {
-    links: AppAccessLink[];
-    nodes: ITopoTopoNode[];
-  };
 }
 
 export interface TopologySegmentsApiResponse {
