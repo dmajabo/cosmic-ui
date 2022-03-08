@@ -60,26 +60,12 @@ const TopoMapV2: React.FC<IProps> = (props: IProps) => {
   const onTryLoadData = async () => {
     const _st = topology.selectedTime || null;
     let param: ITopologyQueryParam = createTopologyQueryParam(_st);
-    const defaultStartTime = DateTime.local().minus({ hours: 6 }).toMillis();
-
-    if (param) {
-      param.startTime = param.timestamp;
-    } else {
-      param = { startTime: defaultStartTime, timestamp: null };
-    }
 
     await onGetChainData([PolicyApi.getSegments(), TopoApi.getAllOrganizations(), TelemetryApi.getTopologySegments()], ['segments', 'organizations', 'topology'], userContext.accessToken!, param);
   };
 
   const onReloadData = async (startTime: Date | null) => {
-    const defaultStartTime = DateTime.local().minus({ hours: 6 }).toMillis();
-
     let param: ITopologyQueryParam = createTopologyQueryParam(startTime);
-    if (param) {
-      param.startTime = param.timestamp;
-    } else {
-      param = { startTime: defaultStartTime, timestamp: null };
-    }
     await onGetChainData([PolicyApi.getSegments(), TopoApi.getAllOrganizations(), TelemetryApi.getTopologySegments()], ['segments', 'organizations', 'topology'], userContext.accessToken!, param);
   };
 

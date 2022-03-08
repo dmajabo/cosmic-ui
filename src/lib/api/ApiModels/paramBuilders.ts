@@ -190,7 +190,6 @@ export const stitchSessionLogParamBuilder = ({ size, time_range, currentPage, ve
 
 export interface ITopologyQueryParam {
   timestamp: number;
-  startTime?: number;
   page_start?: number;
 }
 

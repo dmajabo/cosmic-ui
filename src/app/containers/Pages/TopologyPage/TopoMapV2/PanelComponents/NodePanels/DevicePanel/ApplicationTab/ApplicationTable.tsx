@@ -36,7 +36,6 @@ export const AppTable: React.FC<ApplicationTableProps> = props => {
   const [expandedRowsMapper, setExpandedRowsMapper] = useState<{ [key: string]: boolean }>(null);
 
   const onRowToggle = (rowData: TrafficTableRowData) => {
-    //TODO: Check for resourceId
     if (!expandedRowsMapper) {
       const _obj = {};
       _obj[rowData.resourceId] = true;

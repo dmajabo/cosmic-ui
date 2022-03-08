@@ -68,13 +68,12 @@ export const buildLinks = (
 
 export const buildSiteToAppNodeLinks = (sites: IObject<ITopoSitesNode>, appNodes: IObject<ITopoAppNode>, origLink: AppAccessLink, links: IObject<ITopoLink<any, ITGWNode, any>>) => {
   const from = cloneDeep(sites[origLink.sourceId]);
-
-  from.x = from.x + 115;
-  from.y = from.y - 25;
+  if (from) {
+    from.x = from.x + 115;
+    from.y = from.y - 25;
+  }
 
   const to = cloneDeep(appNodes[origLink.destinationId]);
-  // to.y = to.y + to.height;
-  // to.x = to.x + to.width / 2.4;
 
   if (!from || !to) {
     return;
