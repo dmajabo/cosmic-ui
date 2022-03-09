@@ -82,8 +82,8 @@ export const Goodput: React.FC<GoodputProps> = ({ selectedRows, timeRange, netwo
       const promises = selectedRows.map(row => apiClient.getGoodputMetrics(row.sourceDevice, row.destination, timeRange, row.id));
       Promise.all(promises).then(values => {
         values.forEach(item => {
-          const anomalyArray = item.metrics.keyedmap.find(item => item.key === GOODPUT_ANOMALY)?.ts || [];
-          totalAnomalyCount = totalAnomalyCount + anomalyArray.length;
+          // const anomalyArray = item.metrics.keyedmap.find(item => item.key === GOODPUT_ANOMALY)?.ts || [];
+          // totalAnomalyCount = totalAnomalyCount + anomalyArray.length;
           goodputChartData[item.testId] = item.metrics.keyedmap.find(item => item.key === GOODPUT)?.ts || [];
           goodputChartData[`${item.testId}_anomaly`] = [];
           goodputChartData[`${item.testId}_upperbound`] = item.metrics.keyedmap.find(item => item.key === GOODPUT_UPPERBOUND)?.ts || [];
