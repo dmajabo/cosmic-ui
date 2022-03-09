@@ -46,17 +46,18 @@ export const ApplicationPanel: React.FC<ApplicationPanelProps> = props => {
             },
           }}
         >
-          <Tab disableRipple label="Sites" classes={{ selected: classes.tabSelected }} {...TabComponentProps(0)} className={classes.tab} />
-          <Tab disableRipple label="Traffic" classes={{ selected: classes.tabSelected }} {...TabComponentProps(1)} className={classes.tab} />
+          <Tab disableRipple label="Traffic" classes={{ selected: classes.tabSelected }} {...TabComponentProps(0)} className={classes.tab} />
+          <Tab disableRipple label="Sites" classes={{ selected: classes.tabSelected }} {...TabComponentProps(1)} className={classes.tab} />
         </Tabs>
       </PanelTabWrapper>
       <OverflowContainer>
         <TabPanel value={value} index={0}>
-          <SiteTable showLoader={false} data={siteNames} />
-        </TabPanel>
-        <TabPanel value={value} index={1}>
           <TrafficTab dataItem={props.dataItem} />
         </TabPanel>
+        <TabPanel value={value} index={1}>
+          <SiteTable showLoader={false} data={siteNames} />
+        </TabPanel>
+
       </OverflowContainer>
     </>
   );
