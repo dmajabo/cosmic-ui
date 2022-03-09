@@ -22,10 +22,11 @@ export const ApplicationPanel: React.FC<ApplicationPanelProps> = props => {
 
   const { topology } = useTopologyV2DataContext();
   const siteNames = topology.topologTrafficSegmentsApiResponse.topology.links
-    .filter(link => link.destinationId === props.dataItem.dataItem.nodeId)
+    .filter(link => link.destinationId === props.dataItem.dataItem?.nodeId)
     .map(link => {
-      return topology.sites[link.sourceId].dataItem.name;
-    });
+      return topology.sites[link.sourceId]?.dataItem?.name || '';
+    })
+    .filter(name => name);
 
   return (
     <>

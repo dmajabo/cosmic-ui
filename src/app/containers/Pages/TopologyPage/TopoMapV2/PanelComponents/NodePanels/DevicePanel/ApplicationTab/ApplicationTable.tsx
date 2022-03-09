@@ -1,6 +1,7 @@
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import Paging from 'app/components/Basic/Paging';
 import { TableWrapper } from 'app/components/Basic/Table/PrimeTableStyles';
+import { TableStyles } from 'app/components/Basic/Table/TableStyles';
 import IconWrapper from 'app/components/Buttons/IconWrapper';
 import LoadingIndicator from 'app/components/Loading';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
@@ -33,6 +34,7 @@ interface ApplicationTableProps {
 }
 
 export const AppTable: React.FC<ApplicationTableProps> = props => {
+  const classes = TableStyles();
   const [expandedRowsMapper, setExpandedRowsMapper] = useState<{ [key: string]: boolean }>(null);
 
   const onRowToggle = (rowData: TrafficTableRowData) => {
@@ -82,6 +84,18 @@ export const AppTable: React.FC<ApplicationTableProps> = props => {
             header={AppTrafficColumns.network.label}
             style={{ minWidth: AppTrafficColumns.network.minWidth }}
             sortable={AppTrafficColumns.network.sortable}
+            bodyStyle={{
+              padding: '10px 12px',
+              fontWeight: 500,
+              fontSize: 16,
+              lineHeight: '18px',
+              whiteSpace: 'nowrap',
+              fontFamily: 'DMSans',
+              textAlign: 'left',
+              position: 'initial',
+              letterSpacing: 'unset',
+            }}
+            headerStyle={{ fontSize: '14px', lineHeight: '16px', textTransform: 'uppercase', fontWeight: 700, textAlign: 'left', position: 'initial', letterSpacing: 'unset', fontFamily: 'DMSans' }}
           />
           <Column
             body={(rowData: TrafficTableRowData) => <>{convertBytesToHumanReadableString(rowData.sent)}</>}
@@ -89,6 +103,18 @@ export const AppTable: React.FC<ApplicationTableProps> = props => {
             header={AppTrafficColumns.sent.label}
             style={{ minWidth: AppTrafficColumns.sent.minWidth }}
             sortable={AppTrafficColumns.sent.sortable}
+            bodyStyle={{
+              padding: '10px 12px',
+              fontWeight: 500,
+              fontSize: 16,
+              lineHeight: '18px',
+              whiteSpace: 'nowrap',
+              fontFamily: 'DMSans',
+              textAlign: 'left',
+              position: 'initial',
+              letterSpacing: 'unset',
+            }}
+            headerStyle={{ fontSize: '14px', lineHeight: '16px', textTransform: 'uppercase', fontWeight: 700, textAlign: 'left', position: 'initial', letterSpacing: 'unset', fontFamily: 'DMSans' }}
           />
           <Column
             body={(rowData: TrafficTableRowData) => <>{convertBytesToHumanReadableString(rowData.recv)}</>}
@@ -96,20 +122,73 @@ export const AppTable: React.FC<ApplicationTableProps> = props => {
             header={AppTrafficColumns.received.label}
             style={{ minWidth: AppTrafficColumns.received.minWidth }}
             sortable={AppTrafficColumns.received.sortable}
+            bodyStyle={{
+              padding: '10px 12px',
+              fontWeight: 500,
+              fontSize: 16,
+              lineHeight: '18px',
+              whiteSpace: 'nowrap',
+              fontFamily: 'DMSans',
+              textAlign: 'left',
+              position: 'initial',
+              letterSpacing: 'unset',
+            }}
+            headerStyle={{ fontSize: '14px', lineHeight: '16px', textTransform: 'uppercase', fontWeight: 700, textAlign: 'left', position: 'initial', letterSpacing: 'unset', fontFamily: 'DMSans' }}
           />
-          <Column field={AppTrafficColumns.flows.field} header={AppTrafficColumns.flows.label} style={{ minWidth: AppTrafficColumns.flows.minWidth }} sortable={AppTrafficColumns.flows.sortable} />
+          <Column
+            field={AppTrafficColumns.flows.field}
+            header={AppTrafficColumns.flows.label}
+            style={{ minWidth: AppTrafficColumns.flows.minWidth }}
+            sortable={AppTrafficColumns.flows.sortable}
+            bodyStyle={{
+              padding: '10px 12px',
+              fontWeight: 500,
+              fontSize: 16,
+              lineHeight: '18px',
+              whiteSpace: 'nowrap',
+              fontFamily: 'DMSans',
+              textAlign: 'left',
+              position: 'initial',
+              letterSpacing: 'unset',
+            }}
+            headerStyle={{ fontSize: '14px', lineHeight: '16px', textTransform: 'uppercase', fontWeight: 700, textAlign: 'left', position: 'initial', letterSpacing: 'unset', fontFamily: 'DMSans' }}
+          />
           <Column
             field={AppTrafficColumns.activeTime.field}
             header={AppTrafficColumns.activeTime.label}
             style={{ minWidth: AppTrafficColumns.activeTime.minWidth }}
             sortable={AppTrafficColumns.activeTime.sortable}
             body={(rowData: TrafficTableRowData) => <>{convertSecondsToString(rowData.activeTime)}</>}
+            bodyStyle={{
+              padding: '10px 12px',
+              fontWeight: 500,
+              fontSize: 16,
+              lineHeight: '18px',
+              whiteSpace: 'nowrap',
+              fontFamily: 'DMSans',
+              textAlign: 'left',
+              position: 'initial',
+              letterSpacing: 'unset',
+            }}
+            headerStyle={{ fontSize: '14px', lineHeight: '16px', textTransform: 'uppercase', fontWeight: 700, textAlign: 'left', position: 'initial', letterSpacing: 'unset', fontFamily: 'DMSans' }}
           />
           <Column
             field={AppTrafficColumns.noOfClients.field}
             header={AppTrafficColumns.noOfClients.label}
             style={{ minWidth: AppTrafficColumns.noOfClients.minWidth }}
             sortable={AppTrafficColumns.noOfClients.sortable}
+            bodyStyle={{
+              padding: '10px 12px',
+              fontWeight: 500,
+              fontSize: 16,
+              lineHeight: '18px',
+              whiteSpace: 'nowrap',
+              fontFamily: 'DMSans',
+              textAlign: 'left',
+              position: 'initial',
+              letterSpacing: 'unset',
+            }}
+            headerStyle={{ fontSize: '14px', lineHeight: '16px', textTransform: 'uppercase', fontWeight: 700, textAlign: 'left', position: 'initial', letterSpacing: 'unset', fontFamily: 'DMSans' }}
           />
         </DataTable>
         {props.showLoader && (

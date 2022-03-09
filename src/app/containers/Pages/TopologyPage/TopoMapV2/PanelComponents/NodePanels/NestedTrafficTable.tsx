@@ -84,6 +84,18 @@ export const NestedTrafficTable: React.FC<{ networkId: string; resourceId: strin
             header={AppTrafficNestedColumns.destination.label}
             style={{ minWidth: AppTrafficNestedColumns.destination.minWidth }}
             sortable={AppTrafficNestedColumns.destination.sortable}
+            bodyStyle={{
+              padding: '10px 12px',
+              fontWeight: 500,
+              fontSize: 16,
+              lineHeight: '18px',
+              whiteSpace: 'nowrap',
+              fontFamily: 'DMSans',
+              textAlign: 'left',
+              position: 'initial',
+              letterSpacing: 'unset',
+            }}
+            headerStyle={{ fontSize: '14px', lineHeight: '16px', textTransform: 'uppercase', fontWeight: 700, textAlign: 'left', position: 'initial', letterSpacing: 'unset', fontFamily: 'DMSans' }}
           />
           <Column
             field={AppTrafficColumns.sent.field}
@@ -91,6 +103,18 @@ export const NestedTrafficTable: React.FC<{ networkId: string; resourceId: strin
             style={{ minWidth: AppTrafficColumns.sent.minWidth }}
             sortable={AppTrafficColumns.sent.sortable}
             body={(rowData: NestedTrafficTableRowData) => <>{convertBytesToHumanReadableString(rowData.sent)}</>}
+            bodyStyle={{
+              padding: '10px 12px',
+              fontWeight: 500,
+              fontSize: 16,
+              lineHeight: '18px',
+              whiteSpace: 'nowrap',
+              fontFamily: 'DMSans',
+              textAlign: 'left',
+              position: 'initial',
+              letterSpacing: 'unset',
+            }}
+            headerStyle={{ fontSize: '14px', lineHeight: '16px', textTransform: 'uppercase', fontWeight: 700, textAlign: 'left', position: 'initial', letterSpacing: 'unset', fontFamily: 'DMSans' }}
           />
           <Column
             field={AppTrafficColumns.received.field}
@@ -98,20 +122,73 @@ export const NestedTrafficTable: React.FC<{ networkId: string; resourceId: strin
             style={{ minWidth: AppTrafficColumns.received.minWidth }}
             sortable={AppTrafficColumns.received.sortable}
             body={(rowData: NestedTrafficTableRowData) => <>{convertBytesToHumanReadableString(rowData.recv)}</>}
+            bodyStyle={{
+              padding: '10px 12px',
+              fontWeight: 500,
+              fontSize: 16,
+              lineHeight: '18px',
+              whiteSpace: 'nowrap',
+              fontFamily: 'DMSans',
+              textAlign: 'left',
+              position: 'initial',
+              letterSpacing: 'unset',
+            }}
+            headerStyle={{ fontSize: '14px', lineHeight: '16px', textTransform: 'uppercase', fontWeight: 700, textAlign: 'left', position: 'initial', letterSpacing: 'unset', fontFamily: 'DMSans' }}
           />
-          <Column field={AppTrafficColumns.flows.field} header={AppTrafficColumns.flows.label} style={{ minWidth: AppTrafficColumns.flows.minWidth }} sortable={AppTrafficColumns.flows.sortable} />
+          <Column
+            field={AppTrafficColumns.flows.field}
+            header={AppTrafficColumns.flows.label}
+            style={{ minWidth: AppTrafficColumns.flows.minWidth }}
+            sortable={AppTrafficColumns.flows.sortable}
+            bodyStyle={{
+              padding: '10px 12px',
+              fontWeight: 500,
+              fontSize: 16,
+              lineHeight: '18px',
+              whiteSpace: 'nowrap',
+              fontFamily: 'DMSans',
+              textAlign: 'left',
+              position: 'initial',
+              letterSpacing: 'unset',
+            }}
+            headerStyle={{ fontSize: '14px', lineHeight: '16px', textTransform: 'uppercase', fontWeight: 700, textAlign: 'left', position: 'initial', letterSpacing: 'unset', fontFamily: 'DMSans' }}
+          />
           <Column
             field={AppTrafficColumns.activeTime.field}
             header={AppTrafficColumns.activeTime.label}
             style={{ minWidth: AppTrafficColumns.activeTime.minWidth }}
             sortable={AppTrafficColumns.activeTime.sortable}
             body={(rowData: NestedTrafficTableRowData) => <>{convertSecondsToString(rowData.activeTime)}</>}
+            bodyStyle={{
+              padding: '10px 12px',
+              fontWeight: 500,
+              fontSize: 16,
+              lineHeight: '18px',
+              whiteSpace: 'nowrap',
+              fontFamily: 'DMSans',
+              textAlign: 'left',
+              position: 'initial',
+              letterSpacing: 'unset',
+            }}
+            headerStyle={{ fontSize: '14px', lineHeight: '16px', textTransform: 'uppercase', fontWeight: 700, textAlign: 'left', position: 'initial', letterSpacing: 'unset', fontFamily: 'DMSans' }}
           />
           <Column
             field={AppTrafficColumns.noOfClients.field}
             header={AppTrafficColumns.noOfClients.label}
             style={{ minWidth: AppTrafficColumns.noOfClients.minWidth }}
             sortable={AppTrafficColumns.noOfClients.sortable}
+            bodyStyle={{
+              padding: '10px 12px',
+              fontWeight: 500,
+              fontSize: 16,
+              lineHeight: '18px',
+              whiteSpace: 'nowrap',
+              fontFamily: 'DMSans',
+              textAlign: 'left',
+              position: 'initial',
+              letterSpacing: 'unset',
+            }}
+            headerStyle={{ fontSize: '14px', lineHeight: '16px', textTransform: 'uppercase', fontWeight: 700, textAlign: 'left', position: 'initial', letterSpacing: 'unset', fontFamily: 'DMSans' }}
           />
         </DataTable>
         {loading && (

@@ -81,6 +81,18 @@ const MemberTable: React.FC<Props> = (props: Props) => {
             header={SiteTrafficColumns.network.label}
             style={{ minWidth: SiteTrafficColumns.network.minWidth }}
             sortable={SiteTrafficColumns.network.sortable}
+            bodyStyle={{
+              padding: '10px 12px',
+              fontWeight: 500,
+              fontSize: 16,
+              lineHeight: '18px',
+              whiteSpace: 'nowrap',
+              fontFamily: 'DMSans',
+              textAlign: 'left',
+              position: 'initial',
+              letterSpacing: 'unset',
+            }}
+            headerStyle={{ fontSize: '14px', lineHeight: '16px', textTransform: 'uppercase', fontWeight: 700, textAlign: 'left', position: 'initial', letterSpacing: 'unset', fontFamily: 'DMSans' }}
           />
           <Column
             body={(rowData: MemberRow) => <>{convertBytesToHumanReadableString(rowData.sent)}</>}
@@ -88,6 +100,18 @@ const MemberTable: React.FC<Props> = (props: Props) => {
             header={SiteTrafficColumns.sent.label}
             style={{ minWidth: SiteTrafficColumns.sent.minWidth }}
             sortable={SiteTrafficColumns.sent.sortable}
+            bodyStyle={{
+              padding: '10px 12px',
+              fontWeight: 500,
+              fontSize: 16,
+              lineHeight: '18px',
+              whiteSpace: 'nowrap',
+              fontFamily: 'DMSans',
+              textAlign: 'left',
+              position: 'initial',
+              letterSpacing: 'unset',
+            }}
+            headerStyle={{ fontSize: '14px', lineHeight: '16px', textTransform: 'uppercase', fontWeight: 700, textAlign: 'left', position: 'initial', letterSpacing: 'unset', fontFamily: 'DMSans' }}
           />
           <Column
             body={(rowData: MemberRow) => <>{convertBytesToHumanReadableString(rowData.recv)}</>}
@@ -95,20 +119,73 @@ const MemberTable: React.FC<Props> = (props: Props) => {
             header={SiteTrafficColumns.received.label}
             style={{ minWidth: SiteTrafficColumns.received.minWidth }}
             sortable={SiteTrafficColumns.received.sortable}
+            bodyStyle={{
+              padding: '10px 12px',
+              fontWeight: 500,
+              fontSize: 16,
+              lineHeight: '18px',
+              whiteSpace: 'nowrap',
+              fontFamily: 'DMSans',
+              textAlign: 'left',
+              position: 'initial',
+              letterSpacing: 'unset',
+            }}
+            headerStyle={{ fontSize: '14px', lineHeight: '16px', textTransform: 'uppercase', fontWeight: 700, textAlign: 'left', position: 'initial', letterSpacing: 'unset', fontFamily: 'DMSans' }}
           />
-          <Column field={SiteTrafficColumns.flows.field} header={SiteTrafficColumns.flows.label} style={{ minWidth: SiteTrafficColumns.flows.minWidth }} sortable={SiteTrafficColumns.flows.sortable} />
+          <Column
+            field={SiteTrafficColumns.flows.field}
+            header={SiteTrafficColumns.flows.label}
+            style={{ minWidth: SiteTrafficColumns.flows.minWidth }}
+            sortable={SiteTrafficColumns.flows.sortable}
+            bodyStyle={{
+              padding: '10px 12px',
+              fontWeight: 500,
+              fontSize: 16,
+              lineHeight: '18px',
+              whiteSpace: 'nowrap',
+              fontFamily: 'DMSans',
+              textAlign: 'left',
+              position: 'initial',
+              letterSpacing: 'unset',
+            }}
+            headerStyle={{ fontSize: '14px', lineHeight: '16px', textTransform: 'uppercase', fontWeight: 700, textAlign: 'left', position: 'initial', letterSpacing: 'unset', fontFamily: 'DMSans' }}
+          />
           <Column
             field={SiteTrafficColumns.activeTime.field}
             header={SiteTrafficColumns.activeTime.label}
             style={{ minWidth: SiteTrafficColumns.activeTime.minWidth }}
             sortable={SiteTrafficColumns.activeTime.sortable}
             body={(rowData: MemberRow) => <>{convertSecondsToString(rowData.activeTime)}</>}
+            bodyStyle={{
+              padding: '10px 12px',
+              fontWeight: 500,
+              fontSize: 16,
+              lineHeight: '18px',
+              whiteSpace: 'nowrap',
+              fontFamily: 'DMSans',
+              textAlign: 'left',
+              position: 'initial',
+              letterSpacing: 'unset',
+            }}
+            headerStyle={{ fontSize: '14px', lineHeight: '16px', textTransform: 'uppercase', fontWeight: 700, textAlign: 'left', position: 'initial', letterSpacing: 'unset', fontFamily: 'DMSans' }}
           />
           <Column
             field={SiteTrafficColumns.noOfClients.field}
             header={SiteTrafficColumns.noOfClients.label}
             style={{ minWidth: SiteTrafficColumns.noOfClients.minWidth }}
             sortable={SiteTrafficColumns.noOfClients.sortable}
+            bodyStyle={{
+              padding: '10px 12px',
+              fontWeight: 500,
+              fontSize: 16,
+              lineHeight: '18px',
+              whiteSpace: 'nowrap',
+              fontFamily: 'DMSans',
+              textAlign: 'left',
+              position: 'initial',
+              letterSpacing: 'unset',
+            }}
+            headerStyle={{ fontSize: '14px', lineHeight: '16px', textTransform: 'uppercase', fontWeight: 700, textAlign: 'left', position: 'initial', letterSpacing: 'unset', fontFamily: 'DMSans' }}
           />
         </DataTable>
         {props.showLoader && (
