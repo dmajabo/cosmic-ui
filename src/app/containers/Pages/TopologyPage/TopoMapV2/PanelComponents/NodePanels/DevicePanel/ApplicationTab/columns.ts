@@ -31,14 +31,14 @@ export const AppTrafficColumns: IAppTrafficTColumns = {
   received: {
     label: 'Received',
     field: 'recv',
-    sortable: false,
+    sortable: true,
     resField: 'recv',
     minWidth: '30px',
   },
   sent: {
     label: 'Sent',
     field: 'sent',
-    sortable: false,
+    sortable: true,
     resField: 'sent',
     minWidth: '30px',
   },
@@ -52,7 +52,7 @@ export const AppTrafficColumns: IAppTrafficTColumns = {
   noOfClients: {
     label: 'Clients',
     field: 'noOfClients',
-    sortable: false,
+    sortable: true,
     resField: 'noOfClients',
     minWidth: '50px',
   },
@@ -63,7 +63,7 @@ export const AppTrafficNestedColumns: IAppTrafficNestedColumns = {
   destination: {
     label: 'Destination',
     field: 'destination',
-    sortable: false,
+    sortable: true,
     resField: 'destination',
     minWidth: '70px',
   },
