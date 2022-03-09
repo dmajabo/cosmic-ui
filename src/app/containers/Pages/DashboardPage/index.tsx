@@ -263,6 +263,7 @@ const DashboardPage: React.FC = () => {
                     style={{
                       minWidth: SITES_COLUMNS.name.minWidth,
                       padding: 5,
+                      fontSize: 14,
                       wordWrap: 'break-word',
                       wordBreak: 'break-all',
                     }}
@@ -274,6 +275,7 @@ const DashboardPage: React.FC = () => {
                     style={{
                       minWidth: SITES_COLUMNS.uplinks.minWidth,
                       padding: 5,
+                      fontSize: 14,
                       wordWrap: 'break-word',
                       wordBreak: 'break-all',
                     }}
@@ -285,6 +287,7 @@ const DashboardPage: React.FC = () => {
                     style={{
                       minWidth: SITES_COLUMNS.totalUsage.minWidth,
                       padding: 5,
+                      fontSize: 14,
                       wordWrap: 'break-word',
                       wordBreak: 'break-all',
                     }}
@@ -293,37 +296,37 @@ const DashboardPage: React.FC = () => {
                   ></Column>
                   <Column
                     headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, wordBreak: 'normal' }}
-                    style={{ minWidth: SITES_COLUMNS.clients.minWidth, padding: 5, wordWrap: 'break-word', wordBreak: 'break-all' }}
+                    style={{ minWidth: SITES_COLUMNS.clients.minWidth, padding: 5, wordWrap: 'break-word', wordBreak: 'break-all', fontSize: 14 }}
                     field={SITES_COLUMNS.clients.field}
                     header={SITES_COLUMNS.clients.label}
                   ></Column>
                   <Column
                     headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, wordBreak: 'normal' }}
-                    style={{ minWidth: SITES_COLUMNS.tags.minWidth, padding: 5, wordWrap: 'break-word', wordBreak: 'break-all' }}
+                    style={{ minWidth: SITES_COLUMNS.tags.minWidth, padding: 5, wordWrap: 'break-word', wordBreak: 'break-all', fontSize: 14 }}
                     field={SITES_COLUMNS.tags.field}
                     header={SITES_COLUMNS.tags.label}
                   ></Column>
                   <Column
                     headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, wordBreak: 'normal' }}
-                    style={{ minWidth: SITES_COLUMNS.latency.minWidth, padding: 5, wordWrap: 'break-word', wordBreak: 'normal' }}
+                    style={{ minWidth: SITES_COLUMNS.latency.minWidth, padding: 5, wordWrap: 'break-word', wordBreak: 'normal', fontSize: 14 }}
                     field={SITES_COLUMNS.latency.field}
                     header={SITES_COLUMNS.latency.label}
                   ></Column>
                   <Column
                     headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, wordBreak: 'normal' }}
-                    style={{ minWidth: SITES_COLUMNS.packetLoss.minWidth, padding: 5, wordWrap: 'break-word', wordBreak: 'normal' }}
+                    style={{ minWidth: SITES_COLUMNS.packetLoss.minWidth, padding: 5, wordWrap: 'break-word', wordBreak: 'normal', fontSize: 14 }}
                     field={SITES_COLUMNS.packetLoss.field}
                     header={SITES_COLUMNS.packetLoss.label}
                   ></Column>
                   <Column
                     headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, wordBreak: 'normal' }}
-                    style={{ minWidth: SITES_COLUMNS.goodput.minWidth, padding: 5, wordWrap: 'break-word', wordBreak: 'normal' }}
+                    style={{ minWidth: SITES_COLUMNS.goodput.minWidth, padding: 5, wordWrap: 'break-word', wordBreak: 'normal', fontSize: 14 }}
                     field={SITES_COLUMNS.goodput.field}
                     header={SITES_COLUMNS.goodput.label}
                   ></Column>
                   <Column
                     headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, wordBreak: 'normal' }}
-                    style={{ minWidth: SITES_COLUMNS.availability.minWidth, padding: 5, wordWrap: 'break-word', wordBreak: 'break-all' }}
+                    style={{ minWidth: SITES_COLUMNS.availability.minWidth, padding: 5, wordWrap: 'break-word', wordBreak: 'break-all', fontSize: 14 }}
                     field={SITES_COLUMNS.availability.field}
                     header={SITES_COLUMNS.availability.label}
                   ></Column>
