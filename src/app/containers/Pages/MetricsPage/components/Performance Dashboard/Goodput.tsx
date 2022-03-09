@@ -85,7 +85,7 @@ export const Goodput: React.FC<GoodputProps> = ({ selectedRows, timeRange, netwo
           const anomalyArray = item.metrics.keyedmap.find(item => item.key === GOODPUT_ANOMALY)?.ts || [];
           totalAnomalyCount = totalAnomalyCount + anomalyArray.length;
           goodputChartData[item.testId] = item.metrics.keyedmap.find(item => item.key === GOODPUT)?.ts || [];
-          goodputChartData[`${item.testId}_anomaly`] = item.metrics.keyedmap.find(item => item.key === GOODPUT_ANOMALY)?.ts || [];
+          goodputChartData[`${item.testId}_anomaly`] = [];
           goodputChartData[`${item.testId}_upperbound`] = item.metrics.keyedmap.find(item => item.key === GOODPUT_UPPERBOUND)?.ts || [];
           goodputChartData[`${item.testId}_lowerbound`] = item.metrics.keyedmap.find(item => item.key === GOODPUT_LOWERBOUND)?.ts || [];
           goodputChartData[`${item.testId}_threshold`] = item.metrics.keyedmap.find(item => item.key === GOODPUT_THRESHOLD)?.ts || [];
