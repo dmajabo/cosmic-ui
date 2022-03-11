@@ -6,6 +6,8 @@ import { MetricKeyValue } from './PacketLoss';
 import sortBy from 'lodash/sortBy';
 import HighchartsMore from 'highcharts/highcharts-more';
 import { FinalTableData } from 'lib/api/http/SharedTypes';
+import { SelectOption } from 'app/containers/Pages/AnalyticsPage/components/Metrics Explorer/MetricsExplorer';
+import { SelectedNetworkMetricsData } from './PerformanceDashboard';
 HighchartsMore(Highcharts);
 
 Highcharts.setOptions({
@@ -31,7 +33,7 @@ interface AreaChartData {
 
 interface LineChartProps {
   readonly dataValueSuffix?: string;
-  readonly selectedRows: FinalTableData[];
+  readonly selectedNetworksMetricsData: SelectedNetworkMetricsData[];
   readonly inputData: MetricKeyValue;
   readonly timeFormat?: string;
 }
@@ -93,7 +95,7 @@ const COLORS = [
   '#0097A7',
   '#1A237E',
 ];
-const ANOMALY_POINT_COLOR = 'red';
+const ANOMALY_POINT_COLOR = 'orange';
 
 const addNullPointsForUnavailableData = (array: number[][]) => {
   let data = [];
@@ -112,15 +114,15 @@ const addNullPointsForUnavailableData = (array: number[][]) => {
   return data;
 };
 
-export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataValueSuffix, inputData }) => {
+export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedNetworksMetricsData, dataValueSuffix, inputData }) => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    const tempChartData: ChartData[] = selectedRows.map(row => {
+    const tempChartData: ChartData[] = selectedNetworksMetricsData.map(row => {
       return {
-        id: `${row.name} &#9654 ${row.sourceDevice}`,
-        name: `${row.name} &#9654 ${row.sourceDevice}`,
-        data: sortBy(inputData[row.id], 'time').map(item => {
+        id: `${row.label} &#9654 ${row.deviceString}`,
+        name: `${row.label} &#9654 ${row.deviceString}`,
+        data: sortBy(inputData[row.label], 'time').map(item => {
           const timestamp = DateTime.fromFormat(item.time, OLD_TIME_FORMAT).toLocal();
           return {
             x: timestamp.toMillis(),
@@ -134,12 +136,12 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
               },
             },
             dataValueSuffix: dataValueSuffix,
-            networkName: row.sourceNetwork,
+            networkName: row.label,
             destination: row.destination,
           };
         }),
         zIndex: 1,
-        turboThreshold: inputData[row.id]?.length || 0,
+        turboThreshold: inputData[row.label]?.length || 0,
         tooltip: {
           useHTML: true,
           pointFormat: `
@@ -150,10 +152,10 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
         },
       };
     });
-    const anomalyData: ChartData[] = selectedRows.map(row => ({
-      id: `${row.name}_anomaly`,
-      name: `${row.name}_anomaly`,
-      data: sortBy(inputData[`${row.id}_anomaly`], 'time').map(item => {
+    const anomalyData: ChartData[] = selectedNetworksMetricsData.map(row => ({
+      id: `${row.label}_anomaly`,
+      name: `${row.label}_anomaly`,
+      data: sortBy(inputData[`${row.label}_anomaly`], 'time').map(item => {
         const timestamp = DateTime.fromFormat(item.time, OLD_TIME_FORMAT).toUTC().toMillis();
 
         return {
@@ -168,8 +170,8 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
           destination: row.destination,
         };
       }),
-      linkedTo: `${row.name} &#9654 ${row.sourceDevice}`,
-      turboThreshold: inputData[row.id]?.length || 0,
+      linkedTo: `${row.label} &#9654 ${row.deviceString}`,
+      turboThreshold: inputData[row.label]?.length || 0,
       color: ANOMALY_POINT_COLOR,
       states: {
         hover: {
@@ -185,17 +187,17 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
           `,
       },
     }));
-    const thresholdData: AreaChartData[] = selectedRows.map(row => {
-      const thresholdSeriesData = sortBy(inputData[`${row.id}_threshold`], 'time').map((item, index) => {
+    const thresholdData: AreaChartData[] = selectedNetworksMetricsData.map(row => {
+      const thresholdSeriesData = sortBy(inputData[`${row.label}_threshold`], 'time').map((item, index) => {
         const timestamp = DateTime.fromFormat(item.time, OLD_TIME_FORMAT).toUTC().toMillis();
         return [timestamp, dataValueSuffix === 'mbps' ? Number(item.value) / 1000 : Number(Number.parseFloat(item.value).toFixed(2))];
       });
       const data = addNullPointsForUnavailableData(thresholdSeriesData);
       return {
-        id: `${row.name}_threshold`,
-        name: `${row.name}_threshold`,
+        id: `${row.label}_threshold`,
+        name: `${row.label}_threshold`,
         data: data,
-        linkedTo: `${row.name} &#9654 ${row.sourceDevice}`,
+        linkedTo: `${row.label} &#9654 ${row.deviceString}`,
         lineWidth: 1,
         states: {
           hover: {
@@ -213,9 +215,9 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
         },
       };
     });
-    const areaData: AreaChartData[] = selectedRows.map(row => {
-      const sortedUpperboundData = sortBy(inputData[`${row.id}_upperbound`], 'time');
-      const areaSeriesData = sortBy(inputData[`${row.id}_lowerbound`], 'time').map((item, index) => {
+    const areaData: AreaChartData[] = selectedNetworksMetricsData.map(row => {
+      const sortedUpperboundData = sortBy(inputData[`${row.label}_upperbound`], 'time');
+      const areaSeriesData = sortBy(inputData[`${row.label}_lowerbound`], 'time').map((item, index) => {
         const timestamp = DateTime.fromFormat(item.time, OLD_TIME_FORMAT).toUTC();
         return [
           timestamp.toMillis(),
@@ -227,11 +229,11 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedRows, dataV
       });
       const data = addNullPointsForUnavailableData(areaSeriesData);
       return {
-        name: `${row.name}_bounds`,
+        name: `${row.label}_bounds`,
         data: data,
         type: 'arearange',
-        turboThreshold: inputData[row.id]?.length || 0,
-        linkedTo: `${row.name} &#9654 ${row.sourceDevice}`,
+        turboThreshold: inputData[row.label]?.length || 0,
+        linkedTo: `${row.label} &#9654 ${row.deviceString}`,
         color: 'rgb(235,240,250)',
         zIndex: 0,
         states: {

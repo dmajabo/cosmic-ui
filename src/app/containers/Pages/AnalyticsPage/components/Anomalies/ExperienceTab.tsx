@@ -128,7 +128,7 @@ export const ExperienceTab: React.FC<ExperienceTabProps> = ({ timeRange }) => {
   const { response: organizationResponse, onGet: getOrganizations } = useGet<ITopologyMapData>();
 
   const getSLATests = async () => {
-    const response = await apiClient.getSLATests();
+    const response = await apiClient.getSLATests(true);
     if (isEmpty(response)) {
       setSlaTests([]);
     } else {

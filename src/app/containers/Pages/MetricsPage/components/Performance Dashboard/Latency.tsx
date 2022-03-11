@@ -5,7 +5,6 @@ import { MetricsLineChart } from './MetricsLineChart';
 import LoadingIndicator from 'app/components/Loading';
 import { MetricKeyValue } from './PacketLoss';
 import { LegendData } from './Heatmap';
-import { FinalTableData, Vnet } from 'lib/api/http/SharedTypes';
 import isEmpty from 'lodash/isEmpty';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { Chart, ChartContainerStyles } from 'app/components/ChartContainer/styles';
@@ -13,11 +12,12 @@ import { EmptyText } from 'app/components/Basic/NoDataStyles/NoDataStyles';
 import { useHistory } from 'react-router-dom';
 import { LocationState } from '../..';
 import { ModelalertType } from 'lib/api/ApiModels/Workflow/apiModel';
+import { checkforNoData } from './filterFunctions';
+import { SelectedNetworkMetricsData } from './PerformanceDashboard';
 
 interface LatencyProps {
-  readonly selectedRows: FinalTableData[];
+  readonly selectedNetworksMetricsData: SelectedNetworkMetricsData[];
   readonly timeRange: string;
-  readonly networks: Vnet[];
 }
 
 const LATENCY = 'latency';
@@ -44,7 +44,7 @@ export const LATENCY_HEATMAP_LEGEND: LegendData[] = [
   },
 ];
 
-export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange, networks }) => {
+export const Latency: React.FC<LatencyProps> = ({ selectedNetworksMetricsData, timeRange }) => {
   const classes = PerformanceDashboardStyles();
 
   const [latencyData, setLatencyData] = useState<MetricKeyValue>({});
@@ -69,7 +69,7 @@ export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange, netwo
     const getLatencyMetrics = async () => {
       const latencyChartData: MetricKeyValue = {};
       let totalAnomalyCount = 0;
-      const promises = selectedRows.map(row => apiClient.getLatencyMetrics(row.sourceDevice, row.destination, timeRange, row.id));
+      const promises = selectedNetworksMetricsData.map(row => apiClient.getLatencyMetrics(row.deviceString, row.destination, timeRange, row.label));
       Promise.all(promises).then(values => {
         values.forEach(item => {
           const anomalyArray = item.metrics.keyedmap.find(item => item.key === LATENCY_ANOMALY)?.ts || [];
@@ -90,23 +90,27 @@ export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange, netwo
     return () => {
       setLatencyData({});
     };
-  }, [selectedRows, timeRange]);
+  }, [selectedNetworksMetricsData, timeRange]);
 
   return (
-    <div ref={scrollRef} className={classes.pageComponentBackground}>
-      <div className={classes.pageComponentTitleContainer}>
+    <>
+      <div ref={scrollRef} className={classes.metricComponentTitleContainer}>
         <div className={classes.pageComponentTitle}>Latency summary</div>
         <div className={classes.pillContainer}>
           <span className={classes.pillText}>{anomalyCount}</span>
         </div>
       </div>
       <ChartContainerStyles style={{ maxWidth: '100%', minHeight: 420, maxHeight: 420 }}>
-        {!isEmpty(selectedRows) ? (
+        {!isEmpty(selectedNetworksMetricsData) ? (
           // latencyData contains 5 keys for each row. One for the data, one for anomaly, one for upperbound, one for lowerbound and one for threshold
-          Object.keys(latencyData).length / 5 === selectedRows.length ? (
-            <Chart>
-              <MetricsLineChart dataValueSuffix="ms" selectedRows={selectedRows} inputData={latencyData} />
-            </Chart>
+          Object.keys(latencyData).length / 5 === selectedNetworksMetricsData.length ? (
+            checkforNoData(latencyData) ? (
+              <EmptyText>No Data</EmptyText>
+            ) : (
+              <Chart>
+                <MetricsLineChart dataValueSuffix="ms" selectedNetworksMetricsData={selectedNetworksMetricsData} inputData={latencyData} />
+              </Chart>
+            )
           ) : (
             <LoadingIndicator margin="auto" />
           )
@@ -114,6 +118,6 @@ export const Latency: React.FC<LatencyProps> = ({ selectedRows, timeRange, netwo
           <EmptyText> To see the data select SLA Tests</EmptyText>
         )}
       </ChartContainerStyles>
-    </div>
+    </>
   );
 };

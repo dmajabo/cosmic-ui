@@ -26,14 +26,14 @@ const BASE_URL = process.env.REACT_APP_API_ENDPOINT_PRODUCTION;
 
 interface ApiClient {
   readonly getOrganizations: () => Promise<ITopologyMapData>;
-  readonly getSLATests: () => Promise<GetSLATestResponse>;
+  readonly getSLATests: (include_metrics: boolean) => Promise<GetSLATestResponse>;
   readonly createSLATest: (request: CreateSLATestRequest) => Promise<CreateSLATestResponse>;
   readonly getPacketLossMetrics: (deviceId: string, destination: string, startTime: string, testId: string) => Promise<SLATestMetricsResponse>;
   readonly getLatencyMetrics: (deviceId: string, destination: string, startTime: string, testId: string) => Promise<SLATestMetricsResponse>;
   readonly deleteSLATest: (testId: string) => Promise<DeleteSLATestResponse>;
   readonly getHeatmapPacketLoss: (sourceNw: string, destination: string, startTime: string, testId: string) => Promise<HeatMapResponse>;
   readonly getHeatmapLatency: (sourceNw: string, destination: string, startTime: string, testId: string) => Promise<HeatMapResponse>;
-  readonly getGoodputMetrics: (deviceId: string, destination: string, startTime: string, testId: string) => Promise<SLATestMetricsResponse>;
+  readonly getJitterMetrics: (deviceId: string, destination: string, startTime: string, testId: string) => Promise<SLATestMetricsResponse>;
   readonly getSLATest: (testId: string) => Promise<SLATest>;
   readonly updateSLATest: (testData: UpdateSLATestRequest) => Promise<UpdateSLATestResponse>;
   readonly getAwsRegions: () => Promise<GetAwsRegionsResponse>;
@@ -56,7 +56,7 @@ const PATHS = Object.freeze({
   DELETE_SLA_TEST: (testId: string) => `/policy/api/v1/policy/performance/sla-tests/${testId}`,
   HEATMAP_PACKET_LOSS: (sourceNw: string, destination: string) => `/telemetry/api/v1/metrics/source_nw/${sourceNw}/device/destination/${destination}/avgpacketloss`,
   HEATMAP_LATENCY: (sourceNw: string, destination: string) => `/telemetry/api/v1/metrics/source_nw/${sourceNw}/device/destination/${destination}/avglatency`,
-  GET_GOODPUT: (deviceId: string, destination: string) => `/telemetry/api/v1/metrics/device/${deviceId}/destination/${destination}/goodput`,
+  GET_JITTER: (deviceId: string, destination: string) => `/telemetry/api/v1/metrics/device/${deviceId}/destination/${destination}/jitter`,
   GET_SLA_TEST: (testId: string) => `/policy/api/v1/policy/performance/sla-tests/${testId}`,
   UPDATE_SLA_TEST: (testId: string) => `/policy/api/v1/policy/performance/sla-tests/${testId}`,
   GET_AWS_REGIONS: '/policy/api/v1/policy/aws-regions',
@@ -87,12 +87,12 @@ export const createApiClient = (token: string): ApiClient => {
     }
   }
 
-  async function getSLATests(): Promise<GetSLATestResponse> {
+  async function getSLATests(include_metrics: boolean): Promise<GetSLATestResponse> {
     try {
       const response = await axios.get<GetSLATestResponse>(PATHS.GET_SLA_TESTS, {
         ...config,
         params: {
-          include_metrics: true,
+          include_metrics: include_metrics,
         },
       });
       return response.data;
@@ -209,9 +209,9 @@ export const createApiClient = (token: string): ApiClient => {
     }
   }
 
-  async function getGoodputMetrics(deviceId: string, destination: string, startTime: string, testId: string): Promise<SLATestMetricsResponse> {
+  async function getJitterMetrics(deviceId: string, destination: string, startTime: string, testId: string): Promise<SLATestMetricsResponse> {
     try {
-      const response = await axios.get<SLATestMetricsResponse>(PATHS.GET_GOODPUT(deviceId, destination), {
+      const response = await axios.get<SLATestMetricsResponse>(PATHS.GET_JITTER(deviceId, destination), {
         ...config,
         params: {
           startTime: startTime,
@@ -380,7 +380,7 @@ export const createApiClient = (token: string): ApiClient => {
     deleteSLATest,
     getHeatmapPacketLoss,
     getHeatmapLatency,
-    getGoodputMetrics,
+    getJitterMetrics,
     getSLATest,
     updateSLATest,
     getAwsRegions,

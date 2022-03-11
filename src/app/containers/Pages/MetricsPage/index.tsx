@@ -5,6 +5,7 @@ import { ModelalertType } from 'lib/api/ApiModels/Workflow/apiModel';
 import { Device, MetricsTopoMap, Organization, Vnet } from 'lib/api/http/SharedTypes';
 import { useGetChainData } from 'lib/api/http/useAxiosHook';
 import { MetricsProvider, useMetricsActions } from 'lib/hooks/Metrics/useMetricsDataContent';
+import { IObject } from 'lib/models/general';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import React, { useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
@@ -48,8 +49,10 @@ export interface LocationState {
   readonly anomalyType: ModelalertType;
 }
 
-const getInitialTab = (history: any) => {
-  if (!history || !history.location || !history.location.state) return TabName.Performance;
+const getInitialTab = (history: any, vendors: IObject<AccountVendorTypes>) => {
+  if (!history || !history.location || !history.location.state) {
+    return vendors.hasOwnProperty(AccountVendorTypes.CISCO_MERAKI) ? TabName.Performance : TabName.Cloud;
+  }
   const state = history.location.state as LocationState;
   return state.tabName;
 };
@@ -60,27 +63,27 @@ const MetricsPage: React.FC = () => {
   const userContext = useContext<UserContextState>(UserContext);
   const { response, loading, error, onGetChainData } = useGetChainData<MetricsTopoMap>();
   const history = useHistory<LocationState>();
-  const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [networks, setNetworks] = useState<Vnet[]>([]);
   const [devices, setDevices] = useState<Device[]>([]);
-  const [selectedTabName, setSelectedTabName] = useState<TabName>(getInitialTab(history));
+  const [selectedTabName, setSelectedTabName] = useState<TabName>(getInitialTab(history, userContext.vendors));
   const [isAwsConfigured, setIsAwsConfigured] = useState<boolean>(false);
+  const [isMerakiConfigured, setIsMerakiConfigured] = useState<boolean>(false);
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: TabName) => setSelectedTabName(newValue);
 
   useEffect(() => {
-    onGetChainData([TopoApi.getOnPremOrgList(), TopoApi.getOnPremNetworkList(), TopoApi.getOnPremDeviceList()], ['organizations', 'networks', 'devices'], userContext.accessToken!);
+    onGetChainData([TopoApi.getOnPremNetworkList(), TopoApi.getOnPremDeviceList()], ['networks', 'devices'], userContext.accessToken!);
   }, []);
 
   useEffect(() => {
     if (userContext.vendors) {
       setIsAwsConfigured(userContext.vendors.hasOwnProperty(AccountVendorTypes.AMAZON_AWS));
+      setIsMerakiConfigured(userContext.vendors.hasOwnProperty(AccountVendorTypes.CISCO_MERAKI));
     }
   }, [userContext]);
 
   useEffect(() => {
     if (response) {
-      setOrganizations(response.organizations.orgs);
       setNetworks(response.networks.networks);
       setDevices(response.devices.devices);
     }
@@ -92,18 +95,22 @@ const MetricsPage: React.FC = () => {
         <div className={classes.fixedTabBar}>
           <TabsWrapperStyles>
             <Tabs value={selectedTabName} onChange={handleTabChange} indicatorColor="primary">
-              <Tab
-                value={TabName.Performance}
-                label={<span className={selectedTabName === TabName.Performance ? classes.activeTabLabel : classes.tabLabel}>{TabName.Performance}</span>}
-                wrapped
-                {...a11yProps(TabName.Performance)}
-              />
-              <Tab
-                value={TabName.Sites}
-                label={<span className={selectedTabName === TabName.Sites ? classes.activeTabLabel : classes.tabLabel}>{TabName.Sites}</span>}
-                wrapped
-                {...a11yProps(TabName.Sites)}
-              />
+              {isMerakiConfigured && (
+                <Tab
+                  value={TabName.Performance}
+                  label={<span className={selectedTabName === TabName.Performance ? classes.activeTabLabel : classes.tabLabel}>{TabName.Performance}</span>}
+                  wrapped
+                  {...a11yProps(TabName.Performance)}
+                />
+              )}
+              {isMerakiConfigured && (
+                <Tab
+                  value={TabName.Sites}
+                  label={<span className={selectedTabName === TabName.Sites ? classes.activeTabLabel : classes.tabLabel}>{TabName.Sites}</span>}
+                  wrapped
+                  {...a11yProps(TabName.Sites)}
+                />
+              )}
               {isAwsConfigured && (
                 <Tab
                   value={TabName.Cloud}
@@ -115,12 +122,16 @@ const MetricsPage: React.FC = () => {
             </Tabs>
           </TabsWrapperStyles>
         </div>
-        <TabPanel value={selectedTabName} title={TabName.Performance}>
-          <PerformanceDashboard selectedTabName={selectedTabName} organizations={organizations} networks={networks} devices={devices} orgLoading={loading} orgError={error} />
-        </TabPanel>
-        <TabPanel value={selectedTabName} title={TabName.Sites}>
-          <Sites selectedTabName={selectedTabName} networks={networks} devices={devices} orgLoading={loading} orgError={error} />
-        </TabPanel>
+        {isMerakiConfigured && (
+          <TabPanel value={selectedTabName} title={TabName.Performance}>
+            <PerformanceDashboard selectedTabName={selectedTabName} networks={networks} devices={devices} orgLoading={loading} orgError={error} />
+          </TabPanel>
+        )}
+        {isMerakiConfigured && (
+          <TabPanel value={selectedTabName} title={TabName.Sites}>
+            <Sites selectedTabName={selectedTabName} networks={networks} devices={devices} orgLoading={loading} orgError={error} />
+          </TabPanel>
+        )}
         {isAwsConfigured && (
           <TabPanel value={selectedTabName} title={TabName.Cloud}>
             <Cloud selectedTabName={selectedTabName} />

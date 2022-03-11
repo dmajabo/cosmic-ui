@@ -1,6 +1,7 @@
 import { ISegmentSegmentP } from 'lib/api/ApiModels/Policy/Segment';
 import { Device, Organization, Vnet } from 'lib/api/http/SharedTypes';
 import isEmpty from 'lodash/isEmpty';
+import { MetricKeyValue } from './PacketLoss';
 
 export const GetSelectedOrganizationName = (organizations: Organization[], orgId: string) => {
   const selectedOrganization = organizations.find(organization => organization.extId === orgId);
@@ -33,3 +34,5 @@ export const getTestSegments = (devices: Device[], sourceNetworkExtId: string, s
 };
 
 export const getNetworkTags = (sourceNetworkExtId: string, networks: Vnet[]) => networks.find(network => network.extId === sourceNetworkExtId)?.tags || [];
+
+export const checkforNoData = (metricsObject: MetricKeyValue) => Object.keys(metricsObject).every(key => isEmpty(metricsObject[key]));

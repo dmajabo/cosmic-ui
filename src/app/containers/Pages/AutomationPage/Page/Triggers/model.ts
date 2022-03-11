@@ -24,7 +24,7 @@ export const TriggerGridColumns: ITriggerGridColumns = {
   },
   name: {
     resField: 'name',
-    label: 'Name',
+    label: 'Escalation',
     id: 'triggerName',
     field: 'name',
     width: '400px',
