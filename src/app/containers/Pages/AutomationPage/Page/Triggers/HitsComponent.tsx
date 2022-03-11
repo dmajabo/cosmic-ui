@@ -86,12 +86,12 @@ const HitsComponent: React.FC<Props> = (props: Props) => {
             body={timestampBodyTemplate}
           ></Column>
           {/* <Column style={{ minWidth: NestedTriggerGridColumns.alertType.width }} field={NestedTriggerGridColumns.alertType.field} header={NestedTriggerGridColumns.alertType.label}></Column> */}
-          <Column
+          {/* <Column
             style={{ minWidth: NestedTriggerGridColumns.state.width }}
             field={NestedTriggerGridColumns.state.field}
             header={NestedTriggerGridColumns.state.label}
             body={stateBodyTemplate}
-          ></Column>
+          ></Column> */}
           {/* <Column style={{ minWidth: NestedTriggerGridColumns.objectName.width }} field={NestedTriggerGridColumns.objectName.field} header={NestedTriggerGridColumns.objectName.label}></Column> */}
           {/* <Column
             style={{ minWidth: NestedTriggerGridColumns.objectType.width }}
