@@ -46,7 +46,7 @@ export interface LocationState {
   readonly tabName: TabName;
   readonly deviceId: string;
   readonly destination: string;
-  readonly anomalyType: ModelalertType;
+  readonly anomalyType?: ModelalertType;
 }
 
 const getInitialTab = (history: any, vendors: IObject<AccountVendorTypes>) => {

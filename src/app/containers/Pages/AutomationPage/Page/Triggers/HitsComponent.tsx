@@ -6,7 +6,7 @@ import { useGet } from 'lib/api/http/useAxiosHook';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 // import { IAlertChannel, IAlertVerificationStatus } from 'lib/api/ApiModels/Workflow/apiModel';
 import { IAlertMetaTableItem, NestedTriggerGridColumns } from './model';
-import { DataTable } from 'primereact/datatable';
+import { DataTable, DataTableRowClickEventParams } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { parseFieldAsDate } from 'lib/helpers/general';
 import LoadingIndicator from 'app/components/Loading';
@@ -15,6 +15,9 @@ import { KeyValueWrapper, NestedTableWrapper, StateCell } from 'app/components/B
 import { PAGING_DEFAULT_PAGE_SIZE } from 'lib/models/general';
 import Paging from 'app/components/Basic/Paging';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
+import history from 'utils/history';
+import { LocationState, TabName } from 'app/containers/Pages/MetricsPage';
+import { ROUTE } from 'lib/Routes/model';
 interface Props {
   trigger: IAlertMetaTableItem;
   period: ALERT_TIME_RANGE_QUERY_TYPES;
@@ -75,10 +78,19 @@ const HitsComponent: React.FC<Props> = (props: Props) => {
   const timestampBodyTemplate = (rowData: IAlertAlert) => parseFieldAsDate(rowData.timestamp, `EEE',' LLL d',' yyyy HH:mm aa`);
   const descBodyTemplate = (rowData: IAlertAlert) => <div className="nestedDescCell">{rowData.descString}</div>;
   const stateBodyTemplate = (rowData: IAlertAlert) => <StateCell state={rowData.state}>{convertAlertState(rowData.state)}</StateCell>;
+
+  const onRowClick = (e: DataTableRowClickEventParams) => {
+    const rowData: IAlertAlert = e.data;
+    if (rowData.alertType === ModelalertType.ANOMALY_PACKETLOSS || rowData.alertType === ModelalertType.ANOMALY_LATENCY || rowData.alertType === ModelalertType.ANOMALY_JITTER) {
+      const locationState: LocationState = { anomalyType: rowData.alertType, destination: '', deviceId: rowData.objectExtId, tabName: TabName.Performance };
+      history.push(ROUTE.app + ROUTE.metrics, locationState);
+    }
+  };
+
   return (
     <NestedTableWrapper style={{ display: error ? 'flex' : null, height: rows && rows.length ? 'auto' : '300px', minHeight: rows && rows.length ? '100px' : '300px' }}>
       {!error && (
-        <DataTable className="tableSM" emptyMessage="No data" dataKey="id" value={rows} responsiveLayout="scroll">
+        <DataTable className="tableSM" emptyMessage="No data" dataKey="id" value={rows} responsiveLayout="scroll" onRowClick={onRowClick}>
           <Column
             style={{ minWidth: NestedTriggerGridColumns.timestamp.width }}
             field={NestedTriggerGridColumns.timestamp.field}
