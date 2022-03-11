@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { PerformanceDashboardStyles } from './PerformanceDashboardStyles';
 import { AxiosError } from 'axios';
-import { TabName } from '../..';
+import { LocationState, TabName } from '../..';
 import MatSelect from 'app/components/Inputs/MatSelect';
 import Select from 'react-select';
 import { SelectOption } from 'app/containers/Pages/AnalyticsPage/components/Metrics Explorer/MetricsExplorer';
@@ -11,6 +11,7 @@ import { PacketLoss } from './PacketLoss';
 import { Latency } from './Latency';
 import { Jitter } from './Jitter';
 import { isEmpty } from 'lodash';
+import { useHistory } from 'react-router-dom';
 
 interface PerformanceDashboardProps {
   readonly networks: Vnet[];
@@ -60,10 +61,19 @@ const networkSelectStyles = {
 
 const SELECTED_NETWORKS_LOCAL_KEY = 'selectedNetworks';
 
-const getSelectedNetworksFromLocalStorage = (): SelectOption[] => JSON.parse(localStorage.getItem(SELECTED_NETWORKS_LOCAL_KEY)) || [];
+const getSelectedNetworksFromLocalStorage = (history: any, devices: Device[], networks: Vnet[]): SelectOption[] => {
+  if (!history && !history.location && !history.location.state) {
+    return JSON.parse(localStorage.getItem(SELECTED_NETWORKS_LOCAL_KEY)) || [];
+  }
+  const state = history.location.state as LocationState;
+  const networkId = devices.find(device => device.extId === state?.deviceId || '')?.networkId || '';
+  console.log(state);
+  return networks.map(network => ({ label: network.name, value: network.extId })).filter(network => network.value === networkId);
+};
 
-export const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ networks, devices, orgLoading, orgError, selectedTabName }) => {
+export const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ networks, devices, orgLoading }) => {
   const classes = PerformanceDashboardStyles();
+  const history = useHistory();
 
   const [timeRange, setTimeRange] = useState<string>('-7d');
   const [selectedNetworks, setSelectedNetworks] = useState<SelectOption[]>([]);
@@ -72,16 +82,14 @@ export const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ netw
 
   const selectedNetworksMetricsData: SelectedNetworkMetricsData[] = useMemo(
     () =>
-      isEmpty(devices)
-        ? []
-        : selectedNetworks.map(network => {
-            const deviceIdString = devices
-              .filter(device => device.networkId === network.value)
-              .map(device => device.extId)
-              .join();
-            const destination = '8.8.8.8';
-            return { ...network, deviceString: deviceIdString, destination: destination };
-          }),
+      selectedNetworks.map(network => {
+        const deviceIdString = devices
+          .filter(device => device.networkId === network.value)
+          .map(device => device.extId)
+          .join();
+        const destination = '8.8.8.8';
+        return { ...network, deviceString: deviceIdString, destination: destination };
+      }),
     [selectedNetworks, devices],
   );
 
@@ -93,8 +101,8 @@ export const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ netw
   };
 
   useEffect(() => {
-    setSelectedNetworks(getSelectedNetworksFromLocalStorage());
-  }, []);
+    setSelectedNetworks(getSelectedNetworksFromLocalStorage(history, devices, networks));
+  }, [history, devices, networks]);
 
   return (
     <div className={classes.pageComponentBackground}>
