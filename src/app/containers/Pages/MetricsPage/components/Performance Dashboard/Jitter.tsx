@@ -6,26 +6,27 @@ import { MetricKeyValue } from './PacketLoss';
 import isEmpty from 'lodash/isEmpty';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import LoadingIndicator from 'app/components/Loading';
-import { FinalTableData, Vnet } from 'lib/api/http/SharedTypes';
 import { LegendData } from './Heatmap';
 import { Chart, ChartContainerStyles } from 'app/components/ChartContainer/styles';
 import { useHistory } from 'react-router-dom';
 import { LocationState } from '../..';
 import { ModelalertType } from 'lib/api/ApiModels/Workflow/apiModel';
+import { checkforNoData } from './filterFunctions';
+import { EmptyText } from 'app/components/Basic/NoDataStyles/NoDataStyles';
+import { SelectedNetworkMetricsData } from './PerformanceDashboard';
 
-interface GoodputProps {
-  readonly selectedRows: FinalTableData[];
+interface JitterProps {
+  readonly selectedNetworksMetricsData: SelectedNetworkMetricsData[];
   readonly timeRange: string;
-  readonly networks: Vnet[];
 }
 
-const GOODPUT = 'goodput';
-const GOODPUT_ANOMALY = 'goodput_anomaly';
-const GOODPUT_LOWERBOUND = 'goodput_lowerbound';
-const GOODPUT_UPPERBOUND = 'goodput_upperbound';
-const GOODPUT_THRESHOLD = 'goodput_threshold';
+const JITTER = 'jitter';
+const JITTER_ANOMALY = 'jitter_anomaly';
+const JITTER_LOWERBOUND = 'jitter_lowerbound';
+const JITTER_UPPERBOUND = 'jitter_upperbound';
+const JITTER_THRESHOLD = 'jitter_threshold';
 
-export const GOODPUT_HEATMAP_LEGEND: LegendData[] = [
+export const JITTER_HEATMAP_LEGEND: LegendData[] = [
   {
     low: 100,
     high: Infinity,
@@ -53,10 +54,10 @@ export const GOODPUT_HEATMAP_LEGEND: LegendData[] = [
   },
 ];
 
-export const Goodput: React.FC<GoodputProps> = ({ selectedRows, timeRange, networks }) => {
+export const Jitter: React.FC<JitterProps> = ({ selectedNetworksMetricsData, timeRange }) => {
   const classes = PerformanceDashboardStyles();
 
-  const [goodputData, setGoodputData] = useState<MetricKeyValue>({});
+  const [jitterData, setJitterData] = useState<MetricKeyValue>({});
   const [anomalyCount, setAnomalyCount] = useState<number>(0);
 
   const userContext = useContext<UserContextState>(UserContext);
@@ -69,54 +70,58 @@ export const Goodput: React.FC<GoodputProps> = ({ selectedRows, timeRange, netwo
   useEffect(() => {
     if (history && history && history.location.state) {
       const state = history.location.state as LocationState;
-      if (state.anomalyType === ModelalertType.ANOMALY_GOODPUT) {
+      if (state.anomalyType === ModelalertType.ANOMALY_JITTER) {
         scrollRef.current.scrollIntoView();
       }
     }
   }, []);
 
   useEffect(() => {
-    const getGoodputMetrics = async () => {
-      const goodputChartData: MetricKeyValue = {};
+    const getJitterMetrics = async () => {
+      const jitterChartData: MetricKeyValue = {};
       let totalAnomalyCount = 0;
-      const promises = selectedRows.map(row => apiClient.getGoodputMetrics(row.sourceDevice, row.destination, timeRange, row.id));
+      const promises = selectedNetworksMetricsData.map(row => apiClient.getJitterMetrics(row.deviceString, row.destination, timeRange, row.label));
       Promise.all(promises).then(values => {
         values.forEach(item => {
-          // const anomalyArray = item.metrics.keyedmap.find(item => item.key === GOODPUT_ANOMALY)?.ts || [];
-          // totalAnomalyCount = totalAnomalyCount + anomalyArray.length;
-          goodputChartData[item.testId] = item.metrics.keyedmap.find(item => item.key === GOODPUT)?.ts || [];
-          goodputChartData[`${item.testId}_anomaly`] = [];
-          goodputChartData[`${item.testId}_upperbound`] = item.metrics.keyedmap.find(item => item.key === GOODPUT_UPPERBOUND)?.ts || [];
-          goodputChartData[`${item.testId}_lowerbound`] = item.metrics.keyedmap.find(item => item.key === GOODPUT_LOWERBOUND)?.ts || [];
-          goodputChartData[`${item.testId}_threshold`] = item.metrics.keyedmap.find(item => item.key === GOODPUT_THRESHOLD)?.ts || [];
+          const anomalyArray = item.metrics.keyedmap.find(item => item.key === JITTER_ANOMALY)?.ts || [];
+          totalAnomalyCount = totalAnomalyCount + anomalyArray.length;
+          jitterChartData[item.testId] = item.metrics.keyedmap.find(item => item.key === JITTER)?.ts || [];
+          jitterChartData[`${item.testId}_anomaly`] = anomalyArray;
+          jitterChartData[`${item.testId}_upperbound`] = item.metrics.keyedmap.find(item => item.key === JITTER_UPPERBOUND)?.ts || [];
+          jitterChartData[`${item.testId}_lowerbound`] = item.metrics.keyedmap.find(item => item.key === JITTER_LOWERBOUND)?.ts || [];
+          jitterChartData[`${item.testId}_threshold`] = item.metrics.keyedmap.find(item => item.key === JITTER_THRESHOLD)?.ts || [];
         });
-        setGoodputData(goodputChartData);
+        setJitterData(jitterChartData);
         setAnomalyCount(totalAnomalyCount);
       });
     };
 
-    getGoodputMetrics();
+    getJitterMetrics();
 
     return () => {
-      setGoodputData({});
+      setJitterData({});
     };
-  }, [selectedRows, timeRange]);
+  }, [selectedNetworksMetricsData, timeRange]);
 
   return (
-    <div ref={scrollRef} className={classes.pageComponentBackground}>
-      <div className={classes.pageComponentTitleContainer}>
-        <div className={classes.pageComponentTitle}>Goodput summary</div>
+    <>
+      <div ref={scrollRef} className={classes.metricComponentTitleContainer}>
+        <div className={classes.pageComponentTitle}>Jitter summary</div>
         <div className={classes.pillContainer}>
           <span className={classes.pillText}>{anomalyCount}</span>
         </div>
       </div>
       <ChartContainerStyles style={{ maxWidth: '100%', minHeight: 420, maxHeight: 420 }}>
-        {!isEmpty(selectedRows) ? (
+        {!isEmpty(selectedNetworksMetricsData) ? (
           // goodputData contains 5 keys for each row. One for the data, one for anomaly, one for upperbound,one for lowerbound and one for threshold
-          Object.keys(goodputData).length / 5 === selectedRows.length ? (
-            <Chart>
-              <MetricsLineChart dataValueSuffix="mbps" selectedRows={selectedRows} inputData={goodputData} />
-            </Chart>
+          Object.keys(jitterData).length / 5 === selectedNetworksMetricsData.length ? (
+            checkforNoData(jitterData) ? (
+              <EmptyText>No Data</EmptyText>
+            ) : (
+              <Chart>
+                <MetricsLineChart dataValueSuffix="ms" selectedNetworksMetricsData={selectedNetworksMetricsData} inputData={jitterData} />
+              </Chart>
+            )
           ) : (
             <LoadingIndicator margin="auto" />
           )
@@ -126,6 +131,6 @@ export const Goodput: React.FC<GoodputProps> = ({ selectedRows, timeRange, netwo
           </div>
         )}
       </ChartContainerStyles>
-    </div>
+    </>
   );
 };

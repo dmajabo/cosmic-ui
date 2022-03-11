@@ -1,28 +1,18 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { PerformanceDashboardStyles } from './PerformanceDashboardStyles';
-import { SLATestList } from './SLATestList';
-import { CreateSLATestRequest, Device, FinalTableData, Organization, UpdateSLATestRequest, Vnet } from 'lib/api/http/SharedTypes';
-import LoadingIndicator from 'app/components/Loading';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import isEmpty from 'lodash/isEmpty';
-import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
-import { createApiClient } from 'lib/api/http/apiClient';
-import { AbsLoaderWrapper } from 'app/components/Loading/styles';
-import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
-import { GetDevicesString, getNetworkTags, GetSelectedNetworkName, GetSelectedOrganizationName, getTestSegments } from './filterFunctions';
-import { CreateSLATest } from './CreateSLATest';
-import './Toastify.css';
-import { VendorTypes } from 'lib/api/ApiModels/Topology/apiModels';
 import { AxiosError } from 'axios';
 import { TabName } from '../..';
-import noop from 'lodash/noop';
-import { useGet } from 'lib/api/http/useAxiosHook';
-import { IPolicysvcListSegmentPsResponse, ISegmentSegmentP, SegmentSegmentType } from 'lib/api/ApiModels/Policy/Segment';
-import { PolicyApi } from 'lib/api/ApiModels/Services/policy';
+import MatSelect from 'app/components/Inputs/MatSelect';
+import Select from 'react-select';
+import { SelectOption } from 'app/containers/Pages/AnalyticsPage/components/Metrics Explorer/MetricsExplorer';
+import { Device, Vnet } from 'lib/api/http/SharedTypes';
+import { InputLabel } from 'app/components/Inputs/styles/Label';
+import { PacketLoss } from './PacketLoss';
+import { Latency } from './Latency';
+import { Jitter } from './Jitter';
+import { isEmpty } from 'lodash';
 
 interface PerformanceDashboardProps {
-  readonly organizations: Organization[];
   readonly networks: Vnet[];
   readonly devices: Device[];
   readonly orgLoading: boolean;
@@ -30,154 +20,120 @@ interface PerformanceDashboardProps {
   readonly selectedTabName: TabName;
 }
 
-export const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ networks, organizations, devices, orgLoading, orgError, selectedTabName }) => {
+export interface SelectedNetworkMetricsData extends SelectOption {
+  readonly deviceString: string;
+  readonly destination: string;
+}
+
+const timeRangeOptions = [
+  {
+    value: '-1d',
+    label: 'Last day',
+  },
+  {
+    value: '-7d',
+    label: 'Last week',
+  },
+];
+
+const networkSelectStyles = {
+  control: provided => ({
+    ...provided,
+    height: 50,
+    color: 'blue',
+  }),
+  multiValue: provided => ({
+    ...provided,
+    background: 'rgba(67,127,236,0.1)',
+    borderRadius: 6,
+    padding: 5,
+  }),
+  multiValueLabel: provided => ({
+    ...provided,
+    color: '#437FEC',
+  }),
+  multiValueRemove: provided => ({
+    ...provided,
+    color: '#437FEC',
+  }),
+};
+
+const SELECTED_NETWORKS_LOCAL_KEY = 'selectedNetworks';
+
+const getSelectedNetworksFromLocalStorage = (): SelectOption[] => JSON.parse(localStorage.getItem(SELECTED_NETWORKS_LOCAL_KEY)) || [];
+
+export const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ networks, devices, orgLoading, orgError, selectedTabName }) => {
   const classes = PerformanceDashboardStyles();
-  const userContext = useContext<UserContextState>(UserContext);
-  const apiClient = createApiClient(userContext.accessToken!);
-  const [finalTableData, setFinalTableData] = useState<FinalTableData[]>([]);
-  const [merakiOrganizations, setMerakiOrganizations] = useState<Organization[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [isError, setIsError] = useState<boolean>(false);
-  const [siteSegments, setSiteSegments] = useState<ISegmentSegmentP[]>([]);
-  const { response, onGet } = useGet<IPolicysvcListSegmentPsResponse>();
 
-  useEffect(() => {
-    if (!isEmpty(organizations) && selectedTabName === TabName.Performance) {
-      const merakiOrganizations = organizations.filter(organization => organization.vendorType === VendorTypes.MERAKI);
-      setMerakiOrganizations(merakiOrganizations);
-    }
-  }, [organizations, selectedTabName]);
+  const [timeRange, setTimeRange] = useState<string>('-7d');
+  const [selectedNetworks, setSelectedNetworks] = useState<SelectOption[]>([]);
 
-  const getSLATests = async () => {
-    setIsLoading(true);
-    const responseData = await apiClient.getSLATests();
-    if (!isEmpty(responseData)) {
-      if (Array.isArray(responseData.slaTests) && !isEmpty(responseData.slaTests)) {
-        const testData: FinalTableData[] = responseData.slaTests.map(test => {
-          return {
-            id: test.testId,
-            name: test.name,
-            sourceOrg: test.sourceOrgId,
-            sourceNetwork: test.sourceNwExtId,
-            sourceDevice: '',
-            destination: test.destination,
-            interface: test.interface,
-            description: test.description,
-            sourceNetworkId: test.sourceNwExtId,
-            segments: [],
-            tags: [],
-            averageQoe: {
-              packetLoss: test.metrics.avgPacketLoss.value,
-              latency: test.metrics.avgLatency.value,
-            },
-          };
-        });
-        setFinalTableData(testData);
-        setIsLoading(false);
-      } else {
-        setIsLoading(false);
-      }
-    } else {
-      setIsLoading(false);
-      setIsError(true);
+  const networkOptions: SelectOption[] = useMemo(() => networks.map(network => ({ label: network.name, value: network.extId })), [networks]);
+
+  const selectedNetworksMetricsData: SelectedNetworkMetricsData[] = useMemo(
+    () =>
+      isEmpty(devices)
+        ? []
+        : selectedNetworks.map(network => {
+            const deviceIdString = devices
+              .filter(device => device.networkId === network.value)
+              .map(device => device.extId)
+              .join();
+            const destination = '8.8.8.8';
+            return { ...network, deviceString: deviceIdString, destination: destination };
+          }),
+    [selectedNetworks, devices],
+  );
+
+  const onNetworkSelect = (value: SelectOption[]) => {
+    if (value.length <= 2) {
+      setSelectedNetworks(value);
+      localStorage.setItem(SELECTED_NETWORKS_LOCAL_KEY, JSON.stringify(value));
     }
   };
 
   useEffect(() => {
-    getSLATests();
-    onGet(PolicyApi.getSegments(), userContext.accessToken!);
+    setSelectedNetworks(getSelectedNetworksFromLocalStorage());
   }, []);
 
-  useEffect(() => {
-    if (response && response.segments && response.segments.length) {
-      setSiteSegments(response.segments.filter(segment => segment.segType === SegmentSegmentType.SITE));
-    }
-  }, [response]);
-
-  const newTableData = finalTableData.map(test => {
-    const selectedOrganizationName = GetSelectedOrganizationName(merakiOrganizations, test.sourceOrg);
-    const allDevices: string = GetDevicesString(devices, test.sourceNetwork);
-    const selectedNetworkName = GetSelectedNetworkName(networks, test.sourceNetwork);
-    const segments = getTestSegments(devices, test.sourceNetwork, siteSegments);
-    const networkTags = getNetworkTags(test.sourceNetwork, networks);
-    const { sourceDevice, sourceNetwork, sourceOrg, tags, ...rest } = test;
-    return {
-      ...rest,
-      sourceDevice: allDevices,
-      sourceNetwork: selectedNetworkName,
-      sourceOrg: selectedOrganizationName,
-      segments: segments,
-      tags: networkTags,
-    };
-  });
-
-  const addSlaTest = async (submitData: CreateSLATestRequest) => {
-    const responseData = await apiClient.createSLATest(submitData);
-    if (!isEmpty(responseData)) {
-      toast.success('Test Added Successfully!');
-      getSLATests();
-    } else {
-      toast.error('Something went wrong. Please try Again!');
-    }
-  };
-
-  const deleteSlaTest = async (testId: string) => {
-    const responseData = await apiClient.deleteSLATest(testId);
-    if (isEmpty(responseData)) {
-      toast.success('Test Deleted Successfully!');
-      getSLATests();
-    } else {
-      toast.error('Something went wrong. Please try Again!');
-    }
-  };
-
-  const updateSlaTest = async (submitData: UpdateSLATestRequest) => {
-    const responseData = await apiClient.updateSLATest(submitData);
-    if (!isEmpty(responseData)) {
-      toast.success('Test Updated Successfully!');
-      getSLATests();
-    } else {
-      toast.error('Something went wrong. Please try Again!');
-    }
-  };
-
   return (
-    <>
-      {orgLoading ? (
-        <div className={classes.pageCenter}>
-          <LoadingIndicator />
+    <div className={classes.pageComponentBackground}>
+      <div className={classes.pageComponentTitleContainer}>
+        <div className={classes.pageComponentTitle}>SLA Tests</div>
+        <div>
+          <MatSelect
+            id="SLATestTimePeriod"
+            label="Show"
+            labelStyles={{ margin: 'auto 10px auto 0' }}
+            value={timeRangeOptions.find(time => time.value === timeRange)}
+            options={timeRangeOptions}
+            onChange={e => setTimeRange(e.value)}
+            renderValue={(v: any) => v.label}
+            renderOption={(v: any) => v.label}
+            styles={{ height: '50px', minHeight: '50px', margin: '0 0 0 10px', width: 'auto', display: 'inline-flex', alignItems: 'center' }}
+            selectStyles={{ height: '50px', width: 'auto', minWidth: '240px', border: '1px solid #cbd2bc' }}
+          />
         </div>
-      ) : orgError ? (
-        <AbsLoaderWrapper width="100%" height="100%">
-          <ErrorMessage fontSize={28} margin="auto">
-            {orgError.message}
-          </ErrorMessage>
-        </AbsLoaderWrapper>
-      ) : isLoading ? (
-        <div className={classes.pageCenter}>
-          <LoadingIndicator />
-        </div>
-      ) : isError ? (
-        <AbsLoaderWrapper width="100%" height="100%">
-          <ErrorMessage fontSize={28} margin="auto">
-            Something went wrong. Please refresh page
-          </ErrorMessage>
-        </AbsLoaderWrapper>
-      ) : !isEmpty(finalTableData) ? (
-        <SLATestList
-          updateSlaTest={updateSlaTest}
-          deleteSlaTest={deleteSlaTest}
-          networks={networks}
-          merakiOrganizations={merakiOrganizations}
-          finalTableData={newTableData}
-          addSlaTest={addSlaTest}
-          devices={devices}
-          siteSegments={siteSegments}
+      </div>
+      <div>
+        <InputLabel style={{ marginTop: 20 }}>Select Network</InputLabel>
+        <Select
+          isMulti
+          name="networks"
+          placeholder="Select Network"
+          styles={networkSelectStyles}
+          value={selectedNetworks}
+          options={networkOptions}
+          isLoading={orgLoading}
+          onChange={onNetworkSelect}
+          components={{
+            IndicatorSeparator: () => null,
+          }}
         />
-      ) : (
-        <CreateSLATest networks={networks} merakiOrganizations={merakiOrganizations} addSlaTest={addSlaTest} popup={false} closeSlaTest={noop} />
-      )}
-      <ToastContainer />
-    </>
+      </div>
+      <PacketLoss timeRange={timeRange} selectedNetworksMetricsData={selectedNetworksMetricsData} />
+      <Latency timeRange={timeRange} selectedNetworksMetricsData={selectedNetworksMetricsData} />
+      <Jitter timeRange={timeRange} selectedNetworksMetricsData={selectedNetworksMetricsData} />
+    </div>
   );
 };

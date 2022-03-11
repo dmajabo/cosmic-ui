@@ -308,11 +308,11 @@ export const PerformanceDashboardStyles = makeStyles(
         fontSize: 22,
         fontWeight: 700,
         color: '#05143A',
-        marginBottom: 30,
       },
       pageComponentTitleContainer: {
         display: 'flex',
-        justifyContent: 'flex-start',
+        justifyContent: 'space-between',
+        alignItems: 'center',
       },
       pillContainer: {
         marginLeft: '20px',
@@ -341,6 +341,12 @@ export const PerformanceDashboardStyles = makeStyles(
       },
       tableHeaderTitle: {
         paddingTop: 5,
+      },
+      metricComponentTitleContainer: {
+        marginTop: 50,
+        marginBottom: 20,
+        display: 'flex',
+        justifyContent: 'flex-start',
       },
     }),
   {
