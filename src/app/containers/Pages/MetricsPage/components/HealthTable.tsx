@@ -9,9 +9,14 @@ import { HealthTableData } from './Cloud/DirectConnectConnectionHealth';
 
 interface HealthTableProps {
   readonly tableData: HealthTableData[];
+  readonly customTableCellMinWidth?: string;
 }
 
-const TableContainer = styled.div`
+interface TableContainerProps {
+  readonly customTableCellMinWidth?: string;
+}
+
+const TableContainer = styled.div<TableContainerProps>`
   overflow-x: auto;
   table {
     width: 100%;
@@ -24,13 +29,13 @@ const TableContainer = styled.div`
 
     td {
       padding: 15px;
-      min-width: 200px;
+      min-width: ${props => (props.customTableCellMinWidth ? props.customTableCellMinWidth : '200px')};
       border: 1px solid #e7edf9;
     }
   }
 `;
 
-export const HealthTable: React.FC<HealthTableProps> = ({ tableData }) => {
+export const HealthTable: React.FC<HealthTableProps> = ({ tableData, customTableCellMinWidth }) => {
   const { metrics } = useMetricsDataContext();
   const DUMMY_TABLE_OBJECT = tableData.reduce((acc, nextValue) => {
     acc[`${nextValue.time}_${nextValue.connection}`] = nextValue.value;
@@ -54,7 +59,7 @@ export const HealthTable: React.FC<HealthTableProps> = ({ tableData }) => {
 
   return (
     <>
-      <TableContainer>
+      <TableContainer customTableCellMinWidth={customTableCellMinWidth}>
         <table>
           <tbody>
             <tr>

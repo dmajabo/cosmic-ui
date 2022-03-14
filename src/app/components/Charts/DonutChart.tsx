@@ -55,8 +55,9 @@ interface Props {
   readonly legendSize?: number;
   readonly legendStyles?: Object;
   readonly legendItemStyle?: Object;
-  disabledLegendHide?: boolean;
-  onItemClick?: (item: PieDataItem) => void;
+  readonly disabledLegendHide?: boolean;
+  readonly onItemClick?: (item: PieDataItem) => void;
+  readonly centerCountText?: string;
 }
 
 const DonutChart: React.FC<Props> = (props: Props) => {
@@ -238,7 +239,7 @@ const DonutChart: React.FC<Props> = (props: Props) => {
                   {total}
                 </TextStyle>
                 <TextStyle dx="0" dy={props.totalStyle ? props.totalStyle.offsetLabelY : '36'} fSize={props.totalStyle ? props.totalStyle.fontLabelSize : 14} color="var(--_defaultColor)">
-                  Rules
+                  {props.centerCountText || 'Rules'}
                 </TextStyle>
               </g>
             </>

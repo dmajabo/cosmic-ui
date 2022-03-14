@@ -9,6 +9,7 @@ import { useAutomationDataContext } from 'lib/hooks/Automation/useAutomationData
 import Triggers from './Triggers';
 import Configutation from './Configutation';
 import Accounts from './Accounts';
+import { Summary } from './Summary';
 
 interface IProps {}
 
@@ -60,6 +61,13 @@ const MainPage: React.FC<IProps> = (props: IProps) => {
         index={AUTOMATIONS_TABS[2].index}
       >
         <Accounts />
+      </TabPanel>
+      <TabPanel
+        styles={{ display: 'flex', flexDirection: 'column', flex: automation.selectedTab.index === AUTOMATIONS_TABS[3].index ? '1 1 100%' : '0' }}
+        value={automation.selectedTab.index}
+        index={AUTOMATIONS_TABS[3].index}
+      >
+        <Summary />
       </TabPanel>
     </PageWrapperStyles>
   );
