@@ -80,7 +80,7 @@ export const Jitter: React.FC<JitterProps> = ({ selectedNetworksMetricsData, tim
     const getJitterMetrics = async () => {
       const jitterChartData: MetricKeyValue = {};
       let totalAnomalyCount = 0;
-      const promises = selectedNetworksMetricsData.map(row => apiClient.getJitterMetrics(row.deviceString, row.destination, timeRange, row.label));
+      const promises = selectedNetworksMetricsData.map(row => (row.deviceString ? apiClient.getJitterMetrics(row.deviceString, row.destination, timeRange, row.label) : null));
       Promise.all(promises).then(values => {
         values.forEach(item => {
           const anomalyArray = item.metrics.keyedmap.find(item => item.key === JITTER_ANOMALY)?.ts || [];

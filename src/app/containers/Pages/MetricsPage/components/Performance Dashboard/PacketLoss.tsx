@@ -85,7 +85,7 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedNetworksMetricsD
     const getPacketLossMetrics = async () => {
       const packetLossChartData: MetricKeyValue = {};
       let totalAnomalyCount = 0;
-      const promises = selectedNetworksMetricsData.map(row => apiClient.getPacketLossMetrics(row.deviceString, row.destination, timeRange, row.label));
+      const promises = selectedNetworksMetricsData.map(row => (row.deviceString ? apiClient.getPacketLossMetrics(row.deviceString, row.destination, timeRange, row.label) : null));
       Promise.all(promises).then(values => {
         values.forEach(item => {
           const anomalyArray = item.metrics.keyedmap.find(item => item.key === PACKET_LOSS_ANOMALY)?.ts || [];

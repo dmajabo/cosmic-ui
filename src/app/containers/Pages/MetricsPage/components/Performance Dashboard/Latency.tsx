@@ -69,7 +69,7 @@ export const Latency: React.FC<LatencyProps> = ({ selectedNetworksMetricsData, t
     const getLatencyMetrics = async () => {
       const latencyChartData: MetricKeyValue = {};
       let totalAnomalyCount = 0;
-      const promises = selectedNetworksMetricsData.map(row => apiClient.getLatencyMetrics(row.deviceString, row.destination, timeRange, row.label));
+      const promises = selectedNetworksMetricsData.map(row => (row.deviceString ? apiClient.getLatencyMetrics(row.deviceString, row.destination, timeRange, row.label) : null));
       Promise.all(promises).then(values => {
         values.forEach(item => {
           const anomalyArray = item.metrics.keyedmap.find(item => item.key === LATENCY_ANOMALY)?.ts || [];

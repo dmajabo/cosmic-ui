@@ -74,7 +74,7 @@ export const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ netw
   const history = useHistory();
 
   const [timeRange, setTimeRange] = useState<string>('-7d');
-  const [selectedNetworks, setSelectedNetworks] = useState<SelectOption[]>([]);
+  const [selectedNetworks, setSelectedNetworks] = useState<SelectOption[]>(getSelectedNetworksFromLocalStorage(history, devices, networks));
 
   const networkOptions: SelectOption[] = useMemo(() => networks.map(network => ({ label: network.name, value: network.extId })), [networks]);
 
@@ -97,10 +97,6 @@ export const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ netw
       localStorage.setItem(SELECTED_NETWORKS_LOCAL_KEY, JSON.stringify(value));
     }
   };
-
-  useEffect(() => {
-    setSelectedNetworks(getSelectedNetworksFromLocalStorage(history, devices, networks));
-  }, [history, devices, networks]);
 
   return (
     <div className={classes.pageComponentBackground}>
