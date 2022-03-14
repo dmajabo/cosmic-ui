@@ -338,7 +338,7 @@ export const NODES_CONSTANTS: INodes_Types = {
       iconHeight: 21,
       iconOffsetX: 15, // 62 / 2 - 32 / 2
       iconOffsetY: 20.5, // 62 / 2 - 21 / 2
-      bgColor: 'var(--_accountBg)',
+      bgColor: '#FF9900',
       borderRadius: 6,
     },
     expanded: {
@@ -346,11 +346,11 @@ export const NODES_CONSTANTS: INodes_Types = {
         width: 30,
         height: 30,
         viewBox: '0 0 30 30',
-        iconWidth: 18.5,
-        iconHeight: 11.5,
+        iconWidth: 30,
+        iconHeight: 30,
         iconOffsetX: 5.75, // 30 / 2 - 18.5 / 2
         iconOffsetY: 9.25, // 30 / 2 - 11.5 / 2
-        bgColor: 'var(--_accountBg)',
+        bgColor: '#FF9900',
         borderRadius: 6,
       },
       minWidth: 240,
