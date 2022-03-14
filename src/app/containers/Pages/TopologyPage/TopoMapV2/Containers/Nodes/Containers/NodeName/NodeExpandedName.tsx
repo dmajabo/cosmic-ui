@@ -9,6 +9,7 @@ interface Props {
   markerWidth: number;
   height: number;
   stylesObj: IExpandLabelStyle;
+  count?: number;
 }
 
 const NodeExpandedName: React.FC<Props> = (props: Props) => {
@@ -26,39 +27,53 @@ const NodeExpandedName: React.FC<Props> = (props: Props) => {
           display: 'flex',
           width: '100%',
           height: '100%',
-          fontWeight: 500,
-          flexWrap: 'nowrap',
-          padding: '0 16px 0 8px',
+          flexDirection: 'column',
         }}
       >
-        <span
+        <div
           style={{
-            display: 'inline-block',
-            maxWidth: 'calc(100% - 12px)',
-            margin: 'auto 12px auto 0',
-            color: props.stylesObj.fill,
-            fontSize: props.stylesObj.fontSize + 'px',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
+            display: 'flex',
+            width: '100%',
+            height: '100%',
+            fontWeight: 500,
+            flexWrap: 'nowrap',
+            padding: '0 16px 0 8px',
           }}
         >
-          {props.name}
-        </span>
-        {props.strBtnLabel && (
           <span
             style={{
               display: 'inline-block',
-              flexShrink: 0,
-              margin: 'auto 0 auto auto',
-              fontSize: props.stylesObj.strBtnFontSize + 'px',
-              color: props.stylesObj.strBtnColor,
-              pointerEvents: 'all',
+              maxWidth: 'calc(100% - 12px)',
+              margin: 'auto 12px auto 0',
+              color: props.stylesObj.fill,
+              fontSize: props.stylesObj.fontSize + 'px',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
             }}
-            onClick={props.onClick}
           >
-            {props.strBtnLabel}
+            {props.name}
           </span>
+          {props.strBtnLabel && (
+            <span
+              style={{
+                display: 'inline-block',
+                flexShrink: 0,
+                margin: 'auto 0 auto auto',
+                fontSize: props.stylesObj.strBtnFontSize + 'px',
+                color: props.stylesObj.strBtnColor,
+                pointerEvents: 'all',
+              }}
+              onClick={props.onClick}
+            >
+              {props.strBtnLabel}
+            </span>
+          )}
+        </div>
+        {props.count > 0 && (
+          <div style={{ fontSize: '10px', padding: '0 16px 0 8px', color: '#848DA3' }}>
+            <span>{props.count} VPC</span>
+          </div>
         )}
       </div>
     </foreignObject>

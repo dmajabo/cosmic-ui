@@ -33,6 +33,7 @@ const RegionExpandNode: React.FC<Props> = (props: Props) => {
             markerWidth={NODES_CONSTANTS.REGION.expanded.marker.width}
             height={NODES_CONSTANTS.REGION.expanded.marker.height}
             stylesObj={NODES_CONSTANTS.REGION.labelExpandedStyles}
+            count={props.region.dataItem?.vnets?.length}
             // onClick={props.onShowFullStructure}
           />
         </g>
