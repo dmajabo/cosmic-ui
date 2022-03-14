@@ -10,7 +10,6 @@ import { InputLabel } from 'app/components/Inputs/styles/Label';
 import { PacketLoss } from './PacketLoss';
 import { Latency } from './Latency';
 import { Jitter } from './Jitter';
-import { isEmpty } from 'lodash';
 import { useHistory } from 'react-router-dom';
 
 interface PerformanceDashboardProps {
@@ -62,13 +61,12 @@ const networkSelectStyles = {
 const SELECTED_NETWORKS_LOCAL_KEY = 'selectedNetworks';
 
 const getSelectedNetworksFromLocalStorage = (history: any, devices: Device[], networks: Vnet[]): SelectOption[] => {
-  if (!history && !history.location && !history.location.state) {
-    return JSON.parse(localStorage.getItem(SELECTED_NETWORKS_LOCAL_KEY)) || [];
+  if (history && history.location && history.location.state) {
+    const state = history.location.state as LocationState;
+    const networkId = devices.find(device => device.extId === state?.deviceId || '')?.networkId || '';
+    return networks.map(network => ({ label: network.name, value: network.extId })).filter(network => network.value === networkId);
   }
-  const state = history.location.state as LocationState;
-  const networkId = devices.find(device => device.extId === state?.deviceId || '')?.networkId || '';
-  console.log(state);
-  return networks.map(network => ({ label: network.name, value: network.extId })).filter(network => network.value === networkId);
+  return JSON.parse(localStorage.getItem(SELECTED_NETWORKS_LOCAL_KEY)) || [];
 };
 
 export const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ networks, devices, orgLoading }) => {
