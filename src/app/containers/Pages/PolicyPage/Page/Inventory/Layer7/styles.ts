@@ -22,3 +22,7 @@ export const ValuesStyle = styled.span`
   white-space: nowrap;
   display: inline-block;
 `;
+
+export const VpcIconStyled = styled.span`
+  margin-right: 12px;
+`;
