@@ -27,6 +27,7 @@ const RoutesTable: React.FC<Props> = (props: Props) => {
   const userContext = React.useContext<UserContextState>(UserContext);
   const { policy } = usePolicyDataContext();
   const [columns, setColumns] = React.useState<IGridColumnField[]>([
+    { ...RoutesColumns.accountName },
     { ...RoutesColumns.name },
     { ...RoutesColumns.parentId },
     { ...RoutesColumns.parentType },

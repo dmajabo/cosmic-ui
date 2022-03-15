@@ -1,7 +1,8 @@
 import React from 'react';
 import { ISegmentSegmentP, SegmentNetworkSegMatchKey, SegmentSegmentType } from 'lib/api/ApiModels/Policy/Segment';
-import { ValuesStyle } from '../Inventory/Layer7/styles';
+import { ValuesStyle, VpcIconStyled } from '../Inventory/Layer7/styles';
 import uniqueId from 'lodash/uniqueId';
+import { VpcIcon } from 'app/components/SVGIcons/pagesIcons/vpc';
 
 interface Props {
   dataItem: ISegmentSegmentP;
@@ -18,7 +19,16 @@ const SeparateTableCell: React.FC<Props> = ({ dataItem }) => {
   }
   if (dataItem.segType === SegmentSegmentType.NETWORK && dataItem.networkSegPol && dataItem.networkSegPol.matchRules && dataItem.networkSegPol.matchRules.length) {
     const _str = dataItem.networkSegPol.matchRules.map(it => {
-      if (it.matchKey === SegmentNetworkSegMatchKey.KEY_VNETWORK_EXTID) return <ValuesStyle key={uniqueId()}>{it.matchValuePrimary}</ValuesStyle>;
+      if (it.matchKey === SegmentNetworkSegMatchKey.KEY_VNETWORK_EXTID) {
+        return (
+          <ValuesStyle key={uniqueId()} style={{ paddingLeft: '3px' }}>
+            <VpcIconStyled>
+              <VpcIcon />
+            </VpcIconStyled>
+            {it.matchValuePrimary}
+          </ValuesStyle>
+        );
+      }
       return <ValuesStyle key={uniqueId()}>{`${it.matchValuePrimary}: ${it.matchValueSecondary}`}</ValuesStyle>;
     });
     return <div>{_str}</div>;

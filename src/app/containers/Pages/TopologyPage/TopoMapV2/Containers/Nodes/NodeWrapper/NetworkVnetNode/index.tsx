@@ -1,11 +1,10 @@
+import * as helper from 'app/containers/Pages/TopologyPage/TopoMapV2/Containers/Nodes/NodeWrapper/RegionNode/helper';
+import { INetworkVNetNode, ITopoRegionNode } from 'lib/hooks/Topology/models';
+import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 import React from 'react';
 import { NODES_CONSTANTS } from '../../../../model';
-import { INetworkVNetNode, ITopoRegionNode } from 'lib/hooks/Topology/models';
-// import NodeCounter from '../../Containers/NodeCounter';
-import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 import HtmlNodeLabel from '../../Containers/HtmlNodeLabel';
 import HtmlVpcTooltip from '../../Containers/HtmlNodeTooltip/HtmlVpcTooltip';
-import * as helper from 'app/containers/Pages/TopologyPage/TopoMapV2/Containers/Nodes/NodeWrapper/RegionNode/helper';
 
 interface Props {
   parentId: string;

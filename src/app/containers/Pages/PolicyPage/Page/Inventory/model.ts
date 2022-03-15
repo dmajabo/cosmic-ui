@@ -177,9 +177,20 @@ export interface IRoutesGridColumns {
   parentType: IGridColumnField;
   vnets: IGridColumnField;
   wedges: IGridColumnField;
+  accountName: IGridColumnField;
 }
 
 export const RoutesColumns: IRoutesGridColumns = {
+  accountName: {
+    label: 'Account name',
+    resField: 'ownerId',
+    id: 'accountName',
+    field: 'ownerId',
+    minWidth: '180px',
+    maxWidth: '300px',
+    hide: false,
+    sortable: true,
+  },
   name: {
     label: 'Route name',
     resField: 'name',

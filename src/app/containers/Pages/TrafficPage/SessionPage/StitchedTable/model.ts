@@ -44,7 +44,7 @@ export const StitchedColumns: IStitchedGridColumns = {
     id: 'StitchedColumns_sourcePort',
     field: 'sourcePort',
     minWidth: '140px',
-    hide: false,
+    hide: true,
     sortable: true,
   },
   sourceSegmentId: {
@@ -53,7 +53,7 @@ export const StitchedColumns: IStitchedGridColumns = {
     id: 'StitchedColumns_sourceSegmentId',
     field: 'sourceSegmentId',
     minWidth: '240px',
-    hide: false,
+    hide: true,
     sortable: true,
   },
   sourceSegmentName: {
@@ -66,7 +66,7 @@ export const StitchedColumns: IStitchedGridColumns = {
     sortable: true,
   },
   destIp: {
-    label: 'Destination IP',
+    label: 'Destination',
     resField: 'destIp',
     id: 'StitchedColumns_destIp',
     field: 'destIp',
@@ -75,7 +75,7 @@ export const StitchedColumns: IStitchedGridColumns = {
     sortable: true,
   },
   destPort: {
-    label: 'Destination Port',
+    label: 'Port',
     resField: 'destPort',
     id: 'StitchedColumns_destPort',
     field: 'destPort',
@@ -93,7 +93,7 @@ export const StitchedColumns: IStitchedGridColumns = {
     sortable: true,
   },
   destSegmentName: {
-    label: 'Destination Segment Name',
+    label: 'Destination Segment',
     resField: 'destSegmentName',
     id: 'StitchedColumns_destSegmentName',
     field: 'destSegmentName',

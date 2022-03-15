@@ -50,6 +50,15 @@ const cellValueFromObjectTemplate = (obj: Object, field: string) => {
   return <>{obj[field]}</>;
 };
 
+const segmentNameTemplate = (value: any, color: string) => {
+  return (
+    <div style={{ display: 'inline-flex' }}>
+      {color && <div style={{ borderRadius: '4px', height: '16px', width: '16px', backgroundColor: color, marginRight: '12px' }} />}
+      <div>{value}</div>
+    </div>
+  );
+};
+
 const cellClassNameTemplate = (value: any, className: string) => {
   return <span className={className}>{value}</span>;
 };
@@ -129,4 +138,5 @@ export {
   celltimeStampTemplate,
   cellSessionVendorTemplate,
   getVendorObject,
+  segmentNameTemplate,
 };

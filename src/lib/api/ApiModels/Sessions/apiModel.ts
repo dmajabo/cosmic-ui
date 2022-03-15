@@ -90,7 +90,12 @@ export interface IAllSessionsRes {
   buckets: IBuckets[];
 }
 
-export interface INetworkVendorSessionSummary extends IBaseEntity<string> {
+export interface AdditionalNetworkSummary {
+  sourceSegmentColor?: string;
+  destinationSegmentColor?: string;
+}
+
+export interface INetworkVendorSessionSummary extends AdditionalNetworkSummary, IBaseEntity<string> {
   sessionId: string;
   sourceIp: string;
   sourcePort: string;
