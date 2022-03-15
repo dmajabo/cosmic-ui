@@ -296,6 +296,7 @@ export const DashboardStyles = makeStyles(
         border: '1px solid black',
         height: 30,
         display: 'flex',
+        maxWidth: 100,
       },
       connectivityAvailableItem: {
         width: 2,

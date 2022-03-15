@@ -100,7 +100,7 @@ export const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ netw
 
   useEffect(() => {
     setSelectedNetworks(getSelectedNetworksFromLocalStorage(history, devices, networks));
-  }, [history, devices, networks]);
+  }, [history, networks, devices]);
 
   return (
     <div className={classes.pageComponentBackground}>

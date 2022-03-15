@@ -25,7 +25,7 @@ export const TableStyles = makeStyles(
           border: 'none',
           borderBottom: '1px solid var(--_rowBorder)',
           fontWeight: 700,
-          fontSize: '14px',
+          fontSize: '12px',
           lineHeight: '16px',
           textTransform: 'uppercase',
           color: 'var(--_disabledTextColor)',

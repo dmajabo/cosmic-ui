@@ -55,8 +55,9 @@ interface Props {
   readonly legendSize?: number;
   readonly legendStyles?: Object;
   readonly legendItemStyle?: Object;
-  disabledLegendHide?: boolean;
-  onItemClick?: (item: PieDataItem) => void;
+  readonly disabledLegendHide?: boolean;
+  readonly onItemClick?: (item: PieDataItem) => void;
+  readonly centerCountText?: string;
 }
 
 const DonutChart: React.FC<Props> = (props: Props) => {
@@ -197,7 +198,14 @@ const DonutChart: React.FC<Props> = (props: Props) => {
                 {arcs.map((arc, i) => {
                   if (arc.data.hide || !arc.data) return null;
                   return (
-                    <g id={`arcG${arc.index}`} data-value={arc.data.value} key={`path${i}${arc.data.name}`} onClick={arc.onClick} style={{ cursor: 'pointer' }}>
+                    <g
+                      id={`arcG${arc.index}`}
+                      data-value={arc.data.value}
+                      key={`path${i}${arc.data.name}`}
+                      onClick={arc.onClick}
+                      style={{ cursor: 'pointer' }}
+                      xlinkTitle={`${arc.data.name}: ${arc.data.value}`}
+                    >
                       <path id={`arc${arc.index}`} d={arc.path} fill={arc.color} stroke="var(--_primaryBg)" strokeWidth="2.5" />
                       <foreignObject
                         id={`arcValueFG${arc.index}`}
@@ -211,8 +219,8 @@ const DonutChart: React.FC<Props> = (props: Props) => {
                         <div
                           id={`arcValue${arc.index}`}
                           title={`${arc.data.name}: ${arc.data.value}`}
-                          onMouseEnter={arc.onMouseEnter}
-                          onMouseLeave={arc.onMouseLeave}
+                          // onMouseEnter={arc.onMouseEnter}
+                          // onMouseLeave={arc.onMouseLeave}
                           style={{
                             fontFamily: 'DMSans',
                             fontWeight: 'bold',
@@ -238,7 +246,7 @@ const DonutChart: React.FC<Props> = (props: Props) => {
                   {total}
                 </TextStyle>
                 <TextStyle dx="0" dy={props.totalStyle ? props.totalStyle.offsetLabelY : '36'} fSize={props.totalStyle ? props.totalStyle.fontLabelSize : 14} color="var(--_defaultColor)">
-                  Rules
+                  {props.centerCountText || 'Rules'}
                 </TextStyle>
               </g>
             </>

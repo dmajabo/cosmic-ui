@@ -9,4 +9,7 @@ export const AlertApi = {
   deleteChannel: (id: string) => 'alert/api/v1/alert/channels/' + id,
   getAlertLogs: () => 'alert/api/v1/alert/logs', // res IAlertListAlertLogsResponse
   getAnomalies: () => 'alert/api/v1/alert/anomaly',
+  getAlertCounts: () => 'alert/api/v1/alert/types/count',
+  getCountPerInterval: () => 'alert/api/v1/alert/types/count-per-interval',
+  getAlertLogsByNetwork: (networkId: string) => `alert/api/v1/alert/logs/${networkId}`,
 };

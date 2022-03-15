@@ -1,7 +1,9 @@
 import { MetricsData } from 'app/containers/Pages/TopologyPage/TopologyMetrics/SharedTypes';
 import { AccountVendorTypes } from '../ApiModels/Accounts/apiModel';
+import { GENERAL_TIME_RANGE_QUERY_TYPES } from '../ApiModels/paramBuilders';
 import { ISegmentSegmentP } from '../ApiModels/Policy/Segment';
 import { VendorTypes } from '../ApiModels/Topology/apiModels';
+import { ModelalertType } from '../ApiModels/Workflow/apiModel';
 import { SeverityLevel } from './utils';
 
 export interface Device {
@@ -124,7 +126,7 @@ export interface GetOrganizationResponse {
   readonly organizations?: Organization[];
 }
 
-interface Data {
+export interface Data {
   readonly time: string;
   readonly value: string;
 }
@@ -562,4 +564,36 @@ export interface MetricsTopoMap {
   readonly organizations: OrgResponse;
   readonly networks: NetworkResponse;
   readonly devices: DeviceResponse;
+}
+
+export interface NetworkAlert {
+  readonly id: string;
+  readonly alert_type: ModelalertType;
+  readonly object_ext_id: string;
+  readonly object_name: string;
+  readonly object_type: string;
+  readonly desc_string: string;
+  readonly timestamp: string;
+  readonly value: string;
+  readonly sourceSegment: string;
+  readonly destinationSegment: string;
+  readonly network_id: string;
+  readonly key: string;
+}
+
+export interface NetworkAlertLogResponse {
+  readonly alerts: NetworkAlert[];
+  readonly total_count: number;
+}
+
+export interface NetworkAlertLogParams {
+  readonly alert_type: ModelalertType;
+  readonly time_range: GENERAL_TIME_RANGE_QUERY_TYPES;
+  readonly alert_state: 'ACTIVE';
+  // readonly startTime: string;
+  // readonly include_anomaly: boolean;
+}
+
+export interface NetworkAlertChainResponse {
+  readonly [id: string]: NetworkAlertLogResponse;
 }
