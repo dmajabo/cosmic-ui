@@ -74,4 +74,5 @@ export const LegendRangeValueStyle = styled.span`
   font-size: 14px;
   line-height: 18px;
   flex-shrink: 0;
+  width: 90%;
 `;

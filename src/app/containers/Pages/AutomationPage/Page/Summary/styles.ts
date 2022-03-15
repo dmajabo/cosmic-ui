@@ -96,7 +96,8 @@ export const SummaryItemDivider = styled.div`
 `;
 
 export const LegendContainer = styled.div`
-  display: flex;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: 33% 33% 33%;
   margin-top: 20px;
+  text-overflow: ellipsis;
 `;

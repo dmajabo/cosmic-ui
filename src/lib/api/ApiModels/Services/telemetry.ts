@@ -13,4 +13,5 @@ export const TelemetryApi = {
   getAggregatedTrafficByNetworkId: (networkId: string) => `/telemetry/api/v1/telemetry/metrics/traffic/aggregated/network/${networkId}`,
   getTrafficDataByNetworkExtIdAppId: (networkId: string, appId: string) => `/telemetry/api/v1/telemetry/metrics/traffic/dests/nw/${networkId}/app/${appId}`,
   getTrafficDataByAppId: (appId: string) => `/telemetry/api/v1/telemetry/metrics/traffic/aggregated/app/${appId}`,
+  getAggregatedTraffic: () => '/telemetry/api/v1/telemetry/metrics/traffic/aggregated',
 };

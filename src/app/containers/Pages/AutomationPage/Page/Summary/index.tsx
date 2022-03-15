@@ -8,6 +8,7 @@ import { jsPDF } from 'jspdf';
 import { SummaryComponent } from './SummaryComponent';
 import { ALERT_TIME_RANGE_QUERY_TYPES, convertPeriodToUserFriendlyString } from 'lib/api/ApiModels/paramBuilders';
 import { MetricsProvider, useMetricsActions } from 'lib/hooks/Metrics/useMetricsDataContent';
+import OkulisLogo from './Okulis-Logo-transparent.png';
 
 export const Summary: React.FC = () => {
   const componentRef = useRef(null);
@@ -22,11 +23,21 @@ export const Summary: React.FC = () => {
     const data = canvas.toDataURL('image/png');
 
     const pdf = new jsPDF();
+    let pageHeight = pdf.internal.pageSize.getHeight();
     const imgProperties = pdf.getImageProperties(data);
     const pdfWidth = pdf.internal.pageSize.getWidth();
     const pdfHeight = (imgProperties.height * pdfWidth) / imgProperties.width;
-
-    pdf.addImage(data, 'PNG', 0, 0, pdfWidth, pdfHeight);
+    let heightLeft = pdfHeight;
+    let position = 10;
+    //pdf.addImage(OkulisLogo, 'PNG', 0, 0, 100, 50);
+    pdf.addImage(data, 'PNG', 0, position, pdfWidth, pdfHeight);
+    heightLeft -= pageHeight;
+    while (heightLeft >= 0) {
+      position += heightLeft - pdfHeight; // top padding for other pages
+      pdf.addPage();
+      pdf.addImage(data, 'PNG', 0, position, pdfWidth, pdfHeight);
+      heightLeft -= pageHeight;
+    }
     pdf.save('Summary.pdf');
   };
 
