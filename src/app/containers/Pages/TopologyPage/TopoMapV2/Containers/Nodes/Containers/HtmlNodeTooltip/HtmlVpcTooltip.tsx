@@ -1,8 +1,8 @@
-import React from 'react';
-import { NodeTooltipBg, NodeTooltipWrapper, HeaderNameRow, SubHeaderRow, SubHeaderTitleLabel, SubHeaderTitleValue, FieldCount, FieldIcon, FieldName, FieldRow } from './style';
-import { ITopoRegionNode, INetworkVNetNode } from 'lib/hooks/Topology/models';
+import { AppLoaderBalancerIcon, InternetGatawayIcon, NetLoaderBalancerIcon, VmIcon } from 'app/components/SVGIcons/topologyIcons/TopoMapV2Icons/VnetPanelIcons/vnetPanelIcons';
 import { CloudLoadBalancerTypeP, INetworkLoadBalancer } from 'lib/api/ApiModels/Topology/apiModels';
-import { InternetGatawayIcon, NetLoaderBalancerIcon, AppLoaderBalancerIcon, VmIcon } from 'app/components/SVGIcons/topologyIcons/TopoMapV2Icons/VnetPanelIcons/vnetPanelIcons';
+import { INetworkVNetNode, ITopoRegionNode } from 'lib/hooks/Topology/models';
+import React from 'react';
+import { FieldCount, FieldIcon, FieldName, FieldRow, HeaderNameRow, NodeTooltipBg, NodeTooltipWrapper, SubHeaderRow, SubHeaderTitleLabel, SubHeaderTitleValue } from './style';
 
 interface Props {
   id: string;
