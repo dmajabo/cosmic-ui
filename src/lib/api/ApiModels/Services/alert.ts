@@ -11,4 +11,5 @@ export const AlertApi = {
   getAnomalies: () => 'alert/api/v1/alert/anomaly',
   getAlertCounts: () => 'alert/api/v1/alert/types/count',
   getCountPerInterval: () => 'alert/api/v1/alert/types/count-per-interval',
+  getAlertLogsByNetwork: (networkId: string) => `alert/api/v1/alert/logs/${networkId}`,
 };

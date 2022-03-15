@@ -13,6 +13,10 @@ import { LocationState } from '../..';
 import { ModelalertType } from 'lib/api/ApiModels/Workflow/apiModel';
 import { checkforNoData } from './filterFunctions';
 import { SelectedNetworkMetricsData } from './PerformanceDashboard';
+import { AlertApi } from 'lib/api/ApiModels/Services/alert';
+import { GENERAL_TIME_RANGE_QUERY_TYPES } from 'lib/api/ApiModels/paramBuilders';
+import { useGetChainData } from 'lib/api/http/useAxiosHook';
+import { Data, NetworkAlertChainResponse, NetworkAlertLogParams } from 'lib/api/http/SharedTypes';
 
 interface PacketLossProps {
   readonly selectedNetworksMetricsData: SelectedNetworkMetricsData[];
@@ -64,7 +68,9 @@ export const PACKET_LOSS_HEATMAP_LEGEND: LegendData[] = [
 export const PacketLoss: React.FC<PacketLossProps> = ({ selectedNetworksMetricsData, timeRange }) => {
   const classes = PerformanceDashboardStyles();
   const [packetLossData, setPacketLossData] = useState<MetricKeyValue>({});
+  const [escalationPacketLossData, setEscalationPacketLossData] = useState<MetricKeyValue>({});
   const [anomalyCount, setAnomalyCount] = useState<number>(0);
+  const { response, onGetChainData } = useGetChainData<NetworkAlertChainResponse>();
 
   const userContext = useContext<UserContextState>(UserContext);
   const apiClient = createApiClient(userContext.accessToken!);
@@ -88,18 +94,33 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedNetworksMetricsD
       const promises = selectedNetworksMetricsData.map(row => (row.deviceString ? apiClient.getPacketLossMetrics(row.deviceString, row.destination, timeRange, row.label) : null));
       Promise.all(promises).then(values => {
         values.forEach(item => {
-          const anomalyArray = item.metrics.keyedmap.find(item => item.key === PACKET_LOSS_ANOMALY)?.ts || [];
-          totalAnomalyCount = totalAnomalyCount + anomalyArray.length;
-          packetLossChartData[item.testId] = item.metrics.keyedmap.find(item => item.key === PACKET_LOSS)?.ts || [];
-          packetLossChartData[`${item.testId}_anomaly`] = anomalyArray;
-          packetLossChartData[`${item.testId}_upperbound`] = item.metrics.keyedmap.find(item => item.key === PACKET_LOSS_UPPERBOUND)?.ts || [];
-          packetLossChartData[`${item.testId}_lowerbound`] = item.metrics.keyedmap.find(item => item.key === PACKET_LOSS_LOWERBOUND)?.ts || [];
-          packetLossChartData[`${item.testId}_threshold`] = item.metrics.keyedmap.find(item => item.key === PACKET_LOSS_THRESHOLD)?.ts || [];
+          if (item) {
+            const anomalyArray = item.metrics.keyedmap.find(item => item.key === PACKET_LOSS_ANOMALY)?.ts || [];
+            totalAnomalyCount = totalAnomalyCount + anomalyArray.length;
+            packetLossChartData[item.testId] = item.metrics.keyedmap.find(item => item.key === PACKET_LOSS)?.ts || [];
+            packetLossChartData[`${item.testId}_anomaly`] = anomalyArray;
+            packetLossChartData[`${item.testId}_upperbound`] = item.metrics.keyedmap.find(item => item.key === PACKET_LOSS_UPPERBOUND)?.ts || [];
+            packetLossChartData[`${item.testId}_lowerbound`] = item.metrics.keyedmap.find(item => item.key === PACKET_LOSS_LOWERBOUND)?.ts || [];
+            packetLossChartData[`${item.testId}_threshold`] = item.metrics.keyedmap.find(item => item.key === PACKET_LOSS_THRESHOLD)?.ts || [];
+          }
         });
         setPacketLossData(packetLossChartData);
         setAnomalyCount(totalAnomalyCount);
       });
     };
+
+    if (!isEmpty(selectedNetworksMetricsData)) {
+      const params: NetworkAlertLogParams = {
+        alert_type: ModelalertType.ANOMALY_PACKETLOSS,
+        time_range: timeRange === '-1d' ? GENERAL_TIME_RANGE_QUERY_TYPES.LAST_DAY : GENERAL_TIME_RANGE_QUERY_TYPES.LAST_WEEK,
+      };
+      onGetChainData(
+        selectedNetworksMetricsData.map(network => AlertApi.getAlertLogsByNetwork(network.value)),
+        selectedNetworksMetricsData.map(network => network.value),
+        userContext.accessToken!,
+        params,
+      );
+    }
 
     getPacketLossMetrics();
 
@@ -107,6 +128,15 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedNetworksMetricsD
       setPacketLossData({});
     };
   }, [selectedNetworksMetricsData, timeRange]);
+
+  useEffect(() => {
+    const escalationPacketLossData: MetricKeyValue = {};
+    selectedNetworksMetricsData.forEach(network => {
+      const networkMetrics: Data[] = response[network.value].alerts.map(alert => ({ time: alert.timestamp, value: alert.value || null }));
+      escalationPacketLossData[`${network.label}_escalation`] = networkMetrics;
+    });
+    setEscalationPacketLossData(escalationPacketLossData);
+  }, [response]);
 
   return (
     <>
@@ -118,13 +148,13 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedNetworksMetricsD
       </div>
       <ChartContainerStyles style={{ maxWidth: '100%', minHeight: 420, maxHeight: 420 }}>
         {!isEmpty(selectedNetworksMetricsData) ? (
-          // packetLossData contains 5 keys for each row. One for the data, one for anomaly, one for upperbound,one for lowerbound and one for threshold
-          Object.keys(packetLossData).length / 5 === selectedNetworksMetricsData.length ? (
-            checkforNoData(packetLossData) ? (
+          // packetLossData contains 6 keys for each row. One for the data, one for anomaly, one for upperbound,one for lowerbound, one for threshold and one for escalation
+          Object.keys({ ...packetLossData, ...escalationPacketLossData }).length / 6 === selectedNetworksMetricsData.length ? (
+            checkforNoData({ ...packetLossData, ...escalationPacketLossData }) ? (
               <EmptyText>No Data</EmptyText>
             ) : (
               <Chart>
-                <MetricsLineChart dataValueSuffix="%" selectedNetworksMetricsData={selectedNetworksMetricsData} inputData={packetLossData} />
+                <MetricsLineChart dataValueSuffix="%" selectedNetworksMetricsData={selectedNetworksMetricsData} inputData={{ ...packetLossData, ...escalationPacketLossData }} />
               </Chart>
             )
           ) : (

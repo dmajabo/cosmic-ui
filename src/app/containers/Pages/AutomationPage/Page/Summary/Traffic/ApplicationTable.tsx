@@ -5,7 +5,7 @@ import SummaryTable, { SummaryTableData } from './SummaryTable';
 import { TelemetryApi } from 'lib/api/ApiModels/Services/telemetry';
 import { useGet } from 'lib/api/http/useAxiosHook';
 import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
-import { AggregatedTrafficResponse } from './NetworkTable';
+import { AggregatedTrafficResponse, getBytesString } from './NetworkTable';
 import { Vnet } from 'lib/api/http/SharedTypes';
 
 interface ApplicationTableProps {
@@ -30,18 +30,18 @@ export const ApplicationTable: React.FC<ApplicationTableProps> = ({ timeRange, n
   }, []);
 
   useEffect(() => {
-    if (response && response.traffic_stat.traffic && response.traffic_stat.traffic.length) {
-      const summaryTableData: SummaryTableData[] = response.traffic_stat.traffic.map(item => ({
+    if (response && response.trafficStat.traffic && response.trafficStat.traffic.length) {
+      const summaryTableData: SummaryTableData[] = response.trafficStat.traffic.map(item => ({
         name: networks.find(network => network.extId === item.resource)?.name || 'UNKNOWN',
-        sent: item.total_bytes_sent,
-        received: item.total_bytes_rcvd,
-        activeTime: item.total_active_time,
-        flows: Number(item.total_flows),
-        clients: Number(item.total_clients),
+        sent: getBytesString(item.totalBytesSent),
+        received: getBytesString(item.totalBytesRcvd),
+        activeTime: item.totalActiveTime,
+        flows: Number(item.totalFlows),
+        clients: Number(item.totalClients),
       }));
       setTableData(summaryTableData);
     }
-  }, [response]);
+  }, [response, networks]);
   return (
     <>
       <ChartTitle>Application</ChartTitle>

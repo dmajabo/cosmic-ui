@@ -14,6 +14,10 @@ import { LocationState } from '../..';
 import { ModelalertType } from 'lib/api/ApiModels/Workflow/apiModel';
 import { checkforNoData } from './filterFunctions';
 import { SelectedNetworkMetricsData } from './PerformanceDashboard';
+import { GENERAL_TIME_RANGE_QUERY_TYPES } from 'lib/api/ApiModels/paramBuilders';
+import { AlertApi } from 'lib/api/ApiModels/Services/alert';
+import { NetworkAlertChainResponse, NetworkAlertLogParams, Data } from 'lib/api/http/SharedTypes';
+import { useGetChainData } from 'lib/api/http/useAxiosHook';
 
 interface LatencyProps {
   readonly selectedNetworksMetricsData: SelectedNetworkMetricsData[];
@@ -47,7 +51,9 @@ export const LATENCY_HEATMAP_LEGEND: LegendData[] = [
 export const Latency: React.FC<LatencyProps> = ({ selectedNetworksMetricsData, timeRange }) => {
   const classes = PerformanceDashboardStyles();
 
+  const { response, onGetChainData } = useGetChainData<NetworkAlertChainResponse>();
   const [latencyData, setLatencyData] = useState<MetricKeyValue>({});
+  const [escalationLatencyData, setEscalationLatencyData] = useState<MetricKeyValue>({});
   const [anomalyCount, setAnomalyCount] = useState<number>(0);
 
   const userContext = useContext<UserContextState>(UserContext);
@@ -72,18 +78,33 @@ export const Latency: React.FC<LatencyProps> = ({ selectedNetworksMetricsData, t
       const promises = selectedNetworksMetricsData.map(row => (row.deviceString ? apiClient.getLatencyMetrics(row.deviceString, row.destination, timeRange, row.label) : null));
       Promise.all(promises).then(values => {
         values.forEach(item => {
-          const anomalyArray = item.metrics.keyedmap.find(item => item.key === LATENCY_ANOMALY)?.ts || [];
-          totalAnomalyCount = totalAnomalyCount + anomalyArray.length;
-          latencyChartData[item.testId] = item.metrics.keyedmap.find(item => item.key === LATENCY)?.ts || [];
-          latencyChartData[`${item.testId}_anomaly`] = anomalyArray;
-          latencyChartData[`${item.testId}_upperbound`] = item.metrics.keyedmap.find(item => item.key === LATENCY_UPPERBOUND)?.ts || [];
-          latencyChartData[`${item.testId}_lowerbound`] = item.metrics.keyedmap.find(item => item.key === LATENCY_LOWERBOUND)?.ts || [];
-          latencyChartData[`${item.testId}_threshold`] = item.metrics.keyedmap.find(item => item.key === LATENCY_THRESHOLD)?.ts || [];
+          if (item) {
+            const anomalyArray = item.metrics.keyedmap.find(item => item.key === LATENCY_ANOMALY)?.ts || [];
+            totalAnomalyCount = totalAnomalyCount + anomalyArray.length;
+            latencyChartData[item.testId] = item.metrics.keyedmap.find(item => item.key === LATENCY)?.ts || [];
+            latencyChartData[`${item.testId}_anomaly`] = anomalyArray;
+            latencyChartData[`${item.testId}_upperbound`] = item.metrics.keyedmap.find(item => item.key === LATENCY_UPPERBOUND)?.ts || [];
+            latencyChartData[`${item.testId}_lowerbound`] = item.metrics.keyedmap.find(item => item.key === LATENCY_LOWERBOUND)?.ts || [];
+            latencyChartData[`${item.testId}_threshold`] = item.metrics.keyedmap.find(item => item.key === LATENCY_THRESHOLD)?.ts || [];
+          }
         });
         setLatencyData(latencyChartData);
         setAnomalyCount(totalAnomalyCount);
       });
     };
+
+    if (!isEmpty(selectedNetworksMetricsData)) {
+      const params: NetworkAlertLogParams = {
+        alert_type: ModelalertType.ANOMALY_LATENCY,
+        time_range: timeRange === '-1d' ? GENERAL_TIME_RANGE_QUERY_TYPES.LAST_DAY : GENERAL_TIME_RANGE_QUERY_TYPES.LAST_WEEK,
+      };
+      onGetChainData(
+        selectedNetworksMetricsData.map(network => AlertApi.getAlertLogsByNetwork(network.value)),
+        selectedNetworksMetricsData.map(network => network.value),
+        userContext.accessToken!,
+        params,
+      );
+    }
 
     getLatencyMetrics();
 
@@ -91,6 +112,15 @@ export const Latency: React.FC<LatencyProps> = ({ selectedNetworksMetricsData, t
       setLatencyData({});
     };
   }, [selectedNetworksMetricsData, timeRange]);
+
+  useEffect(() => {
+    const escalationLatencyData: MetricKeyValue = {};
+    selectedNetworksMetricsData.forEach(network => {
+      const networkMetrics: Data[] = response[network.value].alerts.map(alert => ({ time: alert.timestamp, value: alert.value || null }));
+      escalationLatencyData[`${network.label}_escalation`] = networkMetrics;
+    });
+    setEscalationLatencyData(escalationLatencyData);
+  }, [response]);
 
   return (
     <>
@@ -102,13 +132,13 @@ export const Latency: React.FC<LatencyProps> = ({ selectedNetworksMetricsData, t
       </div>
       <ChartContainerStyles style={{ maxWidth: '100%', minHeight: 420, maxHeight: 420 }}>
         {!isEmpty(selectedNetworksMetricsData) ? (
-          // latencyData contains 5 keys for each row. One for the data, one for anomaly, one for upperbound, one for lowerbound and one for threshold
-          Object.keys(latencyData).length / 5 === selectedNetworksMetricsData.length ? (
-            checkforNoData(latencyData) ? (
+          // latencyData contains 6 keys for each row. One for the data, one for anomaly, one for upperbound, one for lowerbound, one for threshold and one for Escalation
+          Object.keys({ ...latencyData, ...escalationLatencyData }).length / 6 === selectedNetworksMetricsData.length ? (
+            checkforNoData({ ...latencyData, ...escalationLatencyData }) ? (
               <EmptyText>No Data</EmptyText>
             ) : (
               <Chart>
-                <MetricsLineChart dataValueSuffix="ms" selectedNetworksMetricsData={selectedNetworksMetricsData} inputData={latencyData} />
+                <MetricsLineChart dataValueSuffix="ms" selectedNetworksMetricsData={selectedNetworksMetricsData} inputData={{ ...latencyData, ...escalationLatencyData }} />
               </Chart>
             )
           ) : (

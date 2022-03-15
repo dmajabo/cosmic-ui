@@ -96,6 +96,7 @@ const COLORS = [
   '#1A237E',
 ];
 const ANOMALY_POINT_COLOR = 'orange';
+const ESCALATION_POINT_COLOR = 'red';
 
 const addNullPointsForUnavailableData = (array: number[][]) => {
   let data = [];
@@ -187,6 +188,41 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedNetworksMet
           `,
       },
     }));
+    const escalationData: ChartData[] = selectedNetworksMetricsData.map(row => ({
+      id: `${row.label}_escalation`,
+      name: `${row.label}_escalation`,
+      data: sortBy(inputData[`${row.label}_escalation`], 'time').map(item => {
+        const timestamp = DateTime.fromFormat(item.time, OLD_TIME_FORMAT).toUTC().toMillis();
+
+        return {
+          x: timestamp,
+          y: dataValueSuffix === 'mbps' ? Number(item.value) / 1000 : Number(Number.parseFloat(item.value).toFixed(2)),
+          marker: {
+            enabled: true,
+            radius: 4,
+            symbol: 'square',
+          },
+          dataValueSuffix: dataValueSuffix,
+          destination: row.destination,
+        };
+      }),
+      linkedTo: `${row.label} &#9654 ${row.deviceString}`,
+      turboThreshold: inputData[row.label]?.length || 0,
+      color: ESCALATION_POINT_COLOR,
+      states: {
+        hover: {
+          lineWidthPlus: 0,
+        },
+      },
+      zIndex: 1,
+      lineWidth: 0,
+      tooltip: {
+        useHTML: true,
+        pointFormat: `
+          <div><b>Escalation:</b> ${dataValueSuffix === '%' ? '{point.y:,.2f}' : '{point.y:,.0f}'}{point.dataValueSuffix}</div><br />
+          `,
+      },
+    }));
     const thresholdData: AreaChartData[] = selectedNetworksMetricsData.map(row => {
       const thresholdSeriesData = sortBy(inputData[`${row.label}_threshold`], 'time').map((item, index) => {
         const timestamp = DateTime.fromFormat(item.time, OLD_TIME_FORMAT).toUTC().toMillis();
@@ -257,6 +293,7 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedNetworksMet
       finalChartData.push(anomalyData[index]);
       finalChartData.push(thresholdData[index]);
       finalChartData.push(areaData[index]);
+      finalChartData.push(escalationData[index]);
     });
     setData(finalChartData);
   }, [inputData]);

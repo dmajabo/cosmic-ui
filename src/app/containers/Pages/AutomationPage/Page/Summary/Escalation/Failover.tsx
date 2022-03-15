@@ -1,6 +1,5 @@
 import { ALERT_TIME_RANGE_QUERY_TYPES, GENERAL_TIME_RANGE_QUERY_TYPES } from 'lib/api/ApiModels/paramBuilders';
 import { AlertApi } from 'lib/api/ApiModels/Services/alert';
-import { ModelalertType } from 'lib/api/ApiModels/Workflow/apiModel';
 import { useGet } from 'lib/api/http/useAxiosHook';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import React, { useContext, useEffect, useState } from 'react';
@@ -11,7 +10,6 @@ import isEmpty from 'lodash/isEmpty';
 import { EmptyText } from 'app/components/Basic/NoDataStyles/NoDataStyles';
 import { AlertResponse, AlertType } from '../SummaryComponent';
 import { INPUT_TIME_FORMAT } from 'app/containers/Pages/DashboardPage';
-import { countBy } from 'lodash';
 import { DateTime } from 'luxon';
 import { getCorrectedTimeString } from 'app/containers/Pages/MetricsPage/components/Utils';
 
@@ -36,6 +34,7 @@ export const Failover: React.FC<FailoverProps> = ({ timeRange }) => {
   useEffect(() => {
     const params = {
       timeRange: timeRange === ALERT_TIME_RANGE_QUERY_TYPES.LAST_DAY ? GENERAL_TIME_RANGE_QUERY_TYPES.LAST_DAY : GENERAL_TIME_RANGE_QUERY_TYPES.LAST_WEEK,
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     };
     onGet(AlertApi.getCountPerInterval(), userContext.accessToken!, params);
   }, [timeRange]);

@@ -14,20 +14,33 @@ interface NetworkTableProps {
 
 interface AggregatedTraffic {
   readonly resource: string;
-  readonly node_type: string;
-  readonly total_bytes_sent: string;
-  readonly total_bytes_rcvd: string;
-  readonly total_flows: string;
-  readonly total_clients: string;
-  readonly total_active_time: string;
+  readonly nodeType: string;
+  readonly totalBytesSent: string;
+  readonly totalBytesRcvd: string;
+  readonly totalFlows: string;
+  readonly totalClients: string;
+  readonly totalActiveTime: string;
 }
 
 export interface AggregatedTrafficResponse {
-  readonly total_count: number;
-  readonly traffic_stat: {
+  readonly totalCount: number;
+  readonly trafficStat: {
     readonly traffic: AggregatedTraffic[];
   };
 }
+const BILLION = 1000000000;
+const MILLION = 1000000;
+const THOUSAND = 1000;
+
+export const getBytesString = (bytes: string) => {
+  const bytesValue = Number(bytes);
+  if (bytesValue > BILLION) {
+    return `${(bytesValue / BILLION).toFixed(2)} GB`;
+  } else if (bytesValue > MILLION) {
+    return `${(bytesValue / MILLION).toFixed(2)} MB`;
+  }
+  return `${(bytesValue / THOUSAND).toFixed(2)} KB`;
+};
 
 export const NetworkTable: React.FC<NetworkTableProps> = ({ timeRange, networks }) => {
   const [tableData, setTableData] = useState<SummaryTableData[]>([]);
@@ -46,18 +59,18 @@ export const NetworkTable: React.FC<NetworkTableProps> = ({ timeRange, networks 
   }, []);
 
   useEffect(() => {
-    if (response && response.traffic_stat.traffic && response.traffic_stat.traffic.length) {
-      const summaryTableData: SummaryTableData[] = response.traffic_stat.traffic.map(item => ({
+    if (response && response.trafficStat.traffic && response.trafficStat.traffic.length) {
+      const summaryTableData: SummaryTableData[] = response.trafficStat.traffic.map(item => ({
         name: networks.find(network => network.extId === item.resource)?.name || 'UNKNOWN',
-        sent: item.total_bytes_sent,
-        received: item.total_bytes_rcvd,
-        activeTime: item.total_active_time,
-        flows: Number(item.total_flows),
-        clients: Number(item.total_clients),
+        sent: getBytesString(item.totalBytesSent),
+        received: getBytesString(item.totalBytesRcvd),
+        activeTime: item.totalActiveTime,
+        flows: Number(item.totalFlows),
+        clients: Number(item.totalClients),
       }));
       setTableData(summaryTableData);
     }
-  }, [response]);
+  }, [response, networks]);
 
   return (
     <>
