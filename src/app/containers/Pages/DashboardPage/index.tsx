@@ -103,7 +103,7 @@ const DashboardPage: React.FC = () => {
   const [anomaliesPageSize, setAnomaliesPageSize] = useState<number>(BASE_ANOMALIES_PAGE_SIZE);
 
   const { response: devicesResponse, loading: devicesLoading, error: devicesError, onGet: getDevices } = useGet<OnPremDevicesResponse>();
-  const { response: deviceMetricsResponse, onGet: getDeviceMetrics } = useGet<DeviceMetricsResponse>();
+  const { response: deviceMetricsResponse, loading: deviceMetricsLoading, onGet: getDeviceMetrics } = useGet<DeviceMetricsResponse>();
   const { response: anomaliesResponse, loading: anomaliesLoading, error: anomaliesError, onGet: getAnomalies } = useGet<AnomaliesResponse>();
 
   const onTabChange = (event: React.SyntheticEvent<Element, Event>, value: string | number) => {
@@ -257,6 +257,7 @@ const DashboardPage: React.FC = () => {
                   responsiveLayout="scroll"
                   value={convertDataToSitesData(devicesResponse?.devices || [], deviceMetricsResponse?.deviceMetrics || [])}
                   scrollable
+                  loading={deviceMetricsLoading}
                 >
                   <Column
                     headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, wordBreak: 'normal' }}
