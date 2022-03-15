@@ -1,7 +1,7 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { ActionPart, ActionRowStyles, ContentWrapper, PageContentWrapper, TableWrapper } from '../../Shared/styles';
-import { useGet } from 'lib/api/http/useAxiosHook';
-import { IAllSessionsRes, INetworkSession, ITesseractListStitchedSessionsResponse } from 'lib/api/ApiModels/Sessions/apiModel';
+import { useGet, useGetChainData } from 'lib/api/http/useAxiosHook';
+import { IAllSessionsRes, INetworkSession, INetworkSessionSummary, INetworkVendorSessionSummary, ITesseractListStitchedSessionsResponse } from 'lib/api/ApiModels/Sessions/apiModel';
 import Table from './Table';
 // import Dropdown from 'app/components/Inputs/Dropdown';
 import { SessionsTabTypes } from 'lib/hooks/Sessions/model';
@@ -28,14 +28,22 @@ import {
 } from 'lib/api/ApiModels/paramBuilders';
 import { TesseractApi } from 'lib/api/ApiModels/Services/tesseract';
 import MatSelect from 'app/components/Inputs/MatSelect';
+import { PolicyApi } from 'lib/api/ApiModels/Services/policy';
+import { IPolicysvcListSegmentPsResponse } from 'lib/api/ApiModels/Policy/Segment';
 
 interface IProps {}
+
+interface StitchedResponseWithSegments {
+  sessionSummary: ITesseractListStitchedSessionsResponse;
+  segments: IPolicysvcListSegmentPsResponse;
+}
 
 const SessionPage: React.FC<IProps> = (props: IProps) => {
   const { sessions } = useSessionsDataContext();
   const userContext = useContext<UserContextState>(UserContext);
   const { response, loading, error, onGet } = useGet<IAllSessionsRes>();
-  const { response: aggregRes, loading: loadingAggreg, error: errorAggreg, onGet: onGetStitchedData } = useGet<ITesseractListStitchedSessionsResponse>();
+  const { response: aggregRes, loading: loadingAggreg, error: errorAggreg, onGetChainData } = useGetChainData<StitchedResponseWithSegments>();
+  const [segments, setSegments] = useState<IPolicysvcListSegmentPsResponse>();
   const [aggregatedData, setAggregatedData] = React.useState<ITesseractListStitchedSessionsResponse>(null);
   const [sessionsData, setSessionsData] = React.useState<INetworkSession[]>([]);
 
@@ -65,8 +73,19 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
     if (aggregRes) {
       setSessionsData([]);
       setTotalCount(0);
-      setAggregatedData(aggregRes);
-      setAggregTotalCount(aggregRes.totalCount);
+      const sessionSummary: INetworkSessionSummary[] = aggregRes.sessionSummary.sessionSummary.map(summary => {
+        const vendorSessionSummary: INetworkVendorSessionSummary[] = summary.vendorSessionSummary.map(vendorSession => {
+          const maybeSourceSegmentColor = aggregRes.segments.segments.find(segment => segment.id === vendorSession.sourceSegmentId)?.color || '';
+          const maybeDestiSegmentColor = aggregRes.segments.segments.find(segment => segment.id === vendorSession.destSegmentId)?.color || '';
+          vendorSession.sourceSegmentColor = maybeSourceSegmentColor;
+          vendorSession.destinationSegmentColor = maybeDestiSegmentColor;
+          return vendorSession;
+        });
+        return { vendorSessionSummary, sessionId: summary.sessionId };
+      });
+      setAggregatedData({ sessionSummary, nextPageKey: aggregRes.sessionSummary.nextPageKey, totalCount: aggregRes.sessionSummary.totalCount });
+      setAggregTotalCount(aggregRes.sessionSummary.totalCount);
+      setSegments(aggregRes.segments);
       return;
     }
     setSessionsData([]);
@@ -121,8 +140,8 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
     loadSessionsData(_param);
   };
 
-  const loadAggregatedData = async _param => {
-    await onGetStitchedData(TesseractApi.getStitchedSessions(), userContext.accessToken!, _param);
+  const loadAggregatedData = _param => {
+    onGetChainData([TesseractApi.getStitchedSessions(), PolicyApi.getSegments()], ['sessionSummary', 'segments'], userContext.accessToken!, _param);
   };
 
   const loadSessionsData = async _param => {
