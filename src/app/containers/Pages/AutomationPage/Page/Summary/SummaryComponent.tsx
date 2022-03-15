@@ -9,9 +9,11 @@ import { ApplicationTable } from './Traffic/ApplicationTable';
 import { NetworkTable } from './Traffic/NetworkTable';
 import { AlertApi } from 'lib/api/ApiModels/Services/alert';
 import { TopoApi } from 'lib/api/ApiModels/Services/topo';
-import { useGetChainData } from 'lib/api/http/useAxiosHook';
+import { useGetChainData, useGet } from 'lib/api/http/useAxiosHook';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { Vnet } from 'lib/api/http/SharedTypes';
+import { IPolicysvcListSegmentPsResponse, ISegmentSegmentP } from 'lib/api/ApiModels/Policy/Segment';
+import { PolicyApi } from 'lib/api/ApiModels/Services/policy';
 
 interface SummaryComponentProps {
   readonly timeRange: ALERT_TIME_RANGE_QUERY_TYPES;
@@ -52,8 +54,10 @@ interface AlertSummaryResponse {
 export const SummaryComponent = React.forwardRef(({ timeRange }: SummaryComponentProps, ref: React.Ref<HTMLDivElement>) => {
   const [alertData, setAlertData] = useState<AlertData[]>([]);
   const [networks, setNetworks] = useState<Vnet[]>([]);
+  const [segments, setSegments] = useState<ISegmentSegmentP[]>([]);
   const userContext = useContext<UserContextState>(UserContext);
   const { response, loading, error, onGetChainData } = useGetChainData<AlertSummaryResponse>();
+  const { response: segmentResponse, onGet } = useGet<IPolicysvcListSegmentPsResponse>();
 
   useEffect(() => {
     const params = {
@@ -62,6 +66,11 @@ export const SummaryComponent = React.forwardRef(({ timeRange }: SummaryComponen
       timeRange: timeRange === ALERT_TIME_RANGE_QUERY_TYPES.LAST_DAY ? GENERAL_TIME_RANGE_QUERY_TYPES.LAST_DAY : GENERAL_TIME_RANGE_QUERY_TYPES.LAST_WEEK,
     };
     onGetChainData([AlertApi.getAlertCounts(), TopoApi.getOnPremNetworkList()], ['alerts', 'networkList'], userContext.accessToken!, params);
+    const segmentParams = {
+      start_from: 0,
+      page_size: 50,
+    };
+    onGet(PolicyApi.getSegments(), userContext.accessToken!, segmentParams);
   }, [timeRange]);
 
   useEffect(() => {
@@ -70,6 +79,11 @@ export const SummaryComponent = React.forwardRef(({ timeRange }: SummaryComponen
       setAlertData(response.alerts.data);
     }
   }, [response]);
+  useEffect(() => {
+    if (segmentResponse && segmentResponse.segments && segmentResponse.segments.length) {
+      setSegments(segmentResponse.segments);
+    }
+  }, [segmentResponse]);
 
   return (
     <div ref={ref}>
@@ -82,14 +96,14 @@ export const SummaryComponent = React.forwardRef(({ timeRange }: SummaryComponen
           <SummaryItemDivider />
           <NetworkAggregatedEscalation loading={loading} error={error} data={alertData} networks={networks} />
           <SummaryItemDivider style={{ marginTop: 30, marginBottom: 20 }} />
-          <Failover timeRange={timeRange} />
-          <SummaryItemDivider />
+          {/* <Failover timeRange={timeRange} />
+          <SummaryItemDivider /> */}
           <DeviceHealth timeRange={timeRange} />
         </SummaryItemContainer>
         <SummaryItemContainer>
           <SummaryItemLabel>Traffic</SummaryItemLabel>
           <NetworkTable timeRange={timeRange} networks={networks} />
-          <ApplicationTable timeRange={timeRange} networks={networks} />
+          <ApplicationTable timeRange={timeRange} segments={segments} />
         </SummaryItemContainer>
       </GridContainer>
     </div>

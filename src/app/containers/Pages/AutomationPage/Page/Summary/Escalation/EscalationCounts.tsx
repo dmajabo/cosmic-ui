@@ -18,7 +18,7 @@ export const EscalationCounts: React.FC<EscalationCountsProps> = ({ loading, err
       <EscalationCountItem loading={loading} error={error} dataColor="#DC4545" label="Packet Loss" data={getAlertTriggerCount(AlertType.ANOMALY_PACKETLOSS)} />
       <EscalationCountItem loading={loading} error={error} dataColor="#F9BA55" label="Jitter" data={getAlertTriggerCount(AlertType.ANOMALY_JITTER)} />
       <EscalationCountItem loading={loading} error={error} dataColor="#437FEC" label="Device" data={getAlertTriggerCount(AlertType.DEVICE_CONNECTIVITY_HEALTH)} />
-      <EscalationCountItem loading={loading} error={error} dataColor="#673AB7" label="Failover" data={getAlertTriggerCount(AlertType.CELLULAR_FAILOVER)} />
+      {/* <EscalationCountItem loading={loading} error={error} dataColor="#673AB7" label="Failover" data={getAlertTriggerCount(AlertType.CELLULAR_FAILOVER)} /> */}
     </>
   );
 };

@@ -6,6 +6,7 @@ import { useGet } from 'lib/api/http/useAxiosHook';
 import { TelemetryApi } from 'lib/api/ApiModels/Services/telemetry';
 import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
 import { Vnet } from 'lib/api/http/SharedTypes';
+import { convertSecondsToString } from 'app/containers/Pages/TopologyPage/TopoMapV2/PanelComponents/utils';
 
 interface NetworkTableProps {
   readonly timeRange: ALERT_TIME_RANGE_QUERY_TYPES;
@@ -64,7 +65,7 @@ export const NetworkTable: React.FC<NetworkTableProps> = ({ timeRange, networks 
         name: networks.find(network => network.extId === item.resource)?.name || 'UNKNOWN',
         sent: getBytesString(item.totalBytesSent),
         received: getBytesString(item.totalBytesRcvd),
-        activeTime: item.totalActiveTime,
+        activeTime: convertSecondsToString(item.totalActiveTime),
         flows: Number(item.totalFlows),
         clients: Number(item.totalClients),
       }));

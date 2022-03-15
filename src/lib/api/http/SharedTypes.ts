@@ -589,6 +589,7 @@ export interface NetworkAlertLogResponse {
 export interface NetworkAlertLogParams {
   readonly alert_type: ModelalertType;
   readonly time_range: GENERAL_TIME_RANGE_QUERY_TYPES;
+  readonly alert_state: 'ACTIVE';
   // readonly startTime: string;
   // readonly include_anomaly: boolean;
 }

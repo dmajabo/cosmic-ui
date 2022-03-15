@@ -21,7 +21,7 @@ interface ColouredNetwork extends Vnet {
 
 const getRandomColours = (colorNum: number, colors: number) => {
   if (colors < 1) colors = 1;
-  return 'hsl(' + ((colorNum * (360 / colors)) % 360) + ',70%,50%)';
+  return 'hsl(' + ((colorNum * (360 / colors)) % 360) + ',40%,50%)';
 };
 
 export const NetworkAggregatedEscalation: React.FC<NetworkAggregatedEscalationProps> = ({ loading, error, data, networks }) => {

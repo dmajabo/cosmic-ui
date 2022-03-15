@@ -58,7 +58,9 @@ const SummaryTable: React.FC<SummaryTableProps> = props => {
               ? props.data.map((row, rowIndex) => {
                   return (
                     <TableRow hover tabIndex={-1} key={`tableRow${row.name}${rowIndex}`} className={classes.row}>
-                      <TableCell className={classes.tableCell}>{row.name || ''}</TableCell>
+                      <TableCell style={{ maxWidth: 200, whiteSpace: 'normal' }} className={classes.tableCell}>
+                        {row.name || ''}
+                      </TableCell>
                       <TableCell className={classes.tableCell}>{row.sent || ''}</TableCell>
                       <TableCell className={classes.tableCell}>{row.received || ''}</TableCell>
                       <TableCell className={classes.tableCell}>{row.flows || ''}</TableCell>

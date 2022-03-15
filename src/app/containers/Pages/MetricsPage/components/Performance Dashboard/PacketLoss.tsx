@@ -113,6 +113,7 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedNetworksMetricsD
       const params: NetworkAlertLogParams = {
         alert_type: ModelalertType.ANOMALY_PACKETLOSS,
         time_range: timeRange === '-1d' ? GENERAL_TIME_RANGE_QUERY_TYPES.LAST_DAY : GENERAL_TIME_RANGE_QUERY_TYPES.LAST_WEEK,
+        alert_state: 'ACTIVE',
       };
       onGetChainData(
         selectedNetworksMetricsData.map(network => AlertApi.getAlertLogsByNetwork(network.value)),
