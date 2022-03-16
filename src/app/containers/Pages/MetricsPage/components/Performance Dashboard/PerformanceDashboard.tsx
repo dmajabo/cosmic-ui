@@ -63,8 +63,12 @@ const SELECTED_NETWORKS_LOCAL_KEY = 'selectedNetworks';
 const getSelectedNetworksFromLocalStorage = (history: any, devices: Device[], networks: Vnet[]): SelectOption[] => {
   if (history && history.location && history.location.state) {
     const state = history.location.state as LocationState;
-    const networkId = devices.find(device => device.extId === state?.deviceId || '')?.networkId || '';
-    return networks.map(network => ({ label: network.name, value: network.extId })).filter(network => network.value === networkId);
+    if (state?.networkId) {
+      return networks.map(network => ({ label: network.name, value: network.extId })).filter(network => network.value === state?.networkId || '');
+    } else {
+      const networkId = devices.find(device => device.extId === state?.deviceId || '')?.networkId || '';
+      return networks.map(network => ({ label: network.name, value: network.extId })).filter(network => network.value === networkId);
+    }
   }
   return JSON.parse(localStorage.getItem(SELECTED_NETWORKS_LOCAL_KEY)) || [];
 };
