@@ -24,7 +24,7 @@ export const ApplicationTable: React.FC<ApplicationTableProps> = ({ timeRange, s
       resourceType: 'NODE_TYPE_APPLICATION',
       time_range: timeRange === ALERT_TIME_RANGE_QUERY_TYPES.LAST_DAY ? GENERAL_TIME_RANGE_QUERY_TYPES.LAST_DAY : GENERAL_TIME_RANGE_QUERY_TYPES.LAST_WEEK,
       sort_key: 'total_recv',
-      topNum: 50,
+      topNum: 10,
       sortType: 'DESC',
     };
     onGet(TelemetryApi.getAggregatedTraffic(), userContext.accessToken!, params);
@@ -45,7 +45,7 @@ export const ApplicationTable: React.FC<ApplicationTableProps> = ({ timeRange, s
   }, [response, segments]);
   return (
     <>
-      <ChartTitle>Application</ChartTitle>
+      <ChartTitle>Top 10 Applications by usage</ChartTitle>
       <SummaryTable data={tableData} showLoader={loading} error={error?.message} />
     </>
   );

@@ -100,9 +100,9 @@ export const SummaryComponent = React.forwardRef(({ timeRange }: SummaryComponen
           <SummaryItemDivider />
           <NetworkAggregatedEscalation loading={loading} error={error} data={alertData} networks={networks} />
           <SummaryItemDivider style={{ marginTop: 30, marginBottom: 20 }} />
-          {/* <Failover timeRange={timeRange} />
-          <SummaryItemDivider /> */}
-          <DeviceHealth timeRange={timeRange} />
+          <Failover timeRange={timeRange} />
+          {/* <SummaryItemDivider />
+          <DeviceHealth timeRange={timeRange} /> */}
         </SummaryItemContainer>
         <SummaryItemContainer>
           <SummaryItemLabel>Traffic</SummaryItemLabel>
