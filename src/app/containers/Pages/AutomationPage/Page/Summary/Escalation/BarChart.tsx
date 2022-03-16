@@ -22,7 +22,7 @@ const barChartOptions = (chartTitle, xAxisText: string, yAxisText: string, barCh
     borderRadius: 6,
     borderWidth: 1,
     spacing: [30, 10, 10, 10],
-    height: 330,
+    height: 400,
   },
   title: {
     text: chartTitle ? chartTitle : null,
@@ -49,13 +49,13 @@ const barChartOptions = (chartTitle, xAxisText: string, yAxisText: string, barCh
     column: {
       dataLabels: {
         enabled: true,
-        color: '#673ab7',
+        color: '#75B472',
       },
       maxPointWidth: 40,
       borderRadius: 6,
     },
   },
-  colors: ['#673ab7'],
+  colors: ['#75B472'],
   legend: {
     enabled: false,
   },

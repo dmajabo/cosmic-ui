@@ -57,7 +57,7 @@ const SummaryTable: React.FC<SummaryTableProps> = props => {
             {props.data && props.data.length
               ? props.data.map((row, rowIndex) => {
                   return (
-                    <TableRow hover tabIndex={-1} key={`tableRow${row.name}${rowIndex}`} className={classes.row}>
+                    <TableRow style={{ height: 46 }} hover tabIndex={-1} key={`tableRow${row.name}${rowIndex}`} className={classes.row}>
                       <TableCell style={{ maxWidth: 200, whiteSpace: 'normal' }} className={classes.tableCell}>
                         {row.name || ''}
                       </TableCell>

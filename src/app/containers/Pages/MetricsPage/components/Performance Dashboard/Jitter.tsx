@@ -18,6 +18,8 @@ import { GENERAL_TIME_RANGE_QUERY_TYPES } from 'lib/api/ApiModels/paramBuilders'
 import { AlertApi } from 'lib/api/ApiModels/Services/alert';
 import { NetworkAlertChainResponse, NetworkAlertLogParams, Data } from 'lib/api/http/SharedTypes';
 import { useGetChainData } from 'lib/api/http/useAxiosHook';
+import { getCorrectedTimeString } from '../Utils';
+import { FormatListNumberedRtlOutlined } from '@mui/icons-material';
 
 interface JitterProps {
   readonly selectedNetworksMetricsData: SelectedNetworkMetricsData[];
@@ -29,6 +31,8 @@ const JITTER_ANOMALY = 'jitter_anomaly';
 const JITTER_LOWERBOUND = 'jitter_lowerbound';
 const JITTER_UPPERBOUND = 'jitter_upperbound';
 const JITTER_THRESHOLD = 'jitter_threshold';
+
+const FIELD_ARRAY = [JITTER, JITTER_ANOMALY, JITTER_LOWERBOUND, JITTER_UPPERBOUND, JITTER_THRESHOLD];
 
 export const JITTER_HEATMAP_LEGEND: LegendData[] = [
   {
@@ -85,19 +89,33 @@ export const Jitter: React.FC<JitterProps> = ({ selectedNetworksMetricsData, tim
     const getJitterMetrics = async () => {
       const jitterChartData: MetricKeyValue = {};
       let totalAnomalyCount = 0;
-      const promises = selectedNetworksMetricsData.map(row => (row.deviceString ? apiClient.getJitterMetrics(row.deviceString, row.destination, timeRange, row.label) : null));
+
+      const promises = selectedNetworksMetricsData.reduce((acc, row) => {
+        const networkApiList = FIELD_ARRAY.map(field => (row.deviceString ? apiClient.getJitterMetrics(row.deviceString, row.destination, timeRange, `${row.label}_${field}`, field) : null));
+        return acc.concat(networkApiList);
+      }, []);
+
       Promise.all(promises).then(values => {
-        values.forEach(item => {
-          if (item) {
-            const anomalyArray = item.metrics.keyedmap.find(item => item.key === JITTER_ANOMALY)?.ts || [];
-            totalAnomalyCount = totalAnomalyCount + anomalyArray.length;
-            jitterChartData[item.testId] = item.metrics.keyedmap.find(item => item.key === JITTER)?.ts || [];
-            jitterChartData[`${item.testId}_anomaly`] = anomalyArray;
-            jitterChartData[`${item.testId}_upperbound`] = item.metrics.keyedmap.find(item => item.key === JITTER_UPPERBOUND)?.ts || [];
-            jitterChartData[`${item.testId}_lowerbound`] = item.metrics.keyedmap.find(item => item.key === JITTER_LOWERBOUND)?.ts || [];
-            jitterChartData[`${item.testId}_threshold`] = item.metrics.keyedmap.find(item => item.key === JITTER_THRESHOLD)?.ts || [];
-          }
-        });
+        if (!isEmpty(values)) {
+          selectedNetworksMetricsData.forEach(network => {
+            FIELD_ARRAY.forEach(field => {
+              const responseItem = values.find(item => item.testId === `${network.label}_${field}`);
+              if (field === JITTER) {
+                jitterChartData[network.label] = responseItem.metrics.keyedmap.find(item => item.key === JITTER)?.ts || [];
+              } else if (field === JITTER_ANOMALY) {
+                const anomalyArray = responseItem.metrics.keyedmap.find(item => item.key === JITTER_ANOMALY)?.ts || [];
+                totalAnomalyCount = totalAnomalyCount + anomalyArray.length;
+                jitterChartData[`${network.label}_anomaly`] = anomalyArray;
+              } else if (field === JITTER_LOWERBOUND) {
+                jitterChartData[`${network.label}_lowerbound`] = responseItem.metrics.keyedmap.find(item => item.key === JITTER_LOWERBOUND)?.ts || [];
+              } else if (field === JITTER_UPPERBOUND) {
+                jitterChartData[`${network.label}_upperbound`] = responseItem.metrics.keyedmap.find(item => item.key === JITTER_UPPERBOUND)?.ts || [];
+              } else {
+                jitterChartData[`${network.label}_threshold`] = responseItem.metrics.keyedmap.find(item => item.key === JITTER_THRESHOLD)?.ts || [];
+              }
+            });
+          });
+        }
         setJitterData(jitterChartData);
         setAnomalyCount(totalAnomalyCount);
       });
@@ -127,7 +145,7 @@ export const Jitter: React.FC<JitterProps> = ({ selectedNetworksMetricsData, tim
   useEffect(() => {
     const escalationLatencyData: MetricKeyValue = {};
     selectedNetworksMetricsData.forEach(network => {
-      const networkMetrics: Data[] = response[network.value].alerts.map(alert => ({ time: alert.timestamp, value: alert.value || null }));
+      const networkMetrics: Data[] = response[network.value].alerts.map(alert => ({ time: getCorrectedTimeString(alert.timestamp), value: alert.value.toString() || null }));
       escalationLatencyData[`${network.label}_escalation`] = networkMetrics;
     });
     setEscalationJitterData(escalationLatencyData);

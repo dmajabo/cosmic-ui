@@ -60,17 +60,20 @@ export const SummaryComponent = React.forwardRef(({ timeRange }: SummaryComponen
   const { response: segmentResponse, onGet } = useGet<IPolicysvcListSegmentPsResponse>();
 
   useEffect(() => {
+    const segmentParams = {
+      start_from: 0,
+      page_size: 50,
+    };
+    onGet(PolicyApi.getSegments(), userContext.accessToken!, segmentParams);
+  }, []);
+
+  useEffect(() => {
     const params = {
       detailedView: true,
       aggKey: 'Network',
       timeRange: timeRange === ALERT_TIME_RANGE_QUERY_TYPES.LAST_DAY ? GENERAL_TIME_RANGE_QUERY_TYPES.LAST_DAY : GENERAL_TIME_RANGE_QUERY_TYPES.LAST_WEEK,
     };
     onGetChainData([AlertApi.getAlertCounts(), TopoApi.getOnPremNetworkList()], ['alerts', 'networkList'], userContext.accessToken!, params);
-    const segmentParams = {
-      start_from: 0,
-      page_size: 50,
-    };
-    onGet(PolicyApi.getSegments(), userContext.accessToken!, segmentParams);
   }, [timeRange]);
 
   useEffect(() => {
@@ -79,6 +82,7 @@ export const SummaryComponent = React.forwardRef(({ timeRange }: SummaryComponen
       setAlertData(response.alerts.data);
     }
   }, [response]);
+
   useEffect(() => {
     if (segmentResponse && segmentResponse.segments && segmentResponse.segments.length) {
       setSegments(segmentResponse.segments);
@@ -96,14 +100,14 @@ export const SummaryComponent = React.forwardRef(({ timeRange }: SummaryComponen
           <SummaryItemDivider />
           <NetworkAggregatedEscalation loading={loading} error={error} data={alertData} networks={networks} />
           <SummaryItemDivider style={{ marginTop: 30, marginBottom: 20 }} />
-          {/* <Failover timeRange={timeRange} />
-          <SummaryItemDivider /> */}
-          <DeviceHealth timeRange={timeRange} />
+          <Failover timeRange={timeRange} />
+          {/* <SummaryItemDivider />
+          <DeviceHealth timeRange={timeRange} /> */}
         </SummaryItemContainer>
         <SummaryItemContainer>
           <SummaryItemLabel>Traffic</SummaryItemLabel>
-          <NetworkTable timeRange={timeRange} networks={networks} />
           <ApplicationTable timeRange={timeRange} segments={segments} />
+          <NetworkTable timeRange={timeRange} networks={networks} />
         </SummaryItemContainer>
       </GridContainer>
     </div>

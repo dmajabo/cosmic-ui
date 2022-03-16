@@ -11,7 +11,11 @@ import { EmptyText } from 'app/components/Basic/NoDataStyles/NoDataStyles';
 import { AlertResponse, AlertType } from '../SummaryComponent';
 import { INPUT_TIME_FORMAT } from 'app/containers/Pages/DashboardPage';
 import { DateTime } from 'luxon';
-import { getCorrectedTimeString } from 'app/containers/Pages/MetricsPage/components/Utils';
+import { getConnectivityMetrics, getCorrectedTimeString, getHealthTableData } from 'app/containers/Pages/MetricsPage/components/Utils';
+import { HealthTableData } from 'app/containers/Pages/MetricsPage/components/Cloud/DirectConnectConnectionHealth';
+import { ConnectivityMetricsData } from 'app/containers/Pages/MetricsPage/components/Sites/ConnectivityHealth';
+import { TelemetryApi } from 'lib/api/ApiModels/Services/telemetry';
+import { GetTelemetryMetricsResponse, ConnectivityHealthParams } from 'lib/api/http/SharedTypes';
 
 interface FailoverProps {
   readonly timeRange: ALERT_TIME_RANGE_QUERY_TYPES;
@@ -29,23 +33,53 @@ const BAR_CHART_TIME_FORMAT = 'MMM dd';
 export const Failover: React.FC<FailoverProps> = ({ timeRange }) => {
   const userContext = useContext<UserContextState>(UserContext);
   const [barChartData, setBarChartData] = useState<BarChartData[]>([]);
-  const { response, loading, error, onGet } = useGet<AlertResponse>();
+  // const { response, loading, error, onGet } = useGet<AlertResponse>();
+
+  // useEffect(() => {
+  //   const params = {
+  //     timeRange: timeRange === ALERT_TIME_RANGE_QUERY_TYPES.LAST_DAY ? GENERAL_TIME_RANGE_QUERY_TYPES.LAST_DAY : GENERAL_TIME_RANGE_QUERY_TYPES.LAST_WEEK,
+  //     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+  //   };
+  //   onGet(AlertApi.getCountPerInterval(), userContext.accessToken!, params);
+  // }, [timeRange]);
+
+  // useEffect(() => {
+  //   if (response && response.data && response.data.length) {
+  //     const failoverData = response.data.find(item => item.alertType === AlertType.CELLULAR_FAILOVER)?.details || [];
+  //     const newBarChartData: BarChartData[] = failoverData.map(item => ({
+  //       date: DateTime.fromFormat(getCorrectedTimeString(item.key), INPUT_TIME_FORMAT).toFormat(BAR_CHART_TIME_FORMAT),
+  //       value: item.totalCount,
+  //     }));
+  //     setBarChartData(newBarChartData);
+  //   }
+  // }, [response]);
+
+  const { response, loading, error, onGet } = useGet<GetTelemetryMetricsResponse>();
 
   useEffect(() => {
-    const params = {
-      timeRange: timeRange === ALERT_TIME_RANGE_QUERY_TYPES.LAST_DAY ? GENERAL_TIME_RANGE_QUERY_TYPES.LAST_DAY : GENERAL_TIME_RANGE_QUERY_TYPES.LAST_WEEK,
-      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    const startTime = timeRange === ALERT_TIME_RANGE_QUERY_TYPES.LAST_DAY ? '-1d' : timeRange === ALERT_TIME_RANGE_QUERY_TYPES.LAST_WEEK ? '-7d' : '-30d';
+    const lastDays = timeRange === ALERT_TIME_RANGE_QUERY_TYPES.LAST_DAY ? '1' : timeRange === ALERT_TIME_RANGE_QUERY_TYPES.LAST_WEEK ? '7' : '30';
+    const params: ConnectivityHealthParams = {
+      startTime: startTime,
+      endTime: '-0m',
+      lastDays: lastDays,
     };
-    onGet(AlertApi.getCountPerInterval(), userContext.accessToken!, params);
+    onGet(TelemetryApi.getConnectivityHealth(), userContext.accessToken!, params);
   }, [timeRange]);
 
   useEffect(() => {
-    if (response && response.data && response.data.length) {
-      const failoverData = response.data.find(item => item.alertType === AlertType.CELLULAR_FAILOVER)?.details || [];
-      const newBarChartData: BarChartData[] = failoverData.map(item => ({
-        date: DateTime.fromFormat(getCorrectedTimeString(item.key), INPUT_TIME_FORMAT).toFormat(BAR_CHART_TIME_FORMAT),
-        value: item.totalCount,
-      }));
+    if (response && response.metrics && response.metrics.length) {
+      const connectivityMetrics: ConnectivityMetricsData[] = getConnectivityMetrics(response);
+      const connectivityTableData: HealthTableData[] = getHealthTableData(connectivityMetrics);
+      const metricsByDate = connectivityTableData.reduce((acc, nextValue) => {
+        if (acc[nextValue.time]) {
+          acc[nextValue.time] += nextValue.value;
+        } else {
+          acc[nextValue.time] = nextValue.value;
+        }
+        return acc;
+      }, {});
+      const newBarChartData: BarChartData[] = Object.keys(metricsByDate).map(date => ({ date: date, value: metricsByDate[date] }));
       setBarChartData(newBarChartData);
     }
   }, [response]);
@@ -64,7 +98,7 @@ export const Failover: React.FC<FailoverProps> = ({ timeRange }) => {
       )}
       {isEmpty(barChartData) && (
         <ChartContainerStyles style={{ maxWidth: '100%', minHeight: 400, maxHeight: 400 }}>
-          <ChartTitle>Cellular Failover</ChartTitle>
+          <ChartTitle>Device Drops</ChartTitle>
           <EmptyText>No Data</EmptyText>
         </ChartContainerStyles>
       )}

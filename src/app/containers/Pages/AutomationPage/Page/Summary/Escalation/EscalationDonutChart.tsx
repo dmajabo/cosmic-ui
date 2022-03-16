@@ -6,21 +6,42 @@ import { AxiosError } from 'axios';
 import React from 'react';
 import LoadingIndicator from 'app/components/Loading';
 import DonutChart, { PieDataItem } from 'app/components/Charts/DonutChart';
+import { LocationState, TabName } from 'app/containers/Pages/MetricsPage';
+import history from 'utils/history';
+import { ROUTE } from 'lib/Routes/model';
+import { ModelalertType } from 'lib/api/ApiModels/Workflow/apiModel';
+import { isEmpty, uniqueId } from 'lodash';
 
 interface EscalationDonutChartProps {
   readonly loading: boolean;
   readonly data: PieDataItem[];
   readonly error: AxiosError;
   readonly chartTitle: string;
+  readonly alertType: ModelalertType;
 }
 
-export const EscalationDonutChart: React.FC<EscalationDonutChartProps> = ({ loading, error, data, chartTitle }) => {
+const EMPTY_PIE_DATA: PieDataItem[] = [
+  {
+    id: uniqueId(),
+    color: 'darkred',
+    hide: false,
+    name: 'None',
+    value: 0,
+  },
+];
+
+export const EscalationDonutChart: React.FC<EscalationDonutChartProps> = ({ loading, error, data, chartTitle, alertType }) => {
+  const onItemClick = (item: PieDataItem) => {
+    const state: LocationState = { tabName: TabName.Performance, destination: '', networkId: item.id, deviceId: '', anomalyType: alertType };
+    history.push(ROUTE.app + ROUTE.metrics, state);
+  };
+
   return (
     <ChartItem style={{ margin: 10 }}>
       <ChartTitle>{chartTitle}</ChartTitle>
       {!error && data !== null && (
         <DonutChart
-          data={data}
+          data={isEmpty(data) ? EMPTY_PIE_DATA : data}
           legendPosition="bottom"
           donutWidth={100}
           donutHeight={85}
@@ -32,6 +53,7 @@ export const EscalationDonutChart: React.FC<EscalationDonutChartProps> = ({ load
           legendStyles={{ flexWrap: 'nowrap', overflow: 'visible' }}
           legendItemStyle={{ width: 'calc(50% - 8px)', justifyContent: 'center' }}
           centerCountText="Total"
+          onItemClick={onItemClick}
         />
       )}
       {!error && !data && (

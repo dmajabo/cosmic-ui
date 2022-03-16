@@ -27,11 +27,13 @@ import { EmptyText } from 'app/components/Basic/NoDataStyles/NoDataStyles';
 import { TelemetryApi } from 'lib/api/ApiModels/Services/telemetry';
 import { DateTime } from 'luxon';
 import { getCorrectedTimeString } from '../MetricsPage/components/Utils';
-import { downRedArrow, upGreenArrow } from 'app/components/SVGIcons/arrows';
+import { downGreenArrow, downRedArrow, upGreenArrow, upRedArrow } from 'app/components/SVGIcons/arrows';
 import { ROUTE } from 'lib/Routes/model';
 import history from 'utils/history';
-import { ModelalertType } from 'lib/api/ApiModels/Workflow/apiModel';
+import { AlertSeverity, IAlertMeta, IAlertMetaDataRes, ModelalertType } from 'lib/api/ApiModels/Workflow/apiModel';
 import { LocationState, TabName } from '../MetricsPage';
+import { ArrowContainer, SeverityLabelContainer } from './styles/DashboardStyledComponents';
+import { ALERT_TIME_RANGE_QUERY_TYPES, paramBuilder } from 'lib/api/ApiModels/paramBuilders';
 
 const Tab = styled(TabUnstyled)`
   color: #848da3;
@@ -72,6 +74,12 @@ const TabsList = styled(TabsListUnstyled)`
   align-content: space-between;
 `;
 
+enum EscalationResult {
+  downGreen = 'downGreen',
+  upRed = 'upRed',
+  showSeverity = 'showSeverity',
+}
+
 const BASE_ANOMALIES_PAGE_SIZE = 10;
 
 export const INPUT_TIME_FORMAT = 'yyyy-MM-dd HH:mm:ss ZZZ z';
@@ -100,11 +108,13 @@ const DashboardPage: React.FC = () => {
   const [currentPage, setCurrentPage] = React.useState<number>(1);
   const [pageSize, setPageSize] = React.useState<number>(PAGING_DEFAULT_PAGE_SIZE);
   const [anomalies, setAnomalies] = useState<AnomalySummary[]>([]);
+  const [alertMetadata, setAlertMetadata] = useState<IAlertMeta[]>([]);
   const [anomaliesPageSize, setAnomaliesPageSize] = useState<number>(BASE_ANOMALIES_PAGE_SIZE);
 
   const { response: devicesResponse, loading: devicesLoading, error: devicesError, onGet: getDevices } = useGet<OnPremDevicesResponse>();
   const { response: deviceMetricsResponse, loading: deviceMetricsLoading, onGet: getDeviceMetrics } = useGet<DeviceMetricsResponse>();
   const { response: anomaliesResponse, loading: anomaliesLoading, error: anomaliesError, onGet: getAnomalies } = useGet<AnomaliesResponse>();
+  const { loading: alertMetadataLoading, response: alertMetadaResponse, onGet: GetAlertMetadata } = useGet<IAlertMetaDataRes>();
 
   const onTabChange = (event: React.SyntheticEvent<Element, Event>, value: string | number) => {
     setSitesViewTabName(value as DashboardSitesViewTab);
@@ -116,6 +126,8 @@ const DashboardPage: React.FC = () => {
     getDevices(TopoApi.getOnPremDeviceList(), userContext.accessToken!);
     getDeviceMetrics(TelemetryApi.getDeviceMetrics(), userContext.accessToken!, { startTime: '-1d', endTime: '-0m' });
     getAnomalySummaryPage(anomaliesPageSize);
+    const _param = paramBuilder(50, 1, ALERT_TIME_RANGE_QUERY_TYPES.LAST_DAY);
+    GetAlertMetadata(AlertApi.getAllMetadata(), userContext.accessToken!, _param);
   }, []);
 
   const convertDataToFeatures = useCallback(
@@ -195,6 +207,12 @@ const DashboardPage: React.FC = () => {
     }
   }, [anomaliesResponse]);
 
+  useEffect(() => {
+    if (alertMetadaResponse && alertMetadaResponse.alertMetadata && alertMetadaResponse.alertMetadata.length) {
+      setAlertMetadata(alertMetadaResponse.alertMetadata);
+    }
+  }, [alertMetadaResponse]);
+
   const onChangeCurrentPage = (_page: number) => {
     setCurrentPage(_page);
     // TODO: Modify this
@@ -216,6 +234,45 @@ const DashboardPage: React.FC = () => {
   const onAnomalyClick = (deviceId: string, destinationIp: string, anomalyType: ModelalertType) => {
     const locationState: LocationState = { anomalyType: anomalyType, destination: destinationIp, deviceId: deviceId, tabName: TabName.Performance };
     history.push(ROUTE.app + ROUTE.metrics, locationState);
+  };
+
+  const getSeverityColour = (anomalyType: ModelalertType) => {
+    const selectedAlert = alertMetadata.find(alert => alert.type === anomalyType);
+    if (selectedAlert) {
+      return selectedAlert.severity === AlertSeverity.LOW ? 'var(--_successColor)' : selectedAlert.severity === AlertSeverity.MEDIUM ? 'var(--_warningColor)' : 'var(--_errorColor)';
+    }
+    return 'var(--_disabledTextColor)';
+  };
+
+  const getSeverityText = (anomalyType: ModelalertType) => {
+    const selectedAlert = alertMetadata.find(alert => alert.type === anomalyType);
+    if (selectedAlert) {
+      return selectedAlert.severity === AlertSeverity.LOW ? 'L' : selectedAlert.severity === AlertSeverity.MEDIUM ? 'M' : 'H';
+    }
+    return '?';
+  };
+
+  const checkAnomalyDescString = (anomalyString: string) => {
+    if (anomalyString.includes('occurred once') || anomalyString.includes('occured once') || anomalyString.includes('increased') || anomalyString.includes('went up')) {
+      return EscalationResult.upRed;
+    }
+    if (anomalyString.includes('decreased') || anomalyString.includes('went down')) {
+      return EscalationResult.downGreen;
+    }
+    return EscalationResult.showSeverity;
+  };
+
+  const getEscalationHeader = (anomaly: AnomalySummary) => {
+    const escalationResult = checkAnomalyDescString(anomaly.descString);
+    return escalationResult === EscalationResult.showSeverity ? (
+      <SeverityLabelContainer color={getSeverityColour(anomaly.anomalyType)}>
+        <span className={classes.severityLabel}>{getSeverityText(anomaly.anomalyType)}</span>
+      </SeverityLabelContainer>
+    ) : escalationResult === EscalationResult.upRed ? (
+      <ArrowContainer>{upRedArrow(20, 20)}</ArrowContainer>
+    ) : (
+      <ArrowContainer>{downGreenArrow(20, 20)}</ArrowContainer>
+    );
   };
 
   return (
@@ -360,10 +417,10 @@ const DashboardPage: React.FC = () => {
       <GridItemContainer gridArea="2 / 2 / 3 / 3">
         <DashboardItemContainer>
           <div className={classes.dashboardLabelContainer}>
-            <DashboardItemLabel style={{ marginBottom: '0px' }}>Anomalies</DashboardItemLabel>
+            <DashboardItemLabel style={{ marginBottom: '0px' }}>Escalations</DashboardItemLabel>
           </div>
           <div className={classes.anomaliesRowsContainer}>
-            {anomaliesLoading && (
+            {anomaliesLoading && alertMetadataLoading && (
               <div className={classes.verticalCenter}>
                 <LoadingIndicator margin="auto" />
               </div>
@@ -371,12 +428,13 @@ const DashboardPage: React.FC = () => {
 
             {anomaliesError && <div>Something went wrong. Please try again</div>}
 
-            {!anomaliesLoading && isEmpty(anomalies) && (
+            {!anomaliesLoading && !alertMetadataLoading && isEmpty(anomalies) && (
               <div className={classes.verticalCenter}>
                 <EmptyText>No Data</EmptyText>
               </div>
             )}
             {!anomaliesLoading &&
+              !alertMetadataLoading &&
               !anomaliesError &&
               anomalies.map(anomaly => {
                 const now = DateTime.now();
@@ -396,9 +454,7 @@ const DashboardPage: React.FC = () => {
                     onClick={() => onAnomalyClick(anomaly.deviceId, anomaly.destinationIp, anomaly.anomalyType)}
                   >
                     <div className={classes.troubleshootContainer}>
-                      <div className={classes.severityLabelContainer}>
-                        <span className={classes.severityLabel}>H</span>
-                      </div>
+                      {getEscalationHeader(anomaly)}
                       {anomaly.boldDescString && anomaly.regularDescString ? (
                         <div>
                           <span>{anomaly.boldDescString}</span>

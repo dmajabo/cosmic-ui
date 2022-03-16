@@ -44,7 +44,8 @@ export const Summary: React.FC = () => {
   return (
     <MetricsProvider actions={metricsActions}>
       <SummaryHeaderContainer>
-        <SecondaryButtonwithEvent styles={{ border: 'none' }} label="Download as PDF" icon={pdfIcon} onClick={handlePrint} />
+        {/* <SecondaryButtonwithEvent styles={{ border: 'none' }} label="Download as PDF" icon={pdfIcon} onClick={handlePrint} /> */}
+        <div />
         <MatSelect
           id="logsTimePeriod"
           label="Show"

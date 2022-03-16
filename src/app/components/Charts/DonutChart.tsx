@@ -234,7 +234,7 @@ const DonutChart: React.FC<Props> = (props: Props) => {
                             ...props.arcLabelStyle,
                           }}
                         >
-                          {arc.data.value}
+                          {arc.data.value ? arc.data.value : ''}
                         </div>
                       </foreignObject>
                     </g>

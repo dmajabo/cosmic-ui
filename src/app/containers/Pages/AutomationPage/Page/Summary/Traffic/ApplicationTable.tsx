@@ -28,7 +28,7 @@ export const ApplicationTable: React.FC<ApplicationTableProps> = ({ timeRange, s
       sortType: 'DESC',
     };
     onGet(TelemetryApi.getAggregatedTraffic(), userContext.accessToken!, params);
-  }, []);
+  }, [timeRange]);
 
   useEffect(() => {
     if (response && response.trafficStat.traffic && response.trafficStat.traffic.length) {
@@ -45,7 +45,7 @@ export const ApplicationTable: React.FC<ApplicationTableProps> = ({ timeRange, s
   }, [response, segments]);
   return (
     <>
-      <ChartTitle>Application</ChartTitle>
+      <ChartTitle>Top 10 Applications by usage</ChartTitle>
       <SummaryTable data={tableData} showLoader={loading} error={error?.message} />
     </>
   );

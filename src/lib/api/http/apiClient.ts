@@ -28,12 +28,12 @@ interface ApiClient {
   readonly getOrganizations: () => Promise<ITopologyMapData>;
   readonly getSLATests: (include_metrics: boolean) => Promise<GetSLATestResponse>;
   readonly createSLATest: (request: CreateSLATestRequest) => Promise<CreateSLATestResponse>;
-  readonly getPacketLossMetrics: (deviceId: string, destination: string, startTime: string, testId: string) => Promise<SLATestMetricsResponse>;
-  readonly getLatencyMetrics: (deviceId: string, destination: string, startTime: string, testId: string) => Promise<SLATestMetricsResponse>;
+  readonly getPacketLossMetrics: (deviceId: string, destination: string, startTime: string, testId: string, field: string) => Promise<SLATestMetricsResponse>;
+  readonly getLatencyMetrics: (deviceId: string, destination: string, startTime: string, testId: string, field: string) => Promise<SLATestMetricsResponse>;
   readonly deleteSLATest: (testId: string) => Promise<DeleteSLATestResponse>;
   readonly getHeatmapPacketLoss: (sourceNw: string, destination: string, startTime: string, testId: string) => Promise<HeatMapResponse>;
   readonly getHeatmapLatency: (sourceNw: string, destination: string, startTime: string, testId: string) => Promise<HeatMapResponse>;
-  readonly getJitterMetrics: (deviceId: string, destination: string, startTime: string, testId: string) => Promise<SLATestMetricsResponse>;
+  readonly getJitterMetrics: (deviceId: string, destination: string, startTime: string, testId: string, field: string) => Promise<SLATestMetricsResponse>;
   readonly getSLATest: (testId: string) => Promise<SLATest>;
   readonly updateSLATest: (testData: UpdateSLATestRequest) => Promise<UpdateSLATestResponse>;
   readonly getAwsRegions: () => Promise<GetAwsRegionsResponse>;
@@ -110,13 +110,14 @@ export const createApiClient = (token: string): ApiClient => {
     }
   }
 
-  async function getPacketLossMetrics(deviceId: string, destination: string, startTime: string, testId: string): Promise<SLATestMetricsResponse> {
+  async function getPacketLossMetrics(deviceId: string, destination: string, startTime: string, testId: string, field: string): Promise<SLATestMetricsResponse> {
     try {
       const response = await axios.get<SLATestMetricsResponse>(PATHS.GET_PACKET_LOSS(deviceId, destination), {
         ...config,
         params: {
           startTime: startTime,
-          include_anomaly: true,
+          include_anomaly: false,
+          field: field,
         },
       });
       return {
@@ -133,13 +134,14 @@ export const createApiClient = (token: string): ApiClient => {
     }
   }
 
-  async function getLatencyMetrics(deviceId: string, destination: string, startTime: string, testId: string): Promise<SLATestMetricsResponse> {
+  async function getLatencyMetrics(deviceId: string, destination: string, startTime: string, testId: string, field: string): Promise<SLATestMetricsResponse> {
     try {
       const response = await axios.get<SLATestMetricsResponse>(PATHS.GET_LATENCY(deviceId, destination), {
         ...config,
         params: {
           startTime: startTime,
-          include_anomaly: true,
+          include_anomaly: false,
+          field: field,
         },
       });
       return {
@@ -209,13 +211,14 @@ export const createApiClient = (token: string): ApiClient => {
     }
   }
 
-  async function getJitterMetrics(deviceId: string, destination: string, startTime: string, testId: string): Promise<SLATestMetricsResponse> {
+  async function getJitterMetrics(deviceId: string, destination: string, startTime: string, testId: string, field: string): Promise<SLATestMetricsResponse> {
     try {
       const response = await axios.get<SLATestMetricsResponse>(PATHS.GET_JITTER(deviceId, destination), {
         ...config,
         params: {
           startTime: startTime,
-          include_anomaly: true,
+          include_anomaly: false,
+          field: field,
         },
       });
       return {

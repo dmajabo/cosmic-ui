@@ -53,11 +53,11 @@ export const NetworkTable: React.FC<NetworkTableProps> = ({ timeRange, networks 
       resourceType: 'NODE_TYPE_SITE',
       time_range: timeRange === ALERT_TIME_RANGE_QUERY_TYPES.LAST_DAY ? GENERAL_TIME_RANGE_QUERY_TYPES.LAST_DAY : GENERAL_TIME_RANGE_QUERY_TYPES.LAST_WEEK,
       sort_key: 'total_sent',
-      topNum: 5,
+      topNum: 10,
       sortType: 'DESC',
     };
     onGet(TelemetryApi.getAggregatedTraffic(), userContext.accessToken!, params);
-  }, []);
+  }, [timeRange]);
 
   useEffect(() => {
     if (response && response.trafficStat.traffic && response.trafficStat.traffic.length) {
@@ -75,7 +75,7 @@ export const NetworkTable: React.FC<NetworkTableProps> = ({ timeRange, networks 
 
   return (
     <>
-      <ChartTitle>Network</ChartTitle>
+      <ChartTitle>Top 10 Networks by usage</ChartTitle>
       <SummaryTable data={tableData} showLoader={loading} error={error?.message} />
     </>
   );
