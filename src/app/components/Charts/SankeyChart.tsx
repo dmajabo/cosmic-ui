@@ -51,14 +51,14 @@ const SankeyChart: React.FC<Props> = (props: Props) => {
               <rect rx="8" ry="8" width="140" height="32" fill="var(--_disabledButtonBg)" />
               <g transform="translate(26, 8)">{dedstionationIcon}</g>
               <text x="50" y="21" fontSize="14" fontWeight="700" fill="var(--_primaryTextColor)">
-                Networks
+                Source
               </text>
             </g>
             <g transform={`translate(${sizes.width - 170}, 10)`}>
               <rect rx="8" ry="8" width="140" height="32" fill="var(--_disabledButtonBg)" />
               <g transform="translate(16, 8)">{applicationIcon}</g>
               <text x="40" y="21" fontSize="14" fontWeight="700" fill="var(--_primaryTextColor)">
-                Applications
+                Destination
               </text>
             </g>
           </g>

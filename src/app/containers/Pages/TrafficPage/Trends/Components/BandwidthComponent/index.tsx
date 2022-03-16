@@ -5,7 +5,6 @@ import { TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES } from 'lib/api/ApiModels/paramBu
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import SankeyChart from 'app/components/Charts/SankeyChart';
 import LoadingIndicator from 'app/components/Loading';
-import { AbsLoaderWrapper } from 'app/components/Loading/styles';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import { TesseractApi } from 'lib/api/ApiModels/Services/tesseract';
 import * as helper from './helper';
@@ -42,6 +41,7 @@ const BandwidthComponent: React.FC<Props> = (props: Props) => {
   const onTryToLoadData = async (timePeriod: TRAFFIC_TRENDS_TIME_RANGE_QUERY_TYPES) => {
     await onGet(TesseractApi.getSegmentsBytes(timePeriod), userContext.accessToken!);
   };
+
   return (
     <>
       {!error && data && data.sankey && data.sankey.links && data.sankey.links.length ? (
