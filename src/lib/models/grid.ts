@@ -16,6 +16,7 @@ export interface IGridColumnField {
   sortable?: boolean;
   format?: (v: any) => string;
   body?: (rowData: any) => React.ReactNode;
+  headerBody?: (rowData: any) => React.ReactNode;
 }
 
 export interface ISortObject {
