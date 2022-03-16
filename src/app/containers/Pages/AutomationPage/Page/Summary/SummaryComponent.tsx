@@ -105,7 +105,7 @@ export const SummaryComponent = React.forwardRef(({ timeRange }: SummaryComponen
           <DeviceHealth timeRange={timeRange} /> */}
         </SummaryItemContainer>
         <SummaryItemContainer>
-          <SummaryItemLabel>Traffic</SummaryItemLabel>
+          {/* <SummaryItemLabel>Traffic</SummaryItemLabel> */}
           <ApplicationTable timeRange={timeRange} segments={segments} />
           <NetworkTable timeRange={timeRange} networks={networks} />
         </SummaryItemContainer>

@@ -52,7 +52,7 @@ export const NetworkTable: React.FC<NetworkTableProps> = ({ timeRange, networks 
     const params = {
       resourceType: 'NODE_TYPE_SITE',
       time_range: timeRange === ALERT_TIME_RANGE_QUERY_TYPES.LAST_DAY ? GENERAL_TIME_RANGE_QUERY_TYPES.LAST_DAY : GENERAL_TIME_RANGE_QUERY_TYPES.LAST_WEEK,
-      sort_key: 'total_sent',
+      sort_key: 'total_flows',
       topNum: 10,
       sortType: 'DESC',
     };
@@ -75,7 +75,7 @@ export const NetworkTable: React.FC<NetworkTableProps> = ({ timeRange, networks 
 
   return (
     <>
-      <ChartTitle>Top 10 Networks by usage</ChartTitle>
+      <ChartTitle style={{ paddingTop: 10, paddingBottom: 10 }}>Top 10 Networks</ChartTitle>
       <SummaryTable data={tableData} showLoader={loading} error={error?.message} />
     </>
   );

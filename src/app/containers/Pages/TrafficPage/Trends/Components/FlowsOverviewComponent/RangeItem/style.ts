@@ -53,7 +53,7 @@ export const LegendRangeItemsWrapper = styled.div`
 export const LegendRangeItemStyle = styled.div`
   display: inline-flex;
   align-items: center;
-  padding: 4px 8px;
+  padding: 11px 8px;
   margin: 4px 12px;
 `;
 

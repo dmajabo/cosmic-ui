@@ -22,7 +22,7 @@ const barChartOptions = (chartTitle, xAxisText: string, yAxisText: string, barCh
     borderRadius: 6,
     borderWidth: 1,
     spacing: [30, 10, 10, 10],
-    height: 400,
+    height: 300,
   },
   title: {
     text: chartTitle ? chartTitle : null,

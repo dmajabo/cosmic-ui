@@ -23,7 +23,7 @@ export const ApplicationTable: React.FC<ApplicationTableProps> = ({ timeRange, s
     const params = {
       resourceType: 'NODE_TYPE_APPLICATION',
       time_range: timeRange === ALERT_TIME_RANGE_QUERY_TYPES.LAST_DAY ? GENERAL_TIME_RANGE_QUERY_TYPES.LAST_DAY : GENERAL_TIME_RANGE_QUERY_TYPES.LAST_WEEK,
-      sort_key: 'total_recv',
+      sort_key: 'total_flows',
       topNum: 10,
       sortType: 'DESC',
     };
@@ -45,7 +45,7 @@ export const ApplicationTable: React.FC<ApplicationTableProps> = ({ timeRange, s
   }, [response, segments]);
   return (
     <>
-      <ChartTitle>Top 10 Applications by usage</ChartTitle>
+      <ChartTitle style={{ paddingBottom: 27 }}>Top 10 Applications</ChartTitle>
       <SummaryTable data={tableData} showLoader={loading} error={error?.message} />
     </>
   );
