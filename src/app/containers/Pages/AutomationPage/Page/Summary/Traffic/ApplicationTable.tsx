@@ -24,11 +24,11 @@ export const ApplicationTable: React.FC<ApplicationTableProps> = ({ timeRange, s
       resourceType: 'NODE_TYPE_APPLICATION',
       time_range: timeRange === ALERT_TIME_RANGE_QUERY_TYPES.LAST_DAY ? GENERAL_TIME_RANGE_QUERY_TYPES.LAST_DAY : GENERAL_TIME_RANGE_QUERY_TYPES.LAST_WEEK,
       sort_key: 'total_recv',
-      topNum: 10,
+      topNum: 50,
       sortType: 'DESC',
     };
     onGet(TelemetryApi.getAggregatedTraffic(), userContext.accessToken!, params);
-  }, []);
+  }, [timeRange]);
 
   useEffect(() => {
     if (response && response.trafficStat.traffic && response.trafficStat.traffic.length) {

@@ -1,6 +1,7 @@
 import { PieDataItem } from 'app/components/Charts/DonutChart';
 import { LegendRangeItemStyle, LegendRangeColorStyle, LegendRangeValueStyle } from 'app/containers/Pages/TrafficPage/Trends/Components/FlowsOverviewComponent/RangeItem/style';
 import { AxiosError } from 'axios';
+import { ModelalertType } from 'lib/api/ApiModels/Workflow/apiModel';
 import { Vnet } from 'lib/api/http/SharedTypes';
 import { uniqBy, uniqueId } from 'lodash';
 import React, { useMemo } from 'react';
@@ -53,9 +54,9 @@ export const NetworkAggregatedEscalation: React.FC<NetworkAggregatedEscalationPr
   return (
     <>
       <SummaryItemContent>
-        <EscalationDonutChart loading={loading} error={error} data={latencyPieChartData} chartTitle="Latency" />
-        <EscalationDonutChart loading={loading} error={error} data={packetLossPieChartData} chartTitle="Packet Loss" />
-        <EscalationDonutChart loading={loading} error={error} data={jitterPieChartData} chartTitle="Jitter" />
+        <EscalationDonutChart loading={loading} error={error} data={latencyPieChartData} chartTitle="Latency" alertType={ModelalertType.ANOMALY_LATENCY} />
+        <EscalationDonutChart loading={loading} error={error} data={packetLossPieChartData} chartTitle="Packet Loss" alertType={ModelalertType.ANOMALY_PACKETLOSS} />
+        <EscalationDonutChart loading={loading} error={error} data={jitterPieChartData} chartTitle="Jitter" alertType={ModelalertType.ANOMALY_JITTER} />
       </SummaryItemContent>
       <LegendContainer>
         {allNetworks.map(item => (
