@@ -26,6 +26,7 @@ import Paging from 'app/components/Basic/Paging';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { GroupHeaderStyles } from './styles';
+import { RightArrowIcon } from 'app/components/SVGIcons/rightArrowIcon';
 
 interface Props {
   data: INetworkSessionSummary[];
@@ -56,6 +57,7 @@ const StitchedTable: React.FC<Props> = (props: Props) => {
           ...StitchedColumns.sourceSegmentName,
           body: (d: INetworkVendorSessionSummary) => cellTemplates.segmentNameTemplate(d.sourceSegmentName, d.sourceSegmentColor),
         },
+        { ...StitchedColumns.arrow, body: () => <RightArrowIcon />, headerBody: () => <RightArrowIcon /> },
         { ...StitchedColumns.destIp },
         { ...StitchedColumns.destPort },
         { ...StitchedColumns.destSegmentName, body: (d: INetworkVendorSessionSummary) => cellTemplates.segmentNameTemplate(d.destSegmentName, d.destinationSegmentColor) },
@@ -168,14 +170,16 @@ const StitchedTable: React.FC<Props> = (props: Props) => {
     }
   }, [error]);
 
-  const headerTemplate = (rowData: INetworkSessionSummary) => {
-    return (
-      <GroupHeaderStyles>
-        <span className="label">Sessions ID:</span>
-        <span className="value">{rowData.sessionId}</span>
-      </GroupHeaderStyles>
-    );
-  };
+  // Hiding session id row
+
+  // const headerTemplate = (rowData: INetworkSessionSummary) => {
+  //   return (
+  //     <GroupHeaderStyles>
+  //       <span className="label">Sessions ID:</span>
+  //       <span className="value">{rowData.sessionId}</span>
+  //     </GroupHeaderStyles>
+  //   );
+  // };
 
   const expandedTemplate = (data: INetworkVendorSessionSummary) => <ExpandedTemplate dataItem={data} columns={aggregatedColumnTabsRef.current[1].items} />;
 
@@ -285,10 +289,7 @@ const StitchedTable: React.FC<Props> = (props: Props) => {
           sortMode="single"
           emptyMessage={!props.error ? 'No data' : ' '}
           responsiveLayout="scroll"
-          rowGroupMode="subheader"
-          groupRowsBy="sessionId"
           expandedRows={expandedRows}
-          rowGroupHeaderTemplate={headerTemplate}
           rowExpansionTemplate={expandedTemplate}
         >
           <Column field="uuId" header="" expander body={expanderBodyTemplate} style={{ width: '40px' }}></Column>
@@ -299,7 +300,7 @@ const StitchedTable: React.FC<Props> = (props: Props) => {
                 key={col.id}
                 sortable={col.sortable}
                 field={col.field}
-                header={col.label}
+                header={col.headerBody || col.label}
                 style={{ width: col.width || null, minWidth: col.minWidth || null, maxWidth: col.maxWidth || null }}
                 body={col.body || null}
               ></Column>

@@ -26,9 +26,9 @@ export const TrendsPage: React.FC<Props> = (props: Props) => {
     <ContentPanelWrapper>
       <PageWithPanelWrapperStyles padding="0" width={showSettingsPanel ? 'calc(100% - 520px)' : '100%'}>
         <HeaderActionsRow />
-        <DroppedFlowsComponent />
-        <BandwidthComponent />
         <FlowsOverviewComponent onOpenPanel={onOpenPanel} />
+        <BandwidthComponent />
+        <DroppedFlowsComponent />
       </PageWithPanelWrapperStyles>
       <PanelBar
         styles={{ position: 'fixed', top: APP_HEADER_HEIGHT, right: '0', maxHeight: `calc(100% - ${APP_HEADER_HEIGHT})`, zIndex: 11 }}

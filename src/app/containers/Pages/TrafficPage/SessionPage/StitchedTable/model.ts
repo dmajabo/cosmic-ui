@@ -17,9 +17,19 @@ export interface IStitchedGridColumns {
   destSegmentName: IGridColumnField;
   protocol: IGridColumnField;
   deviceVendor: IGridColumnField;
+  arrow: IGridColumnField;
 }
 
 export const StitchedColumns: IStitchedGridColumns = {
+  arrow: {
+    label: '',
+    resField: '',
+    id: 'StitchedColumns_arrow',
+    field: '',
+    minWidth: '60px',
+    hide: false,
+    sortable: false,
+  },
   sessionId: {
     label: 'Session ID',
     resField: 'sessionId',

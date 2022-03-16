@@ -28,6 +28,7 @@ const SecurityGroupsTable: React.FC<Props> = (props: Props) => {
   const { policy } = usePolicyDataContext();
   const { vendors, accessToken } = React.useContext<UserContextState>(UserContext);
   const [columns, setColumns] = React.useState<IGridColumnField[]>([
+    { ...SecurityGroupsColumns.accountName },
     { ...SecurityGroupsColumns.name },
     { ...SecurityGroupsColumns.extId },
     { ...SecurityGroupsColumns.networkId, body: (d: INetworkSecurityGroup) => cellTemplates.cellValueFromArrayTemplate(d.vnets, 'extId') },

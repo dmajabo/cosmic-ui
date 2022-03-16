@@ -293,9 +293,20 @@ export interface ISecurityGroupsGridColumns {
   inboundRulesCount: IGridColumnField;
   outboundRulesCount: IGridColumnField;
   networkId: IGridColumnField;
+  accountName: IGridColumnField;
 }
 
 export const SecurityGroupsColumns: ISecurityGroupsGridColumns = {
+  accountName: {
+    label: 'Account name',
+    resField: 'ownerId',
+    id: 'accountName',
+    field: 'ownerId',
+    minWidth: '180px',
+    maxWidth: '300px',
+    hide: false,
+    sortable: true,
+  },
   name: {
     label: 'Security Group name',
     resField: 'name',
