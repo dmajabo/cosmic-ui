@@ -91,7 +91,7 @@ export const Jitter: React.FC<JitterProps> = ({ selectedNetworksMetricsData, tim
       let totalAnomalyCount = 0;
 
       const promises = selectedNetworksMetricsData.reduce((acc, row) => {
-        const networkApiList = FIELD_ARRAY.map(field => (row.deviceString ? apiClient.getJitterMetrics(row.deviceString, row.destination, timeRange, `${row.label}_${field}`, field) : null));
+        const networkApiList = row.deviceString ? FIELD_ARRAY.map(field => apiClient.getJitterMetrics(row.deviceString, row.destination, timeRange, `${row.label}_${field}`, field)) : [];
         return acc.concat(networkApiList);
       }, []);
 
@@ -99,19 +99,21 @@ export const Jitter: React.FC<JitterProps> = ({ selectedNetworksMetricsData, tim
         if (!isEmpty(values)) {
           selectedNetworksMetricsData.forEach(network => {
             FIELD_ARRAY.forEach(field => {
-              const responseItem = values.find(item => item.testId === `${network.label}_${field}`);
-              if (field === JITTER) {
-                jitterChartData[network.label] = responseItem.metrics.keyedmap.find(item => item.key === JITTER)?.ts || [];
-              } else if (field === JITTER_ANOMALY) {
-                const anomalyArray = responseItem.metrics.keyedmap.find(item => item.key === JITTER_ANOMALY)?.ts || [];
-                totalAnomalyCount = totalAnomalyCount + anomalyArray.length;
-                jitterChartData[`${network.label}_anomaly`] = anomalyArray;
-              } else if (field === JITTER_LOWERBOUND) {
-                jitterChartData[`${network.label}_lowerbound`] = responseItem.metrics.keyedmap.find(item => item.key === JITTER_LOWERBOUND)?.ts || [];
-              } else if (field === JITTER_UPPERBOUND) {
-                jitterChartData[`${network.label}_upperbound`] = responseItem.metrics.keyedmap.find(item => item.key === JITTER_UPPERBOUND)?.ts || [];
-              } else {
-                jitterChartData[`${network.label}_threshold`] = responseItem.metrics.keyedmap.find(item => item.key === JITTER_THRESHOLD)?.ts || [];
+              const responseItem = values.find(item => item?.testId === `${network.label}_${field}`);
+              if (responseItem) {
+                if (field === JITTER) {
+                  jitterChartData[network.label] = responseItem.metrics.keyedmap.find(item => item.key === JITTER)?.ts || [];
+                } else if (field === JITTER_ANOMALY) {
+                  const anomalyArray = responseItem.metrics.keyedmap.find(item => item.key === JITTER_ANOMALY)?.ts || [];
+                  totalAnomalyCount = totalAnomalyCount + anomalyArray.length;
+                  jitterChartData[`${network.label}_anomaly`] = anomalyArray;
+                } else if (field === JITTER_LOWERBOUND) {
+                  jitterChartData[`${network.label}_lowerbound`] = responseItem.metrics.keyedmap.find(item => item.key === JITTER_LOWERBOUND)?.ts || [];
+                } else if (field === JITTER_UPPERBOUND) {
+                  jitterChartData[`${network.label}_upperbound`] = responseItem.metrics.keyedmap.find(item => item.key === JITTER_UPPERBOUND)?.ts || [];
+                } else {
+                  jitterChartData[`${network.label}_threshold`] = responseItem.metrics.keyedmap.find(item => item.key === JITTER_THRESHOLD)?.ts || [];
+                }
               }
             });
           });

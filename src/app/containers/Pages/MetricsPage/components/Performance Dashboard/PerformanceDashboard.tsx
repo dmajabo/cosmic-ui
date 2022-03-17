@@ -103,7 +103,9 @@ export const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ netw
   };
 
   useEffect(() => {
-    setSelectedNetworks(getSelectedNetworksFromLocalStorage(history, devices, networks));
+    if (networks.length && devices.length) {
+      setSelectedNetworks(getSelectedNetworksFromLocalStorage(history, devices, networks));
+    }
   }, [history, networks, devices]);
 
   return (
