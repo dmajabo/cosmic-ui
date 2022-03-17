@@ -379,3 +379,11 @@ export const SecurityGroupsColumns: ISecurityGroupsGridColumns = {
     sortable: false,
   },
 };
+
+export enum ResourceType {
+  TransitGateway = 'TransitGateway',
+  VPC = 'VPC',
+  SecurityGroup = 'SecurityGroup',
+  RouteTable = 'RouteTable',
+  TgwRouteTable = 'TgwRouteTable',
+}

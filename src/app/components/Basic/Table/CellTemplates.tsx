@@ -110,6 +110,14 @@ const cellSessionVendorTemplate = (vendor: string) => {
   );
 };
 
+const cellHyperLinkTemplate = (link: string, value: string) => {
+  return (
+    <a href={link} target="_blank" rel="noreferrer" style={{ color: '#437FEC' }}>
+      {value}
+    </a>
+  );
+};
+
 const getVendorObject = (label: AccountVendorTypes) => {
   if (label === AccountVendorTypes.CISCO_MERAKI) {
     return { icon: ciscoMerakiLogoIcon(28), label: 'Cisco Meraki' };
@@ -139,4 +147,5 @@ export {
   cellSessionVendorTemplate,
   getVendorObject,
   segmentNameTemplate,
+  cellHyperLinkTemplate,
 };
