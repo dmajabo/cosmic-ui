@@ -10,7 +10,20 @@ import { DashboardItemContainer, DashboardItemContent, DashboardItemLabel, GridC
 import InOutBound from '../components/ManagmentItem/InOutBound';
 import ManagementLayer7 from '../components/ManagmentItem/ManagementLayer7';
 import ManagementDrifts from '../components/ManagmentItem/ManagementDrifts';
-import { AnomaliesResponse, AnomalySummary, AvailabilityMetric, DashboardSitesViewTab, Device, DeviceMetrics, DeviceMetricsResponse, OnPremDevicesResponse, SitesData, SITES_COLUMNS } from '../enum';
+import {
+  AnomaliesResponse,
+  AnomalySummary,
+  AvailabilityMetric,
+  DashboardSitesViewTab,
+  Device,
+  DeviceEscalationsResponse,
+  DeviceMetrics,
+  DeviceMetricsResponse,
+  EscalationData,
+  OnPremDevicesResponse,
+  SitesData,
+  SITES_COLUMNS,
+} from '../enum';
 import { Feature, Map } from '../components/Map/Map';
 import { useGet } from 'lib/api/http/useAxiosHook';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
@@ -33,7 +46,7 @@ import history from 'utils/history';
 import { AlertSeverity, IAlertMeta, IAlertMetaDataRes, ModelalertType } from 'lib/api/ApiModels/Workflow/apiModel';
 import { LocationState, TabName } from '../../MetricsPage';
 import { ArrowContainer, SeverityLabelContainer } from '../styles/DashboardStyledComponents';
-import { ALERT_TIME_RANGE_QUERY_TYPES, paramBuilder } from 'lib/api/ApiModels/paramBuilders';
+import { ALERT_TIME_RANGE_QUERY_TYPES, GENERAL_TIME_RANGE_QUERY_TYPES, paramBuilder } from 'lib/api/ApiModels/paramBuilders';
 
 const Tab = styled(TabUnstyled)`
   color: #848da3;
@@ -115,6 +128,7 @@ export const MerakiDashboard: React.FC = () => {
   const { response: deviceMetricsResponse, loading: deviceMetricsLoading, onGet: getDeviceMetrics } = useGet<DeviceMetricsResponse>();
   const { response: anomaliesResponse, loading: anomaliesLoading, error: anomaliesError, onGet: getAnomalies } = useGet<AnomaliesResponse>();
   const { loading: alertMetadataLoading, response: alertMetadaResponse, onGet: GetAlertMetadata } = useGet<IAlertMetaDataRes>();
+  const { response: deviceEscalationResponse, onGet: GetDeviceEscalations } = useGet<DeviceEscalationsResponse>();
 
   const onTabChange = (event: React.SyntheticEvent<Element, Event>, value: string | number) => {
     setSitesViewTabName(value as DashboardSitesViewTab);
@@ -128,15 +142,19 @@ export const MerakiDashboard: React.FC = () => {
     getAnomalySummaryPage(anomaliesPageSize);
     const _param = paramBuilder(50, 1, ALERT_TIME_RANGE_QUERY_TYPES.LAST_DAY);
     GetAlertMetadata(AlertApi.getAllMetadata(), userContext.accessToken!, _param);
+    const deviceEscalationParams = { time_range: GENERAL_TIME_RANGE_QUERY_TYPES.LAST_DAY };
+    GetDeviceEscalations(AlertApi.getDeviceEscalations(), userContext.accessToken!, deviceEscalationParams);
   }, []);
 
   const convertDataToFeatures = useCallback(
-    (devices: Device[] = []): Feature[] => {
+    (devices: Device[] = [], escalationData: EscalationData[] = []): Feature[] => {
       return devices.map(device => {
+        const deviceEscalationData = escalationData.find(item => item.objectExtId === device.extId);
         return {
           type: 'Feature',
           properties: { title: device.extId, uplinks: device.uplinks },
           geometry: {
+            deviceEscalationData: deviceEscalationData,
             coordinates: [device.lon, device.lat],
             type: 'Point',
             name: device.id,
@@ -144,7 +162,7 @@ export const MerakiDashboard: React.FC = () => {
         };
       });
     },
-    [devicesResponse],
+    [devicesResponse, deviceEscalationResponse],
   );
 
   const convertDataToSitesData = useCallback(
@@ -301,7 +319,7 @@ export const MerakiDashboard: React.FC = () => {
 
           {!devicesLoading && sitesViewTabName === DashboardSitesViewTab.Map && (
             <div className={classes.mapContainerMain}>
-              <Map features={convertDataToFeatures(devicesResponse?.devices)} deviceMetrics={deviceMetricsResponse?.deviceMetrics || []} />
+              <Map features={convertDataToFeatures(devicesResponse?.devices, deviceEscalationResponse?.escalationData)} deviceMetrics={deviceMetricsResponse?.deviceMetrics || []} />
             </div>
           )}
 

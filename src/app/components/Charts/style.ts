@@ -73,9 +73,6 @@ export const LegendLeft = styled.div`
 `;
 
 export const LegendBottom = styled.div<WrapProps>`
-  position: absolute;
-  bottom: -9px; // legendItem line height / 2
-  width: 100%;
   height: auto;
   max-height: ${props => (props.height ? `${100 - props.height}%` : '20%')};
   display: flex;

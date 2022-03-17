@@ -41,6 +41,35 @@ export const GridContainer = styled.div`
   } */
 `;
 
+export const AWSGridContainer = styled.div`
+  // https://cssgrid-generator.netlify.app/
+  display: grid;
+  grid-template-columns: calc(50% - 15px) calc(50% - 15px);
+  grid-template-rows: repeat(2, 1fr);
+  grid-column-gap: 30px;
+  grid-row-gap: 30px;
+  width: 100%;
+  height: calc(100vh - 81px);
+  padding: 30px;
+
+  @media (max-width: ${device_LL - 1 + 'px'}) {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+    height: auto;
+  }
+  /* MERAKI DASHBOARD */
+  /* .div1 {
+    grid-area: 1 / 1 / 3 / 2;
+  }
+  .div2 {
+    grid-area: 1 / 2 / 2 / 3;
+  }
+  .div3 {
+    grid-area: 2 / 2 / 3 / 3;
+  } */
+`;
+
 export const GridItemContainer = styled.div<DashboardStyleProps>`
   display: flex;
   grid-area: ${props => props.gridArea || '1 / 1 / 3 / 2'};
@@ -81,4 +110,25 @@ export const DashboardItemContent = styled.div`
   flex-grow: 1;
   flex-wrap: nowrap;
   flex-shrink: 0;
+`;
+
+export const DashboardItemHeaderTitle = styled.div`
+  font-weight: 700;
+  font-size: 20px;
+`;
+
+export const DashboardItemHeaderContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 26px;
+  margin-bottom: 15px;
+`;
+
+export const MarkerCountContainer = styled.div`
+  display: flex;
+`;
+export const MarkerIconContainer = styled.div`
+  margin-left: 20px;
+  margin-right: 10px;
 `;

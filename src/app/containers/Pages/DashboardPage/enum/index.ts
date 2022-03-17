@@ -38,6 +38,14 @@ export interface Device {
   readonly vnetworks: Vnetwork[];
   readonly uplinks: Uplink[];
 }
+export interface EscalationData {
+  readonly objectExtId: string;
+  readonly activeEscalationsCount: number;
+  readonly totalEscalations: number;
+}
+export interface DeviceEscalationsResponse {
+  readonly escalationData: EscalationData[];
+}
 
 export interface OnPremDevicesResponse {
   readonly totalCount: number;
