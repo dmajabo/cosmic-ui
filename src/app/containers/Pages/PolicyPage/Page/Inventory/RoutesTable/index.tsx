@@ -1,7 +1,7 @@
 import React from 'react';
 import InventoryTableHeader from 'app/containers/Pages/PolicyPage/Components/InventoryTableHeader';
 import { IGridColumnField, ISortObject } from 'lib/models/grid';
-import { RoutesColumns } from '../model';
+import { ResourceType, RoutesColumns } from '../model';
 import { TableWrapper } from 'app/components/Basic/Table/PrimeTableStyles';
 import { DataTable, DataTablePFSEvent } from 'primereact/datatable';
 import { Column } from 'primereact/column';
@@ -20,6 +20,8 @@ import Paging from 'app/components/Basic/Paging';
 import { paramBuilder } from 'lib/api/ApiModels/paramBuilders';
 import * as cellTemplates from 'app/components/Basic/Table/CellTemplates';
 import { InventoryPanelTypes } from 'lib/hooks/Policy/models';
+import { cellHyperLinkTemplate } from 'app/components/Basic/Table/CellTemplates';
+import { getAmazonConsoleUrl } from '../utils';
 
 interface Props {}
 
@@ -29,10 +31,29 @@ const RoutesTable: React.FC<Props> = (props: Props) => {
   const [columns, setColumns] = React.useState<IGridColumnField[]>([
     { ...RoutesColumns.accountName },
     { ...RoutesColumns.name },
-    { ...RoutesColumns.parentId },
+    {
+      ...RoutesColumns.parentId,
+      body: (data: INetworkRouteTable) => {
+        const url = getAmazonConsoleUrl(data.regionCode, data.parentType as ResourceType, data.parentId);
+        if (data.parentId) {
+          return cellHyperLinkTemplate(url, data.parentId);
+        }
+        return <></>;
+      },
+    },
     { ...RoutesColumns.parentType },
     { ...RoutesColumns.numberOfRoutes },
-    { ...RoutesColumns.extId },
+    {
+      ...RoutesColumns.extId,
+      body: (data: INetworkRouteTable) => {
+        const parentType = data.parentType === ResourceType.VPC ? ResourceType.RouteTable : data.parentType === ResourceType.TransitGateway ? ResourceType.TgwRouteTable : '';
+        const url = getAmazonConsoleUrl(data.regionCode, parentType as ResourceType, data.extId);
+        if (data.parentId && parentType) {
+          return cellHyperLinkTemplate(url, data.extId);
+        }
+        return <></>;
+      },
+    },
   ]);
   const { response, loading, error, onGet } = useGet<IToposvcListRouteTableResponse>();
   const [data, setData] = React.useState<INetworkRouteTable[]>([]);
@@ -153,6 +174,7 @@ const RoutesTable: React.FC<Props> = (props: Props) => {
                   sortable={it.sortable}
                   field={it.field}
                   header={it.label}
+                  body={it.body || null}
                 ></Column>
               );
             })}

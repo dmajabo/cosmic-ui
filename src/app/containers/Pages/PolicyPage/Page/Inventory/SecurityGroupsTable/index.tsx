@@ -6,7 +6,7 @@ import { useGet } from 'lib/api/http/useAxiosHook';
 import { usePolicyDataContext } from 'lib/hooks/Policy/usePolicyDataContext';
 import { IGridColumnField, ISortObject } from 'lib/models/grid';
 import { UserContextState, UserContext } from 'lib/Routes/UserProvider';
-import { SecurityGroupsColumns } from '../model';
+import { ResourceType, SecurityGroupsColumns } from '../model';
 import { DataTable, DataTablePFSEvent } from 'primereact/datatable';
 import * as gridHelper from 'lib/helpers/gridHelper';
 import { TopoApi } from 'lib/api/ApiModels/Services/topo';
@@ -21,6 +21,7 @@ import Paging from 'app/components/Basic/Paging';
 import { AccountVendorTypes } from 'lib/api/ApiModels/Accounts/apiModel';
 import * as cellTemplates from 'app/components/Basic/Table/CellTemplates';
 import { InventoryPanelTypes } from 'lib/hooks/Policy/models';
+import { getAmazonConsoleUrl } from '../utils';
 
 interface Props {}
 
@@ -30,7 +31,16 @@ const SecurityGroupsTable: React.FC<Props> = (props: Props) => {
   const [columns, setColumns] = React.useState<IGridColumnField[]>([
     { ...SecurityGroupsColumns.accountName },
     { ...SecurityGroupsColumns.name },
-    { ...SecurityGroupsColumns.extId },
+    {
+      ...SecurityGroupsColumns.extId,
+      body: (data: INetworkSecurityGroup) => {
+        const url = getAmazonConsoleUrl(data.regionCode, ResourceType.SecurityGroup, data.extId);
+        if (data.extId) {
+          return cellTemplates.cellHyperLinkTemplate(url, data.extId);
+        }
+        return <></>;
+      },
+    },
     { ...SecurityGroupsColumns.networkId, body: (d: INetworkSecurityGroup) => cellTemplates.cellValueFromArrayTemplate(d.vnets, 'extId') },
     { ...SecurityGroupsColumns.inboundRulesCount },
     { ...SecurityGroupsColumns.outboundRulesCount },
