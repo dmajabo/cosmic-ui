@@ -149,7 +149,8 @@ export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[]
             }
           });
         }
-        if (_objR) {
+        // Do not add global region if it has got 0 vpc
+        if (_objR && (_objR.dataItem.name.toLowerCase() !== 'global' || _objR.webAcls.length > 0)) {
           regions[_objR.dataItem.extId] = _objR;
         }
       });
