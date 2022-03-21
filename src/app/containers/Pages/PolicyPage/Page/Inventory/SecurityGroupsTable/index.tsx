@@ -41,7 +41,17 @@ const SecurityGroupsTable: React.FC<Props> = (props: Props) => {
         return <></>;
       },
     },
-    { ...SecurityGroupsColumns.networkId, body: (d: INetworkSecurityGroup) => cellTemplates.cellValueFromArrayTemplate(d.vnets, 'extId') },
+    {
+      ...SecurityGroupsColumns.networkId,
+      body: (d: INetworkSecurityGroup) => {
+        if (d.vnets && d.vnets.length && d.vnets[0]['extId']) {
+          const data = d.vnets[0]['extId'];
+          const url = getAmazonConsoleUrl(d.regionCode, ResourceType.VPC, data);
+          return cellTemplates.cellHyperLinkTemplate(url, data);
+        }
+        return <></>;
+      },
+    },
     { ...SecurityGroupsColumns.inboundRulesCount },
     { ...SecurityGroupsColumns.outboundRulesCount },
   ]);
