@@ -1,6 +1,6 @@
 import { AccountVendorTypes } from 'lib/api/ApiModels/Accounts/apiModel';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { AwsDashboard } from './Page/AwsDashboard';
 import { MerakiDashboard } from './Page/MerakiDashboard';
 

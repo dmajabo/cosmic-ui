@@ -12,7 +12,9 @@ mapboxgl.workerClass = require('worker-loader!mapbox-gl/dist/mapbox-gl-csp-worke
 
 export interface Properties {
   readonly title: string;
-  readonly uplinks: Uplink[];
+  readonly uplinks?: Uplink[];
+  readonly id?: string;
+  readonly ownerId?: string;
 }
 export interface Feature {
   readonly type: string;
@@ -20,7 +22,7 @@ export interface Feature {
     readonly type: string;
     readonly name: string;
     readonly coordinates: [number, number];
-    readonly deviceEscalationData: EscalationData;
+    readonly deviceEscalationData?: EscalationData;
   };
   readonly properties: Properties;
 }
