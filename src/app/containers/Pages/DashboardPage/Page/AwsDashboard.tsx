@@ -36,7 +36,7 @@ export const AwsDashboard: React.FC = () => {
     (wedges: INetworkwEdge[] = []): Feature[] =>
       wedges.map(wedge => ({
         type: 'Feature',
-        properties: { title: wedge.regionDetail.name, id: wedge.extId || '', ownerId: wedge.ownerId || '' },
+        properties: { title: wedge.regionDetail.name, id: wedge.extId || '', ownerId: wedge.ownerId || '', name: wedge.name || '' },
         geometry: { coordinates: [wedge.regionDetail.long, wedge.regionDetail.lat], type: 'Point', name: wedge.regionDetail.id },
       })),
     [response],

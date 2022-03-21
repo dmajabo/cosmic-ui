@@ -22,8 +22,8 @@ export const AWSManagementItem: React.FC<AwsManagementItemProps> = ({ wedges, lo
   const pieChartData: PieDataItem[] = [{ id: 'Transit Gateways', name: 'Transit Gateways', hide: false, value: wedges?.length || 0, color: '#F69442' }];
 
   useEffect(() => {
-    getRouteTable(TopoApi.getRouteTables(), userContext.accessToken!, { page_size: 0 });
-    getSecurityGroup(TopoApi.getSecurityGroups(), userContext.accessToken!, { page_size: 0, vendorType: AccountVendorTypes.AMAZON_AWS });
+    getRouteTable(TopoApi.getRouteTables(), userContext.accessToken!, { page_size: 1 });
+    getSecurityGroup(TopoApi.getSecurityGroups(), userContext.accessToken!, { page_size: 1, vendorType: AccountVendorTypes.AMAZON_AWS });
   }, []);
 
   const routeTableCount = useMemo(() => routeTableResponse?.totalCount || 0, [routeTableResponse]);

@@ -15,6 +15,7 @@ export interface Properties {
   readonly uplinks?: Uplink[];
   readonly id?: string;
   readonly ownerId?: string;
+  readonly name?: string;
 }
 export interface Feature {
   readonly type: string;

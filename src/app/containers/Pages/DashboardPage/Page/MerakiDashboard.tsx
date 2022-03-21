@@ -148,6 +148,7 @@ export const MerakiDashboard: React.FC = () => {
 
   const convertDataToFeatures = useCallback(
     (devices: Device[] = [], escalationData: EscalationData[] = []): Feature[] => {
+      console.log(deviceEscalationResponse);
       return devices.map(device => {
         const deviceEscalationData = escalationData.find(item => item.objectExtId === device.extId);
         return {

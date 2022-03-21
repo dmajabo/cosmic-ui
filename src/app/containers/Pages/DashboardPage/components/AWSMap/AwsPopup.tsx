@@ -19,6 +19,10 @@ export const AwsPopup: React.FC<AwsPopupProps> = ({ properties }) => {
           <span className={classes.popupContentValue}>{properties.id}</span>
         </div>
         <div className={classes.popupItemContainer}>
+          <span className={classes.popupContentLabel}>Name: </span>
+          <span className={classes.popupContentValue}>{properties.name}</span>
+        </div>
+        <div className={classes.popupItemContainer}>
           <span className={classes.popupContentLabel}>AWS Account: </span>
           <span className={classes.popupContentValue}>{properties.ownerId}</span>
         </div>
