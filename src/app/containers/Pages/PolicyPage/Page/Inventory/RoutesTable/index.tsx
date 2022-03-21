@@ -22,8 +22,12 @@ import * as cellTemplates from 'app/components/Basic/Table/CellTemplates';
 import { InventoryPanelTypes } from 'lib/hooks/Policy/models';
 import { cellHyperLinkTemplate } from 'app/components/Basic/Table/CellTemplates';
 import { getAmazonConsoleUrl } from '../utils';
+import { ISegmentSegmentP } from 'lib/api/ApiModels/Policy/Segment';
+import first from 'lodash/first';
 
-interface Props {}
+interface Props {
+  segments?: ISegmentSegmentP[];
+}
 
 const RoutesTable: React.FC<Props> = (props: Props) => {
   const userContext = React.useContext<UserContextState>(UserContext);
@@ -31,6 +35,7 @@ const RoutesTable: React.FC<Props> = (props: Props) => {
   const [columns, setColumns] = React.useState<IGridColumnField[]>([
     { ...RoutesColumns.accountName },
     { ...RoutesColumns.name },
+    { ...RoutesColumns.segmentName },
     {
       ...RoutesColumns.parentId,
       body: (data: INetworkRouteTable) => {
@@ -76,7 +81,12 @@ const RoutesTable: React.FC<Props> = (props: Props) => {
 
   React.useEffect(() => {
     if (response && response.routeTables) {
-      setData(response.routeTables);
+      const data = response.routeTables.map(item => {
+        const firstVnet = first(item.vnets) || {};
+        const segmentName = props.segments?.find(seg => seg.id === firstVnet['segmentId'])?.name || '';
+        return { ...item, segmentName };
+      });
+      setData(data);
       setTotalCount(response.totalCount);
     } else {
       setData([]);

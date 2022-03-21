@@ -178,9 +178,20 @@ export interface IRoutesGridColumns {
   vnets: IGridColumnField;
   wedges: IGridColumnField;
   accountName: IGridColumnField;
+  segmentName: IGridColumnField;
 }
 
 export const RoutesColumns: IRoutesGridColumns = {
+  segmentName: {
+    label: 'Segment name',
+    resField: 'segmentName',
+    id: 'segmentname',
+    field: 'segmentName',
+    minWidth: '180px',
+    maxWidth: '300px',
+    hide: false,
+    sortable: true,
+  },
   accountName: {
     label: 'Account name',
     resField: 'ownerId',
@@ -294,9 +305,20 @@ export interface ISecurityGroupsGridColumns {
   outboundRulesCount: IGridColumnField;
   networkId: IGridColumnField;
   accountName: IGridColumnField;
+  segmentName: IGridColumnField;
 }
 
 export const SecurityGroupsColumns: ISecurityGroupsGridColumns = {
+  segmentName: {
+    label: 'Segment name',
+    resField: 'segmentName',
+    id: 'segmentname',
+    field: 'segmentName',
+    minWidth: '180px',
+    maxWidth: '300px',
+    hide: false,
+    sortable: true,
+  },
   accountName: {
     label: 'Account name',
     resField: 'ownerId',

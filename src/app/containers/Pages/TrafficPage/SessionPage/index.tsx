@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { ActionPart, ActionRowStyles, ContentWrapper, PageContentWrapper, TableWrapper } from '../../Shared/styles';
 import { useGet, useGetChainData } from 'lib/api/http/useAxiosHook';
 import { IAllSessionsRes, INetworkSession, INetworkSessionSummary, INetworkVendorSessionSummary, ITesseractListStitchedSessionsResponse } from 'lib/api/ApiModels/Sessions/apiModel';
@@ -43,7 +43,6 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
   const userContext = useContext<UserContextState>(UserContext);
   const { response, loading, error, onGet } = useGet<IAllSessionsRes>();
   const { response: aggregRes, loading: loadingAggreg, error: errorAggreg, onGetChainData } = useGetChainData<StitchedResponseWithSegments>();
-  const [segments, setSegments] = useState<IPolicysvcListSegmentPsResponse>();
   const [aggregatedData, setAggregatedData] = React.useState<ITesseractListStitchedSessionsResponse>(null);
   const [sessionsData, setSessionsData] = React.useState<INetworkSession[]>([]);
 
@@ -85,7 +84,6 @@ const SessionPage: React.FC<IProps> = (props: IProps) => {
       });
       setAggregatedData({ sessionSummary, nextPageKey: aggregRes.sessionSummary.nextPageKey, totalCount: aggregRes.sessionSummary.totalCount });
       setAggregTotalCount(aggregRes.sessionSummary.totalCount);
-      setSegments(aggregRes.segments);
       return;
     }
     setSessionsData([]);
