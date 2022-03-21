@@ -80,7 +80,7 @@ export const Latency: React.FC<LatencyProps> = ({ selectedNetworksMetricsData, t
       let totalAnomalyCount = 0;
 
       const promises = selectedNetworksMetricsData.reduce((acc, row) => {
-        const networkApiList = FIELD_ARRAY.map(field => (row.deviceString ? apiClient.getLatencyMetrics(row.deviceString, row.destination, timeRange, `${row.label}_${field}`, field) : null));
+        const networkApiList = row.deviceString ? FIELD_ARRAY.map(field => apiClient.getLatencyMetrics(row.deviceString, row.destination, timeRange, `${row.label}_${field}`, field)) : [];
         return acc.concat(networkApiList);
       }, []);
 
@@ -88,19 +88,21 @@ export const Latency: React.FC<LatencyProps> = ({ selectedNetworksMetricsData, t
         if (!isEmpty(values)) {
           selectedNetworksMetricsData.forEach(network => {
             FIELD_ARRAY.forEach(field => {
-              const responseItem = values.find(item => item.testId === `${network.label}_${field}`);
-              if (field === LATENCY) {
-                latencyChartData[network.label] = responseItem.metrics.keyedmap.find(item => item.key === LATENCY)?.ts || [];
-              } else if (field === LATENCY_ANOMALY) {
-                const anomalyArray = responseItem.metrics.keyedmap.find(item => item.key === LATENCY_ANOMALY)?.ts || [];
-                totalAnomalyCount = totalAnomalyCount + anomalyArray.length;
-                latencyChartData[`${network.label}_anomaly`] = anomalyArray;
-              } else if (field === LATENCY_LOWERBOUND) {
-                latencyChartData[`${network.label}_lowerbound`] = responseItem.metrics.keyedmap.find(item => item.key === LATENCY_LOWERBOUND)?.ts || [];
-              } else if (field === LATENCY_UPPERBOUND) {
-                latencyChartData[`${network.label}_upperbound`] = responseItem.metrics.keyedmap.find(item => item.key === LATENCY_UPPERBOUND)?.ts || [];
-              } else {
-                latencyChartData[`${network.label}_threshold`] = responseItem.metrics.keyedmap.find(item => item.key === LATENCY_THRESHOLD)?.ts || [];
+              const responseItem = values.find(item => item?.testId === `${network.label}_${field}`);
+              if (responseItem) {
+                if (field === LATENCY) {
+                  latencyChartData[network.label] = responseItem.metrics.keyedmap.find(item => item.key === LATENCY)?.ts || [];
+                } else if (field === LATENCY_ANOMALY) {
+                  const anomalyArray = responseItem.metrics.keyedmap.find(item => item.key === LATENCY_ANOMALY)?.ts || [];
+                  totalAnomalyCount = totalAnomalyCount + anomalyArray.length;
+                  latencyChartData[`${network.label}_anomaly`] = anomalyArray;
+                } else if (field === LATENCY_LOWERBOUND) {
+                  latencyChartData[`${network.label}_lowerbound`] = responseItem.metrics.keyedmap.find(item => item.key === LATENCY_LOWERBOUND)?.ts || [];
+                } else if (field === LATENCY_UPPERBOUND) {
+                  latencyChartData[`${network.label}_upperbound`] = responseItem.metrics.keyedmap.find(item => item.key === LATENCY_UPPERBOUND)?.ts || [];
+                } else {
+                  latencyChartData[`${network.label}_threshold`] = responseItem.metrics.keyedmap.find(item => item.key === LATENCY_THRESHOLD)?.ts || [];
+                }
               }
             });
           });

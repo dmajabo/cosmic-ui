@@ -35,7 +35,7 @@ export const DashboardStyles = makeStyles(
         color: '#05143A',
       },
       pillContainer: {
-        marginLeft: '20px',
+        marginLeft: '10px',
         backgroundColor: '#437FEC',
         borderRadius: '20px',
         display: 'flex',

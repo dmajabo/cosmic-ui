@@ -1,5 +1,5 @@
 import { ALERT_TIME_RANGE_QUERY_TYPES, GENERAL_TIME_RANGE_QUERY_TYPES } from 'lib/api/ApiModels/paramBuilders';
-import { AlertApi } from 'lib/api/ApiModels/Services/alert';
+// import { AlertApi } from 'lib/api/ApiModels/Services/alert';
 import { useGet } from 'lib/api/http/useAxiosHook';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import React, { useContext, useEffect, useState } from 'react';
@@ -8,9 +8,8 @@ import LoadingIndicator from 'app/components/Loading';
 import { ChartContainerStyles, ChartTitle } from 'app/components/ChartContainer/styles';
 import isEmpty from 'lodash/isEmpty';
 import { EmptyText } from 'app/components/Basic/NoDataStyles/NoDataStyles';
-import { AlertResponse, AlertType } from '../SummaryComponent';
-import { INPUT_TIME_FORMAT } from 'app/containers/Pages/DashboardPage';
-import { DateTime } from 'luxon';
+// import { AlertResponse, AlertType } from '../SummaryComponent';
+// import { DateTime } from 'luxon';
 import { getConnectivityMetrics, getCorrectedTimeString, getHealthTableData } from 'app/containers/Pages/MetricsPage/components/Utils';
 import { HealthTableData } from 'app/containers/Pages/MetricsPage/components/Cloud/DirectConnectConnectionHealth';
 import { ConnectivityMetricsData } from 'app/containers/Pages/MetricsPage/components/Sites/ConnectivityHealth';
@@ -28,7 +27,7 @@ const getXAxisText = (barChartData: BarChartData[]) => {
   return `${barChartData[0].date} to ${barChartData[barChartData.length - 1].date} (1 day interval)`;
 };
 
-const BAR_CHART_TIME_FORMAT = 'MMM dd';
+// const BAR_CHART_TIME_FORMAT = 'MMM dd';
 
 export const Failover: React.FC<FailoverProps> = ({ timeRange }) => {
   const userContext = useContext<UserContextState>(UserContext);

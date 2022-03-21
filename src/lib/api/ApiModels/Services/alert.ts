@@ -12,4 +12,5 @@ export const AlertApi = {
   getAlertCounts: () => 'alert/api/v1/alert/types/count',
   getCountPerInterval: () => 'alert/api/v1/alert/types/count-per-interval',
   getAlertLogsByNetwork: (networkId: string) => `alert/api/v1/alert/logs/${networkId}`,
+  getDeviceEscalations: () => 'alert/api/v1/alert/objects/escalations',
 };

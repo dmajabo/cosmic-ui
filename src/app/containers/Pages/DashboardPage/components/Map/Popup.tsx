@@ -4,10 +4,10 @@ import startCase from 'lodash/startCase';
 import isNumber from 'lodash/isNumber';
 import { DateTime } from 'luxon';
 import React from 'react';
-import { AVAILABILITY_TIME_FORMAT, getAvailabilityArray, INPUT_TIME_FORMAT } from '../..';
 import { DashboardStyles } from '../../DashboardStyles';
 import { Properties } from './Map';
 import { DeviceMetrics } from '../../enum';
+import { getAvailabilityArray, INPUT_TIME_FORMAT, AVAILABILITY_TIME_FORMAT } from '../../Page/MerakiDashboard';
 
 interface PopupProps {
   readonly properties: Properties;
