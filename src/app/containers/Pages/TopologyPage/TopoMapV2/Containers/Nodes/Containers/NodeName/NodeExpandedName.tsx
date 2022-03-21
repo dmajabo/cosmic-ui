@@ -3,6 +3,7 @@ import { IExpandLabelStyle } from '../../../../model';
 
 interface Props {
   name: string;
+  description?: string;
   strBtnLabel?: string;
   onClick?: () => void;
   nodeWidth: number;
@@ -34,7 +35,6 @@ const NodeExpandedName: React.FC<Props> = (props: Props) => {
           style={{
             display: 'flex',
             width: '100%',
-            height: '100%',
             fontWeight: 500,
             flexWrap: 'nowrap',
             padding: '0 16px 0 8px',
@@ -42,7 +42,6 @@ const NodeExpandedName: React.FC<Props> = (props: Props) => {
         >
           <span
             style={{
-              display: 'inline-block',
               maxWidth: 'calc(100% - 12px)',
               margin: 'auto 12px auto 0',
               color: props.stylesObj.fill,
@@ -70,6 +69,11 @@ const NodeExpandedName: React.FC<Props> = (props: Props) => {
             </span>
           )}
         </div>
+        {props.description && (
+          <div style={{ fontSize: '12px', padding: '0 16px 0 8px', color: '#848DA3' }}>
+            <span>{props.description}</span>
+          </div>
+        )}
         {props.count > 0 && (
           <div style={{ fontSize: '10px', padding: '0 16px 0 8px', color: '#848DA3' }}>
             <span>{props.count} VPC</span>

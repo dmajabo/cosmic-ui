@@ -22,8 +22,11 @@ import { AccountVendorTypes } from 'lib/api/ApiModels/Accounts/apiModel';
 import * as cellTemplates from 'app/components/Basic/Table/CellTemplates';
 import { InventoryPanelTypes } from 'lib/hooks/Policy/models';
 import { getAmazonConsoleUrl } from '../utils';
+import { ISegmentSegmentP } from 'lib/api/ApiModels/Policy/Segment';
 
-interface Props {}
+interface Props {
+  segments?: ISegmentSegmentP[];
+}
 
 const SecurityGroupsTable: React.FC<Props> = (props: Props) => {
   const { policy } = usePolicyDataContext();
@@ -31,6 +34,7 @@ const SecurityGroupsTable: React.FC<Props> = (props: Props) => {
   const [columns, setColumns] = React.useState<IGridColumnField[]>([
     { ...SecurityGroupsColumns.accountName },
     { ...SecurityGroupsColumns.name },
+    { ...SecurityGroupsColumns.segmentName },
     {
       ...SecurityGroupsColumns.extId,
       body: (data: INetworkSecurityGroup) => {
@@ -41,7 +45,17 @@ const SecurityGroupsTable: React.FC<Props> = (props: Props) => {
         return <></>;
       },
     },
-    { ...SecurityGroupsColumns.networkId, body: (d: INetworkSecurityGroup) => cellTemplates.cellValueFromArrayTemplate(d.vnets, 'extId') },
+    {
+      ...SecurityGroupsColumns.networkId,
+      body: (d: INetworkSecurityGroup) => {
+        if (d.vnets && d.vnets.length && d.vnets[0]['extId']) {
+          const data = d.vnets[0]['extId'];
+          const url = getAmazonConsoleUrl(d.regionCode, ResourceType.VPC, data);
+          return cellTemplates.cellHyperLinkTemplate(url, data);
+        }
+        return <></>;
+      },
+    },
     { ...SecurityGroupsColumns.inboundRulesCount },
     { ...SecurityGroupsColumns.outboundRulesCount },
   ]);
@@ -66,7 +80,11 @@ const SecurityGroupsTable: React.FC<Props> = (props: Props) => {
 
   React.useEffect(() => {
     if (response && response.securityGroups) {
-      setData(response.securityGroups);
+      const data = response.securityGroups.map(item => {
+        const segmentName = props.segments?.find(seg => seg.id === item.vnets[0]?.segmentId)?.name || '';
+        return { ...item, segmentName };
+      });
+      setData(data);
       setTotalCount(response.totalCount);
     } else {
       setData([]);

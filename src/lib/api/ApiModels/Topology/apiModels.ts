@@ -76,7 +76,11 @@ export interface INetworkRoute {
   regionCode: string;
 }
 
-export interface INetworkRouteTable extends IBaseEntity<string> {
+export interface ISegmentName {
+  segmentName: string;
+}
+
+export interface INetworkRouteTable extends IBaseEntity<string>, ISegmentName {
   name: string;
   description: string;
   extId: string;
@@ -129,7 +133,7 @@ export interface INetworkRule extends IBaseEntity<string> {
   readonly networkName: string;
 }
 
-export interface INetworkSecurityGroup extends IBaseEntity<string> {
+export interface INetworkSecurityGroup extends IBaseEntity<string>, ISegmentName {
   name: string;
   description: string;
   extId: string;
