@@ -19,11 +19,11 @@ const RegionExpandNode: React.FC<Props> = (props: Props) => {
     return maybeAccount.name || maybeAccount.extId || '';
   }, [props.region]);
 
-  const nodeName = useMemo(() => {
+  const nodeNameWithAccountId = useMemo(() => {
     const account = topology.originData.find(item => item.extId === props.region.orgId);
     const ctrlName = account?.ctrlrName;
     if (props.region.dataItem.name && ctrlName && accountName) {
-      return `${ctrlName} (${accountName}) - ${props.region.dataItem.name.toUpperCase()}`;
+      return `${ctrlName} (${accountName})`;
     }
     return props.region.dataItem.name;
   }, [props.region]);
@@ -43,11 +43,12 @@ const RegionExpandNode: React.FC<Props> = (props: Props) => {
         <g transform="translate(0, 0)">
           <NodeMarker iconId={NODES_CONSTANTS.ACCOUNT.iconId} stylesObj={NODES_CONSTANTS.ACCOUNT.expanded.marker} />
           <NodeExpandedName
-            name={nodeName}
+            description={nodeNameWithAccountId}
+            name={props.region.dataItem.name ? `${props.region.dataItem.name.toUpperCase()}` : props.region.dataItem.name}
             // strBtnLabel="Open Region"
             nodeWidth={props.region.width}
             markerWidth={NODES_CONSTANTS.REGION.expanded.marker.width}
-            height={NODES_CONSTANTS.REGION.expanded.marker.height}
+            height={NODES_CONSTANTS.REGION.expanded.marker.height + 20}
             stylesObj={NODES_CONSTANTS.REGION.labelExpandedStyles}
             count={props.region.dataItem?.vnets?.length}
             // onClick={props.onShowFullStructure}
