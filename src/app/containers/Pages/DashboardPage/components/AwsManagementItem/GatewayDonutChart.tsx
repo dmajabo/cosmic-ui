@@ -2,31 +2,18 @@ import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import { ChartTitle } from 'app/components/ChartContainer/styles';
 import DonutChart, { PieDataItem } from 'app/components/Charts/DonutChart';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
-import { uniqueId } from 'lodash';
+
 import React from 'react';
 import { ChartContent, ChartItem, ChartValue } from '../ManagmentItem/styles';
 import LoadingIndicator from 'app/components/Loading';
+import { AxiosError } from 'axios';
+interface GatewayDonutChartProps {
+  readonly data: PieDataItem[];
+  readonly loading: boolean;
+  readonly error: AxiosError;
+}
 
-const error = null;
-const loading = false;
-const data: PieDataItem[] = [
-  {
-    id: uniqueId(),
-    name: 'Transit',
-    hide: false,
-    value: 6,
-    color: 'orange',
-  },
-  {
-    id: uniqueId(),
-    name: 'Direct Connect',
-    hide: false,
-    value: 4,
-    color: 'blue',
-  },
-];
-
-export const GatewayDonutChart: React.FC = () => {
+export const GatewayDonutChart: React.FC<GatewayDonutChartProps> = ({ data, loading, error }) => {
   return (
     <ChartItem>
       <ChartTitle>Gateways</ChartTitle>

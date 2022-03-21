@@ -379,6 +379,7 @@ export interface INetworkwEdge extends IBaseEntity<string> {
   wedgePeeringConnections: INetworkWedgePeeringConnection[];
   ownerId: string;
   regionCode: string;
+  regionDetail?: INetworkRegionDetail;
 }
 
 export interface INetworkoEdge extends IBaseEntity<string> {

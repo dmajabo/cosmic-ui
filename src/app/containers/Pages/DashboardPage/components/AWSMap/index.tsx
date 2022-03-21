@@ -4,6 +4,7 @@ import React, { useEffect } from 'react';
 import { DashboardStyles } from '../../DashboardStyles';
 import './AwsMap.css';
 import ReactDOMServer from 'react-dom/server';
+import { AwsPopup } from './AwsPopup';
 // @ts-ignore
 // eslint-disable-next-line import/no-webpack-loader-syntax
 mapboxgl.workerClass = require('worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker').default;
@@ -35,7 +36,7 @@ mapboxgl.accessToken = process.env['REACT_APP_MAPBOX_TOKEN'];
 const MAPBOX_STYLE_URL = 'mapbox://styles/ajay-tp/ckznsacom001m15r6w0fjjaim';
 const LATITUDE = 43.023;
 const LONGITUDE = -95.288;
-const INITIAL_ZOOM_LEVEL = 3;
+const INITIAL_ZOOM_LEVEL = 0;
 
 export const AWSMap: React.FC<MapProps> = ({ features }) => {
   useEffect(() => {
@@ -47,24 +48,24 @@ export const AWSMap: React.FC<MapProps> = ({ features }) => {
       attributionControl: false,
       dragRotate: false,
     });
-    // if (features.length) {
-    //   for (const { geometry, properties } of features) {
-    //     // create a HTML element for each feature
-    //     const el = document.createElement('div');
-    //     el.className = 'tg-marker';
-    //     // make a marker for each feature and add to the map
-    //     new mapboxgl.Marker({
-    //       element: el,
-    //     })
-    //       .setLngLat(geometry.coordinates)
-    //       .setPopup(
-    //         new mapboxgl.Popup({ offset: [-10, -75] }) // add popups
-    //           .setHTML(ReactDOMServer.renderToString(<div />)),
-    //       )
-    //       .addTo(map);
-    //   }
-    // }
-  }, []);
+    if (features.length) {
+      for (const { geometry, properties } of features) {
+        // create a HTML element for each feature
+        const el = document.createElement('div');
+        el.className = 'tg-marker';
+        // make a marker for each feature and add to the map
+        new mapboxgl.Marker({
+          element: el,
+        })
+          .setLngLat(geometry.coordinates)
+          .setPopup(
+            new mapboxgl.Popup({ offset: [-10, -75] }) // add popups
+              .setHTML(ReactDOMServer.renderToString(<AwsPopup properties={properties} />)),
+          )
+          .addTo(map);
+      }
+    }
+  }, [features]);
 
   const classes = DashboardStyles();
 

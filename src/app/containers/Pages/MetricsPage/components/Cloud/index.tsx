@@ -68,8 +68,8 @@ export const Cloud: React.FC<CloudTabProps> = ({ selectedTabName }) => {
             />
           </div>
         </div>
-        <DirectConnectConnectionHealth selectedTabName={selectedTabName} timeRange={timeRange} onOpenPanel={onOpenPanel} />
-        <DirectConnectVirtualHealth selectedTabName={selectedTabName} timeRange={timeRange} />
+        {/* <DirectConnectConnectionHealth selectedTabName={selectedTabName} timeRange={timeRange} onOpenPanel={onOpenPanel} />
+        <DirectConnectVirtualHealth selectedTabName={selectedTabName} timeRange={timeRange} /> */}
         <Transit selectedTabName={selectedTabName} timeRange={timeRange} />
       </PageWithPanelWrapperStyles>
       <PanelBar

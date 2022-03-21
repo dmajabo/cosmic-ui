@@ -1,21 +1,28 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Tab, Tabs } from '@mui/material';
 import { TabsStyles } from 'app/components/Tabs/TabsStyles';
 import { TabComponentProps } from 'app/components/Tabs/TabComponentProps';
 import { PageWrapperStyles, TabsWrapperStyles } from '../../Shared/styles';
 import TabPanel from 'app/components/Tabs/TabPanel';
-import { AUTOMATIONS_TABS } from 'lib/hooks/Automation/models';
+import { AUTOMATIONS_TABS, AutomationTabTypes } from 'lib/hooks/Automation/models';
 import { useAutomationDataContext } from 'lib/hooks/Automation/useAutomationDataContext';
 import Triggers from './Triggers';
 import Configutation from './Configutation';
 import Accounts from './Accounts';
 import { Summary } from './Summary';
+import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
+import { AccountVendorTypes } from 'lib/api/ApiModels/Accounts/apiModel';
+import { IObject } from 'lib/models/general';
 
 interface IProps {}
+
+const getAutomationTabs = (vendors: IObject<AccountVendorTypes>) =>
+  vendors.hasOwnProperty(AccountVendorTypes.CISCO_MERAKI) ? AUTOMATIONS_TABS : AUTOMATIONS_TABS.filter(tab => tab.id !== AutomationTabTypes.Summary);
 
 const MainPage: React.FC<IProps> = (props: IProps) => {
   const { automation } = useAutomationDataContext();
   const classes = TabsStyles();
+  const userContext = useContext<UserContextState>(UserContext);
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     automation.onChangeSelectedTab(newValue);
@@ -36,7 +43,7 @@ const MainPage: React.FC<IProps> = (props: IProps) => {
             },
           }}
         >
-          {AUTOMATIONS_TABS.map(it => (
+          {getAutomationTabs(userContext.vendors).map(it => (
             <Tab disableRipple key={`automationKey${it.id}`} label={it.label} classes={{ selected: classes.tabSelected }} {...TabComponentProps(0)} className={classes.tabBigSize} />
           ))}
         </Tabs>
