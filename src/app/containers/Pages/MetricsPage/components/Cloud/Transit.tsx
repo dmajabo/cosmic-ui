@@ -1,87 +1,159 @@
-import { Chart, ChartContainerStyles } from 'app/components/ChartContainer/styles';
-import { LookbackSelectOption } from 'app/containers/Pages/AnalyticsPage/components/Metrics Explorer/LookbackTimeTab';
-import { MultiLineMetricsData } from 'app/containers/Pages/TopologyPage/TopologyMetrics/SharedTypes';
-import { createApiClient } from 'lib/api/http/apiClient';
-import { TransitMetricsParams } from 'lib/api/http/SharedTypes';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { MetricsStyles } from '../../MetricsStyles';
-import LoadingIndicator from 'app/components/Loading';
-import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
-import { EmptyText } from 'app/components/Basic/NoDataStyles/NoDataStyles';
-import { MultiLineChart } from 'app/containers/Pages/TopologyPage/TopoMapV2/PanelComponents/NodePanels/WedgePanel/MetricsTab/MultiLineChart';
-import { getChartXAxisLabel, isMetricsEmpty } from '../Utils';
 import { TabName } from '../..';
+import MatSelect from 'app/components/Inputs/MatSelect';
+import Select from 'react-select';
+import { InputLabel } from 'app/components/Inputs/styles/Label';
+import { IWEdgesRes } from 'lib/api/ApiModels/Topology/apiModels';
+import { useGet } from 'lib/api/http/useAxiosHook';
+import { TopoApi } from 'lib/api/ApiModels/Services/topo';
+import { TransitMetricChart } from './TransitMetricChart';
+
+export interface TransitSelectOption {
+  readonly label: string;
+  readonly value: string;
+  readonly type: string;
+}
 
 interface TransitProps {
-  readonly timeRange: LookbackSelectOption;
   readonly selectedTabName: TabName;
 }
 
-const TRANSIT_METRICNAMES = ['BytesIn', 'BytesOut'];
+const timeRangeOptions = [
+  {
+    value: '-1d',
+    label: 'Last day',
+  },
+  {
+    value: '-7d',
+    label: 'Last week',
+  },
+];
 
-const TRANSIT_METRIC_TYPES = ['NetworkLink', 'VpnLink', 'WedgePeeringConnection'];
+const networkSelectStyles = {
+  control: provided => ({
+    ...provided,
+    height: 50,
+    color: 'blue',
+  }),
+  multiValue: provided => ({
+    ...provided,
+    background: 'rgba(67,127,236,0.1)',
+    borderRadius: 6,
+    padding: 5,
+  }),
+  multiValueLabel: provided => ({
+    ...provided,
+    color: '#437FEC',
+  }),
+  multiValueRemove: provided => ({
+    ...provided,
+    color: '#437FEC',
+  }),
+};
 
-export const Transit: React.FC<TransitProps> = ({ timeRange, selectedTabName }) => {
+const SELECTED_TGW_LOCAL_KEY = 'selectedTGW';
+
+const getInitialSelectedTGW = () => {
+  const localSelectedTGW = localStorage.getItem(SELECTED_TGW_LOCAL_KEY);
+  return localSelectedTGW ? JSON.parse(localSelectedTGW) : [];
+};
+
+export const Transit: React.FC<TransitProps> = ({ selectedTabName }) => {
   const classes = MetricsStyles();
   const userContext = useContext<UserContextState>(UserContext);
-  const apiClient = createApiClient(userContext.accessToken!);
 
-  const [metricsData, setMetricsData] = useState<MultiLineMetricsData[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [isError, setIsError] = useState<boolean>(false);
+  const { response, loading, onGet } = useGet<IWEdgesRes>();
+
+  const [timeRange, setTimeRange] = useState<string>('-7d');
+  const [selectedTGW, setSelectedTGW] = useState<TransitSelectOption[]>(getInitialSelectedTGW());
+
+  const onTGWSelect = (value: TransitSelectOption[]) => {
+    if (value.length <= 2) {
+      setSelectedTGW(value);
+      localStorage.setItem(SELECTED_TGW_LOCAL_KEY, JSON.stringify(value));
+    }
+  };
 
   useEffect(() => {
-    if (selectedTabName === TabName.Cloud) {
-      const promises = TRANSIT_METRIC_TYPES.map(type => {
-        const params: TransitMetricsParams = {
-          startTime: timeRange.value,
-          endTime: '-0m',
-          type: type,
-          metricNames: TRANSIT_METRICNAMES,
-        };
-        return apiClient.getTelemetryMetrics(type, params);
-      });
-      setIsLoading(true);
-      Promise.all(promises)
-        .then(responses => {
-          const transitMetricsData: MultiLineMetricsData[] = responses.reduce((acc, nextValue) => {
-            if (nextValue.metrics.length > 0) {
-              const typeMetricsData: MultiLineMetricsData[] = nextValue.metrics.map(item => ({
-                name: `${nextValue.type}_${item.resourceId}_${item.key}`,
-                metrics: item.ts,
-              }));
-              return acc.concat(typeMetricsData);
-            } else {
-              return acc.concat([]);
-            }
-          }, []);
-          setMetricsData(transitMetricsData);
-          setIsLoading(false);
-        })
-        .catch(() => {
-          setIsError(true);
-          setIsLoading(false);
-        });
+    onGet(TopoApi.getWedges(), userContext.accessToken!);
+  }, []);
+
+  const transitSelectOptions: TransitSelectOption[] = useMemo((): TransitSelectOption[] => {
+    if (response && response.wEdges && response.wEdges.length) {
+      return response.wEdges.map(wedge => ({ label: wedge.name, value: wedge.extId, type: 'wEdge' }));
     }
-  }, [timeRange, selectedTabName]);
+    return [];
+  }, [response]);
 
   return (
     <div className={classes.pageComponentBackground}>
-      <div className={classes.pageComponentTitle}>Transit</div>
-      <ChartContainerStyles style={{ maxWidth: '100%', minHeight: 420, maxHeight: 420 }}>
-        {isLoading ? (
-          <LoadingIndicator margin="auto" />
-        ) : isError ? (
-          <ErrorMessage>Something went wrong.Please try again</ErrorMessage>
-        ) : isMetricsEmpty(metricsData) ? (
-          <EmptyText>No Data</EmptyText>
-        ) : (
-          <Chart>
-            <MultiLineChart dataValueSuffix="bytes" inputData={metricsData} yAxisText="bytes" xAxisText={getChartXAxisLabel(metricsData)} sharedMarker />
-          </Chart>
-        )}
-      </ChartContainerStyles>
+      <div className={classes.pageComponentTitleContainer}>
+        <div className={classes.pageComponentTitle}>TGW Metrics</div>
+        <div>
+          <MatSelect
+            id="TGWMetricsTimePeriod"
+            label="Show"
+            labelStyles={{ margin: 'auto 10px auto 0' }}
+            value={timeRangeOptions.find(time => time.value === timeRange)}
+            options={timeRangeOptions}
+            onChange={e => setTimeRange(e.value)}
+            renderValue={(v: any) => v.label}
+            renderOption={(v: any) => v.label}
+            styles={{ height: '50px', minHeight: '50px', margin: '0 0 0 10px', width: 'auto', display: 'inline-flex', alignItems: 'center' }}
+            selectStyles={{ height: '50px', width: 'auto', minWidth: '240px', border: '1px solid #cbd2bc' }}
+          />
+        </div>
+      </div>
+      <div>
+        <InputLabel style={{ marginTop: 20 }}>Select TGW</InputLabel>
+        <Select
+          isMulti
+          name="tgws"
+          placeholder="Select TGW"
+          styles={networkSelectStyles}
+          value={selectedTGW}
+          options={transitSelectOptions}
+          isLoading={loading}
+          onChange={onTGWSelect}
+          components={{
+            IndicatorSeparator: () => null,
+          }}
+        />
+        <TransitMetricChart
+          chartDataSuffix="bytes"
+          chartTitle="Transit Gateway Bytes In"
+          metricNames={['BytesIn', 'BytesIn_anomaly', 'BytesIn_upperbound', 'BytesIn_lowerbound', 'BytesIn_threshold']}
+          baseMetricName="BytesIn"
+          selectedTGW={selectedTGW}
+          timeRange={timeRange}
+        />
+        <TransitMetricChart
+          chartDataSuffix="bytes"
+          chartTitle="Transit Gateway Bytes Out"
+          metricNames={['BytesOut', 'BytesOut_anomaly', 'BytesOut_upperbound', 'BytesOut_lowerbound', 'BytesOut_threshold']}
+          baseMetricName="BytesOut"
+          selectedTGW={selectedTGW}
+          timeRange={timeRange}
+        />
+        <TransitMetricChart
+          chartDataSuffix="packets"
+          chartTitle="Transit Gateway Packets In"
+          metricNames={['PacketsIn', 'PacketsIn_anomaly', 'PacketsIn_upperbound', 'PacketsIn_lowerbound', 'PacketsIn_threshold']}
+          baseMetricName="PacketsIn"
+          selectedTGW={selectedTGW}
+          timeRange={timeRange}
+        />
+        <TransitMetricChart
+          chartDataSuffix="packets"
+          chartTitle="Transit Gateway Packets Out"
+          metricNames={['PacketsOut', 'PacketsOut_anomaly', 'PacketsOut_upperbound', 'PacketsOut_lowerbound', 'PacketsOut_threshold']}
+          baseMetricName="PacketsOut"
+          selectedTGW={selectedTGW}
+          timeRange={timeRange}
+        />
+      </div>
     </div>
   );
 };

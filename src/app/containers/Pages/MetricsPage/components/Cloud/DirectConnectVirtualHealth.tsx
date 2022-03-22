@@ -35,6 +35,7 @@ export const DirectConnectVirtualHealth: React.FC<DirectConnectVirtualHealthProp
         metricNames: DIRECT_CONNECT_VIRTUAL_HEALTH_METRIC_NAMES,
         startTime: timeRange.value,
         endTime: '-0m',
+        cloudExtId: '',
       };
       onGet(TelemetryApi.getAllMetrics(), userContext.accessToken!, params);
     }

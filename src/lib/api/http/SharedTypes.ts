@@ -517,6 +517,7 @@ export interface TransitMetricsParams {
   readonly metricNames: string[];
   readonly startTime: string;
   readonly endTime: string;
+  readonly cloudExtId: string;
 }
 
 export interface ConnectivityHealthParams {
@@ -540,7 +541,7 @@ interface TelemetryMetricsTags {
 }
 
 export interface GetTelemetryMetricsResponse {
-  readonly type?: string;
+  readonly name?: string;
   readonly metrics: TelemetryMetrics[];
 }
 
