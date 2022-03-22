@@ -18,6 +18,7 @@ import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 import { TelemetryApi } from 'lib/api/ApiModels/Services/telemetry';
 import { DateTime } from 'luxon';
+import { AlertApi } from 'lib/api/ApiModels/Services/alert';
 
 interface IProps {}
 
@@ -60,13 +61,25 @@ const TopoMapV2: React.FC<IProps> = (props: IProps) => {
   const onTryLoadData = async () => {
     const _st = topology.selectedTime || null;
     let param: ITopologyQueryParam = createTopologyQueryParam(_st);
+    const escalationParam = { objectType: 'tgw' };
 
-    await onGetChainData([PolicyApi.getSegments(), TopoApi.getAllOrganizations(), TelemetryApi.getTopologySegments()], ['segments', 'organizations', 'topology'], userContext.accessToken!, param);
+    await onGetChainData(
+      [PolicyApi.getSegments(), TopoApi.getAllOrganizations(), TelemetryApi.getTopologySegments(), AlertApi.getDeviceEscalations()],
+      ['segments', 'organizations', 'topology', 'escalations'],
+      userContext.accessToken!,
+      { ...param, ...escalationParam },
+    );
   };
 
   const onReloadData = async (startTime: Date | null) => {
     let param: ITopologyQueryParam = createTopologyQueryParam(startTime);
-    await onGetChainData([PolicyApi.getSegments(), TopoApi.getAllOrganizations(), TelemetryApi.getTopologySegments()], ['segments', 'organizations', 'topology'], userContext.accessToken!, param);
+    const escalationParam = { objectType: 'tgw' };
+    await onGetChainData(
+      [PolicyApi.getSegments(), TopoApi.getAllOrganizations(), TelemetryApi.getTopologySegments(), AlertApi.getDeviceEscalations()],
+      ['segments', 'organizations', 'topology', 'escalations'],
+      userContext.accessToken!,
+      { ...param, ...escalationParam },
+    );
   };
 
   return (

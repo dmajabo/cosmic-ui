@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { NODES_CONSTANTS, TOPOLOGY_IDS } from '../../../../model';
 import { ITGWNode, TopologyPanelTypes } from 'lib/hooks/Topology/models';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
@@ -50,6 +50,11 @@ const NetworkWEdgeNode: React.FC<Props> = (props: Props) => {
     }
   };
 
+  const escalation = useMemo(() => {
+    // TODO: Verify the condition
+    return topology.tgwEscalations?.find(esc => esc.objectExtId === props.item.parentId);
+  }, [props.item]);
+
   return (
     <g
       ref={nodeRef}
@@ -77,14 +82,14 @@ const NetworkWEdgeNode: React.FC<Props> = (props: Props) => {
           fill="white"
         />
       </svg>
-      {/* TODO: Uncomment this when alert endpoint is done */}
+      {/* TODO: Write logic for color */}
 
-      {/* <foreignObject width="1" height="1" style={{ overflow: 'visible' }} pointerEvents="none">
+      <foreignObject width="1" height="1" style={{ overflow: 'visible' }} pointerEvents="none">
         <div style={{ backgroundColor: 'green', borderRadius: '4px', height: '14px', width: '21px', position: 'absolute', top: '42px', left: '15px' }}>
-          <span style={{ color: '#FFF', fontSize: '10px', position: 'absolute', paddingLeft: '7px' }}>5</span>
+          <span style={{ color: '#FFF', fontSize: '10px', position: 'absolute', paddingLeft: '7px' }}>{escalation?.totalEscalations || 0}</span>
         </div>
-      </foreignObject> */}
-      <HtmlNodeLabel name={props.item.name || props.item.extId} labelStyles={{ ...NODES_CONSTANTS.NETWORK_WEDGE.labelHtmlStyles }} />
+      </foreignObject>
+      <HtmlNodeLabel name={props.item.name || props.item.extId} labelStyles={{ ...NODES_CONSTANTS.NETWORK_WEDGE.labelHtmlStyles, marginTop: '7' }} />
       <HtmlNodeTooltip id={`tooltip${props.item.uiId}`} name="Transit Gateway" x={NODES_CONSTANTS.NETWORK_WEDGE.collapse.r * 2 + 5} y={NODES_CONSTANTS.NETWORK_WEDGE.collapse.r} minWidth="120px" />
     </g>
   );
