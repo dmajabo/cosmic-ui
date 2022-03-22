@@ -1,5 +1,3 @@
-import { MultiLineMetricsData } from 'app/containers/Pages/TopologyPage/TopologyMetrics/SharedTypes';
-import { createApiClient } from 'lib/api/http/apiClient';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { MetricsStyles } from '../../MetricsStyles';
@@ -55,11 +53,12 @@ const networkSelectStyles = {
   }),
 };
 
-const TRANSIT_METRICNAMES = ['BytesIn', 'BytesOut'];
-
-const TRANSIT_METRIC_TYPES = ['NetworkLink', 'VpnLink', 'WedgePeeringConnection'];
-
 const SELECTED_TGW_LOCAL_KEY = 'selectedTGW';
+
+const getInitialSelectedTGW = () => {
+  const localSelectedTGW = localStorage.getItem(SELECTED_TGW_LOCAL_KEY);
+  return localSelectedTGW ? JSON.parse(localSelectedTGW) : [];
+};
 
 export const Transit: React.FC<TransitProps> = ({ selectedTabName }) => {
   const classes = MetricsStyles();
@@ -68,7 +67,7 @@ export const Transit: React.FC<TransitProps> = ({ selectedTabName }) => {
   const { response, loading, onGet } = useGet<IWEdgesRes>();
 
   const [timeRange, setTimeRange] = useState<string>('-7d');
-  const [selectedTGW, setSelectedTGW] = useState<TransitSelectOption[]>([]);
+  const [selectedTGW, setSelectedTGW] = useState<TransitSelectOption[]>(getInitialSelectedTGW());
 
   const onTGWSelect = (value: TransitSelectOption[]) => {
     if (value.length <= 2) {
@@ -83,7 +82,7 @@ export const Transit: React.FC<TransitProps> = ({ selectedTabName }) => {
 
   const transitSelectOptions: TransitSelectOption[] = useMemo((): TransitSelectOption[] => {
     if (response && response.wEdges && response.wEdges.length) {
-      return response.wEdges.map(wedge => ({ label: wedge.name, value: wedge.extId, type: 'Wedge' }));
+      return response.wEdges.map(wedge => ({ label: wedge.name, value: wedge.extId, type: 'wEdge' }));
     }
     return [];
   }, [response]);
@@ -122,10 +121,38 @@ export const Transit: React.FC<TransitProps> = ({ selectedTabName }) => {
             IndicatorSeparator: () => null,
           }}
         />
-        <TransitMetricChart chartDataSuffix="bytes" chartTitle="Transit Gateway Bytes In" metricNames={['BytesIn']} selectedTGW={selectedTGW} timeRange={timeRange} />
-        <TransitMetricChart chartDataSuffix="bytes" chartTitle="Transit Gateway Bytes Out" metricNames={['BytesOut']} selectedTGW={selectedTGW} timeRange={timeRange} />
-        <TransitMetricChart chartDataSuffix="packets" chartTitle="Transit Gateway Packets In" metricNames={['PacketsIn']} selectedTGW={selectedTGW} timeRange={timeRange} />
-        <TransitMetricChart chartDataSuffix="packets" chartTitle="Transit Gateway Packets Out" metricNames={['PacketsOut']} selectedTGW={selectedTGW} timeRange={timeRange} />
+        <TransitMetricChart
+          chartDataSuffix="bytes"
+          chartTitle="Transit Gateway Bytes In"
+          metricNames={['BytesIn', 'BytesIn_anomaly', 'BytesIn_upperbound', 'BytesIn_lowerbound', 'BytesIn_threshold']}
+          baseMetricName="BytesIn"
+          selectedTGW={selectedTGW}
+          timeRange={timeRange}
+        />
+        <TransitMetricChart
+          chartDataSuffix="bytes"
+          chartTitle="Transit Gateway Bytes Out"
+          metricNames={['BytesOut', 'BytesOut_anomaly', 'BytesOut_upperbound', 'BytesOut_lowerbound', 'BytesOut_threshold']}
+          baseMetricName="BytesOut"
+          selectedTGW={selectedTGW}
+          timeRange={timeRange}
+        />
+        <TransitMetricChart
+          chartDataSuffix="packets"
+          chartTitle="Transit Gateway Packets In"
+          metricNames={['PacketsIn', 'PacketsIn_anomaly', 'PacketsIn_upperbound', 'PacketsIn_lowerbound', 'PacketsIn_threshold']}
+          baseMetricName="PacketsIn"
+          selectedTGW={selectedTGW}
+          timeRange={timeRange}
+        />
+        <TransitMetricChart
+          chartDataSuffix="packets"
+          chartTitle="Transit Gateway Packets Out"
+          metricNames={['PacketsOut', 'PacketsOut_anomaly', 'PacketsOut_upperbound', 'PacketsOut_lowerbound', 'PacketsOut_threshold']}
+          baseMetricName="PacketsOut"
+          selectedTGW={selectedTGW}
+          timeRange={timeRange}
+        />
       </div>
     </div>
   );
