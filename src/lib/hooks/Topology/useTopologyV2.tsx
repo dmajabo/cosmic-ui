@@ -1,4 +1,5 @@
 import { ITimeMinMaxRange } from 'app/components/Inputs/TimeSlider/helpers';
+import { EscalationData } from 'app/containers/Pages/DashboardPage/enum';
 import { NODES_CONSTANTS } from 'app/containers/Pages/TopologyPage/TopoMapV2/model';
 // import { updateRegionHeight } from './helpers/buildNodeHelpers';
 import { ISegmentSegmentP, SegmentSegmentType } from 'lib/api/ApiModels/Policy/Segment';
@@ -53,6 +54,7 @@ export interface TopologyV2ContextType {
   sites: IObject<ITopoSitesNode>;
   regions: IObject<ITopoRegionNode>;
   applicationNodes: IObject<ITopoAppNode>;
+  tgwEscalations: EscalationData[];
   onChangeSitesPage: (sitesId: string, page: number) => void;
 
   selectedNode: any;
@@ -95,7 +97,7 @@ export function useTopologyV2Context(): TopologyV2ContextType {
   const [applicationNodes, setApplicationNodes] = React.useState<IObject<ITopoAppNode>>(null);
   const [topologTrafficSegmentsApiResponse, setTopologTrafficSegmentsApiResponse] = React.useState<TopologySegmentsApiResponse>(null);
   const [regions, setRegionsNodes] = React.useState<IObject<ITopoRegionNode>>(null);
-
+  const [tgwEscalations, setTgwEscalations] = React.useState<EscalationData[]>([]);
   const [links, setLinks] = React.useState<IObject<ITopoLink<any, any, any>>>(null);
   const [segments, setSegments] = React.useState<IMapped_Segment[]>(null);
   const [selectedNode, setSelectedNode] = React.useState<ITopoAccountNode | ITopoSitesNode | ITopoRegionNode>(null);
@@ -157,6 +159,7 @@ export function useTopologyV2Context(): TopologyV2ContextType {
       setSitesNodes(null);
       setRegionsNodes(null);
 
+      setTgwEscalations([]);
       setLinks(null);
       setSegments(null);
       setOriginSegmentsData(null);
@@ -171,11 +174,11 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     const _data: ITopologyPreparedMapDataV2 = createTopology(entities, _orgObj, _segmentsObj, res.topology);
 
     if (_data) {
-      // console.log(_data.links);
       setAccountsNodes(_data.accounts);
       setSitesNodes(_data.sites);
       setRegionsNodes(_data.regions);
 
+      setTgwEscalations(res.escalations.escalationData);
       setLinks(_data.links);
       setSegments(_data.segments);
       setApplicationNodes(_data.appNodes);
@@ -415,7 +418,7 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     accounts,
     sites,
     regions,
-
+    tgwEscalations,
     onChangeSitesPage,
 
     selectedNode,

@@ -41,24 +41,27 @@ import {
 
 export const createAccounts = (accounts: IObject<ITopoAccountNode>, _data: INetworkOrg[]) => {
   if (!_data || !_data.length) return;
+
   _data.forEach((org, orgI) => {
     if (!org.regions || !org.regions.length) return;
+
     org.regions.forEach(region => {
       const _name = buildRegionName(org, region);
       if (!region.wedges || !region.wedges.length) return;
+
       region.wedges.forEach((w, index) => {
-        let account: ITopoAccountNode = accounts[`${region.name}${org.extId}`]; // _accounts.findIndex(it => it.dataItem.id === `${w.regionCode}${w.ownerId}`);
+        let account: ITopoAccountNode = accounts[org.extId]; // _accounts.findIndex(it => it.dataItem.id === `${w.regionCode}${w.ownerId}`);
         if (account) {
-          const _wNode: ITGWNode = createWedgeNode(`${region.name}${org.extId}`, org, orgI, 0, index, w);
-          accounts[`${region.name}${org.extId}`].children.push(_wNode);
-          accounts[`${region.name}${org.extId}`].totalChildrenCount = accounts[`${region.name}${org.extId}`].children.length;
-          return;
+          const _wNode: ITGWNode = createWedgeNode(org.extId, org, orgI, 0, account.totalChildrenCount, w);
+          accounts[org.extId].children.push(_wNode);
+          accounts[org.extId].totalChildrenCount = accounts[org.extId].children.length;
+        } else {
+          const _a: ITopoAccountNode = createAccountNode(org.extId, _name, org.extId);
+          const _wNode: ITGWNode = createWedgeNode(org.extId, org, orgI, 0, index, w);
+          _a.children.push(_wNode);
+          _a.totalChildrenCount = _a.children.length;
+          accounts[_a.dataItem.extId] = _a;
         }
-        const _a: ITopoAccountNode = createAccountNode(`${region.name}${org.extId}`, _name, org.extId);
-        const _wNode: ITGWNode = createWedgeNode(`${region.name}${org.extId}`, org, orgI, 0, index, w);
-        _a.children.push(_wNode);
-        _a.totalChildrenCount = _a.children.length;
-        accounts[_a.dataItem.extId] = _a;
       });
     });
   });
@@ -234,20 +237,13 @@ export const createTopology = (filter: FilterEntityOptions, _data: INetworkOrg[]
 
 const buildRegionName = (org: INetworkOrg, region: INetworkRegion): string => {
   const { extId, ctrlrName } = org;
-  const { extId: regExtId, name } = region;
+  const { extId: regExtId } = region;
   let str = '';
   if (ctrlrName) {
     str = ctrlrName.toUpperCase() + ' ';
   }
   if (extId) {
     str += `(${extId})`;
-  }
-  if (name) {
-    if (str.length) {
-      str += ` - ${name.toUpperCase()}`;
-    } else {
-      str += name.toUpperCase();
-    }
   }
   if (str.length) return str;
   if (regExtId) return regExtId;

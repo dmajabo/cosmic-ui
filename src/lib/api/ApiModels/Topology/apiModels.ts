@@ -1,3 +1,4 @@
+import { DeviceEscalationsResponse } from 'app/containers/Pages/DashboardPage/enum';
 import { IBaseEntity } from 'lib/models/general';
 import { TopologyGroupTypesAsNumber, TopologyGroupTypesAsString } from 'lib/models/topology';
 import { IBasePages, IBaseTotalCount } from '../generalApiModel';
@@ -509,6 +510,7 @@ export interface ITopologyDataRes {
   segments: IPolicysvcListSegmentPsResponse;
   organizations: ITopologyMapData;
   topology: TopologySegmentsApiResponse;
+  escalations: DeviceEscalationsResponse;
 }
 
 export interface ICloudVNetworkP extends IBaseEntity<string> {
