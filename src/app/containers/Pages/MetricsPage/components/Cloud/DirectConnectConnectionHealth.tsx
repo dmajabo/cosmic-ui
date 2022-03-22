@@ -43,6 +43,7 @@ export const DirectConnectConnectionHealth: React.FC<DirectConnectConnectionHeal
         metricNames: DIRECT_CONNECT_CONNECTION_HEALTH_METRIC_NAMES,
         startTime: timeRange.value,
         endTime: '-0m',
+        cloudExtId: '',
       };
       onGet(TelemetryApi.getAllMetrics(), userContext.accessToken!, params);
     }

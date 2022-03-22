@@ -44,7 +44,7 @@ interface ApiClient {
   readonly getHeatmapGoodput: (sourceNw: string, destination: string, startTime: string, testId: string) => Promise<HeatMapResponse>;
   readonly getExperienceAnomalies: (name: string, timeRange: string) => Promise<GetExperienceAnomaliesResponse>;
   readonly getMetricsResponse: (id: string, params: IMetrickQueryParam) => Promise<GetMetricsResponse>;
-  readonly getTelemetryMetrics: (type: string, params: TransitMetricsParams) => Promise<GetTelemetryMetricsResponse>;
+  readonly getTelemetryMetrics: (name: string, params: TransitMetricsParams) => Promise<GetTelemetryMetricsResponse>;
 }
 
 const PATHS = Object.freeze({
@@ -359,16 +359,16 @@ export const createApiClient = (token: string): ApiClient => {
     }
   }
 
-  async function getTelemetryMetrics(type: string, params: TransitMetricsParams): Promise<GetTelemetryMetricsResponse> {
+  async function getTelemetryMetrics(name: string, params: TransitMetricsParams): Promise<GetTelemetryMetricsResponse> {
     try {
       const response = await axios.get<GetTelemetryMetricsResponse>(PATHS.GET_TELEMETRY_METRICS, {
         ...config,
         params: params,
       });
-      return { type: type, ...response.data };
+      return { name: name, ...response.data };
     } catch {
       return {
-        type: type,
+        name: name,
         metrics: [],
       };
     }

@@ -19,28 +19,9 @@ import { Transit } from './Transit';
 interface CloudTabProps {
   readonly selectedTabName: TabName;
 }
-
-const TIME_RANGE_OPTIONS: LookbackSelectOption[] = [
-  {
-    label: LookbackLabel.oneDay,
-    value: LookbackValue.oneDay,
-  },
-  {
-    label: LookbackLabel.oneWeek,
-    value: LookbackValue.oneWeek,
-  },
-  {
-    label: LookbackLabel.oneMonth,
-    value: LookbackValue.oneMonth,
-  },
-];
-
 export const Cloud: React.FC<CloudTabProps> = ({ selectedTabName }) => {
   const classes = MetricsStyles();
-  const [timeRange, setTimeRange] = useState<LookbackSelectOption>(TIME_RANGE_OPTIONS[1]);
   const [showSettingsPanel, setShowSettingsPanel] = useState<boolean>(false);
-
-  const handleTimeRangeChange = (value: LookbackSelectOption) => setTimeRange(value);
 
   const onOpenPanel = () => {
     setShowSettingsPanel(true);
@@ -52,25 +33,9 @@ export const Cloud: React.FC<CloudTabProps> = ({ selectedTabName }) => {
   return (
     <ContentPanelWrapper>
       <PageWithPanelWrapperStyles padding="0" width={showSettingsPanel ? 'calc(100% - 520px)' : '100%'}>
-        <div className={classes.endFlexContainer}>
-          <div>
-            <MatSelect
-              id="cloudTimePeriod"
-              label="Show"
-              labelStyles={{ margin: 'auto 10px auto 0' }}
-              value={timeRange}
-              options={TIME_RANGE_OPTIONS}
-              onChange={handleTimeRangeChange}
-              renderValue={(v: LookbackSelectOption) => v.label}
-              renderOption={(v: LookbackSelectOption) => v.label}
-              styles={{ height: '50px', minHeight: '50px', margin: '0 0 0 10px', width: 'auto', display: 'inline-flex', alignItems: 'center' }}
-              selectStyles={{ height: '50px', width: 'auto', minWidth: '240px', border: '1px solid transparent' }}
-            />
-          </div>
-        </div>
         {/* <DirectConnectConnectionHealth selectedTabName={selectedTabName} timeRange={timeRange} onOpenPanel={onOpenPanel} />
         <DirectConnectVirtualHealth selectedTabName={selectedTabName} timeRange={timeRange} /> */}
-        <Transit selectedTabName={selectedTabName} timeRange={timeRange} />
+        <Transit selectedTabName={selectedTabName} />
       </PageWithPanelWrapperStyles>
       <PanelBar
         styles={{ position: 'fixed', top: APP_HEADER_HEIGHT, right: '0', maxHeight: `calc(100% - ${APP_HEADER_HEIGHT})`, zIndex: 11 }}

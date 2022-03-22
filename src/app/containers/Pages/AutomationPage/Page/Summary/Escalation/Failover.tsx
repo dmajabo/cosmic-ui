@@ -86,17 +86,17 @@ export const Failover: React.FC<FailoverProps> = ({ timeRange }) => {
   return (
     <>
       {!loading && !error && !isEmpty(barChartData) && (
-        <div style={{ height: 400 }}>
-          <BarChart inputData={barChartData} xAxisText={getXAxisText(barChartData)} yAxisText="Failovers" chartTitle="Cellular Failover" />
+        <div style={{ height: 300 }}>
+          <BarChart inputData={barChartData} xAxisText={getXAxisText(barChartData)} yAxisText="Drops" chartTitle="Device Drops" />
         </div>
       )}
       {loading && (
-        <ChartContainerStyles style={{ maxWidth: '100%', minHeight: 400, maxHeight: 400 }}>
+        <ChartContainerStyles style={{ maxWidth: '100%', minHeight: 300, maxHeight: 300 }}>
           <LoadingIndicator margin="auto" />
         </ChartContainerStyles>
       )}
       {isEmpty(barChartData) && (
-        <ChartContainerStyles style={{ maxWidth: '100%', minHeight: 400, maxHeight: 400 }}>
+        <ChartContainerStyles style={{ maxWidth: '100%', minHeight: 300, maxHeight: 300 }}>
           <ChartTitle>Device Drops</ChartTitle>
           <EmptyText>No Data</EmptyText>
         </ChartContainerStyles>
