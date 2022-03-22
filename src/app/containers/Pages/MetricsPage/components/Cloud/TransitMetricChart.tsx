@@ -47,25 +47,32 @@ export const TransitMetricChart: React.FC<TransitMetricChartProps> = ({ selected
         });
         return acc.concat(itemPromiseList);
       }, []);
-      Promise.all(promises).then(responses => {
-        const newTransitMetricsData: MetricKeyValue = {};
-        responses.forEach(response => {
-          if (response.metrics.length > 0) {
-            response.metrics.forEach(item => {
-              newTransitMetricsData[`${response.name}_${item.key}`] = item.ts;
-              if (item.key.includes('_anomaly')) {
-                setAnomalyCount(anomalyCount + item.ts.length);
-              }
-            });
-          }
+      setIsLoading(true);
+      Promise.all(promises)
+        .then(responses => {
+          const newTransitMetricsData: MetricKeyValue = {};
+          responses.forEach(response => {
+            if (response.metrics.length > 0) {
+              response.metrics.forEach(item => {
+                newTransitMetricsData[`${response.name}_${item.key}`] = item.ts;
+                if (item.key.includes('_anomaly')) {
+                  setAnomalyCount(anomalyCount + item.ts.length);
+                }
+              });
+            }
+          });
+          setIsLoading(false);
+          setTransitMetricsData(newTransitMetricsData);
+        })
+        .catch(() => {
+          setIsLoading(false);
+          setIsError(true);
         });
-        setIsLoading(false);
-        setTransitMetricsData(newTransitMetricsData);
-      });
     }
 
     return () => {
       setTransitMetricsData({});
+      setAnomalyCount(0);
     };
   }, [timeRange, selectedTGW]);
 

@@ -9,6 +9,7 @@ import { IWEdgesRes } from 'lib/api/ApiModels/Topology/apiModels';
 import { useGet } from 'lib/api/http/useAxiosHook';
 import { TopoApi } from 'lib/api/ApiModels/Services/topo';
 import { TransitMetricChart } from './TransitMetricChart';
+import { isEmpty } from 'lodash';
 
 export interface TransitSelectOption {
   readonly label: string;
@@ -86,6 +87,17 @@ export const Transit: React.FC<TransitProps> = ({ selectedTabName }) => {
     }
     return [];
   }, [response]);
+
+  useEffect(() => {
+    if (!isEmpty(transitSelectOptions)) {
+      if (isEmpty(selectedTGW)) {
+        const defaultTGWIndex = Math.round(Math.random() * transitSelectOptions.length);
+        const defaultSelectedTGW = [transitSelectOptions[defaultTGWIndex]];
+        setSelectedTGW(defaultSelectedTGW);
+        localStorage.setItem(SELECTED_TGW_LOCAL_KEY, JSON.stringify(defaultSelectedTGW));
+      }
+    }
+  }, [transitSelectOptions]);
 
   return (
     <div className={classes.pageComponentBackground}>
