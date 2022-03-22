@@ -43,6 +43,7 @@ export interface IExpandLabelStyle extends ICollapseLabelStyle {
 
 export interface ILabelHtmlStyles extends ISize, ICollapseLabelStyle {
   textAlign: string;
+  marginTop?: string;
 }
 
 export interface ICollapseExpandBtn extends ISize {

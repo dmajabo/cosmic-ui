@@ -20,6 +20,7 @@ const HtmlNodeLabel: React.FC<Props> = ({ name, labelStyles, labelWidth }) => {
           fontWeight: 500,
           pointerEvents: 'none',
           verticalAlign: 'top',
+          marginTop: labelStyles.marginTop ? labelStyles.marginTop + 'px' : '0px',
         }}
         className="textOverflowEllips"
         title={name}

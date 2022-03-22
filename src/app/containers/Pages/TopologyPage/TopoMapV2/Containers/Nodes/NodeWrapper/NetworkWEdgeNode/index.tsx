@@ -77,7 +77,14 @@ const NetworkWEdgeNode: React.FC<Props> = (props: Props) => {
           fill="white"
         />
       </svg>
-      <HtmlNodeLabel name={props.item.name || props.item.extId} labelStyles={NODES_CONSTANTS.NETWORK_WEDGE.labelHtmlStyles} />
+      {/* TODO: Uncomment this when alert endpoint is done */}
+
+      {/* <foreignObject width="1" height="1" style={{ overflow: 'visible' }} pointerEvents="none">
+        <div style={{ backgroundColor: 'green', borderRadius: '4px', height: '14px', width: '21px', position: 'absolute', top: '42px', left: '15px' }}>
+          <span style={{ color: '#FFF', fontSize: '10px', position: 'absolute', paddingLeft: '7px' }}>5</span>
+        </div>
+      </foreignObject> */}
+      <HtmlNodeLabel name={props.item.name || props.item.extId} labelStyles={{ ...NODES_CONSTANTS.NETWORK_WEDGE.labelHtmlStyles }} />
       <HtmlNodeTooltip id={`tooltip${props.item.uiId}`} name="Transit Gateway" x={NODES_CONSTANTS.NETWORK_WEDGE.collapse.r * 2 + 5} y={NODES_CONSTANTS.NETWORK_WEDGE.collapse.r} minWidth="120px" />
     </g>
   );
