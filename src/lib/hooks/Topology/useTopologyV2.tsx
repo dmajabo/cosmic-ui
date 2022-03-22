@@ -171,7 +171,6 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     const _data: ITopologyPreparedMapDataV2 = createTopology(entities, _orgObj, _segmentsObj, res.topology);
 
     if (_data) {
-      // console.log(_data.links);
       setAccountsNodes(_data.accounts);
       setSitesNodes(_data.sites);
       setRegionsNodes(_data.regions);
