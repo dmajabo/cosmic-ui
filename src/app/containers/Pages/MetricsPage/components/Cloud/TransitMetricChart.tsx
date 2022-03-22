@@ -19,9 +19,10 @@ interface TransitMetricChartProps {
   readonly metricNames: string[];
   readonly chartDataSuffix: string;
   readonly chartTitle: string;
+  readonly baseMetricName: string;
 }
 
-export const TransitMetricChart: React.FC<TransitMetricChartProps> = ({ selectedTGW, timeRange, metricNames, chartDataSuffix, chartTitle }) => {
+export const TransitMetricChart: React.FC<TransitMetricChartProps> = ({ selectedTGW, timeRange, metricNames, chartDataSuffix, chartTitle, baseMetricName }) => {
   const classes = PerformanceDashboardStyles();
   const [transitMetricsData, setTransitMetricsData] = useState<MetricKeyValue>({});
   const [anomalyCount, setAnomalyCount] = useState<number>(0);
@@ -32,61 +33,41 @@ export const TransitMetricChart: React.FC<TransitMetricChartProps> = ({ selected
   const apiClient = createApiClient(userContext.accessToken!);
 
   useEffect(() => {
-    // const promises = TRANSIT_METRIC_TYPES.map(type => {
-    //   const params: TransitMetricsParams = {
-    //     startTime: timeRange,
-    //     endTime: '-0m',
-    //     type: type,
-    //     metricNames: TRANSIT_METRICNAMES,
-    //   };
-    //   return apiClient.getTelemetryMetrics(type, params);
-    // });
-    // setIsLoading(true);
-    // Promise.all(promises)
-    //   .then(responses => {
-    //     const transitMetricsData: MultiLineMetricsData[] = responses.reduce((acc, nextValue) => {
-    //       if (nextValue.metrics.length > 0) {
-    //         const typeMetricsData: MultiLineMetricsData[] = nextValue.metrics.map(item => ({
-    //           name: `${nextValue.type}_${item.resourceId}_${item.key}`,
-    //           metrics: item.ts,
-    //         }));
-    //         return acc.concat(typeMetricsData);
-    //       } else {
-    //         return acc.concat([]);
-    //       }
-    //     }, []);
-    //     setTransitMetricsData(transitMetricsData);
-    //     setIsLoading(false);
-    //   })
-    //   .catch(() => {
-    //     setIsError(true);
-    //     setIsLoading(false);
-    //   });
-    const promises = selectedTGW.map(item => {
-      const params: TransitMetricsParams = {
-        startTime: timeRange,
-        endTime: '-0m',
-        type: item.type,
-        metricNames: metricNames,
-        cloudExtId: item.value,
-      };
-      return apiClient.getTelemetryMetrics(item.label, params);
-    });
-    Promise.all(promises).then(responses => {
-      const newTransitMetricsData: MetricKeyValue = {};
-      responses.forEach(response => {
-        if (response.metrics.length) {
-          response.metrics.forEach(item => {
-            transitMetricsData[`${response.name}_${item.key}`] = item.ts;
-            if (item.key.includes('_anomaly')) {
-              setAnomalyCount(anomalyCount + item.ts.length);
-            }
-          });
-        }
+    if (!isEmpty(selectedTGW)) {
+      const promises = selectedTGW.reduce((acc, item) => {
+        const itemPromiseList = metricNames.map(metric => {
+          const params: TransitMetricsParams = {
+            startTime: timeRange,
+            endTime: '-0m',
+            type: item.type,
+            metricNames: [metric],
+            cloudExtId: item.value,
+          };
+          return apiClient.getTelemetryMetrics(item.label, params);
+        });
+        return acc.concat(itemPromiseList);
+      }, []);
+      Promise.all(promises).then(responses => {
+        const newTransitMetricsData: MetricKeyValue = {};
+        responses.forEach(response => {
+          if (response.metrics.length > 0) {
+            response.metrics.forEach(item => {
+              newTransitMetricsData[`${response.name}_${item.key}`] = item.ts;
+              if (item.key.includes('_anomaly')) {
+                setAnomalyCount(anomalyCount + item.ts.length);
+              }
+            });
+          }
+        });
+        setIsLoading(false);
+        setTransitMetricsData(newTransitMetricsData);
       });
-      setTransitMetricsData(newTransitMetricsData);
-    });
-  }, [timeRange]);
+    }
+
+    return () => {
+      setTransitMetricsData({});
+    };
+  }, [timeRange, selectedTGW]);
 
   return (
     <>
@@ -107,7 +88,7 @@ export const TransitMetricChart: React.FC<TransitMetricChartProps> = ({ selected
           <EmptyText>No Data</EmptyText>
         ) : (
           <Chart>
-            <TransitMetricsLineChart dataValueSuffix={chartDataSuffix} selectedTGW={selectedTGW} inputData={transitMetricsData} />
+            <TransitMetricsLineChart dataValueSuffix={chartDataSuffix} selectedTGW={selectedTGW} inputData={transitMetricsData} baseMetricName={baseMetricName} />
           </Chart>
         )}
       </ChartContainerStyles>

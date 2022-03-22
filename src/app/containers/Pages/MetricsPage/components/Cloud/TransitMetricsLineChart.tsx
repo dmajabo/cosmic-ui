@@ -35,6 +35,7 @@ interface LineChartProps {
   readonly selectedTGW: TransitSelectOption[];
   readonly inputData: MetricKeyValue;
   readonly timeFormat?: string;
+  readonly baseMetricName: string;
 }
 
 const OLD_TIME_FORMAT: string = 'yyyy-MM-dd HH:mm:ss ZZZ z';
@@ -114,7 +115,7 @@ const addNullPointsForUnavailableData = (array: number[][]) => {
   return data;
 };
 
-export const TransitMetricsLineChart: React.FC<LineChartProps> = ({ dataValueSuffix, inputData, selectedTGW }) => {
+export const TransitMetricsLineChart: React.FC<LineChartProps> = ({ dataValueSuffix, inputData, selectedTGW, baseMetricName }) => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -122,7 +123,7 @@ export const TransitMetricsLineChart: React.FC<LineChartProps> = ({ dataValueSuf
       return {
         id: `${row.label}`,
         name: `${row.label}`,
-        data: sortBy(inputData[row.label], 'time').map(item => {
+        data: sortBy(inputData[`${row.label}_${baseMetricName}`], 'time').map(item => {
           const timestamp = DateTime.fromFormat(item.time, OLD_TIME_FORMAT).toLocal();
           return {
             x: timestamp.toMillis(),
@@ -153,7 +154,7 @@ export const TransitMetricsLineChart: React.FC<LineChartProps> = ({ dataValueSuf
     const anomalyData: ChartData[] = selectedTGW.map(row => ({
       id: `${row.label}_anomaly`,
       name: `${row.label}_anomaly`,
-      data: sortBy(inputData[`${row.label}_anomaly`], 'time').map(item => {
+      data: sortBy(inputData[`${row.label}_${baseMetricName}_anomaly`], 'time').map(item => {
         const timestamp = DateTime.fromFormat(item.time, OLD_TIME_FORMAT).toUTC().toMillis();
 
         return {
@@ -187,7 +188,7 @@ export const TransitMetricsLineChart: React.FC<LineChartProps> = ({ dataValueSuf
     const escalationData: ChartData[] = selectedTGW.map(row => ({
       id: `${row.label}_escalation`,
       name: `${row.label}_escalation`,
-      data: sortBy(inputData[`${row.label}_escalation`], 'time').map(item => {
+      data: sortBy(inputData[`${row.label}_${baseMetricName}_escalation`], 'time').map(item => {
         const timestamp = DateTime.fromFormat(item.time, OLD_TIME_FORMAT).toUTC().toMillis();
 
         return {
@@ -219,7 +220,7 @@ export const TransitMetricsLineChart: React.FC<LineChartProps> = ({ dataValueSuf
       },
     }));
     const thresholdData: AreaChartData[] = selectedTGW.map(row => {
-      const thresholdSeriesData = sortBy(inputData[`${row.label}_threshold`], 'time').map((item, index) => {
+      const thresholdSeriesData = sortBy(inputData[`${row.label}_${baseMetricName}_threshold`], 'time').map((item, index) => {
         const timestamp = DateTime.fromFormat(item.time, OLD_TIME_FORMAT).toUTC().toMillis();
         return [timestamp, dataValueSuffix === 'mbps' ? Number(item.value) / 1000 : Number(Number.parseFloat(item.value).toFixed(2))];
       });
@@ -247,8 +248,8 @@ export const TransitMetricsLineChart: React.FC<LineChartProps> = ({ dataValueSuf
       };
     });
     const areaData: AreaChartData[] = selectedTGW.map(row => {
-      const sortedUpperboundData = sortBy(inputData[`${row.label}_upperbound`], 'time');
-      const areaSeriesData = sortBy(inputData[`${row.label}_lowerbound`], 'time').map((item, index) => {
+      const sortedUpperboundData = sortBy(inputData[`${row.label}_${baseMetricName}_upperbound`], 'time');
+      const areaSeriesData = sortBy(inputData[`${row.label}_${baseMetricName}_lowerbound`], 'time').map((item, index) => {
         const timestamp = DateTime.fromFormat(item.time, OLD_TIME_FORMAT).toUTC();
         return [
           timestamp.toMillis(),
