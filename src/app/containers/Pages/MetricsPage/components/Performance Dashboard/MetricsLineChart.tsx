@@ -281,8 +281,8 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedNetworksMet
         tooltip: {
           useHTML: true,
           pointFormat: `
-          <div><b>Upperbound: </b>${dataValueSuffix === '%' ? '{point.y:,.2f}' : '{point.y:,.0f}'}${dataValueSuffix}</div><br />
-          <div><b>Lowerbound: </b>${dataValueSuffix === '%' ? '{point.y:,.2f}' : '{point.y:,.0f}'}${dataValueSuffix}</div><br />
+          <div><b>Upperbound: </b>${dataValueSuffix === '%' ? '{point.high:,.2f}' : '{point.high:,.0f}'}${dataValueSuffix}</div><br />
+          <div><b>Lowerbound: </b>${dataValueSuffix === '%' ? '{point.low:,.2f}' : '{point.low:,.0f}'}${dataValueSuffix}</div><br />
           `,
         },
       };
