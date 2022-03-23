@@ -2,9 +2,7 @@ import React from 'react';
 import { AnalyticsStyles } from '../../AnalyticsStyles';
 import { AnomalyBarChart } from './AnomalyBarChart';
 import { AnomalyExperienceTableData, Column, ColumnAccessor, AnomalyPolicyLogsTableData } from 'lib/api/http/SharedTypes';
-import { AnomalyTable } from './AnomalyTable';
 import { SeverityIcon } from './SeverityIcon';
-import { AnomalySLATestTable } from './AnomalySLATestTable';
 import { DUMMY_ANOMALY_TABLE_DATA, DUMMY_BAR_CHART_DATA, DUMMY_LOGS_TABLE_DATA } from '../../DummyData';
 import { Row } from 'react-table';
 import { getSeverityColour } from 'lib/api/http/utils';
@@ -101,7 +99,6 @@ export const PolicyTab: React.FC<PolicyTabProps> = () => {
     return (
       <div>
         <div className={classes.anomalySubcomponentTitle}>Logs</div>
-        <AnomalySLATestTable columns={LOGS_TABLE_COLUMNS} data={logsTableData} sortableHeaders={LOGS_TABLE_SORTABLE_HEADERS} />
       </div>
     );
   }, []);
@@ -119,7 +116,6 @@ export const PolicyTab: React.FC<PolicyTabProps> = () => {
           <span className={classes.anomalyTableTitle}>Triggers</span>
           <span className={classes.anomalyCount}>7</span>
         </div>
-        <AnomalyTable inputColumns={anomalyTableColumns} data={tableData} subComponent={policySubComponent} sortableHeaders={ANOMALY_TABLE_SORTABLE_HEADERS} />
       </div>
     </div>
   );

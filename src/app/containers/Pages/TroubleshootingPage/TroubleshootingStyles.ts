@@ -173,6 +173,40 @@ export const TroubleshootingStyles = makeStyles(
         fontWeight: 700,
         marginBottom: 15,
       },
+      tableHeaderText: {
+        fontWeight: 700,
+        fontSize: 12,
+        color: '#848DA3',
+      },
+      sortIcon: {
+        marginLeft: 15,
+      },
+      flexContainer: {
+        display: 'flex',
+        justifyContent: 'space-between',
+      },
+      paginationText: {
+        fontSize: 16,
+        fontWeight: 500,
+        color: 'black',
+      },
+      activePaginationText: {
+        fontSize: 16,
+        fontWeight: 500,
+        color: 'black',
+      },
+      paginationButton: {
+        border: 'none',
+        cursor: 'pointer',
+      },
+      paginationSelect: {
+        width: 60,
+        height: 35,
+        border: '1px solid #CBD2DC',
+        borderRadius: 6,
+        marginLeft: 10,
+        marginRight: 10,
+      },
     }),
   {
     index: 1,
