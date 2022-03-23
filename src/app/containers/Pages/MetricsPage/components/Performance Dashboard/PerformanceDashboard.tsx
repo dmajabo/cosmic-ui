@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { PerformanceDashboardStyles } from './PerformanceDashboardStyles';
 import { AxiosError } from 'axios';
 import { LocationState, TabName } from '../..';
 import MatSelect from 'app/components/Inputs/MatSelect';
@@ -11,6 +10,8 @@ import { PacketLoss } from './PacketLoss';
 import { Latency } from './Latency';
 import { Jitter } from './Jitter';
 import { useHistory } from 'react-router-dom';
+import { MetricsStyles } from '../../MetricsStyles';
+import { ModelalertType } from 'lib/api/ApiModels/Workflow/apiModel';
 
 interface PerformanceDashboardProps {
   readonly networks: Vnet[];
@@ -79,12 +80,29 @@ const getSelectedNetworksFromLocalStorage = (history: any, devices: Device[], ne
   return JSON.parse(localStorage.getItem(SELECTED_NETWORKS_LOCAL_KEY)) || [];
 };
 
+const getExpandedItemFromHistory = (history: any, expandedItem: string) => {
+  if (history && history.location && history.location.state) {
+    const state = history.location.state as LocationState;
+    return state.anomalyType === ModelalertType.ANOMALY_PACKETLOSS
+      ? 'Packet Loss'
+      : state.anomalyType === ModelalertType.ANOMALY_LATENCY
+      ? 'Latency'
+      : state.anomalyType === ModelalertType.ANOMALY_JITTER
+      ? 'Jitter'
+      : expandedItem;
+  }
+  return expandedItem;
+};
+
 export const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ networks, devices, orgLoading }) => {
-  const classes = PerformanceDashboardStyles();
+  const classes = MetricsStyles();
   const history = useHistory();
 
   const [timeRange, setTimeRange] = useState<string>('-1d');
+  const [expandedItem, setExpandedItem] = useState<string>('Packet Loss');
   const [selectedNetworks, setSelectedNetworks] = useState<SelectOption[]>([]);
+
+  const onExpandedItemChange = (value: string) => setExpandedItem(value);
 
   const networkOptions: SelectOption[] = useMemo(() => networks.map(network => ({ label: network.name, value: network.extId })), [networks]);
 
@@ -113,6 +131,12 @@ export const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ netw
       setSelectedNetworks(getSelectedNetworksFromLocalStorage(history, devices, networks));
     }
   }, [history, networks, devices]);
+
+  useEffect(() => {
+    onExpandedItemChange(getExpandedItemFromHistory(history, expandedItem));
+  }, [history]);
+
+  console.log(expandedItem);
 
   return (
     <div className={classes.pageComponentBackground}>
@@ -149,9 +173,15 @@ export const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ netw
           }}
         />
       </div>
-      <PacketLoss timeRange={timeRange} selectedNetworksMetricsData={selectedNetworksMetricsData} />
-      <Latency timeRange={timeRange} selectedNetworksMetricsData={selectedNetworksMetricsData} />
-      <Jitter timeRange={timeRange} selectedNetworksMetricsData={selectedNetworksMetricsData} />
+      <PacketLoss
+        timeRange={timeRange}
+        selectedNetworksMetricsData={selectedNetworksMetricsData}
+        expandedItem={expandedItem}
+        onExpandedItemChange={onExpandedItemChange}
+        baseMetricName="Packet Loss"
+      />
+      <Latency timeRange={timeRange} selectedNetworksMetricsData={selectedNetworksMetricsData} expandedItem={expandedItem} onExpandedItemChange={onExpandedItemChange} baseMetricName="Latency" />
+      <Jitter timeRange={timeRange} selectedNetworksMetricsData={selectedNetworksMetricsData} expandedItem={expandedItem} onExpandedItemChange={onExpandedItemChange} baseMetricName="Jitter" />
     </div>
   );
 };

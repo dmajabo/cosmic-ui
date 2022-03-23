@@ -97,6 +97,15 @@ export const MetricsStyles = makeStyles(
         lineHeight: '16px',
         padding: '0px 10px 0px 10px',
       },
+      noChartText: {
+        color: '#848DA3',
+        fontSize: 14,
+        fontWeight: 400,
+      },
+      noChartContainer: {
+        padding: 250,
+        textAlign: 'center',
+      },
     }),
   {
     index: 1,

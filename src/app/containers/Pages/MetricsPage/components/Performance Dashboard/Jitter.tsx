@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { createApiClient } from 'lib/api/http/apiClient';
-import { PerformanceDashboardStyles } from './PerformanceDashboardStyles';
 import { MetricsLineChart } from './MetricsLineChart';
 import { MetricKeyValue } from './PacketLoss';
 import isEmpty from 'lodash/isEmpty';
@@ -18,10 +17,17 @@ import { AlertApi } from 'lib/api/ApiModels/Services/alert';
 import { NetworkAlertChainResponse, NetworkAlertLogParams, Data } from 'lib/api/http/SharedTypes';
 import { useGetChainData } from 'lib/api/http/useAxiosHook';
 import { getCorrectedTimeString } from '../Utils';
+import { MetricsStyles } from '../../MetricsStyles';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import IconButton from 'app/components/Buttons/IconButton';
 
 interface JitterProps {
   readonly selectedNetworksMetricsData: SelectedNetworkMetricsData[];
   readonly timeRange: string;
+  readonly expandedItem: string;
+  readonly baseMetricName: string;
+  readonly onExpandedItemChange: (value: string) => void;
 }
 
 const JITTER = 'jitter';
@@ -60,8 +66,8 @@ export const JITTER_HEATMAP_LEGEND: LegendData[] = [
   },
 ];
 
-export const Jitter: React.FC<JitterProps> = ({ selectedNetworksMetricsData, timeRange }) => {
-  const classes = PerformanceDashboardStyles();
+export const Jitter: React.FC<JitterProps> = ({ selectedNetworksMetricsData, timeRange, baseMetricName, expandedItem, onExpandedItemChange }) => {
+  const classes = MetricsStyles();
   const { response, onGetChainData } = useGetChainData<NetworkAlertChainResponse>();
   const [escalationjitterData, setEscalationJitterData] = useState<MetricKeyValue>({});
   const [jitterData, setJitterData] = useState<MetricKeyValue>({});
@@ -73,6 +79,8 @@ export const Jitter: React.FC<JitterProps> = ({ selectedNetworksMetricsData, tim
 
   const history = useHistory();
   const scrollRef = useRef(null);
+
+  const handleExpansionItemChange = (value: string) => () => onExpandedItemChange(value);
 
   useEffect(() => {
     if (history && history && history.location.state) {
@@ -121,7 +129,7 @@ export const Jitter: React.FC<JitterProps> = ({ selectedNetworksMetricsData, tim
       });
     };
 
-    if (!isEmpty(selectedNetworksMetricsData)) {
+    if (!isEmpty(selectedNetworksMetricsData) && expandedItem === baseMetricName) {
       const params: NetworkAlertLogParams = {
         alert_type: ModelalertType.ANOMALY_JITTER,
         time_range: timeRange === '-1d' ? GENERAL_TIME_RANGE_QUERY_TYPES.LAST_DAY : GENERAL_TIME_RANGE_QUERY_TYPES.LAST_WEEK,
@@ -133,14 +141,14 @@ export const Jitter: React.FC<JitterProps> = ({ selectedNetworksMetricsData, tim
         userContext.accessToken!,
         params,
       );
-    }
 
-    getJitterMetrics();
+      getJitterMetrics();
+    }
 
     return () => {
       setJitterData({});
     };
-  }, [selectedNetworksMetricsData, timeRange]);
+  }, [selectedNetworksMetricsData, timeRange, expandedItem]);
 
   useEffect(() => {
     const escalationLatencyData: MetricKeyValue = {};
@@ -153,13 +161,16 @@ export const Jitter: React.FC<JitterProps> = ({ selectedNetworksMetricsData, tim
 
   return (
     <>
-      <div ref={scrollRef} className={classes.metricComponentTitleContainer}>
-        <div className={classes.pageComponentTitle}>Jitter summary</div>
-        <div className={classes.pillContainer}>
-          <span className={classes.pillText}>{anomalyCount}</span>
+      <div ref={scrollRef} className={classes.pageComponentTitleContainer}>
+        <div className={classes.metricComponentTitleContainer}>
+          <div className={classes.pageComponentTitle}>Jitter summary</div>
+          <div className={classes.pillContainer} style={{ display: expandedItem === baseMetricName ? 'block' : 'none' }}>
+            <span className={classes.pillText}>{anomalyCount}</span>
+          </div>
         </div>
+        <IconButton icon={expandedItem === baseMetricName ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />} onClick={handleExpansionItemChange(baseMetricName)} />
       </div>
-      <ChartContainerStyles style={{ maxWidth: '100%', minHeight: 420, maxHeight: 420 }}>
+      <ChartContainerStyles style={{ maxWidth: '100%', minHeight: 420, maxHeight: 420, display: expandedItem === baseMetricName ? 'block' : 'none' }}>
         {!isEmpty(selectedNetworksMetricsData) ? (
           // goodputData contains 6 keys for each row. One for the data, one for anomaly, one for upperbound,one for lowerbound, one for threshold and one for escalation
           Object.keys({ ...jitterData, ...escalationjitterData }).length / 6 === selectedNetworksMetricsData.length ? (
@@ -171,7 +182,7 @@ export const Jitter: React.FC<JitterProps> = ({ selectedNetworksMetricsData, tim
               </Chart>
             )
           ) : (
-            <LoadingIndicator margin="auto" />
+            <LoadingIndicator margin="15% auto" />
           )
         ) : (
           <div className={classes.noChartContainer}>

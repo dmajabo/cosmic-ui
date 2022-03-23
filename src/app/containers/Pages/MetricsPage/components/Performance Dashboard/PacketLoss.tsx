@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { createApiClient } from 'lib/api/http/apiClient';
-import { PerformanceDashboardStyles } from './PerformanceDashboardStyles';
 import { MetricsLineChart } from './MetricsLineChart';
 import LoadingIndicator from 'app/components/Loading';
 import isEmpty from 'lodash/isEmpty';
@@ -17,10 +16,17 @@ import { GENERAL_TIME_RANGE_QUERY_TYPES } from 'lib/api/ApiModels/paramBuilders'
 import { useGetChainData } from 'lib/api/http/useAxiosHook';
 import { Data, NetworkAlertChainResponse, NetworkAlertLogParams } from 'lib/api/http/SharedTypes';
 import { getCorrectedTimeString } from '../Utils';
+import { MetricsStyles } from '../../MetricsStyles';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import IconButton from 'app/components/Buttons/IconButton';
 
 interface PacketLossProps {
   readonly selectedNetworksMetricsData: SelectedNetworkMetricsData[];
   readonly timeRange: string;
+  readonly expandedItem: string;
+  readonly baseMetricName: string;
+  readonly onExpandedItemChange: (value: string) => void;
 }
 
 interface DataMetrics {
@@ -67,8 +73,8 @@ export const PACKET_LOSS_HEATMAP_LEGEND: LegendData[] = [
   },
 ];
 
-export const PacketLoss: React.FC<PacketLossProps> = ({ selectedNetworksMetricsData, timeRange }) => {
-  const classes = PerformanceDashboardStyles();
+export const PacketLoss: React.FC<PacketLossProps> = ({ selectedNetworksMetricsData, timeRange, baseMetricName, expandedItem, onExpandedItemChange }) => {
+  const classes = MetricsStyles();
   const [packetLossData, setPacketLossData] = useState<MetricKeyValue>({});
   const [escalationPacketLossData, setEscalationPacketLossData] = useState<MetricKeyValue>({});
   const [anomalyCount, setAnomalyCount] = useState<number>(0);
@@ -79,6 +85,8 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedNetworksMetricsD
 
   const history = useHistory();
   const scrollRef = useRef(null);
+
+  const handleExpansionItemChange = (value: string) => () => onExpandedItemChange(value);
 
   useEffect(() => {
     if (history && history && history.location.state) {
@@ -127,7 +135,7 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedNetworksMetricsD
       });
     };
 
-    if (!isEmpty(selectedNetworksMetricsData)) {
+    if (!isEmpty(selectedNetworksMetricsData) && expandedItem === baseMetricName) {
       const params: NetworkAlertLogParams = {
         alert_type: ModelalertType.ANOMALY_PACKETLOSS,
         time_range: timeRange === '-1d' ? GENERAL_TIME_RANGE_QUERY_TYPES.LAST_DAY : GENERAL_TIME_RANGE_QUERY_TYPES.LAST_WEEK,
@@ -139,14 +147,14 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedNetworksMetricsD
         userContext.accessToken!,
         params,
       );
-    }
 
-    getPacketLossMetrics();
+      getPacketLossMetrics();
+    }
 
     return () => {
       setPacketLossData({});
     };
-  }, [selectedNetworksMetricsData, timeRange]);
+  }, [selectedNetworksMetricsData, timeRange, expandedItem]);
 
   useEffect(() => {
     const escalationPacketLossData: MetricKeyValue = {};
@@ -159,13 +167,16 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedNetworksMetricsD
 
   return (
     <>
-      <div ref={scrollRef} className={classes.metricComponentTitleContainer}>
-        <div className={classes.pageComponentTitle}>Packet Loss summary</div>
-        <div className={classes.pillContainer}>
-          <span className={classes.pillText}>{anomalyCount}</span>
+      <div ref={scrollRef} className={classes.pageComponentTitleContainer}>
+        <div className={classes.metricComponentTitleContainer}>
+          <div className={classes.pageComponentTitle}>Packet Loss summary</div>
+          <div className={classes.pillContainer} style={{ display: expandedItem === baseMetricName ? 'block' : 'none' }}>
+            <span className={classes.pillText}>{anomalyCount}</span>
+          </div>
         </div>
+        <IconButton icon={expandedItem === baseMetricName ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />} onClick={handleExpansionItemChange(baseMetricName)} />
       </div>
-      <ChartContainerStyles style={{ maxWidth: '100%', minHeight: 420, maxHeight: 420 }}>
+      <ChartContainerStyles style={{ maxWidth: '100%', minHeight: 420, maxHeight: 420, display: expandedItem === baseMetricName ? 'block' : 'none' }}>
         {!isEmpty(selectedNetworksMetricsData) ? (
           // packetLossData contains 6 keys for each row. One for the data, one for anomaly, one for upperbound,one for lowerbound, one for threshold and one for escalation
           Object.keys({ ...packetLossData, ...escalationPacketLossData }).length / 6 === selectedNetworksMetricsData.length ? (
@@ -177,7 +188,7 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedNetworksMetricsD
               </Chart>
             )
           ) : (
-            <LoadingIndicator margin="auto" />
+            <LoadingIndicator margin="15% auto" />
           )
         ) : (
           <EmptyText>To see the data select SLA Tests</EmptyText>
