@@ -4,7 +4,7 @@ import FilterIcon from '../../MetricsPage/icons/performance dashboard/filter';
 import ColumnsIcon from '../../MetricsPage/icons/performance dashboard/columns';
 import { LookbackLabel } from '../../AnalyticsPage/components/Metrics Explorer/LookbackTimeTab';
 import { AnomalyPolicyLogsTableData, Column, ColumnAccessor } from 'lib/api/http/SharedTypes';
-import { AnomalySLATestTable } from '../../AnalyticsPage/components/Anomalies/AnomalySLATestTable';
+import { AnomalySLATestTable } from './AnomalySLATestTable';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import { CheckboxData } from '../../AnalyticsPage/components/Metrics Explorer/Dimensions';
 import { Checkbox, FormControlLabel, FormGroup, Popover } from '@mui/material';
@@ -23,7 +23,6 @@ import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import { PolicyLogDetailsDialog } from './PolicyLogDetailsDialog';
 import { getCorrectedTimeString } from '../../MetricsPage/components/Utils';
 import MatSelect from 'app/components/Inputs/MatSelect';
-import { on } from 'events';
 
 const REGEX = /[-[\]{}()*+?.,\\^$|#\s]/g;
 

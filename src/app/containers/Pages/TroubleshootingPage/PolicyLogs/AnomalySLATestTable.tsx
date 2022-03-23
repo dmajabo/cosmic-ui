@@ -2,10 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import { useTable, useSortBy, usePagination } from 'react-table';
 import { AnomalyPolicyLogsTableData, AnomalySlaTestData, Column, CostDetailTableData, HitsTableData } from 'lib/api/http/SharedTypes';
-import { AnalyticsStyles } from '../../AnalyticsStyles';
-import SortIcon from '../../../MetricsPage/icons/performance dashboard/sort';
+import SortIcon from '../../MetricsPage/icons/performance dashboard/sort';
 import { Typography } from '@mui/material';
 import { isEmpty } from 'lodash';
+import { TroubleshootingStyles } from '../TroubleshootingStyles';
 
 const Styles = styled.div`
   table {
@@ -43,7 +43,7 @@ interface AnomalySLATestTableProps {
 }
 
 export const AnomalySLATestTable: React.FC<AnomalySLATestTableProps> = ({ data, columns, sortableHeaders }) => {
-  const classes = AnalyticsStyles();
+  const classes = TroubleshootingStyles();
 
   const {
     getTableProps,

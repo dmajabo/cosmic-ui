@@ -3,27 +3,29 @@ import { useGet } from 'lib/api/http/useAxiosHook';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { MetricsStyles } from '../../MetricsStyles';
 import isEmpty from 'lodash/isEmpty';
-import sortBy from 'lodash/sortBy';
 import { LookbackSelectOption, LookbackValue } from 'app/containers/Pages/AnalyticsPage/components/Metrics Explorer/LookbackTimeTab';
 import { TelemetryApi } from 'lib/api/ApiModels/Services/telemetry';
-import { ConnectivityHealthParams, GetTelemetryMetricsResponse, TransitMetricsParams } from 'lib/api/http/SharedTypes';
-import { DateTime } from 'luxon';
-import { getConnectivityMetrics, getCorrectedTimeString, getHealthTableData } from '../Utils';
+import { ConnectivityHealthParams, GetTelemetryMetricsResponse } from 'lib/api/http/SharedTypes';
+import { getConnectivityMetrics, getHealthTableData } from '../Utils';
 import LoadingIndicator from 'app/components/Loading';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
-import { EmptyText } from 'app/components/Basic/NoDataStyles/NoDataStyles';
 import { HealthTableData } from '../Cloud/DirectConnectConnectionHealth';
 import { TabName } from '../..';
-import { ChartContainer, ChartHeader, ChartLabel, ChartWrapper } from 'app/containers/Pages/TrafficPage/Trends/styles';
+import { ChartContainer, ChartHeader, ChartLabel } from 'app/containers/Pages/TrafficPage/Trends/styles';
 import { settingIcon } from 'app/components/SVGIcons/settingIcon';
 import SecondaryButton from 'app/components/Buttons/SecondaryButton';
-import { useMetricsDataContext } from 'lib/hooks/Metrics/useMetricsDataContent';
 import { HealthTable } from '../HealthTable';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import IconButton from 'app/components/Buttons/IconButton';
 
 interface ConnectivityHealthProps {
   readonly timeRange: LookbackSelectOption;
   readonly selectedTabName: TabName;
   readonly onOpenPanel: () => void;
+  readonly baseMetricName: string;
+  readonly expandedItem: string;
+  readonly onExpandedItemChange: (value: string) => void;
 }
 
 interface MetricsObject {
@@ -35,16 +37,16 @@ export interface ConnectivityMetricsData {
   readonly metrics: MetricsObject;
 }
 
-const CONNECTIVITY_HEALTH_METRIC_NAMES = ['ConnectivityHealth'];
-
-export const ConnectivityHealth: React.FC<ConnectivityHealthProps> = ({ timeRange, selectedTabName, onOpenPanel }) => {
+export const ConnectivityHealth: React.FC<ConnectivityHealthProps> = ({ timeRange, selectedTabName, onOpenPanel, baseMetricName, expandedItem, onExpandedItemChange }) => {
   const classes = MetricsStyles();
   const userContext = useContext<UserContextState>(UserContext);
   const [healthTableData, setHealthTableData] = useState<HealthTableData[]>([]);
   const { response, loading, error, onGet } = useGet<GetTelemetryMetricsResponse>();
 
+  const handleExpansionItemChange = (value: string) => () => onExpandedItemChange(value);
+
   useEffect(() => {
-    if (selectedTabName === TabName.Sites) {
+    if (selectedTabName === TabName.Sites && expandedItem === baseMetricName) {
       const lastDays = timeRange.value === LookbackValue.oneDay ? '1' : timeRange.value === LookbackValue.oneWeek ? '7' : '30';
       const params: ConnectivityHealthParams = {
         startTime: timeRange.value,
@@ -53,7 +55,7 @@ export const ConnectivityHealth: React.FC<ConnectivityHealthProps> = ({ timeRang
       };
       onGet(TelemetryApi.getConnectivityHealth(), userContext.accessToken!, params);
     }
-  }, [timeRange, selectedTabName]);
+  }, [timeRange, selectedTabName, expandedItem]);
 
   useEffect(() => {
     if (response && response.metrics && response.metrics.length) {
@@ -64,22 +66,29 @@ export const ConnectivityHealth: React.FC<ConnectivityHealthProps> = ({ timeRang
   }, [response]);
 
   return (
-    <ChartContainer margin="30px 0px 0px 0px">
-      <ChartHeader>
+    <>
+      <ChartHeader style={{ paddingTop: 30 }}>
         <ChartLabel className="textOverflowEllips">Connectivity Health</ChartLabel>
-        <SecondaryButton styles={{ margin: '0 0 0 auto' }} label="Settings" icon={settingIcon} onClick={onOpenPanel} />
+        <SecondaryButton styles={{ margin: '0 0 0 auto', display: expandedItem === baseMetricName ? 'block' : 'none' }} label="Settings" icon={settingIcon} onClick={onOpenPanel} />
+        <IconButton
+          styles={{ marginLeft: 10, minWidth: 50 }}
+          icon={expandedItem === baseMetricName ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+          onClick={handleExpansionItemChange(baseMetricName)}
+        />
       </ChartHeader>
-      {loading ? (
-        <LoadingIndicator margin="auto" />
-      ) : error ? (
-        <ErrorMessage className="error">{error.message || 'Something went wrong'}</ErrorMessage>
-      ) : isEmpty(healthTableData) ? (
-        <ErrorMessage className="empty" color="var(--_primaryTextColor)" fontSize={20} margin="auto">
-          No data
-        </ErrorMessage>
-      ) : (
-        <HealthTable tableData={healthTableData} />
-      )}
-    </ChartContainer>
+      <ChartContainer style={{ padding: 0, display: expandedItem === baseMetricName ? 'flex' : 'none' }}>
+        {loading ? (
+          <LoadingIndicator margin="10% auto" />
+        ) : error ? (
+          <ErrorMessage className="error">{error.message || 'Something went wrong'}</ErrorMessage>
+        ) : isEmpty(healthTableData) ? (
+          <ErrorMessage className="empty" color="var(--_primaryTextColor)" fontSize={20} margin="auto">
+            No data
+          </ErrorMessage>
+        ) : (
+          <HealthTable tableData={healthTableData} />
+        )}
+      </ChartContainer>
+    </>
   );
 };

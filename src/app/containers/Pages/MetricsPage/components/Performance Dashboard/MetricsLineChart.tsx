@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import { DateTime } from 'luxon';
-import { MetricKeyValue } from './PacketLoss';
+import { EscalationCorelation, MetricKeyValue } from './PacketLoss';
 import sortBy from 'lodash/sortBy';
 import HighchartsMore from 'highcharts/highcharts-more';
 import { SelectedNetworkMetricsData } from './PerformanceDashboard';
@@ -34,6 +34,7 @@ interface LineChartProps {
   readonly selectedNetworksMetricsData: SelectedNetworkMetricsData[];
   readonly inputData: MetricKeyValue;
   readonly timeFormat?: string;
+  readonly escalationCorelation: EscalationCorelation[];
 }
 
 const OLD_TIME_FORMAT: string = 'yyyy-MM-dd HH:mm:ss ZZZ z';
@@ -113,7 +114,7 @@ const addNullPointsForUnavailableData = (array: number[][]) => {
   return data;
 };
 
-export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedNetworksMetricsData, dataValueSuffix, inputData }) => {
+export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedNetworksMetricsData, dataValueSuffix, inputData, escalationCorelation }) => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -191,6 +192,7 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedNetworksMet
       name: `${row.label}_escalation`,
       data: sortBy(inputData[`${row.label}_escalation`], 'time').map(item => {
         const timestamp = DateTime.fromFormat(item.time, OLD_TIME_FORMAT).toUTC().toMillis();
+        const { event, timestamp: corelationTimestamp } = escalationCorelation.find(corelation => corelation.networkId === row.value && corelation.timestamp === item.time)?.corelation;
 
         return {
           x: timestamp,
@@ -202,6 +204,8 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedNetworksMet
           },
           dataValueSuffix: dataValueSuffix,
           destination: row.destination,
+          event: event,
+          corelationTimestamp: corelationTimestamp ? `: ${DateTime.fromFormat(corelationTimestamp, OLD_TIME_FORMAT).toUTC().toFormat('EEEE, MMM dd, hh:mm a')}` : '',
         };
       }),
       linkedTo: `${row.label} &#9654 ${row.deviceString}`,
@@ -217,7 +221,16 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedNetworksMet
       tooltip: {
         useHTML: true,
         pointFormat: `
-          <div><b>Escalation:</b> ${dataValueSuffix === '%' ? '{point.y:,.2f}' : '{point.y:,.0f}'}{point.dataValueSuffix}</div><br />
+          <div>
+          <b>Escalation:</b> ${dataValueSuffix === '%' ? '{point.y:,.2f}' : '{point.y:,.0f}'}{point.dataValueSuffix}
+          </div>
+          <br/>
+          <div>
+          <b>Related Events:</b>
+          <br/>
+          <div style="padding-left: 10px;">&nbsp&nbsp&nbsp{point.event}{point.corelationTimestamp}</div>
+          </div>
+          <br />
           `,
       },
     }));

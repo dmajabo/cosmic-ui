@@ -2,9 +2,7 @@ import React from 'react';
 import { AnalyticsStyles } from '../../AnalyticsStyles';
 import { AnomalyBarChart } from './AnomalyBarChart';
 import { Column, ColumnAccessor, AnomalyCostTableData, CostDetailTableData, CostDetailHeader } from 'lib/api/http/SharedTypes';
-import { AnomalyTable } from './AnomalyTable';
 import { SeverityIcon } from './SeverityIcon';
-import { AnomalySLATestTable } from './AnomalySLATestTable';
 import { DUMMY_ANOMALY_COST_TABLE_DATA, DUMMY_BAR_CHART_DATA } from '../../DummyData';
 import { Row } from 'react-table';
 import { getSeverityColour } from 'lib/api/http/utils';
@@ -112,7 +110,6 @@ export const CostTab: React.FC<CostTabProps> = () => {
             </div>
           ))}
         </div>
-        <AnomalySLATestTable columns={costDetailColumns} data={costDetailData} sortableHeaders={ANOMALY_COST_DETAIL_TABLE_SORTABLE_HEADERS} />
       </div>
     );
   }, []);
@@ -130,7 +127,6 @@ export const CostTab: React.FC<CostTabProps> = () => {
           <span className={classes.anomalyTableTitle}>Triggers</span>
           <span className={classes.anomalyCount}>7</span>
         </div>
-        <AnomalyTable inputColumns={anomalyTableColumns} data={tableData} subComponent={costSubComponent} sortableHeaders={ANOMALY_TABLE_SORTABLE_HEADERS} />
       </div>
     </div>
   );

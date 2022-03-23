@@ -1,9 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { createApiClient } from 'lib/api/http/apiClient';
-import { PerformanceDashboardStyles } from './PerformanceDashboardStyles';
 import { MetricsLineChart } from './MetricsLineChart';
 import LoadingIndicator from 'app/components/Loading';
-import { LegendData } from './Heatmap';
 import isEmpty from 'lodash/isEmpty';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { Chart, ChartContainerStyles } from 'app/components/ChartContainer/styles';
@@ -12,16 +10,23 @@ import { useHistory } from 'react-router-dom';
 import { LocationState } from '../..';
 import { ModelalertType } from 'lib/api/ApiModels/Workflow/apiModel';
 import { checkforNoData } from './filterFunctions';
-import { SelectedNetworkMetricsData } from './PerformanceDashboard';
+import { SelectedNetworkMetricsData, LegendData } from './PerformanceDashboard';
 import { AlertApi } from 'lib/api/ApiModels/Services/alert';
 import { GENERAL_TIME_RANGE_QUERY_TYPES } from 'lib/api/ApiModels/paramBuilders';
 import { useGetChainData } from 'lib/api/http/useAxiosHook';
 import { Data, NetworkAlertChainResponse, NetworkAlertLogParams } from 'lib/api/http/SharedTypes';
 import { getCorrectedTimeString } from '../Utils';
+import { MetricsStyles } from '../../MetricsStyles';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import IconButton from 'app/components/Buttons/IconButton';
 
 interface PacketLossProps {
   readonly selectedNetworksMetricsData: SelectedNetworkMetricsData[];
   readonly timeRange: string;
+  readonly expandedItem: string;
+  readonly baseMetricName: string;
+  readonly onExpandedItemChange: (value: string) => void;
 }
 
 interface DataMetrics {
@@ -31,6 +36,17 @@ interface DataMetrics {
 
 export interface MetricKeyValue {
   [id: string]: DataMetrics[];
+}
+
+interface CorelationObject {
+  readonly timestamp: string;
+  readonly event: string;
+}
+
+export interface EscalationCorelation {
+  readonly networkId: string;
+  readonly timestamp: string;
+  readonly corelation: CorelationObject;
 }
 
 export interface TestIdToName {
@@ -68,10 +84,11 @@ export const PACKET_LOSS_HEATMAP_LEGEND: LegendData[] = [
   },
 ];
 
-export const PacketLoss: React.FC<PacketLossProps> = ({ selectedNetworksMetricsData, timeRange }) => {
-  const classes = PerformanceDashboardStyles();
+export const PacketLoss: React.FC<PacketLossProps> = ({ selectedNetworksMetricsData, timeRange, baseMetricName, expandedItem, onExpandedItemChange }) => {
+  const classes = MetricsStyles();
   const [packetLossData, setPacketLossData] = useState<MetricKeyValue>({});
   const [escalationPacketLossData, setEscalationPacketLossData] = useState<MetricKeyValue>({});
+  const [escalationCorelation, setEscalationCorelation] = useState<EscalationCorelation[]>([]);
   const [anomalyCount, setAnomalyCount] = useState<number>(0);
   const { response, onGetChainData } = useGetChainData<NetworkAlertChainResponse>();
 
@@ -80,6 +97,8 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedNetworksMetricsD
 
   const history = useHistory();
   const scrollRef = useRef(null);
+
+  const handleExpansionItemChange = (value: string) => () => onExpandedItemChange(value);
 
   useEffect(() => {
     if (history && history && history.location.state) {
@@ -128,7 +147,7 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedNetworksMetricsD
       });
     };
 
-    if (!isEmpty(selectedNetworksMetricsData)) {
+    if (!isEmpty(selectedNetworksMetricsData) && expandedItem === baseMetricName) {
       const params: NetworkAlertLogParams = {
         alert_type: ModelalertType.ANOMALY_PACKETLOSS,
         time_range: timeRange === '-1d' ? GENERAL_TIME_RANGE_QUERY_TYPES.LAST_DAY : GENERAL_TIME_RANGE_QUERY_TYPES.LAST_WEEK,
@@ -140,33 +159,45 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedNetworksMetricsD
         userContext.accessToken!,
         params,
       );
-    }
 
-    getPacketLossMetrics();
+      getPacketLossMetrics();
+    }
 
     return () => {
       setPacketLossData({});
     };
-  }, [selectedNetworksMetricsData, timeRange]);
+  }, [selectedNetworksMetricsData, timeRange, expandedItem]);
 
   useEffect(() => {
     const escalationPacketLossData: MetricKeyValue = {};
+    const totalCorelations: EscalationCorelation[] = [];
     selectedNetworksMetricsData.forEach(network => {
       const networkMetrics: Data[] = response[network.value].alerts.map(alert => ({ time: getCorrectedTimeString(alert.timestamp), value: alert.value.toString() || null }));
       escalationPacketLossData[`${network.label}_escalation`] = networkMetrics;
+      response[network.value].alerts.forEach(alert => {
+        totalCorelations.push({
+          networkId: network.value,
+          timestamp: getCorrectedTimeString(alert.timestamp),
+          corelation: isEmpty(alert.correlations) ? { timestamp: '', event: 'No Cellular Failover detected' } : { timestamp: alert.correlations[0].timestamp, event: 'Cellular Failover' },
+        });
+      });
     });
     setEscalationPacketLossData(escalationPacketLossData);
+    setEscalationCorelation(totalCorelations);
   }, [response]);
 
   return (
     <>
-      <div ref={scrollRef} className={classes.metricComponentTitleContainer}>
-        <div className={classes.pageComponentTitle}>Packet Loss summary</div>
-        <div className={classes.pillContainer}>
-          <span className={classes.pillText}>{anomalyCount}</span>
+      <div ref={scrollRef} className={classes.pageComponentTitleContainer}>
+        <div className={classes.metricComponentTitleContainer}>
+          <div className={classes.pageComponentTitle}>Packet Loss summary</div>
+          <div className={classes.pillContainer} style={{ display: expandedItem === baseMetricName ? 'block' : 'none' }}>
+            <span className={classes.pillText}>{anomalyCount}</span>
+          </div>
         </div>
+        <IconButton icon={expandedItem === baseMetricName ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />} onClick={handleExpansionItemChange(baseMetricName)} />
       </div>
-      <ChartContainerStyles style={{ maxWidth: '100%', minHeight: 420, maxHeight: 420 }}>
+      <ChartContainerStyles style={{ maxWidth: '100%', minHeight: 420, maxHeight: 420, display: expandedItem === baseMetricName ? 'block' : 'none' }}>
         {!isEmpty(selectedNetworksMetricsData) ? (
           // packetLossData contains 6 keys for each row. One for the data, one for anomaly, one for upperbound,one for lowerbound, one for threshold and one for escalation
           Object.keys({ ...packetLossData, ...escalationPacketLossData }).length / 6 === selectedNetworksMetricsData.length ? (
@@ -174,14 +205,19 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedNetworksMetricsD
               <EmptyText>No Data</EmptyText>
             ) : (
               <Chart>
-                <MetricsLineChart dataValueSuffix="%" selectedNetworksMetricsData={selectedNetworksMetricsData} inputData={{ ...packetLossData, ...escalationPacketLossData }} />
+                <MetricsLineChart
+                  dataValueSuffix="%"
+                  selectedNetworksMetricsData={selectedNetworksMetricsData}
+                  inputData={{ ...packetLossData, ...escalationPacketLossData }}
+                  escalationCorelation={escalationCorelation}
+                />
               </Chart>
             )
           ) : (
-            <LoadingIndicator margin="auto" />
+            <LoadingIndicator margin="10% auto" />
           )
         ) : (
-          <EmptyText>To see the data select SLA Tests</EmptyText>
+          <EmptyText style={{ margin: '13% auto' }}>To see the data select networks on top</EmptyText>
         )}
       </ChartContainerStyles>
     </>

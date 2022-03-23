@@ -13,9 +13,7 @@ import {
   HitsTableData,
   SLATest,
 } from 'lib/api/http/SharedTypes';
-import { AnomalyTable } from './AnomalyTable';
 import { SeverityIcon } from './SeverityIcon';
-import { AnomalySLATestTable } from './AnomalySLATestTable';
 import { Row } from 'react-table';
 import { getSeverityColour, SeverityLevel } from 'lib/api/http/utils';
 import { useGet } from 'lib/api/http/useAxiosHook';
@@ -286,7 +284,6 @@ export const ExperienceTab: React.FC<ExperienceTabProps> = ({ timeRange }) => {
       ) : (
         <div>
           <div className={`${classes.sessionLogs} ${classes.anomalySubcomponentTitle}`}>Hits</div>
-          <AnomalySLATestTable columns={HITS_TABLE_COLUMNS} data={hitsTableData} sortableHeaders={HITS_TABLE_SORTABLE_HEADERS} />
         </div>
       );
     },
@@ -325,7 +322,7 @@ export const ExperienceTab: React.FC<ExperienceTabProps> = ({ timeRange }) => {
             Something went wrong. Please refresh page
           </ErrorMessage>
         ) : (
-          <AnomalyTable inputColumns={anomalyTableColumns} data={tableData} subComponent={experienceSubComponent} sortableHeaders={ANOMALY_TABLE_SORTABLE_HEADERS} />
+          <div />
         )}
       </div>
     </div>
