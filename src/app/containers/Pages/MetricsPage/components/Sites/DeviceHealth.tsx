@@ -14,22 +14,30 @@ import { IMetrickQueryParam } from 'lib/api/ApiModels/Metrics/apiModel';
 import { getChartXAxisLabel, isMetricsEmpty } from '../Utils';
 import { TabName } from '../..';
 import { DeviceToNetworkMap } from '.';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import IconButton from 'app/components/Buttons/IconButton';
 
 interface DeviceHealthProps {
   readonly devices: string[];
   readonly timeRange: LookbackSelectOption;
   readonly deviceToNetworkMap: DeviceToNetworkMap;
   readonly selectedTabName: TabName;
+  readonly baseMetricName: string;
+  readonly expandedItem: string;
+  readonly onExpandedItemChange: (value: string) => void;
 }
 
-export const DeviceHealth: React.FC<DeviceHealthProps> = ({ devices, timeRange, selectedTabName, deviceToNetworkMap }) => {
+export const DeviceHealth: React.FC<DeviceHealthProps> = ({ devices, timeRange, selectedTabName, deviceToNetworkMap, baseMetricName, expandedItem, onExpandedItemChange }) => {
   const classes = MetricsStyles();
   const userContext = useContext<UserContextState>(UserContext);
   const { response, loading, error, onGetChainData } = useGetChainData();
   const [metricsData, setMetricsData] = useState<MultiLineMetricsData[]>([]);
 
+  const handleExpansionItemChange = (value: string) => () => onExpandedItemChange(value);
+
   useEffect(() => {
-    if (devices.length > 0 && selectedTabName === TabName.Sites) {
+    if (devices.length > 0 && selectedTabName === TabName.Sites && expandedItem === baseMetricName) {
       const timeParams: IMetrickQueryParam = {
         startTime: timeRange.value,
         endTime: '-0m',
@@ -41,7 +49,7 @@ export const DeviceHealth: React.FC<DeviceHealthProps> = ({ devices, timeRange, 
         timeParams,
       );
     }
-  }, [devices, timeRange, selectedTabName]);
+  }, [devices, timeRange, selectedTabName, expandedItem]);
 
   useEffect(() => {
     if (response) {
@@ -54,21 +62,24 @@ export const DeviceHealth: React.FC<DeviceHealthProps> = ({ devices, timeRange, 
   }, [response]);
 
   return (
-    <div className={classes.pageComponentBackground}>
-      <div className={classes.pageComponentTitle}>Device Health</div>
-      <ChartContainerStyles style={{ maxWidth: '100%', minHeight: 420, maxHeight: 420 }}>
+    <>
+      <div className={classes.pageComponentTitleContainer}>
+        <div className={classes.pageComponentTitle}>Device Health</div>
+        <IconButton icon={expandedItem === baseMetricName ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />} onClick={handleExpansionItemChange(baseMetricName)} />
+      </div>
+      <ChartContainerStyles style={{ maxWidth: '100%', minHeight: 420, maxHeight: 420, display: expandedItem === baseMetricName ? 'block' : 'none' }}>
         {loading ? (
-          <LoadingIndicator margin="auto" />
+          <LoadingIndicator margin="10% auto" />
         ) : error ? (
           <ErrorMessage>{error}</ErrorMessage>
         ) : isMetricsEmpty(metricsData) ? (
-          <EmptyText>No Data</EmptyText>
+          <EmptyText style={{ margin: '13% auto' }}>To see the data select networks on top</EmptyText>
         ) : (
           <Chart>
             <MultiLineChart inputData={metricsData} yAxisText="score" xAxisText={getChartXAxisLabel(metricsData)} showAdditionalTooltipItem />
           </Chart>
         )}
       </ChartContainerStyles>
-    </div>
+    </>
   );
 };

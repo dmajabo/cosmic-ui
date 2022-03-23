@@ -182,12 +182,10 @@ export const Jitter: React.FC<JitterProps> = ({ selectedNetworksMetricsData, tim
               </Chart>
             )
           ) : (
-            <LoadingIndicator margin="15% auto" />
+            <LoadingIndicator margin="10% auto" />
           )
         ) : (
-          <div className={classes.noChartContainer}>
-            <span className={classes.noChartText}>To see the data select SLA Tests on top</span>
-          </div>
+          <EmptyText style={{ margin: '13% auto' }}>To see the data select networks on top</EmptyText>
         )}
       </ChartContainerStyles>
     </>

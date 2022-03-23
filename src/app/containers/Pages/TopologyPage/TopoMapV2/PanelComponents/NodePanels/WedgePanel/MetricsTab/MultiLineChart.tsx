@@ -110,7 +110,6 @@ export const MultiLineChart: React.FC<LineChartProps> = ({ dataValueSuffix, inpu
       title: {
         text: xAxisText,
       },
-      tickInterval: 24 * 3600 * 1000,
     },
     tooltip: {
       shared: sharedMarker,

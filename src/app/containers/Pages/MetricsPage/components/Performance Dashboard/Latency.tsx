@@ -172,10 +172,10 @@ export const Latency: React.FC<LatencyProps> = ({ selectedNetworksMetricsData, t
               </Chart>
             )
           ) : (
-            <LoadingIndicator margin="15% auto" />
+            <LoadingIndicator margin="10% auto" />
           )
         ) : (
-          <EmptyText> To see the data select SLA Tests</EmptyText>
+          <EmptyText style={{ margin: '13% auto' }}>To see the data select networks on top</EmptyText>
         )}
       </ChartContainerStyles>
     </>
