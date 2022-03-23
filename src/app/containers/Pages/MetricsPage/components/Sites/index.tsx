@@ -47,16 +47,12 @@ const TIME_RANGE_OPTIONS: LookbackSelectOption[] = [
     label: LookbackLabel.oneWeek,
     value: LookbackValue.oneWeek,
   },
-  {
-    label: LookbackLabel.oneMonth,
-    value: LookbackValue.oneMonth,
-  },
 ];
 
 export const Sites: React.FC<SitesProps> = ({ networks, devices, orgError, orgLoading, selectedTabName }) => {
   const classes = MetricsStyles();
   const [showSettingsPanel, setShowSettingsPanel] = useState<boolean>(false);
-  const [timeRange, setTimeRange] = useState<LookbackSelectOption>(TIME_RANGE_OPTIONS[1]);
+  const [timeRange, setTimeRange] = useState<LookbackSelectOption>(TIME_RANGE_OPTIONS[0]);
 
   const handleTimeRangeChange = (value: LookbackSelectOption) => setTimeRange(value);
 

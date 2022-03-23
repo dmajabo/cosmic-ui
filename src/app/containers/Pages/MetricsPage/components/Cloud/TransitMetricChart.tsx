@@ -6,12 +6,15 @@ import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { Chart, ChartContainerStyles } from 'app/components/ChartContainer/styles';
 import { EmptyText } from 'app/components/Basic/NoDataStyles/NoDataStyles';
 import { checkforNoData } from '../Performance Dashboard/filterFunctions';
-import { PerformanceDashboardStyles } from '../Performance Dashboard/PerformanceDashboardStyles';
 import { MetricKeyValue } from '../Performance Dashboard/PacketLoss';
 import { TransitMetricsLineChart } from './TransitMetricsLineChart';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import { TransitSelectOption } from './Transit';
 import { TransitMetricsParams } from 'lib/api/http/SharedTypes';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import IconButton from 'app/components/Buttons/IconButton';
+import { MetricsStyles } from '../../MetricsStyles';
 
 interface TransitMetricChartProps {
   readonly selectedTGW: TransitSelectOption[];
@@ -20,10 +23,12 @@ interface TransitMetricChartProps {
   readonly chartDataSuffix: string;
   readonly chartTitle: string;
   readonly baseMetricName: string;
+  readonly expandedItem: string;
+  readonly onExpandedItemChange: (value: string) => void;
 }
 
-export const TransitMetricChart: React.FC<TransitMetricChartProps> = ({ selectedTGW, timeRange, metricNames, chartDataSuffix, chartTitle, baseMetricName }) => {
-  const classes = PerformanceDashboardStyles();
+export const TransitMetricChart: React.FC<TransitMetricChartProps> = ({ selectedTGW, timeRange, metricNames, chartDataSuffix, chartTitle, baseMetricName, expandedItem, onExpandedItemChange }) => {
+  const classes = MetricsStyles();
   const [transitMetricsData, setTransitMetricsData] = useState<MetricKeyValue>({});
   const [anomalyCount, setAnomalyCount] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -32,8 +37,10 @@ export const TransitMetricChart: React.FC<TransitMetricChartProps> = ({ selected
   const userContext = useContext<UserContextState>(UserContext);
   const apiClient = createApiClient(userContext.accessToken!);
 
+  const handleExpansionItemChange = (value: string) => () => onExpandedItemChange(value);
+
   useEffect(() => {
-    if (!isEmpty(selectedTGW)) {
+    if (!isEmpty(selectedTGW) && expandedItem === baseMetricName) {
       const promises = selectedTGW.reduce((acc, item) => {
         const itemPromiseList = metricNames.map(metric => {
           const params: TransitMetricsParams = {
@@ -74,21 +81,24 @@ export const TransitMetricChart: React.FC<TransitMetricChartProps> = ({ selected
       setTransitMetricsData({});
       setAnomalyCount(0);
     };
-  }, [timeRange, selectedTGW]);
+  }, [timeRange, selectedTGW, expandedItem]);
 
   return (
     <>
-      <div className={classes.metricComponentTitleContainer}>
-        <div className={classes.pageComponentTitle}>{chartTitle}</div>
-        <div className={classes.pillContainer}>
-          <span className={classes.pillText}>{anomalyCount}</span>
+      <div className={classes.pageComponentTitleContainer}>
+        <div className={classes.metricComponentTitleContainer}>
+          <div className={classes.pageComponentTitle}>{chartTitle}</div>
+          <div className={classes.pillContainer} style={{ display: expandedItem === baseMetricName ? 'block' : 'none' }}>
+            <span className={classes.pillText}>{anomalyCount}</span>
+          </div>
         </div>
+        <IconButton icon={expandedItem === baseMetricName ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />} onClick={handleExpansionItemChange(baseMetricName)} />
       </div>
-      <ChartContainerStyles style={{ maxWidth: '100%', minHeight: 420, maxHeight: 420 }}>
+      <ChartContainerStyles style={{ maxWidth: '100%', minHeight: 420, maxHeight: 420, display: expandedItem === baseMetricName ? 'block' : 'none' }}>
         {isEmpty(selectedTGW) ? (
           <EmptyText>To see the data select TGW</EmptyText>
         ) : isLoading ? (
-          <LoadingIndicator margin="auto" />
+          <LoadingIndicator margin="15% auto" />
         ) : isError ? (
           <ErrorMessage>Something went wrong.Please Try again</ErrorMessage>
         ) : checkforNoData(transitMetricsData) ? (

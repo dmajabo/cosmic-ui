@@ -25,6 +25,12 @@ export interface SelectedNetworkMetricsData extends SelectOption {
   readonly destination: string;
 }
 
+export interface LegendData {
+  readonly low: number;
+  readonly high: number;
+  readonly color: string;
+}
+
 const timeRangeOptions = [
   {
     value: '-1d',
@@ -77,7 +83,7 @@ export const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ netw
   const classes = PerformanceDashboardStyles();
   const history = useHistory();
 
-  const [timeRange, setTimeRange] = useState<string>('-7d');
+  const [timeRange, setTimeRange] = useState<string>('-1d');
   const [selectedNetworks, setSelectedNetworks] = useState<SelectOption[]>([]);
 
   const networkOptions: SelectOption[] = useMemo(() => networks.map(network => ({ label: network.name, value: network.extId })), [networks]);

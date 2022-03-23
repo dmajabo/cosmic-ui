@@ -1,7 +1,6 @@
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { MetricsStyles } from '../../MetricsStyles';
-import { TabName } from '../..';
 import MatSelect from 'app/components/Inputs/MatSelect';
 import Select from 'react-select';
 import { InputLabel } from 'app/components/Inputs/styles/Label';
@@ -15,10 +14,6 @@ export interface TransitSelectOption {
   readonly label: string;
   readonly value: string;
   readonly type: string;
-}
-
-interface TransitProps {
-  readonly selectedTabName: TabName;
 }
 
 const timeRangeOptions = [
@@ -61,13 +56,14 @@ const getInitialSelectedTGW = () => {
   return localSelectedTGW ? JSON.parse(localSelectedTGW) : [];
 };
 
-export const Transit: React.FC<TransitProps> = ({ selectedTabName }) => {
+export const Transit: React.FC = () => {
   const classes = MetricsStyles();
   const userContext = useContext<UserContextState>(UserContext);
 
   const { response, loading, onGet } = useGet<IWEdgesRes>();
 
-  const [timeRange, setTimeRange] = useState<string>('-7d');
+  const [timeRange, setTimeRange] = useState<string>('-1d');
+  const [expandedItem, setExpandedItem] = useState<string>('BytesIn');
   const [selectedTGW, setSelectedTGW] = useState<TransitSelectOption[]>(getInitialSelectedTGW());
 
   const onTGWSelect = (value: TransitSelectOption[]) => {
@@ -76,6 +72,8 @@ export const Transit: React.FC<TransitProps> = ({ selectedTabName }) => {
       localStorage.setItem(SELECTED_TGW_LOCAL_KEY, JSON.stringify(value));
     }
   };
+
+  const onExpandedItemChange = (value: string) => setExpandedItem(value);
 
   useEffect(() => {
     onGet(TopoApi.getWedges(), userContext.accessToken!);
@@ -140,6 +138,8 @@ export const Transit: React.FC<TransitProps> = ({ selectedTabName }) => {
           baseMetricName="BytesIn"
           selectedTGW={selectedTGW}
           timeRange={timeRange}
+          expandedItem={expandedItem}
+          onExpandedItemChange={onExpandedItemChange}
         />
         <TransitMetricChart
           chartDataSuffix="bytes"
@@ -148,6 +148,8 @@ export const Transit: React.FC<TransitProps> = ({ selectedTabName }) => {
           baseMetricName="BytesOut"
           selectedTGW={selectedTGW}
           timeRange={timeRange}
+          expandedItem={expandedItem}
+          onExpandedItemChange={onExpandedItemChange}
         />
         <TransitMetricChart
           chartDataSuffix="packets"
@@ -156,6 +158,8 @@ export const Transit: React.FC<TransitProps> = ({ selectedTabName }) => {
           baseMetricName="PacketsIn"
           selectedTGW={selectedTGW}
           timeRange={timeRange}
+          expandedItem={expandedItem}
+          onExpandedItemChange={onExpandedItemChange}
         />
         <TransitMetricChart
           chartDataSuffix="packets"
@@ -164,6 +168,8 @@ export const Transit: React.FC<TransitProps> = ({ selectedTabName }) => {
           baseMetricName="PacketsOut"
           selectedTGW={selectedTGW}
           timeRange={timeRange}
+          expandedItem={expandedItem}
+          onExpandedItemChange={onExpandedItemChange}
         />
       </div>
     </div>

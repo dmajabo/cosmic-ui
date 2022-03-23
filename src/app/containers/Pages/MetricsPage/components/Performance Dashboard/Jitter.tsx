@@ -6,20 +6,18 @@ import { MetricKeyValue } from './PacketLoss';
 import isEmpty from 'lodash/isEmpty';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import LoadingIndicator from 'app/components/Loading';
-import { LegendData } from './Heatmap';
 import { Chart, ChartContainerStyles } from 'app/components/ChartContainer/styles';
 import { useHistory } from 'react-router-dom';
 import { LocationState } from '../..';
 import { ModelalertType } from 'lib/api/ApiModels/Workflow/apiModel';
 import { checkforNoData } from './filterFunctions';
 import { EmptyText } from 'app/components/Basic/NoDataStyles/NoDataStyles';
-import { SelectedNetworkMetricsData } from './PerformanceDashboard';
+import { LegendData, SelectedNetworkMetricsData } from './PerformanceDashboard';
 import { GENERAL_TIME_RANGE_QUERY_TYPES } from 'lib/api/ApiModels/paramBuilders';
 import { AlertApi } from 'lib/api/ApiModels/Services/alert';
 import { NetworkAlertChainResponse, NetworkAlertLogParams, Data } from 'lib/api/http/SharedTypes';
 import { useGetChainData } from 'lib/api/http/useAxiosHook';
 import { getCorrectedTimeString } from '../Utils';
-import { FormatListNumberedRtlOutlined } from '@mui/icons-material';
 
 interface JitterProps {
   readonly selectedNetworksMetricsData: SelectedNetworkMetricsData[];
