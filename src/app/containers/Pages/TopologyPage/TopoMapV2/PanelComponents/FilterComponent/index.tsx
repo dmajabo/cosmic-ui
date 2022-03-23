@@ -10,6 +10,7 @@ import React, { useContext, useMemo } from 'react';
 import { PanelHeader, PanelTitle } from '../styles';
 import FilterApplicationGroup from './FilterApplicationGroup';
 import FilterNodesGroup from './FilterNodesGroup';
+import FilterRegionGroup from './FilterRegionGroup';
 import FilterSegmentsGroup from './FilterSegmentsGroup';
 
 interface IProps {}
@@ -65,7 +66,7 @@ const FilterComponent: React.FC<IProps> = (props: IProps) => {
           {IS_VENDOR_AWS && (
             <>
               <FilterGroup maxGroupHeight="unset" label="Regions" styles={{ margin: '0 0 5px 0' }}>
-                <FilterNodesGroup type={TopoFilterTypes.Regions} icon={awsVendorIcon} data={topology.regions} onClick={onSelectFilterOption} />
+                <FilterRegionGroup type={TopoFilterTypes.Regions} icon={awsVendorIcon} data={topology.regions} onClick={onSelectFilterOption} />
               </FilterGroup>
               <FilterGroup maxGroupHeight="unset" label="Accounts" styles={{ margin: '0 0 5px 0' }}>
                 <FilterNodesGroup type={TopoFilterTypes.Accounts} icon={accountFilterIcon} data={topology.accounts} onClick={onSelectFilterOption} />
