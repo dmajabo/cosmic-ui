@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { createApiClient } from 'lib/api/http/apiClient';
 import { MetricsLineChart } from './MetricsLineChart';
-import { MetricKeyValue } from './PacketLoss';
+import { EscalationCorelation, MetricKeyValue } from './PacketLoss';
 import isEmpty from 'lodash/isEmpty';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import LoadingIndicator from 'app/components/Loading';
@@ -70,6 +70,7 @@ export const Jitter: React.FC<JitterProps> = ({ selectedNetworksMetricsData, tim
   const classes = MetricsStyles();
   const { response, onGetChainData } = useGetChainData<NetworkAlertChainResponse>();
   const [escalationjitterData, setEscalationJitterData] = useState<MetricKeyValue>({});
+  const [escalationCorelation, setEscalationCorelation] = useState<EscalationCorelation[]>([]);
   const [jitterData, setJitterData] = useState<MetricKeyValue>({});
   const [anomalyCount, setAnomalyCount] = useState<number>(0);
 
@@ -152,11 +153,20 @@ export const Jitter: React.FC<JitterProps> = ({ selectedNetworksMetricsData, tim
 
   useEffect(() => {
     const escalationLatencyData: MetricKeyValue = {};
+    const totalCorelations: EscalationCorelation[] = [];
     selectedNetworksMetricsData.forEach(network => {
       const networkMetrics: Data[] = response[network.value].alerts.map(alert => ({ time: getCorrectedTimeString(alert.timestamp), value: alert.value.toString() || null }));
       escalationLatencyData[`${network.label}_escalation`] = networkMetrics;
+      response[network.value].alerts.forEach(alert => {
+        totalCorelations.push({
+          networkId: network.value,
+          timestamp: getCorrectedTimeString(alert.timestamp),
+          corelation: isEmpty(alert.correlations) ? { timestamp: '', event: 'No Cellular Failover detected' } : { timestamp: alert.correlations[0].timestamp, event: 'Cellular Failover' },
+        });
+      });
     });
     setEscalationJitterData(escalationLatencyData);
+    setEscalationCorelation(totalCorelations);
   }, [response]);
 
   return (
@@ -178,7 +188,12 @@ export const Jitter: React.FC<JitterProps> = ({ selectedNetworksMetricsData, tim
               <EmptyText>No Data</EmptyText>
             ) : (
               <Chart>
-                <MetricsLineChart dataValueSuffix="ms" selectedNetworksMetricsData={selectedNetworksMetricsData} inputData={{ ...jitterData, ...escalationjitterData }} />
+                <MetricsLineChart
+                  dataValueSuffix="ms"
+                  selectedNetworksMetricsData={selectedNetworksMetricsData}
+                  inputData={{ ...jitterData, ...escalationjitterData }}
+                  escalationCorelation={escalationCorelation}
+                />
               </Chart>
             )
           ) : (

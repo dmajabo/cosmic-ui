@@ -38,6 +38,17 @@ export interface MetricKeyValue {
   [id: string]: DataMetrics[];
 }
 
+interface CorelationObject {
+  readonly timestamp: string;
+  readonly event: string;
+}
+
+export interface EscalationCorelation {
+  readonly networkId: string;
+  readonly timestamp: string;
+  readonly corelation: CorelationObject;
+}
+
 export interface TestIdToName {
   [id: string]: string;
 }
@@ -77,6 +88,7 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedNetworksMetricsD
   const classes = MetricsStyles();
   const [packetLossData, setPacketLossData] = useState<MetricKeyValue>({});
   const [escalationPacketLossData, setEscalationPacketLossData] = useState<MetricKeyValue>({});
+  const [escalationCorelation, setEscalationCorelation] = useState<EscalationCorelation[]>([]);
   const [anomalyCount, setAnomalyCount] = useState<number>(0);
   const { response, onGetChainData } = useGetChainData<NetworkAlertChainResponse>();
 
@@ -158,11 +170,20 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedNetworksMetricsD
 
   useEffect(() => {
     const escalationPacketLossData: MetricKeyValue = {};
+    const totalCorelations: EscalationCorelation[] = [];
     selectedNetworksMetricsData.forEach(network => {
       const networkMetrics: Data[] = response[network.value].alerts.map(alert => ({ time: getCorrectedTimeString(alert.timestamp), value: alert.value.toString() || null }));
       escalationPacketLossData[`${network.label}_escalation`] = networkMetrics;
+      response[network.value].alerts.forEach(alert => {
+        totalCorelations.push({
+          networkId: network.value,
+          timestamp: getCorrectedTimeString(alert.timestamp),
+          corelation: isEmpty(alert.correlations) ? { timestamp: '', event: 'No Cellular Failover detected' } : { timestamp: alert.correlations[0].timestamp, event: 'Cellular Failover' },
+        });
+      });
     });
     setEscalationPacketLossData(escalationPacketLossData);
+    setEscalationCorelation(totalCorelations);
   }, [response]);
 
   return (
@@ -184,7 +205,12 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedNetworksMetricsD
               <EmptyText>No Data</EmptyText>
             ) : (
               <Chart>
-                <MetricsLineChart dataValueSuffix="%" selectedNetworksMetricsData={selectedNetworksMetricsData} inputData={{ ...packetLossData, ...escalationPacketLossData }} />
+                <MetricsLineChart
+                  dataValueSuffix="%"
+                  selectedNetworksMetricsData={selectedNetworksMetricsData}
+                  inputData={{ ...packetLossData, ...escalationPacketLossData }}
+                  escalationCorelation={escalationCorelation}
+                />
               </Chart>
             )
           ) : (

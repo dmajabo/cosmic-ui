@@ -580,6 +580,7 @@ export interface NetworkAlert {
   readonly destinationSegment: string;
   readonly network_id: string;
   readonly key: string;
+  readonly correlations: NetworkAlert[];
 }
 
 export interface NetworkAlertLogResponse {

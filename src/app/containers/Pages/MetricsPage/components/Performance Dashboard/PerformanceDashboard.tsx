@@ -136,8 +136,6 @@ export const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ netw
     onExpandedItemChange(getExpandedItemFromHistory(history, expandedItem));
   }, [history]);
 
-  console.log(expandedItem);
-
   return (
     <div className={classes.pageComponentBackground}>
       <div className={classes.pageComponentTitleContainer}>

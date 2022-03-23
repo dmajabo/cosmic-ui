@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import { createApiClient } from 'lib/api/http/apiClient';
 import { MetricsLineChart } from './MetricsLineChart';
 import LoadingIndicator from 'app/components/Loading';
-import { MetricKeyValue } from './PacketLoss';
+import { EscalationCorelation, MetricKeyValue } from './PacketLoss';
 import isEmpty from 'lodash/isEmpty';
 import { UserContext, UserContextState } from 'lib/Routes/UserProvider';
 import { Chart, ChartContainerStyles } from 'app/components/ChartContainer/styles';
@@ -62,6 +62,7 @@ export const Latency: React.FC<LatencyProps> = ({ selectedNetworksMetricsData, t
   const { response, onGetChainData } = useGetChainData<NetworkAlertChainResponse>();
   const [latencyData, setLatencyData] = useState<MetricKeyValue>({});
   const [escalationLatencyData, setEscalationLatencyData] = useState<MetricKeyValue>({});
+  const [escalationCorelation, setEscalationCorelation] = useState<EscalationCorelation[]>([]);
   const [anomalyCount, setAnomalyCount] = useState<number>(0);
 
   const userContext = useContext<UserContextState>(UserContext);
@@ -142,11 +143,20 @@ export const Latency: React.FC<LatencyProps> = ({ selectedNetworksMetricsData, t
 
   useEffect(() => {
     const escalationLatencyData: MetricKeyValue = {};
+    const totalCorelations: EscalationCorelation[] = [];
     selectedNetworksMetricsData.forEach(network => {
       const networkMetrics: Data[] = response[network.value].alerts.map(alert => ({ time: getCorrectedTimeString(alert.timestamp), value: alert.value.toString() || null }));
       escalationLatencyData[`${network.label}_escalation`] = networkMetrics;
+      response[network.value].alerts.forEach(alert => {
+        totalCorelations.push({
+          networkId: network.value,
+          timestamp: getCorrectedTimeString(alert.timestamp),
+          corelation: isEmpty(alert.correlations) ? { timestamp: '', event: 'No Cellular Failover detected' } : { timestamp: alert.correlations[0].timestamp, event: 'Cellular Failover' },
+        });
+      });
     });
     setEscalationLatencyData(escalationLatencyData);
+    setEscalationCorelation(totalCorelations);
   }, [response]);
 
   return (
@@ -168,7 +178,12 @@ export const Latency: React.FC<LatencyProps> = ({ selectedNetworksMetricsData, t
               <EmptyText>No Data</EmptyText>
             ) : (
               <Chart>
-                <MetricsLineChart dataValueSuffix="ms" selectedNetworksMetricsData={selectedNetworksMetricsData} inputData={{ ...latencyData, ...escalationLatencyData }} />
+                <MetricsLineChart
+                  dataValueSuffix="ms"
+                  selectedNetworksMetricsData={selectedNetworksMetricsData}
+                  inputData={{ ...latencyData, ...escalationLatencyData }}
+                  escalationCorelation={escalationCorelation}
+                />
               </Chart>
             )
           ) : (
