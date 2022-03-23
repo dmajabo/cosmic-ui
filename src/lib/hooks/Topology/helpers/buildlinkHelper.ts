@@ -1,4 +1,4 @@
-import { AppAccessLink, INetworkNetworkLink, INetworkVpnLink, INetworkVpnLinkState } from 'lib/api/ApiModels/Topology/apiModels';
+import { AppAccessLink, INetworkNetworkLink, INetworkVpnLink, INetworkVpnLinkState, INetworkwEdge } from 'lib/api/ApiModels/Topology/apiModels';
 import {
   INetworkVNetNode,
   ITGWNode,
@@ -44,8 +44,18 @@ export const buildLinks = (
           });
         });
       }
+
+      // Links between TWGs
+      Object.keys(accounts).forEach(key => {
+        accounts[key].children.forEach(tgwNode => {
+          tgwNode.wedgePeeringConnections.forEach(wedgePeeringConnection => {
+            buildTgwLinks(accounts, tgwNode, wedgePeeringConnection.peerWedge, _links);
+          });
+        });
+      });
     });
   }
+
   if (sites && Object.keys(sites).length) {
     Object.keys(sites).forEach(key => {
       if (!sites[key].children || !sites[key].children.length) return;
@@ -57,6 +67,7 @@ export const buildLinks = (
       });
     });
   }
+
   if (appOrigLinks.length) {
     appOrigLinks.forEach(orginLink => {
       buildSiteToAppNodeLinks(sites, appNodes, orginLink, _links);
@@ -64,6 +75,28 @@ export const buildLinks = (
   }
   if (!Object.keys(_links).length) return null;
   return _links;
+};
+
+const findToTgwNodeNode = (accounts: IObject<ITopoAccountNode>, peerEdge: INetworkwEdge) => {
+  const account = accounts[peerEdge.ownerId];
+  if (account) {
+    const toTgwNode = account.children.find(node => node.id === peerEdge.id);
+    return toTgwNode;
+  }
+  return undefined;
+};
+
+export const buildTgwLinks = (accounts: IObject<ITopoAccountNode>, tgwNode: ITGWNode, peerEdge: INetworkwEdge, links: IObject<ITopoLink<any, ITGWNode, any>>) => {
+  const from = tgwNode;
+  const to = findToTgwNodeNode(accounts, peerEdge);
+  const fromParent = accounts[tgwNode.ownerId];
+  const toParent = accounts[peerEdge.ownerId];
+
+  if (!from || !to || !fromParent || !toParent) {
+    return;
+  }
+  const nl: ITopoLink<INetworkVNetNode, ITGWNode, INetworkNetworkLink> = createTopoLink(TopoLinkTypes.NetworkNetworkLink, from, to, fromParent, toParent, null, null);
+  links[nl.extId] = nl;
 };
 
 export const buildSiteToAppNodeLinks = (sites: IObject<ITopoSitesNode>, appNodes: IObject<ITopoAppNode>, origLink: AppAccessLink, links: IObject<ITopoLink<any, ITGWNode, any>>) => {

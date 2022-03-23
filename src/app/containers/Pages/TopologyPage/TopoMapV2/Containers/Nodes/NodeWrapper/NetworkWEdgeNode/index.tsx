@@ -85,7 +85,7 @@ const NetworkWEdgeNode: React.FC<Props> = (props: Props) => {
       {/* TODO: Write logic for color */}
 
       <foreignObject width="1" height="1" style={{ overflow: 'visible' }} pointerEvents="none">
-        <div style={{ backgroundColor: 'green', borderRadius: '4px', height: '14px', width: '21px', position: 'absolute', top: '42px', left: '15px' }}>
+        <div style={{ backgroundColor: 'green', borderRadius: '4px', height: '16px', width: '21px', position: 'absolute', top: '42px', left: '15px' }}>
           <span style={{ color: '#FFF', fontSize: '10px', position: 'absolute', paddingLeft: '7px' }}>{escalation?.totalEscalations || 0}</span>
         </div>
       </foreignObject>

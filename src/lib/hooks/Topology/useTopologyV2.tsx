@@ -332,8 +332,16 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     }
     if (groupType === TopoFilterTypes.Regions) {
       const _obj: IObject<ITopoRegionNode> = _.cloneDeep(regions);
-      _obj[type].visible = selected;
-      const _links: IObject<ITopoLink<any, any, any>> = updateLinksVisibleStateBySpecificNode(links, _obj[type].dataItem.extId, _obj, sites, accounts, applicationNodes);
+      const regionName = _obj[type].dataItem.name;
+      let _links: IObject<ITopoLink<any, any, any>> = _.cloneDeep(links);
+
+      for (const key in _obj) {
+        if (_obj[key].dataItem.name === regionName) {
+          _obj[key].visible = selected;
+          const tempLinks: IObject<ITopoLink<any, any, any>> = updateLinksVisibleStateBySpecificNode(_links, _obj[key].dataItem.extId, _obj, sites, accounts, applicationNodes);
+          _links = { ..._links, ...tempLinks };
+        }
+      }
       setLinks(_links);
       setRegionsNodes(_obj);
       return;
