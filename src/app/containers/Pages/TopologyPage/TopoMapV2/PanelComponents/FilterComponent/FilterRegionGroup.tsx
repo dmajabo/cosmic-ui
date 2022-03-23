@@ -19,9 +19,9 @@ interface TransformedNode {
 const FilterRegionGroup: React.FC<Props> = (props: Props) => {
   const onClick = (node: any) => {
     const _id = node.dataItem.extId ? node.dataItem.extId : node.dataItem.id;
-    // const _id = node.dataItem.name;
     props.onClick(props.type, _id, !node.visible);
   };
+
   const transformedData = useMemo(() => {
     const data: TransformedNode = {};
     Object.keys(props.data).forEach(key => {
@@ -30,7 +30,6 @@ const FilterRegionGroup: React.FC<Props> = (props: Props) => {
     return data;
   }, [props.data]);
 
-  console.log(transformedData);
   return (
     <>
       {Object.keys(transformedData).map((key, index) => {
@@ -44,17 +43,6 @@ const FilterRegionGroup: React.FC<Props> = (props: Props) => {
           </FilterGroupItem>
         );
       })}
-      {/* {Object.keys(props.data).map((key, index) => {
-        return (
-          <FilterGroupItem key={`${props.type}${props.data[key].uiId}`}>
-            <ItemWrapper onClick={() => onClick(props.data[key])}>
-              <SimpleCheckbox isChecked={props.data[key].visible} wrapStyles={{ margin: '0 10px 0 0' }} readOnly inputStyles={{ pointerEvents: 'none' }} />
-              <GroupItemIcon style={props.iconStyles}>{props.icon}</GroupItemIcon>
-              <GroupItemLabel maxWidth="calc(100% - 58px)">{props.data[key].dataItem.name ? props.data[key].dataItem.name.toUpperCase() : props.data[key].dataItem.name}</GroupItemLabel>
-            </ItemWrapper>
-          </FilterGroupItem>
-        );
-      })} */}
     </>
   );
 };
