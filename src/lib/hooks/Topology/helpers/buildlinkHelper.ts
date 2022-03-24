@@ -111,7 +111,7 @@ export const buildTgwLinks = (accounts: IObject<ITopoAccountNode>, tgwNode: ITGW
   if (!from || !to || !fromParent || !toParent) {
     return;
   }
-  const nl: ITopoLink<INetworkVNetNode, ITGWNode, INetworkNetworkLink> = createTopoLink(TopoLinkTypes.NetworkNetworkLink, from, to, fromParent, toParent, null, null);
+  const nl: ITopoLink<INetworkVNetNode, ITGWNode, INetworkNetworkLink> = createTopoLink(TopoLinkTypes.TgwLink, from, to, fromParent, toParent, null, null);
   links[nl.extId] = nl;
 };
 
@@ -324,6 +324,35 @@ export const hideLinksFromUnselctedAppNode = (
       const to = applicationNodes[nodeId];
       _links[key].visible = from.visible && to.visible ? true : false;
       continue;
+    }
+  }
+  return _links;
+};
+
+const findTwgNode = (accounts: IObject<ITopoAccountNode>, node: ITGWNode) => {
+  let identifiedNode: ITGWNode;
+
+  for (let key in accounts) {
+    for (let child of accounts[key].children) {
+      // Check if the account itself is visible
+      if (child.id === node.id && accounts[key].visible) {
+        return child;
+      }
+    }
+  }
+  return identifiedNode;
+};
+
+export const updateTwgLinksVisibleState = (links: IObject<ITopoLink<any, any, any>>, node: ITGWNode, accounts: IObject<ITopoAccountNode>) => {
+  if (!links || !Object.keys(links).length) return null;
+  const _links: IObject<ITopoLink<any, any, any>> = _.cloneDeep(links);
+
+  for (let key in _links) {
+    if (_links[key].type !== TopoLinkTypes.TgwLink) continue;
+    if (_links[key].from.id === node.id || _links[key].to.id === node.id) {
+      const from = findTwgNode(accounts, _links[key].from);
+      const to = findTwgNode(accounts, _links[key].to);
+      _links[key].visible = from?.visible && to?.visible ? true : false;
     }
   }
   return _links;
