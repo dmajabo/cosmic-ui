@@ -223,8 +223,13 @@ export const DashboardStyles = makeStyles(
       severityLabel: {
         fontWeight: 500,
         fontSize: '14px',
-        padding: 8,
         lineHeight: '18px',
+        maxWidth: '29px',
+        width: '29px',
+        height: '29px',
+        maxHeight: '29px',
+        display: 'grid',
+        placeItems: 'center',
         color: '#ffffff',
       },
       ciscoPopupIcon: {
