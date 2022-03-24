@@ -47,6 +47,7 @@ import { AlertSeverity, IAlertMeta, IAlertMetaDataRes, ModelalertType } from 'li
 import { LocationState, TabName } from '../../MetricsPage';
 import { ArrowContainer, SeverityLabelContainer } from '../styles/DashboardStyledComponents';
 import { ALERT_TIME_RANGE_QUERY_TYPES, GENERAL_TIME_RANGE_QUERY_TYPES, paramBuilder } from 'lib/api/ApiModels/paramBuilders';
+import { isNumber } from 'lodash';
 
 const Tab = styled(TabUnstyled)`
   color: #848da3;
@@ -148,12 +149,11 @@ export const MerakiDashboard: React.FC = () => {
 
   const convertDataToFeatures = useCallback(
     (devices: Device[] = [], escalationData: EscalationData[] = []): Feature[] => {
-      console.log(deviceEscalationResponse);
       return devices.map(device => {
         const deviceEscalationData = escalationData.find(item => item.objectExtId === device.extId);
         return {
           type: 'Feature',
-          properties: { title: device.extId, uplinks: device.uplinks },
+          properties: { title: device.extId, uplinks: device.uplinks, name: device.vnetworks.reduce((acc, cur) => acc + cur.name, '') },
           geometry: {
             deviceEscalationData: deviceEscalationData,
             coordinates: [device.lon, device.lat],
@@ -168,15 +168,14 @@ export const MerakiDashboard: React.FC = () => {
 
   const convertDataToSitesData = useCallback(
     (devices: Device[] = [], deviceMetrics: DeviceMetrics[] = []): SitesData[] => {
-      return deviceMetrics.map(deviceMetric => {
-        const selectedDevice = devices.find(device => device.extId === deviceMetric.extId);
-        const tagArray = selectedDevice?.vnetworks.reduce((acc, vnetwork) => acc.concat(vnetwork.tags), []).map(tag => tag.value);
-        const bytesSent = deviceMetric?.bytesSendUsage / 1000000;
-        const bytesRecieved = deviceMetric?.bytesReceivedUsage / 1000000;
-        const availabilityArray = getAvailabilityArray(deviceMetric.availabilityMetrics);
-
+      return devices.map(device => {
+        const selectedDeviceMetric = deviceMetrics.find(metric => metric.extId === device.extId);
+        const tagArray = device.vnetworks.reduce((acc, vnetwork) => acc.concat(vnetwork.tags), []).map(tag => tag.value);
+        const bytesSent = selectedDeviceMetric?.bytesSendUsage / 1000000;
+        const bytesRecieved = selectedDeviceMetric?.bytesReceivedUsage / 1000000;
+        const availabilityArray = getAvailabilityArray(selectedDeviceMetric?.availabilityMetrics);
         return {
-          name: deviceMetric?.name || '',
+          name: device.vnetworks.reduce((acc, cur) => acc + cur.name, '') || '',
           totalUsage: (
             <div className={classes.troubleshootContainer}>
               <div>
@@ -190,21 +189,21 @@ export const MerakiDashboard: React.FC = () => {
             </div>
           ),
           avgBandwidth: '',
-          latency: `${deviceMetric?.latency.toFixed(2)} ms` || '',
-          packetLoss: `${deviceMetric?.packetloss > 0 ? deviceMetric?.packetloss.toFixed(2) : deviceMetric?.packetloss}%` || '',
-          goodput: `${deviceMetric?.goodput / 1000} mbps`,
+          latency: selectedDeviceMetric?.latency ? `${selectedDeviceMetric?.latency.toFixed(2)} ms` : 'NaN',
+          packetLoss: isNumber(selectedDeviceMetric?.packetloss) ? `${selectedDeviceMetric?.packetloss > 0 ? selectedDeviceMetric?.packetloss.toFixed(2) : selectedDeviceMetric?.packetloss}%` : 'NaN',
+          goodput: selectedDeviceMetric?.goodput ? `${selectedDeviceMetric?.goodput / 1000} mbps` : 'NaN',
           jitter: '',
-          clients: selectedDevice?.vnetworks.reduce((acc, vnetwork) => acc + vnetwork.numberOfOnetClients, 0),
+          clients: device.vnetworks.reduce((acc, vnetwork) => acc + vnetwork.numberOfOnetClients, 0),
           tags: tagArray.join(', '),
-          uplinks: selectedDevice.uplinks.map(uplink => uplink.name).join(', '),
+          uplinks: device.uplinks.map(uplink => uplink.name).join(', '),
           availability: (
             <div className={classes.connectivityContainer}>
-              {availabilityArray?.map(item => {
+              {availabilityArray?.map((item, index) => {
                 const timestamp = DateTime.fromFormat(getCorrectedTimeString(item.time), INPUT_TIME_FORMAT).toFormat(AVAILABILITY_TIME_FORMAT);
                 if (Number(item.value) > 0) {
-                  return <div title={timestamp} key={item.time} className={classes.connectivityUnavailableItem} />;
+                  return <div title={timestamp} key={index} className={classes.connectivityUnavailableItem} />;
                 }
-                return <div title={timestamp} key={item.time} className={classes.connectivityAvailableItem} />;
+                return <div title={timestamp} key={index} className={classes.connectivityAvailableItem} />;
               })}
             </div>
           ),
@@ -333,7 +332,6 @@ export const MerakiDashboard: React.FC = () => {
                   responsiveLayout="scroll"
                   value={convertDataToSitesData(devicesResponse?.devices || [], deviceMetricsResponse?.deviceMetrics || [])}
                   scrollable
-                  loading={deviceMetricsLoading}
                 >
                   <Column
                     headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, wordBreak: 'normal' }}

@@ -23,7 +23,7 @@ export const Popup: React.FC<PopupProps> = ({ properties, deviceMetrics }) => {
     <>
       <div className={classes.popupContainer}>
         <div className={classes.popupHeaderContainer}>
-          <span className={classes.popupTitle}>{selectedDeviceMetrics?.name}</span>
+          <span className={classes.popupTitle}>{properties.name}</span>
         </div>
         <hr className={classes.popupHr} />
         <div className={`${classes.popupItemContainer} ${classes.troubleshootContainer}`}>

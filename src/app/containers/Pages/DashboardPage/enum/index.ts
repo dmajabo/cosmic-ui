@@ -14,6 +14,7 @@ interface Tag {
 interface Vnetwork {
   readonly numberOfOnetClients: number;
   readonly tags: Tag[];
+  readonly name: string;
 }
 
 export interface Uplink {
