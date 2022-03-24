@@ -191,7 +191,9 @@ export const Jitter: React.FC<JitterProps> = ({ selectedNetworksMetricsData, tim
         totalCorelations.push({
           networkId: network.value,
           timestamp: getCorrectedTimeString(alert.timestamp),
-          corelation: isEmpty(alert.correlations) ? { timestamp: '', event: 'No Cellular Failover detected' } : { timestamp: alert.correlations[0].timestamp, event: 'Cellular Failover' },
+          corelation: isEmpty(alert.correlations)
+            ? { timestamp: '', event: 'No Cellular Failover detected' }
+            : { timestamp: getCorrectedTimeString(alert.correlations[0].timestamp), event: 'Cellular Failover' },
         });
       });
     });
