@@ -59,7 +59,7 @@ const PACKET_LOSS_LOWERBOUND = 'packetloss_lowerbound';
 const PACKET_LOSS_UPPERBOUND = 'packetloss_upperbound';
 const PACKET_LOSS_THRESHOLD = 'packetloss_threshold';
 
-const FIELD_ARRAY = [PACKET_LOSS, PACKET_LOSS_ANOMALY, PACKET_LOSS_LOWERBOUND, PACKET_LOSS_UPPERBOUND, PACKET_LOSS_THRESHOLD];
+const FIELD_ARRAY = [PACKET_LOSS, PACKET_LOSS_LOWERBOUND, PACKET_LOSS_UPPERBOUND, PACKET_LOSS_THRESHOLD];
 
 export const PACKET_LOSS_HEATMAP_LEGEND: LegendData[] = [
   {
@@ -87,6 +87,7 @@ export const PACKET_LOSS_HEATMAP_LEGEND: LegendData[] = [
 export const PacketLoss: React.FC<PacketLossProps> = ({ selectedNetworksMetricsData, timeRange, baseMetricName, expandedItem, onExpandedItemChange }) => {
   const classes = MetricsStyles();
   const [packetLossData, setPacketLossData] = useState<MetricKeyValue>({});
+  const [anomalyPacketLossData, setAnomalyPacketLossData] = useState<MetricKeyValue>({});
   const [escalationPacketLossData, setEscalationPacketLossData] = useState<MetricKeyValue>({});
   const [escalationCorelation, setEscalationCorelation] = useState<EscalationCorelation[]>([]);
   const [anomalyCount, setAnomalyCount] = useState<number>(0);
@@ -100,6 +101,60 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedNetworksMetricsD
 
   const handleExpansionItemChange = (value: string) => () => onExpandedItemChange(value);
 
+  const getPacketLossAnomalies = async () => {
+    const packetLossChartData: MetricKeyValue = {};
+    let totalAnomalyCount = 0;
+    const promises = selectedNetworksMetricsData.reduce((acc, row) => {
+      const networkApiList = row.deviceString ? apiClient.getPacketLossMetrics(row.deviceString, row.destination, timeRange, `${row.label}_${PACKET_LOSS_ANOMALY}`, PACKET_LOSS_ANOMALY) : [];
+      return acc.concat(networkApiList);
+    }, []);
+    Promise.all(promises).then(values => {
+      if (!isEmpty(values)) {
+        selectedNetworksMetricsData.forEach(network => {
+          const responseItem = values.find(item => item?.testId === `${network.label}_${PACKET_LOSS_ANOMALY}`);
+          if (responseItem) {
+            const anomalyArray = responseItem.metrics.keyedmap.find(item => item.key === PACKET_LOSS_ANOMALY)?.ts || [];
+            totalAnomalyCount = totalAnomalyCount + anomalyArray.length;
+            packetLossChartData[`${network.label}_anomaly`] = anomalyArray;
+          }
+        });
+      }
+      setAnomalyPacketLossData(packetLossChartData);
+      setAnomalyCount(totalAnomalyCount);
+    });
+  };
+
+  const getPacketLossMetrics = async () => {
+    const packetLossChartData: MetricKeyValue = {};
+
+    const promises = selectedNetworksMetricsData.reduce((acc, row) => {
+      const networkApiList = row.deviceString ? FIELD_ARRAY.map(field => apiClient.getPacketLossMetrics(row.deviceString, row.destination, timeRange, `${row.label}_${field}`, field)) : [];
+      return acc.concat(networkApiList);
+    }, []);
+
+    Promise.all(promises).then(values => {
+      if (!isEmpty(values)) {
+        selectedNetworksMetricsData.forEach(network => {
+          FIELD_ARRAY.forEach(field => {
+            const responseItem = values.find(item => item?.testId === `${network.label}_${field}`);
+            if (responseItem) {
+              if (field === PACKET_LOSS) {
+                packetLossChartData[network.label] = responseItem.metrics.keyedmap.find(item => item.key === PACKET_LOSS)?.ts || [];
+              } else if (field === PACKET_LOSS_LOWERBOUND) {
+                packetLossChartData[`${network.label}_lowerbound`] = responseItem.metrics.keyedmap.find(item => item.key === PACKET_LOSS_LOWERBOUND)?.ts || [];
+              } else if (field === PACKET_LOSS_UPPERBOUND) {
+                packetLossChartData[`${network.label}_upperbound`] = responseItem.metrics.keyedmap.find(item => item.key === PACKET_LOSS_UPPERBOUND)?.ts || [];
+              } else {
+                packetLossChartData[`${network.label}_threshold`] = responseItem.metrics.keyedmap.find(item => item.key === PACKET_LOSS_THRESHOLD)?.ts || [];
+              }
+            }
+          });
+        });
+      }
+      setPacketLossData(packetLossChartData);
+    });
+  };
+
   useEffect(() => {
     if (history && history && history.location.state) {
       const state = history.location.state as LocationState;
@@ -110,43 +165,6 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedNetworksMetricsD
   }, []);
 
   useEffect(() => {
-    const getPacketLossMetrics = async () => {
-      const packetLossChartData: MetricKeyValue = {};
-      let totalAnomalyCount = 0;
-
-      const promises = selectedNetworksMetricsData.reduce((acc, row) => {
-        const networkApiList = row.deviceString ? FIELD_ARRAY.map(field => apiClient.getPacketLossMetrics(row.deviceString, row.destination, timeRange, `${row.label}_${field}`, field)) : [];
-        return acc.concat(networkApiList);
-      }, []);
-
-      Promise.all(promises).then(values => {
-        if (!isEmpty(values)) {
-          selectedNetworksMetricsData.forEach(network => {
-            FIELD_ARRAY.forEach(field => {
-              const responseItem = values.find(item => item?.testId === `${network.label}_${field}`);
-              if (responseItem) {
-                if (field === PACKET_LOSS) {
-                  packetLossChartData[network.label] = responseItem.metrics.keyedmap.find(item => item.key === PACKET_LOSS)?.ts || [];
-                } else if (field === PACKET_LOSS_ANOMALY) {
-                  const anomalyArray = responseItem.metrics.keyedmap.find(item => item.key === PACKET_LOSS_ANOMALY)?.ts || [];
-                  totalAnomalyCount = totalAnomalyCount + anomalyArray.length;
-                  packetLossChartData[`${network.label}_anomaly`] = anomalyArray;
-                } else if (field === PACKET_LOSS_LOWERBOUND) {
-                  packetLossChartData[`${network.label}_lowerbound`] = responseItem.metrics.keyedmap.find(item => item.key === PACKET_LOSS_LOWERBOUND)?.ts || [];
-                } else if (field === PACKET_LOSS_UPPERBOUND) {
-                  packetLossChartData[`${network.label}_upperbound`] = responseItem.metrics.keyedmap.find(item => item.key === PACKET_LOSS_UPPERBOUND)?.ts || [];
-                } else {
-                  packetLossChartData[`${network.label}_threshold`] = responseItem.metrics.keyedmap.find(item => item.key === PACKET_LOSS_THRESHOLD)?.ts || [];
-                }
-              }
-            });
-          });
-        }
-        setPacketLossData(packetLossChartData);
-        setAnomalyCount(totalAnomalyCount);
-      });
-    };
-
     if (!isEmpty(selectedNetworksMetricsData) && expandedItem === baseMetricName) {
       const params: NetworkAlertLogParams = {
         alert_type: ModelalertType.ANOMALY_PACKETLOSS,
@@ -169,6 +187,16 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedNetworksMetricsD
   }, [selectedNetworksMetricsData, timeRange, expandedItem]);
 
   useEffect(() => {
+    if (!isEmpty(selectedNetworksMetricsData)) {
+      getPacketLossAnomalies();
+    }
+
+    return () => {
+      setAnomalyCount(0);
+    };
+  }, [selectedNetworksMetricsData, timeRange]);
+
+  useEffect(() => {
     const escalationPacketLossData: MetricKeyValue = {};
     const totalCorelations: EscalationCorelation[] = [];
     selectedNetworksMetricsData.forEach(network => {
@@ -178,7 +206,9 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedNetworksMetricsD
         totalCorelations.push({
           networkId: network.value,
           timestamp: getCorrectedTimeString(alert.timestamp),
-          corelation: isEmpty(alert.correlations) ? { timestamp: '', event: 'No Cellular Failover detected' } : { timestamp: alert.correlations[0].timestamp, event: 'Cellular Failover' },
+          corelation: isEmpty(alert.correlations)
+            ? { timestamp: '', event: 'No Cellular Failover detected' }
+            : { timestamp: getCorrectedTimeString(alert.correlations[0].timestamp), event: 'Cellular Failover' },
         });
       });
     });
@@ -191,7 +221,7 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedNetworksMetricsD
       <div ref={scrollRef} className={classes.pageComponentTitleContainer}>
         <div className={classes.metricComponentTitleContainer}>
           <div className={classes.pageComponentTitle}>Packet Loss summary</div>
-          <div className={classes.pillContainer} style={{ display: expandedItem === baseMetricName ? 'block' : 'none' }}>
+          <div className={classes.pillContainer}>
             <span className={classes.pillText}>{anomalyCount}</span>
           </div>
         </div>
@@ -200,15 +230,15 @@ export const PacketLoss: React.FC<PacketLossProps> = ({ selectedNetworksMetricsD
       <ChartContainerStyles style={{ maxWidth: '100%', minHeight: 420, maxHeight: 420, display: expandedItem === baseMetricName ? 'block' : 'none' }}>
         {!isEmpty(selectedNetworksMetricsData) ? (
           // packetLossData contains 6 keys for each row. One for the data, one for anomaly, one for upperbound,one for lowerbound, one for threshold and one for escalation
-          Object.keys({ ...packetLossData, ...escalationPacketLossData }).length / 6 === selectedNetworksMetricsData.length ? (
-            checkforNoData({ ...packetLossData, ...escalationPacketLossData }) ? (
+          Object.keys({ ...packetLossData, ...escalationPacketLossData, ...anomalyPacketLossData }).length / 6 === selectedNetworksMetricsData.length ? (
+            checkforNoData({ ...packetLossData, ...escalationPacketLossData, ...anomalyPacketLossData }) ? (
               <EmptyText>No Data</EmptyText>
             ) : (
               <Chart>
                 <MetricsLineChart
                   dataValueSuffix="%"
                   selectedNetworksMetricsData={selectedNetworksMetricsData}
-                  inputData={{ ...packetLossData, ...escalationPacketLossData }}
+                  inputData={{ ...packetLossData, ...escalationPacketLossData, ...anomalyPacketLossData }}
                   escalationCorelation={escalationCorelation}
                 />
               </Chart>

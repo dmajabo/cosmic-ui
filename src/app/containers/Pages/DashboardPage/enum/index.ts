@@ -14,6 +14,7 @@ interface Tag {
 interface Vnetwork {
   readonly numberOfOnetClients: number;
   readonly tags: Tag[];
+  readonly name: string;
 }
 
 export interface Uplink {
@@ -122,6 +123,47 @@ export interface SitesGridColumns {
   readonly tags: IGridColumnField;
   readonly availability: IGridColumnField;
 }
+
+export interface TransitGatewayData {
+  readonly name: string;
+  readonly id: string;
+  readonly accountId: string;
+  readonly region: string;
+}
+
+export interface TransitGatewayColumns {
+  readonly name: IGridColumnField;
+  readonly id: IGridColumnField;
+  readonly accountId: IGridColumnField;
+  readonly region: IGridColumnField;
+}
+
+export const TRANSIT_GATEWAY_COLUNMNS: TransitGatewayColumns = {
+  name: {
+    label: 'NAME',
+    resField: 'name',
+    field: 'name',
+    minWidth: '120px',
+  },
+  id: {
+    label: 'ID',
+    resField: 'id',
+    field: 'id',
+    minWidth: '120px',
+  },
+  accountId: {
+    label: 'AWS ACCOUNT ID',
+    resField: 'accountId',
+    field: 'accountId',
+    minWidth: '120px',
+  },
+  region: {
+    label: 'REGION',
+    resField: 'region',
+    field: 'region',
+    minWidth: '120px',
+  },
+};
 
 export const SITES_COLUMNS: SitesGridColumns = {
   name: {

@@ -36,7 +36,7 @@ const LATENCY_LOWERBOUND = 'latency_lowerbound';
 const LATENCY_UPPERBOUND = 'latency_upperbound';
 const LATENCY_THRESHOLD = 'latency_threshold';
 
-const FIELD_ARRAY = [LATENCY, LATENCY_ANOMALY, LATENCY_LOWERBOUND, LATENCY_UPPERBOUND, LATENCY_THRESHOLD];
+const FIELD_ARRAY = [LATENCY, LATENCY_LOWERBOUND, LATENCY_UPPERBOUND, LATENCY_THRESHOLD];
 
 export const LATENCY_HEATMAP_LEGEND: LegendData[] = [
   {
@@ -61,6 +61,7 @@ export const Latency: React.FC<LatencyProps> = ({ selectedNetworksMetricsData, t
 
   const { response, onGetChainData } = useGetChainData<NetworkAlertChainResponse>();
   const [latencyData, setLatencyData] = useState<MetricKeyValue>({});
+  const [anomalyLatencyData, setAnomalyLatencyData] = useState<MetricKeyValue>({});
   const [escalationLatencyData, setEscalationLatencyData] = useState<MetricKeyValue>({});
   const [escalationCorelation, setEscalationCorelation] = useState<EscalationCorelation[]>([]);
   const [anomalyCount, setAnomalyCount] = useState<number>(0);
@@ -73,6 +74,60 @@ export const Latency: React.FC<LatencyProps> = ({ selectedNetworksMetricsData, t
 
   const handleExpansionItemChange = (value: string) => () => onExpandedItemChange(value);
 
+  const getLatencyAnomalies = async () => {
+    const latencyChartData: MetricKeyValue = {};
+    let totalAnomalyCount = 0;
+    const promises = selectedNetworksMetricsData.reduce((acc, row) => {
+      const networkApiList = row.deviceString ? apiClient.getLatencyMetrics(row.deviceString, row.destination, timeRange, `${row.label}_${LATENCY_ANOMALY}`, LATENCY_ANOMALY) : [];
+      return acc.concat(networkApiList);
+    }, []);
+    Promise.all(promises).then(values => {
+      if (!isEmpty(values)) {
+        selectedNetworksMetricsData.forEach(network => {
+          const responseItem = values.find(item => item?.testId === `${network.label}_${LATENCY_ANOMALY}`);
+          if (responseItem) {
+            const anomalyArray = responseItem.metrics.keyedmap.find(item => item.key === LATENCY_ANOMALY)?.ts || [];
+            totalAnomalyCount = totalAnomalyCount + anomalyArray.length;
+            latencyChartData[`${network.label}_anomaly`] = anomalyArray;
+          }
+        });
+      }
+    });
+    setAnomalyLatencyData(latencyChartData);
+    setAnomalyCount(totalAnomalyCount);
+  };
+
+  const getLatencyMetrics = async () => {
+    const latencyChartData: MetricKeyValue = {};
+
+    const promises = selectedNetworksMetricsData.reduce((acc, row) => {
+      const networkApiList = row.deviceString ? FIELD_ARRAY.map(field => apiClient.getLatencyMetrics(row.deviceString, row.destination, timeRange, `${row.label}_${field}`, field)) : [];
+      return acc.concat(networkApiList);
+    }, []);
+
+    Promise.all(promises).then(values => {
+      if (!isEmpty(values)) {
+        selectedNetworksMetricsData.forEach(network => {
+          FIELD_ARRAY.forEach(field => {
+            const responseItem = values.find(item => item?.testId === `${network.label}_${field}`);
+            if (responseItem) {
+              if (field === LATENCY) {
+                latencyChartData[network.label] = responseItem.metrics.keyedmap.find(item => item.key === LATENCY)?.ts || [];
+              } else if (field === LATENCY_LOWERBOUND) {
+                latencyChartData[`${network.label}_lowerbound`] = responseItem.metrics.keyedmap.find(item => item.key === LATENCY_LOWERBOUND)?.ts || [];
+              } else if (field === LATENCY_UPPERBOUND) {
+                latencyChartData[`${network.label}_upperbound`] = responseItem.metrics.keyedmap.find(item => item.key === LATENCY_UPPERBOUND)?.ts || [];
+              } else {
+                latencyChartData[`${network.label}_threshold`] = responseItem.metrics.keyedmap.find(item => item.key === LATENCY_THRESHOLD)?.ts || [];
+              }
+            }
+          });
+        });
+      }
+      setLatencyData(latencyChartData);
+    });
+  };
+
   useEffect(() => {
     if (history && history && history.location.state) {
       const state = history.location.state as LocationState;
@@ -83,43 +138,6 @@ export const Latency: React.FC<LatencyProps> = ({ selectedNetworksMetricsData, t
   }, []);
 
   useEffect(() => {
-    const getLatencyMetrics = async () => {
-      const latencyChartData: MetricKeyValue = {};
-      let totalAnomalyCount = 0;
-
-      const promises = selectedNetworksMetricsData.reduce((acc, row) => {
-        const networkApiList = row.deviceString ? FIELD_ARRAY.map(field => apiClient.getLatencyMetrics(row.deviceString, row.destination, timeRange, `${row.label}_${field}`, field)) : [];
-        return acc.concat(networkApiList);
-      }, []);
-
-      Promise.all(promises).then(values => {
-        if (!isEmpty(values)) {
-          selectedNetworksMetricsData.forEach(network => {
-            FIELD_ARRAY.forEach(field => {
-              const responseItem = values.find(item => item?.testId === `${network.label}_${field}`);
-              if (responseItem) {
-                if (field === LATENCY) {
-                  latencyChartData[network.label] = responseItem.metrics.keyedmap.find(item => item.key === LATENCY)?.ts || [];
-                } else if (field === LATENCY_ANOMALY) {
-                  const anomalyArray = responseItem.metrics.keyedmap.find(item => item.key === LATENCY_ANOMALY)?.ts || [];
-                  totalAnomalyCount = totalAnomalyCount + anomalyArray.length;
-                  latencyChartData[`${network.label}_anomaly`] = anomalyArray;
-                } else if (field === LATENCY_LOWERBOUND) {
-                  latencyChartData[`${network.label}_lowerbound`] = responseItem.metrics.keyedmap.find(item => item.key === LATENCY_LOWERBOUND)?.ts || [];
-                } else if (field === LATENCY_UPPERBOUND) {
-                  latencyChartData[`${network.label}_upperbound`] = responseItem.metrics.keyedmap.find(item => item.key === LATENCY_UPPERBOUND)?.ts || [];
-                } else {
-                  latencyChartData[`${network.label}_threshold`] = responseItem.metrics.keyedmap.find(item => item.key === LATENCY_THRESHOLD)?.ts || [];
-                }
-              }
-            });
-          });
-        }
-        setLatencyData(latencyChartData);
-        setAnomalyCount(totalAnomalyCount);
-      });
-    };
-
     if (!isEmpty(selectedNetworksMetricsData) && expandedItem === baseMetricName) {
       const params: NetworkAlertLogParams = {
         alert_type: ModelalertType.ANOMALY_LATENCY,
@@ -142,6 +160,16 @@ export const Latency: React.FC<LatencyProps> = ({ selectedNetworksMetricsData, t
   }, [selectedNetworksMetricsData, timeRange, expandedItem]);
 
   useEffect(() => {
+    if (!isEmpty(selectedNetworksMetricsData)) {
+      getLatencyAnomalies();
+    }
+
+    return () => {
+      setAnomalyCount(0);
+    };
+  }, [selectedNetworksMetricsData, timeRange]);
+
+  useEffect(() => {
     const escalationLatencyData: MetricKeyValue = {};
     const totalCorelations: EscalationCorelation[] = [];
     selectedNetworksMetricsData.forEach(network => {
@@ -151,7 +179,9 @@ export const Latency: React.FC<LatencyProps> = ({ selectedNetworksMetricsData, t
         totalCorelations.push({
           networkId: network.value,
           timestamp: getCorrectedTimeString(alert.timestamp),
-          corelation: isEmpty(alert.correlations) ? { timestamp: '', event: 'No Cellular Failover detected' } : { timestamp: alert.correlations[0].timestamp, event: 'Cellular Failover' },
+          corelation: isEmpty(alert.correlations)
+            ? { timestamp: '', event: 'No Cellular Failover detected' }
+            : { timestamp: getCorrectedTimeString(alert.correlations[0].timestamp), event: 'Cellular Failover' },
         });
       });
     });
@@ -164,7 +194,7 @@ export const Latency: React.FC<LatencyProps> = ({ selectedNetworksMetricsData, t
       <div ref={scrollRef} className={classes.pageComponentTitleContainer}>
         <div className={classes.metricComponentTitleContainer}>
           <div className={classes.pageComponentTitle}>Latency summary</div>
-          <div className={classes.pillContainer} style={{ display: expandedItem === baseMetricName ? 'block' : 'none' }}>
+          <div className={classes.pillContainer}>
             <span className={classes.pillText}>{anomalyCount}</span>
           </div>
         </div>
@@ -173,15 +203,15 @@ export const Latency: React.FC<LatencyProps> = ({ selectedNetworksMetricsData, t
       <ChartContainerStyles style={{ maxWidth: '100%', minHeight: 420, maxHeight: 420, display: expandedItem === baseMetricName ? 'block' : 'none' }}>
         {!isEmpty(selectedNetworksMetricsData) ? (
           // latencyData contains 6 keys for each row. One for the data, one for anomaly, one for upperbound, one for lowerbound, one for threshold and one for Escalation
-          Object.keys({ ...latencyData, ...escalationLatencyData }).length / 6 === selectedNetworksMetricsData.length ? (
-            checkforNoData({ ...latencyData, ...escalationLatencyData }) ? (
+          Object.keys({ ...latencyData, ...escalationLatencyData, ...anomalyLatencyData }).length / 6 === selectedNetworksMetricsData.length ? (
+            checkforNoData({ ...latencyData, ...escalationLatencyData, ...anomalyLatencyData }) ? (
               <EmptyText>No Data</EmptyText>
             ) : (
               <Chart>
                 <MetricsLineChart
                   dataValueSuffix="ms"
                   selectedNetworksMetricsData={selectedNetworksMetricsData}
-                  inputData={{ ...latencyData, ...escalationLatencyData }}
+                  inputData={{ ...latencyData, ...escalationLatencyData, ...anomalyLatencyData }}
                   escalationCorelation={escalationCorelation}
                 />
               </Chart>

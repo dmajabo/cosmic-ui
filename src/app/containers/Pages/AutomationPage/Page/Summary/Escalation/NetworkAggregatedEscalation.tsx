@@ -1,6 +1,7 @@
 import { PieDataItem } from 'app/components/Charts/DonutChart';
 import { LegendRangeItemStyle, LegendRangeColorStyle, LegendRangeValueStyle } from 'app/containers/Pages/TrafficPage/Trends/Components/FlowsOverviewComponent/RangeItem/style';
 import { AxiosError } from 'axios';
+import { ALERT_TIME_RANGE_QUERY_TYPES } from 'lib/api/ApiModels/paramBuilders';
 import { ModelalertType } from 'lib/api/ApiModels/Workflow/apiModel';
 import { Vnet } from 'lib/api/http/SharedTypes';
 import { uniqBy, uniqueId } from 'lodash';
@@ -14,6 +15,7 @@ interface NetworkAggregatedEscalationProps {
   readonly error: AxiosError;
   readonly data: AlertData[];
   readonly networks: Vnet[];
+  readonly timeRange: ALERT_TIME_RANGE_QUERY_TYPES;
 }
 
 interface ColouredNetwork extends Vnet {
@@ -25,7 +27,7 @@ const getRandomColours = (colorNum: number, colors: number) => {
   return 'hsl(' + ((colorNum * (360 / colors)) % 360) + ',40%,50%)';
 };
 
-export const NetworkAggregatedEscalation: React.FC<NetworkAggregatedEscalationProps> = ({ loading, error, data, networks }) => {
+export const NetworkAggregatedEscalation: React.FC<NetworkAggregatedEscalationProps> = ({ loading, error, data, networks, timeRange }) => {
   const colouredNetworks: ColouredNetwork[] = useMemo(() => networks.map((network, index) => ({ ...network, color: getRandomColours(index, networks.length) })), [networks]);
   const packetLossPieChartData: PieDataItem[] = useMemo(() => {
     const packetLossAlertData = data.find(item => item.alertType === AlertType.ANOMALY_PACKETLOSS)?.details || [];
@@ -54,9 +56,9 @@ export const NetworkAggregatedEscalation: React.FC<NetworkAggregatedEscalationPr
   return (
     <>
       <SummaryItemContent>
-        <EscalationDonutChart loading={loading} error={error} data={latencyPieChartData} chartTitle="Latency" alertType={ModelalertType.ANOMALY_LATENCY} />
-        <EscalationDonutChart loading={loading} error={error} data={packetLossPieChartData} chartTitle="Packet Loss" alertType={ModelalertType.ANOMALY_PACKETLOSS} />
-        <EscalationDonutChart loading={loading} error={error} data={jitterPieChartData} chartTitle="Jitter" alertType={ModelalertType.ANOMALY_JITTER} />
+        <EscalationDonutChart loading={loading} error={error} data={latencyPieChartData} chartTitle="Latency" alertType={ModelalertType.ANOMALY_LATENCY} timeRange={timeRange} />
+        <EscalationDonutChart loading={loading} error={error} data={packetLossPieChartData} chartTitle="Packet Loss" alertType={ModelalertType.ANOMALY_PACKETLOSS} timeRange={timeRange} />
+        <EscalationDonutChart loading={loading} error={error} data={jitterPieChartData} chartTitle="Jitter" alertType={ModelalertType.ANOMALY_JITTER} timeRange={timeRange} />
       </SummaryItemContent>
       <LegendContainer>
         {allNetworks.map(item => (

@@ -24,6 +24,13 @@ export const DashboardStyles = makeStyles(
         flexGrow: 'unset',
         margin: '0 0 auto 0',
       },
+      awsTableWrapper: {
+        width: '100%',
+        maxHeight: 'calc(100% - 50px)',
+        height: 'auto',
+        flexGrow: 'unset',
+        margin: '0 0 auto 0',
+      },
       sitesTableHeaderCell: { fontSize: '12px', color: '#848DA3', fontWeight: 700 },
       sitesHeaderLeftSection: {
         display: 'flex',

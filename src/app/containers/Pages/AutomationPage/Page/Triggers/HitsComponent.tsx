@@ -82,7 +82,13 @@ const HitsComponent: React.FC<Props> = (props: Props) => {
   const onRowClick = (e: DataTableRowClickEventParams) => {
     const rowData: IAlertAlert = e.data;
     if (rowData.alertType === ModelalertType.ANOMALY_PACKETLOSS || rowData.alertType === ModelalertType.ANOMALY_LATENCY || rowData.alertType === ModelalertType.ANOMALY_JITTER) {
-      const locationState: LocationState = { anomalyType: rowData.alertType, destination: '', deviceId: rowData.objectExtId, tabName: TabName.Performance };
+      const locationState: LocationState = {
+        anomalyType: rowData.alertType,
+        destination: '',
+        deviceId: rowData.objectExtId,
+        tabName: TabName.Performance,
+        timeRange: props.period === ALERT_TIME_RANGE_QUERY_TYPES.LAST_DAY ? '-1d' : '-7d',
+      };
       history.push(ROUTE.app + ROUTE.metrics, locationState);
     }
   };
