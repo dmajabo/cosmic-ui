@@ -332,17 +332,37 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     if (groupType === TopoFilterTypes.Accounts) {
       let _links: IObject<ITopoLink<any, any, any>> = cloneDeep(links);
       const _obj: IObject<ITopoAccountNode> = cloneDeep(accounts);
+      const copiedRegions: IObject<ITopoRegionNode> = cloneDeep(regions);
+
       _obj[type].visible = selected;
 
       _links = updateLinksVisibleStateBySpecificNode(links, _obj[type].dataItem.extId, regions, sites, _obj, applicationNodes);
 
-      // hide regions which belong to the selected accounts
-      const copiedRegions: IObject<ITopoRegionNode> = cloneDeep(regions);
+      // toggle regions which belong to the selected accounts
       Object.keys(copiedRegions).forEach(key => {
         if (copiedRegions[key].orgId === type) {
           copiedRegions[key].visible = selected;
           _links = updateLinksVisibleStateBySpecificNode(_links, copiedRegions[key].dataItem.extId, copiedRegions, sites, _obj, applicationNodes);
         }
+      });
+
+      // test
+      Object.keys(_obj).forEach(key => {
+        _obj[key].children.forEach(tgwNode => {
+          if (tgwNode.ownerId === type) {
+            tgwNode.visible = selected;
+          }
+        });
+      });
+
+      /* Links require the updated visibility state of TWG nodes. Hence can't be combined with the above loop */
+      Object.keys(_obj).forEach(key => {
+        _obj[key].children.forEach(tgwNode => {
+          if (tgwNode.ownerId === type) {
+            const tempLinks: IObject<ITopoLink<any, any, any>> = updateTwgLinksVisibleState(_links, tgwNode, _obj);
+            _links = { ..._links, ...tempLinks };
+          }
+        });
       });
 
       setRegionsNodes(copiedRegions);
@@ -367,7 +387,7 @@ export function useTopologyV2Context(): TopologyV2ContextType {
         });
       });
 
-      /* Links require the updated visibility state of TWS nodes. Hence can't be combined with the above loop */
+      /* Links require the updated visibility state of TWG nodes. Hence can't be combined with the above loop */
       Object.keys(copiedAccounts).forEach(key => {
         copiedAccounts[key].children.forEach(tgwNode => {
           if (tgwNode.regionCode === regionName) {

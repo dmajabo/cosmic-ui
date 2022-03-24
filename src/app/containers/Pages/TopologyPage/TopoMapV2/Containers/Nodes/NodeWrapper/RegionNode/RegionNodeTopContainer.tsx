@@ -83,12 +83,10 @@ const RegionNodeTopContainer: React.FC<Props> = (props: Props) => {
   // };
 
   if (!pos || !props.region.visible) return null;
-  const offsetX = 0;
-  const offsetY = props.region.dataItem.name.toLowerCase() === 'global' ? 392 : 0;
 
   return (
     <>
-      <g id={`${NODES_CONSTANTS.REGION.type}${props.region.uiId}`} className="topologyNode" transform={`translate(${pos.x + offsetX}, ${pos.y + offsetY})`} data-type={NODES_CONSTANTS.REGION.type}>
+      <g id={`${NODES_CONSTANTS.REGION.type}${props.region.uiId}`} className="topologyNode" transform={`translate(${pos.x}, ${pos.y})`} data-type={NODES_CONSTANTS.REGION.type}>
         <RegionExpandNode dragId={`drag${NODES_CONSTANTS.REGION.type}${props.region.uiId}`} region={props.region} show={!props.region.collapsed} />
       </g>
       {/* <g onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} className="topologyNode">
