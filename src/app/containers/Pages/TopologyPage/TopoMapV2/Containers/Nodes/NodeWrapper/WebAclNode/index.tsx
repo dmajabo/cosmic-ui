@@ -16,6 +16,8 @@ interface Props {
   onClick: (item: INetworkWebAclNode) => void;
   onCenteredToNode: (node: INetworkWebAclNode, panelWidth: number) => void;
   onCenteredMap: () => void;
+  offsetX?: number;
+  offsetY?: number;
 }
 
 const WebAclNode: React.FC<Props> = (props: Props) => {
@@ -58,7 +60,7 @@ const WebAclNode: React.FC<Props> = (props: Props) => {
 
   return (
     <g
-      transform={`translate(${props.item.x}, ${props.item.y})`}
+      transform={`translate(${props.item.x + (props.offsetX || 0)}, ${props.item.y + (props.offsetY || 0)})`}
       className={`topoNodeLevel1 webaclNodeWrapper ${isNodeSelected ? 'selectedTopoLevel1' : ''}`}
       onClick={onClick}
       cursor="pointer"

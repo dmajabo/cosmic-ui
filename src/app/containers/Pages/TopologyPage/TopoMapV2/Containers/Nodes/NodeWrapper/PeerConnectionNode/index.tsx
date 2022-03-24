@@ -13,6 +13,8 @@ interface Props {
   vnetCollapseStyles?: ICollapseStyles;
   labelStyles?: ILabelHtmlStyles;
   showLabel?: boolean;
+  offsetX?: number;
+  offsetY?: number;
 }
 
 const PeerConnectionNode: React.FC<Props> = (props: Props) => {
@@ -51,7 +53,7 @@ const PeerConnectionNode: React.FC<Props> = (props: Props) => {
           vnetCollapseStyles={props.vnetCollapseStyles}
         />
       ))} */}
-      <g transform={`translate(${props.item.x}, ${props.item.y})`} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
+      <g transform={`translate(${props.item.x + (props.offsetX || 0)}, ${props.item.y + (props.offsetY || 0)})`} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
         <circle fill={props.nodeStyles.bgColor} r={props.nodeStyles.r} cx={props.nodeStyles.r} cy={props.nodeStyles.r} className="peerConnectionNode" pointerEvents="all" />
         <use
           href={`#${NODES_CONSTANTS.PEERING_CONNECTION.type}`}

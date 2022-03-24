@@ -34,6 +34,9 @@ const RegionNode: React.FC<Props> = (props: Props) => {
       </g>
     );
   }
+  const offsetX = props.dataItem.dataItem.name.toLowerCase() === 'global' ? 0 : 0;
+  const offsetY = props.dataItem.dataItem.name.toLowerCase() === 'global' ? 392 : 0;
+
   return (
     <g id={`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}childrensLayer`} className="topologyNode" data-type={NODES_CONSTANTS.REGION.type}>
       <>
@@ -51,6 +54,8 @@ const RegionNode: React.FC<Props> = (props: Props) => {
                   labelStyles={NODES_CONSTANTS.WEB_ACL.labelHtmlStyles}
                   onCenteredToNode={props.onCenteredToNode}
                   onCenteredMap={props.onCenteredMap}
+                  offsetX={offsetX}
+                  offsetY={offsetY}
                 />
               ));
             })}
@@ -67,6 +72,8 @@ const RegionNode: React.FC<Props> = (props: Props) => {
                   dataItem={props.dataItem}
                   nodeStyles={NODES_CONSTANTS.PEERING_CONNECTION.collapse}
                   vnetCollapseStyles={NODES_CONSTANTS.NETWORK_VNET.collapse}
+                  offsetX={offsetX}
+                  offsetY={offsetY}
                 />
               ));
             })}
@@ -85,6 +92,8 @@ const RegionNode: React.FC<Props> = (props: Props) => {
                   onClick={onVpcClick}
                   onCenteredToNode={props.onCenteredToNode}
                   onCenteredMap={props.onCenteredMap}
+                  offsetX={offsetX}
+                  offsetY={offsetY}
                 />
               ));
             })}

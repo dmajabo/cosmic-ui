@@ -13,6 +13,8 @@ interface Props {
   onClick: (item: INetworkVNetNode) => void;
   onCenteredToNode: (node: INetworkVNetNode, panelWidth: number) => void;
   onCenteredMap: () => void;
+  offsetX?: number;
+  offsetY?: number;
 }
 
 const NetworkVnetNode: React.FC<Props> = (props: Props) => {
@@ -74,7 +76,7 @@ const NetworkVnetNode: React.FC<Props> = (props: Props) => {
       onMouseOver={onMouseEnter}
       onMouseOut={onMouseLeave}
       className={`topoNodeLevel1 vnetNodeWrapper ${isNodeSelected ? 'selectedTopoLevel1' : ''}`}
-      transform={`translate(${props.item.x}, ${props.item.y})`}
+      transform={`translate(${props.item.x + (props.offsetX || 0)}, ${props.item.y + (props.offsetY || 0)})`}
       data-id={props.item.extId}
       data-uiid={props.item.uiId}
       onClick={onClick}
