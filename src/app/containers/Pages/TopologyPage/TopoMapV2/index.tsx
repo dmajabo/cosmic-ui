@@ -2,10 +2,6 @@ import React, { useContext } from 'react';
 import { ContainerWithFooter, TopoContainer, MapContainer } from './styles';
 import LoadingIndicator from 'app/components/Loading';
 import { AbsLoaderWrapper } from 'app/components/Loading/styles';
-// import PanelBar from 'app/components/Basic/PanelBar';
-// import Entities from './PanelComponents/EntitiesComponent/Entities';
-// import data from './Test mock data.json';
-// import segmentsData from './Test mock segments.json';
 import { ITopologyDataRes } from 'lib/api/ApiModels/Topology/apiModels';
 import FooterAction from './FooterAction';
 import Graph from './Graph';
@@ -17,7 +13,6 @@ import { TopoApi } from 'lib/api/ApiModels/Services/topo';
 import { ErrorMessage } from 'app/components/Basic/ErrorMessage/ErrorMessage';
 import { useTopologyV2DataContext } from 'lib/hooks/Topology/useTopologyDataContext';
 import { TelemetryApi } from 'lib/api/ApiModels/Services/telemetry';
-import { DateTime } from 'luxon';
 import { AlertApi } from 'lib/api/ApiModels/Services/alert';
 
 interface IProps {}

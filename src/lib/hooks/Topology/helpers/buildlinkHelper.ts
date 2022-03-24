@@ -49,7 +49,9 @@ export const buildLinks = (
       Object.keys(accounts).forEach(key => {
         accounts[key].children.forEach(tgwNode => {
           tgwNode.wedgePeeringConnections.forEach(wedgePeeringConnection => {
-            buildTgwLinks(accounts, tgwNode, wedgePeeringConnection.peerWedge, _links);
+            if (!isLinkAlreadyPresent(_links, tgwNode, wedgePeeringConnection.peerWedge)) {
+              buildTgwLinks(accounts, tgwNode, wedgePeeringConnection.peerWedge, _links);
+            }
           });
         });
       });
@@ -77,25 +79,39 @@ export const buildLinks = (
   return _links;
 };
 
+const isLinkAlreadyPresent = (links: IObject<ITopoLink<any, any, any>>, from: ITGWNode, to: INetworkwEdge): boolean => {
+  for (let key in links) {
+    if (links[key].to?.id === from.id && links[key].from?.id === to.id) {
+      return true;
+    }
+  }
+  return false;
+};
+
 const findToTgwNodeNode = (accounts: IObject<ITopoAccountNode>, peerEdge: INetworkwEdge) => {
   const account = accounts[peerEdge.ownerId];
   if (account) {
     const toTgwNode = account.children.find(node => node.id === peerEdge.id);
-    return toTgwNode;
+    return cloneDeep(toTgwNode);
   }
   return undefined;
 };
 
 export const buildTgwLinks = (accounts: IObject<ITopoAccountNode>, tgwNode: ITGWNode, peerEdge: INetworkwEdge, links: IObject<ITopoLink<any, ITGWNode, any>>) => {
-  const from = tgwNode;
+  const from = cloneDeep(tgwNode);
   const to = findToTgwNodeNode(accounts, peerEdge);
   const fromParent = accounts[tgwNode.ownerId];
   const toParent = accounts[peerEdge.ownerId];
 
+  // To move TGW link from top to center
+  if (to) {
+    to.y = to.y + 30;
+  }
+
   if (!from || !to || !fromParent || !toParent) {
     return;
   }
-  const nl: ITopoLink<INetworkVNetNode, ITGWNode, INetworkNetworkLink> = createTopoLink(TopoLinkTypes.NetworkNetworkLink, from, to, fromParent, toParent, null, null);
+  const nl: ITopoLink<INetworkVNetNode, ITGWNode, INetworkNetworkLink> = createTopoLink(TopoLinkTypes.TgwLink, from, to, fromParent, toParent, null, null);
   links[nl.extId] = nl;
 };
 
@@ -308,6 +324,35 @@ export const hideLinksFromUnselctedAppNode = (
       const to = applicationNodes[nodeId];
       _links[key].visible = from.visible && to.visible ? true : false;
       continue;
+    }
+  }
+  return _links;
+};
+
+const findTwgNode = (accounts: IObject<ITopoAccountNode>, node: ITGWNode) => {
+  let identifiedNode: ITGWNode;
+
+  for (let key in accounts) {
+    for (let child of accounts[key].children) {
+      // Check if the account itself is visible
+      if (child.id === node.id && accounts[key].visible) {
+        return child;
+      }
+    }
+  }
+  return identifiedNode;
+};
+
+export const updateTwgLinksVisibleState = (links: IObject<ITopoLink<any, any, any>>, node: ITGWNode, accounts: IObject<ITopoAccountNode>) => {
+  if (!links || !Object.keys(links).length) return null;
+  const _links: IObject<ITopoLink<any, any, any>> = _.cloneDeep(links);
+
+  for (let key in _links) {
+    if (_links[key].type !== TopoLinkTypes.TgwLink) continue;
+    if (_links[key].from.id === node.id || _links[key].to.id === node.id) {
+      const from = findTwgNode(accounts, _links[key].from);
+      const to = findTwgNode(accounts, _links[key].to);
+      _links[key].visible = from?.visible && to?.visible ? true : false;
     }
   }
   return _links;

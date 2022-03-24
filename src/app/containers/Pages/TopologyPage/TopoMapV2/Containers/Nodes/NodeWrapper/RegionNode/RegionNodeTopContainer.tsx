@@ -83,6 +83,7 @@ const RegionNodeTopContainer: React.FC<Props> = (props: Props) => {
   // };
 
   if (!pos || !props.region.visible) return null;
+
   return (
     <>
       <g id={`${NODES_CONSTANTS.REGION.type}${props.region.uiId}`} className="topologyNode" transform={`translate(${pos.x}, ${pos.y})`} data-type={NODES_CONSTANTS.REGION.type}>

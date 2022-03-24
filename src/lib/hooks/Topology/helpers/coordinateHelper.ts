@@ -69,6 +69,12 @@ export const updateRegionItems = (items: IObject<ITopoRegionNode>, filter: Filte
     items[key].y = _startYPos - items[key].height;
     items[key].x = offsetX;
     offsetX = offsetX + items[key].width + NODES_CONSTANTS.REGION.spaceX;
+
+    if (items[key].dataItem?.name?.toLowerCase() === 'global') {
+      items[key].y = _startYPos - items[key].height + 392;
+      offsetX = offsetX - (items[key].width + NODES_CONSTANTS.REGION.spaceX);
+      items[key].x = offsetX - 100;
+    }
   });
   return { width: offsetX, height: maxNodeHeight };
 };

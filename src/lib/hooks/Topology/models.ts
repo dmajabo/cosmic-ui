@@ -107,6 +107,7 @@ export enum TopoLinkTypes {
   NetworkNetworkLink = 'NetworkNetworkLink',
   VPNLink = 'VpnLink',
   PeerConnectionLink = 'PeerConnectionLink',
+  TgwLink = 'TgwLink',
 }
 
 export interface ITopoLink<F, T, L> extends IVisible, IBaseEntity<string> {

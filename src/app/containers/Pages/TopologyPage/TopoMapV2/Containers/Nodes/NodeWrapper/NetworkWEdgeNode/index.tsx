@@ -55,6 +55,9 @@ const NetworkWEdgeNode: React.FC<Props> = (props: Props) => {
     return topology.tgwEscalations?.find(esc => esc.objectExtId === props.item.parentId);
   }, [props.item]);
 
+  if (!props.item.visible) {
+    return null;
+  }
   return (
     <g
       ref={nodeRef}

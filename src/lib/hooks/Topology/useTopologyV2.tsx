@@ -10,10 +10,17 @@ import { OKULIS_LOCAL_STORAGE_KEYS } from 'lib/api/http/utils';
 import { jsonClone } from 'lib/helpers/cloneHelper';
 import { getSessionStoragePreference, getSessionStoragePreferences, StoragePreferenceKeys, updateSessionStoragePreference } from 'lib/helpers/localStorageHelpers';
 import { IObject, IPosition, ISelectedListItem, ITimeTypes, TIME_PERIOD } from 'lib/models/general';
-import _ from 'lodash';
+import cloneDeep from 'lodash/cloneDeep';
 import * as React from 'react';
 import { createTopology } from './helper';
-import { hideLinksFromUnselctedAppNode, updateLinkNodesPosition, updateLinksVisibleStateBySpecificNode, updateLinkVisibleState, updateVpnLinks } from './helpers/buildlinkHelper';
+import {
+  hideLinksFromUnselctedAppNode,
+  updateLinkNodesPosition,
+  updateLinksVisibleStateBySpecificNode,
+  updateLinkVisibleState,
+  updateTwgLinksVisibleState,
+  updateVpnLinks,
+} from './helpers/buildlinkHelper';
 import { updateCollapseExpandAccounts, updateCollapseExpandSites, updateRegionNodes } from './helpers/buildNodeHelpers';
 import { getRegionChildrenOffsetY, setUpRegionChildCoord } from './helpers/coordinateHelper';
 import {
@@ -102,8 +109,8 @@ export function useTopologyV2Context(): TopologyV2ContextType {
   const [segments, setSegments] = React.useState<IMapped_Segment[]>(null);
   const [selectedNode, setSelectedNode] = React.useState<ITopoAccountNode | ITopoSitesNode | ITopoRegionNode>(null);
   const [regionStructures, setRegionStructures] = React.useState<ITopoRegionNode[]>([]);
-  const [entities, setEntities] = React.useState<FilterEntityOptions>(_.cloneDeep(DEFAULT_ENTITY_OPTIONS));
-  const [severity, setSeverity] = React.useState<FilterSeverityOptions>(_.cloneDeep(DEFAULT_SEVERITY_OPTIONS));
+  const [entities, setEntities] = React.useState<FilterEntityOptions>(cloneDeep(DEFAULT_ENTITY_OPTIONS));
+  const [severity, setSeverity] = React.useState<FilterSeverityOptions>(cloneDeep(DEFAULT_SEVERITY_OPTIONS));
   const [selectedPeriod, setSelectedPeriod] = React.useState<ISelectedListItem<ITimeTypes>>(TIME_PERIOD[0]);
   const [selectedTime, setSelectedTime] = React.useState<Date | null>(null);
   const [timeRange, setTimeRange] = React.useState<ITimeMinMaxRange | null>(null);
@@ -290,7 +297,7 @@ export function useTopologyV2Context(): TopologyV2ContextType {
 
   const onSelectFilterOption = (groupType: TopoFilterTypes, type: FilterEntityTypes | AlertSeverity | string, selected: boolean) => {
     if (groupType === TopoFilterTypes.Entities) {
-      const _obj: FilterEntityOptions = _.cloneDeep(entities);
+      const _obj: FilterEntityOptions = cloneDeep(entities);
       _obj[type].selected = selected;
       if (type === FilterEntityTypes.SITES) {
         const _data: IObject<ITopoSitesNode> = updateCollapseExpandSites(sites, !_obj[type].selected);
@@ -316,24 +323,79 @@ export function useTopologyV2Context(): TopologyV2ContextType {
       return;
     }
     if (groupType === TopoFilterTypes.Severity) {
-      const _obj: FilterSeverityOptions = _.cloneDeep(severity);
+      const _obj: FilterSeverityOptions = cloneDeep(severity);
       _obj[type].selected = selected;
       updateSessionStoragePreference(_obj, OKULIS_LOCAL_STORAGE_KEYS.OKULIS_PREFERENCE, StoragePreferenceKeys.TOPOLOGY_FILTER_SEVERITY_OPTIONS);
       setSeverity(_obj);
       return;
     }
     if (groupType === TopoFilterTypes.Accounts) {
-      const _obj: IObject<ITopoAccountNode> = _.cloneDeep(accounts);
+      let _links: IObject<ITopoLink<any, any, any>> = cloneDeep(links);
+      const _obj: IObject<ITopoAccountNode> = cloneDeep(accounts);
+      const copiedRegions: IObject<ITopoRegionNode> = cloneDeep(regions);
+
       _obj[type].visible = selected;
-      const _links: IObject<ITopoLink<any, any, any>> = updateLinksVisibleStateBySpecificNode(links, _obj[type].dataItem.extId, regions, sites, _obj, applicationNodes);
+
+      _links = updateLinksVisibleStateBySpecificNode(links, _obj[type].dataItem.extId, regions, sites, _obj, applicationNodes);
+
+      // toggle regions which belong to the selected accounts
+      Object.keys(copiedRegions).forEach(key => {
+        if (copiedRegions[key].orgId === type) {
+          copiedRegions[key].visible = selected;
+          _links = updateLinksVisibleStateBySpecificNode(_links, copiedRegions[key].dataItem.extId, copiedRegions, sites, _obj, applicationNodes);
+        }
+      });
+
+      // test
+      Object.keys(_obj).forEach(key => {
+        _obj[key].children.forEach(tgwNode => {
+          if (tgwNode.ownerId === type) {
+            tgwNode.visible = selected;
+          }
+        });
+      });
+
+      /* Links require the updated visibility state of TWG nodes. Hence can't be combined with the above loop */
+      Object.keys(_obj).forEach(key => {
+        _obj[key].children.forEach(tgwNode => {
+          if (tgwNode.ownerId === type) {
+            const tempLinks: IObject<ITopoLink<any, any, any>> = updateTwgLinksVisibleState(_links, tgwNode, _obj);
+            _links = { ..._links, ...tempLinks };
+          }
+        });
+      });
+
+      setRegionsNodes(copiedRegions);
       setLinks(_links);
       setAccountsNodes(_obj);
       return;
     }
+
     if (groupType === TopoFilterTypes.Regions) {
-      const _obj: IObject<ITopoRegionNode> = _.cloneDeep(regions);
+      const _obj: IObject<ITopoRegionNode> = cloneDeep(regions);
       const regionName = _obj[type].dataItem.name;
-      let _links: IObject<ITopoLink<any, any, any>> = _.cloneDeep(links);
+      let _links: IObject<ITopoLink<any, any, any>> = cloneDeep(links);
+
+      // Remove TGWs which belong to the selected region
+      const copiedAccounts: IObject<ITopoAccountNode> = cloneDeep(accounts);
+
+      Object.keys(copiedAccounts).forEach(key => {
+        copiedAccounts[key].children.forEach(tgwNode => {
+          if (tgwNode.regionCode === regionName) {
+            tgwNode.visible = selected;
+          }
+        });
+      });
+
+      /* Links require the updated visibility state of TWG nodes. Hence can't be combined with the above loop */
+      Object.keys(copiedAccounts).forEach(key => {
+        copiedAccounts[key].children.forEach(tgwNode => {
+          if (tgwNode.regionCode === regionName) {
+            const tempLinks: IObject<ITopoLink<any, any, any>> = updateTwgLinksVisibleState(_links, tgwNode, copiedAccounts);
+            _links = { ..._links, ...tempLinks };
+          }
+        });
+      });
 
       for (const key in _obj) {
         if (_obj[key].dataItem.name === regionName) {
@@ -342,6 +404,8 @@ export function useTopologyV2Context(): TopologyV2ContextType {
           _links = { ..._links, ...tempLinks };
         }
       }
+
+      setAccountsNodes(copiedAccounts);
       setLinks(_links);
       setRegionsNodes(_obj);
       return;
@@ -351,7 +415,7 @@ export function useTopologyV2Context(): TopologyV2ContextType {
   const onSelectApplicationFilterOption = (application: IMapped_Application, index: number, _selected: boolean) => {
     const _applications: IMapped_Application[] = appFiltersRef.current.slice();
     _applications[index].selected = _selected;
-    const _obj: IObject<ITopoAppNode> = _.cloneDeep(applicationNodes);
+    const _obj: IObject<ITopoAppNode> = cloneDeep(applicationNodes);
 
     _obj[application.extId].visible = _selected;
     const _links: IObject<ITopoLink<any, any, any>> = hideLinksFromUnselctedAppNode(links, _obj[application.extId].dataItem.extId, _obj, sites);
@@ -364,13 +428,13 @@ export function useTopologyV2Context(): TopologyV2ContextType {
     const _segments: IMapped_Segment[] = segmentsRef.current.slice();
     _segments[index].selected = _selected;
     if (segment.type === SegmentSegmentType.SITE) {
-      const _obj: IObject<ITopoSitesNode> = _.cloneDeep(sites);
+      const _obj: IObject<ITopoSitesNode> = cloneDeep(sites);
       _obj[segment.extId].visible = _selected;
       const _links: IObject<ITopoLink<any, any, any>> = updateLinksVisibleStateBySpecificNode(links, _obj[segment.extId].dataItem.id, regions, _obj, accounts, applicationNodes);
       setLinks(_links);
       setSitesNodes(_obj);
     } else if (segment.type === SegmentSegmentType.NETWORK) {
-      const _obj: IObject<ITopoRegionNode> = _.cloneDeep(regions);
+      const _obj: IObject<ITopoRegionNode> = cloneDeep(regions);
       const ids = [];
       segment.children.forEach(vnet => {
         _obj[vnet.parentId].children[vnet.rowIndex][vnet.childIndex].visible = _selected;

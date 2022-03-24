@@ -34,6 +34,7 @@ const RegionNode: React.FC<Props> = (props: Props) => {
       </g>
     );
   }
+
   return (
     <g id={`${NODES_CONSTANTS.REGION.type}${props.dataItem.uiId}childrensLayer`} className="topologyNode" data-type={NODES_CONSTANTS.REGION.type}>
       <>
