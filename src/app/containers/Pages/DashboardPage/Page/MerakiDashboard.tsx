@@ -251,7 +251,7 @@ export const MerakiDashboard: React.FC = () => {
   };
 
   const onAnomalyClick = (deviceId: string, destinationIp: string, anomalyType: ModelalertType) => {
-    const locationState: LocationState = { anomalyType: anomalyType, destination: destinationIp, deviceId: deviceId, tabName: TabName.Performance };
+    const locationState: LocationState = { anomalyType: anomalyType, destination: destinationIp, deviceId: deviceId, tabName: TabName.Performance, timeRange: '-7d' };
     history.push(ROUTE.app + ROUTE.metrics, locationState);
   };
 

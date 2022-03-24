@@ -11,6 +11,7 @@ import history from 'utils/history';
 import { ROUTE } from 'lib/Routes/model';
 import { ModelalertType } from 'lib/api/ApiModels/Workflow/apiModel';
 import { isEmpty, uniqueId } from 'lodash';
+import { ALERT_TIME_RANGE_QUERY_TYPES } from 'lib/api/ApiModels/paramBuilders';
 
 interface EscalationDonutChartProps {
   readonly loading: boolean;
@@ -18,6 +19,7 @@ interface EscalationDonutChartProps {
   readonly error: AxiosError;
   readonly chartTitle: string;
   readonly alertType: ModelalertType;
+  readonly timeRange: ALERT_TIME_RANGE_QUERY_TYPES;
 }
 
 const EMPTY_PIE_DATA: PieDataItem[] = [
@@ -30,9 +32,16 @@ const EMPTY_PIE_DATA: PieDataItem[] = [
   },
 ];
 
-export const EscalationDonutChart: React.FC<EscalationDonutChartProps> = ({ loading, error, data, chartTitle, alertType }) => {
+export const EscalationDonutChart: React.FC<EscalationDonutChartProps> = ({ loading, error, data, chartTitle, alertType, timeRange }) => {
   const onItemClick = (item: PieDataItem) => {
-    const state: LocationState = { tabName: TabName.Performance, destination: '', networkId: item.id, deviceId: '', anomalyType: alertType };
+    const state: LocationState = {
+      tabName: TabName.Performance,
+      destination: '',
+      networkId: item.id,
+      deviceId: '',
+      anomalyType: alertType,
+      timeRange: timeRange === ALERT_TIME_RANGE_QUERY_TYPES.LAST_DAY ? '-1d' : '-7d',
+    };
     history.push(ROUTE.app + ROUTE.metrics, state);
   };
 

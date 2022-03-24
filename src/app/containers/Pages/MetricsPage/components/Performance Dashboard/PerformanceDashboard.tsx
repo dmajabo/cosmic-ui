@@ -94,6 +94,14 @@ const getExpandedItemFromHistory = (history: any, expandedItem: string) => {
   return expandedItem;
 };
 
+const getTimeRangefromHistory = (history: any, timeRange: string) => {
+  if (history && history.location && history.location.state) {
+    const state = history.location.state as LocationState;
+    return state.timeRange;
+  }
+  return timeRange;
+};
+
 export const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ networks, devices, orgLoading }) => {
   const classes = MetricsStyles();
   const history = useHistory();
@@ -134,6 +142,7 @@ export const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ netw
 
   useEffect(() => {
     onExpandedItemChange(getExpandedItemFromHistory(history, expandedItem));
+    setTimeRange(getTimeRangefromHistory(history, timeRange));
   }, [history]);
 
   return (
