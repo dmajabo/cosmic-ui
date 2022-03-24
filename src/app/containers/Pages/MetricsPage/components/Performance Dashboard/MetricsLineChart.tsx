@@ -192,8 +192,8 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedNetworksMet
       name: `${row.label}_escalation`,
       data: sortBy(inputData[`${row.label}_escalation`], 'time').map(item => {
         const timestamp = DateTime.fromFormat(item.time, OLD_TIME_FORMAT).toUTC().toMillis();
-        const { event, timestamp: corelationTimestamp } = escalationCorelation.find(corelation => corelation.networkId === row.value && corelation.timestamp === item.time)?.corelation;
-
+        const { event, timestamp: corelationTime } = escalationCorelation.find(corelation => corelation.networkId === row.value && corelation.timestamp === item.time)?.corelation;
+        const corelationTimestamp = DateTime.fromFormat(corelationTime, OLD_TIME_FORMAT).toUTC().toMillis();
         return {
           x: timestamp,
           y: dataValueSuffix === 'mbps' ? Number(item.value) / 1000 : Number(Number.parseFloat(item.value).toFixed(2)),
@@ -205,7 +205,7 @@ export const MetricsLineChart: React.FC<LineChartProps> = ({ selectedNetworksMet
           dataValueSuffix: dataValueSuffix,
           destination: row.destination,
           event: event,
-          corelationTimestamp: corelationTimestamp ? `: ${DateTime.fromFormat(corelationTimestamp, OLD_TIME_FORMAT).toUTC().toFormat('EEEE, MMM dd, hh:mm a')}` : '',
+          corelationTimestamp: corelationTimestamp ? `: ${DateTime.fromMillis(corelationTimestamp).toFormat('EEEE, MMM dd, hh:mm a')}` : '',
         };
       }),
       linkedTo: `${row.label} &#9654 ${row.deviceString}`,
