@@ -4,6 +4,7 @@ import { IObject } from 'lib/models/general';
 import NetworkNetworkLink from './NetworkNetworkLink';
 import VPNLink from './VPNLink';
 import PeerConnectionLink from './PeerConnectionLink';
+import TgwLink from './TgwLink';
 
 interface Props {
   links: IObject<ITopoLink<any, any, any>>;
@@ -21,6 +22,9 @@ const LinksWrapper: React.FC<Props> = (props: Props) => {
         }
         if (props.links[key].type === TopoLinkTypes.PeerConnectionLink) {
           return <PeerConnectionLink key={props.links[key].extId} dataItem={{ ...props.links[key] }} visible={props.links[key].visible} />;
+        }
+        if (props.links[key].type === TopoLinkTypes.TgwLink) {
+          return <TgwLink key={props.links[key].extId} dataItem={{ ...props.links[key] }} visible={props.links[key].visible} />;
         }
         return null;
       })}
