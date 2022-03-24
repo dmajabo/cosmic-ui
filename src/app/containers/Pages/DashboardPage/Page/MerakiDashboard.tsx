@@ -113,6 +113,15 @@ export const getAvailabilityArray = (availabilityArray: AvailabilityMetric[]): A
   return availabilityArray;
 };
 
+const dashboardHeaderStyle: React.CSSProperties = { fontSize: '12px', color: '#848DA3', fontWeight: 700, wordBreak: 'normal' };
+const getDashboardRowStyle = (minWidth: string): React.CSSProperties => ({
+  minWidth: minWidth,
+  padding: 5,
+  fontSize: 14,
+  wordWrap: 'break-word',
+  wordBreak: 'break-all',
+});
+
 export const MerakiDashboard: React.FC = () => {
   const classes = DashboardStyles();
   const userContext = useContext<UserContextState>(UserContext);
@@ -333,75 +342,47 @@ export const MerakiDashboard: React.FC = () => {
                   value={convertDataToSitesData(devicesResponse?.devices || [], deviceMetricsResponse?.deviceMetrics || [])}
                   scrollable
                 >
+                  <Column headerStyle={dashboardHeaderStyle} style={getDashboardRowStyle(SITES_COLUMNS.name.minWidth)} field={SITES_COLUMNS.name.field} header={SITES_COLUMNS.name.label}></Column>
                   <Column
-                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, wordBreak: 'normal' }}
-                    style={{
-                      minWidth: SITES_COLUMNS.name.minWidth,
-                      padding: 5,
-                      fontSize: 14,
-                      wordWrap: 'break-word',
-                      wordBreak: 'break-all',
-                    }}
-                    field={SITES_COLUMNS.name.field}
-                    header={SITES_COLUMNS.name.label}
-                  ></Column>
-                  <Column
-                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, wordBreak: 'normal' }}
-                    style={{
-                      minWidth: SITES_COLUMNS.uplinks.minWidth,
-                      padding: 5,
-                      fontSize: 14,
-                      wordWrap: 'break-word',
-                      wordBreak: 'break-all',
-                    }}
+                    headerStyle={dashboardHeaderStyle}
+                    style={getDashboardRowStyle(SITES_COLUMNS.uplinks.minWidth)}
                     field={SITES_COLUMNS.uplinks.field}
                     header={SITES_COLUMNS.uplinks.label}
                   ></Column>
                   <Column
-                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, wordBreak: 'normal' }}
-                    style={{
-                      minWidth: SITES_COLUMNS.totalUsage.minWidth,
-                      padding: 5,
-                      fontSize: 14,
-                      wordWrap: 'break-word',
-                      wordBreak: 'break-all',
-                    }}
+                    headerStyle={dashboardHeaderStyle}
+                    style={getDashboardRowStyle(SITES_COLUMNS.totalUsage.minWidth)}
                     field={SITES_COLUMNS.totalUsage.field}
                     header={SITES_COLUMNS.totalUsage.label}
                   ></Column>
                   <Column
-                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, wordBreak: 'normal' }}
-                    style={{ minWidth: SITES_COLUMNS.clients.minWidth, padding: 5, wordWrap: 'break-word', wordBreak: 'break-all', fontSize: 14 }}
+                    headerStyle={dashboardHeaderStyle}
+                    style={getDashboardRowStyle(SITES_COLUMNS.clients.minWidth)}
                     field={SITES_COLUMNS.clients.field}
                     header={SITES_COLUMNS.clients.label}
                   ></Column>
+                  <Column headerStyle={dashboardHeaderStyle} style={getDashboardRowStyle(SITES_COLUMNS.tags.minWidth)} field={SITES_COLUMNS.tags.field} header={SITES_COLUMNS.tags.label}></Column>
                   <Column
-                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, wordBreak: 'normal' }}
-                    style={{ minWidth: SITES_COLUMNS.tags.minWidth, padding: 5, wordWrap: 'break-word', wordBreak: 'break-all', fontSize: 14 }}
-                    field={SITES_COLUMNS.tags.field}
-                    header={SITES_COLUMNS.tags.label}
-                  ></Column>
-                  <Column
-                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, wordBreak: 'normal' }}
-                    style={{ minWidth: SITES_COLUMNS.latency.minWidth, padding: 5, wordWrap: 'break-word', wordBreak: 'normal', fontSize: 14 }}
+                    headerStyle={dashboardHeaderStyle}
+                    style={getDashboardRowStyle(SITES_COLUMNS.latency.minWidth)}
                     field={SITES_COLUMNS.latency.field}
                     header={SITES_COLUMNS.latency.label}
                   ></Column>
                   <Column
-                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, wordBreak: 'normal' }}
-                    style={{ minWidth: SITES_COLUMNS.packetLoss.minWidth, padding: 5, wordWrap: 'break-word', wordBreak: 'normal', fontSize: 14 }}
+                    headerStyle={dashboardHeaderStyle}
+                    style={getDashboardRowStyle(SITES_COLUMNS.packetLoss.minWidth)}
                     field={SITES_COLUMNS.packetLoss.field}
                     header={SITES_COLUMNS.packetLoss.label}
                   ></Column>
                   <Column
-                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, wordBreak: 'normal' }}
-                    style={{ minWidth: SITES_COLUMNS.goodput.minWidth, padding: 5, wordWrap: 'break-word', wordBreak: 'normal', fontSize: 14 }}
+                    headerStyle={dashboardHeaderStyle}
+                    style={getDashboardRowStyle(SITES_COLUMNS.goodput.minWidth)}
                     field={SITES_COLUMNS.goodput.field}
                     header={SITES_COLUMNS.goodput.label}
                   ></Column>
                   <Column
-                    headerStyle={{ fontSize: '12px', color: '#848DA3', fontWeight: 700, wordBreak: 'normal' }}
-                    style={{ minWidth: SITES_COLUMNS.availability.minWidth, padding: 5, wordWrap: 'break-word', wordBreak: 'break-all', fontSize: 14 }}
+                    headerStyle={dashboardHeaderStyle}
+                    style={getDashboardRowStyle(SITES_COLUMNS.availability.minWidth)}
                     field={SITES_COLUMNS.availability.field}
                     header={SITES_COLUMNS.availability.label}
                   ></Column>

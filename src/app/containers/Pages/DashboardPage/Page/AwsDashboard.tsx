@@ -1,6 +1,5 @@
 import { EmptyText } from 'app/components/Basic/NoDataStyles/NoDataStyles';
 import { upRedArrow, downGreenArrow } from 'app/components/SVGIcons/arrows';
-import transitGatewayIcon from 'app/components/SVGIcons/dashboardIcons/transitGatewayIcon';
 import { AlertApi } from 'lib/api/ApiModels/Services/alert';
 import { TopoApi } from 'lib/api/ApiModels/Services/topo';
 import { INetworkwEdge, IWEdgesRes } from 'lib/api/ApiModels/Topology/apiModels';
@@ -18,7 +17,12 @@ import { AWSMap } from '../components/AWSMap';
 import { Feature } from '../components/Map/Map';
 import { Segments } from '../components/Segments';
 import { DashboardStyles } from '../DashboardStyles';
-import { AnomalySummary, AnomaliesResponse } from '../enum';
+import { AnomalySummary, AnomaliesResponse, DashboardSitesViewTab, TRANSIT_GATEWAY_COLUNMNS, TransitGatewayData } from '../enum';
+import { TabsUnstyled } from '@mui/material';
+import TabsListUnstyled from '@mui/base/TabsListUnstyled';
+import { buttonUnstyledClasses } from '@mui/base/ButtonUnstyled';
+import TabUnstyled, { tabUnstyledClasses } from '@mui/base/TabUnstyled';
+import { styled } from '@mui/system';
 import {
   AWSGridContainer,
   DashboardItemContainer,
@@ -27,12 +31,56 @@ import {
   DashboardItemLabel,
   GridItemContainer,
   MarkerCountContainer,
-  MarkerIconContainer,
 } from '../styles/ChartContainer';
 import { SeverityLabelContainer, ArrowContainer } from '../styles/DashboardStyledComponents';
 import { INPUT_TIME_FORMAT } from './MerakiDashboard';
+import { ALERT_TIME_RANGE_QUERY_TYPES, paramBuilder } from 'lib/api/ApiModels/paramBuilders';
+import { TableWrapper } from 'app/components/Basic/Table/PrimeTableStyles';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
+import Paging from 'app/components/Basic/Paging';
+import { PAGING_DEFAULT_PAGE_SIZE } from 'lib/models/general';
 
 const BASE_ANOMALIES_PAGE_SIZE = 10;
+
+const Tab = styled(TabUnstyled)`
+  color: #848da3;
+  cursor: pointer;
+  font-size: 12px;
+  background: #f3f6fc;
+  padding: 6px 40px 6px 40px;
+  border: none;
+  border-radius: 6px;
+  display: flex;
+
+  &.Mui-selected {
+    color: #437fec;
+    font-weight: bold;
+  }
+
+  &:hover {
+    color: #437fec;
+  }
+
+  &.${buttonUnstyledClasses.focusVisible} {
+    color: #437fec;
+  }
+
+  &.${tabUnstyledClasses.selected} {
+    background-color: white;
+  }
+
+  &.${buttonUnstyledClasses.disabled} {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+`;
+
+const TabsList = styled(TabsListUnstyled)`
+  border-radius: 6px;
+  display: flex;
+  align-content: space-between;
+`;
 
 enum EscalationResult {
   downGreen = 'downGreen',
@@ -40,18 +88,35 @@ enum EscalationResult {
   showSeverity = 'showSeverity',
 }
 
+const dashboardHeaderStyle: React.CSSProperties = { fontSize: '12px', color: '#848DA3', fontWeight: 700, wordBreak: 'normal' };
+const getDashboardRowStyle = (minWidth: string): React.CSSProperties => ({
+  minWidth: minWidth,
+  padding: 5,
+  fontSize: 14,
+  wordWrap: 'break-word',
+  wordBreak: 'break-all',
+});
+
 export const AwsDashboard: React.FC = () => {
   const classes = DashboardStyles();
   const userContext = useContext<UserContextState>(UserContext);
   const trafficActions = useTrafficActions();
   const { response, loading, error, onGet } = useGet<IWEdgesRes>();
+  const [sitesViewTabName, setSitesViewTabName] = useState<DashboardSitesViewTab>(DashboardSitesViewTab.Map);
   const [anomalies, setAnomalies] = useState<AnomalySummary[]>([]);
   const [alertMetadata, setAlertMetadata] = useState<IAlertMeta[]>([]);
   const { loading: alertMetadataLoading, response: alertMetadaResponse, onGet: GetAlertMetadata } = useGet<IAlertMetaDataRes>();
   const [anomaliesPageSize, setAnomaliesPageSize] = useState<number>(BASE_ANOMALIES_PAGE_SIZE);
   const { response: anomaliesResponse, loading: anomaliesLoading, error: anomaliesError, onGet: getAnomalies } = useGet<AnomaliesResponse>();
+  const [totalCount, setTotalCount] = useState<number>(0);
+  const [currentPage, setCurrentPage] = React.useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(PAGING_DEFAULT_PAGE_SIZE);
 
   const getAnomalySummaryPage = (pageSize: number) => getAnomalies(AlertApi.getAnomalies(), userContext.accessToken!, { pageSize: pageSize });
+
+  const onTabChange = (event: React.SyntheticEvent<Element, Event>, value: string | number) => {
+    setSitesViewTabName(value as DashboardSitesViewTab);
+  };
 
   const loadMoreAnomalies = () => {
     const newPageSize = anomaliesPageSize + BASE_ANOMALIES_PAGE_SIZE;
@@ -97,6 +162,24 @@ export const AwsDashboard: React.FC = () => {
     );
   };
 
+  const onChangeCurrentPage = (_page: number) => {
+    setCurrentPage(_page);
+    // TODO: Modify this
+    // onTryLoadAlertMetaData(size, page, selectedPeriod);
+  };
+
+  const onChangePageSize = (size: number, page?: number) => {
+    if (page) {
+      setCurrentPage(page);
+      setPageSize(size);
+      // TODO: Modify this
+      // onTryLoadAlertMetaData(size, page, selectedPeriod);
+      return;
+    }
+    setPageSize(size);
+    // onTryLoadAlertMetaData(size, currentPage, selectedPeriod);
+  };
+
   useEffect(() => {
     if (anomaliesResponse && anomaliesResponse.anomalySummary && anomaliesResponse.anomalySummary.length) {
       setAnomalies(anomaliesResponse.anomalySummary);
@@ -105,6 +188,9 @@ export const AwsDashboard: React.FC = () => {
 
   useEffect(() => {
     onGet(TopoApi.getWedges(), userContext.accessToken!);
+    const _param = paramBuilder(50, 1, ALERT_TIME_RANGE_QUERY_TYPES.LAST_DAY);
+    getAnomalySummaryPage(anomaliesPageSize);
+    GetAlertMetadata(AlertApi.getAllMetadata(), userContext.accessToken!, _param);
   }, []);
   useEffect(() => {
     if (alertMetadaResponse && alertMetadaResponse.alertMetadata && alertMetadaResponse.alertMetadata.length) {
@@ -122,20 +208,87 @@ export const AwsDashboard: React.FC = () => {
     [response],
   );
 
+  const convertWedgesToTransitGatewayData = useCallback(
+    (wedges: INetworkwEdge[] = []): TransitGatewayData[] =>
+      wedges.map(wedge => ({
+        name: wedge.name,
+        id: wedge.extId,
+        accountId: wedge.ownerId,
+        region: wedge.regionDetail.name,
+      })),
+    [response],
+  );
+
   return (
     <TrafficProvider actions={trafficActions}>
       <AWSGridContainer>
         <GridItemContainer gridArea="1 / 1 / 2 / 2">
           <DashboardItemContainer>
             <DashboardItemHeaderContainer>
-              <DashboardItemHeaderTitle>Transit Gateway</DashboardItemHeaderTitle>
-              <div className={classes.pillContainer}>
-                <span className={classes.pillText}>{response?.totalCount || 0}</span>
+              <MarkerCountContainer>
+                <DashboardItemHeaderTitle>Transit Gateway</DashboardItemHeaderTitle>
+                <div className={classes.pillContainer}>
+                  <span className={classes.pillText}>{response?.totalCount || 0}</span>
+                </div>
+              </MarkerCountContainer>
+              <div>
+                <TabsUnstyled value={sitesViewTabName} onChange={onTabChange}>
+                  <div className={classes.tabListContainer}>
+                    <TabsList>
+                      <Tab value={DashboardSitesViewTab.Map}>{DashboardSitesViewTab.Map.toUpperCase()}</Tab>
+                      <Tab value={DashboardSitesViewTab.List}>{DashboardSitesViewTab.List.toUpperCase()}</Tab>
+                    </TabsList>
+                  </div>
+                </TabsUnstyled>
               </div>
             </DashboardItemHeaderContainer>
-            <div className={classes.mapContainerMain}>
-              <AWSMap features={convertWedgestoFeatures(response?.wEdges)} />
-            </div>
+            {sitesViewTabName === DashboardSitesViewTab.Map && (
+              <div className={classes.mapContainerMain}>
+                <AWSMap features={convertWedgestoFeatures(response?.wEdges)} />
+              </div>
+            )}
+            {sitesViewTabName === DashboardSitesViewTab.List && (
+              <div>
+                <TableWrapper className={classes.awsTableWrapper}>
+                  <DataTable className="tableSX fixedToParentHeight" id="aws_tgws" responsiveLayout="scroll" value={convertWedgesToTransitGatewayData(response?.wEdges)} scrollable scrollHeight="34vh">
+                    <Column
+                      headerStyle={dashboardHeaderStyle}
+                      style={getDashboardRowStyle(TRANSIT_GATEWAY_COLUNMNS.name.minWidth)}
+                      field={TRANSIT_GATEWAY_COLUNMNS.name.field}
+                      header={TRANSIT_GATEWAY_COLUNMNS.name.label}
+                    />
+                    <Column
+                      headerStyle={dashboardHeaderStyle}
+                      style={getDashboardRowStyle(TRANSIT_GATEWAY_COLUNMNS.id.minWidth)}
+                      field={TRANSIT_GATEWAY_COLUNMNS.id.field}
+                      header={TRANSIT_GATEWAY_COLUNMNS.id.label}
+                    />
+                    <Column
+                      headerStyle={dashboardHeaderStyle}
+                      style={getDashboardRowStyle(TRANSIT_GATEWAY_COLUNMNS.accountId.minWidth)}
+                      field={TRANSIT_GATEWAY_COLUNMNS.accountId.field}
+                      header={TRANSIT_GATEWAY_COLUNMNS.accountId.label}
+                    />
+                    <Column
+                      headerStyle={dashboardHeaderStyle}
+                      style={getDashboardRowStyle(TRANSIT_GATEWAY_COLUNMNS.region.minWidth)}
+                      field={TRANSIT_GATEWAY_COLUNMNS.region.field}
+                      header={TRANSIT_GATEWAY_COLUNMNS.region.label}
+                    />
+                  </DataTable>
+                </TableWrapper>
+                <Paging
+                  disabled={totalCount === 0}
+                  hideRange={1024}
+                  count={totalCount}
+                  pageSize={pageSize}
+                  currentPage={currentPage}
+                  onChangePage={onChangeCurrentPage}
+                  onChangePageSize={onChangePageSize}
+                  pagingWrapStyles={{ display: totalCount < pageSize ? 'none' : '' }}
+                />
+              </div>
+            )}
           </DashboardItemContainer>
         </GridItemContainer>
         <GridItemContainer gridArea="1 / 2 / 2 / 2">

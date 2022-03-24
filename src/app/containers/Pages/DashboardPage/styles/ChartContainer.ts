@@ -119,7 +119,7 @@ export const DashboardItemHeaderTitle = styled.div`
 
 export const DashboardItemHeaderContainer = styled.div`
   display: flex;
-  justify-content: start;
+  justify-content: space-between;
   align-items: center;
   height: 26px;
   margin-bottom: 15px;
