@@ -49,7 +49,9 @@ export const buildLinks = (
       Object.keys(accounts).forEach(key => {
         accounts[key].children.forEach(tgwNode => {
           tgwNode.wedgePeeringConnections.forEach(wedgePeeringConnection => {
-            buildTgwLinks(accounts, tgwNode, wedgePeeringConnection.peerWedge, _links);
+            if (!isLinkAlreadyPresent(_links, tgwNode, wedgePeeringConnection.peerWedge)) {
+              buildTgwLinks(accounts, tgwNode, wedgePeeringConnection.peerWedge, _links);
+            }
           });
         });
       });
@@ -77,20 +79,34 @@ export const buildLinks = (
   return _links;
 };
 
+const isLinkAlreadyPresent = (links: IObject<ITopoLink<any, any, any>>, from: ITGWNode, to: INetworkwEdge): boolean => {
+  for (let key in links) {
+    if (links[key].to?.id === from.id && links[key].from?.id === to.id) {
+      return true;
+    }
+  }
+  return false;
+};
+
 const findToTgwNodeNode = (accounts: IObject<ITopoAccountNode>, peerEdge: INetworkwEdge) => {
   const account = accounts[peerEdge.ownerId];
   if (account) {
     const toTgwNode = account.children.find(node => node.id === peerEdge.id);
-    return toTgwNode;
+    return cloneDeep(toTgwNode);
   }
   return undefined;
 };
 
 export const buildTgwLinks = (accounts: IObject<ITopoAccountNode>, tgwNode: ITGWNode, peerEdge: INetworkwEdge, links: IObject<ITopoLink<any, ITGWNode, any>>) => {
-  const from = tgwNode;
+  const from = cloneDeep(tgwNode);
   const to = findToTgwNodeNode(accounts, peerEdge);
   const fromParent = accounts[tgwNode.ownerId];
   const toParent = accounts[peerEdge.ownerId];
+
+  // To move TGW link from top to center
+  if (to) {
+    to.y = to.y + 30;
+  }
 
   if (!from || !to || !fromParent || !toParent) {
     return;
