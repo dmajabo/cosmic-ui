@@ -8,7 +8,7 @@ export const ChartContainer = styled.div<ContainerProps>`
   flex-direction: column;
   flex-shrink: 0;
   width: 100%;
-  height: 570px;
+  min-height: 570px;
   background: var(--_primaryBg);
   border-radius: 6px;
   position: relative;
@@ -26,7 +26,7 @@ export const ChartHeader = styled.div`
 
 export const ChartLabel = styled.div`
   color: var(--_primaryTextColor);
-  font-family: 'DMSans';
+  font-family: 'DMSans', sans-serif;
   font-style: normal;
   font-weight: bold;
   font-size: 22px;

@@ -47,7 +47,7 @@ export const APP_PAGES: IPage[] = [
   { id: 'dashboard', path: ROUTE.dashboard, pageName: 'Dashboard', icon: dashboardIcon, breadcrumb: null },
   { id: 'topology', path: ROUTE.topology, pageName: 'Topology', icon: topologyIcon, breadcrumb: null },
   { id: 'policy', path: ROUTE.policy, pageName: 'Policy', icon: policyIcon, breadcrumb: null },
-  // { id: 'traffic', path: ROUTE.traffic, pageName: 'Traffic', icon: trafficIcon, breadcrumb: null },
+  { id: 'traffic', path: ROUTE.traffic, pageName: 'Traffic', icon: trafficIcon, breadcrumb: null },
   // { id: 'transit', path: ROUTE.transit, pageName: 'Transit', icon: edgesIcon, breadcrumb: BreadCrumbTypes.TRANSIT },
   // { id: 'performanceDashboard', path: ROUTE.performanceDashboard, pageName: 'Performance Dashboard', icon: performanceDashboard, breadcrumb: null },
   // { id: 'sessions', path: ROUTE.sessions, pageName: 'Sessions', icon: sessionsIcon, breadcrumb: null },

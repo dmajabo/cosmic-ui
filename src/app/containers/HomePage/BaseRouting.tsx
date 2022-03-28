@@ -23,7 +23,7 @@ export default function BaseRouting() {
         <Route exact path={`${match.path}${ROUTE.metrics}`} component={MetricsPage} />
         <Route exact path={`${match.path}${ROUTE.policy}`} component={PolicyPage} />
         {/* <Route exact path={`${match.path}${ROUTE.transit}`} component={Edges} /> */}
-        {/* <Route exact path={`${match.path}${ROUTE.traffic}`} component={TrafficPage} /> */}
+        <Route exact path={`${match.path}${ROUTE.traffic}`} component={TrafficPage} />
         <Route exact path={`${match.path}${ROUTE.analytics}`} component={AnalyticsPage} />
         <Route exact path={`${match.path}${ROUTE.troubleshooting}`} component={TroubleshootingPage} />
         <Route path={`${match.path}${ROUTE.workflow}`} component={AutomationPage} />
